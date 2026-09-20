@@ -600,14 +600,16 @@ A flexible hierarchy should support:
 - Team captain(s)
 - Member / fighter
 
-A typical example may look like:
+One possible example may look like:
 
-Buhurt International (BI)
-→ Canadian governing organization / recognized national body
+International federation or rules authority (for example BI, IMCF, or another body)
+→ National governing organization
 → HACSA or another regional/organizational body
 → Red Deer Reavers
 → Team captains
 → Fighters
+
+This is an example relationship only. BuhurtOS must not require every organization to sit beneath BI or any single federation.
 
 The hierarchy must remain configurable because different countries and rule systems may organize the sport differently.
 
@@ -681,3 +683,97 @@ Higher-level administrators may view data inside their jurisdiction according to
 A subordinate organization must never automatically gain access to sibling organizations' private data.
 
 Public competition records can be aggregated upward for rankings, history, and spectator views without exposing private administrative or medical information.
+
+
+## Federation-Agnostic Governance and Independent Rulesets
+
+BuhurtOS must never hard-code Buhurt International, IMCF, HACSA, or any other federation as the permanent root of the product.
+
+The platform must support multiple current, historical, future, and local governing bodies side by side.
+
+Examples may include:
+
+- Buhurt International (BI)
+- IMCF
+- National governing bodies
+- Regional associations
+- Provincial/state organizations
+- Independent leagues
+- Local tournament organizations
+- Future federations that do not exist yet
+
+A governing body may become inactive, merge, rename, split, or cease operating without breaking historical records.
+
+### Governing bodies are not the same thing as rulesets
+
+Rulesets must be separate versioned entities from organizations.
+
+A governing body may publish one or more rulesets.
+
+An organization may recognize or adopt rulesets published by another body.
+
+An event may select a specific ruleset and version regardless of the host organization's place in the governance hierarchy.
+
+For example:
+
+- BI Rules 2027
+- IMCF Historical Rules 2025
+- HACSA Rules 2027
+- HACSA Rules based on BI with local amendments
+- Local exhibition rules
+- Custom event rules
+
+### Ruleset records
+
+Every ruleset should support:
+
+- Name
+- Publisher / governing body
+- Version
+- Effective date
+- Retirement date
+- Status: draft, active, superseded, historical
+- Supported competition formats
+- Scoring definitions
+- Penalties/cards
+- Equipment/armor requirements where appropriate
+- Match timing
+- Round structure
+- Advancement rules
+- Tie-breaking
+- Ranking eligibility
+- Allowed local overrides
+- Source/reference documents
+- Structured machine-readable configuration
+- Human-readable explanation for fighters, marshals, and spectators
+
+Completed matches must retain an immutable reference to the exact ruleset version used.
+
+### Organization relationships must be flexible
+
+The governance model should not rely on one permanent strict tree.
+
+BuhurtOS should support relationships such as:
+
+- affiliated with
+- sanctioned by
+- recognized by
+- member of
+- regional body of
+- national body of
+- rules adopted from
+- historical predecessor/successor
+
+This allows the database to represent real-world changes without rewriting history.
+
+### Historical organizations
+
+If a governing body or organization becomes inactive:
+
+- Its historical events remain accessible
+- Its rulesets remain available for old results
+- Its fighter and team records remain linked correctly
+- It can be marked inactive/historical rather than deleted
+- Successor organizations may be linked without replacing the original historical entity
+
+The same principle applies to renamed, merged, dissolved, or replaced organizations.
