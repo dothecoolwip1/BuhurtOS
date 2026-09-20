@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { demoFighters, demoTeams } from '../data/showcase';
 import { Avatar, PageHeader, Panel, Pill } from '../components/ShowcaseUI';
@@ -7,7 +8,7 @@ export function TeamPage(){
   const team=demoTeams.find(t=>t.id===teamId)??demoTeams[0];
   const members=demoFighters.filter(f=>f.teamId===team.id);
   return <>
-    <div className="show-profile-hero team" style={{'--profile-accent':team.color} as React.CSSProperties}><div className="show-team-logo-xl">{team.logoText}</div><div className="grow"><span className="eyebrow">HACSA TEAM</span><h1>{team.name}</h1><p>{team.city} • Founded {team.founded}</p><div className="show-inline-pills"><Pill tone="green">{team.status}</Pill><Pill>{members.length} profiled fighters</Pill></div></div><button className="show-btn secondary">Share team</button></div>
+    <div className="show-profile-hero team" style={{'--profile-accent':team.color} as CSSProperties}><div className="show-team-logo-xl">{team.logoText}</div><div className="grow"><span className="eyebrow">HACSA TEAM</span><h1>{team.name}</h1><p>{team.city} • Founded {team.founded}</p><div className="show-inline-pills"><Pill tone="green">{team.status}</Pill><Pill>{members.length} profiled fighters</Pill></div></div><button className="show-btn secondary">Share team</button></div>
     <div className="show-profile-tabs"><button className="active">Overview</button><button>Roster</button><button>Results</button><button>History</button><button>Upcoming</button></div>
     <div className="show-two-col wide-left">
       <div className="show-stack">
