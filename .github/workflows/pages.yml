@@ -1,4 +1,4 @@
-name: Deploy BuhurtOS Test Site
+name: Deploy BuhurtOS
 
 on:
   push:
@@ -24,16 +24,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build BuhurtOS
+        env:
+          GITHUB_PAGES: "true"
+        run: npx vite build
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
-      - name: Upload standalone BuhurtOS site
+      - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: dist
 
       - name: Deploy Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
