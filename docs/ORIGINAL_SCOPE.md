@@ -31,7 +31,8 @@ The product should be HACSA-first while remaining multi-organization and globall
 
 ## Hierarchy and Core Data Model
 
-Organization
+Governing Body / Federation
+→ Organization
 → Season
 → Event
 → Fight Card / List
@@ -581,3 +582,102 @@ Temporary/ghost fighters must be mergeable into a permanent member profile witho
 8. The fighter can register for events and their future results attach to the same permanent fighter record.
 
 This delegated model is a core product requirement for BuhurtOS.
+
+
+## Governing Bodies and Federation Hierarchy
+
+BuhurtOS must support governing bodies above individual organizations so it can represent the real sport hierarchy instead of treating every organization as a top-level tenant.
+
+### Required hierarchy
+
+A flexible hierarchy should support:
+
+- International governing body / federation
+- National governing body
+- Regional or provincial/state governing organization
+- Local organization or club association
+- Team
+- Team captain(s)
+- Member / fighter
+
+A typical example may look like:
+
+Buhurt International (BI)
+→ Canadian governing organization / recognized national body
+→ HACSA or another regional/organizational body
+→ Red Deer Reavers
+→ Team captains
+→ Fighters
+
+The hierarchy must remain configurable because different countries and rule systems may organize the sport differently.
+
+### Governing body capabilities
+
+Higher-level governing bodies should be able to:
+
+- Create or recognize subordinate organizations
+- Approve or suspend subordinate organizations where appropriate
+- Publish official rulesets
+- Define sanctioned competition classes/divisions
+- Define ranking systems
+- Define season structures
+- Define championship qualification rules
+- Sanction events
+- View sanctioned event results
+- Maintain official fighter/team records across subordinate organizations
+- Maintain discipline and suspension records within their jurisdiction
+- Publish official announcements
+- Maintain governance metadata, branding, region/country, links, and contacts
+- Delegate administrative authority to subordinate organizations without giving them access to unrelated organizations
+
+### Ruleset inheritance
+
+Rules should be inheritable through the hierarchy.
+
+For example:
+
+BI ruleset
+→ national override/addendum
+→ HACSA override/addendum
+→ event-specific configuration
+
+Lower levels may only override fields explicitly allowed by the parent governing body.
+
+Every match/result must preserve the exact ruleset/version used at the time so historical results remain reproducible even after rules change.
+
+### Sanctioning and event authority
+
+Events should be able to reference:
+
+- Governing body
+- Sanctioning organization
+- Host organization
+- Participating teams
+- Ruleset/version
+- Ranking/standings eligibility
+- Championship/qualifier status
+- Official event classification
+
+This allows a tournament to be hosted by one organization while being sanctioned by a higher governing body.
+
+### Identity across governing bodies
+
+Teams and fighters must have permanent BuhurtOS identities that can participate across multiple governing bodies without duplicate profiles.
+
+A fighter may:
+
+- Belong to one current team
+- Hold memberships in multiple governing bodies
+- Compete in events sanctioned by different organizations
+- Carry one career history across all compatible events
+- Have rankings that are jurisdiction-specific where necessary
+
+Historical results must preserve the organization/team represented at the time of competition.
+
+### Multi-organization data visibility
+
+Higher-level administrators may view data inside their jurisdiction according to permission and privacy rules.
+
+A subordinate organization must never automatically gain access to sibling organizations' private data.
+
+Public competition records can be aggregated upward for rankings, history, and spectator views without exposing private administrative or medical information.
