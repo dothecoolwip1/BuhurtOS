@@ -777,3 +777,32 @@ If a governing body or organization becomes inactive:
 - Successor organizations may be linked without replacing the original historical entity
 
 The same principle applies to renamed, merged, dissolved, or replaced organizations.
+
+
+## Primary HACSA Hierarchy
+
+For the primary HACSA implementation, BuhurtOS should model the normal chain as:
+
+Buhurt International (BI)
+→ HACSA
+→ Team
+→ Fighter / Member
+
+Example:
+
+BI
+→ HACSA
+→ Red Deer Reavers
+→ Bob
+
+In this model:
+
+- BI is the parent governing body / federation
+- HACSA is the organization operating beneath BI
+- Red Deer Reavers is a team belonging to HACSA
+- Bob is a fighter/member belonging to the Red Deer Reavers
+- Team captains manage the relationship between the team and its members
+- Fighters manage their own personal profiles
+- Historical results preserve the exact team and organization represented at the time
+
+The data model should optimize the first implementation around this BI → HACSA → Team → Fighter path while remaining capable of supporting other federations and structures later.
