@@ -7,7 +7,7 @@ export function ShowcasePublicPage(){
   const alex=demoFighters.find(f=>f.id==='alex')!;
   return <div className="show-public">
     <section className="show-public-hero">
-      <div className="show-public-nav"><div className="show-brand"><span className="show-brand-mark">B</span><span><b>BuhurtOS</b><small>HACSA Fall Open</small></span></div><div><button>Schedule</button><button>Brackets</button><button>Standings</button><button>What is Buhurt?</button></div></div>
+      <div className="show-public-nav"><div className="show-brand"><span className="show-brand-mark">B</span><span><b>BuhurtOS</b><small>HACSA Fall Open</small></span></div><div><button>Schedule</button><button>Brackets</button><button>Standings</button><button>What is Buhurt?</button><Link className="show-public-staff-link" to="/home">Staff preview</Link></div></div>
       <div className="show-public-live-label"><span className="show-live-dot"></span> LIVE FROM SPRINGBROOK</div>
       <h1>HACSA Fall Open</h1><p>Follow every field, fighter, bracket and result live.</p>
       <div className="show-public-actions"><button className="show-btn light">▶ Watch livestream</button><button className="show-btn glass">View full schedule</button></div>
