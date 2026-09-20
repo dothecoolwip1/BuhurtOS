@@ -1,0 +1,24 @@
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { demoFighters } from '../data/showcase';
+import { Avatar, PageHeader, Panel, Pill, StatCard } from '../components/ShowcaseUI';
+
+export function TeamHQPage(){
+  const [inviteOpen,setInviteOpen]=useState(false);
+  const roster=useMemo(()=>demoFighters.filter(f=>f.teamId==='reavers'),[]);
+  return <>
+    <PageHeader eyebrow="Captain Portal" title="Red Deer Reavers HQ" description="Manage the official team roster, invitations, event lineups and readiness without owning your fighters’ personal profiles." actions={<><button className="show-btn secondary">Team settings</button><button className="show-btn primary" onClick={()=>setInviteOpen(true)}>＋ Invite member</button></>}/>
+    <div className="show-stat-grid"><StatCard label="Active members" value="14" note="11 fighters • 3 support" tone="accent"/><StatCard label="Fall Open lineup" value="9" note="7 cleared • 2 pending" tone="good"/><StatCard label="Pending invites" value="2" note="Sent this week" tone="warn"/><StatCard label="Season team rank" value="#2" note="HACSA 2026"/></div>
+    <div className="show-two-col wide-left">
+      <Panel title="Roster" subtitle="Fighters own their personal details. Captains manage team membership and competition status." actions={<button className="show-link-btn" onClick={()=>setInviteOpen(true)}>Invite fighter</button>}>
+        <div className="show-roster-table">{roster.map((f,index)=><article key={f.id}><Avatar initials={f.name.split(' ').map(x=>x[0]).join('').slice(0,2)} tone={f.photoTone}/><div className="grow"><Link to={`/fighters/${f.id}`}><b>{f.name}</b></Link><small>{f.categories.join(' • ')}</small></div><div className="show-readiness"><Pill tone="green">Member</Pill>{index===1?<Pill tone="amber">Waiver due</Pill>:<Pill tone="green">Event ready</Pill>}</div><button className="show-kebab">•••</button></article>)}</div>
+      </Panel>
+      <div className="show-stack">
+        <Panel title="Captain actions" subtitle="What needs your attention"><div className="show-action-list"><button><span>✉</span><div><b>2 invitations pending</b><small>Resend or cancel invitations</small></div><i>›</i></button><button><span>✓</span><div><b>1 membership request</b><small>Review fighter request</small></div><i>›</i></button><button><span>⚔</span><div><b>Fall Open lineup</b><small>9 selected • lock by Sep 23</small></div><i>›</i></button><button><span>♙</span><div><b>Add mercenary</b><small>Event-only temporary fighter</small></div><i>›</i></button></div></Panel>
+        <Panel title="Team profile"><div className="show-team-profile-mini"><span className="show-team-logo-large">RR</span><div><b>Red Deer Reavers</b><small>Central Alberta • HACSA</small><p>Public team page is 86% complete.</p></div></div><Link className="show-btn secondary full" to="/teams/reavers">Preview public team page</Link></Panel>
+      </div>
+    </div>
+    <Panel title="Event lineups" subtitle="Choose who represents the team without changing permanent membership"><div className="show-lineup-grid"><article><div><span className="show-date-tile"><b>SEP</b><small>26</small></span><div><h3>HACSA Fall Open</h3><p>5v5 • Longsword • Sword & Buckler</p></div></div><div className="show-lineup-people">{roster.slice(0,3).map(f=><Avatar key={f.id} initials={f.name.split(' ').map(x=>x[0]).join('').slice(0,2)} tone={f.photoTone} size="sm"/>)}<span>+6</span></div><button className="show-btn primary">Manage lineup</button></article><article><div><span className="show-date-tile"><b>NOV</b><small>14</small></span><div><h3>Winter Clash</h3><p>Registration open</p></div></div><div><Pill tone="amber">4 registered</Pill></div><button className="show-btn secondary">Open event</button></article></div></Panel>
+    {inviteOpen?<div className="show-modal-backdrop" onMouseDown={e=>e.currentTarget===e.target&&setInviteOpen(false)}><section className="show-modal"><div className="show-modal-head"><div><span className="eyebrow">TEAM INVITATION</span><h2>Add a Reavers member</h2></div><button onClick={()=>setInviteOpen(false)}>×</button></div><div className="show-segment"><button className="active">Invite existing fighter</button><button>Invite by email</button></div><label className="show-search big"><span>⌕</span><input autoFocus placeholder="Search BuhurtOS fighters by name…"/></label><div className="show-suggestion"><Avatar initials="JM"/><div><b>Jamie Morgan</b><small>Independent fighter • Alberta</small></div><button className="show-btn primary">Invite</button></div><p className="show-helper">The fighter controls their own profile. Accepting this invitation only creates the team membership relationship.</p><div className="show-modal-actions"><button className="show-btn secondary" onClick={()=>setInviteOpen(false)}>Close</button></div></section></div>:null}
+  </>;
+}
