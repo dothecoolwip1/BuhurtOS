@@ -13,9 +13,11 @@ import { ShowcaseEventPage } from './pages/ShowcaseEventPage';
 import { ShowcaseRankingsPage } from './pages/ShowcaseRankingsPage';
 import { ShowcaseRulesPage } from './pages/ShowcaseRulesPage';
 import { ShowcasePublicPage } from './pages/ShowcasePublicPage';
+import { MarketingHome } from './pages/MarketingHome';
 
 export function App(){
   return <HashRouter><Routes>
+    <Route path="/" element={<MarketingHome/>}/>
     <Route path="/public" element={<ShowcasePublicPage/>}/>
     <Route element={<ShowcaseShell/>}>
       <Route path="/home" element={<ShowcaseDashboard/>}/>
@@ -31,6 +33,6 @@ export function App(){
       <Route path="/rankings" element={<ShowcaseRankingsPage/>}/>
       <Route path="/rules" element={<ShowcaseRulesPage/>}/>
     </Route>
-    <Route path="*" element={<Navigate to="/home" replace/>}/>
+    <Route path="*" element={<Navigate to="/" replace/>}/>
   </Routes></HashRouter>;
 }
