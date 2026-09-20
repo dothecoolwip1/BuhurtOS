@@ -296,20 +296,17 @@ exports.downloadText = downloadText;
 exports.openPrintableReport = openPrintableReport;
 function csvCell(value) {
     const text = String(value ?? '');
-    return /[",
-]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+    return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 function standingsCsv(rows) {
     const header = ['Rank', 'Competitor', 'Matches', 'Wins', 'Losses', 'Draws', 'Points For', 'Points Against', 'Differential', 'Standing Points'];
     const lines = rows.map((r, index) => [index + 1, r.name, r.matches, r.wins, r.losses, r.draws, r.pointsFor, r.pointsAgainst, r.differential, r.standingPoints]);
-    return [header, ...lines].map(row => row.map(csvCell).join(',')).join('
-');
+    return [header, ...lines].map(row => row.map(csvCell).join(',')).join('\n');
 }
 function matchesCsv(matches) {
     const header = ['Order', 'Label', 'Category', 'Stage', 'Status', 'Winner Side', 'Side 1 Total', 'Side 2 Total'];
     const lines = matches.map(m => [m.scheduledOrder, m.label, m.category, m.stage, m.status, m.resultSummary?.winnerSide ?? '', m.resultSummary?.side1Total ?? '', m.resultSummary?.side2Total ?? '']);
-    return [header, ...lines].map(row => row.map(csvCell).join(',')).join('
-');
+    return [header, ...lines].map(row => row.map(csvCell).join(',')).join('\n');
 }
 function downloadText(filename, content, mime = 'text/csv;charset=utf-8') {
     const blob = new Blob([content], { type: mime });
