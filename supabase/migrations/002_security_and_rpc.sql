@@ -298,3 +298,82 @@ begin
   if p_direction not in (-1,1) then raise exception 'Direction must be -1 or 1'; end if;
   select * into v_match from public.matches where id = p_match_id for update;
   if not found then raise exception 'Match not found'; end if;
+  if not private.has_event_role((select auth.uid()), v_match.event_id, array['event_organizer','field_marshal','assistant_marshal']::public.event_role[]) then raise exception 'Not authorized'; end if;
+  if p_direction = -1 then select * into v_other from public.matches where fight_card_id is not distinct from v_match.fight_card_id and event_id = v_match.event_id and scheduled_order < v_match.scheduled_order order by scheduled_order desc limit 1 for update;
+  else select * into v_other from public.matches where fight_card_id is not distinct from v_match.fight_card_id and event_id = v_match.event_id and scheduled_order > v_match.scheduled_order order by scheduled_order asc limit 1 for update; end if;
+  if not found then return; end if;
+  update public.matches set scheduled_order = v_other.scheduled_order where id = v_match.id;
+  update public.matches set scheduled_order = v_match.scheduled_order where id = v_other.id;
+end;
+$$;
+
+create or replace function public.submit_public_registration(p_event_id uuid, p_email text, p_display_name text, p_team_name text, p_category text, p_phone text, p_emergency_contact text, p_waiver_acknowledged boolean)
+returns jsonb language plpgsql security definer set search_path = '' as $$
+declare v_event public.events%rowtype; v_registration public.event_registrations%rowtype;
+begin
+  select * into v_event from public.events where id = p_event_id and status in ('published','live') and registration_open;
+  if not found then raise exception 'Registration is not open'; end if;
+  if length(trim(p_email)) < 5 or position('@' in p_email) = 0 then raise exception 'Valid email required'; end if;
+  if length(trim(p_display_name)) < 2 then raise exception 'Name required'; end if;
+  if length(trim(p_category)) < 1 then raise exception 'Category required'; end if;
+  insert into public.event_registrations(event_id,email,display_name,team_name,category,phone,emergency_contact,waiver_acknowledged,payment_status)
+  values (p_event_id,lower(trim(p_email)),trim(p_display_name),nullif(trim(p_team_name),''),trim(p_category),nullif(trim(p_phone),''),nullif(trim(p_emergency_contact),''),p_waiver_acknowledged,case when v_event.registration_fee_cents = 0 then 'not_required'::public.payment_status else 'pending'::public.payment_status end)
+  returning * into v_registration;
+  return jsonb_build_object('registrationId',v_registration.id,'registrationToken',v_registration.registration_token,'paymentRequired',v_event.registration_fee_cents > 0,'amountCents',v_event.registration_fee_cents,'currency',v_event.currency);
+end;
+$$;
+
+revoke execute on function public.submit_match_result(uuid,jsonb,smallint,text,public.match_status) from public, anon;
+grant execute on function public.submit_match_result(uuid,jsonb,smallint,text,public.match_status) to authenticated;
+revoke execute on function public.reorder_match(uuid,integer) from public, anon;
+grant execute on function public.reorder_match(uuid,integer) to authenticated;
+revoke execute on function public.submit_public_registration(uuid,text,text,text,text,text,text,boolean) from public;
+grant execute on function public.submit_public_registration(uuid,text,text,text,text,text,text,boolean) to anon, authenticated;
+
+create or replace function public.save_bracket_plan(p_bracket jsonb, p_matches jsonb)
+returns uuid language plpgsql security invoker set search_path = '' as $$
+declare
+  v_bracket_id uuid := (p_bracket->>'id')::uuid;
+  v_event_id uuid := (p_bracket->>'eventId')::uuid;
+  v_event public.events%rowtype;
+  v_match jsonb;
+  v_participant jsonb;
+  v_roster uuid;
+begin
+  select * into v_event from public.events where id = v_event_id;
+  if not found then raise exception 'Event not found'; end if;
+  if not (private.is_platform_admin((select auth.uid())) or private.has_org_role((select auth.uid()), v_event.organization_id, array['organization_admin']::public.organization_role[]) or private.has_event_role((select auth.uid()), v_event_id, array['event_organizer','field_marshal']::public.event_role[])) then raise exception 'Not authorized to create brackets'; end if;
+  if jsonb_typeof(p_matches) <> 'array' or jsonb_array_length(p_matches) < 1 then raise exception 'Bracket plan has no matches'; end if;
+
+  insert into public.brackets(id,event_id,fight_card_id,name,format,category,metadata,created_by)
+  values (v_bracket_id,v_event_id,nullif(p_bracket->>'fightCardId','')::uuid,p_bracket->>'name',p_bracket->>'format',p_bracket->>'category',coalesce(p_bracket->'metadata','{}'::jsonb),(select auth.uid()));
+
+  for v_match in select value from jsonb_array_elements(p_matches) loop
+    insert into public.matches(id,organization_id,season_id,event_id,fight_card_id,bracket_id,label,category,match_type,scoring_config,status,stage,scheduled_order,bracket_round,bracket_slot,winner_advances_to_match_id,winner_advances_to_slot,loser_advances_to_match_id,loser_advances_to_slot,result_summary,created_by)
+    values (
+      (v_match->>'id')::uuid,v_event.organization_id,v_event.season_id,v_event.id,nullif(v_match->>'fightCardId','')::uuid,v_bracket_id,
+      v_match->>'label',v_match->>'category',v_match->>'matchType',coalesce(v_match->'scoringConfig','{}'::jsonb),
+      coalesce((v_match->>'status')::public.match_status,'scheduled'::public.match_status),coalesce((v_match->>'stage')::public.match_stage,'bracket'::public.match_stage),
+      coalesce((v_match->>'scheduledOrder')::integer,0),nullif(v_match->>'bracketRound','')::integer,v_match->>'bracketSlot',
+      nullif(v_match->>'winnerAdvancesToMatchId','')::uuid,nullif(v_match->>'winnerAdvancesToSlot','')::smallint,
+      nullif(v_match->>'loserAdvancesToMatchId','')::uuid,nullif(v_match->>'loserAdvancesToSlot','')::smallint,coalesce(v_match->'resultSummary','{}'::jsonb),(select auth.uid())
+    );
+  end loop;
+
+  for v_match in select value from jsonb_array_elements(p_matches) loop
+    for v_participant in select value from jsonb_array_elements(coalesce(v_match->'participants','[]'::jsonb)) loop
+      v_roster := nullif(v_participant->>'rosterEntryId','')::uuid;
+      if v_roster is not null and not exists (select 1 from public.event_roster_entries r where r.id = v_roster and r.event_id = v_event_id and r.can_compete) then raise exception 'Bracket contains a competitor who is not cleared'; end if;
+      insert into public.match_participants(match_id,roster_entry_id,side_index,seed,is_placeholder,placeholder_label,source_match_id,source_slot,is_winner_source)
+      values ((v_match->>'id')::uuid,v_roster,(v_participant->>'sideIndex')::smallint,nullif(v_participant->>'seed','')::integer,coalesce((v_participant->>'isPlaceholder')::boolean,false),v_participant->>'placeholderLabel',nullif(v_participant->>'sourceMatchId','')::uuid,nullif(v_participant->>'sourceSlot','')::smallint,nullif(v_participant->>'isWinnerSource','')::boolean);
+    end loop;
+  end loop;
+
+  insert into public.audit_log(organization_id,event_id,actor_user_id,table_name,record_id,action,payload)
+  values (v_event.organization_id,v_event_id,(select auth.uid()),'brackets',v_bracket_id,'create_bracket',jsonb_build_object('matchCount',jsonb_array_length(p_matches)));
+  return v_bracket_id;
+end;
+$$;
+
+revoke execute on function public.save_bracket_plan(jsonb,jsonb) from public, anon;
+grant execute on function public.save_bracket_plan(jsonb,jsonb) to authenticated;
