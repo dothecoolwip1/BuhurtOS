@@ -1,0 +1,12 @@
+import {modules1} from './modules-1.js';
+import {modules2} from './modules-2.js';
+import {modules3} from './modules-3.js';
+import {modules4} from './modules-4.js';
+import {modules5} from './modules-5.js';
+import {modules6} from './modules-6.js';
+import {modules7} from './modules-7.js';
+import {modules8} from './modules-8.js';
+import {modules9} from './modules-9.js';
+import {modules10} from './modules-10.js';
+import {modules11} from './modules-11.js';
+import * as React from 'react';import * as JSXRuntime from 'react/jsx-runtime';import * as ReactDOMClient from 'react-dom/client';import * as ReactRouterDOM from 'react-router-dom';const __external={'react':React,'react/jsx-runtime':JSXRuntime,'react-dom/client':ReactDOMClient,'react-router-dom':ReactRouterDOM,'styles.css':{},'@supabase/supabase-js':{createClient(){throw new Error('Supabase disabled in demo build')}}};const __modules={...modules1,...modules2,...modules3,...modules4,...modules5,...modules6,...modules7,...modules8,...modules9,...modules10,...modules11},__cache={};function __normalize(r,f){if(!r.startsWith('.'))return r;const b=f.includes('/')?f.slice(0,f.lastIndexOf('/')):'';const p=(b?b+'/'+r:r).split('/'),o=[];for(const x of p){if(!x||x==='.')continue;if(x==='..')o.pop();else o.push(x)}return o.join('/').replace(/\.(js|ts|tsx)$/,'')}function __require(r,f=''){const id=__normalize(r,f);if(__external[id])return __external[id];if(__cache[id])return __cache[id].exports;const fac=__modules[id];if(!fac)throw new Error('BuhurtOS module not found: '+id+' requested by '+f);const m={exports:{}};__cache[id]=m;fac(m,m.exports,q=>__require(q,id));return m.exports}__require('main');
