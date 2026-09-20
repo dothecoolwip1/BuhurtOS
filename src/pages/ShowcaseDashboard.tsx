@@ -16,7 +16,7 @@ export function ShowcaseDashboard(){
       <StatCard label={admin?'Active teams':captain?'Active roster':'Career record'} value={admin?demoTeams.filter(t=>t.status==='active').length:captain?14:'27–9–1'} note={admin?'1 forming team':captain?'12 competition ready':'73% win rate'} tone="accent"/>
       <StatCard label={admin?'Registered fighters':captain?'Next event':'2026 season'} value={admin?'64':captain?'6 days':'8–2'} note={admin?'Across current event':captain?'HACSA Fall Open':'#3 Longsword'} tone="good"/>
       <StatCard label={admin?'Live fields':captain?'Pending actions':'Podiums'} value={admin?3:captain?3:6} note={admin?'All reporting':captain?'2 waivers • 1 invite':'12 career events'} />
-      <StatCard label={admin?'Open registrations':captain?'Team ranking':'Upcoming fights'} value={admin?43:'#2':2} note={admin?'Winter Clash':captain?'2026 season':'Today • Fields 1 & 2'} tone="warn"/>
+      <StatCard label={admin?'Open registrations':captain?'Team ranking':'Upcoming fights'} value={admin?43:captain?'#2':2} note={admin?'Winter Clash':captain?'2026 season':'Today • Fields 1 & 2'} tone="warn"/>
     </div>
     <div className="show-dashboard-grid">
       <Panel title="Live tournament" subtitle="HACSA Fall Open • three fields currently running" actions={<Link to="/events/fall-open">Open command →</Link>}>
