@@ -107,6 +107,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       await refreshPending();
       return;
     }
+    const client = supabase;
     const column = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' }[field];
     const { error: writeError } = await client.from('event_roster_entries').update({ [column]: value }).eq('id', entryId);
     if (writeError) {
@@ -122,6 +123,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     if (!validation.valid || !validation.result) throw new Error(validation.errors.join(' '));
 
     if (supabase && online) {
+      const client = supabase;
       const { error: rpcError } = await client.rpc('submit_match_result', {
         p_match_id: match.id,
         p_rounds: rounds,
@@ -162,6 +164,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       await refreshPending();
       return;
     }
+    const client = supabase;
     const { error: rpcError } = await client.rpc('reorder_match', { p_match_id: matchId, p_direction: direction });
     if (rpcError) throw rpcError;
   }, [matches, online, refreshPending]);
@@ -186,6 +189,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       await refreshPending();
       return;
     }
+    const client = supabase;
     const { error: rpcError } = await client.rpc('set_match_status', { p_match_id: match.id, p_status: status, p_expected_status: previous });
     if (rpcError) {
       setMatches(matches);
