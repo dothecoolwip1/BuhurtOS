@@ -1,0 +1,10 @@
+{
+  "name": "BuhurtOS",
+  "short_name": "BuhurtOS",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f141a",
+  "theme_color": "#151c24",
+  "description": "Offline capable tournament operations for Buhurt events",
+  "scope": "./"
+}
