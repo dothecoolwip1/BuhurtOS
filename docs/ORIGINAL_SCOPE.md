@@ -476,3 +476,108 @@ Missing or substantially incomplete:
 - Complete end-to-end regression coverage
 
 This file must remain the source of truth until each original requirement is either completed or explicitly removed by the product owner.
+
+
+## Organization, Team, Captain, and Member Self-Service
+
+BuhurtOS must support a delegated organization and team management model so HACSA does not need to manually maintain every team and fighter.
+
+### Organization-controlled team creation
+
+Authorized organization administrators must be able to:
+
+- Create new teams inside their organization
+- Approve or disable teams
+- Assign or replace team captains
+- Maintain team status, region, logo, public description, colours, links, and contact information
+- View team rosters and tournament participation
+- Transfer team administration when leadership changes
+- Preserve historical team records even when a team is renamed or leadership changes
+
+Teams remain owned by the organization, not by an individual captain account.
+
+### Team captain roster management
+
+Authorized team captains must be able to:
+
+- Invite existing BuhurtOS members to join their team
+- Invite people who do not yet have a BuhurtOS account
+- Add temporary or pending members
+- Remove members from the active roster without deleting historical records
+- Assign member roles where permitted
+- Review team membership requests
+- Confirm or reject team affiliation requests
+- Manage team tournament lineups
+- Add guest or mercenary fighters for an event
+- See fighter eligibility and event registration status
+- Never gain access to private information belonging to another team
+
+Team membership changes must be auditable and historical membership periods should be preserved.
+
+### Member and fighter self-service profiles
+
+Every member should be able to maintain their own personal profile without requiring a captain or HACSA administrator to edit it for them.
+
+Self-service profile fields should support:
+
+- Display name
+- Legal name where required for private administrative use
+- Fighter name / nickname
+- Profile photo
+- Additional gallery photos
+- Biography
+- Home region
+- Team affiliation
+- Preferred weapons / divisions
+- Height and weight where the fighter chooses to provide them and where appropriate
+- Social links
+- Achievements
+- Experience
+- Certifications or qualifications where relevant
+- Emergency/medical information only where specifically required, with strict private access controls
+- Public/private visibility settings for individual profile fields
+
+Members must be able to upload, replace, reorder, and remove their own profile photos.
+
+### Public fighter profiles
+
+A fighter may choose to expose a public sports profile containing appropriate information such as:
+
+- Profile photo
+- Fighter name
+- Team
+- Region
+- Categories competed in
+- Career record
+- Season record
+- Tournament history
+- Placements and podiums
+- Upcoming public events
+- Achievements
+- Public biography
+- Selected public photos
+
+Private contact, waiver, medical, emergency, login, and administrative information must never appear on the public profile.
+
+### Identity and historical integrity
+
+The fighter account, fighter record, and team membership must remain separate concepts.
+
+A fighter changing teams must not create a new fighter identity or reset their career history.
+
+Historical results must continue to show the team the fighter represented at the time of the event while the current profile may show their current team.
+
+Temporary/ghost fighters must be mergeable into a permanent member profile without losing past match, bracket, discipline, or standings references.
+
+### Suggested onboarding flow
+
+1. HACSA or another authorized organization creates/approves a team.
+2. The organization assigns one or more team captains.
+3. A captain invites members by email or shareable invite link.
+4. The member creates/signs into their BuhurtOS account.
+5. The member builds their personal fighter profile and uploads photos.
+6. The member accepts the team invitation.
+7. The captain confirms the roster relationship where required.
+8. The fighter can register for events and their future results attach to the same permanent fighter record.
+
+This delegated model is a core product requirement for BuhurtOS.
