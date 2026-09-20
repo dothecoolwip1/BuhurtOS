@@ -19,7 +19,7 @@ export function resolveStreamEmbed(rawUrl: string | undefined, parentHostname?: 
     if (videoId && /^[A-Za-z0-9_-]{6,20}$/.test(videoId)) return { provider: 'youtube', embedUrl: `https://www.youtube.com/embed/${videoId}` };
   }
   if (host === 'vimeo.com' || host === 'player.vimeo.com') {
-    const videoId = url.pathname.split('/').filter(Boolean).findLast(segment => /^\d+$/.test(segment));
+    const videoId = url.pathname.split('/').filter(Boolean).reverse().find((segment: string) => /^\d+$/.test(segment));
     if (videoId) return { provider: 'vimeo', embedUrl: `https://player.vimeo.com/video/${videoId}` };
   }
   if (host === 'twitch.tv' || host === 'm.twitch.tv') {
