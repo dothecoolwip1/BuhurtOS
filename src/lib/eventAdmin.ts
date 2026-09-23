@@ -1,4 +1,4 @@
-import type { EventRecord } from '../types';
+import type { EventRecord, FightCard } from '../types';
 import { supabase } from './supabase';
 
 export type RegistrationReviewStatus = 'pending' | 'approved' | 'waitlisted' | 'withdrawn' | 'rejected';
@@ -148,5 +148,49 @@ export async function deleteEventAnnouncement(eventId: string, announcementId: s
     return;
   }
   const { error } = await supabase.from('announcements').delete().eq('id', announcementId).eq('event_id', eventId);
+  if (error) throw error;
+}
+
+
+const fightCardsKey = (eventId: string) => 'buhurtos-demo-fight-cards-' + eventId;
+
+export async function createFightCard(eventId: string, name: string, existing: FightCard[]): Promise<void> {
+  const cleanName = name.trim();
+  if (!cleanName) throw new Error('Field name is required.');
+  if (!supabase) {
+    const next: FightCard = {
+      id: crypto.randomUUID(),
+      eventId,
+      name: cleanName,
+      listName: cleanName,
+      status: 'live',
+      sortOrder: existing.length
+    };
+    localStorage.setItem(fightCardsKey(eventId), JSON.stringify([...existing, next]));
+    return;
+  }
+  const { error } = await supabase.from('fight_cards').insert({
+    event_id: eventId,
+    name: cleanName,
+    list_name: cleanName,
+    status: 'live',
+    sort_order: existing.length
+  });
+  if (error) throw error;
+}
+
+export async function updateFightCard(eventId: string, card: FightCard, input: { name?: string; status?: FightCard['status'] }, existing: FightCard[]): Promise<void> {
+  const nextName = input.name?.trim() || card.name;
+  const nextStatus = input.status ?? card.status;
+  if (!supabase) {
+    const next = existing.map(item => item.id === card.id ? { ...item, name: nextName, listName: nextName, status: nextStatus } : item);
+    localStorage.setItem(fightCardsKey(eventId), JSON.stringify(next));
+    return;
+  }
+  const { error } = await supabase.from('fight_cards').update({
+    name: nextName,
+    list_name: nextName,
+    status: nextStatus
+  }).eq('id', card.id).eq('event_id', eventId);
   if (error) throw error;
 }
