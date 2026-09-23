@@ -5,7 +5,7 @@ const assert = {
 };
 import { validateScore } from '../src/lib/scoring';
 import { checkCompliance } from '../src/lib/compliance';
-import { advanceOutcome, advanceWinner, generateDoubleElimination, generateRoundRobin, generateRoundRobinPools, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
+import { advanceOutcome, advanceWinner, computePoolQualificationState, generateDoubleElimination, generateRoundRobin, generateRoundRobinPools, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
 import { computeEventStandings } from '../src/lib/standings';
 import { resolveStreamEmbed } from '../src/lib/stream';
 import type { EventRecord, MatchRecord, RosterEntry } from '../src/types';
@@ -70,6 +70,23 @@ assert.equal(pools.pools.length, 2, 'five competitors with target size three sho
 assert.equal(pools.matches.length, 4, 'three-person plus two-person pools should generate four matches');
 const redPoolAssignments = pools.pools.map(pool => pool.entryIds.filter(id => id === 'a' || id === 'b').length);
 assert.ok(redPoolAssignments.every(count => count <= 1), 'same-team competitors should be separated across pools when possible');
+const completedPools = pools.matches.map((match,index) => ({
+  ...match,
+  status: 'finalized' as const,
+  resultSummary: {
+    winnerSide: 1 as const,
+    side1Total: 5 + index,
+    side2Total: 2,
+    roundsWonSide1: 1,
+    roundsWonSide2: 0,
+    resultType: 'points' as const
+  }
+}));
+const qualification = computePoolQualificationState(completedPools, entries.map(item => item.entry), 'pools', 2);
+assert.equal(qualification.ready, true);
+assert.equal(qualification.pools.length, 2);
+assert.equal(qualification.qualifiers.length, 4, 'top two competitors from each pool should qualify');
+assert.equal(new Set(qualification.qualifiers.map(item => item.entry.id)).size, 4, 'qualifiers must be unique');
 const first = generated.matches[0];
 const advanced = advanceWinner(generated.matches, first.id, first.participants.find(p => p.rosterEntryId)?.rosterEntryId ?? 'a');
 if (first.winnerAdvancesToMatchId) {
