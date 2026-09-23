@@ -21,7 +21,31 @@ export interface RegistrationResult {
 
 export async function submitRegistration(input: RegistrationInput): Promise<RegistrationResult> {
   if (!supabase) {
-    return { registrationId: crypto.randomUUID(), registrationToken: crypto.randomUUID(), paymentRequired: true, amountCents: 2500, currency: 'CAD' };
+    const key = 'buhurtos-demo-registrations-' + input.eventId;
+    const existing = JSON.parse(localStorage.getItem(key) ?? '[]') as Array<Record<string, any>>;
+    if (existing.some(item => item.email?.toLowerCase() === input.email.trim().toLowerCase() && item.category === input.category)) {
+      throw new Error('This email is already registered for that category.');
+    }
+    const registrationId = crypto.randomUUID();
+    const registrationToken = crypto.randomUUID();
+    const now = new Date().toISOString();
+    existing.unshift({
+      id: registrationId,
+      eventId: input.eventId,
+      email: input.email.trim().toLowerCase(),
+      displayName: input.displayName.trim(),
+      teamName: input.teamName.trim() || undefined,
+      category: input.category,
+      phone: input.phone.trim() || undefined,
+      emergencyContact: input.emergencyContact.trim() || undefined,
+      waiverAcknowledged: input.waiverAcknowledged,
+      status: 'pending',
+      paymentStatus: 'pending',
+      createdAt: now,
+      updatedAt: now
+    });
+    localStorage.setItem(key, JSON.stringify(existing));
+    return { registrationId, registrationToken, paymentRequired: true, amountCents: 2500, currency: 'CAD' };
   }
   const { data, error } = await supabase.rpc('submit_public_registration', {
     p_event_id: input.eventId,
