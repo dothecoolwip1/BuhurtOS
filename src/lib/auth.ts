@@ -14,6 +14,9 @@ export async function signOut(): Promise<void> {
 
 export async function sendMagicLink(email: string): Promise<void> {
   if (!supabase) throw new Error('Supabase is not configured.');
-  const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: `${window.location.origin}/login${window.location.search}` } });
+  const queryIndex = window.location.hash.indexOf('?');
+  const hashQuery = queryIndex >= 0 ? window.location.hash.slice(queryIndex) : '';
+  const emailRedirectTo = `${window.location.origin}${window.location.pathname}#/ops/login${hashQuery}`;
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo } });
   if (error) throw error;
 }
