@@ -474,3 +474,115 @@ export function generateDoubleElimination(params: {
     matches: [...upperMatches, ...lowerByRound.flat(), grandFinal, resetFinal]
   };
 }
+
+
+export interface PoolStanding {
+  pool: string;
+  rosterEntryId: UUID;
+  name: string;
+  played: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  pointsFor: number;
+  pointsAgainst: number;
+  differential: number;
+  standingPoints: number;
+}
+
+export interface PoolQualificationState {
+  ready: boolean;
+  incompleteMatchIds: UUID[];
+  pools: Array<{ name: string; standings: PoolStanding[] }>;
+  qualifiers: SeededEntry[];
+}
+
+function poolNameForMatch(match: MatchRecord): string {
+  const slotMatch = match.bracketSlot?.match(/^Pool-([A-Za-z0-9]+)-/);
+  if (slotMatch) return 'Pool ' + slotMatch[1];
+  const labelMatch = match.label.match(/^(Pool\s+[^•]+)(?:\s*•|$)/i);
+  return labelMatch?.[1]?.trim() ?? 'Pool';
+}
+
+export function computePoolQualificationState(
+  matches: MatchRecord[],
+  roster: RosterEntry[],
+  bracketId: UUID,
+  qualifiersPerPool = 2
+): PoolQualificationState {
+  const poolMatches = matches.filter(match => match.bracketId === bracketId && match.stage === 'pool' && match.status !== 'cancelled');
+  const incompleteMatchIds = poolMatches.filter(match => match.status !== 'finalized').map(match => match.id);
+  const byPool = new Map<string, MatchRecord[]>();
+  for (const match of poolMatches) {
+    const pool = poolNameForMatch(match);
+    if (!byPool.has(pool)) byPool.set(pool, []);
+    byPool.get(pool)!.push(match);
+  }
+
+  const pools = [...byPool.entries()].sort(([a],[b]) => a.localeCompare(b)).map(([pool,poolItems]) => {
+    const rows = new Map<UUID, PoolStanding>();
+    const ensure = (id: UUID) => {
+      if (!rows.has(id)) {
+        rows.set(id, {
+          pool,
+          rosterEntryId: id,
+          name: roster.find(entry => entry.id === id)?.displayName ?? 'Unknown competitor',
+          played: 0,
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          pointsFor: 0,
+          pointsAgainst: 0,
+          differential: 0,
+          standingPoints: 0
+        });
+      }
+      return rows.get(id)!;
+    };
+
+    for (const match of poolItems.filter(item => item.status === 'finalized')) {
+      const side1Id = match.participants.find(p => p.sideIndex === 1)?.rosterEntryId;
+      const side2Id = match.participants.find(p => p.sideIndex === 2)?.rosterEntryId;
+      if (!side1Id || !side2Id || !match.resultSummary || match.resultSummary.resultType === 'bye') continue;
+      const left = ensure(side1Id);
+      const right = ensure(side2Id);
+      left.played += 1;
+      right.played += 1;
+      left.pointsFor += match.resultSummary.side1Total;
+      left.pointsAgainst += match.resultSummary.side2Total;
+      right.pointsFor += match.resultSummary.side2Total;
+      right.pointsAgainst += match.resultSummary.side1Total;
+      if (match.resultSummary.winnerSide === 1) {
+        left.wins += 1; right.losses += 1; left.standingPoints += 3;
+      } else if (match.resultSummary.winnerSide === 2) {
+        right.wins += 1; left.losses += 1; right.standingPoints += 3;
+      } else {
+        left.draws += 1; right.draws += 1; left.standingPoints += 1; right.standingPoints += 1;
+      }
+    }
+
+    const standings = [...rows.values()]
+      .map(row => ({ ...row, differential: row.pointsFor - row.pointsAgainst }))
+      .sort((a,b) =>
+        b.standingPoints - a.standingPoints ||
+        b.wins - a.wins ||
+        b.differential - a.differential ||
+        b.pointsFor - a.pointsFor ||
+        a.name.localeCompare(b.name)
+      );
+    return { name: pool, standings };
+  });
+
+  const qualifiers: SeededEntry[] = [];
+  let seed = 1;
+  for (let rank = 0; rank < qualifiersPerPool; rank += 1) {
+    for (const pool of pools) {
+      const standing = pool.standings[rank];
+      if (!standing) continue;
+      const entry = roster.find(item => item.id === standing.rosterEntryId);
+      if (entry) qualifiers.push({ entry, seed: seed++ });
+    }
+  }
+
+  return { ready: poolMatches.length > 0 && incompleteMatchIds.length === 0, incompleteMatchIds, pools, qualifiers };
+}
