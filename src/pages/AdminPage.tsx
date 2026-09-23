@@ -107,7 +107,7 @@ export function AdminPage() {
         category: source.category,
         format: 'single_elimination',
         metadata: {
-          sourcePoolBracketId,
+          sourcePoolBracketId: sourceBracketId,
           qualifiersPerPool,
           pools: qualification.pools.map(pool => ({ name: pool.name, qualifiers: pool.standings.slice(0, qualifiersPerPool).map(row => row.rosterEntryId) }))
         }
