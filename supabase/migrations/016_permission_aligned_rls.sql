@@ -316,7 +316,8 @@ create or replace function public.update_roster_clearance_idempotent(
   p_operation_id uuid,
   p_roster_entry_id uuid,
   p_field text,
-  p_value boolean
+  p_value boolean,
+  p_expected_value boolean default null
 )
 returns jsonb
 language plpgsql
@@ -327,6 +328,7 @@ declare
   roster_row public.event_roster_entries%rowtype;
   existing public.sync_operations%rowtype;
   required_permission text;
+  current_value boolean;
   result_json jsonb;
 begin
   if (select auth.uid()) is null then raise exception 'Authentication required'; end if;
@@ -349,6 +351,19 @@ begin
   end;
 
   if required_permission is null then raise exception 'Unsupported clearance field'; end if;
+
+  current_value:=case p_field
+    when 'armor_cleared' then roster_row.armor_cleared
+    when 'medical_cleared' then roster_row.medical_cleared
+    when 'checked_in' then roster_row.checked_in
+    when 'waiver_confirmed' then roster_row.waiver_confirmed
+    when 'weigh_in_cleared' then roster_row.weigh_in_cleared
+  end;
+
+  if p_expected_value is not null and current_value is distinct from p_expected_value and current_value is distinct from p_value then
+    raise exception 'Clearance changed since it was loaded';
+  end if;
+
   if not (
     private.user_has_permission((select auth.uid()),required_permission,roster_row.organization_id,roster_row.event_id,roster_row.team_id)
     or private.user_has_permission((select auth.uid()),'roster.manage',roster_row.organization_id,roster_row.event_id,roster_row.team_id)
@@ -356,7 +371,7 @@ begin
     raise exception 'Not authorized to update this clearance';
   end if;
 
-  if not found then
+  if existing.operation_id is null then
     insert into public.sync_operations(operation_id,user_id,operation_type,entity_type,entity_id)
     values(p_operation_id,(select auth.uid()),'update_roster_clearance','event_roster_entry',p_roster_entry_id);
   elsif existing.state<>'completed' then
@@ -379,8 +394,8 @@ begin
 end;
 $$;
 
-revoke execute on function public.update_roster_clearance_idempotent(uuid,uuid,text,boolean) from public,anon;
-grant execute on function public.update_roster_clearance_idempotent(uuid,uuid,text,boolean) to authenticated;
+revoke execute on function public.update_roster_clearance_idempotent(uuid,uuid,text,boolean,boolean) from public,anon;
+grant execute on function public.update_roster_clearance_idempotent(uuid,uuid,text,boolean,boolean) to authenticated;
 
 -- A scorekeeper can finalize scores without receiving unrestricted UPDATE on matches.
 alter function public.submit_match_result(uuid,jsonb,smallint,text,public.match_status) security definer;
