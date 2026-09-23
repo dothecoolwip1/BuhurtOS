@@ -29,6 +29,7 @@ import { SyncPage } from './pages/SyncPage';
 import { SetupPage } from './pages/SetupPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { PublicPage } from './pages/PublicPage';
+import { EventManagementPage } from './pages/EventManagementPage';
 
 function OperationsProvider() {
   return <AppStateProvider><Outlet /></AppStateProvider>;
@@ -70,6 +71,7 @@ export function App(){
         <Route path="roster" element={<RosterPage/>}/>
         <Route path="bracket" element={<BracketPage/>}/>
         <Route path="standings" element={<StandingsPage/>}/>
+        <Route path="manage" element={<RequirePermission permission="event.manage"><EventManagementPage/></RequirePermission>}/>
         <Route path="admin" element={<RequirePermission permission="bracket.manage"><AdminPage/></RequirePermission>}/>
         <Route path="discipline" element={<RequirePermission permission="discipline.manage"><DisciplinePage/></RequirePermission>}/>
         <Route path="notes" element={<RequirePermission permission="notes.team"><NotesPage/></RequirePermission>}/>
