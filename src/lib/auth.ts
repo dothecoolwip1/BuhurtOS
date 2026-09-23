@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { clearPrivateSnapshotCache } from './offlineSnapshot';
+import { normalizeEmail, validateEmail, validatePassword } from './validation';
 
 function requireClient() {
   if (!supabase) throw new Error('BuhurtOS authentication is not configured.');
@@ -13,7 +14,7 @@ function appRedirect(route: string): string {
 
 export async function signIn(email: string, password: string): Promise<void> {
   const client = requireClient();
-  const { error } = await client.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+  const { error } = await client.auth.signInWithPassword({ email:normalizeEmail(email),password });
   if (error) throw error;
 }
 
@@ -28,15 +29,17 @@ export async function signOut():Promise<void>{
 export async function sendMagicLink(email: string): Promise<void> {
   const client = requireClient();
   const { error } = await client.auth.signInWithOtp({
-    email: email.trim().toLowerCase(),
+    email:normalizeEmail(email),
     options: { emailRedirectTo: appRedirect('/ops') }
   });
   if (error) throw error;
 }
 
-export async function requestPasswordReset(email: string): Promise<void> {
-  const client = requireClient();
-  const { error } = await client.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+export async function requestPasswordReset(email:string):Promise<void>{
+  const client=requireClient();
+  const validation=validateEmail(email);
+  if(validation)throw new Error(validation);
+  const {error}=await client.auth.resetPasswordForEmail(normalizeEmail(email),{
     redirectTo: appRedirect('/ops/recover')
   });
   if (error) throw error;
@@ -44,7 +47,8 @@ export async function requestPasswordReset(email: string): Promise<void> {
 
 export async function updatePassword(password: string): Promise<void> {
   const client = requireClient();
-  if (password.length < 10) throw new Error('Use a password with at least 10 characters.');
+  const validation=validatePassword(password);
+  if(validation)throw new Error(validation);
   const { error } = await client.auth.updateUser({ password });
   if (error) throw error;
 }
@@ -53,7 +57,8 @@ export async function completeAccountSetup(displayName: string, password: string
   const client = requireClient();
   const trimmedName = displayName.trim();
   if (trimmedName.length < 2) throw new Error('Enter your display name.');
-  if (password.length < 10) throw new Error('Use a password with at least 10 characters.');
+  const passwordValidation=validatePassword(password);
+  if(passwordValidation)throw new Error(passwordValidation);
   const { error } = await client.auth.updateUser({
     password,
     data: { display_name: trimmedName }
