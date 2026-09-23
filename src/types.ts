@@ -2,9 +2,11 @@ export type UUID = string;
 
 export type EventType = 'ranked_competitive' | 'demo_fun' | 'exhibition' | 'clinic_training' | 'custom';
 export type StandingsMode = 'season_and_event' | 'event_only' | 'no_standings';
-export type EventStatus = 'draft' | 'published' | 'live' | 'completed' | 'archived';
+export type EventStatus = 'draft' | 'published' | 'registration_open' | 'registration_closed' | 'check_in' | 'live' | 'completed' | 'archived' | 'cancelled';
 export type MatchStatus = 'scheduled' | 'on_deck' | 'in_the_hole' | 'active' | 'completed' | 'finalized' | 'forfeit' | 'cancelled';
 export type MatchStage = 'pool' | 'bracket' | 'showcase' | 'final';
+export type ValidationStatus = 'in_progress' | 'submitted' | 'pending_validation' | 'validated' | 'disputed' | 'corrected' | 'final';
+export type RingStatus = 'idle' | 'preparing' | 'ready' | 'match_underway' | 'medical_hold' | 'marshal_review' | 'delayed' | 'closed';
 export type RosterEntryType = 'fighter' | 'team' | 'ghost_fighter' | 'guest_fighter';
 export type RosterStatus = 'registered' | 'approved' | 'no_show' | 'late' | 'withdrawn';
 export type EventRole = 'event_organizer' | 'field_marshal' | 'assistant_marshal' | 'team_captain' | 'fighter';
@@ -206,4 +208,101 @@ export interface OfflineMutation {
   attempts: number;
   state: 'queued' | 'syncing' | 'conflict' | 'failed';
   lastError?: string;
+}
+
+
+export interface EventDivision {
+  id: UUID;
+  eventId: UUID;
+  rulesetVersionId?: UUID;
+  name: string;
+  disciplineKey: string;
+  genderDivision?: string;
+  ageMin?: number;
+  ageMax?: number;
+  weightMinKg?: number;
+  weightMaxKg?: number;
+  teamMin?: number;
+  teamMax?: number;
+  registrationCap?: number;
+  advancementConfig: Record<string, unknown>;
+  seedingConfig: Record<string, unknown>;
+  status: 'draft' | 'open' | 'closed' | 'completed' | 'cancelled';
+  sortOrder: number;
+}
+
+export interface PoolRecord {
+  id: UUID;
+  eventId: UUID;
+  divisionId: UUID;
+  name: string;
+  advancementCount: number;
+  standingsConfig: {
+    winPoints?: number;
+    drawPoints?: number;
+    tieBreakers?: string[];
+  };
+  lockedAt?: string;
+}
+
+export interface PoolEntryRecord {
+  id: UUID;
+  poolId: UUID;
+  rosterEntryId: UUID;
+  seed: number;
+  finalPlace?: number;
+  advanced: boolean;
+}
+
+export interface RingRecord {
+  id: UUID;
+  eventId: UUID;
+  name: string;
+  sortOrder: number;
+  status: RingStatus;
+  statusNote?: string;
+  updatedAt: string;
+}
+
+export interface ScheduleItem {
+  id: UUID;
+  eventId: UUID;
+  ringId?: UUID;
+  matchId?: UUID;
+  divisionId?: UUID;
+  itemType: 'match' | 'break' | 'ceremony' | 'lunch' | 'armor_check' | 'meeting' | 'awards' | 'custom';
+  title: string;
+  startsAt: string;
+  endsAt: string;
+  status: 'scheduled' | 'delayed' | 'active' | 'completed' | 'cancelled';
+  isPublic: boolean;
+  notes?: string;
+}
+
+export interface CorrectionRequest {
+  id: UUID;
+  reporterUserId?: UUID;
+  reporterEmail?: string;
+  category: 'wrong_fighter' | 'duplicate_fighter' | 'wrong_team' | 'incorrect_score' | 'incorrect_affiliation' | 'wrong_event' | 'missing_event' | 'incorrect_video' | 'other';
+  entityType?: string;
+  entityId?: UUID;
+  description: string;
+  evidenceLinks: string[];
+  status: 'submitted' | 'under_review' | 'needs_information' | 'approved' | 'rejected' | 'applied';
+  resolutionNotes?: string;
+  createdAt: string;
+  resolvedAt?: string;
+}
+
+export interface RankingConfiguration {
+  id: UUID;
+  organizationId?: UUID;
+  seasonId?: UUID;
+  name: string;
+  scope: 'global' | 'organization' | 'country' | 'regional' | 'season' | 'career' | 'discipline' | 'team' | 'weight_class' | 'age_class';
+  disciplineKey?: string;
+  version: number;
+  formula: Record<string, unknown>;
+  minimumMatches: number;
+  isPublic: boolean;
 }
