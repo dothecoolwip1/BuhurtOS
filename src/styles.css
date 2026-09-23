@@ -833,3 +833,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   .method-card{grid-template-columns:1fr 1fr}
   .table-wrap{margin-inline:-4px;width:calc(100% + 8px)}
 }
+
+.theme-toggle{width:44px;min-width:44px;height:44px;display:inline-grid;place-items:center;border:1px solid var(--ops-border-strong);border-radius:10px;background:var(--ops-surface-raised);color:var(--ops-text);font-size:1rem}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.show-role-actions{display:flex;align-items:center;gap:8px}
+.marketing-nav-actions{align-items:center}
