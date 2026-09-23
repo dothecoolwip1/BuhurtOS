@@ -35,7 +35,7 @@ jobs:
       - name: Build BuhurtOS
         env:
           GITHUB_PAGES: "true"
-        run: npm run typecheck && npx vite build --mode github-pages
+        run: npm run typecheck && npm test && npx vite build --mode github-pages
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
