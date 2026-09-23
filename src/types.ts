@@ -338,6 +338,19 @@ export interface RulesetSettings {
   };
 }
 
+export interface RulesetSettingsPatch {
+  enabledFormats?: string[];
+  scoringOverrides?: Record<string, Partial<ScoringConfig>>;
+  timing?: Partial<RulesetSettings['timing']>;
+  victory?: Partial<RulesetSettings['victory']>;
+  roster?: Partial<RulesetSettings['roster']>;
+  equipment?: Partial<RulesetSettings['equipment']>;
+  classifications?: Partial<RulesetSettings['classifications']>;
+  compliance?: Partial<RulesetSettings['compliance']>;
+  discipline?: Partial<RulesetSettings['discipline']>;
+  bracket?: Partial<RulesetSettings['bracket']>;
+}
+
 export interface RulesetRecord {
   id: UUID;
   organizationId?: UUID;
@@ -350,7 +363,7 @@ export interface RulesetRecord {
   status: 'draft' | 'published' | 'retired';
   effectiveFrom?: string;
   effectiveTo?: string;
-  settings: RulesetSettings;
+  settings: RulesetSettingsPatch;
   createdAt?: string;
   updatedAt?: string;
 }
