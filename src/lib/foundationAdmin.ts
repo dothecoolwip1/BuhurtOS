@@ -21,6 +21,7 @@ export interface AdminFighter { id:string; name:string; nickname?:string; countr
 export interface AdminClaim { id:string; fighterId:string; fighterName:string; userId:string; statement?:string; status:'pending'|'approved'|'rejected'|'cancelled'; createdAt:string }
 export interface AdminRole { id:string; roleKey:string; name:string; scopeType:'platform'|'organization'|'event'|'team'; isSystem:boolean; isActive:boolean }
 export interface AdminGrant { id:string; userId:string; roleId:string; roleName:string; createdAt:string; expiresAt?:string }
+export interface AdminPermission { key:string; description:string }
 export interface FoundationSnapshot {
   organization:AdminOrganization;
   seasons:AdminSeason[];
@@ -34,6 +35,8 @@ export interface FoundationSnapshot {
   claims:AdminClaim[];
   roles:AdminRole[];
   grants:AdminGrant[];
+  permissions:AdminPermission[];
+  rolePermissions:Record<string,string[]>;
 }
 
 function requireClient(){
@@ -43,7 +46,7 @@ function requireClient(){
 
 export async function loadFoundationSnapshot(organizationId:string):Promise<FoundationSnapshot>{
   const client=requireClient();
-  const [org,seasons,rulesets,disciplines,divisions,categories,clubs,teams,fighters,claims,roles,grants]=await Promise.all([
+  const [org,seasons,rulesets,disciplines,divisions,categories,clubs,teams,fighters,claims,roles,grants,permissions,rolePermissions]=await Promise.all([
     client.from('organizations').select('id,name,short_name,region,country_code,website_url,is_public,status,description').eq('id',organizationId).single(),
     client.from('seasons').select('id,name,starts_at,ends_at,status,ruleset_id').eq('organization_id',organizationId).is('deleted_at',null).order('starts_at',{ascending:false}),
     client.from('rulesets').select('id,name,short_name,version,status,parent_ruleset_id,settings').or('organization_id.is.null,organization_id.eq.'+organizationId).order('name'),
@@ -55,9 +58,11 @@ export async function loadFoundationSnapshot(organizationId:string):Promise<Foun
     client.from('fighters').select('id,name,nickname,country_code,team_id,is_temporary,is_active,public_profile').eq('organization_id',organizationId).is('deleted_at',null).order('name'),
     client.from('fighter_profile_claims').select('id,fighter_id,user_id,statement,status,created_at,fighters!inner(name,organization_id)').eq('fighters.organization_id',organizationId).order('created_at',{ascending:false}),
     client.from('role_definitions').select('id,role_key,name,scope_type,is_system,is_active').or('organization_id.is.null,organization_id.eq.'+organizationId).order('scope_type').order('name'),
-    client.from('access_grants').select('id,user_id,role_id,created_at,expires_at,role_definitions(name)').eq('organization_id',organizationId).is('deleted_at',null).order('created_at',{ascending:false})
+    client.from('access_grants').select('id,user_id,role_id,created_at,expires_at,role_definitions(name)').eq('organization_id',organizationId).is('deleted_at',null).order('created_at',{ascending:false}),
+    client.from('permissions').select('permission_key,description').order('permission_key'),
+    client.from('role_permissions').select('role_id,permission_key')
   ]);
-  const error=org.error||seasons.error||rulesets.error||disciplines.error||divisions.error||categories.error||clubs.error||teams.error||fighters.error||claims.error||roles.error||grants.error;
+  const error=org.error||seasons.error||rulesets.error||disciplines.error||divisions.error||categories.error||clubs.error||teams.error||fighters.error||claims.error||roles.error||grants.error||permissions.error||rolePermissions.error;
   if(error)throw error;
   const o:any=org.data;
   return {
@@ -72,7 +77,9 @@ export async function loadFoundationSnapshot(organizationId:string):Promise<Foun
     fighters:(fighters.data??[]).map((r:any)=>({id:r.id,name:r.name,nickname:r.nickname??undefined,countryCode:r.country_code??undefined,teamId:r.team_id??undefined,isTemporary:r.is_temporary,isActive:r.is_active,publicProfile:r.public_profile})),
     claims:(claims.data??[]).map((r:any)=>({id:r.id,fighterId:r.fighter_id,fighterName:(Array.isArray(r.fighters)?r.fighters[0]?.name:r.fighters?.name)??r.fighter_id,userId:r.user_id,statement:r.statement??undefined,status:r.status,createdAt:r.created_at})),
     roles:(roles.data??[]).map((r:any)=>({id:r.id,roleKey:r.role_key,name:r.name,scopeType:r.scope_type,isSystem:r.is_system,isActive:r.is_active})),
-    grants:(grants.data??[]).map((r:any)=>({id:r.id,userId:r.user_id,roleId:r.role_id,roleName:(Array.isArray(r.role_definitions)?r.role_definitions[0]?.name:r.role_definitions?.name)??r.role_id,createdAt:r.created_at,expiresAt:r.expires_at??undefined}))
+    grants:(grants.data??[]).map((r:any)=>({id:r.id,userId:r.user_id,roleId:r.role_id,roleName:(Array.isArray(r.role_definitions)?r.role_definitions[0]?.name:r.role_definitions?.name)??r.role_id,createdAt:r.created_at,expiresAt:r.expires_at??undefined})),
+    permissions:(permissions.data??[]).map((r:any)=>({key:r.permission_key,description:r.description})),
+    rolePermissions:(rolePermissions.data??[]).reduce((acc:Record<string,string[]>,r:any)=>{(acc[r.role_id]??=[]).push(r.permission_key);return acc;},{})
   };
 }
 
@@ -205,4 +212,14 @@ export async function revokeAccessGrant(id:string):Promise<void>{
   const client=requireClient();
   const {error}=await client.from('access_grants').update({deleted_at:new Date().toISOString()}).eq('id',id);
   if(error)throw error;
+}
+
+
+export async function setCustomRolePermissions(roleId:string,permissionKeys:string[]):Promise<void>{
+  const client=requireClient();
+  const {error:deleteError}=await client.from('role_permissions').delete().eq('role_id',roleId);
+  if(deleteError)throw deleteError;
+  if(permissionKeys.length===0)return;
+  const {error:insertError}=await client.from('role_permissions').insert(permissionKeys.map(permission_key=>({role_id:roleId,permission_key})));
+  if(insertError)throw insertError;
 }
