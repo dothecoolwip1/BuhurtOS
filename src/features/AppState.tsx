@@ -4,7 +4,7 @@ import { demoUser } from '../data/demo';
 import { loadEventSnapshot } from '../lib/repository';
 import { isSupabaseConfigured, subscribeToEvent, supabase } from '../lib/supabase';
 import { validateScore } from '../lib/scoring';
-import { advanceWinner } from '../lib/bracket';
+import { advanceOutcome } from '../lib/bracket';
 import { enqueueMutation, flushMutationQueue, listMutations } from '../lib/offlineQueue';
 import { loadUserContext } from '../lib/userContext';
 
@@ -155,7 +155,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     const winnerSide = validation.result.winnerSide;
     if (winnerSide) {
       const winnerId = match.participants.find(p => p.sideIndex === winnerSide)?.rosterEntryId;
-      if (winnerId) next = advanceWinner(next, matchId, winnerId);
+      const loserSide = winnerSide === 1 ? 2 : 1;
+      const loserId = match.participants.find(p => p.sideIndex === loserSide)?.rosterEntryId;
+      if (winnerId) next = advanceOutcome(next, matchId, winnerId, loserId);
     }
     setMatches(next);
     if (!supabase) { localStorage.setItem('buhurtos-demo-matches', JSON.stringify(next)); return; }
