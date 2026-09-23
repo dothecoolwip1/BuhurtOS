@@ -302,6 +302,9 @@ with check (
   )
 );
 
+revoke all on public.fighter_identities, public.clubs, public.fighter_affiliations, public.competition_divisions, public.event_divisions from anon;
+revoke all on public.fighter_identities, public.clubs, public.fighter_affiliations, public.competition_divisions, public.event_divisions from authenticated;
+
 grant select on public.fighter_identities, public.clubs, public.fighter_affiliations to authenticated;
 grant insert, update, delete on public.fighter_identities, public.clubs, public.fighter_affiliations to authenticated;
 grant select on public.competition_divisions, public.event_divisions to anon, authenticated;
