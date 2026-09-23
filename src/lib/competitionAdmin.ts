@@ -125,13 +125,19 @@ export async function submitCorrection(input:Omit<CorrectionRequest,'id'|'status
     const storageKey='buhurtos-demo-corrections',rows=read<CorrectionRequest[]>(storageKey,[]);
     write(storageKey,[row,...rows]);return row;
   }
-  const {data,error}=await supabase.from('correction_requests').insert({reporter_user_id:input.reporterUserId??null,reporter_email:input.reporterEmail??null,category:input.category,entity_type:input.entityType??null,entity_id:input.entityId??null,description:input.description,evidence_links:input.evidenceLinks}).select('*').single();
+  const {data,error}=await supabase.from('correction_requests').insert({organization_id:input.organizationId??null,event_id:input.eventId??null,reporter_user_id:input.reporterUserId??null,reporter_email:input.reporterEmail??null,category:input.category,entity_type:input.entityType??null,entity_id:input.entityId??null,description:input.description,evidence_links:input.evidenceLinks}).select('*').single();
   if(error)throw error;
   return {...row,id:data.id,createdAt:data.created_at};
 }
-export async function listCorrections():Promise<CorrectionRequest[]>{
-  if(!supabase)return read('buhurtos-demo-corrections',[]);
-  const {data,error}=await supabase.from('correction_requests').select('*').order('created_at',{ascending:false});
+export async function listCorrections(eventId?:UUID):Promise<CorrectionRequest[]>{
+  if(!supabase){const rows=read<CorrectionRequest[]>('buhurtos-demo-corrections',[]);return eventId?rows.filter(r=>r.eventId===eventId):rows;}
+  let query=supabase.from('correction_requests').select('*').order('created_at',{ascending:false});
+  if(eventId)query=query.eq('event_id',eventId);
+  const {data,error}=await query;
   if(error)throw error;
-  return (data??[]).map((r:any)=>({id:r.id,reporterUserId:r.reporter_user_id??undefined,reporterEmail:r.reporter_email??undefined,category:r.category,entityType:r.entity_type??undefined,entityId:r.entity_id??undefined,description:r.description,evidenceLinks:r.evidence_links??[],status:r.status,resolutionNotes:r.resolution_notes??undefined,createdAt:r.created_at,resolvedAt:r.resolved_at??undefined}));
+  return (data??[]).map((r:any)=>({id:r.id,organizationId:r.organization_id??undefined,eventId:r.event_id??undefined,reporterUserId:r.reporter_user_id??undefined,reporterEmail:r.reporter_email??undefined,category:r.category,entityType:r.entity_type??undefined,entityId:r.entity_id??undefined,description:r.description,evidenceLinks:r.evidence_links??[],status:r.status,resolutionNotes:r.resolution_notes??undefined,createdAt:r.created_at,resolvedAt:r.resolved_at??undefined}));
+}
+export async function reviewCorrection(id:UUID,status:CorrectionRequest['status'],resolutionNotes?:string):Promise<void>{
+  if(!supabase){const rows=read<CorrectionRequest[]>('buhurtos-demo-corrections',[]);write('buhurtos-demo-corrections',rows.map(r=>r.id===id?{...r,status,resolutionNotes:resolutionNotes?.trim()||undefined,resolvedAt:['rejected','applied'].includes(status)?new Date().toISOString():undefined}:r));return;}
+  const {error}=await supabase.rpc('review_correction_request',{p_correction_id:id,p_status:status,p_resolution_notes:resolutionNotes?.trim()||null});if(error)throw error;
 }
