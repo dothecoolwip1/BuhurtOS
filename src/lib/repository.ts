@@ -1,6 +1,6 @@
 import type { Announcement, EventRecord, FightCard, MatchRecord, RosterEntry } from '../types';
 import { demoAnnouncements, demoEvent, demoMatches, demoRoster } from '../data/demo';
-import { supabase } from './supabase';
+import { configurationError, isDemoModeAllowed, supabase } from './supabase';
 
 export interface EventSnapshot {
   event: EventRecord;
@@ -39,6 +39,9 @@ function snakeMatch(row: Record<string, any>): MatchRecord {
 
 export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot> {
   if (!supabase) {
+    if (!isDemoModeAllowed) {
+      throw new Error(configurationError ?? 'BuhurtOS operations are not configured.');
+    }
     const ghosts = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-ghosts') ?? '[]');
     const savedMatches = typeof localStorage === 'undefined' ? null : localStorage.getItem('buhurtos-demo-matches');
     const bracketMatches = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-bracket-matches') ?? '[]');
