@@ -27,14 +27,23 @@ export function SchedulePage(){
 
   const participantIds=(matchId?:string)=>matches.find(m=>m.id===matchId)?.participants.filter(p=>p.rosterEntryId&&!p.isPlaceholder).map(p=>p.rosterEntryId!)??[];
   const assignments:ScheduleAssignment[]=items.map(item=>({id:item.id,startsAt:item.startsAt,endsAt:item.endsAt,ringId:item.ringId,participantIds:participantIds(item.matchId)}));
-  const candidate:ScheduleAssignment={id:'candidate',startsAt:new Date(form.startsAt).toISOString(),endsAt:new Date(form.endsAt).toISOString(),ringId:form.ringId||undefined,participantIds:participantIds(form.matchId)};
-  const candidateConflicts=useMemo(()=>{
-    try{return detectScheduleConflicts([...assignments,candidate]).filter(c=>c.firstId==='candidate'||c.secondId==='candidate');}
-    catch{return [];}
+  const candidateState=useMemo(()=>{
+    const start=new Date(form.startsAt);
+    const end=new Date(form.endsAt);
+    if(!form.startsAt||!form.endsAt||!Number.isFinite(start.getTime())||!Number.isFinite(end.getTime())||end<=start){
+      return {valid:false,conflicts:[] as ReturnType<typeof detectScheduleConflicts>};
+    }
+    const candidate:ScheduleAssignment={id:'candidate',startsAt:start.toISOString(),endsAt:end.toISOString(),ringId:form.ringId||undefined,participantIds:participantIds(form.matchId)};
+    try{
+      return {valid:true,conflicts:detectScheduleConflicts([...assignments,candidate]).filter(c=>c.firstId==='candidate'||c.secondId==='candidate')};
+    }catch{
+      return {valid:false,conflicts:[] as ReturnType<typeof detectScheduleConflicts>};
+    }
   },[items,form.startsAt,form.endsAt,form.ringId,form.matchId,matches]);
+  const candidateConflicts=candidateState.conflicts;
 
   const save=async()=>{
-    if(!form.title.trim()||!form.startsAt||!form.endsAt)return;
+    if(!form.title.trim()||!candidateState.valid)return setMessage('Enter a valid start and end time.');
     if(candidateConflicts.length)return setMessage('Resolve the schedule conflicts before saving.');
     setBusy(true);setMessage('');
     try{
@@ -66,7 +75,7 @@ export function SchedulePage(){
         <label>Notes<textarea value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))}/></label>
         <label className="checkbox-line"><input type="checkbox" checked={form.isPublic} onChange={e=>setForm(f=>({...f,isPublic:e.target.checked}))}/><span>Visible on public schedule</span></label>
         {candidateConflicts.length>0&&<div className="validation-errors">{candidateConflicts.map((conflict,index)=><div key={index}>{conflict.reason==='participant_overlap'?`Competitor overlap with ${conflict.firstId==='candidate'?conflict.secondId:conflict.firstId}`:`Ring overlap with ${conflict.firstId==='candidate'?conflict.secondId:conflict.firstId}`}</div>)}</div>}
-        <button className="primary big" disabled={busy||!form.title.trim()||candidateConflicts.length>0} onClick={save}>Save Schedule Item</button>
+        <button className="primary big" disabled={busy||!form.title.trim()||!candidateState.valid||candidateConflicts.length>0} onClick={save}>Save Schedule Item</button>
       </div></section>}
 
       <section className="panel-card"><h2>Conflict monitor</h2><p>BuhurtOS checks every saved interval for participant and ring collisions.</p>{(()=>{
