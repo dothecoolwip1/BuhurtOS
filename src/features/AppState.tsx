@@ -46,7 +46,12 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const reload = useCallback(async () => {
     try {
       setError(null);
-      const requestedEventId = typeof window === 'undefined' ? undefined : new URLSearchParams(window.location.search).get('event') ?? undefined;
+      const requestedEventId = typeof window === 'undefined' ? undefined : (() => {
+        const direct = new URLSearchParams(window.location.search).get('event');
+        if (direct) return direct;
+        const hashQuery = window.location.hash.includes('?') ? window.location.hash.slice(window.location.hash.indexOf('?') + 1) : '';
+        return new URLSearchParams(hashQuery).get('event') ?? undefined;
+      })();
       const snap = await loadEventSnapshot(requestedEventId);
       setEvent(snap.event);
       setMatches(snap.matches);
