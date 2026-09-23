@@ -5,7 +5,7 @@ import { signOut } from '../lib/auth';
 
 const nav: Array<{to:string;label:string;icon:string;permission?:Permission}> = [
   { to:'/ops', label:'Ops', icon:'⚔', permission:'event.view_private' },
-  { to:'/ops/roster', label:'Roster', icon:'✓', permission:'roster.manage' },
+  { to:'/ops/roster', label:'Roster', icon:'✓', permission:'event.view_private' },
   { to:'/ops/bracket', label:'Bracket', icon:'⌘', permission:'bracket.manage' },
   { to:'/ops/standings', label:'Standings', icon:'≡', permission:'event.view_private' },
   { to:'/live', label:'Public', icon:'◎' }
