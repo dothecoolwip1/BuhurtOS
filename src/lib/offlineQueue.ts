@@ -1,4 +1,5 @@
 import type { OfflineMutation } from '../types';
+import { supabase } from './supabase';
 
 const DB_NAME = 'buhurtos-offline';
 const DB_VERSION = 2;
@@ -71,9 +72,11 @@ async function registerBackgroundSync(): Promise<void> {
 export async function enqueueMutation(
   input: Omit<OfflineMutation, 'id' | 'createdAt' | 'updatedAt' | 'attempts' | 'state'>
 ): Promise<OfflineMutation> {
-  const now = isoNow();
-  const item: OfflineMutation = {
+  const now=isoNow();
+  const authUserId=supabase?(await supabase.auth.getSession()).data.session?.user.id:undefined;
+  const item:OfflineMutation={
     ...input,
+    ownerUserId:input.ownerUserId??authUserId,
     id: globalThis.crypto?.randomUUID?.() ?? 'q-' + Date.now() + '-' + Math.random().toString(36).slice(2),
     createdAt: now,
     updatedAt: now,
@@ -86,11 +89,11 @@ export async function enqueueMutation(
   return item;
 }
 
-export async function listMutations(): Promise<OfflineMutation[]> {
-  const rows = !hasIndexedDb()
-    ? [...memory.values()]
-    : await withStore<OfflineMutation[]>('readonly', store => store.getAll());
-  return rows.map(normalizeMutation).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+export async function listMutations(ownerUserId?:string):Promise<OfflineMutation[]>{
+  const rows=!hasIndexedDb()?[...memory.values()]:await withStore<OfflineMutation[]>('readonly',store=>store.getAll());
+  return rows.map(normalizeMutation)
+    .filter(item=>!ownerUserId||item.ownerUserId===ownerUserId)
+    .sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
 }
 
 export async function updateMutation(item: OfflineMutation): Promise<void> {
@@ -126,9 +129,10 @@ function dueForAutomaticRetry(item: OfflineMutation, nowMs: number): boolean {
 }
 
 export async function flushMutationQueue(
-  executor: (mutation: OfflineMutation) => Promise<SyncOutcome>
-): Promise<{ synced: number; conflicts: number; failed: number; deferred: number }> {
-  const queued = await listMutations();
+  executor:(mutation:OfflineMutation)=>Promise<SyncOutcome>,
+  ownerUserId?:string
+):Promise<{synced:number;conflicts:number;failed:number;deferred:number}>{
+  const queued=await listMutations(ownerUserId);
   const nowMs = Date.now();
   let synced = 0;
   let conflicts = 0;
@@ -185,20 +189,22 @@ export async function flushMutationQueue(
     }
   }
 
-  if ((await listMutations()).some(item => item.state === 'queued' || item.state === 'failed')) {
+  if ((await listMutations(ownerUserId)).some(item=>item.state==='queued'||item.state==='failed')) {
     await registerBackgroundSync();
   }
 
   return { synced, conflicts, failed, deferred };
 }
 
-export async function retryMutation(id: string): Promise<void> {
-  const item = (await listMutations()).find(row => row.id === id);
+export async function retryMutation(id:string,ownerUserId?:string):Promise<void>{
+  const item=(await listMutations(ownerUserId)).find(row=>row.id===id);
   if (!item) return;
   await updateMutation({ ...item, state: 'queued', attempts: 0, nextAttemptAt: undefined, lastError: undefined });
   await registerBackgroundSync();
 }
 
-export async function discardMutation(id: string): Promise<void> {
+export async function discardMutation(id:string,ownerUserId?:string):Promise<void>{
+  const item=(await listMutations(ownerUserId)).find(row=>row.id===id);
+  if(!item)return;
   await removeMutation(id);
 }
