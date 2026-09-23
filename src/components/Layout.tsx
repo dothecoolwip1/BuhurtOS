@@ -31,7 +31,8 @@ export function Layout() {
         {can('discipline.manage')&&<NavLink to="/ops/discipline">Discipline</NavLink>}
         {can('notes.team')&&<NavLink to="/ops/notes">Fight Notes</NavLink>}
         {can('event.view_private')&&<NavLink to="/ops/sync">Sync Queue</NavLink>}
-        {canSetup&&<NavLink to="/ops/setup">Platform Administration</NavLink>}
+        {can('organization.manage')&&<NavLink to="/ops/foundation">Organization Administration</NavLink>}
+        {canSetup&&<NavLink to="/ops/setup">Platform Setup</NavLink>}
         <NavLink to={'/register'+(event?'?event='+encodeURIComponent(event.id):'')}>Registration</NavLink>
         <NavLink to="/">Platform Home</NavLink>
         {dataMode==='supabase'&&<button className="link-button" onClick={()=>signOut()}>Sign Out</button>}
