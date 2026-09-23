@@ -15,5 +15,6 @@ export function subscribeToEvent(eventId: string, onChange: () => void): Realtim
     .on('postgres_changes', { event: '*', schema: 'public', table: 'matches', filter: `event_id=eq.${eventId}` }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'event_roster_entries', filter: `event_id=eq.${eventId}` }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'announcements', filter: `event_id=eq.${eventId}` }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'fight_cards', filter: `event_id=eq.${eventId}` }, onChange)
     .subscribe();
 }
