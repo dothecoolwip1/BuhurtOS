@@ -15,6 +15,10 @@ export async function loadUserContext(userId: string, displayName: string): Prom
     return { userId, displayName, platformRoles: [], organizationRoles: [], eventRoles: [], permissionGrants: [] };
   }
 
+  // Accept pending invitations before reading memberships so existing accounts
+  // receive newly granted access on the same sign-in.
+  await supabase.rpc('claim_pending_invitations').catch(() => undefined);
+
   const [platform, org, event, permissions] = await Promise.all([
     supabase.from('platform_memberships').select('role').eq('user_id', userId),
     supabase.from('organization_memberships').select('organization_id,role').eq('user_id', userId),
