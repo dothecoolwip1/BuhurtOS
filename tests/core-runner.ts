@@ -5,7 +5,7 @@ const assert = {
 };
 import { validateScore } from '../src/lib/scoring';
 import { checkCompliance } from '../src/lib/compliance';
-import { advanceWinner, generateRoundRobin, generateRoundRobinPools, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
+import { advanceOutcome, advanceWinner, generateDoubleElimination, generateRoundRobin, generateRoundRobinPools, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
 import { computeEventStandings } from '../src/lib/standings';
 import { resolveStreamEmbed } from '../src/lib/stream';
 import type { EventRecord, MatchRecord, RosterEntry } from '../src/types';
@@ -76,6 +76,21 @@ if (first.winnerAdvancesToMatchId) {
   const target = advanced.find(m => m.id === first.winnerAdvancesToMatchId)!;
   assert.ok(target.participants.some(p => p.rosterEntryId));
 }
+
+const doubleElimination = generateDoubleElimination({
+  organizationId: 'org', seasonId: 'season', eventId: 'event', fightCardId: 'card', bracketId: 'double', category: 'Longsword', matchType: 'longsword', entries: entries.slice(0,4),
+  scoringConfig: { kind: 'duel', roundsRequired: 3, allowDrawRound: false }
+});
+assert.equal(doubleElimination.matches.length, 7, 'four-person double elimination should contain seven possible matches');
+const upperOpeningDouble = doubleElimination.matches.find(match => match.bracketSlot === '1-1')!;
+assert.ok(Boolean(upperOpeningDouble.loserAdvancesToMatchId), 'upper bracket losses must feed the lower bracket');
+const upperDoubleWinner = upperOpeningDouble.participants[0].rosterEntryId!;
+const upperDoubleLoser = upperOpeningDouble.participants[1].rosterEntryId!;
+const advancedDouble = advanceOutcome(doubleElimination.matches, upperOpeningDouble.id, upperDoubleWinner, upperDoubleLoser);
+const lowerTarget = advancedDouble.find(match => match.id === upperOpeningDouble.loserAdvancesToMatchId)!;
+assert.ok(lowerTarget.participants.some(participant => participant.rosterEntryId === upperDoubleLoser), 'loser must populate the lower bracket target');
+assert.ok(doubleElimination.matches.some(match => match.bracketSlot === 'GF-1'));
+assert.ok(doubleElimination.matches.some(match => match.bracketSlot === 'GF-2' && match.status === 'cancelled'));
 
 const fivePersonBracket = generateSingleElimination({
   organizationId: 'org', seasonId: 'season', eventId: 'event', fightCardId: 'card', bracketId: 'five', category: 'Duel', matchType: 'duel', entries,
