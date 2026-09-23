@@ -1,10 +1,45 @@
 {
+  "id": "./",
   "name": "BuhurtOS",
   "short_name": "BuhurtOS",
-  "start_url": "./",
+  "start_url": "./#/ops",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0f141a",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#0a0f14",
   "theme_color": "#151c24",
-  "description": "Offline capable tournament operations for Buhurt events",
-  "scope": "./"
+  "description": "Offline capable armored combat tournament operations",
+  "categories": [
+    "sports",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Event Operations",
+      "short_name": "Ops",
+      "url": "./#/ops"
+    },
+    {
+      "name": "Roster",
+      "short_name": "Roster",
+      "url": "./#/ops/roster"
+    },
+    {
+      "name": "Public Event",
+      "short_name": "Live",
+      "url": "./#/live"
+    }
+  ]
 }
