@@ -5,7 +5,8 @@ export interface RegistrationInput {
   email: string;
   displayName: string;
   teamName: string;
-  category: string;
+  divisionId?: string;
+  category?: string;
   phone: string;
   emergencyContact: string;
   waiverAcknowledged: boolean;
@@ -17,22 +18,39 @@ export interface RegistrationResult {
   paymentRequired: boolean;
   amountCents: number;
   currency: string;
+  status?: 'pending' | 'approved' | 'waitlisted' | 'withdrawn' | 'rejected';
+  divisionId?: string;
 }
 
 export async function submitRegistration(input: RegistrationInput): Promise<RegistrationResult> {
   if (!supabase) {
-    return { registrationId: crypto.randomUUID(), registrationToken: crypto.randomUUID(), paymentRequired: true, amountCents: 2500, currency: 'CAD' };
+    const row = { registrationId: crypto.randomUUID(), registrationToken: crypto.randomUUID(), paymentRequired: true, amountCents: 2500, currency: 'CAD', status: 'pending' as const, divisionId: input.divisionId };
+    const current = JSON.parse(localStorage.getItem(`buhurtos-demo-registrations-${input.eventId}`) ?? '[]');
+    localStorage.setItem(`buhurtos-demo-registrations-${input.eventId}`, JSON.stringify([{...row,...input,createdAt:new Date().toISOString()},...current]));
+    return row;
   }
-  const { data, error } = await supabase.rpc('submit_public_registration', {
-    p_event_id: input.eventId,
-    p_email: input.email,
-    p_display_name: input.displayName,
-    p_team_name: input.teamName,
-    p_category: input.category,
-    p_phone: input.phone,
-    p_emergency_contact: input.emergencyContact,
-    p_waiver_acknowledged: input.waiverAcknowledged
-  });
+  const call = input.divisionId
+    ? supabase.rpc('submit_public_registration_v2', {
+        p_event_id: input.eventId,
+        p_division_id: input.divisionId,
+        p_email: input.email,
+        p_display_name: input.displayName,
+        p_team_name: input.teamName,
+        p_phone: input.phone,
+        p_emergency_contact: input.emergencyContact,
+        p_waiver_acknowledged: input.waiverAcknowledged
+      })
+    : supabase.rpc('submit_public_registration', {
+        p_event_id: input.eventId,
+        p_email: input.email,
+        p_display_name: input.displayName,
+        p_team_name: input.teamName,
+        p_category: input.category ?? 'Open',
+        p_phone: input.phone,
+        p_emergency_contact: input.emergencyContact,
+        p_waiver_acknowledged: input.waiverAcknowledged
+      });
+  const { data, error } = await call;
   if (error) throw error;
   return data as RegistrationResult;
 }
