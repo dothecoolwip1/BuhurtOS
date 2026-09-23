@@ -1,5 +1,5 @@
 import type { GeneratedBracket } from './bracket';
-import type { EventRecord, RosterEntry } from '../types';
+import type { Bracket, EventRecord, RosterEntry } from '../types';
 import { supabase } from './supabase';
 
 export async function addGhostFighter(event: EventRecord, displayName: string, teamId?: string): Promise<RosterEntry> {
@@ -18,13 +18,15 @@ export async function addGhostFighter(event: EventRecord, displayName: string, t
   return { ...row, id: data.id };
 }
 
-export async function saveBracketPlan(event: EventRecord, plan: GeneratedBracket, options: { id: string; name: string; fightCardId?: string; category: string }): Promise<string> {
+export async function saveBracketPlan(event: EventRecord, plan: GeneratedBracket, options: { id: string; name: string; fightCardId?: string; category: string; format?: Bracket['format']; metadata?: Record<string, unknown> }): Promise<string> {
   if (!supabase) {
-    localStorage.setItem('buhurtos-demo-bracket-matches', JSON.stringify(plan.matches));
+    const existing = JSON.parse(localStorage.getItem('buhurtos-demo-bracket-matches') ?? '[]');
+    const ids = new Set(plan.matches.map(match => match.id));
+    localStorage.setItem('buhurtos-demo-bracket-matches', JSON.stringify([...existing.filter((match: any) => !ids.has(match.id)), ...plan.matches]));
     return options.id;
   }
   const { data, error } = await supabase.rpc('save_bracket_plan', {
-    p_bracket: { id: options.id, eventId: event.id, fightCardId: options.fightCardId ?? '', name: options.name, format: 'single_elimination', category: options.category, metadata: { generatedAt: new Date().toISOString(), antiFratricide: true } },
+    p_bracket: { id: options.id, eventId: event.id, fightCardId: options.fightCardId ?? '', name: options.name, format: options.format ?? 'single_elimination', category: options.category, metadata: { generatedAt: new Date().toISOString(), antiFratricide: true, ...(options.metadata ?? {}) } },
     p_matches: plan.matches
   });
   if (error) throw error;
