@@ -962,7 +962,7 @@ using (private.is_platform_admin((select auth.uid())))
 with check (private.is_platform_admin((select auth.uid())));
 create policy official_affiliations_read on public.official_organization_affiliations for select to authenticated using (
   private.has_org_role((select auth.uid()),organization_id,array['organization_admin','organization_staff']::public.organization_role[])
-  or user_has_permission((select auth.uid()),'roles.manage',organization_id,null,null)
+  or private.user_has_permission((select auth.uid()),'roles.manage',organization_id,null,null)
 );
 create policy official_affiliations_write on public.official_organization_affiliations for all to authenticated
 using (private.user_has_permission((select auth.uid()),'roles.manage',organization_id,null,null))
