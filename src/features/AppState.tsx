@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { Announcement, EventRecord, MatchRecord, MatchStatus, RosterEntry, ScoreRound, UserContext } from '../types';
+import type { Announcement, EventRecord, FightCard, MatchRecord, MatchStatus, RosterEntry, ScoreRound, UserContext } from '../types';
 import { demoUser } from '../data/demo';
 import { loadEventSnapshot } from '../lib/repository';
 import { isSupabaseConfigured, subscribeToEvent, supabase } from '../lib/supabase';
@@ -14,6 +14,7 @@ interface AppStateValue {
   event: EventRecord | null;
   matches: MatchRecord[];
   roster: RosterEntry[];
+  fightCards: FightCard[];
   announcements: Announcement[];
   user: UserContext | null;
   online: boolean;
@@ -45,6 +46,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [event, setEvent] = useState<EventRecord | null>(null);
   const [matches, setMatches] = useState<MatchRecord[]>([]);
   const [roster, setRoster] = useState<RosterEntry[]>([]);
+  const [fightCards, setFightCards] = useState<FightCard[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [user, setUser] = useState<UserContext | null>(isSupabaseConfigured ? null : demoUser);
   const [online, setOnline] = useState(typeof navigator === 'undefined' ? true : navigator.onLine);
@@ -60,6 +62,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       setEvent(snap.event);
       setMatches(snap.matches);
       setRoster(snap.roster);
+      setFightCards(snap.fightCards);
       setAnnouncements(snap.announcements);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to load event data.');
@@ -168,7 +171,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }, [matches, online, reload, refreshPending]);
 
   const reorderMatch = useCallback(async (matchId: string, direction: -1 | 1) => {
-    const ordered = [...matches].sort((a, b) => a.scheduledOrder - b.scheduledOrder);
+    const source = matches.find(m => m.id === matchId);
+    if (!source) return;
+    const ordered = matches.filter(m => m.eventId === source.eventId && m.fightCardId === source.fightCardId).sort((a, b) => a.scheduledOrder - b.scheduledOrder);
     const index = ordered.findIndex(m => m.id === matchId);
     const swapIndex = index + direction;
     if (index < 0 || swapIndex < 0 || swapIndex >= ordered.length) return;
@@ -276,7 +281,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return () => navigator.serviceWorker.removeEventListener('message', handler);
   }, [syncNow]);
 
-  const value = useMemo<AppStateValue>(() => ({ loading, error, event, matches, roster, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, error, event, matches, roster, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
+  const value = useMemo<AppStateValue>(() => ({ loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }
 
