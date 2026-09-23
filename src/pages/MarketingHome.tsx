@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 const audiences = [
   {
@@ -63,7 +64,7 @@ export function MarketingHome(){
         <a href="#features">Features</a>
         <a href="#cost">Cost</a>
       </nav>
-      <div className="marketing-nav-actions">
+      <div className="marketing-nav-actions"><ThemeToggle/>
         <Link className="show-btn secondary" to="/public">Spectator demo</Link>
         <Link className="show-btn primary" to="/home">Explore prototype</Link>
       </div>
