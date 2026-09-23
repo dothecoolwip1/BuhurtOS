@@ -629,3 +629,26 @@ small{color:var(--muted)}
 .marketing-footer{max-width:1320px;margin:0 auto;padding:28px 24px 50px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}.marketing-footer p{font-size:.64rem;margin:0}
 @media(max-width:980px){.marketing-nav>nav{display:none}.marketing-hero{grid-template-columns:1fr;min-height:auto;padding-top:70px}.marketing-hero-ui{max-width:700px;margin:auto}.marketing-problem-grid{grid-template-columns:repeat(2,1fr)}.marketing-audience-grid{grid-template-columns:repeat(2,1fr)}.marketing-flow{grid-template-columns:1fr}.marketing-flow>span{transform:rotate(90deg);text-align:center}.marketing-feature-layout,.marketing-record-section{grid-template-columns:1fr}.marketing-feature-copy{position:static}.marketing-cost-points{grid-template-columns:1fr}.marketing-cta{align-items:flex-start;flex-direction:column}}
 @media(max-width:640px){.marketing-nav{padding:12px 14px}.marketing-nav-actions .show-btn.secondary{display:none}.marketing-nav-actions .show-btn{padding:9px 11px;font-size:.7rem}.marketing-hero{padding:54px 14px}.marketing-hero h1{font-size:3.2rem}.marketing-hero-copy>p{font-size:.9rem}.marketing-float-card{display:none}.marketing-demo-score>div{grid-template-columns:1fr;justify-items:center;text-align:center!important}.marketing-team-mark{order:0!important}.marketing-demo-score strong,.marketing-demo-score b{order:initial!important}.marketing-section,.marketing-dark-section,.marketing-record-section,.marketing-cost,.marketing-cta{padding:64px 14px}.marketing-problem-grid,.marketing-audience-grid,.marketing-capability-grid{grid-template-columns:1fr}.marketing-record-stats{grid-template-columns:repeat(2,1fr)}.marketing-record-stats span:nth-child(2){border-right:0}.marketing-footer{align-items:flex-start;flex-direction:column;padding-left:14px;padding-right:14px}.marketing-proof{gap:6px}.marketing-proof span{min-width:72px}.marketing-proof i{display:none}}
+
+
+/* Event command centre */
+.registration-summary{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:0 0 18px}
+.registration-summary button{min-height:72px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:12px}
+.registration-summary button.selected{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:rgba(255,138,31,.08)}
+.registration-summary b{font-size:1.15rem}
+.registration-summary span{text-transform:capitalize;font-size:.7rem;color:var(--muted)}
+.registration-review-list{display:grid;gap:10px}
+.registration-review-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.registration-review-head h3{font-size:1.1rem;margin-bottom:.25rem}
+.registration-review-head p{margin:0;font-size:.78rem}
+.registration-review-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0}
+.registration-review-meta span{padding:10px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.018);display:flex;flex-direction:column;gap:3px}
+.registration-review-meta small{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em}
+.registration-review-meta b{font-size:.76rem;text-transform:capitalize}
+.announcement-list article{display:flex;gap:12px;align-items:flex-start}
+@media(max-width:760px){
+  .registration-summary{grid-template-columns:repeat(3,1fr)}
+  .registration-review-meta{grid-template-columns:repeat(2,1fr)}
+  .registration-review-head{flex-direction:column}
+  .registration-review-list .header-actions{justify-content:flex-start;flex-wrap:wrap}
+}
