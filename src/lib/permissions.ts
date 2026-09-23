@@ -39,7 +39,7 @@ export const EVENT_ROLE_PERMISSIONS: Record<EventRole, readonly Permission[]> = 
   field_marshal: ['event.view_private','roster.manage','armor.inspect','match.manage','match.score','announcement.manage','discipline.manage','notes.team'],
   assistant_marshal: ['event.view_private','roster.manage','armor.inspect','match.manage','match.score','announcement.manage','notes.team'],
   scorekeeper: ['event.view_private','match.score'],
-  registration_staff: ['event.view_private','registration.manage','roster.manage'],
+  registration_staff: ['event.view_private','registration.manage'],
   armor_inspector: ['event.view_private','armor.inspect'],
   medical_staff: ['event.view_private','medical.manage'],
   team_captain: ['event.view_private','team.manage','notes.team'],
