@@ -151,6 +151,14 @@ export interface MatchRecord {
   winnerAdvancesToSlot?: 1 | 2;
   loserAdvancesToMatchId?: UUID;
   loserAdvancesToSlot?: 1 | 2;
+  divisionId?: UUID;
+  ringId?: UUID;
+  poolId?: UUID;
+  scheduledStart?: string;
+  validationStatus?: ValidationStatus;
+  victoryMethod?: string;
+  officialNotes?: string;
+  videoUrl?: string;
   resultSummary?: MatchResultSummary;
   participants: MatchParticipant[];
   rounds: ScoreRound[];
