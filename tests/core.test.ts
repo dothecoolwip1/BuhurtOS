@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { validateScore } from '../src/lib/scoring';
 import { checkCompliance } from '../src/lib/compliance';
-import { advanceWinner, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
+import { advanceBracketResult, advanceWinner, generateDoubleElimination, generateRoundRobin, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
 import { computeEventStandings } from '../src/lib/standings';
 import { resolveStreamEmbed } from '../src/lib/stream';
 import { computePoolStandings, generateSeededPools } from '../src/lib/pools';
@@ -149,5 +149,40 @@ describe('official sporting analytics',()=>{
       {...roster('c','C','blue'),fighterId:'fighter-c'}
     ]);
     expect(h2h.meetings).toBe(1);expect(h2h.leftWins).toBe(1);expect(h2h.rightWins).toBe(0);
+  });
+});
+
+
+describe('expanded bracket formats',()=>{
+  const eight=Array.from({length:8},(_,index)=>({
+    entry:roster(String.fromCharCode(97+index),`Fighter ${index+1}`,index<2?'red':index<4?'blue':`team-${index}`),
+    seed:index+1
+  }));
+  it('creates a complete round robin with every pair exactly once',()=>{
+    const plan=generateRoundRobin({organizationId:'org',seasonId:'season',eventId:'event',bracketId:'rr',category:'Duel',matchType:'duel',entries:eight.slice(0,5),scoringConfig:scoring});
+    expect(plan.rounds).toBe(5);
+    expect(plan.matches).toHaveLength(10);
+    const pairs=plan.matches.map(m=>m.participants.map(p=>p.rosterEntryId).sort().join(':'));
+    expect(new Set(pairs).size).toBe(10);
+  });
+  it('creates winners, losers, grand final and conditional reset for eight competitors',()=>{
+    const plan=generateDoubleElimination({organizationId:'org',seasonId:'season',eventId:'event',bracketId:'de',category:'Duel',matchType:'duel',entries:eight,scoringConfig:scoring});
+    expect(plan.matches.filter(m=>m.bracketSlot?.startsWith('WB-'))).toHaveLength(7);
+    expect(plan.matches.filter(m=>m.bracketSlot?.startsWith('LB-'))).toHaveLength(6);
+    expect(plan.matches.some(m=>m.bracketSlot==='GF')).toBe(true);
+    expect(plan.matches.find(m=>m.bracketSlot==='GF-RESET')?.status).toBe('cancelled');
+    expect(plan.matches.filter(m=>m.loserAdvancesToMatchId).length).toBeGreaterThan(0);
+  });
+  it('advances both winner and loser through double elimination',()=>{
+    const plan=generateDoubleElimination({organizationId:'org',seasonId:'season',eventId:'event',bracketId:'de2',category:'Duel',matchType:'duel',entries:eight.slice(0,4),scoringConfig:scoring});
+    const opening=plan.matches.find(m=>m.bracketSlot==='WB-1-1')!;
+    const winner=opening.participants[0].rosterEntryId!;
+    const loser=opening.participants[1].rosterEntryId!;
+    const progressed=advanceBracketResult(plan.matches,opening.id,winner);
+    expect(progressed.find(m=>m.id===opening.winnerAdvancesToMatchId)?.participants.some(p=>p.rosterEntryId===winner)).toBe(true);
+    expect(progressed.find(m=>m.id===opening.loserAdvancesToMatchId)?.participants.some(p=>p.rosterEntryId===loser)).toBe(true);
+  });
+  it('refuses non-power-of-two double elimination rather than silently removing two-loss protection',()=>{
+    expect(()=>generateDoubleElimination({organizationId:'org',seasonId:'season',eventId:'event',bracketId:'bad',category:'Duel',matchType:'duel',entries:eight.slice(0,5),scoringConfig:scoring})).toThrow(/power-of-two/i);
   });
 });
