@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { previewRoleLabels, usePreviewMode, type PreviewRole } from '../features/PreviewMode';
+import { ThemeToggle } from './ThemeToggle';
 
 const navByRole: Record<PreviewRole, Array<[string,string,string]>> = {
   bi_admin: [['/home','Overview','◫'],['/governance','Governance','⌘'],['/teams','Teams','♜'],['/fighters','Fighters','♟'],['/events','Events','⚔'],['/rankings','Rankings','↗'],['/rules','Rulesets','§'],['/public','Public Arena','◎']],
@@ -30,7 +31,7 @@ export function ShowcaseShell(){
       <header className="show-topbar">
         <div className="show-mobile-brand"><span className="show-brand-mark">B</span><b>{activeLabel}</b></div>
         <div className="show-top-context"><span className="show-live-dot"></span><span>HACSA Fall Open</span><small>Prototype</small></div>
-        <label className="show-role-picker"><span>Preview as</span><select value={role} onChange={e=>switchRole(e.target.value as PreviewRole)}>{Object.entries(previewRoleLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
+        <div className="show-role-actions"><ThemeToggle/><label className="show-role-picker"><span>Preview as</span><select value={role} onChange={e=>switchRole(e.target.value as PreviewRole)}>{Object.entries(previewRoleLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label></div>
       </header>
       <div className="show-content"><Outlet/></div>
     </main>
