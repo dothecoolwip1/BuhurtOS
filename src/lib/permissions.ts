@@ -19,6 +19,11 @@ export type Permission =
 
 const EVENT_ROLE_PERMISSIONS: Record<EventRole, Permission[]> = {
   event_organizer: ['event.view_private', 'event.manage', 'roster.manage', 'match.manage', 'match.score', 'bracket.manage', 'announcement.manage', 'discipline.manage', 'notes.team', 'schedule.manage', 'ring.manage', 'result.validate', 'correction.review', 'ranking.manage'],
+  tournament_director: ['event.view_private', 'event.manage', 'roster.manage', 'match.manage', 'match.score', 'bracket.manage', 'announcement.manage', 'discipline.manage', 'notes.team', 'schedule.manage', 'ring.manage', 'result.validate', 'correction.review', 'ranking.manage'],
+  scorekeeper: ['event.view_private', 'match.score', 'match.manage'],
+  registration_staff: ['event.view_private', 'roster.manage'],
+  armor_inspector: ['event.view_private', 'roster.manage'],
+  medical_staff: ['event.view_private', 'roster.manage'],
   field_marshal: ['event.view_private', 'roster.manage', 'match.manage', 'match.score', 'announcement.manage', 'discipline.manage', 'notes.team', 'schedule.manage', 'ring.manage', 'result.validate'],
   assistant_marshal: ['event.view_private', 'roster.manage', 'match.manage', 'match.score', 'announcement.manage', 'notes.team', 'ring.manage'],
   team_captain: ['event.view_private', 'notes.team'],
