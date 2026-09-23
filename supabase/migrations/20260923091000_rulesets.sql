@@ -28,8 +28,8 @@ create table if not exists public.rulesets (
     ),
     'bracket', jsonb_build_object('antiFratricide', true)
   ),
-  created_by uuid default (select auth.uid()),
-  last_edited_by uuid default (select auth.uid()),
+  created_by uuid default auth.uid(),
+  last_edited_by uuid default auth.uid(),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
   constraint ruleset_owner_shape check (team_id is null or organization_id is not null),
