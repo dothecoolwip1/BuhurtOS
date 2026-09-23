@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useAppState } from '../features/AppState';
 import { hasPermission } from '../lib/permissions';
 import { signOut } from '../lib/auth';
+import { ThemeToggle } from './ThemeToggle';
 
 const nav = [
   ['/run', 'Ops', '⚔'],
@@ -43,7 +44,7 @@ export function Layout() {
       <main className="main-shell">
         <header className="topbar">
           <div><strong>{event?.name ?? 'BuhurtOS'}</strong><small>{event?.venue ?? 'No event selected'}</small></div>
-          <div className="status-row">
+          <div className="status-row"><ThemeToggle/>
             <span className={`status-pill ${online ? 'ok' : 'warn'}`}>{online ? 'Online' : 'Offline'}</span>
             <span className="status-pill">{dataMode === 'supabase' ? 'Live DB' : 'Demo'}</span>
             {pendingCount > 0 && <button className="status-pill action" onClick={syncNow}>{pendingCount} queued</button>}
