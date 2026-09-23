@@ -5,7 +5,7 @@ const assert = {
 };
 import { validateScore } from '../src/lib/scoring';
 import { checkCompliance } from '../src/lib/compliance';
-import { advanceWinner, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
+import { advanceWinner, generateRoundRobin, generateRoundRobinPools, generateSingleElimination, placeSeedsAntiFratricide } from '../src/lib/bracket';
 import { computeEventStandings } from '../src/lib/standings';
 import { resolveStreamEmbed } from '../src/lib/stream';
 import type { EventRecord, MatchRecord, RosterEntry } from '../src/types';
@@ -54,6 +54,22 @@ const generated = generateSingleElimination({
 assert.equal(generated.size, 8);
 assert.equal(generated.matches.length, 7);
 assert.ok(generated.matches.some(m => m.stage === 'final'));
+
+const roundRobin = generateRoundRobin({
+  organizationId: 'org', seasonId: 'season', eventId: 'event', bracketId: 'round-robin', category: 'Longsword', matchType: 'longsword', entries: entries.slice(0,4),
+  scoringConfig: { kind: 'duel', roundsRequired: 3, allowDrawRound: false }
+});
+assert.equal(roundRobin.matches.length, 6, 'four-person round robin should generate six matches');
+assert.ok(roundRobin.matches.every(match => match.stage === 'pool'));
+
+const pools = generateRoundRobinPools({
+  organizationId: 'org', seasonId: 'season', eventId: 'event', bracketId: 'pools', category: 'Longsword', matchType: 'longsword', entries,
+  scoringConfig: { kind: 'duel', roundsRequired: 3, allowDrawRound: false }, targetPoolSize: 3
+});
+assert.equal(pools.pools.length, 2, 'five competitors with target size three should generate two pools');
+assert.equal(pools.matches.length, 4, 'three-person plus two-person pools should generate four matches');
+const redPoolAssignments = pools.pools.map(pool => pool.entryIds.filter(id => id === 'a' || id === 'b').length);
+assert.ok(redPoolAssignments.every(count => count <= 1), 'same-team competitors should be separated across pools when possible');
 const first = generated.matches[0];
 const advanced = advanceWinner(generated.matches, first.id, first.participants.find(p => p.rosterEntryId)?.rosterEntryId ?? 'a');
 if (first.winnerAdvancesToMatchId) {
