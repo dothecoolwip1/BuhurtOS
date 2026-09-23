@@ -32,6 +32,7 @@ import { SetupPage } from './pages/SetupPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { PublicPage } from './pages/PublicPage';
 import { EventManagementPage } from './pages/EventManagementPage';
+import { FoundationAdminPage } from './pages/FoundationAdminPage';
 import { configurationError } from './lib/supabase';
 
 function OperationsProvider() {
@@ -83,6 +84,7 @@ export function App(){
         <Route path="notes" element={<RequirePermission permission="notes.team"><NotesPage/></RequirePermission>}/>
         <Route path="sync" element={<RequirePermission permission="event.view_private"><SyncPage/></RequirePermission>}/>
         <Route path="setup" element={<SetupPage/>}/>
+        <Route path="foundation" element={<RequirePermission permission="organization.manage"><FoundationAdminPage/></RequirePermission>}/>
       </Route>
     </Route>
 
