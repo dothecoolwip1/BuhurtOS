@@ -74,6 +74,12 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }, [reload, refreshPending]);
 
   useEffect(() => {
+    const handleRouteChange = () => { reload().catch(() => undefined); };
+    window.addEventListener('hashchange', handleRouteChange);
+    return () => window.removeEventListener('hashchange', handleRouteChange);
+  }, [reload]);
+
+  useEffect(() => {
     if (!supabase) return;
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return setUser(null);
