@@ -18,7 +18,8 @@ export async function submitMatchResult(match: MatchRecord, rounds: ScoreRound[]
     return;
   }
 
-  const { error } = await supabase.rpc('submit_match_result', {
+  const { error } = await supabase.rpc('submit_match_result_idempotent', {
+    p_operation_id: crypto.randomUUID(),
     p_match_id: match.id,
     p_rounds: rounds,
     p_forfeit_side: forfeit?.side ?? null,
