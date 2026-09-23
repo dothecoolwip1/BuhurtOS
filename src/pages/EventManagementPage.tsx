@@ -2,13 +2,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAppState } from '../features/AppState';
 import {
   createEventAnnouncement,
+  createFightCard,
   deleteEventAnnouncement,
   listEventRegistrations,
   reviewRegistration,
   updateEventSettings,
+  updateFightCard,
   type EventRegistrationAdmin,
   type RegistrationReviewStatus
 } from '../lib/eventAdmin';
+import type { FightCard } from '../types';
 
 const reviewStates: Array<{value: Exclude<RegistrationReviewStatus,'pending'>; label:string}> = [
   { value:'approved', label:'Approve' },
@@ -18,14 +21,16 @@ const reviewStates: Array<{value: Exclude<RegistrationReviewStatus,'pending'>; l
 ];
 
 export function EventManagementPage(){
-  const { event, announcements, reload } = useAppState();
+  const { event, announcements, fightCards, reload } = useAppState();
   const [registrations,setRegistrations]=useState<EventRegistrationAdmin[]>([]);
-  const [tab,setTab]=useState<'settings'|'registrations'|'announcements'>('settings');
+  const [tab,setTab]=useState<'settings'|'fields'|'registrations'|'announcements'>('settings');
   const [message,setMessage]=useState('');
   const [busy,setBusy]=useState(false);
   const [filter,setFilter]=useState<RegistrationReviewStatus|'all'>('all');
   const [settings,setSettings]=useState({status:'draft',eventType:'ranked_competitive',standingsMode:'season_and_event',registrationOpen:false,livestreamUrl:''});
   const [announcement,setAnnouncement]=useState({title:'',body:'',isPublic:true,scheduledFor:''});
+  const [newFieldName,setNewFieldName]=useState('');
+  const [fieldDrafts,setFieldDrafts]=useState<Record<string,{name:string;status:FightCard['status']}>>({});
 
   useEffect(()=>{
     if(!event)return;
@@ -38,6 +43,10 @@ export function EventManagementPage(){
     });
     listEventRegistrations(event.id).then(setRegistrations).catch(error=>setMessage(error instanceof Error?error.message:'Unable to load registrations.'));
   },[event?.id]);
+
+  useEffect(()=>{
+    setFieldDrafts(Object.fromEntries(fightCards.map(card=>[card.id,{name:card.name,status:card.status}])));
+  },[fightCards]);
 
   const filtered=useMemo(()=>filter==='all'?registrations:registrations.filter(item=>item.status===filter),[registrations,filter]);
   const counts=useMemo(()=>registrations.reduce<Record<string,number>>((acc,item)=>{acc[item.status]=(acc[item.status]??0)+1;return acc;},{}),[registrations]);
@@ -56,6 +65,30 @@ export function EventManagementPage(){
       await reload();
       setMessage('Event settings saved.');
     }catch(error){setMessage(error instanceof Error?error.message:'Unable to save event settings.');}
+    finally{setBusy(false);}
+  };
+
+  const addField=async()=>{
+    if(!newFieldName.trim())return;
+    setBusy(true);setMessage('');
+    try{
+      await createFightCard(event.id,newFieldName,fightCards);
+      setNewFieldName('');
+      await reload();
+      setMessage('Field created.');
+    }catch(error){setMessage(error instanceof Error?error.message:'Unable to create field.');}
+    finally{setBusy(false);}
+  };
+
+  const saveField=async(card:FightCard)=>{
+    const draft=fieldDrafts[card.id];
+    if(!draft)return;
+    setBusy(true);setMessage('');
+    try{
+      await updateFightCard(event.id,card,draft,fightCards);
+      await reload();
+      setMessage('Field updated.');
+    }catch(error){setMessage(error instanceof Error?error.message:'Unable to update field.');}
     finally{setBusy(false);}
   };
 
@@ -91,8 +124,8 @@ export function EventManagementPage(){
 
   return <>
     <section className="section-head">
-      <div><span className="eyebrow">Event command centre</span><h1>Manage {event.name}</h1><p>Control publishing, registration intake, livestreaming, standings behaviour and event announcements.</p></div>
-      <div className="header-actions"><button className={tab==='settings'?'primary':''} onClick={()=>setTab('settings')}>Settings</button><button className={tab==='registrations'?'primary':''} onClick={()=>setTab('registrations')}>Registrations {registrations.length>0?'('+registrations.length+')':''}</button><button className={tab==='announcements'?'primary':''} onClick={()=>setTab('announcements')}>Announcements</button></div>
+      <div><span className="eyebrow">Event command centre</span><h1>Manage {event.name}</h1><p>Control publishing, fields, registration intake, livestreaming, standings behaviour and event announcements.</p></div>
+      <div className="header-actions"><button className={tab==='settings'?'primary':''} onClick={()=>setTab('settings')}>Settings</button><button className={tab==='fields'?'primary':''} onClick={()=>setTab('fields')}>Fields</button><button className={tab==='registrations'?'primary':''} onClick={()=>setTab('registrations')}>Registrations {registrations.length>0?'('+registrations.length+')':''}</button><button className={tab==='announcements'?'primary':''} onClick={()=>setTab('announcements')}>Announcements</button></div>
     </section>
 
     {tab==='settings'&&<div className="admin-grid">
@@ -106,6 +139,11 @@ export function EventManagementPage(){
         <label>Livestream URL<input value={settings.livestreamUrl} onChange={e=>setSettings(s=>({...s,livestreamUrl:e.target.value}))} placeholder="YouTube, Twitch, or supported stream URL"/></label>
         <button className="primary big" disabled={busy} onClick={saveSettings}>Save Event Settings</button>
       </div></section>
+    </div>}
+
+    {tab==='fields'&&<div className="admin-grid">
+      <section className="panel-card"><h2>Add tournament field</h2><p>Each field gets an independent fight queue and bullpen state.</p><div className="inline-form"><input value={newFieldName} onChange={e=>setNewFieldName(e.target.value)} placeholder="Field 2 / List B"/><button className="primary" disabled={busy||!newFieldName.trim()} onClick={addField}>Add Field</button></div></section>
+      <section className="panel-card"><h2>Fields & lists</h2><div className="field-admin-list">{fightCards.length===0?<div className="state-card">No explicit fields yet. Create one before assigning new competition structures.</div>:fightCards.sort((a,b)=>a.sortOrder-b.sortOrder).map(card=>{const draft=fieldDrafts[card.id]??{name:card.name,status:card.status};return <article key={card.id}><div className="form-stack grow"><label>Name<input value={draft.name} onChange={e=>setFieldDrafts(current=>({...current,[card.id]:{...draft,name:e.target.value}}))}/></label><label>Status<select value={draft.status} onChange={e=>setFieldDrafts(current=>({...current,[card.id]:{...draft,status:e.target.value as FightCard['status']}}))}><option value="draft">Draft</option><option value="live">Live</option><option value="locked">Locked</option><option value="archived">Archived</option></select></label></div><button disabled={busy} onClick={()=>saveField(card)}>Save</button></article>;})}</div></section>
     </div>}
 
     {tab==='registrations'&&<>
