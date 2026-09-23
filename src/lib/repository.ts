@@ -30,6 +30,14 @@ function snakeMatch(row: Record<string, any>): MatchRecord {
     winnerAdvancesToSlot: row.winner_advances_to_slot ?? undefined,
     loserAdvancesToMatchId: row.loser_advances_to_match_id ?? undefined,
     loserAdvancesToSlot: row.loser_advances_to_slot ?? undefined,
+    divisionId: row.division_id ?? undefined,
+    ringId: row.ring_id ?? undefined,
+    poolId: row.pool_id ?? undefined,
+    scheduledStart: row.scheduled_start ?? undefined,
+    validationStatus: row.validation_status ?? 'in_progress',
+    victoryMethod: row.victory_method ?? undefined,
+    officialNotes: row.official_notes ?? undefined,
+    videoUrl: row.video_url ?? undefined,
     resultSummary: row.result_summary,
     participants: (row.match_participants ?? []).map((p: any) => ({ rosterEntryId: p.roster_entry_id ?? undefined, sideIndex: p.side_index, seed: p.seed ?? undefined, isPlaceholder: p.is_placeholder, placeholderLabel: p.placeholder_label ?? undefined, sourceMatchId: p.source_match_id ?? undefined, sourceSlot: p.source_slot ?? undefined, isWinnerSource: p.is_winner_source ?? undefined })),
     rounds: (row.match_rounds ?? []).map((r: any) => ({ roundNumber: r.round_number, side1Score: Number(r.side_1_score), side2Score: Number(r.side_2_score), notes: r.notes ?? undefined }))
@@ -51,7 +59,7 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
 
   let resolvedEventId = eventId || (import.meta.env.VITE_DEFAULT_EVENT_ID as string | undefined);
   if (!resolvedEventId) {
-    const candidate = await supabase.from('events').select('id').in('status', ['live','published','draft']).order('starts_at', { ascending: false }).limit(1).maybeSingle();
+    const candidate = await supabase.from('events').select('id').in('status', ['live','check_in','registration_open','published','draft']).order('starts_at', { ascending: false }).limit(1).maybeSingle();
     if (candidate.error) throw candidate.error;
     resolvedEventId = candidate.data?.id;
   }
