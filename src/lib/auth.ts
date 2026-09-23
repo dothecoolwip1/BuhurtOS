@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { clearPrivateSnapshotCache } from './offlineSnapshot';
 
 function requireClient() {
   if (!supabase) throw new Error('BuhurtOS authentication is not configured.');
@@ -16,10 +17,12 @@ export async function signIn(email: string, password: string): Promise<void> {
   if (error) throw error;
 }
 
-export async function signOut(): Promise<void> {
-  if (!supabase) return;
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+export async function signOut():Promise<void>{
+  if(!supabase)return;
+  const userId=(await supabase.auth.getUser()).data.user?.id;
+  const {error}=await supabase.auth.signOut();
+  if(error)throw error;
+  if(userId)await clearPrivateSnapshotCache('user:'+userId);
 }
 
 export async function sendMagicLink(email: string): Promise<void> {
