@@ -142,7 +142,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
     if (supabase && online) {
       const client = supabase;
-      const { error: rpcError } = await client.rpc('submit_match_result', {
+      const { error: rpcError } = await client.rpc('submit_match_result_idempotent', {
+        p_operation_id: crypto.randomUUID(),
         p_match_id: match.id,
         p_rounds: rounds,
         p_forfeit_side: forfeit?.side ?? null,
@@ -189,7 +190,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       return;
     }
     const client = supabase;
-    const { error: rpcError } = await client.rpc('reorder_match', { p_match_id: matchId, p_direction: direction });
+    const { error: rpcError } = await client.rpc('reorder_match_idempotent', { p_operation_id: crypto.randomUUID(), p_match_id: matchId, p_direction: direction });
     if (rpcError) throw rpcError;
   }, [matches, online, refreshPending]);
 
@@ -214,7 +215,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       return;
     }
     const client = supabase;
-    const { error: rpcError } = await client.rpc('set_match_status', { p_match_id: match.id, p_status: status, p_expected_status: previous });
+    const { error: rpcError } = await client.rpc('set_match_status_idempotent', { p_operation_id: crypto.randomUUID(), p_match_id: match.id, p_status: status, p_expected_status: previous });
     if (rpcError) {
       setMatches(matches);
       throw rpcError;
@@ -228,19 +229,19 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     await flushMutationQueue(async mutation => {
       if (mutation.operation === 'rpc' && mutation.entity === 'match_result') {
         const payload = mutation.payload as any;
-        const { error: e } = await client.rpc('submit_match_result', { p_match_id: mutation.entityId, p_rounds: payload.rounds, p_forfeit_side: payload.forfeit?.side ?? null, p_forfeit_reason: payload.forfeit?.reason ?? null, p_expected_status: mutation.baseVersion ?? 'scheduled' });
+        const { error: e } = await client.rpc('submit_match_result_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_rounds: payload.rounds, p_forfeit_side: payload.forfeit?.side ?? null, p_forfeit_reason: payload.forfeit?.reason ?? null, p_expected_status: mutation.baseVersion ?? 'scheduled' });
         if (e) return { ok: false, conflict: e.code === 'P0001' || e.code === '40001', error: e.message };
         return { ok: true };
       }
       if (mutation.operation === 'rpc' && mutation.entity === 'match_status') {
         const payload = mutation.payload as { status: MatchStatus };
-        const { error: e } = await client.rpc('set_match_status', { p_match_id: mutation.entityId, p_status: payload.status, p_expected_status: mutation.baseVersion ?? 'scheduled' });
+        const { error: e } = await client.rpc('set_match_status_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_status: payload.status, p_expected_status: mutation.baseVersion ?? 'scheduled' });
         if (e) return { ok: false, conflict: e.code === 'P0001' || /changed since/i.test(e.message), error: e.message };
         return { ok: true };
       }
       if (mutation.operation === 'rpc' && mutation.entity === 'fight_card_order') {
         const payload = mutation.payload as { direction: -1 | 1 };
-        const { error: e } = await client.rpc('reorder_match', { p_match_id: mutation.entityId, p_direction: payload.direction });
+        const { error: e } = await client.rpc('reorder_match_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_direction: payload.direction });
         return e ? { ok: false, error: e.message } : { ok: true };
       }
       if (mutation.operation === 'update' && mutation.entity === 'event_roster_entries') {
