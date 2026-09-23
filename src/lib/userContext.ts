@@ -17,7 +17,7 @@ export async function loadUserContext(userId: string, displayName: string): Prom
 
   // Accept pending invitations before reading memberships so existing accounts
   // receive newly granted access on the same sign-in.
-  await supabase.rpc('claim_pending_invitations').catch(() => undefined);
+  await supabase.rpc('claim_pending_invitations');
 
   const [platform, org, event, permissions] = await Promise.all([
     supabase.from('platform_memberships').select('role').eq('user_id', userId),
