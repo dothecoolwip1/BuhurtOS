@@ -52,7 +52,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [online, setOnline] = useState(typeof navigator === 'undefined' ? true : navigator.onLine);
   const [pendingCount, setPendingCount] = useState(0);
 
-  const refreshPending = useCallback(async () => setPendingCount((await listMutations()).length), []);
+  const refreshPending=useCallback(async()=>setPendingCount(user?.userId?(await listMutations(user.userId)).length:0),[user?.userId]);
 
   const reload = useCallback(async () => {
     try {
@@ -243,7 +243,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const syncNow = useCallback(async () => {
     const client = supabase;
     if (!client || !online) return;
-    await flushMutationQueue(async mutation => {
+    if(!user?.userId)return;
+    await flushMutationQueue(async mutation=>{
       if (mutation.operation === 'rpc' && mutation.entity === 'match_result') {
         const payload = mutation.payload as any;
         const { error: e } = await client.rpc('submit_match_result_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_rounds: payload.rounds, p_forfeit_side: payload.forfeit?.side ?? null, p_forfeit_reason: payload.forfeit?.reason ?? null, p_expected_status: mutation.baseVersion ?? 'scheduled' });
@@ -273,11 +274,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         if (e) return { ok: false, conflict: /changed since/i.test(e.message), error: e.message };
         return { ok: true };
       }
-      return { ok: false, error: 'Unsupported queued mutation type.' };
-    });
+      return {ok:false,retryable:false,error:'Unsupported queued mutation type.'};
+    },user.userId);
     await refreshPending();
     await reload();
-  }, [online, refreshPending, reload]);
+  }, [online,user?.userId,refreshPending,reload]);
 
   useEffect(() => {
     if (!online || pendingCount === 0 || !supabase) return;
