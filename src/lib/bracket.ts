@@ -183,16 +183,37 @@ export function generateSingleElimination(params: {
   return { size, rounds, matches: allMatches };
 }
 
-export function advanceWinner(matches: MatchRecord[], completedMatchId: UUID, winnerRosterEntryId: UUID): MatchRecord[] {
+function placeAdvancedParticipant(copy: MatchRecord[], source: MatchRecord, targetId: UUID | undefined, targetSlot: 1 | 2 | undefined, rosterEntryId: UUID | undefined, isWinnerSource: boolean): void {
+  if (!targetId || !targetSlot || !rosterEntryId) return;
+  const target = copy.find(m => m.id === targetId);
+  if (!target) throw new Error('Bracket target match is missing.');
+  target.participants = target.participants.filter(p => p.sideIndex !== targetSlot);
+  target.participants.push({ rosterEntryId, sideIndex: targetSlot, sourceMatchId: source.id, sourceSlot: targetSlot, isWinnerSource });
+}
+
+export function advanceOutcome(matches: MatchRecord[], completedMatchId: UUID, winnerRosterEntryId: UUID, loserRosterEntryId?: UUID): MatchRecord[] {
   const copy = structuredClone(matches);
   const source = copy.find(m => m.id === completedMatchId);
-  if (!source?.winnerAdvancesToMatchId || !source.winnerAdvancesToSlot) return copy;
-  const target = copy.find(m => m.id === source.winnerAdvancesToMatchId);
-  if (!target) throw new Error('Bracket target match is missing.');
-  const slot = source.winnerAdvancesToSlot;
-  target.participants = target.participants.filter(p => p.sideIndex !== slot);
-  target.participants.push({ rosterEntryId: winnerRosterEntryId, sideIndex: slot, sourceMatchId: source.id, sourceSlot: slot, isWinnerSource: true });
+  if (!source) return copy;
+
+  if (source.bracketSlot === 'GF-1' && source.winnerAdvancesToMatchId) {
+    const reset = copy.find(m => m.id === source.winnerAdvancesToMatchId);
+    if (!reset) throw new Error('Grand final reset match is missing.');
+    const upperChampion = source.participants.find(p => p.sideIndex === 1)?.rosterEntryId;
+    if (winnerRosterEntryId === upperChampion) {
+      reset.status = 'cancelled';
+      return copy;
+    }
+    reset.status = 'scheduled';
+  }
+
+  placeAdvancedParticipant(copy, source, source.winnerAdvancesToMatchId, source.winnerAdvancesToSlot, winnerRosterEntryId, true);
+  placeAdvancedParticipant(copy, source, source.loserAdvancesToMatchId, source.loserAdvancesToSlot, loserRosterEntryId, false);
   return copy;
+}
+
+export function advanceWinner(matches: MatchRecord[], completedMatchId: UUID, winnerRosterEntryId: UUID): MatchRecord[] {
+  return advanceOutcome(matches, completedMatchId, winnerRosterEntryId);
 }
 
 
@@ -306,5 +327,149 @@ export function generateRoundRobinPools(params: {
     rounds: Math.max(...pools.map(pool => Math.max(1,pool.length - 1))),
     matches,
     pools: pools.map((pool,index) => ({ name: 'Pool ' + String.fromCharCode(65 + index), entryIds: pool.map(item => item.entry.id) }))
+  };
+}
+
+
+export function generateDoubleElimination(params: {
+  organizationId: UUID;
+  seasonId: UUID;
+  eventId: UUID;
+  fightCardId?: UUID;
+  bracketId: UUID;
+  category: string;
+  matchType: string;
+  entries: SeededEntry[];
+  scoringConfig: MatchRecord['scoringConfig'];
+}): GeneratedBracket {
+  if (params.entries.length < 4) throw new Error('Double elimination requires at least four competitors.');
+  const upper = generateSingleElimination(params);
+  const upperRounds = Math.log2(upper.size);
+  const upperMatches = upper.matches;
+  const upperByRound = new Map<number, MatchRecord[]>();
+  for (let round = 1; round <= upperRounds; round += 1) {
+    upperByRound.set(round, upperMatches.filter(match => match.bracketRound === round).sort((a,b) => (a.bracketSlot ?? '').localeCompare(b.bracketSlot ?? '')));
+  }
+
+  const lowerRounds = Math.max(2, upperRounds * 2 - 2);
+  const lowerByRound: MatchRecord[][] = [];
+  for (let lowerRound = 1; lowerRound <= lowerRounds; lowerRound += 1) {
+    const exponent = Math.floor((lowerRound + 1) / 2) + 1;
+    const count = Math.max(1, upper.size / Math.pow(2, exponent));
+    const roundMatches: MatchRecord[] = [];
+    for (let index = 0; index < count; index += 1) {
+      roundMatches.push({
+        id: uuid(),
+        organizationId: params.organizationId,
+        seasonId: params.seasonId,
+        eventId: params.eventId,
+        fightCardId: params.fightCardId,
+        bracketId: params.bracketId,
+        label: 'Lower Round ' + lowerRound + ' • Match ' + (index + 1),
+        category: params.category,
+        matchType: params.matchType,
+        scoringConfig: structuredClone(params.scoringConfig),
+        status: 'scheduled',
+        stage: 'bracket',
+        scheduledOrder: 1000 + lowerRound * 100 + index,
+        bracketRound: upperRounds + lowerRound,
+        bracketSlot: 'L' + lowerRound + '-' + (index + 1),
+        participants: [],
+        rounds: []
+      });
+    }
+    lowerByRound.push(roundMatches);
+  }
+
+  for (let roundIndex = 0; roundIndex < lowerByRound.length - 1; roundIndex += 1) {
+    const current = lowerByRound[roundIndex];
+    const next = lowerByRound[roundIndex + 1];
+    const lowerRound = roundIndex + 1;
+    current.forEach((match,index) => {
+      const targetIndex = lowerRound % 2 === 1 ? index : Math.floor(index / 2);
+      const target = next[targetIndex];
+      const slot = (lowerRound % 2 === 1 ? 1 : (index % 2 === 0 ? 1 : 2)) as 1 | 2;
+      match.winnerAdvancesToMatchId = target.id;
+      match.winnerAdvancesToSlot = slot;
+      target.participants.push({ sideIndex: slot, isPlaceholder: true, placeholderLabel: 'Winner ' + match.label, sourceMatchId: match.id, sourceSlot: slot, isWinnerSource: true });
+    });
+  }
+
+  const firstUpper = upperByRound.get(1) ?? [];
+  const firstLower = lowerByRound[0];
+  firstUpper.forEach((match,index) => {
+    const target = firstLower[Math.floor(index / 2)];
+    if (!target) return;
+    const slot = (index % 2 === 0 ? 1 : 2) as 1 | 2;
+    match.loserAdvancesToMatchId = target.id;
+    match.loserAdvancesToSlot = slot;
+    target.participants.push({ sideIndex: slot, isPlaceholder: true, placeholderLabel: 'Loser ' + match.label, sourceMatchId: match.id, sourceSlot: slot, isWinnerSource: false });
+  });
+
+  for (let upperRound = 2; upperRound <= upperRounds; upperRound += 1) {
+    const sources = upperByRound.get(upperRound) ?? [];
+    const injectionRoundIndex = upperRound * 2 - 3;
+    const targets = lowerByRound[injectionRoundIndex];
+    sources.forEach((match,index) => {
+      const target = targets[targets.length - 1 - index];
+      if (!target) return;
+      match.loserAdvancesToMatchId = target.id;
+      match.loserAdvancesToSlot = 2;
+      target.participants = target.participants.filter(p => p.sideIndex !== 2);
+      target.participants.push({ sideIndex: 2, isPlaceholder: true, placeholderLabel: 'Loser ' + match.label, sourceMatchId: match.id, sourceSlot: 2, isWinnerSource: false });
+    });
+  }
+
+  const upperFinal = (upperByRound.get(upperRounds) ?? [])[0];
+  const lowerFinal = lowerByRound[lowerByRound.length - 1][0];
+  const grandFinal: MatchRecord = {
+    id: uuid(),
+    organizationId: params.organizationId,
+    seasonId: params.seasonId,
+    eventId: params.eventId,
+    fightCardId: params.fightCardId,
+    bracketId: params.bracketId,
+    label: 'Grand Final',
+    category: params.category,
+    matchType: params.matchType,
+    scoringConfig: structuredClone(params.scoringConfig),
+    status: 'scheduled',
+    stage: 'final',
+    scheduledOrder: 9000,
+    bracketRound: upperRounds + lowerRounds + 1,
+    bracketSlot: 'GF-1',
+    participants: [
+      { sideIndex: 1, isPlaceholder: true, placeholderLabel: 'Upper Bracket Champion', sourceMatchId: upperFinal.id, sourceSlot: 1, isWinnerSource: true },
+      { sideIndex: 2, isPlaceholder: true, placeholderLabel: 'Lower Bracket Champion', sourceMatchId: lowerFinal.id, sourceSlot: 2, isWinnerSource: true }
+    ],
+    rounds: []
+  };
+  const resetFinal: MatchRecord = {
+    ...structuredClone(grandFinal),
+    id: uuid(),
+    label: 'Grand Final Reset • If Required',
+    status: 'cancelled',
+    scheduledOrder: 9001,
+    bracketRound: grandFinal.bracketRound! + 1,
+    bracketSlot: 'GF-2',
+    participants: [
+      { sideIndex: 1, isPlaceholder: true, placeholderLabel: 'Grand Final competitor', sourceMatchId: grandFinal.id, sourceSlot: 1, isWinnerSource: true },
+      { sideIndex: 2, isPlaceholder: true, placeholderLabel: 'Grand Final competitor', sourceMatchId: grandFinal.id, sourceSlot: 2, isWinnerSource: false }
+    ]
+  };
+
+  upperFinal.winnerAdvancesToMatchId = grandFinal.id;
+  upperFinal.winnerAdvancesToSlot = 1;
+  lowerFinal.winnerAdvancesToMatchId = grandFinal.id;
+  lowerFinal.winnerAdvancesToSlot = 2;
+  grandFinal.winnerAdvancesToMatchId = resetFinal.id;
+  grandFinal.winnerAdvancesToSlot = 1;
+  grandFinal.loserAdvancesToMatchId = resetFinal.id;
+  grandFinal.loserAdvancesToSlot = 2;
+
+  return {
+    size: upper.size,
+    rounds: upperRounds + lowerRounds + 2,
+    matches: [...upperMatches, ...lowerByRound.flat(), grandFinal, resetFinal]
   };
 }
