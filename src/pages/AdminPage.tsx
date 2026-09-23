@@ -8,6 +8,11 @@ import type { EventRole } from '../types';
 
 const assignableRoles: Array<{value: EventRole; label: string}> = [
   { value: 'event_organizer', label: 'Event Organizer' },
+  { value: 'tournament_director', label: 'Tournament Director' },
+  { value: 'scorekeeper', label: 'Scorekeeper' },
+  { value: 'registration_staff', label: 'Registration Staff' },
+  { value: 'armor_inspector', label: 'Armor Inspector' },
+  { value: 'medical_staff', label: 'Medical Staff' },
   { value: 'field_marshal', label: 'Field Marshal' },
   { value: 'assistant_marshal', label: 'Assistant Marshal' },
   { value: 'team_captain', label: 'Team Captain' },
