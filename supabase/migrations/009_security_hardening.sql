@@ -91,12 +91,16 @@ with check (
     where e.id = event_registrations.event_id
       and e.status in ('published','live')
       and e.registration_open
+      and event_registrations.payment_status = case
+        when e.registration_fee_cents = 0 then 'not_required'::public.payment_status
+        else 'pending'::public.payment_status
+      end
   )
 );
 
 grant insert (
   id,event_id,email,display_name,team_name,category,phone,
-  emergency_contact,waiver_acknowledged,registration_token
+  emergency_contact,waiver_acknowledged,registration_token,payment_status
 ) on public.event_registrations to anon;
 
 create or replace function public.submit_public_registration(
@@ -132,12 +136,13 @@ begin
 
   insert into public.event_registrations(
     id,event_id,email,display_name,team_name,category,phone,emergency_contact,
-    waiver_acknowledged,registration_token
+    waiver_acknowledged,registration_token,payment_status
   )
   values (
     v_registration_id,p_event_id,lower(trim(p_email)),trim(p_display_name),
     nullif(trim(p_team_name),''),trim(p_category),nullif(trim(p_phone),''),
-    nullif(trim(p_emergency_contact),''),p_waiver_acknowledged,v_registration_token
+    nullif(trim(p_emergency_contact),''),p_waiver_acknowledged,v_registration_token,
+    case when v_event.registration_fee_cents = 0 then 'not_required'::public.payment_status else 'pending'::public.payment_status end
   );
 
   return jsonb_build_object(
