@@ -40,10 +40,38 @@ jobs:
       - name: Production build
         run: npx vite build --mode github-pages
 
+  database:
+    name: Rebuild and test Supabase schema
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase database
+        run: supabase db start
+
+      - name: Run database tests
+        run: supabase test db
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Typecheck Edge Functions
+        run: deno check supabase/functions/invite-event-member/index.ts
+
   deploy:
     name: Deploy GitHub Pages
     if: github.event_name != 'pull_request'
-    needs: quality
+    needs: [quality, database]
     runs-on: ubuntu-latest
     permissions:
       contents: read
