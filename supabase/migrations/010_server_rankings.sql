@@ -71,6 +71,7 @@ begin
     where m.season_id=v_config.season_id
       and m.organization_id=v_config.organization_id
       and m.status='finalized'
+      and m.validation_status='final'
       and e.event_type='ranked_competitive'
       and coalesce(m.result_summary->>'resultType','')<>'bye'
       and r1.fighter_id is not null
