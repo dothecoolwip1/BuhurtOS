@@ -77,7 +77,7 @@ export function App(){
         <Route path="roster" element={<RequirePermission permission="event.view_private"><RosterPage/></RequirePermission>}/>
         <Route path="bracket" element={<RequirePermission permission="bracket.manage"><BracketPage/></RequirePermission>}/>
         <Route path="standings" element={<RequirePermission permission="event.view_private"><StandingsPage/></RequirePermission>}/>
-        <Route path="manage" element={<RequirePermission permission="event.manage"><EventManagementPage/></RequirePermission>}/>
+        <Route path="manage" element={<RequirePermission permission="event.view_private"><EventManagementPage/></RequirePermission>}/>
         <Route path="admin" element={<RequirePermission permission="bracket.manage"><AdminPage/></RequirePermission>}/>
         <Route path="discipline" element={<RequirePermission permission="discipline.manage"><DisciplinePage/></RequirePermission>}/>
         <Route path="notes" element={<RequirePermission permission="notes.team"><NotesPage/></RequirePermission>}/>
