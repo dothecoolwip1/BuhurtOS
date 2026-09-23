@@ -22,6 +22,7 @@ export function Layout() {
         <NavLink to="/" className="brand-block"><span className="brand-mark">B</span><div><b>BuhurtOS</b><small>Tournament Operations</small></div></NavLink>
         <nav>{nav.map(([to, label, icon]) => <NavLink key={to} to={to} end={to === '/run'}><span>{icon}</span>{label}</NavLink>)}</nav>
         <div className="utility-nav">
+          {can('roster.manage') && <NavLink to="/run/registrations">Registrations</NavLink>}
           {can('roster.manage') && <NavLink to="/run/check-in">Check In</NavLink>}
           {can('bracket.manage') && <NavLink to="/run/competition">Competition</NavLink>}
           {can('schedule.manage') && <NavLink to="/run/schedule">Schedule</NavLink>}
