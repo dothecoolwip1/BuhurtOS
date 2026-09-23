@@ -6,7 +6,7 @@ create or replace function public.review_event_registration(
 )
 returns uuid
 language plpgsql
-security invoker
+security definer
 set search_path = ''
 as $$
 declare
