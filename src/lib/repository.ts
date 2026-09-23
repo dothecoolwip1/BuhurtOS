@@ -46,7 +46,12 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
     const roster = [...rosterBase.map(r => ({ ...r, ...(overrides[r.id] ?? {}) })), ...ghosts];
     const baseMatches = savedMatches ? JSON.parse(savedMatches) : structuredClone(demoMatches);
     const existingIds = new Set(baseMatches.map((m: any) => m.id));
-    return { event: demoEvent, matches: [...baseMatches, ...bracketMatches.filter((m: any) => !existingIds.has(m.id))], roster, announcements: structuredClone(demoAnnouncements) };
+    const eventOverride = typeof localStorage === 'undefined' ? null : localStorage.getItem('buhurtos-demo-event-' + demoEvent.id);
+    const event = eventOverride ? { ...structuredClone(demoEvent), ...JSON.parse(eventOverride) } : structuredClone(demoEvent);
+    const savedAnnouncements = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-announcements-' + demoEvent.id) ?? '[]');
+    const announcementIds = new Set(savedAnnouncements.map((a: any) => a.id));
+    const announcements = [...savedAnnouncements, ...structuredClone(demoAnnouncements).filter(a => !announcementIds.has(a.id))];
+    return { event, matches: [...baseMatches, ...bracketMatches.filter((m: any) => !existingIds.has(m.id))], roster, announcements };
   }
 
   let resolvedEventId = eventId || (import.meta.env.VITE_DEFAULT_EVENT_ID as string | undefined);
