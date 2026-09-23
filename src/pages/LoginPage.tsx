@@ -10,7 +10,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
-  if (user) return <Navigate to={`/${location.search}`} replace />;
+  if (user) return <Navigate to={`/ops${location.search}`} replace />;
   const run = async (action: 'password' | 'magic') => {
     setBusy(true); setMessage('');
     try {
