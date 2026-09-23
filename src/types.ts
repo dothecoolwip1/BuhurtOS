@@ -444,6 +444,7 @@ export interface UserContext {
 
 export interface OfflineMutation {
   id: UUID;
+  ownerUserId?: UUID;
   entity: string;
   entityId: string;
   operation: 'insert' | 'update' | 'delete' | 'rpc';
