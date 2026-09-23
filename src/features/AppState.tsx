@@ -30,6 +30,15 @@ interface AppStateValue {
 
 const AppStateContext = createContext<AppStateValue | null>(null);
 
+function requestedEventIdFromLocation(): string | undefined {
+  if (typeof window === 'undefined') return undefined;
+  const direct = new URLSearchParams(window.location.search).get('event');
+  if (direct) return direct;
+  const queryIndex = window.location.hash.indexOf('?');
+  if (queryIndex < 0) return undefined;
+  return new URLSearchParams(window.location.hash.slice(queryIndex + 1)).get('event') ?? undefined;
+}
+
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +55,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const reload = useCallback(async () => {
     try {
       setError(null);
-      const requestedEventId = typeof window === 'undefined' ? undefined : new URLSearchParams(window.location.search).get('event') ?? undefined;
+      const requestedEventId = requestedEventIdFromLocation();
       const snap = await loadEventSnapshot(requestedEventId);
       setEvent(snap.event);
       setMatches(snap.matches);
