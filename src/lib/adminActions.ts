@@ -1,6 +1,7 @@
 import type { GeneratedBracket } from './bracket';
 import type { Bracket, EventRecord, RosterEntry } from '../types';
 import { supabase } from './supabase';
+import { normalizeTemporaryFighterInput } from './identity';
 
 export interface AdminOption { id:string; name:string }
 
@@ -25,20 +26,21 @@ export async function addGhostFighter(
   countryCode?: string,
   divisionId?: string
 ): Promise<RosterEntry> {
-  const row: RosterEntry = {
+  const normalized=normalizeTemporaryFighterInput({displayName,countryCode,teamId,divisionId});
+  const row:RosterEntry={
     id: crypto.randomUUID(),
     organizationId: event.organizationId,
     eventId: event.id,
     teamId,
     entryType: 'ghost_fighter',
-    displayName,
+    displayName:normalized.displayName,
     checkedIn: false,
     armorCleared: false,
     medicalCleared: false,
     waiverConfirmed: false,
     weighInCleared: false,
     attendanceStatus: 'registered',
-    metadata: { temporary: true, countryCode, divisionId }
+    metadata:{temporary:true,countryCode:normalized.countryCode,divisionId:normalized.divisionId}
   };
 
   if (!supabase) {
@@ -50,10 +52,10 @@ export async function addGhostFighter(
 
   const { data,error }=await supabase.rpc('create_temporary_fighter_for_event',{
     p_event_id:event.id,
-    p_display_name:displayName,
-    p_country_code:countryCode?.trim().toUpperCase()||null,
-    p_team_id:teamId||null,
-    p_division_id:divisionId||null
+    p_display_name:normalized.displayName,
+    p_country_code:normalized.countryCode||null,
+    p_team_id:normalized.teamId||null,
+    p_division_id:normalized.divisionId||null
   });
   if(error)throw error;
   const result=data as {fighterId:string;rosterEntryId:string};
