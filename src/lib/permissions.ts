@@ -10,12 +10,17 @@ export type Permission =
   | 'announcement.manage'
   | 'discipline.manage'
   | 'notes.team'
-  | 'profile.self';
+  | 'profile.self'
+  | 'schedule.manage'
+  | 'ring.manage'
+  | 'result.validate'
+  | 'correction.review'
+  | 'ranking.manage';
 
 const EVENT_ROLE_PERMISSIONS: Record<EventRole, Permission[]> = {
-  event_organizer: ['event.view_private', 'event.manage', 'roster.manage', 'match.manage', 'match.score', 'bracket.manage', 'announcement.manage', 'discipline.manage', 'notes.team'],
-  field_marshal: ['event.view_private', 'roster.manage', 'match.manage', 'match.score', 'announcement.manage', 'discipline.manage', 'notes.team'],
-  assistant_marshal: ['event.view_private', 'roster.manage', 'match.manage', 'match.score', 'announcement.manage', 'notes.team'],
+  event_organizer: ['event.view_private', 'event.manage', 'roster.manage', 'match.manage', 'match.score', 'bracket.manage', 'announcement.manage', 'discipline.manage', 'notes.team', 'schedule.manage', 'ring.manage', 'result.validate', 'correction.review', 'ranking.manage'],
+  field_marshal: ['event.view_private', 'roster.manage', 'match.manage', 'match.score', 'announcement.manage', 'discipline.manage', 'notes.team', 'schedule.manage', 'ring.manage', 'result.validate'],
+  assistant_marshal: ['event.view_private', 'roster.manage', 'match.manage', 'match.score', 'announcement.manage', 'notes.team', 'ring.manage'],
   team_captain: ['event.view_private', 'notes.team'],
   fighter: ['event.view_private', 'profile.self']
 };
