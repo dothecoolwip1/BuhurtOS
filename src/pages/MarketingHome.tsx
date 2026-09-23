@@ -66,7 +66,7 @@ export function MarketingHome(){
       </nav>
       <div className="marketing-nav-actions"><ThemeToggle/>
         <Link className="show-btn secondary" to="/public">Spectator demo</Link>
-        <Link className="show-btn primary" to="/home">Explore prototype</Link>
+        <Link className="show-btn primary" to="/home">Open BuhurtOS</Link>
       </div>
     </header>
 
@@ -75,9 +75,9 @@ export function MarketingHome(){
         <div className="marketing-hero-copy">
           <span className="marketing-kicker"><i></i> Built for the sport, not adapted from another one</span>
           <h1>Everything Buhurt.<br/><em>One system.</em></h1>
-          <p>BuhurtOS is being built as a complete tournament and competition platform for governing organizations, event organizers, teams, fighters, marshals and spectators.</p>
+          <p>BuhurtOS is a connected tournament and competition platform for governing organizations, event organizers, teams, fighters, marshals and spectators.</p>
           <div className="marketing-hero-actions">
-            <Link className="show-btn primary large" to="/home">Explore the working prototype →</Link>
+            <Link className="show-btn primary large" to="/home">Open the platform →</Link>
             <Link className="show-btn secondary large" to="/public">See the spectator experience</Link>
           </div>
           <div className="marketing-proof">
@@ -150,7 +150,7 @@ export function MarketingHome(){
             <span className="eyebrow">THE FULL MEAL DEAL</span>
             <h2>Not just a bracket app.</h2>
             <p>The goal is a complete operating system for competition: before the event, during the event, after the event and across the whole season.</p>
-            <Link className="show-btn primary large" to="/home">Walk through the prototype →</Link>
+            <Link className="show-btn primary large" to="/home">Explore BuhurtOS →</Link>
           </div>
           <div className="marketing-capability-grid">{capabilities.map((x,i)=><div key={x}><span>{i+1}</span><b>{x}</b></div>)}</div>
         </div>
@@ -181,7 +181,7 @@ export function MarketingHome(){
             <span><b>Cost recovery only</b><small>If real operating costs appear, pricing is intended to cover those costs.</small></span>
             <span><b>Transparent by design</b><small>The community should understand what it is paying for.</small></span>
           </div>
-          <p className="marketing-cost-note">The prototype is currently a free development project and does not process real registrations, payments or official records.</p>
+          <p className="marketing-cost-note">The public demo uses demonstration data. Live organizations can connect their own secured Supabase backend for official records.</p>
         </div>
       </section>
 
@@ -192,7 +192,7 @@ export function MarketingHome(){
           <p>Switch between HACSA admin, team captain, fighter and spectator views to see how the same event can work for everyone.</p>
         </div>
         <div>
-          <Link className="show-btn primary large" to="/home">Explore the prototype</Link>
+          <Link className="show-btn primary large" to="/home">Explore BuhurtOS</Link>
           <Link className="show-btn secondary large" to="/public">Open spectator view</Link>
         </div>
       </section>
@@ -200,7 +200,7 @@ export function MarketingHome(){
 
     <footer className="marketing-footer">
       <div className="show-brand"><span className="show-brand-mark">B</span><span><b>BuhurtOS</b><small>Built for Buhurt</small></span></div>
-      <p>Frontend concept prototype • Demo data • Not yet an official competition system</p>
+      <p>BuhurtOS • Demo data is clearly separated from official organization records</p>
     </footer>
   </div>;
 }
