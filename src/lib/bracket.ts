@@ -184,13 +184,186 @@ export function generateSingleElimination(params: {
 }
 
 export function advanceWinner(matches: MatchRecord[], completedMatchId: UUID, winnerRosterEntryId: UUID): MatchRecord[] {
-  const copy = structuredClone(matches);
-  const source = copy.find(m => m.id === completedMatchId);
-  if (!source?.winnerAdvancesToMatchId || !source.winnerAdvancesToSlot) return copy;
-  const target = copy.find(m => m.id === source.winnerAdvancesToMatchId);
-  if (!target) throw new Error('Bracket target match is missing.');
-  const slot = source.winnerAdvancesToSlot;
-  target.participants = target.participants.filter(p => p.sideIndex !== slot);
-  target.participants.push({ rosterEntryId: winnerRosterEntryId, sideIndex: slot, sourceMatchId: source.id, sourceSlot: slot, isWinnerSource: true });
+  return advanceBracketResult(matches, completedMatchId, winnerRosterEntryId);
+}
+
+
+function isPowerOfTwo(value:number):boolean{
+  return value>=2 && (value & (value-1))===0;
+}
+
+function makeGeneratedMatch(params:{
+  organizationId:UUID;seasonId:UUID;eventId:UUID;fightCardId?:UUID;bracketId:UUID;category:string;matchType:string;
+  scoringConfig:MatchRecord['scoringConfig'];label:string;stage:MatchRecord['stage'];scheduledOrder:number;bracketRound:number;bracketSlot:string;
+  status?:MatchRecord['status'];
+}):MatchRecord{
+  return {
+    id:uuid(),organizationId:params.organizationId,seasonId:params.seasonId,eventId:params.eventId,fightCardId:params.fightCardId,
+    bracketId:params.bracketId,label:params.label,category:params.category,matchType:params.matchType,scoringConfig:params.scoringConfig,
+    status:params.status??'scheduled',stage:params.stage,scheduledOrder:params.scheduledOrder,bracketRound:params.bracketRound,
+    bracketSlot:params.bracketSlot,participants:[],rounds:[]
+  };
+}
+
+export function generateRoundRobin(params:{
+  organizationId:UUID;seasonId:UUID;eventId:UUID;fightCardId?:UUID;bracketId:UUID;category:string;matchType:string;
+  entries:SeededEntry[];scoringConfig:MatchRecord['scoringConfig'];
+}):GeneratedBracket{
+  if(params.entries.length<2)throw new Error('At least two competitors are required for round robin.');
+  const ordered=[...params.entries].sort((a,b)=>a.seed-b.seed||a.entry.displayName.localeCompare(b.entry.displayName));
+  const rotation:Array<SeededEntry|null>=[...ordered];
+  if(rotation.length%2===1)rotation.push(null);
+  const n=rotation.length;
+  const matches:MatchRecord[]=[];
+  for(let round=1;round<n;round+=1){
+    let matchIndex=0;
+    for(let i=0;i<n/2;i+=1){
+      const left=rotation[i];
+      const right=rotation[n-1-i];
+      if(!left||!right)continue;
+      matchIndex+=1;
+      const match=makeGeneratedMatch({...params,label:`Round ${round} • Match ${matchIndex}`,stage:'pool',scheduledOrder:round*100+matchIndex,bracketRound:round,bracketSlot:`RR-${round}-${matchIndex}`});
+      match.participants=[
+        {rosterEntryId:left.entry.id,sideIndex:1,seed:left.seed},
+        {rosterEntryId:right.entry.id,sideIndex:2,seed:right.seed}
+      ];
+      matches.push(match);
+    }
+    const fixed=rotation[0];
+    const moving=rotation.slice(1);
+    moving.unshift(moving.pop()!);
+    rotation.splice(0,rotation.length,fixed,...moving);
+  }
+  return {size:params.entries.length,rounds:n-1,matches};
+}
+
+export function generateDoubleElimination(params:{
+  organizationId:UUID;seasonId:UUID;eventId:UUID;fightCardId?:UUID;bracketId:UUID;category:string;matchType:string;
+  entries:SeededEntry[];scoringConfig:MatchRecord['scoringConfig'];
+}):GeneratedBracket{
+  if(params.entries.length<4)throw new Error('Double elimination requires at least four competitors.');
+  if(!isPowerOfTwo(params.entries.length))throw new Error('Double elimination currently requires a power-of-two field so every competitor receives two-loss protection. Use pools or round robin to reduce the field before double elimination.');
+  const slots=placeSeedsAntiFratricide(params.entries);
+  const size=slots.length;
+  const winnerRounds=Math.log2(size);
+  const winners:MatchRecord[][]=[];
+  for(let round=1;round<=winnerRounds;round+=1){
+    const count=size/Math.pow(2,round);
+    const group:MatchRecord[]=[];
+    for(let i=0;i<count;i+=1){
+      group.push(makeGeneratedMatch({...params,label:`Winners R${round} • Match ${i+1}`,stage:'bracket',scheduledOrder:round*100+i,bracketRound:round,bracketSlot:`WB-${round}-${i+1}`}));
+    }
+    winners.push(group);
+  }
+  winners[0].forEach((match,i)=>{
+    const left=slots[i*2]!,right=slots[i*2+1]!;
+    match.participants=[{rosterEntryId:left.entry.id,sideIndex:1,seed:left.seed},{rosterEntryId:right.entry.id,sideIndex:2,seed:right.seed}];
+  });
+
+  const loserRoundCount=winnerRounds*2-2;
+  const losers:MatchRecord[][]=[];
+  for(let round=1;round<=loserRoundCount;round+=1){
+    const exponent=Math.floor((round+1)/2)+1;
+    const count=size/Math.pow(2,exponent);
+    const group:MatchRecord[]=[];
+    for(let i=0;i<count;i+=1){
+      group.push(makeGeneratedMatch({...params,label:`Losers R${round} • Match ${i+1}`,stage:'bracket',scheduledOrder:1000+round*100+i,bracketRound:100+round,bracketSlot:`LB-${round}-${i+1}`}));
+    }
+    losers.push(group);
+  }
+
+  // Winners bracket progression.
+  for(let r=0;r<winners.length-1;r+=1){
+    winners[r].forEach((match,i)=>{
+      const target=winners[r+1][Math.floor(i/2)];
+      const slot=(i%2===0?1:2) as 1|2;
+      match.winnerAdvancesToMatchId=target.id;match.winnerAdvancesToSlot=slot;
+      target.participants.push({sideIndex:slot,isPlaceholder:true,placeholderLabel:`Winner ${match.label}`,sourceMatchId:match.id,sourceSlot:slot,isWinnerSource:true});
+    });
+  }
+
+  // First winners-round losers meet each other in Losers R1.
+  winners[0].forEach((match,i)=>{
+    const target=losers[0][Math.floor(i/2)];
+    const slot=(i%2===0?1:2) as 1|2;
+    match.loserAdvancesToMatchId=target.id;match.loserAdvancesToSlot=slot;
+    target.participants.push({sideIndex:slot,isPlaceholder:true,placeholderLabel:`Loser ${match.label}`,sourceMatchId:match.id,sourceSlot:slot,isWinnerSource:false});
+  });
+
+  // Later winners-round losers enter every even losers round. Reverse mapping reduces immediate rematches.
+  for(let winnerRound=2;winnerRound<=winnerRounds;winnerRound+=1){
+    const targetRound=losers[2*winnerRound-3];
+    winners[winnerRound-1].forEach((match,i)=>{
+      const targetIndex=targetRound.length-1-i;
+      const target=targetRound[targetIndex];
+      match.loserAdvancesToMatchId=target.id;match.loserAdvancesToSlot=2;
+      target.participants.push({sideIndex:2,isPlaceholder:true,placeholderLabel:`Loser ${match.label}`,sourceMatchId:match.id,sourceSlot:2,isWinnerSource:false});
+    });
+  }
+
+  // Losers bracket alternates survivor-vs-drop and consolidation rounds.
+  for(let r=0;r<losers.length-1;r+=1){
+    const current=losers[r],next=losers[r+1];
+    current.forEach((match,i)=>{
+      const sameCount=next.length===current.length;
+      const target=next[sameCount?i:Math.floor(i/2)];
+      const slot=(sameCount?1:(i%2===0?1:2)) as 1|2;
+      match.winnerAdvancesToMatchId=target.id;match.winnerAdvancesToSlot=slot;
+      target.participants.push({sideIndex:slot,isPlaceholder:true,placeholderLabel:`Winner ${match.label}`,sourceMatchId:match.id,sourceSlot:slot,isWinnerSource:true});
+    });
+  }
+
+  const grandFinal=makeGeneratedMatch({...params,label:'Grand Final',stage:'final',scheduledOrder:9000,bracketRound:900,bracketSlot:'GF'});
+  const reset=makeGeneratedMatch({...params,label:'Grand Final Reset (if required)',stage:'final',scheduledOrder:9100,bracketRound:901,bracketSlot:'GF-RESET',status:'cancelled'});
+  reset.participants=[
+    {sideIndex:1,isPlaceholder:true,placeholderLabel:'If required'},
+    {sideIndex:2,isPlaceholder:true,placeholderLabel:'If required'}
+  ];
+  const wbFinal=winners[winners.length-1][0];
+  wbFinal.winnerAdvancesToMatchId=grandFinal.id;wbFinal.winnerAdvancesToSlot=1;
+  grandFinal.participants.push({sideIndex:1,isPlaceholder:true,placeholderLabel:'Winners bracket champion',sourceMatchId:wbFinal.id,sourceSlot:1,isWinnerSource:true});
+  const lbFinal=losers[losers.length-1][0];
+  lbFinal.winnerAdvancesToMatchId=grandFinal.id;lbFinal.winnerAdvancesToSlot=2;
+  grandFinal.participants.push({sideIndex:2,isPlaceholder:true,placeholderLabel:'Losers bracket champion',sourceMatchId:lbFinal.id,sourceSlot:2,isWinnerSource:true});
+
+  return {size,rounds:winnerRounds+loserRoundCount+2,matches:[...winners.flat(),...losers.flat(),grandFinal,reset]};
+}
+
+export function advanceBracketResult(matches:MatchRecord[],completedMatchId:UUID,winnerRosterEntryId:UUID):MatchRecord[]{
+  const copy=structuredClone(matches);
+  const source=copy.find(m=>m.id===completedMatchId);
+  if(!source)return copy;
+  const winnerParticipant=source.participants.find(p=>p.rosterEntryId===winnerRosterEntryId);
+  if(!winnerParticipant)return copy;
+  const loserParticipant=source.participants.find(p=>p.sideIndex!==winnerParticipant.sideIndex&&p.rosterEntryId);
+
+  const place=(targetId:UUID|undefined,targetSlot:1|2|undefined,rosterEntryId:UUID|undefined,isWinner:boolean)=>{
+    if(!targetId||!targetSlot||!rosterEntryId)return;
+    const target=copy.find(m=>m.id===targetId);
+    if(!target)throw new Error('Bracket target match is missing.');
+    target.participants=target.participants.filter(p=>p.sideIndex!==targetSlot);
+    target.participants.push({rosterEntryId,sideIndex:targetSlot,sourceMatchId:source.id,sourceSlot:targetSlot,isWinnerSource:isWinner});
+  };
+  place(source.winnerAdvancesToMatchId,source.winnerAdvancesToSlot,winnerRosterEntryId,true);
+  place(source.loserAdvancesToMatchId,source.loserAdvancesToSlot,loserParticipant?.rosterEntryId,false);
+
+  if(source.bracketSlot==='GF'){
+    const reset=copy.find(m=>m.bracketId===source.bracketId&&m.bracketSlot==='GF-RESET');
+    if(reset){
+      if(winnerParticipant.sideIndex===2&&loserParticipant?.rosterEntryId){
+        const side1=source.participants.find(p=>p.sideIndex===1)?.rosterEntryId;
+        const side2=source.participants.find(p=>p.sideIndex===2)?.rosterEntryId;
+        if(side1&&side2){
+          reset.status='scheduled';
+          reset.participants=[
+            {rosterEntryId:side1,sideIndex:1,sourceMatchId:source.id,sourceSlot:1,isWinnerSource:winnerParticipant.sideIndex===1},
+            {rosterEntryId:side2,sideIndex:2,sourceMatchId:source.id,sourceSlot:2,isWinnerSource:winnerParticipant.sideIndex===2}
+          ];
+        }
+      }else{
+        reset.status='cancelled';
+      }
+    }
+  }
   return copy;
 }
