@@ -11,8 +11,10 @@ create table public.fighter_identities (
   avatar_path text,
   bio text,
   merged_into_identity_id uuid references public.fighter_identities(id) on delete set null,
+  created_by uuid references public.profiles(id) default auth.uid(),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
+  last_edited_by uuid references public.profiles(id) default auth.uid(),
   deleted_at timestamptz,
   deleted_by uuid references public.profiles(id) on delete set null,
   check (merged_into_identity_id is null or merged_into_identity_id <> id)
@@ -31,10 +33,10 @@ create table public.clubs (
   website_url text,
   notes text,
   is_active boolean not null default true,
-  created_by uuid references public.profiles(id),
+  created_by uuid references public.profiles(id) default auth.uid(),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
-  last_edited_by uuid references public.profiles(id),
+  last_edited_by uuid references public.profiles(id) default auth.uid(),
   deleted_at timestamptz,
   deleted_by uuid references public.profiles(id) on delete set null
 );
@@ -54,15 +56,15 @@ alter table public.fighters
   add column deleted_at timestamptz,
   add column deleted_by uuid references public.profiles(id) on delete set null;
 
-insert into public.fighter_identities(id,user_id,display_name,nickname,avatar_path,bio,created_at,updated_at)
+insert into public.fighter_identities(id,user_id,display_name,nickname,avatar_path,bio,created_by,created_at,updated_at,last_edited_by)
 select distinct on (f.user_id)
-  f.id,f.user_id,f.name,f.nickname,f.avatar_path,f.bio,f.created_at,f.updated_at
+  f.id,f.user_id,f.name,f.nickname,f.avatar_path,f.bio,f.created_by,f.created_at,f.updated_at,f.last_edited_by
 from public.fighters f
 where f.user_id is not null
 order by f.user_id,f.created_at,f.id;
 
-insert into public.fighter_identities(id,user_id,display_name,nickname,avatar_path,bio,created_at,updated_at)
-select f.id,null,f.name,f.nickname,f.avatar_path,f.bio,f.created_at,f.updated_at
+insert into public.fighter_identities(id,user_id,display_name,nickname,avatar_path,bio,created_by,created_at,updated_at,last_edited_by)
+select f.id,null,f.name,f.nickname,f.avatar_path,f.bio,f.created_by,f.created_at,f.updated_at,f.last_edited_by
 from public.fighters f
 where f.user_id is null
 on conflict (id) do nothing;
@@ -92,10 +94,10 @@ create table public.fighter_affiliations (
   is_primary boolean not null default false,
   source_event_id uuid references public.events(id) on delete set null,
   notes text,
-  created_by uuid references public.profiles(id),
+  created_by uuid references public.profiles(id) default auth.uid(),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
-  last_edited_by uuid references public.profiles(id),
+  last_edited_by uuid references public.profiles(id) default auth.uid(),
   check (ends_on is null or ends_on >= starts_on),
   check (club_id is not null or team_id is not null or affiliation_type = 'independent')
 );
@@ -121,10 +123,10 @@ create table public.competition_divisions (
   eligibility_label text,
   status public.division_status not null default 'draft',
   metadata jsonb not null default '{}'::jsonb,
-  created_by uuid references public.profiles(id),
+  created_by uuid references public.profiles(id) default auth.uid(),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
-  last_edited_by uuid references public.profiles(id),
+  last_edited_by uuid references public.profiles(id) default auth.uid(),
   deleted_at timestamptz,
   deleted_by uuid references public.profiles(id) on delete set null,
   check (max_weight_kg is null or min_weight_kg is null or max_weight_kg >= min_weight_kg),
@@ -143,10 +145,10 @@ create table public.event_divisions (
   registration_limit integer check (registration_limit is null or registration_limit > 0),
   is_registration_open boolean not null default true,
   metadata jsonb not null default '{}'::jsonb,
-  created_by uuid references public.profiles(id),
+  created_by uuid references public.profiles(id) default auth.uid(),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
-  last_edited_by uuid references public.profiles(id),
+  last_edited_by uuid references public.profiles(id) default auth.uid(),
   unique(event_id,division_id)
 );
 
@@ -165,6 +167,54 @@ create trigger clubs_updated before update on public.clubs for each row execute 
 create trigger fighter_affiliations_updated before update on public.fighter_affiliations for each row execute function public.set_updated_at();
 create trigger competition_divisions_updated before update on public.competition_divisions for each row execute function public.set_updated_at();
 create trigger event_divisions_updated before update on public.event_divisions for each row execute function public.set_updated_at();
+
+create or replace function private.stamp_foundation_actor()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  new.last_edited_by := coalesce((select auth.uid()), new.last_edited_by);
+  return new;
+end;
+$;
+
+revoke execute on function private.stamp_foundation_actor() from public, anon, authenticated;
+
+create or replace function private.stamp_soft_delete_actor()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  if new.deleted_at is not null and old.deleted_at is null then
+    new.deleted_by := coalesce(new.deleted_by, (select auth.uid()));
+  end if;
+  return new;
+end;
+$;
+
+revoke execute on function private.stamp_soft_delete_actor() from public, anon, authenticated;
+
+do $
+declare
+  v_table text;
+begin
+  foreach v_table in array array['fighter_identities','clubs','fighter_affiliations','competition_divisions','event_divisions','fighters','teams']
+  loop
+    execute format('drop trigger if exists stamp_actor on public.%I',v_table);
+    execute format('create trigger stamp_actor before update on public.%I for each row execute function private.stamp_foundation_actor()',v_table);
+  end loop;
+
+  foreach v_table in array array['fighter_identities','clubs','competition_divisions','fighters','teams']
+  loop
+    execute format('drop trigger if exists stamp_soft_delete_actor on public.%I',v_table);
+    execute format('create trigger stamp_soft_delete_actor before update of deleted_at on public.%I for each row execute function private.stamp_soft_delete_actor()',v_table);
+  end loop;
+end;
+$;
 
 alter table public.fighter_identities enable row level security;
 alter table public.clubs enable row level security;
@@ -357,8 +407,8 @@ begin
     v_identity_id := v_fighter.identity_id;
   else
     v_name := coalesce(nullif(trim(p_display_name),''),v_roster.display_name);
-    insert into public.fighter_identities(display_name,created_at,updated_at)
-    values (v_name,timezone('utc',now()),timezone('utc',now()))
+    insert into public.fighter_identities(display_name,created_by,last_edited_by,created_at,updated_at)
+    values (v_name,v_uid,v_uid,timezone('utc',now()),timezone('utc',now()))
     returning id into v_identity_id;
 
     insert into public.fighters(organization_id,team_id,identity_id,name,created_by,last_edited_by)
@@ -429,7 +479,7 @@ begin
       update public.fighter_identities set user_id = null where id = v_duplicate.identity_id;
     end if;
     update public.fighters set user_id = v_duplicate.user_id,last_edited_by = v_uid where id = v_canonical.id;
-    update public.fighter_identities set user_id = v_duplicate.user_id where id = v_canonical.identity_id;
+    update public.fighter_identities set user_id = v_duplicate.user_id,last_edited_by = v_uid where id = v_canonical.identity_id;
   end if;
 
   update public.event_roster_entries
@@ -445,7 +495,8 @@ begin
     update public.fighter_identities
     set merged_into_identity_id = v_canonical.identity_id,
         deleted_at = timezone('utc',now()),
-        deleted_by = v_uid
+        deleted_by = v_uid,
+        last_edited_by = v_uid
     where id = v_duplicate.identity_id;
   end if;
 
