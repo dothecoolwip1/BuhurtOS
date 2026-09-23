@@ -173,14 +173,16 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const reorderMatch = useCallback(async (matchId: string, direction: -1 | 1) => {
     const source = matches.find(m => m.id === matchId);
     if (!source) return;
-    const ordered = matches.filter(m => m.eventId === source.eventId && m.fightCardId === source.fightCardId).sort((a, b) => a.scheduledOrder - b.scheduledOrder);
+    const ordered = matches.filter(m => m.eventId === source.eventId && m.fightCardId === source.fightCardId).map(m => ({ ...m })).sort((a, b) => a.scheduledOrder - b.scheduledOrder);
     const index = ordered.findIndex(m => m.id === matchId);
     const swapIndex = index + direction;
     if (index < 0 || swapIndex < 0 || swapIndex >= ordered.length) return;
     [ordered[index].scheduledOrder, ordered[swapIndex].scheduledOrder] = [ordered[swapIndex].scheduledOrder, ordered[index].scheduledOrder];
     const reordered = [...ordered].sort((a, b) => a.scheduledOrder - b.scheduledOrder);
-    setMatches(reordered);
-    if (!supabase) { localStorage.setItem('buhurtos-demo-matches', JSON.stringify(reordered)); return; }
+    const orderById = new Map(reordered.map(match => [match.id, match.scheduledOrder]));
+    const nextMatches = matches.map(match => orderById.has(match.id) ? { ...match, scheduledOrder: orderById.get(match.id)! } : match);
+    setMatches(nextMatches);
+    if (!supabase) { localStorage.setItem('buhurtos-demo-matches', JSON.stringify(nextMatches)); return; }
     if (!online) {
       await enqueueMutation({ entity: 'fight_card_order', entityId: matchId, operation: 'rpc', payload: { direction } });
       await refreshPending();
