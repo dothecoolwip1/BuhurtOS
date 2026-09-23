@@ -281,6 +281,8 @@ export interface ScheduleItem {
 
 export interface CorrectionRequest {
   id: UUID;
+  organizationId?: UUID;
+  eventId?: UUID;
   reporterUserId?: UUID;
   reporterEmail?: string;
   category: 'wrong_fighter' | 'duplicate_fighter' | 'wrong_team' | 'incorrect_score' | 'incorrect_affiliation' | 'wrong_event' | 'missing_event' | 'incorrect_video' | 'other';
