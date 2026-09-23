@@ -84,7 +84,7 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
     event: {
       id: e.id, organizationId: e.organization_id, seasonId: e.season_id, name: e.name, venue: e.venue,
       startsAt: e.starts_at, endsAt: e.ends_at, organizerName: e.organizer_name ?? undefined,
-      eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined,
+      eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined, rulesetId: e.ruleset_id ?? undefined,
       registrationOpen: e.registration_open, registrationFeeCents: e.registration_fee_cents, currency: e.currency
     },
     roster: (rosterQuery.data ?? []).map((r: any) => ({
