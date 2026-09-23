@@ -21,12 +21,20 @@ export function Layout() {
         <NavLink to="/" className="brand-block"><span className="brand-mark">B</span><div><b>BuhurtOS</b><small>Tournament Operations</small></div></NavLink>
         <nav>{nav.map(([to, label, icon]) => <NavLink key={to} to={to} end={to === '/run'}><span>{icon}</span>{label}</NavLink>)}</nav>
         <div className="utility-nav">
+          {can('bracket.manage') && <NavLink to="/run/competition">Competition</NavLink>}
+          {can('schedule.manage') && <NavLink to="/run/schedule">Schedule</NavLink>}
+          {can('ring.manage') && <NavLink to="/run/rings">Ring Control</NavLink>}
+          {can('result.validate') && <NavLink to="/run/validation">Validation</NavLink>}
+          {can('ranking.manage') && <NavLink to="/run/rankings">Ranking Engine</NavLink>}
+          {can('correction.review') && <NavLink to="/run/corrections">Corrections</NavLink>}
+          {canSetup && <NavLink to="/run/duplicates">Duplicates</NavLink>}
           {can('bracket.manage') && <NavLink to="/run/admin">Organizer Tools</NavLink>}
           {can('discipline.manage') && <NavLink to="/run/discipline">Discipline</NavLink>}
           {can('notes.team') && <NavLink to="/run/notes">Fight Notes</NavLink>}
           <NavLink to="/run/sync">Sync Queue</NavLink>
           {canSetup && <NavLink to="/run/setup">Setup</NavLink>}
           <NavLink to={event ? `/register?event=${event.id}` : '/register'}>Registration</NavLink>
+          <NavLink to="/corrections/report">Report Correction</NavLink>
           <NavLink to="/home">Discover</NavLink>
           {dataMode === 'supabase' && user && <button className="link-button" onClick={() => signOut()}>Sign Out</button>}
           {dataMode === 'supabase' && !user && <NavLink to="/login">Sign In</NavLink>}
