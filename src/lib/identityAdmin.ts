@@ -160,6 +160,34 @@ export async function createClub(organizationId: string, input: { name: string; 
   return rowToClub(data);
 }
 
+export async function updateClub(organizationId: string, clubId: string, input: { name: string; shortName?: string; region?: string; websiteUrl?: string }): Promise<void> {
+  const cleanName = input.name.trim();
+  if (!cleanName) throw new Error('Club name is required.');
+  if (!supabase) {
+    const key = demoKey('clubs', organizationId);
+    writeDemo(key, readDemo<Club>(key).map(row => row.id === clubId ? { ...row, name: cleanName, shortName: input.shortName?.trim() || undefined, region: input.region?.trim() || undefined, websiteUrl: input.websiteUrl?.trim() || undefined } : row));
+    return;
+  }
+  const { error } = await supabase.from('clubs').update({
+    name: cleanName,
+    short_name: input.shortName?.trim() || null,
+    region: input.region?.trim() || null,
+    website_url: input.websiteUrl?.trim() || null
+  }).eq('id', clubId).eq('organization_id', organizationId).is('deleted_at', null);
+  if (error) throw error;
+}
+
+export async function archiveClub(organizationId: string, clubId: string): Promise<void> {
+  const deletedAt = new Date().toISOString();
+  if (!supabase) {
+    const key = demoKey('clubs', organizationId);
+    writeDemo(key, readDemo<Club>(key).map(row => row.id === clubId ? { ...row, isActive: false, deletedAt } : row));
+    return;
+  }
+  const { error } = await supabase.from('clubs').update({ is_active: false, deleted_at: deletedAt }).eq('id', clubId).eq('organization_id', organizationId).is('deleted_at', null);
+  if (error) throw error;
+}
+
 export async function listDivisions(organizationId: string): Promise<CompetitionDivision[]> {
   if (!supabase) return readDemo<CompetitionDivision>(demoKey('divisions', organizationId)).filter(row => !row.deletedAt).sort((a, b) => a.name.localeCompare(b.name));
   const { data, error } = await supabase.from('competition_divisions').select('*').or('organization_id.is.null,organization_id.eq.' + organizationId).is('deleted_at', null).order('name');
@@ -201,6 +229,46 @@ export async function createDivision(organizationId: string, input: { name: stri
   return rowToDivision(data);
 }
 
+export async function updateDivision(organizationId: string, divisionId: string, input: { name: string; competitionFormatId: string; teamSize?: number; eligibilityLabel?: string }): Promise<void> {
+  const cleanName = input.name.trim();
+  if (!cleanName) throw new Error('Division name is required.');
+  const slug = normalizeFighterName(cleanName).replace(/\s+/g, '-');
+  if (!supabase) {
+    const key = demoKey('divisions', organizationId);
+    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? { ...row, name: cleanName, slug, competitionFormatId: input.competitionFormatId, teamSize: input.teamSize, eligibilityLabel: input.eligibilityLabel?.trim() || undefined } : row));
+    return;
+  }
+  const { error } = await supabase.from('competition_divisions').update({
+    name: cleanName,
+    slug,
+    competition_format_id: input.competitionFormatId,
+    team_size: input.teamSize || null,
+    eligibility_label: input.eligibilityLabel?.trim() || null
+  }).eq('id', divisionId).eq('organization_id', organizationId).is('deleted_at', null);
+  if (error) throw error;
+}
+
+export async function setDivisionStatus(organizationId: string, divisionId: string, status: CompetitionDivision['status']): Promise<void> {
+  if (!supabase) {
+    const key = demoKey('divisions', organizationId);
+    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? { ...row, status } : row));
+    return;
+  }
+  const { error } = await supabase.from('competition_divisions').update({ status }).eq('id', divisionId).eq('organization_id', organizationId).is('deleted_at', null);
+  if (error) throw error;
+}
+
+export async function archiveDivision(organizationId: string, divisionId: string): Promise<void> {
+  const deletedAt = new Date().toISOString();
+  if (!supabase) {
+    const key = demoKey('divisions', organizationId);
+    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? { ...row, status: 'retired', deletedAt } : row));
+    return;
+  }
+  const { error } = await supabase.from('competition_divisions').update({ status: 'retired', deleted_at: deletedAt }).eq('id', divisionId).eq('organization_id', organizationId).is('deleted_at', null);
+  if (error) throw error;
+}
+
 export async function listAffiliations(organizationId: string): Promise<FighterAffiliation[]> {
   if (!supabase) return readDemo<FighterAffiliation>(demoKey('affiliations', organizationId)).sort((a, b) => b.startsOn.localeCompare(a.startsOn));
   const { data, error } = await supabase.from('fighter_affiliations').select('*').eq('organization_id', organizationId).order('starts_on', { ascending: false });
@@ -236,6 +304,28 @@ export async function createAffiliation(input: Omit<FighterAffiliation, 'id'>): 
   }).select('*').single();
   if (error) throw error;
   return rowToAffiliation(data);
+}
+
+export async function endAffiliation(organizationId: string, affiliationId: string, endsOn = new Date().toISOString().slice(0, 10)): Promise<void> {
+  if (!supabase) {
+    const key = demoKey('affiliations', organizationId);
+    writeDemo(key, readDemo<FighterAffiliation>(key).map(row => row.id === affiliationId ? { ...row, endsOn } : row));
+    return;
+  }
+  const { error } = await supabase.from('fighter_affiliations').update({ ends_on: endsOn, is_primary: false }).eq('id', affiliationId).eq('organization_id', organizationId);
+  if (error) throw error;
+}
+
+export async function archiveFoundationFighter(event: EventRecord, roster: RosterEntry[], fighterId: string): Promise<void> {
+  const deletedAt = new Date().toISOString();
+  if (!supabase) {
+    const key = demoKey('fighters', event.organizationId);
+    const current = await listFoundationFighters(event, roster);
+    writeDemo(key, current.map(row => row.id === fighterId ? { ...row, deletedAt } : row));
+    return;
+  }
+  const { error } = await supabase.from('fighters').update({ is_active: false, deleted_at: deletedAt }).eq('id', fighterId).eq('organization_id', event.organizationId).is('deleted_at', null);
+  if (error) throw error;
 }
 
 export async function claimTemporaryFighter(event: EventRecord, rosterEntryId: string, existingFighterId?: string, displayName?: string): Promise<string> {

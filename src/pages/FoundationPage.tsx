@@ -2,17 +2,24 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAppState } from '../features/AppState';
 import { competitionFormats } from '../lib/competitionFormats';
 import {
+  archiveClub,
+  archiveDivision,
+  archiveFoundationFighter,
   claimTemporaryFighter,
   createAffiliation,
   createClub,
   createDivision,
+  endAffiliation,
   findDuplicateFighterCandidates,
   listAffiliations,
   listClubs,
   listDivisions,
   listFoundationFighters,
   listTeams,
-  mergeFoundationFighters
+  mergeFoundationFighters,
+  setDivisionStatus,
+  updateClub,
+  updateDivision
 } from '../lib/identityAdmin';
 import type { AffiliationType, Club, CompetitionDivision, FighterAffiliation, FoundationFighter, Team } from '../types';
 
@@ -25,8 +32,10 @@ export function FoundationPage() {
   const [divisions, setDivisions] = useState<CompetitionDivision[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [affiliations, setAffiliations] = useState<FighterAffiliation[]>([]);
-  const [clubForm, setClubForm] = useState({ name: '', shortName: '', region: '' });
+  const [clubForm, setClubForm] = useState({ name: '', shortName: '', region: '', websiteUrl: '' });
+  const [editingClubId, setEditingClubId] = useState('');
   const [divisionForm, setDivisionForm] = useState({ name: '', competitionFormatId: competitionFormats[0]?.id || 'longsword', teamSize: '', eligibilityLabel: '' });
+  const [editingDivisionId, setEditingDivisionId] = useState('');
   const [claimForm, setClaimForm] = useState({ rosterEntryId: '', fighterId: '' });
   const [mergeForm, setMergeForm] = useState({ canonical: '', duplicate: '' });
   const [affiliationForm, setAffiliationForm] = useState({ fighterId: '', clubId: '', teamId: '', affiliationType: 'member' as AffiliationType, startsOn: today(), endsOn: '', isPrimary: true });
@@ -80,20 +89,58 @@ export function FoundationPage() {
     }
   };
 
-  const addClub = () => run(async () => {
-    await createClub(event.organizationId, clubForm);
-    setClubForm({ name: '', shortName: '', region: '' });
-  }, 'Club created.');
+  const saveClub = () => run(async () => {
+    if (editingClubId) {
+      await updateClub(event.organizationId, editingClubId, clubForm);
+    } else {
+      await createClub(event.organizationId, clubForm);
+    }
+    setClubForm({ name: '', shortName: '', region: '', websiteUrl: '' });
+    setEditingClubId('');
+  }, editingClubId ? 'Club updated.' : 'Club created.');
 
-  const addDivision = () => run(async () => {
-    await createDivision(event.organizationId, {
+  const editClub = (club: Club) => {
+    setEditingClubId(club.id);
+    setClubForm({ name: club.name, shortName: club.shortName || '', region: club.region || '', websiteUrl: club.websiteUrl || '' });
+  };
+
+  const removeClub = (club: Club) => {
+    if (!window.confirm('Archive ' + club.name + '? Existing team and history references will be preserved.')) return;
+    return run(() => archiveClub(event.organizationId, club.id), 'Club archived without deleting history.');
+  };
+
+  const saveDivision = () => run(async () => {
+    const input = {
       name: divisionForm.name,
       competitionFormatId: divisionForm.competitionFormatId,
       teamSize: divisionForm.teamSize ? Number(divisionForm.teamSize) : undefined,
       eligibilityLabel: divisionForm.eligibilityLabel || undefined
-    });
+    };
+    if (editingDivisionId) await updateDivision(event.organizationId, editingDivisionId, input);
+    else await createDivision(event.organizationId, input);
     setDivisionForm({ name: '', competitionFormatId: competitionFormats[0]?.id || 'longsword', teamSize: '', eligibilityLabel: '' });
-  }, 'Division created as a draft.');
+    setEditingDivisionId('');
+  }, editingDivisionId ? 'Division updated.' : 'Division created as a draft.');
+
+  const editDivision = (division: CompetitionDivision) => {
+    setEditingDivisionId(division.id);
+    setDivisionForm({
+      name: division.name,
+      competitionFormatId: division.competitionFormatId,
+      teamSize: division.teamSize ? String(division.teamSize) : '',
+      eligibilityLabel: division.eligibilityLabel || ''
+    });
+  };
+
+  const publishDivision = (division: CompetitionDivision) => run(
+    () => setDivisionStatus(event.organizationId, division.id, division.status === 'published' ? 'draft' : 'published'),
+    division.status === 'published' ? 'Division returned to draft.' : 'Division published.'
+  );
+
+  const removeDivision = (division: CompetitionDivision) => {
+    if (!window.confirm('Archive ' + division.name + '? Existing event, bracket, match, and registration references will remain intact.')) return;
+    return run(() => archiveDivision(event.organizationId, division.id), 'Division retired and archived without deleting history.');
+  };
 
   const claim = () => {
     const entry = temporaryEntries.find(row => row.id === claimForm.rosterEntryId);
@@ -125,6 +172,16 @@ export function FoundationPage() {
         sourceEventId: event.id
       });
     }, 'Affiliation history updated.');
+  };
+
+  const closeAffiliation = (row: FighterAffiliation) => run(
+    () => endAffiliation(event.organizationId, row.id),
+    'Affiliation ended and retained in fighter history.'
+  );
+
+  const archiveFighter = (fighter: FoundationFighter) => {
+    if (!window.confirm('Archive ' + fighter.name + '? Historical roster, match, and discipline records will be preserved.')) return;
+    return run(() => archiveFoundationFighter(event, roster, fighter.id), 'Fighter archived without deleting historical records.');
   };
 
   return <>
@@ -177,6 +234,9 @@ export function FoundationPage() {
           </label>
           <button disabled={busy || !mergeForm.canonical || !mergeForm.duplicate} onClick={merge}>Merge Fighter Records</button>
         </div>
+        <div className="membership-list">
+          {fighters.slice(0, 12).map(fighter => <article key={fighter.id}><div className="grow"><strong>{fighter.name}</strong><small>{fighter.userId ? 'Claimed account' : 'Unclaimed identity'}{fighter.teamId ? ' · team linked' : ''}</small></div><button disabled={busy} onClick={() => archiveFighter(fighter)}>Archive</button></article>)}
+        </div>
       </section>
 
       <section className="panel-card">
@@ -186,10 +246,12 @@ export function FoundationPage() {
           <input placeholder="Club name" value={clubForm.name} onChange={e => setClubForm(form => ({ ...form, name: e.target.value }))}/>
           <input placeholder="Short name" value={clubForm.shortName} onChange={e => setClubForm(form => ({ ...form, shortName: e.target.value }))}/>
           <input placeholder="Region" value={clubForm.region} onChange={e => setClubForm(form => ({ ...form, region: e.target.value }))}/>
-          <button disabled={busy || !clubForm.name.trim()} onClick={addClub}>Add Club</button>
+          <input placeholder="Website URL, optional" value={clubForm.websiteUrl} onChange={e => setClubForm(form => ({ ...form, websiteUrl: e.target.value }))}/>
+          <button disabled={busy || !clubForm.name.trim()} onClick={saveClub}>{editingClubId ? 'Save Club' : 'Add Club'}</button>
+          {editingClubId && <button disabled={busy} onClick={() => { setEditingClubId(''); setClubForm({ name: '', shortName: '', region: '', websiteUrl: '' }); }}>Cancel Edit</button>}
         </div>
         <div className="membership-list">
-          {clubs.length === 0 ? <div className="state-card">No clubs created yet.</div> : clubs.map(club => <article key={club.id}><div><strong>{club.name}</strong><small>{[club.shortName, club.region].filter(Boolean).join(' · ') || 'No extra details'}</small></div></article>)}
+          {clubs.length === 0 ? <div className="state-card">No clubs created yet.</div> : clubs.map(club => <article key={club.id}><div className="grow"><strong>{club.name}</strong><small>{[club.shortName, club.region].filter(Boolean).join(' · ') || 'No extra details'}</small></div><div className="header-actions"><button disabled={busy} onClick={() => editClub(club)}>Edit</button><button disabled={busy} onClick={() => removeClub(club)}>Archive</button></div></article>)}
         </div>
       </section>
 
@@ -205,10 +267,11 @@ export function FoundationPage() {
           </label>
           <input type="number" min="1" placeholder="Team size, if fixed" value={divisionForm.teamSize} onChange={e => setDivisionForm(form => ({ ...form, teamSize: e.target.value }))}/>
           <input placeholder="Eligibility label, optional" value={divisionForm.eligibilityLabel} onChange={e => setDivisionForm(form => ({ ...form, eligibilityLabel: e.target.value }))}/>
-          <button disabled={busy || !divisionForm.name.trim()} onClick={addDivision}>Create Draft Division</button>
+          <button disabled={busy || !divisionForm.name.trim()} onClick={saveDivision}>{editingDivisionId ? 'Save Division' : 'Create Draft Division'}</button>
+          {editingDivisionId && <button disabled={busy} onClick={() => { setEditingDivisionId(''); setDivisionForm({ name: '', competitionFormatId: competitionFormats[0]?.id || 'longsword', teamSize: '', eligibilityLabel: '' }); }}>Cancel Edit</button>}
         </div>
         <div className="membership-list">
-          {divisions.length === 0 ? <div className="state-card">No formal divisions created yet.</div> : divisions.map(division => <article key={division.id}><div><strong>{division.name}</strong><small>{division.competitionFormatId.replaceAll('_', ' ')} · {division.status}</small></div></article>)}
+          {divisions.length === 0 ? <div className="state-card">No formal divisions created yet.</div> : divisions.map(division => <article key={division.id}><div className="grow"><strong>{division.name}</strong><small>{division.competitionFormatId.replaceAll('_', ' ')} · {division.status}</small></div><div className="header-actions"><button disabled={busy} onClick={() => editDivision(division)}>Edit</button><button disabled={busy} onClick={() => publishDivision(division)}>{division.status === 'published' ? 'Unpublish' : 'Publish'}</button><button disabled={busy} onClick={() => removeDivision(division)}>Archive</button></div></article>)}
         </div>
       </section>
 
@@ -252,7 +315,7 @@ export function FoundationPage() {
             const fighter = fighters.find(item => item.identityId === row.identityId);
             const club = clubs.find(item => item.id === row.clubId);
             const team = teams.find(item => item.id === row.teamId);
-            return <article key={row.id}><div><strong>{fighter?.name || 'Fighter'}</strong><small>{row.affiliationType} · {club?.name || team?.name || 'Independent'} · {row.startsOn}{row.endsOn ? ' to ' + row.endsOn : ' to present'}</small></div></article>;
+            return <article key={row.id}><div className="grow"><strong>{fighter?.name || 'Fighter'}</strong><small>{row.affiliationType} · {club?.name || team?.name || 'Independent'} · {row.startsOn}{row.endsOn ? ' to ' + row.endsOn : ' to present'}</small></div>{!row.endsOn && <button disabled={busy} onClick={() => closeAffiliation(row)}>End</button>}</article>;
           })}
         </div>
       </section>
