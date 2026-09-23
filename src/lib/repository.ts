@@ -1,4 +1,4 @@
-import type { Announcement, EventRecord, MatchRecord, RosterEntry } from '../types';
+import type { Announcement, EventRecord, FightCard, MatchRecord, RosterEntry } from '../types';
 import { demoAnnouncements, demoEvent, demoMatches, demoRoster } from '../data/demo';
 import { supabase } from './supabase';
 
@@ -6,6 +6,7 @@ export interface EventSnapshot {
   event: EventRecord;
   matches: MatchRecord[];
   roster: RosterEntry[];
+  fightCards: FightCard[];
   announcements: Announcement[];
 }
 
@@ -51,7 +52,11 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
     const savedAnnouncements = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-announcements-' + demoEvent.id) ?? '[]');
     const announcementIds = new Set(savedAnnouncements.map((a: any) => a.id));
     const announcements = [...savedAnnouncements, ...structuredClone(demoAnnouncements).filter(a => !announcementIds.has(a.id))];
-    return { event, matches: [...baseMatches, ...bracketMatches.filter((m: any) => !existingIds.has(m.id))], roster, announcements };
+    const allMatches = [...baseMatches, ...bracketMatches.filter((m: any) => !existingIds.has(m.id))];
+    const savedFightCards = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-fight-cards-' + demoEvent.id) ?? '[]');
+    const fightCardIds = [...new Set(allMatches.map((match: any) => match.fightCardId).filter(Boolean))] as string[];
+    const fightCards: FightCard[] = savedFightCards.length ? savedFightCards : fightCardIds.map((id,index) => ({ id, eventId: demoEvent.id, name: 'Field ' + (index + 1), listName: 'Field ' + (index + 1), status: 'live', sortOrder: index }));
+    return { event, matches: allMatches, roster, fightCards, announcements };
   }
 
   let resolvedEventId = eventId || (import.meta.env.VITE_DEFAULT_EVENT_ID as string | undefined);
@@ -64,14 +69,15 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
 
   const { data: sessionData } = await supabase.auth.getSession();
   const rosterColumns = sessionData.session ? '*' : 'id,event_id,team_id,entry_type,display_name,attendance_status';
-  const [eventQuery, rosterQuery, matchQuery, announcementQuery] = await Promise.all([
+  const [eventQuery, rosterQuery, fightCardQuery, matchQuery, announcementQuery] = await Promise.all([
     supabase.from('events').select('*').eq('id', resolvedEventId).single(),
     supabase.from('event_roster_entries').select(rosterColumns).eq('event_id', resolvedEventId).order('display_name'),
+    supabase.from('fight_cards').select('*').eq('event_id', resolvedEventId).order('sort_order'),
     supabase.from('matches').select('*,match_participants(*),match_rounds(*)').eq('event_id', resolvedEventId).order('scheduled_order'),
     supabase.from('announcements').select('*').eq('event_id', resolvedEventId).order('created_at', { ascending: false })
   ]);
 
-  const error = eventQuery.error || rosterQuery.error || matchQuery.error || announcementQuery.error;
+  const error = eventQuery.error || rosterQuery.error || fightCardQuery.error || matchQuery.error || announcementQuery.error;
   if (error) throw error;
   const e: any = eventQuery.data;
   return {
@@ -87,6 +93,7 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
       medicalCleared: r.medical_cleared ?? false, waiverConfirmed: r.waiver_confirmed ?? false, weighInCleared: r.weigh_in_cleared ?? false,
       attendanceStatus: r.attendance_status, metadata: r.metadata
     })),
+    fightCards: (fightCardQuery.data ?? []).map((card: any) => ({ id: card.id, eventId: card.event_id, name: card.name, listName: card.list_name, status: card.status, sortOrder: card.sort_order })),
     matches: (matchQuery.data ?? []).map(snakeMatch),
     announcements: (announcementQuery.data ?? []).map((a: any) => ({ id: a.id, eventId: a.event_id, title: a.title, body: a.body, isPublic: a.is_public, scheduledFor: a.scheduled_for ?? undefined, createdAt: a.created_at }))
   };
