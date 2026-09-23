@@ -1,7 +1,7 @@
 import type { EventRecord, EventType, StandingsMode } from '../types';
 import { supabase } from './supabase';
 
-export interface SetupOrganization { id:string; name:string; shortName:string; region:string }
+export interface SetupOrganization { id:string; name:string; shortName:string; region:string; status:'active'|'inactive' }
 export interface SetupSeason { id:string; organizationId:string; name:string; startsAt:string; endsAt:string; status:string }
 
 export async function claimFirstSuperAdmin(): Promise<boolean> {
@@ -13,18 +13,35 @@ export async function claimFirstSuperAdmin(): Promise<boolean> {
 
 export async function listOrganizations(): Promise<SetupOrganization[]> {
   if (!supabase) return [];
-  const { data, error } = await supabase.from('organizations').select('id,name,short_name,region').order('name');
+  const { data, error } = await supabase.from('organizations').select('id,name,short_name,region,status').order('name');
   if (error) throw error;
-  return (data ?? []).map((row:any)=>({id:row.id,name:row.name,shortName:row.short_name,region:row.region}));
+  return (data ?? []).map((row:any)=>({id:row.id,name:row.name,shortName:row.short_name,region:row.region,status:row.status}));
 }
 
 export async function createOrganization(input:{name:string;shortName:string;region:string;userId:string}):Promise<SetupOrganization>{
-  if(!supabase) return {id:crypto.randomUUID(),name:input.name,shortName:input.shortName,region:input.region};
-  const {data,error}=await supabase.from('organizations').insert({name:input.name,short_name:input.shortName,region:input.region,created_by:input.userId,last_edited_by:input.userId}).select('id,name,short_name,region').single();
+  if(!supabase) return {id:crypto.randomUUID(),name:input.name,shortName:input.shortName,region:input.region,status:'active'};
+  const {data,error}=await supabase.from('organizations').insert({name:input.name,short_name:input.shortName,region:input.region,created_by:input.userId,last_edited_by:input.userId}).select('id,name,short_name,region,status').single();
   if(error)throw error;
   const {error:membershipError}=await supabase.from('organization_memberships').insert({organization_id:data.id,user_id:input.userId,role:'organization_admin'});
   if(membershipError)throw membershipError;
-  return {id:data.id,name:data.name,shortName:data.short_name,region:data.region};
+  return {id:data.id,name:data.name,shortName:data.short_name,region:data.region,status:data.status};
+}
+
+export async function updateOrganization(input:{id:string;name:string;shortName:string;region:string}):Promise<void>{
+  if(!input.name.trim()||!input.shortName.trim()||!input.region.trim())throw new Error('Organization name, short name, and region are required.');
+  if(!supabase)return;
+  const {error}=await supabase.from('organizations').update({
+    name:input.name.trim(),
+    short_name:input.shortName.trim(),
+    region:input.region.trim()
+  }).eq('id',input.id);
+  if(error)throw error;
+}
+
+export async function setOrganizationStatus(id:string,status:'active'|'inactive'):Promise<void>{
+  if(!supabase)return;
+  const {error}=await supabase.from('organizations').update({status}).eq('id',id);
+  if(error)throw error;
 }
 
 export async function listSeasons(organizationId:string):Promise<SetupSeason[]>{
@@ -39,6 +56,25 @@ export async function createSeason(input:{organizationId:string;name:string;star
   const {data,error}=await supabase.from('seasons').insert({organization_id:input.organizationId,name:input.name,starts_at:input.startsAt,ends_at:input.endsAt,status:'active',created_by:input.userId,last_edited_by:input.userId}).select('*').single();
   if(error)throw error;
   return {id:data.id,organizationId:data.organization_id,name:data.name,startsAt:data.starts_at,endsAt:data.ends_at,status:data.status};
+}
+
+export async function updateSeason(input:{id:string;organizationId:string;name:string;startsAt:string;endsAt:string;status:SetupSeason['status']}):Promise<void>{
+  if(!input.name.trim())throw new Error('Season name is required.');
+  if(new Date(input.endsAt).getTime()<=new Date(input.startsAt).getTime())throw new Error('Season end must be after its start.');
+  if(!supabase)return;
+  const {error}=await supabase.from('seasons').update({
+    name:input.name.trim(),
+    starts_at:input.startsAt,
+    ends_at:input.endsAt,
+    status:input.status
+  }).eq('id',input.id).eq('organization_id',input.organizationId);
+  if(error)throw error;
+}
+
+export async function setSeasonStatus(organizationId:string,id:string,status:'draft'|'active'|'archived'):Promise<void>{
+  if(!supabase)return;
+  const {error}=await supabase.from('seasons').update({status}).eq('id',id).eq('organization_id',organizationId);
+  if(error)throw error;
 }
 
 export async function listEvents(organizationId:string):Promise<Array<Pick<EventRecord,'id'|'name'|'venue'|'startsAt'|'status'>>>{
