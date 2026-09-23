@@ -31,6 +31,7 @@ import { RegistrationPage } from './pages/RegistrationPage';
 import { PublicPage } from './pages/PublicPage';
 import { EventManagementPage } from './pages/EventManagementPage';
 import { FoundationPage } from './pages/FoundationPage';
+import { RulesetsPage } from './pages/RulesetsPage';
 
 function OperationsProvider() {
   return <AppStateProvider><Outlet /></AppStateProvider>;
@@ -77,6 +78,7 @@ export function App(){
         <Route path="discipline" element={<RequirePermission permission="discipline.manage"><DisciplinePage/></RequirePermission>}/>
         <Route path="notes" element={<RequirePermission permission="notes.team"><NotesPage/></RequirePermission>}/>
         <Route path="foundation" element={<FoundationPage/>}/>
+        <Route path="rulesets" element={<RulesetsPage/>}/>
         <Route path="sync" element={<SyncPage/>}/>
         <Route path="setup" element={<SetupPage/>}/>
       </Route>

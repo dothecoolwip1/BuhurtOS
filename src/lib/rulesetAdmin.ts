@@ -1,4 +1,4 @@
-import type { EventRecord, RulesetRecord, RulesetSettings, ScoringConfig } from '../types';
+import type { EventRecord, RulesetRecord, RulesetSettings, RulesetSettingsPatch, ScoringConfig } from '../types';
 import { supabase } from './supabase';
 import { competitionFormats, type CompetitionFormatPreset } from './competitionFormats';
 
@@ -23,7 +23,7 @@ export const defaultRulesetSettings: RulesetSettings = {
 
 const demoKey = (organizationId: string) => 'buhurtos-demo-rulesets-' + organizationId;
 
-function normalizeSettings(value: Partial<RulesetSettings> | null | undefined): RulesetSettings {
+function normalizeSettings(value: RulesetSettingsPatch | null | undefined): RulesetSettings {
   return {
     enabledFormats: value?.enabledFormats?.length ? [...value.enabledFormats] : [...defaultRulesetSettings.enabledFormats],
     scoringOverrides: { ...defaultRulesetSettings.scoringOverrides, ...(value?.scoringOverrides ?? {}) },
@@ -34,6 +34,7 @@ function normalizeSettings(value: Partial<RulesetSettings> | null | undefined): 
 }
 
 function rowToRuleset(row: any): RulesetRecord {
+  const rawSettings = (row.settings ?? {}) as RulesetSettingsPatch;
   return {
     id: row.id,
     organizationId: row.organization_id ?? undefined,
@@ -46,7 +47,8 @@ function rowToRuleset(row: any): RulesetRecord {
     status: row.status,
     effectiveFrom: row.effective_from ?? undefined,
     effectiveTo: row.effective_to ?? undefined,
-    settings: normalizeSettings(row.settings),
+    settings: normalizeSettings(rawSettings),
+    overrides: rawSettings,
     createdAt: row.created_at ?? undefined,
     updatedAt: row.updated_at ?? undefined
   };
@@ -87,10 +89,14 @@ export function resolveRulesetSettings(rulesets: RulesetRecord[], rulesetId?: st
     }
     const parent = record.parentRulesetId ? resolve(record.parentRulesetId) : structuredClone(defaultRulesetSettings);
     visited.delete(id);
-    const own = record.settings;
+    const own: RulesetSettingsPatch = record.overrides ?? record.settings;
+    const scoringOverrides: RulesetSettings['scoringOverrides'] = { ...parent.scoringOverrides };
+    for (const [formatId, override] of Object.entries(own.scoringOverrides ?? {})) {
+      scoringOverrides[formatId] = { ...(parent.scoringOverrides[formatId] ?? {}), ...override };
+    }
     return {
-      enabledFormats: own.enabledFormats?.length ? [...own.enabledFormats] : [...parent.enabledFormats],
-      scoringOverrides: { ...parent.scoringOverrides, ...(own.scoringOverrides ?? {}) },
+      enabledFormats: own.enabledFormats !== undefined ? [...own.enabledFormats] : [...parent.enabledFormats],
+      scoringOverrides,
       compliance: { ...parent.compliance, ...(own.compliance ?? {}) },
       discipline: { ...parent.discipline, ...(own.discipline ?? {}) },
       bracket: { ...parent.bracket, ...(own.bracket ?? {}) }
@@ -137,7 +143,7 @@ export async function createRuleset(
     status: input.status,
     effective_from: input.effectiveFrom || null,
     effective_to: input.effectiveTo || null,
-    settings: normalizeSettings(input.settings)
+    settings: input.overrides ?? normalizeSettings(input.settings)
   }).select('id').single();
   if (error) throw error;
   return data.id;
@@ -156,7 +162,7 @@ export async function updateDraftRuleset(event: EventRecord, record: RulesetReco
     short_name: record.shortName.trim(),
     version: record.version.trim(),
     description: record.description?.trim() || null,
-    settings: normalizeSettings(record.settings),
+    settings: record.overrides ?? normalizeSettings(record.settings),
     effective_from: record.effectiveFrom || null,
     effective_to: record.effectiveTo || null
   }).eq('id',record.id).eq('organization_id',event.organizationId).eq('status','draft');

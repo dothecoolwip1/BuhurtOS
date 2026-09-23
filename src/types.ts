@@ -214,6 +214,14 @@ export interface RulesetSettings {
   };
 }
 
+export interface RulesetSettingsPatch {
+  enabledFormats?: string[];
+  scoringOverrides?: Record<string, Partial<ScoringConfig>>;
+  compliance?: Partial<RulesetSettings['compliance']>;
+  discipline?: Partial<RulesetSettings['discipline']>;
+  bracket?: Partial<RulesetSettings['bracket']>;
+}
+
 export interface RulesetRecord {
   id: UUID;
   organizationId?: UUID;
@@ -227,6 +235,7 @@ export interface RulesetRecord {
   effectiveFrom?: string;
   effectiveTo?: string;
   settings: RulesetSettings;
+  overrides?: RulesetSettingsPatch;
   createdAt?: string;
   updatedAt?: string;
 }

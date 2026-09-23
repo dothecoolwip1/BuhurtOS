@@ -26,6 +26,7 @@ export function Layout() {
           {can('discipline.manage') && <NavLink to="/ops/discipline">Discipline</NavLink>}
           {can('notes.team') && <NavLink to="/ops/notes">Fight Notes</NavLink>}
           {canSetup && <NavLink to="/ops/foundation">Identity & Divisions</NavLink>}
+          {canSetup && <NavLink to="/ops/rulesets">Rulesets</NavLink>}
           <NavLink to="/ops/sync">Sync Queue</NavLink>
           {canSetup && <NavLink to="/ops/setup">Setup</NavLink>}
           <NavLink to={'/register' + (event ? '?event=' + event.id : '')}>Registration</NavLink>
