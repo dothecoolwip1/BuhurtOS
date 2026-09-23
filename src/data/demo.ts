@@ -72,5 +72,10 @@ export const demoAnnouncements: Announcement[] = [
 ];
 
 export const demoUser: UserContext = {
-  userId: 'demo-admin', displayName: 'Demo Event Organizer', platformRoles: [], organizationRoles: [{ organizationId: 'org-hacsa', role: 'organization_admin' }], eventRoles: [{ eventId: demoEvent.id, role: 'event_organizer' }]
+  userId: 'demo-admin',
+  displayName: 'Demo Event Organizer',
+  platformRoles: [],
+  organizationRoles: [{ organizationId: 'org-hacsa', role: 'organization_admin' }],
+  eventRoles: [{ eventId: demoEvent.id, role: 'event_organizer' }],
+  permissionGrants: []
 };

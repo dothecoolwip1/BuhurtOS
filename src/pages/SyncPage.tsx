@@ -4,13 +4,13 @@ import { discardMutation, listMutations, retryMutation } from '../lib/offlineQue
 import type { OfflineMutation } from '../types';
 
 export function SyncPage() {
-  const { online, syncNow, refreshQueue } = useAppState();
+  const {online,syncNow,refreshQueue,user}=useAppState();
   const [items, setItems] = useState<OfflineMutation[]>([]);
   const [busy, setBusy] = useState(false);
-  const load = async () => setItems(await listMutations());
-  useEffect(() => { load(); }, []);
-  const retry = async (id: string) => { await retryMutation(id); await refreshQueue(); await load(); };
-  const discard = async (id: string) => { await discardMutation(id); await refreshQueue(); await load(); };
+  const load=async()=>setItems(user?.userId?await listMutations(user.userId):[]);
+  useEffect(()=>{load();},[user?.userId]);
+  const retry = async (id: string) => { await retryMutation(id,user?.userId); await refreshQueue(); await load(); };
+  const discard = async (id: string) => { await discardMutation(id,user?.userId); await refreshQueue(); await load(); };
   const sync = async () => { setBusy(true); try { await syncNow(); await load(); } finally { setBusy(false); } };
   return <>
     <section className="section-head"><div><span className="eyebrow">Offline recovery</span><h1>Sync Queue</h1><p>Queued field actions stay on this device until the server accepts them. Conflicts require an explicit decision instead of silently overwriting another marshal.</p></div><div className="header-actions"><button disabled={!online || busy} onClick={sync}>{busy ? 'Syncing…' : 'Sync Now'}</button></div></section>

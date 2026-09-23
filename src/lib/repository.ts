@@ -1,6 +1,7 @@
 import type { Announcement, EventRecord, FightCard, MatchRecord, RosterEntry } from '../types';
 import { demoAnnouncements, demoEvent, demoMatches, demoRoster } from '../data/demo';
-import { supabase } from './supabase';
+import { configurationError, isDemoModeAllowed, supabase } from './supabase';
+import { loadEventSnapshotCache, saveEventSnapshotCache } from './offlineSnapshot';
 
 export interface EventSnapshot {
   event: EventRecord;
@@ -39,6 +40,9 @@ function snakeMatch(row: Record<string, any>): MatchRecord {
 
 export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot> {
   if (!supabase) {
+    if (!isDemoModeAllowed) {
+      throw new Error(configurationError ?? 'BuhurtOS operations are not configured.');
+    }
     const ghosts = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-ghosts') ?? '[]');
     const savedMatches = typeof localStorage === 'undefined' ? null : localStorage.getItem('buhurtos-demo-matches');
     const bracketMatches = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-bracket-matches') ?? '[]');
@@ -59,16 +63,30 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
     return { event, matches: allMatches, roster, fightCards, announcements };
   }
 
-  let resolvedEventId = eventId || (import.meta.env.VITE_DEFAULT_EVENT_ID as string | undefined);
-  if (!resolvedEventId) {
-    const candidate = await supabase.from('events').select('id').in('status', ['live','published','draft']).order('starts_at', { ascending: false }).limit(1).maybeSingle();
-    if (candidate.error) throw candidate.error;
-    resolvedEventId = candidate.data?.id;
-  }
-  if (!resolvedEventId) throw new Error('No accessible BuhurtOS event was found. Set VITE_DEFAULT_EVENT_ID or publish an event.');
+  const { data:sessionData }=await supabase.auth.getSession();
+  const cacheScope=sessionData.session?.user?.id?'user:'+sessionData.session.user.id:'public';
+  const offline=typeof navigator!=='undefined'&&!navigator.onLine;
+  let resolvedEventId=eventId||(import.meta.env.VITE_DEFAULT_EVENT_ID as string|undefined);
 
-  const { data: sessionData } = await supabase.auth.getSession();
-  const rosterColumns = sessionData.session ? '*' : 'id,event_id,team_id,entry_type,display_name,attendance_status';
+  if(!resolvedEventId&&offline){
+    const cached=await loadEventSnapshotCache(cacheScope);
+    if(cached)return cached;
+  }
+
+  if(!resolvedEventId){
+    const candidate=await supabase.from('events').select('id').in('status',['live','published','draft']).order('starts_at',{ascending:false}).limit(1).maybeSingle();
+    if(candidate.error){
+      if(offline){
+        const cached=await loadEventSnapshotCache(cacheScope);
+        if(cached)return cached;
+      }
+      throw candidate.error;
+    }
+    resolvedEventId=candidate.data?.id;
+  }
+  if(!resolvedEventId)throw new Error('No accessible BuhurtOS event was found. Set VITE_DEFAULT_EVENT_ID or publish an event.');
+
+  const rosterColumns=sessionData.session?'*':'id,event_id,team_id,entry_type,display_name,attendance_status';
   const [eventQuery, rosterQuery, fightCardQuery, matchQuery, announcementQuery] = await Promise.all([
     supabase.from('events').select('*').eq('id', resolvedEventId).single(),
     supabase.from('event_roster_entries').select(rosterColumns).eq('event_id', resolvedEventId).order('display_name'),
@@ -77,10 +95,16 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
     supabase.from('announcements').select('*').eq('event_id', resolvedEventId).order('created_at', { ascending: false })
   ]);
 
-  const error = eventQuery.error || rosterQuery.error || fightCardQuery.error || matchQuery.error || announcementQuery.error;
-  if (error) throw error;
-  const e: any = eventQuery.data;
-  return {
+  const error=eventQuery.error||rosterQuery.error||fightCardQuery.error||matchQuery.error||announcementQuery.error;
+  if(error){
+    if(offline){
+      const cached=await loadEventSnapshotCache(cacheScope,resolvedEventId);
+      if(cached)return cached;
+    }
+    throw error;
+  }
+  const e:any=eventQuery.data;
+  const snapshot:EventSnapshot={
     event: {
       id: e.id, organizationId: e.organization_id, seasonId: e.season_id, name: e.name, venue: e.venue,
       startsAt: e.starts_at, endsAt: e.ends_at, organizerName: e.organizer_name ?? undefined,
@@ -95,6 +119,8 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
     })),
     fightCards: (fightCardQuery.data ?? []).map((card: any) => ({ id: card.id, eventId: card.event_id, name: card.name, listName: card.list_name, status: card.status, sortOrder: card.sort_order })),
     matches: (matchQuery.data ?? []).map(snakeMatch),
-    announcements: (announcementQuery.data ?? []).map((a: any) => ({ id: a.id, eventId: a.event_id, title: a.title, body: a.body, isPublic: a.is_public, scheduledFor: a.scheduled_for ?? undefined, createdAt: a.created_at }))
+    announcements:(announcementQuery.data??[]).map((a:any)=>({id:a.id,eventId:a.event_id,title:a.title,body:a.body,isPublic:a.is_public,scheduledFor:a.scheduled_for??undefined,createdAt:a.created_at}))
   };
+  await saveEventSnapshotCache(cacheScope,snapshot);
+  return snapshot;
 }

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BuhurtOS">
+  <rect width="512" height="512" rx="112" fill="#0a0f14"/>
+  <path d="M256 58 404 116v112c0 104-59 180-148 226C167 408 108 332 108 228V116L256 58Z" fill="#151f29" stroke="#ff8a1f" stroke-width="24"/>
+  <path d="M191 150h77c65 0 101 26 101 72 0 28-15 48-42 59 36 10 54 35 54 70 0 56-42 83-119 83h-71V150Zm61 52v58h20c29 0 43-10 43-30s-14-28-43-28h-20Zm0 106v74h25c34 0 50-12 50-37s-17-37-51-37h-24Z" fill="#f5f7fa"/>
+</svg>

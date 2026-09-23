@@ -18,6 +18,8 @@ import { ShowcaseRulesPage } from './pages/ShowcaseRulesPage';
 import { ShowcasePublicPage } from './pages/ShowcasePublicPage';
 import { MarketingHome } from './pages/MarketingHome';
 import { LoginPage } from './pages/LoginPage';
+import { RecoveryPage } from './pages/RecoveryPage';
+import { AccountSetupPage } from './pages/AccountSetupPage';
 import { OpsPage } from './pages/OpsPage';
 import { RosterPage } from './pages/RosterPage';
 import { BracketPage } from './pages/BracketPage';
@@ -30,17 +32,20 @@ import { SetupPage } from './pages/SetupPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { PublicPage } from './pages/PublicPage';
 import { EventManagementPage } from './pages/EventManagementPage';
+import { FoundationAdminPage } from './pages/FoundationAdminPage';
+import { configurationError } from './lib/supabase';
 
 function OperationsProvider() {
   return <AppStateProvider><Outlet /></AppStateProvider>;
 }
 
 function OperationalGate() {
-  const { loading, user, dataMode } = useAppState();
-  const location = useLocation();
-  if (loading) return <div className="state-card">Loading tournament operations…</div>;
-  if (dataMode === 'supabase' && !user) return <Navigate to={`/ops/login${location.search}`} replace />;
-  return <Layout />;
+  const { loading,user,dataMode }=useAppState();
+  const location=useLocation();
+  if(loading)return <div className="state-card">Loading tournament operations…</div>;
+  if(dataMode==='unconfigured')return <main className="auth-shell"><section className="auth-card"><span className="brand-mark large">B</span><span className="eyebrow">BuhurtOS operations</span><h1>Backend configuration required</h1><p>{configurationError}</p><a className="button-link" href="#/">Return to platform home</a></section></main>;
+  if(dataMode==='supabase'&&!user)return <Navigate to={'/ops/login'+location.search} replace/>;
+  return <Layout/>;
 }
 
 export function App(){
@@ -66,17 +71,20 @@ export function App(){
       <Route path="/live" element={<PublicPage/>}/>
       <Route path="/register" element={<RegistrationPage/>}/>
       <Route path="/ops/login" element={<LoginPage/>}/>
+      <Route path="/ops/recover" element={<RecoveryPage/>}/>
+      <Route path="/ops/account-setup" element={<AccountSetupPage/>}/>
       <Route path="/ops" element={<OperationalGate/>}>
-        <Route index element={<OpsPage/>}/>
-        <Route path="roster" element={<RosterPage/>}/>
-        <Route path="bracket" element={<BracketPage/>}/>
-        <Route path="standings" element={<StandingsPage/>}/>
-        <Route path="manage" element={<RequirePermission permission="event.manage"><EventManagementPage/></RequirePermission>}/>
+        <Route index element={<RequirePermission permission="event.view_private"><OpsPage/></RequirePermission>}/>
+        <Route path="roster" element={<RequirePermission permission="event.view_private"><RosterPage/></RequirePermission>}/>
+        <Route path="bracket" element={<RequirePermission permission="bracket.manage"><BracketPage/></RequirePermission>}/>
+        <Route path="standings" element={<RequirePermission permission="event.view_private"><StandingsPage/></RequirePermission>}/>
+        <Route path="manage" element={<RequirePermission permission="event.view_private"><EventManagementPage/></RequirePermission>}/>
         <Route path="admin" element={<RequirePermission permission="bracket.manage"><AdminPage/></RequirePermission>}/>
         <Route path="discipline" element={<RequirePermission permission="discipline.manage"><DisciplinePage/></RequirePermission>}/>
         <Route path="notes" element={<RequirePermission permission="notes.team"><NotesPage/></RequirePermission>}/>
-        <Route path="sync" element={<SyncPage/>}/>
+        <Route path="sync" element={<RequirePermission permission="event.view_private"><SyncPage/></RequirePermission>}/>
         <Route path="setup" element={<SetupPage/>}/>
+        <Route path="foundation" element={<RequirePermission permission="organization.manage"><FoundationAdminPage/></RequirePermission>}/>
       </Route>
     </Route>
 

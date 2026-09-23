@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Announcement, EventRecord, FightCard, MatchRecord, MatchStatus, RosterEntry, ScoreRound, UserContext } from '../types';
 import { demoUser } from '../data/demo';
 import { loadEventSnapshot } from '../lib/repository';
-import { isSupabaseConfigured, subscribeToEvent, supabase } from '../lib/supabase';
+import { isDemoModeAllowed, isSupabaseConfigured, subscribeToEvent, supabase } from '../lib/supabase';
 import { validateScore } from '../lib/scoring';
 import { advanceOutcome } from '../lib/bracket';
 import { enqueueMutation, flushMutationQueue, listMutations } from '../lib/offlineQueue';
@@ -19,7 +19,7 @@ interface AppStateValue {
   user: UserContext | null;
   online: boolean;
   pendingCount: number;
-  dataMode: 'demo' | 'supabase';
+  dataMode: 'demo' | 'supabase' | 'unconfigured';
   reload: () => Promise<void>;
   updateCompliance: (entryId: string, field: 'checkedIn' | 'armorCleared' | 'medicalCleared' | 'waiverConfirmed' | 'weighInCleared', value: boolean) => Promise<void>;
   finalizeResult: (matchId: string, rounds: ScoreRound[], forfeit?: { side: 1 | 2; reason: string }) => Promise<void>;
@@ -48,11 +48,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [roster, setRoster] = useState<RosterEntry[]>([]);
   const [fightCards, setFightCards] = useState<FightCard[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [user, setUser] = useState<UserContext | null>(isSupabaseConfigured ? null : demoUser);
+  const [user, setUser] = useState<UserContext | null>(isSupabaseConfigured ? null : isDemoModeAllowed ? demoUser : null);
   const [online, setOnline] = useState(typeof navigator === 'undefined' ? true : navigator.onLine);
   const [pendingCount, setPendingCount] = useState(0);
 
-  const refreshPending = useCallback(async () => setPendingCount((await listMutations()).length), []);
+  const refreshPending=useCallback(async()=>setPendingCount(user?.userId?(await listMutations(user.userId)).length:0),[user?.userId]);
 
   const reload = useCallback(async () => {
     try {
@@ -113,21 +113,38 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const updateCompliance = useCallback(async (entryId: string, field: 'checkedIn' | 'armorCleared' | 'medicalCleared' | 'waiverConfirmed' | 'weighInCleared', value: boolean) => {
     const before = roster.find(r => r.id === entryId);
     if (!before) return;
+    const column = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' }[field];
+    const expectedValue = before[field];
+
     setRoster(current => current.map(r => r.id === entryId ? { ...r, [field]: value } : r));
+
     if (!supabase) {
       const overrides = JSON.parse(localStorage.getItem('buhurtos-demo-roster-overrides') ?? '{}');
       overrides[entryId] = { ...(overrides[entryId] ?? {}), [field]: value };
       localStorage.setItem('buhurtos-demo-roster-overrides', JSON.stringify(overrides));
       return;
     }
+
     if (!online) {
-      await enqueueMutation({ entity: 'event_roster_entries', entityId: entryId, operation: 'update', payload: { [field]: value }, baseVersion: JSON.stringify(before) });
+      await enqueueMutation({
+        entity: 'roster_clearance',
+        entityId: entryId,
+        operation: 'rpc',
+        payload: { field: column, value, expectedValue }
+      });
       await refreshPending();
       return;
     }
+
     const client = supabase;
-    const column = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' }[field];
-    const { error: writeError } = await client.from('event_roster_entries').update({ [column]: value }).eq('id', entryId);
+    const { error: writeError } = await client.rpc('update_roster_clearance_idempotent', {
+      p_operation_id: crypto.randomUUID(),
+      p_roster_entry_id: entryId,
+      p_field: column,
+      p_value: value,
+      p_expected_value: expectedValue
+    });
+
     if (writeError) {
       setRoster(current => current.map(r => r.id === entryId ? before : r));
       throw writeError;
@@ -142,7 +159,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
     if (supabase && online) {
       const client = supabase;
-      const { error: rpcError } = await client.rpc('submit_match_result', {
+      const { error: rpcError } = await client.rpc('submit_match_result_idempotent', {
+        p_operation_id: crypto.randomUUID(),
         p_match_id: match.id,
         p_rounds: rounds,
         p_forfeit_side: forfeit?.side ?? null,
@@ -189,7 +207,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       return;
     }
     const client = supabase;
-    const { error: rpcError } = await client.rpc('reorder_match', { p_match_id: matchId, p_direction: direction });
+    const { error: rpcError } = await client.rpc('reorder_match_idempotent', { p_operation_id: crypto.randomUUID(), p_match_id: matchId, p_direction: direction });
     if (rpcError) throw rpcError;
   }, [matches, online, refreshPending]);
 
@@ -214,7 +232,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       return;
     }
     const client = supabase;
-    const { error: rpcError } = await client.rpc('set_match_status', { p_match_id: match.id, p_status: status, p_expected_status: previous });
+    const { error: rpcError } = await client.rpc('set_match_status_idempotent', { p_operation_id: crypto.randomUUID(), p_match_id: match.id, p_status: status, p_expected_status: previous });
     if (rpcError) {
       setMatches(matches);
       throw rpcError;
@@ -225,48 +243,42 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const syncNow = useCallback(async () => {
     const client = supabase;
     if (!client || !online) return;
-    await flushMutationQueue(async mutation => {
+    if(!user?.userId)return;
+    await flushMutationQueue(async mutation=>{
       if (mutation.operation === 'rpc' && mutation.entity === 'match_result') {
         const payload = mutation.payload as any;
-        const { error: e } = await client.rpc('submit_match_result', { p_match_id: mutation.entityId, p_rounds: payload.rounds, p_forfeit_side: payload.forfeit?.side ?? null, p_forfeit_reason: payload.forfeit?.reason ?? null, p_expected_status: mutation.baseVersion ?? 'scheduled' });
+        const { error: e } = await client.rpc('submit_match_result_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_rounds: payload.rounds, p_forfeit_side: payload.forfeit?.side ?? null, p_forfeit_reason: payload.forfeit?.reason ?? null, p_expected_status: mutation.baseVersion ?? 'scheduled' });
         if (e) return { ok: false, conflict: e.code === 'P0001' || e.code === '40001', error: e.message };
         return { ok: true };
       }
       if (mutation.operation === 'rpc' && mutation.entity === 'match_status') {
         const payload = mutation.payload as { status: MatchStatus };
-        const { error: e } = await client.rpc('set_match_status', { p_match_id: mutation.entityId, p_status: payload.status, p_expected_status: mutation.baseVersion ?? 'scheduled' });
+        const { error: e } = await client.rpc('set_match_status_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_status: payload.status, p_expected_status: mutation.baseVersion ?? 'scheduled' });
         if (e) return { ok: false, conflict: e.code === 'P0001' || /changed since/i.test(e.message), error: e.message };
         return { ok: true };
       }
       if (mutation.operation === 'rpc' && mutation.entity === 'fight_card_order') {
         const payload = mutation.payload as { direction: -1 | 1 };
-        const { error: e } = await client.rpc('reorder_match', { p_match_id: mutation.entityId, p_direction: payload.direction });
+        const { error: e } = await client.rpc('reorder_match_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_direction: payload.direction });
         return e ? { ok: false, error: e.message } : { ok: true };
       }
-      if (mutation.operation === 'update' && mutation.entity === 'event_roster_entries') {
-        const payload = mutation.payload as Record<string, unknown>;
-        const mapped: Record<string, unknown> = {};
-        const map: Record<string, string> = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' };
-        const base = mutation.baseVersion ? JSON.parse(mutation.baseVersion) as Record<string, unknown> : null;
-        const { data: current, error: readError } = await client.from('event_roster_entries').select('checked_in,armor_cleared,medical_cleared,waiver_confirmed,weigh_in_cleared').eq('id', mutation.entityId).single();
-        if (readError) return { ok: false, error: readError.message };
-        for (const [key, value] of Object.entries(payload)) {
-          const column = map[key] ?? key;
-          mapped[column] = value;
-          if (base) {
-            const before = base[key];
-            const remote = (current as Record<string, unknown>)[column];
-            if (remote !== before && remote !== value) return { ok: false, conflict: true, error: `Roster field ${key} changed on another device.` };
-          }
-        }
-        const { error: e } = await client.from('event_roster_entries').update(mapped).eq('id', mutation.entityId);
-        return e ? { ok: false, error: e.message } : { ok: true };
+      if (mutation.operation === 'rpc' && mutation.entity === 'roster_clearance') {
+        const payload = mutation.payload as { field: string; value: boolean; expectedValue: boolean };
+        const { error: e } = await client.rpc('update_roster_clearance_idempotent', {
+          p_operation_id: mutation.id,
+          p_roster_entry_id: mutation.entityId,
+          p_field: payload.field,
+          p_value: payload.value,
+          p_expected_value: payload.expectedValue
+        });
+        if (e) return { ok: false, conflict: /changed since/i.test(e.message), error: e.message };
+        return { ok: true };
       }
-      return { ok: false, error: 'Unsupported queued mutation type.' };
-    });
+      return {ok:false,retryable:false,error:'Unsupported queued mutation type.'};
+    },user.userId);
     await refreshPending();
     await reload();
-  }, [online, refreshPending, reload]);
+  }, [online,user?.userId,refreshPending,reload]);
 
   useEffect(() => {
     if (!online || pendingCount === 0 || !supabase) return;
@@ -283,7 +295,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return () => navigator.serviceWorker.removeEventListener('message', handler);
   }, [syncNow]);
 
-  const value = useMemo<AppStateValue>(() => ({ loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
+  const value = useMemo<AppStateValue>(() => ({ loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : isDemoModeAllowed ? 'demo' : 'unconfigured', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }
 

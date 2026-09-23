@@ -1,10 +1,29 @@
-import type { EventRecord, RulesetRecord, RulesetSettings, ScoringConfig } from '../types';
+import type { EventRecord, RulesetRecord, RulesetSettings, RulesetSettingsPatch, ScoringConfig } from '../types';
 import { supabase } from './supabase';
 import { competitionFormats, type CompetitionFormatPreset } from './competitionFormats';
 
 export const defaultRulesetSettings: RulesetSettings = {
   enabledFormats: competitionFormats.map(format => format.id),
   scoringOverrides: {},
+  timing: {
+    rounds: 3,
+    overtimeEnabled: false
+  },
+  victory: {
+    conditions: ['configured_format_result'],
+    pointSystem: {},
+    tieBreakers: ['wins','standing_points','score_differential','points_scored']
+  },
+  roster: {},
+  equipment: {
+    allowedWeapons: [],
+    complianceRequirements: []
+  },
+  classifications: {
+    ageDivisions: [],
+    weightClasses: [],
+    genderDivisions: []
+  },
   compliance: {
     requireCheckIn: true,
     requireArmorClearance: true,
@@ -13,27 +32,109 @@ export const defaultRulesetSettings: RulesetSettings = {
     requireWeighIn: true
   },
   discipline: {
+    knockdownsEnabled: true,
     yellowCardsBeforeSuspension: 2,
-    redCardSuspensionMatches: 1
+    redCardSuspensionMatches: 1,
+    disqualificationRules: []
   },
   bracket: {
-    antiFratricide: true
+    antiFratricide: true,
+    advancementRules: [],
+    specialTournamentRules: []
   }
 };
 
 const demoKey = (organizationId: string) => 'buhurtos-demo-rulesets-' + organizationId;
 
-function normalizeSettings(value: Partial<RulesetSettings> | null | undefined): RulesetSettings {
+function normalizePatch(value: RulesetSettingsPatch | null | undefined): RulesetSettingsPatch {
+  if (!value) return {};
   return {
-    enabledFormats: value?.enabledFormats?.length ? [...value.enabledFormats] : [...defaultRulesetSettings.enabledFormats],
-    scoringOverrides: { ...defaultRulesetSettings.scoringOverrides, ...(value?.scoringOverrides ?? {}) },
-    compliance: { ...defaultRulesetSettings.compliance, ...(value?.compliance ?? {}) },
-    discipline: { ...defaultRulesetSettings.discipline, ...(value?.discipline ?? {}) },
-    bracket: { ...defaultRulesetSettings.bracket, ...(value?.bracket ?? {}) }
+    ...(value.enabledFormats ? { enabledFormats: [...value.enabledFormats] } : {}),
+    ...(value.scoringOverrides ? { scoringOverrides: structuredClone(value.scoringOverrides) } : {}),
+    ...(value.timing ? { timing: { ...value.timing } } : {}),
+    ...(value.victory ? {
+      victory: {
+        ...value.victory,
+        ...(value.victory.conditions ? { conditions: [...value.victory.conditions] } : {}),
+        ...(value.victory.pointSystem ? { pointSystem: { ...value.victory.pointSystem } } : {}),
+        ...(value.victory.tieBreakers ? { tieBreakers: [...value.victory.tieBreakers] } : {})
+      }
+    } : {}),
+    ...(value.roster ? { roster: { ...value.roster } } : {}),
+    ...(value.equipment ? {
+      equipment: {
+        ...value.equipment,
+        ...(value.equipment.allowedWeapons ? { allowedWeapons: [...value.equipment.allowedWeapons] } : {}),
+        ...(value.equipment.complianceRequirements ? { complianceRequirements: [...value.equipment.complianceRequirements] } : {})
+      }
+    } : {}),
+    ...(value.classifications ? {
+      classifications: {
+        ...value.classifications,
+        ...(value.classifications.ageDivisions ? { ageDivisions: [...value.classifications.ageDivisions] } : {}),
+        ...(value.classifications.weightClasses ? { weightClasses: [...value.classifications.weightClasses] } : {}),
+        ...(value.classifications.genderDivisions ? { genderDivisions: [...value.classifications.genderDivisions] } : {})
+      }
+    } : {}),
+    ...(value.compliance ? { compliance: { ...value.compliance } } : {}),
+    ...(value.discipline ? {
+      discipline: {
+        ...value.discipline,
+        ...(value.discipline.disqualificationRules ? { disqualificationRules: [...value.discipline.disqualificationRules] } : {})
+      }
+    } : {}),
+    ...(value.bracket ? {
+      bracket: {
+        ...value.bracket,
+        ...(value.bracket.advancementRules ? { advancementRules: [...value.bracket.advancementRules] } : {}),
+        ...(value.bracket.specialTournamentRules ? { specialTournamentRules: [...value.bracket.specialTournamentRules] } : {})
+      }
+    } : {})
   };
 }
 
-function rowToRuleset(row: any): RulesetRecord {
+export function mergeRulesetSettings(parent: RulesetSettings, patch: RulesetSettingsPatch): RulesetSettings {
+  return {
+    enabledFormats: patch.enabledFormats ? [...patch.enabledFormats] : [...parent.enabledFormats],
+    scoringOverrides: { ...parent.scoringOverrides, ...(patch.scoringOverrides ?? {}) },
+    timing: { ...parent.timing, ...(patch.timing ?? {}) },
+    victory: {
+      ...parent.victory,
+      ...(patch.victory ?? {}),
+      conditions: patch.victory?.conditions ? [...patch.victory.conditions] : [...parent.victory.conditions],
+      pointSystem: { ...parent.victory.pointSystem, ...(patch.victory?.pointSystem ?? {}) },
+      tieBreakers: patch.victory?.tieBreakers ? [...patch.victory.tieBreakers] : [...parent.victory.tieBreakers]
+    },
+    roster: { ...parent.roster, ...(patch.roster ?? {}) },
+    equipment: {
+      ...parent.equipment,
+      ...(patch.equipment ?? {}),
+      allowedWeapons: patch.equipment?.allowedWeapons ? [...patch.equipment.allowedWeapons] : [...parent.equipment.allowedWeapons],
+      complianceRequirements: patch.equipment?.complianceRequirements ? [...patch.equipment.complianceRequirements] : [...parent.equipment.complianceRequirements]
+    },
+    classifications: {
+      ...parent.classifications,
+      ...(patch.classifications ?? {}),
+      ageDivisions: patch.classifications?.ageDivisions ? [...patch.classifications.ageDivisions] : [...parent.classifications.ageDivisions],
+      weightClasses: patch.classifications?.weightClasses ? [...patch.classifications.weightClasses] : [...parent.classifications.weightClasses],
+      genderDivisions: patch.classifications?.genderDivisions ? [...patch.classifications.genderDivisions] : [...parent.classifications.genderDivisions]
+    },
+    compliance: { ...parent.compliance, ...(patch.compliance ?? {}) },
+    discipline: {
+      ...parent.discipline,
+      ...(patch.discipline ?? {}),
+      disqualificationRules: patch.discipline?.disqualificationRules ? [...patch.discipline.disqualificationRules] : [...parent.discipline.disqualificationRules]
+    },
+    bracket: {
+      ...parent.bracket,
+      ...(patch.bracket ?? {}),
+      advancementRules: patch.bracket?.advancementRules ? [...patch.bracket.advancementRules] : [...parent.bracket.advancementRules],
+      specialTournamentRules: patch.bracket?.specialTournamentRules ? [...patch.bracket.specialTournamentRules] : [...parent.bracket.specialTournamentRules]
+    }
+  };
+}
+
+function rowToRuleset(row: Record<string, any>): RulesetRecord {
   return {
     id: row.id,
     organizationId: row.organization_id ?? undefined,
@@ -46,7 +147,7 @@ function rowToRuleset(row: any): RulesetRecord {
     status: row.status,
     effectiveFrom: row.effective_from ?? undefined,
     effectiveTo: row.effective_to ?? undefined,
-    settings: normalizeSettings(row.settings),
+    settings: normalizePatch(row.settings),
     createdAt: row.created_at ?? undefined,
     updatedAt: row.updated_at ?? undefined
   };
@@ -56,7 +157,7 @@ export async function listRulesets(organizationId: string): Promise<RulesetRecor
   if (!supabase) {
     try {
       return (JSON.parse(localStorage.getItem(demoKey(organizationId)) ?? '[]') as RulesetRecord[])
-        .map(record => ({ ...record, settings: normalizeSettings(record.settings) }))
+        .map(record => ({ ...record, settings: normalizePatch(record.settings) }))
         .sort((a,b) => a.name.localeCompare(b.name) || b.version.localeCompare(a.version));
     } catch {
       return [];
@@ -75,26 +176,21 @@ export async function listRulesets(organizationId: string): Promise<RulesetRecor
 export function resolveRulesetSettings(rulesets: RulesetRecord[], rulesetId?: string): RulesetSettings {
   if (!rulesetId) return structuredClone(defaultRulesetSettings);
   const byId = new Map(rulesets.map(record => [record.id, record]));
-  const visited = new Set<string>();
+  const resolving = new Set<string>();
 
   const resolve = (id: string): RulesetSettings => {
-    if (visited.has(id)) throw new Error('Ruleset inheritance contains a cycle.');
-    visited.add(id);
+    if (resolving.has(id)) throw new Error('Ruleset inheritance contains a cycle.');
+    resolving.add(id);
     const record = byId.get(id);
     if (!record) {
-      visited.delete(id);
+      resolving.delete(id);
       return structuredClone(defaultRulesetSettings);
     }
-    const parent = record.parentRulesetId ? resolve(record.parentRulesetId) : structuredClone(defaultRulesetSettings);
-    visited.delete(id);
-    const own = record.settings;
-    return {
-      enabledFormats: own.enabledFormats?.length ? [...own.enabledFormats] : [...parent.enabledFormats],
-      scoringOverrides: { ...parent.scoringOverrides, ...(own.scoringOverrides ?? {}) },
-      compliance: { ...parent.compliance, ...(own.compliance ?? {}) },
-      discipline: { ...parent.discipline, ...(own.discipline ?? {}) },
-      bracket: { ...parent.bracket, ...(own.bracket ?? {}) }
-    };
+    const parent = record.parentRulesetId
+      ? resolve(record.parentRulesetId)
+      : structuredClone(defaultRulesetSettings);
+    resolving.delete(id);
+    return mergeRulesetSettings(parent, record.settings);
   };
 
   return resolve(rulesetId);
@@ -113,11 +209,12 @@ export async function createRuleset(
   input: Omit<RulesetRecord,'id'|'organizationId'|'createdAt'|'updatedAt'>
 ): Promise<string> {
   const id = crypto.randomUUID();
+  const patch = normalizePatch(input.settings);
   const record: RulesetRecord = {
     ...input,
     id,
     organizationId: event.organizationId,
-    settings: normalizeSettings(input.settings),
+    settings: patch,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -137,7 +234,7 @@ export async function createRuleset(
     status: input.status,
     effective_from: input.effectiveFrom || null,
     effective_to: input.effectiveTo || null,
-    settings: normalizeSettings(input.settings)
+    settings: patch
   }).select('id').single();
   if (error) throw error;
   return data.id;
@@ -145,9 +242,12 @@ export async function createRuleset(
 
 export async function updateDraftRuleset(event: EventRecord, record: RulesetRecord): Promise<void> {
   if (record.status !== 'draft') throw new Error('Published rulesets are immutable. Create a new version instead.');
+  const patch = normalizePatch(record.settings);
   if (!supabase) {
     const current = await listRulesets(event.organizationId);
-    localStorage.setItem(demoKey(event.organizationId), JSON.stringify(current.map(item => item.id === record.id ? { ...record, updatedAt: new Date().toISOString() } : item)));
+    localStorage.setItem(demoKey(event.organizationId), JSON.stringify(current.map(item =>
+      item.id === record.id ? { ...record, settings: patch, updatedAt: new Date().toISOString() } : item
+    )));
     return;
   }
   const { error } = await supabase.from('rulesets').update({
@@ -156,17 +256,40 @@ export async function updateDraftRuleset(event: EventRecord, record: RulesetReco
     short_name: record.shortName.trim(),
     version: record.version.trim(),
     description: record.description?.trim() || null,
-    settings: normalizeSettings(record.settings),
+    settings: patch,
     effective_from: record.effectiveFrom || null,
     effective_to: record.effectiveTo || null
   }).eq('id',record.id).eq('organization_id',event.organizationId).eq('status','draft');
   if (error) throw error;
 }
 
+export async function cloneRulesetVersion(
+  event: EventRecord,
+  source: RulesetRecord,
+  version: string
+): Promise<string> {
+  return createRuleset(event, {
+    teamId: source.teamId,
+    parentRulesetId: source.id,
+    name: source.name,
+    shortName: source.shortName,
+    version,
+    description: source.description,
+    status: 'draft',
+    effectiveFrom: undefined,
+    effectiveTo: undefined,
+    settings: {}
+  });
+}
+
 export async function setRulesetStatus(event: EventRecord, record: RulesetRecord, status: 'published'|'retired'): Promise<void> {
+  if (status === 'published' && record.status !== 'draft') throw new Error('Only draft rulesets can be published.');
+  if (status === 'retired' && record.status !== 'published') throw new Error('Only published rulesets can be retired.');
   if (!supabase) {
     const current = await listRulesets(event.organizationId);
-    localStorage.setItem(demoKey(event.organizationId), JSON.stringify(current.map(item => item.id === record.id ? { ...item, status, updatedAt: new Date().toISOString() } : item)));
+    localStorage.setItem(demoKey(event.organizationId), JSON.stringify(current.map(item =>
+      item.id === record.id ? { ...item, status, updatedAt: new Date().toISOString() } : item
+    )));
     return;
   }
   const { error } = await supabase.from('rulesets').update({ status }).eq('id',record.id).eq('organization_id',event.organizationId);
