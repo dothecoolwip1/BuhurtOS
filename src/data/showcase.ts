@@ -74,7 +74,7 @@ export const demoTeams: DemoTeam[] = [
     captain: 'Mason Clarke',
     members: 18,
     founded: '2019',
-    bio: 'Demo team used in the BuhurtOS frontend prototype.'
+    bio: 'Armored combat team used in BuhurtOS demonstration competition data.'
   },
   {
     id: 'vanguard',
@@ -88,7 +88,7 @@ export const demoTeams: DemoTeam[] = [
     captain: 'Alex Morgan',
     members: 11,
     founded: '2022',
-    bio: 'Demo team used in the BuhurtOS frontend prototype.'
+    bio: 'Armored combat team used in BuhurtOS demonstration competition data.'
   },
   {
     id: 'badlands',

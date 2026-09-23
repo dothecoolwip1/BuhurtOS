@@ -18,13 +18,13 @@ export async function addGhostFighter(event: EventRecord, displayName: string, t
   return { ...row, id: data.id };
 }
 
-export async function saveBracketPlan(event: EventRecord, plan: GeneratedBracket, options: { id: string; name: string; fightCardId?: string; category: string }): Promise<string> {
+export async function saveBracketPlan(event: EventRecord, plan: GeneratedBracket, options: { id: string; name: string; fightCardId?: string; category: string; format?: 'single_elimination' | 'double_elimination' | 'round_robin' | 'pools_to_bracket' }): Promise<string> {
   if (!supabase) {
     localStorage.setItem('buhurtos-demo-bracket-matches', JSON.stringify(plan.matches));
     return options.id;
   }
   const { data, error } = await supabase.rpc('save_bracket_plan', {
-    p_bracket: { id: options.id, eventId: event.id, fightCardId: options.fightCardId ?? '', name: options.name, format: 'single_elimination', category: options.category, metadata: { generatedAt: new Date().toISOString(), antiFratricide: true } },
+    p_bracket: { id: options.id, eventId: event.id, fightCardId: options.fightCardId ?? '', name: options.name, format: options.format ?? 'single_elimination', category: options.category, metadata: { generatedAt: new Date().toISOString(), antiFratricide: true } },
     p_matches: plan.matches
   });
   if (error) throw error;

@@ -1,7 +1,9 @@
-name: Deploy BuhurtOS
+name: BuhurtOS Quality and Deploy
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -11,11 +13,33 @@ permissions:
   id-token: write
 
 concurrency:
-  group: github-pages
+  group: buhurtos-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install locked dependencies
+        run: npm install --no-audit --no-fund
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit and rule tests
+        run: npm test
+      - name: Production build
+        env:
+          GITHUB_PAGES: "true"
+        run: npx vite build --mode github-pages
+
   deploy:
+    if: github.event_name != 'pull_request'
+    needs: quality
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -23,28 +47,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
-
-      - name: Install dependencies
-        run: npm install
-
+      - name: Install locked dependencies
+        run: npm install --no-audit --no-fund
       - name: Build BuhurtOS
         env:
           GITHUB_PAGES: "true"
-        run: npm run typecheck && npx vite build --mode github-pages
-
+        run: npx vite build --mode github-pages
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v5
