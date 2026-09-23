@@ -74,7 +74,7 @@ export function App(){
       <Route path="/ops/account-setup" element={<AccountSetupPage/>}/>
       <Route path="/ops" element={<OperationalGate/>}>
         <Route index element={<RequirePermission permission="event.view_private"><OpsPage/></RequirePermission>}/>
-        <Route path="roster" element={<RequirePermission permission="roster.manage"><RosterPage/></RequirePermission>}/>
+        <Route path="roster" element={<RequirePermission permission="event.view_private"><RosterPage/></RequirePermission>}/>
         <Route path="bracket" element={<RequirePermission permission="bracket.manage"><BracketPage/></RequirePermission>}/>
         <Route path="standings" element={<RequirePermission permission="event.view_private"><StandingsPage/></RequirePermission>}/>
         <Route path="manage" element={<RequirePermission permission="event.manage"><EventManagementPage/></RequirePermission>}/>
