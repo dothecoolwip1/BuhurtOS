@@ -194,3 +194,117 @@ export function advanceWinner(matches: MatchRecord[], completedMatchId: UUID, wi
   target.participants.push({ rosterEntryId: winnerRosterEntryId, sideIndex: slot, sourceMatchId: source.id, sourceSlot: slot, isWinnerSource: true });
   return copy;
 }
+
+
+export function generateRoundRobin(params: {
+  organizationId: UUID;
+  seasonId: UUID;
+  eventId: UUID;
+  fightCardId?: UUID;
+  bracketId: UUID;
+  category: string;
+  matchType: string;
+  entries: SeededEntry[];
+  scoringConfig: MatchRecord['scoringConfig'];
+  labelPrefix?: string;
+  orderOffset?: number;
+}): GeneratedBracket {
+  if (params.entries.length < 2) throw new Error('At least two competitors are required to generate a round robin.');
+  const ordered = [...params.entries].sort((a,b) => a.seed - b.seed || a.entry.displayName.localeCompare(b.entry.displayName));
+  const matches: MatchRecord[] = [];
+  let order = params.orderOffset ?? 0;
+  for (let left = 0; left < ordered.length; left += 1) {
+    for (let right = left + 1; right < ordered.length; right += 1) {
+      order += 1;
+      matches.push({
+        id: uuid(),
+        organizationId: params.organizationId,
+        seasonId: params.seasonId,
+        eventId: params.eventId,
+        fightCardId: params.fightCardId,
+        bracketId: params.bracketId,
+        label: (params.labelPrefix ? params.labelPrefix + ' • ' : '') + 'Match ' + order,
+        category: params.category,
+        matchType: params.matchType,
+        scoringConfig: structuredClone(params.scoringConfig),
+        status: 'scheduled',
+        stage: 'pool',
+        scheduledOrder: order,
+        bracketRound: 1,
+        bracketSlot: (params.labelPrefix || 'RR') + '-' + order,
+        participants: [
+          { rosterEntryId: ordered[left].entry.id, sideIndex: 1, seed: ordered[left].seed },
+          { rosterEntryId: ordered[right].entry.id, sideIndex: 2, seed: ordered[right].seed }
+        ],
+        rounds: []
+      });
+    }
+  }
+  return { size: ordered.length, rounds: Math.max(1, ordered.length - 1), matches };
+}
+
+export interface GeneratedPools extends GeneratedBracket {
+  pools: Array<{ name: string; entryIds: UUID[] }>;
+}
+
+export function generateRoundRobinPools(params: {
+  organizationId: UUID;
+  seasonId: UUID;
+  eventId: UUID;
+  fightCardId?: UUID;
+  bracketId: UUID;
+  category: string;
+  matchType: string;
+  entries: SeededEntry[];
+  scoringConfig: MatchRecord['scoringConfig'];
+  targetPoolSize?: number;
+}): GeneratedPools {
+  if (params.entries.length < 3) throw new Error('At least three competitors are required to generate pools.');
+  const targetPoolSize = Math.max(3, params.targetPoolSize ?? 4);
+  const poolCount = Math.max(1, Math.ceil(params.entries.length / targetPoolSize));
+  const pools: SeededEntry[][] = Array.from({ length: poolCount }, () => []);
+  const ordered = [...params.entries].sort((a,b) => a.seed - b.seed || a.entry.displayName.localeCompare(b.entry.displayName));
+
+  for (const candidate of ordered) {
+    const rankedPools = pools
+      .map((pool,index) => ({
+        index,
+        sameTeam: candidate.entry.teamId ? pool.filter(item => item.entry.teamId === candidate.entry.teamId).length : 0,
+        size: pool.length
+      }))
+      .sort((a,b) => a.sameTeam - b.sameTeam || a.size - b.size || a.index - b.index);
+    pools[rankedPools[0].index].push(candidate);
+  }
+
+  const matches: MatchRecord[] = [];
+  let orderOffset = 0;
+  pools.forEach((pool,index) => {
+    const poolName = 'Pool ' + String.fromCharCode(65 + index);
+    const generated = generateRoundRobin({
+      organizationId: params.organizationId,
+      seasonId: params.seasonId,
+      eventId: params.eventId,
+      fightCardId: params.fightCardId,
+      bracketId: params.bracketId,
+      category: params.category,
+      matchType: params.matchType,
+      entries: pool,
+      scoringConfig: params.scoringConfig,
+      labelPrefix: poolName,
+      orderOffset
+    });
+    generated.matches.forEach(match => {
+      match.scheduledOrder = matches.length + 1;
+      match.bracketSlot = poolName.replace(' ','-') + '-' + (matches.length + 1);
+      matches.push(match);
+    });
+    orderOffset = matches.length;
+  });
+
+  return {
+    size: params.entries.length,
+    rounds: Math.max(...pools.map(pool => Math.max(1,pool.length - 1))),
+    matches,
+    pools: pools.map((pool,index) => ({ name: 'Pool ' + String.fromCharCode(65 + index), entryIds: pool.map(item => item.entry.id) }))
+  };
+}
