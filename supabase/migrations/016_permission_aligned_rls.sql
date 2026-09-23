@@ -501,3 +501,46 @@ $$;
 
 revoke execute on function public.review_event_registration(uuid,public.registration_status) from public,anon;
 grant execute on function public.review_event_registration(uuid,public.registration_status) to authenticated;
+
+
+-- Event administrators need supporting directory rows without becoming organization administrators.
+create or replace function private.can_view_managed_profile(check_user uuid,target_user uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select
+    private.is_platform_admin(check_user)
+    or exists(
+      select 1
+      from public.event_memberships target
+      join public.events e on e.id=target.event_id
+      where target.user_id=target_user
+        and private.user_has_permission(check_user,'event.manage',e.organization_id,e.id,target.team_id)
+    );
+$$;
+
+revoke execute on function private.can_view_managed_profile(uuid,uuid) from public,anon,authenticated;
+grant execute on function private.can_view_managed_profile(uuid,uuid) to authenticated;
+
+drop policy if exists teams_event_staff_read on public.teams;
+create policy teams_event_staff_read on public.teams for select to authenticated
+using (
+  exists(
+    select 1 from public.events e
+    where e.organization_id=teams.organization_id
+      and private.user_has_permission((select auth.uid()),'event.view_private',e.organization_id,e.id,teams.id)
+  )
+);
+
+drop policy if exists fighters_event_staff_read on public.fighters;
+create policy fighters_event_staff_read on public.fighters for select to authenticated
+using (
+  exists(
+    select 1 from public.events e
+    where e.organization_id=fighters.organization_id
+      and private.user_has_permission((select auth.uid()),'event.view_private',e.organization_id,e.id,fighters.team_id)
+  )
+);
