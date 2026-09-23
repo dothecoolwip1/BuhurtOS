@@ -12,6 +12,7 @@ import {
   type RegistrationReviewStatus
 } from '../lib/eventAdmin';
 import type { FightCard } from '../types';
+import { hasPermission } from '../lib/permissions';
 
 const reviewStates: Array<{value: Exclude<RegistrationReviewStatus,'pending'>; label:string}> = [
   { value:'approved', label:'Approve' },
@@ -21,9 +22,12 @@ const reviewStates: Array<{value: Exclude<RegistrationReviewStatus,'pending'>; l
 ];
 
 export function EventManagementPage(){
-  const { event, announcements, fightCards, reload } = useAppState();
+  const { event,announcements,fightCards,reload,user }=useAppState();
   const [registrations,setRegistrations]=useState<EventRegistrationAdmin[]>([]);
   const [tab,setTab]=useState<'settings'|'fields'|'registrations'|'announcements'>('settings');
+  const canEventManage=Boolean(event&&hasPermission(user,'event.manage',event.id,event.organizationId));
+  const canRegistration=Boolean(event&&hasPermission(user,'registration.manage',event.id,event.organizationId));
+  const canAnnouncement=Boolean(event&&hasPermission(user,'announcement.manage',event.id,event.organizationId));
   const [message,setMessage]=useState('');
   const [busy,setBusy]=useState(false);
   const [filter,setFilter]=useState<RegistrationReviewStatus|'all'>('all');
@@ -39,10 +43,17 @@ export function EventManagementPage(){
       eventType:event.eventType,
       standingsMode:event.standingsMode,
       registrationOpen:Boolean(event.registrationOpen),
-      livestreamUrl:event.livestreamUrl ?? ''
+      livestreamUrl:event.livestreamUrl??''
     });
-    listEventRegistrations(event.id).then(setRegistrations).catch(error=>setMessage(error instanceof Error?error.message:'Unable to load registrations.'));
-  },[event?.id]);
+    if(canRegistration){
+      listEventRegistrations(event.id).then(setRegistrations).catch(error=>setMessage(error instanceof Error?error.message:'Unable to load registrations.'));
+    }else{
+      setRegistrations([]);
+    }
+    if(canEventManage)setTab(current=>current==='registrations'&&!canRegistration?'settings':current);
+    else if(canRegistration)setTab('registrations');
+    else if(canAnnouncement)setTab('announcements');
+  },[event?.id,canEventManage,canRegistration,canAnnouncement]);
 
   useEffect(()=>{
     setFieldDrafts(Object.fromEntries(fightCards.map(card=>[card.id,{name:card.name,status:card.status}])));
@@ -125,10 +136,15 @@ export function EventManagementPage(){
   return <>
     <section className="section-head">
       <div><span className="eyebrow">Event command centre</span><h1>Manage {event.name}</h1><p>Control publishing, fields, registration intake, livestreaming, standings behaviour and event announcements.</p></div>
-      <div className="header-actions"><button className={tab==='settings'?'primary':''} onClick={()=>setTab('settings')}>Settings</button><button className={tab==='fields'?'primary':''} onClick={()=>setTab('fields')}>Fields</button><button className={tab==='registrations'?'primary':''} onClick={()=>setTab('registrations')}>Registrations {registrations.length>0?'('+registrations.length+')':''}</button><button className={tab==='announcements'?'primary':''} onClick={()=>setTab('announcements')}>Announcements</button></div>
+      <div className="header-actions">
+        {canEventManage&&<button className={tab==='settings'?'primary':''} onClick={()=>setTab('settings')}>Settings</button>}
+        {canEventManage&&<button className={tab==='fields'?'primary':''} onClick={()=>setTab('fields')}>Fields</button>}
+        {canRegistration&&<button className={tab==='registrations'?'primary':''} onClick={()=>setTab('registrations')}>Registrations {registrations.length>0?'('+registrations.length+')':''}</button>}
+        {canAnnouncement&&<button className={tab==='announcements'?'primary':''} onClick={()=>setTab('announcements')}>Announcements</button>}
+      </div>
     </section>
 
-    {tab==='settings'&&<div className="admin-grid">
+    {canEventManage&&tab==='settings'&&<div className="admin-grid">
       <section className="panel-card"><h2>Event state</h2><div className="form-stack">
         <label>Status<select value={settings.status} onChange={e=>setSettings(s=>({...s,status:e.target.value}))}><option value="draft">Draft</option><option value="published">Published</option><option value="live">Live</option><option value="completed">Completed</option><option value="archived">Archived</option></select></label>
         <label>Event type<select value={settings.eventType} onChange={e=>setSettings(s=>({...s,eventType:e.target.value}))}><option value="ranked_competitive">Ranked competitive</option><option value="demo_fun">Demo / fun</option><option value="exhibition">Exhibition</option><option value="clinic_training">Clinic / training</option><option value="custom">Custom</option></select></label>
@@ -141,12 +157,12 @@ export function EventManagementPage(){
       </div></section>
     </div>}
 
-    {tab==='fields'&&<div className="admin-grid">
+    {canEventManage&&tab==='fields'&&<div className="admin-grid">
       <section className="panel-card"><h2>Add tournament field</h2><p>Each field gets an independent fight queue and bullpen state.</p><div className="inline-form"><input value={newFieldName} onChange={e=>setNewFieldName(e.target.value)} placeholder="Field 2 / List B"/><button className="primary" disabled={busy||!newFieldName.trim()} onClick={addField}>Add Field</button></div></section>
       <section className="panel-card"><h2>Fields & lists</h2><div className="field-admin-list">{fightCards.length===0?<div className="state-card">No explicit fields yet. Create one before assigning new competition structures.</div>:[...fightCards].sort((a,b)=>a.sortOrder-b.sortOrder).map(card=>{const draft=fieldDrafts[card.id]??{name:card.name,status:card.status};return <article key={card.id}><div className="form-stack grow"><label>Name<input value={draft.name} onChange={e=>setFieldDrafts(current=>({...current,[card.id]:{...draft,name:e.target.value}}))}/></label><label>Status<select value={draft.status} onChange={e=>setFieldDrafts(current=>({...current,[card.id]:{...draft,status:e.target.value as FightCard['status']}}))}><option value="draft">Draft</option><option value="live">Live</option><option value="locked">Locked</option><option value="archived">Archived</option></select></label></div><button disabled={busy} onClick={()=>saveField(card)}>Save</button></article>;})}</div></section>
     </div>}
 
-    {tab==='registrations'&&<>
+    {canRegistration&&tab==='registrations'&&<>
       <div className="registration-summary">
         {(['pending','approved','waitlisted','rejected','withdrawn'] as const).map(status=><button key={status} className={filter===status?'selected':''} onClick={()=>setFilter(status)}><b>{counts[status]??0}</b><span>{status}</span></button>)}
         <button className={filter==='all'?'selected':''} onClick={()=>setFilter('all')}><b>{registrations.length}</b><span>all</span></button>
@@ -158,7 +174,7 @@ export function EventManagementPage(){
       </article>)}</div>}
     </>}
 
-    {tab==='announcements'&&<div className="admin-grid">
+    {canAnnouncement&&tab==='announcements'&&<div className="admin-grid">
       <section className="panel-card"><h2>New announcement</h2><div className="form-stack">
         <label>Title<input value={announcement.title} onChange={e=>setAnnouncement(a=>({...a,title:e.target.value}))}/></label>
         <label>Message<textarea value={announcement.body} onChange={e=>setAnnouncement(a=>({...a,body:e.target.value}))}/></label>
@@ -169,6 +185,7 @@ export function EventManagementPage(){
       <section className="panel-card"><h2>Event announcements</h2><div className="announcement-list">{announcements.length===0?<div className="state-card">No announcements yet.</div>:announcements.map(item=><article key={item.id}><div className="grow"><b>{item.title}</b><p>{item.body}</p><small>{item.isPublic?'Public':'Internal'}{item.scheduledFor?' · scheduled '+new Date(item.scheduledFor).toLocaleString():''}</small></div><button disabled={busy} onClick={()=>removeAnnouncement(item.id)}>Remove</button></article>)}</div></section>
     </div>}
 
+    {!canEventManage&&!canRegistration&&!canAnnouncement&&<div className="state-card"><h2>No command-centre capabilities assigned</h2><p>Your event role can use other operational views, but it does not include event configuration, registration review, or announcements.</p></div>}
     {message&&<div className="auth-message">{message}</div>}
   </>;
 }
