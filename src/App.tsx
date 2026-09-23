@@ -37,6 +37,7 @@ import { ReportCorrectionPage } from './pages/ReportCorrectionPage';
 import { DuplicateManagementPage } from './pages/DuplicateManagementPage';
 import { RankingsEnginePage } from './pages/RankingsEnginePage';
 import { CheckInPage } from './pages/CheckInPage';
+import { RegistrationsAdminPage } from './pages/RegistrationsAdminPage';
 
 export function App(){
   return <HashRouter>
@@ -52,6 +53,7 @@ export function App(){
           <Route index element={<OpsPage/>}/>
           <Route path="roster" element={<RosterPage/>}/>
           <Route path="check-in" element={<CheckInPage/>}/>
+          <Route path="registrations" element={<RegistrationsAdminPage/>}/>
           <Route path="bracket" element={<BracketPage/>}/>
           <Route path="standings" element={<StandingsPage/>}/>
           <Route path="public" element={<PublicPage/>}/>
