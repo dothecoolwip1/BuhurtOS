@@ -696,3 +696,28 @@ small{color:var(--muted)}
   .public-schedule article{grid-template-columns:48px minmax(0,1fr)}
   .public-schedule article>.status-pill{grid-column:2;justify-self:start}
 }
+
+
+/* Permanent foundation administration */
+.foundation-grid{align-items:start}
+.panel-card>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;min-height:44px}
+.panel-card>summary::-webkit-details-marker{display:none}
+.panel-card>summary::after{content:'+';font-size:1.25rem;color:var(--muted);font-weight:800}
+.panel-card[open]>summary::after{content:'−'}
+.panel-card>summary small{margin-left:auto;margin-right:8px}
+.detail-body{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.config-sections{display:flex;flex-direction:column;gap:16px}
+.row-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.row-actions button{min-height:36px}
+.permission-picker{display:flex;flex-wrap:wrap;gap:7px;padding:10px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.12)}
+.permission-chip{border:1px solid var(--line-strong);background:var(--panel-2);color:var(--soft);border-radius:999px;padding:8px 10px;font-size:.72rem;font-weight:750}
+.permission-chip.selected{border-color:var(--accent);background:rgba(255,138,31,.12);color:#ffd5ad}
+.check-grid label.read-only{opacity:.62;cursor:not-allowed}
+.danger{border-color:rgba(255,91,99,.45)!important;color:#ff9da2!important;background:rgba(255,91,99,.08)!important}
+@media(max-width:720px){
+  .panel-card>summary{align-items:flex-start;flex-wrap:wrap}
+  .panel-card>summary small{width:100%;margin:2px 0 0}
+  .row-actions{width:100%;justify-content:flex-start}
+  .membership-list article{align-items:flex-start;flex-wrap:wrap}
+  .permission-chip{min-height:42px}
+}
