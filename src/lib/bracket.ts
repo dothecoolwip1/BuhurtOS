@@ -343,6 +343,7 @@ export function generateDoubleElimination(params: {
   scoringConfig: MatchRecord['scoringConfig'];
 }): GeneratedBracket {
   if (params.entries.length < 4) throw new Error('Double elimination requires at least four competitors.');
+  if (nextPowerOfTwo(params.entries.length) !== params.entries.length) throw new Error('Double elimination currently requires a power-of-two field (4, 8, 16, 32). Use pools first when the field size is uneven.');
   const upper = generateSingleElimination(params);
   const upperRounds = Math.log2(upper.size);
   const upperMatches = upper.matches;
