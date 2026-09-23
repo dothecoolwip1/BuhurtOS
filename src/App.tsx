@@ -28,6 +28,14 @@ import { SetupPage } from './pages/SetupPage';
 import { PublicPage } from './pages/PublicPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { LoginPage } from './pages/LoginPage';
+import { CompetitionPage } from './pages/CompetitionPage';
+import { RingControlPage } from './pages/RingControlPage';
+import { SchedulePage } from './pages/SchedulePage';
+import { ValidationPage } from './pages/ValidationPage';
+import { CorrectionsPage } from './pages/CorrectionsPage';
+import { ReportCorrectionPage } from './pages/ReportCorrectionPage';
+import { DuplicateManagementPage } from './pages/DuplicateManagementPage';
+import { RankingsEnginePage } from './pages/RankingsEnginePage';
 
 export function App(){
   return <HashRouter>
@@ -37,6 +45,7 @@ export function App(){
         <Route path="/public" element={<ShowcasePublicPage/>}/>
         <Route path="/register" element={<RegistrationPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/corrections/report" element={<ReportCorrectionPage/>}/>
 
         <Route path="/run" element={<Layout/>}>
           <Route index element={<OpsPage/>}/>
@@ -49,6 +58,13 @@ export function App(){
           <Route path="notes" element={<NotesPage/>}/>
           <Route path="sync" element={<SyncPage/>}/>
           <Route path="setup" element={<SetupPage/>}/>
+          <Route path="competition" element={<CompetitionPage/>}/>
+          <Route path="rings" element={<RingControlPage/>}/>
+          <Route path="schedule" element={<SchedulePage/>}/>
+          <Route path="validation" element={<ValidationPage/>}/>
+          <Route path="corrections" element={<CorrectionsPage/>}/>
+          <Route path="duplicates" element={<DuplicateManagementPage/>}/>
+          <Route path="rankings" element={<RankingsEnginePage/>}/>
         </Route>
 
         <Route element={<ShowcaseShell/>}>
