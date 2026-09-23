@@ -1,5 +1,6 @@
 import type { AffiliationType, TeamType } from '../types';
 import { supabase } from './supabase';
+import { assertSafeMerge } from './validation';
 
 export interface AdminOrganization {
   id:string; name:string; shortName:string; region:string; countryCode?:string; websiteUrl?:string;
@@ -190,6 +191,7 @@ export async function reviewClaimAdmin(claimId:string,status:'approved'|'rejecte
 
 export async function mergeAdmin(entityType:'fighter'|'team'|'club',sourceId:string,targetId:string,reason:string):Promise<string>{
   const client=requireClient();
+  assertSafeMerge(sourceId,targetId,reason);
   const {data,error}=await client.rpc('merge_identity_records',{p_entity_type:entityType,p_source_id:sourceId,p_target_id:targetId,p_reason:reason});
   if(error)throw error;
   return String(data);
