@@ -356,8 +356,8 @@ export function advanceBracketResult(matches:MatchRecord[],completedMatchId:UUID
         if(side1&&side2){
           reset.status='scheduled';
           reset.participants=[
-            {rosterEntryId:side1,sideIndex:1,sourceMatchId:source.id,sourceSlot:1,isWinnerSource:winnerParticipant.sideIndex===1},
-            {rosterEntryId:side2,sideIndex:2,sourceMatchId:source.id,sourceSlot:2,isWinnerSource:winnerParticipant.sideIndex===2}
+            {rosterEntryId:side1,sideIndex:1,sourceMatchId:source.id,sourceSlot:1,isWinnerSource:false},
+            {rosterEntryId:side2,sideIndex:2,sourceMatchId:source.id,sourceSlot:2,isWinnerSource:true}
           ];
         }
       }else{
