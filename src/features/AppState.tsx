@@ -113,21 +113,38 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const updateCompliance = useCallback(async (entryId: string, field: 'checkedIn' | 'armorCleared' | 'medicalCleared' | 'waiverConfirmed' | 'weighInCleared', value: boolean) => {
     const before = roster.find(r => r.id === entryId);
     if (!before) return;
+    const column = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' }[field];
+    const expectedValue = before[field];
+
     setRoster(current => current.map(r => r.id === entryId ? { ...r, [field]: value } : r));
+
     if (!supabase) {
       const overrides = JSON.parse(localStorage.getItem('buhurtos-demo-roster-overrides') ?? '{}');
       overrides[entryId] = { ...(overrides[entryId] ?? {}), [field]: value };
       localStorage.setItem('buhurtos-demo-roster-overrides', JSON.stringify(overrides));
       return;
     }
+
     if (!online) {
-      await enqueueMutation({ entity: 'event_roster_entries', entityId: entryId, operation: 'update', payload: { [field]: value }, baseVersion: JSON.stringify(before) });
+      await enqueueMutation({
+        entity: 'roster_clearance',
+        entityId: entryId,
+        operation: 'rpc',
+        payload: { field: column, value, expectedValue }
+      });
       await refreshPending();
       return;
     }
+
     const client = supabase;
-    const column = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' }[field];
-    const { error: writeError } = await client.from('event_roster_entries').update({ [column]: value }).eq('id', entryId);
+    const { error: writeError } = await client.rpc('update_roster_clearance_idempotent', {
+      p_operation_id: crypto.randomUUID(),
+      p_roster_entry_id: entryId,
+      p_field: column,
+      p_value: value,
+      p_expected_value: expectedValue
+    });
+
     if (writeError) {
       setRoster(current => current.map(r => r.id === entryId ? before : r));
       throw writeError;
@@ -244,24 +261,17 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         const { error: e } = await client.rpc('reorder_match_idempotent', { p_operation_id: mutation.id, p_match_id: mutation.entityId, p_direction: payload.direction });
         return e ? { ok: false, error: e.message } : { ok: true };
       }
-      if (mutation.operation === 'update' && mutation.entity === 'event_roster_entries') {
-        const payload = mutation.payload as Record<string, unknown>;
-        const mapped: Record<string, unknown> = {};
-        const map: Record<string, string> = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' };
-        const base = mutation.baseVersion ? JSON.parse(mutation.baseVersion) as Record<string, unknown> : null;
-        const { data: current, error: readError } = await client.from('event_roster_entries').select('checked_in,armor_cleared,medical_cleared,waiver_confirmed,weigh_in_cleared').eq('id', mutation.entityId).single();
-        if (readError) return { ok: false, error: readError.message };
-        for (const [key, value] of Object.entries(payload)) {
-          const column = map[key] ?? key;
-          mapped[column] = value;
-          if (base) {
-            const before = base[key];
-            const remote = (current as Record<string, unknown>)[column];
-            if (remote !== before && remote !== value) return { ok: false, conflict: true, error: `Roster field ${key} changed on another device.` };
-          }
-        }
-        const { error: e } = await client.from('event_roster_entries').update(mapped).eq('id', mutation.entityId);
-        return e ? { ok: false, error: e.message } : { ok: true };
+      if (mutation.operation === 'rpc' && mutation.entity === 'roster_clearance') {
+        const payload = mutation.payload as { field: string; value: boolean; expectedValue: boolean };
+        const { error: e } = await client.rpc('update_roster_clearance_idempotent', {
+          p_operation_id: mutation.id,
+          p_roster_entry_id: mutation.entityId,
+          p_field: payload.field,
+          p_value: payload.value,
+          p_expected_value: payload.expectedValue
+        });
+        if (e) return { ok: false, conflict: /changed since/i.test(e.message), error: e.message };
+        return { ok: true };
       }
       return { ok: false, error: 'Unsupported queued mutation type.' };
     });
