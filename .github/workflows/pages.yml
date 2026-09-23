@@ -31,6 +31,12 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Capture lockfile
+        run: |
+          echo LOCKFILE_BEGIN
+          base64 -w 76 package-lock.json
+          echo LOCKFILE_END
+
       - name: Typecheck
         run: npm run typecheck
 
