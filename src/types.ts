@@ -42,6 +42,7 @@ export interface EventRecord {
   status: EventStatus;
   timezone: string;
   livestreamUrl?: string;
+  rulesetId?: UUID;
   registrationOpen?: boolean;
   registrationFeeCents?: number;
   currency?: string;
@@ -127,6 +128,42 @@ export interface ScoringConfig {
   scoreCapPerRound?: number;
   teamFightMode?: 'survivors' | 'round_wins';
   requireReasonOnForfeit?: boolean;
+}
+
+export interface RulesetSettings {
+  enabledFormats: string[];
+  scoringOverrides: Record<string, Partial<ScoringConfig>>;
+  compliance: {
+    requireCheckIn: boolean;
+    requireArmorClearance: boolean;
+    requireMedicalClearance: boolean;
+    requireWaiver: boolean;
+    requireWeighIn: boolean;
+  };
+  discipline: {
+    yellowCardsBeforeSuspension: number;
+    redCardSuspensionMatches: number;
+  };
+  bracket: {
+    antiFratricide: boolean;
+  };
+}
+
+export interface RulesetRecord {
+  id: UUID;
+  organizationId?: UUID;
+  teamId?: UUID;
+  parentRulesetId?: UUID;
+  name: string;
+  shortName: string;
+  version: string;
+  description?: string;
+  status: 'draft' | 'published' | 'retired';
+  effectiveFrom?: string;
+  effectiveTo?: string;
+  settings: RulesetSettings;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface MatchRecord {
