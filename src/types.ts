@@ -9,7 +9,7 @@ export type ValidationStatus = 'in_progress' | 'submitted' | 'pending_validation
 export type RingStatus = 'idle' | 'preparing' | 'ready' | 'match_underway' | 'medical_hold' | 'marshal_review' | 'delayed' | 'closed';
 export type RosterEntryType = 'fighter' | 'team' | 'ghost_fighter' | 'guest_fighter';
 export type RosterStatus = 'registered' | 'approved' | 'no_show' | 'late' | 'withdrawn';
-export type EventRole = 'event_organizer' | 'field_marshal' | 'assistant_marshal' | 'team_captain' | 'fighter';
+export type EventRole = 'event_organizer' | 'tournament_director' | 'field_marshal' | 'assistant_marshal' | 'scorekeeper' | 'registration_staff' | 'armor_inspector' | 'medical_staff' | 'team_captain' | 'fighter';
 export type OrganizationRole = 'organization_admin' | 'organization_staff';
 export type PlatformRole = 'platform_super_admin' | 'platform_staff';
 
