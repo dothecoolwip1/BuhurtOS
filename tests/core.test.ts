@@ -8,6 +8,7 @@ import { computePoolStandings, generateSeededPools } from '../src/lib/pools';
 import { computeEloRankings } from '../src/lib/ranking';
 import { detectScheduleConflicts } from '../src/lib/schedule';
 import { findDuplicateCandidates, nameSimilarity } from '../src/lib/duplicates';
+import { calculateFighterStatistics, calculateHeadToHead } from '../src/lib/sportsAnalytics';
 import type { EventRecord, MatchRecord, RosterEntry } from '../src/types';
 
 const roster = (id:string,name:string,teamId:string):RosterEntry=>({
@@ -126,5 +127,27 @@ describe('safe livestreams',()=>{
   it('embeds supported HTTPS video URLs only',()=>{
     expect(resolveStreamEmbed('https://youtu.be/dQw4w9WgXcQ')?.embedUrl).toContain('youtube.com/embed/');
     expect(resolveStreamEmbed('http://example.com/not-safe')).toBeNull();
+  });
+});
+
+
+describe('official sporting analytics',()=>{
+  const officialMatches:MatchRecord[]=[
+    {id:'s1',organizationId:'org',seasonId:'season',eventId:'event',label:'A vs C',category:'Duel',matchType:'duel',scoringConfig:scoring,status:'finalized',stage:'bracket',scheduledOrder:1,validationStatus:'final',participants:[{rosterEntryId:'a',sideIndex:1},{rosterEntryId:'c',sideIndex:2}],rounds:[],resultSummary:{winnerSide:1,side1Total:5,side2Total:3,roundsWonSide1:2,roundsWonSide2:1,resultType:'points'}},
+    {id:'s2',organizationId:'org',seasonId:'season',eventId:'event',label:'A vs C disputed',category:'Duel',matchType:'duel',scoringConfig:scoring,status:'finalized',stage:'bracket',scheduledOrder:2,validationStatus:'disputed',participants:[{rosterEntryId:'a',sideIndex:1},{rosterEntryId:'c',sideIndex:2}],rounds:[],resultSummary:{winnerSide:2,side1Total:2,side2Total:4,roundsWonSide1:0,roundsWonSide2:2,resultType:'points'}}
+  ];
+  it('counts accepted results and ignores disputed history',()=>{
+    const stats=calculateFighterStatistics('fighter-a',officialMatches,[
+      {...roster('a','A','red'),fighterId:'fighter-a'},
+      {...roster('c','C','blue'),fighterId:'fighter-c'}
+    ]);
+    expect(stats.matches).toBe(1);expect(stats.wins).toBe(1);expect(stats.pointDifferential).toBe(2);
+  });
+  it('builds head to head from the same official source of truth',()=>{
+    const h2h=calculateHeadToHead('fighter-a','fighter-c',officialMatches,[
+      {...roster('a','A','red'),fighterId:'fighter-a'},
+      {...roster('c','C','blue'),fighterId:'fighter-c'}
+    ]);
+    expect(h2h.meetings).toBe(1);expect(h2h.leftWins).toBe(1);expect(h2h.rightWins).toBe(0);
   });
 });
