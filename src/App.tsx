@@ -30,6 +30,7 @@ import { SetupPage } from './pages/SetupPage';
 import { RegistrationPage } from './pages/RegistrationPage';
 import { PublicPage } from './pages/PublicPage';
 import { EventManagementPage } from './pages/EventManagementPage';
+import { FoundationPage } from './pages/FoundationPage';
 
 function OperationsProvider() {
   return <AppStateProvider><Outlet /></AppStateProvider>;
@@ -39,7 +40,7 @@ function OperationalGate() {
   const { loading, user, dataMode } = useAppState();
   const location = useLocation();
   if (loading) return <div className="state-card">Loading tournament operations…</div>;
-  if (dataMode === 'supabase' && !user) return <Navigate to={`/ops/login${location.search}`} replace />;
+  if (dataMode === 'supabase' && !user) return <Navigate to={'/ops/login' + location.search} replace />;
   return <Layout />;
 }
 
@@ -75,6 +76,7 @@ export function App(){
         <Route path="admin" element={<RequirePermission permission="bracket.manage"><AdminPage/></RequirePermission>}/>
         <Route path="discipline" element={<RequirePermission permission="discipline.manage"><DisciplinePage/></RequirePermission>}/>
         <Route path="notes" element={<RequirePermission permission="notes.team"><NotesPage/></RequirePermission>}/>
+        <Route path="foundation" element={<FoundationPage/>}/>
         <Route path="sync" element={<SyncPage/>}/>
         <Route path="setup" element={<SetupPage/>}/>
       </Route>

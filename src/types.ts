@@ -10,6 +10,8 @@ export type RosterStatus = 'registered' | 'approved' | 'no_show' | 'late' | 'wit
 export type EventRole = 'event_organizer' | 'field_marshal' | 'assistant_marshal' | 'team_captain' | 'fighter';
 export type OrganizationRole = 'organization_admin' | 'organization_staff';
 export type PlatformRole = 'platform_super_admin' | 'platform_staff';
+export type AffiliationType = 'member' | 'mercenary' | 'guest' | 'independent';
+export type DivisionStatus = 'draft' | 'published' | 'retired';
 
 export interface Organization {
   id: UUID;
@@ -48,9 +50,21 @@ export interface EventRecord {
   currency?: string;
 }
 
+export interface Club {
+  id: UUID;
+  organizationId: UUID;
+  name: string;
+  shortName?: string;
+  region?: string;
+  websiteUrl?: string;
+  isActive: boolean;
+  deletedAt?: string;
+}
+
 export interface Team {
   id: UUID;
   organizationId: UUID;
+  clubId?: UUID;
   name: string;
   cityOrRegion?: string;
 }
@@ -58,10 +72,60 @@ export interface Team {
 export interface Fighter {
   id: UUID;
   organizationId: UUID;
+  identityId?: UUID;
   teamId?: UUID;
+  userId?: UUID;
   name: string;
   nickname?: string;
   preferredWeapons: string[];
+  mergedIntoFighterId?: UUID;
+  deletedAt?: string;
+}
+
+export interface FoundationFighter extends Fighter {
+  identityId: UUID;
+}
+
+export interface FighterAffiliation {
+  id: UUID;
+  identityId: UUID;
+  organizationId: UUID;
+  clubId?: UUID;
+  teamId?: UUID;
+  affiliationType: AffiliationType;
+  startsOn: string;
+  endsOn?: string;
+  isPrimary: boolean;
+  sourceEventId?: UUID;
+  notes?: string;
+}
+
+export interface CompetitionDivision {
+  id: UUID;
+  organizationId?: UUID;
+  name: string;
+  slug: string;
+  competitionFormatId: string;
+  rulesetId?: UUID;
+  teamSize?: number;
+  minWeightKg?: number;
+  maxWeightKg?: number;
+  ageMin?: number;
+  ageMax?: number;
+  eligibilityLabel?: string;
+  status: DivisionStatus;
+  metadata: Record<string, unknown>;
+  deletedAt?: string;
+}
+
+export interface EventDivision {
+  id: UUID;
+  eventId: UUID;
+  divisionId: UUID;
+  rulesetId?: UUID;
+  registrationLimit?: number;
+  isRegistrationOpen: boolean;
+  metadata: Record<string, unknown>;
 }
 
 export interface RosterEntry {
@@ -94,6 +158,7 @@ export interface Bracket {
   id: UUID;
   eventId: UUID;
   fightCardId?: UUID;
+  divisionId?: UUID;
   name: string;
   format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'pools_to_bracket';
   category: string;
@@ -173,6 +238,7 @@ export interface MatchRecord {
   eventId: UUID;
   fightCardId?: UUID;
   bracketId?: UUID;
+  divisionId?: UUID;
   label: string;
   category: string;
   matchType: string;

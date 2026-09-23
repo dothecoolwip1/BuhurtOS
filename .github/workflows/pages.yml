@@ -40,10 +40,33 @@ jobs:
       - name: Production build
         run: npx vite build --mode github-pages
 
+  database:
+    name: Rebuild and test Supabase schema
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase
+        run: supabase start
+
+      - name: Rebuild database from migrations
+        run: supabase db reset
+
+      - name: Run pgTAP database tests
+        run: supabase test db
+
   deploy:
     name: Deploy GitHub Pages
     if: github.event_name != 'pull_request'
-    needs: quality
+    needs: [quality, database]
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -25,9 +25,10 @@ export function Layout() {
           {can('bracket.manage') && <NavLink to="/ops/admin">Bracket & Access Tools</NavLink>}
           {can('discipline.manage') && <NavLink to="/ops/discipline">Discipline</NavLink>}
           {can('notes.team') && <NavLink to="/ops/notes">Fight Notes</NavLink>}
+          {canSetup && <NavLink to="/ops/foundation">Identity & Divisions</NavLink>}
           <NavLink to="/ops/sync">Sync Queue</NavLink>
           {canSetup && <NavLink to="/ops/setup">Setup</NavLink>}
-          <NavLink to={`/register${event ? `?event=${event.id}` : ''}`}>Registration</NavLink>
+          <NavLink to={'/register' + (event ? '?event=' + event.id : '')}>Registration</NavLink>
           <NavLink to="/">Platform Home</NavLink>
           {dataMode === 'supabase' && <button className="link-button" onClick={() => signOut()}>Sign Out</button>}
         </div>
@@ -36,7 +37,7 @@ export function Layout() {
         <header className="topbar">
           <div><strong>{event?.name ?? 'BuhurtOS'}</strong><small>{event?.venue ?? 'No event selected'}</small></div>
           <div className="status-row">
-            <span className={`status-pill ${online ? 'ok' : 'warn'}`}>{online ? 'Online' : 'Offline'}</span>
+            <span className={'status-pill ' + (online ? 'ok' : 'warn')}>{online ? 'Online' : 'Offline'}</span>
             <span className="status-pill">{dataMode === 'supabase' ? 'Live DB' : 'Demo'}</span>
             {pendingCount > 0 && <button className="status-pill action" onClick={syncNow}>{pendingCount} queued</button>}
           </div>
