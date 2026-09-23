@@ -173,12 +173,12 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 begin
   new.last_edited_by := coalesce((select auth.uid()), new.last_edited_by);
   return new;
 end;
-$;
+$$;
 
 revoke execute on function private.stamp_foundation_actor() from public, anon, authenticated;
 
@@ -187,18 +187,18 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 begin
   if new.deleted_at is not null and old.deleted_at is null then
     new.deleted_by := coalesce(new.deleted_by, (select auth.uid()));
   end if;
   return new;
 end;
-$;
+$$;
 
 revoke execute on function private.stamp_soft_delete_actor() from public, anon, authenticated;
 
-do $
+do $$
 declare
   v_table text;
 begin
@@ -214,7 +214,7 @@ begin
     execute format('create trigger stamp_soft_delete_actor before update of deleted_at on public.%I for each row execute function private.stamp_soft_delete_actor()',v_table);
   end loop;
 end;
-$;
+$$;
 
 alter table public.fighter_identities enable row level security;
 alter table public.clubs enable row level security;
