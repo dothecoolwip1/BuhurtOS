@@ -589,7 +589,7 @@ on conflict do nothing;
 
 insert into public.role_permissions(role_id,permission_key)
 select r.id,p.permission_key from public.role_definitions r
-cross join lateral unnest(array['event.view_private','registration.manage','roster.manage']::text[]) p(permission_key)
+cross join lateral unnest(array['event.view_private','registration.manage']::text[]) p(permission_key)
 where r.role_key='registration_staff'
 on conflict do nothing;
 
