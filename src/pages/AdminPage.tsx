@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAppState } from '../features/AppState';
 import { checkCompliance } from '../lib/compliance';
-import { generateSingleElimination } from '../lib/bracket';
+import { generateRoundRobin, generateRoundRobinPools, generateSingleElimination } from '../lib/bracket';
 import { addGhostFighter, saveBracketPlan } from '../lib/adminActions';
 import { inviteEventMember, listEventMemberships, removeEventMembership, type EventMembershipView } from '../lib/memberAdmin';
-import type { EventRole } from '../types';
+import { competitionFormatById, competitionFormats } from '../lib/competitionFormats';
+import type { Bracket, EventRole } from '../types';
 
 const assignableRoles: Array<{value: EventRole; label: string}> = [
   { value: 'event_organizer', label: 'Event Organizer' },
@@ -18,6 +19,9 @@ export function AdminPage() {
   const { event, roster, reload } = useAppState();
   const [ghostName, setGhostName] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
+  const [bracketFormat, setBracketFormat] = useState<Bracket['format']>('single_elimination');
+  const [competitionFormatId, setCompetitionFormatId] = useState('longsword');
+  const [poolSize, setPoolSize] = useState(4);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [memberships, setMemberships] = useState<EventMembershipView[]>([]);
@@ -46,11 +50,25 @@ export function AdminPage() {
     setBusy(true); setMessage('');
     try {
       const bracketId = crypto.randomUUID();
-      const plan = generateSingleElimination({ organizationId: event.organizationId, seasonId: event.seasonId, eventId: event.id, bracketId, category: 'Duel', matchType: 'longsword', entries: chosen.map((entry,index) => ({ entry, seed: index + 1 })), scoringConfig: { kind: 'duel', roundsRequired: 3, allowDrawRound: false, scoreCapPerRound: 10 } });
-      await saveBracketPlan(event, plan, { id: bracketId, name: `Duel Bracket ${new Date().toLocaleDateString()}`, category: 'Duel' });
+      const preset = competitionFormatById(competitionFormatId);
+      const entries = chosen.map((entry,index) => ({ entry, seed: index + 1 }));
+      const common = { organizationId: event.organizationId, seasonId: event.seasonId, eventId: event.id, bracketId, category: preset.name, matchType: preset.matchType, entries, scoringConfig: preset.scoringConfig };
+      const plan = bracketFormat === 'round_robin'
+        ? generateRoundRobin(common)
+        : bracketFormat === 'pools_to_bracket'
+          ? generateRoundRobinPools({ ...common, targetPoolSize: poolSize })
+          : generateSingleElimination(common);
+      const poolMetadata = 'pools' in plan ? { pools: plan.pools, targetPoolSize: poolSize } : {};
+      await saveBracketPlan(event, plan, {
+        id: bracketId,
+        name: preset.name + ' ' + bracketFormat.replaceAll('_',' ') + ' ' + new Date().toLocaleDateString(),
+        category: preset.name,
+        format: bracketFormat,
+        metadata: poolMetadata
+      });
       await reload();
-      setMessage(`Bracket created with ${plan.matches.length} matches. Same-team separation and automatic byes were applied.`);
-    } catch (e) { setMessage(e instanceof Error ? e.message : 'Unable to create bracket.'); }
+      setMessage('Competition structure created with ' + plan.matches.length + ' matches.');
+    } catch (e) { setMessage(e instanceof Error ? e.message : 'Unable to create competition structure.'); }
     finally { setBusy(false); }
   };
   const addMember = async () => {
@@ -76,7 +94,7 @@ export function AdminPage() {
     <section className="section-head"><div><span className="eyebrow">Event setup</span><h1>Organizer Tools</h1><p>Administrative actions are kept separate from live field controls.</p></div></section>
     <div className="admin-grid">
       <section className="panel-card"><h2>Add ghost fighter</h2><p>Create an event-only identity immediately. It can later be linked to a permanent fighter without changing historical match references.</p><div className="inline-form"><input value={ghostName} onChange={e => setGhostName(e.target.value)} placeholder="Display name"/><button className="primary" disabled={busy} onClick={addGhost}>Add</button></div></section>
-      <section className="panel-card"><h2>Generate single-elimination bracket</h2><p>Only cleared competitors are selectable. Standard seeding preserves byes while anti-fratricide optimization separates same-team fighters where possible.</p><div className="selector-list">{eligible.map(entry => <label key={entry.id}><input type="checkbox" checked={selected.includes(entry.id)} onChange={e => setSelected(current => e.target.checked ? [...current, entry.id] : current.filter(id => id !== entry.id))}/><span>{entry.displayName}</span></label>)}</div><button className="primary big" disabled={busy || selected.length < 2} onClick={generate}>Generate Bracket</button></section>
+      <section className="panel-card"><h2>Build competition structure</h2><p>Choose the division and competition format. Only cleared competitors can be placed into live competition.</p><div className="form-stack"><label>Division<select value={competitionFormatId} onChange={e=>setCompetitionFormatId(e.target.value)}>{competitionFormats.map(format=><option key={format.id} value={format.id}>{format.name}</option>)}</select></label><label>Format<select value={bracketFormat} onChange={e=>setBracketFormat(e.target.value as Bracket['format'])}><option value="single_elimination">Single elimination</option><option value="round_robin">Round robin</option><option value="pools_to_bracket">Pools</option></select></label>{bracketFormat==='pools_to_bracket'&&<label>Target pool size<input type="number" min="3" max="12" value={poolSize} onChange={e=>setPoolSize(Math.max(3,Number(e.target.value)||4))}/></label>}</div><div className="selector-list">{eligible.map(entry => <label key={entry.id}><input type="checkbox" checked={selected.includes(entry.id)} onChange={e => setSelected(current => e.target.checked ? [...current, entry.id] : current.filter(id => id !== entry.id))}/><span>{entry.displayName}</span></label>)}</div><button className="primary big" disabled={busy || selected.length < 2} onClick={generate}>Generate Competition</button></section>
       <section className="panel-card"><h2>Invite event member</h2><p>Invitations are handled server-side. Service credentials never enter the browser.</p><div className="form-stack"><label>Email<input type="email" value={memberForm.email} onChange={e=>setMemberForm(f=>({...f,email:e.target.value}))}/></label><label>Display name<input value={memberForm.displayName} onChange={e=>setMemberForm(f=>({...f,displayName:e.target.value}))}/></label><label>Role<select value={memberForm.role} onChange={e=>setMemberForm(f=>({...f,role:e.target.value as EventRole,teamId:e.target.value === 'team_captain' ? f.teamId : ''}))}>{assignableRoles.map(role=><option key={role.value} value={role.value}>{role.label}</option>)}</select></label>{memberForm.role === 'team_captain' && <label>Captain team<select value={memberForm.teamId} onChange={e=>setMemberForm(f=>({...f,teamId:e.target.value}))}><option value="">Choose team</option>{teamOptions.map(team=><option key={team.id} value={team.id}>{team.label}</option>)}</select></label>}<button className="primary big" disabled={busy || !memberForm.email} onClick={addMember}>Invite / Assign Access</button></div></section>
       <section className="panel-card"><h2>Event access</h2><p>Removing a role only removes access for this event. It does not delete the account or fighter history.</p><div className="membership-list">{memberships.length === 0 ? <div className="state-card">No managed event roles are visible yet.</div> : memberships.map(member=><article key={member.id}><div><strong>{member.displayName}</strong><small>{member.role.replaceAll('_',' ')}{member.teamId ? ` · team ${member.teamId.slice(0,8)}` : ''}</small></div><button disabled={busy} onClick={()=>removeMember(member.id)}>Remove</button></article>)}</div></section>
     </div>
