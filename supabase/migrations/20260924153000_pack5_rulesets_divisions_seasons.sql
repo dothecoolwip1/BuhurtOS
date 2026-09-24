@@ -1184,6 +1184,264 @@ create trigger pack5_event_division_governance
 before insert or update or delete on public.event_divisions
 for each row execute function private.govern_event_division();
 
+create or replace function private.create_event_ruleset_snapshot(
+  p_event_id uuid,
+  p_ruleset_id uuid
+)
+returns uuid
+language plpgsql
+security invoker
+set search_path=''
+as $
+declare
+  v_event public.events%rowtype;
+  v_ruleset public.rulesets%rowtype;
+  v_snapshot_id uuid;
+  v_chain jsonb;
+  v_sources jsonb;
+begin
+  select * into v_event from public.events where id=p_event_id;
+  if not found then raise exception 'Event not found'; end if;
+
+  select * into v_ruleset from public.rulesets where id=p_ruleset_id;
+  if not found or v_ruleset.status <> 'published' then
+    raise exception 'Event ruleset snapshot requires a published ruleset';
+  end if;
+  if v_ruleset.organization_id is not null and v_ruleset.organization_id <> v_event.organization_id then
+    raise exception 'Ruleset belongs to another organization';
+  end if;
+
+  with recursive chain as (
+    select r.id,r.parent_ruleset_id,r.name,r.short_name,r.version,0 as depth,array[r.id] as path
+    from public.rulesets r where r.id=p_ruleset_id
+    union all
+    select p.id,p.parent_ruleset_id,p.name,p.short_name,p.version,c.depth+1,c.path || p.id
+    from public.rulesets p
+    join chain c on p.id=c.parent_ruleset_id
+    where not p.id=any(c.path)
+  )
+  select coalesce(jsonb_agg(
+    jsonb_build_object('id',id,'name',name,'shortName',short_name,'version',version)
+    order by depth desc
+  ),'[]'::jsonb)
+  into v_chain
+  from chain;
+
+  with recursive chain_ids as (
+    select r.id,r.parent_ruleset_id,array[r.id] as path
+    from public.rulesets r where r.id=p_ruleset_id
+    union all
+    select p.id,p.parent_ruleset_id,c.path || p.id
+    from public.rulesets p
+    join chain_ids c on p.id=c.parent_ruleset_id
+    where not p.id=any(c.path)
+  )
+  select coalesce(jsonb_agg(
+    jsonb_build_object(
+      'rulesetId',s.ruleset_id,'label',s.label,'url',s.source_url,'version',s.version_label,
+      'effectiveFrom',s.effective_from,'effectiveTo',s.effective_to,'kind',s.source_kind,
+      'accessedOn',s.accessed_on
+    ) order by s.created_at
+  ),'[]'::jsonb)
+  into v_sources
+  from public.ruleset_sources s
+  where s.ruleset_id in (select id from chain_ids)
+    and s.source_kind <> 'internal';
+
+  insert into public.event_ruleset_snapshots(
+    event_id,ruleset_id,ruleset_name,ruleset_short_name,ruleset_version,
+    resolved_settings,eligibility_policy,scoring_policy,tournament_policy,ranking_policy,
+    ruleset_chain,source_snapshot
+  ) values (
+    p_event_id,p_ruleset_id,v_ruleset.name,v_ruleset.short_name,v_ruleset.version,
+    private.resolve_ruleset_settings(p_ruleset_id),
+    private.resolve_ruleset_policy(p_ruleset_id,'eligibility'),
+    private.resolve_ruleset_policy(p_ruleset_id,'scoring'),
+    private.resolve_ruleset_policy(p_ruleset_id,'tournament'),
+    private.resolve_ruleset_policy(p_ruleset_id,'ranking'),
+    v_chain,v_sources
+  ) returning id into v_snapshot_id;
+
+  return v_snapshot_id;
+end;
+$;
+
+revoke execute on function private.create_event_ruleset_snapshot(uuid,uuid) from public,anon;
+grant execute on function private.create_event_ruleset_snapshot(uuid,uuid) to authenticated;
+
+create or replace function public.assign_event_division_guarded(
+  p_event_id uuid,
+  p_division_id uuid,
+  p_registration_limit integer default null
+)
+returns uuid
+language plpgsql
+security invoker
+set search_path=''
+as $
+declare
+  v_event public.events%rowtype;
+  v_division public.competition_divisions%rowtype;
+  v_ruleset_id uuid;
+  v_snapshot_id uuid;
+  v_id uuid;
+begin
+  select * into v_event from public.events where id=p_event_id;
+  if not found then raise exception 'Event not found'; end if;
+  if not (
+    private.is_platform_admin((select auth.uid()))
+    or private.has_org_role((select auth.uid()),v_event.organization_id,array['organization_admin']::public.organization_role[])
+    or private.has_event_role((select auth.uid()),v_event.id,array['event_organizer']::public.event_role[])
+  ) then raise exception 'Not authorized to assign event divisions'; end if;
+  if v_event.status not in ('draft','published') then
+    raise exception 'Live or historical event divisions cannot be changed';
+  end if;
+
+  select * into v_division from public.competition_divisions where id=p_division_id;
+  if not found or v_division.status <> 'published' then
+    raise exception 'Only published divisions can be assigned to events';
+  end if;
+  if v_division.organization_id is not null and v_division.organization_id <> v_event.organization_id then
+    raise exception 'Division belongs to another organization';
+  end if;
+  if p_registration_limit is not null and p_registration_limit < 1 then
+    raise exception 'Registration limit must be positive';
+  end if;
+
+  v_ruleset_id := coalesce(v_division.ruleset_id,v_event.ruleset_id);
+  if v_ruleset_id is null then
+    raise exception 'Lock a published event or division ruleset before assigning this division';
+  end if;
+
+  if v_ruleset_id = v_event.ruleset_id and v_event.ruleset_snapshot_id is not null then
+    v_snapshot_id := v_event.ruleset_snapshot_id;
+  else
+    v_snapshot_id := private.create_event_ruleset_snapshot(p_event_id,v_ruleset_id);
+  end if;
+
+  insert into public.event_divisions(
+    event_id,division_id,ruleset_id,ruleset_snapshot_id,registration_limit,is_registration_open
+  ) values (
+    p_event_id,p_division_id,v_ruleset_id,v_snapshot_id,p_registration_limit,true
+  )
+  returning id into v_id;
+
+  insert into public.audit_log(organization_id,event_id,actor_user_id,table_name,record_id,action,payload)
+  values (
+    v_event.organization_id,p_event_id,(select auth.uid()),'event_divisions',v_id,'assign_event_division',
+    jsonb_build_object('divisionId',p_division_id,'rulesetId',v_ruleset_id,'rulesetSnapshotId',v_snapshot_id)
+  );
+
+  return v_id;
+end;
+$;
+
+create or replace function public.remove_event_division_guarded(
+  p_event_division_id uuid,
+  p_expected_updated_at timestamptz
+)
+returns void
+language plpgsql
+security invoker
+set search_path=''
+as $
+declare
+  v_row public.event_divisions%rowtype;
+  v_event public.events%rowtype;
+begin
+  select * into v_row from public.event_divisions where id=p_event_division_id for update;
+  if not found then raise exception 'Event division not found'; end if;
+  select * into v_event from public.events where id=v_row.event_id;
+  if not found then raise exception 'Event not found'; end if;
+  if not (
+    private.is_platform_admin((select auth.uid()))
+    or private.has_org_role((select auth.uid()),v_event.organization_id,array['organization_admin']::public.organization_role[])
+    or private.has_event_role((select auth.uid()),v_event.id,array['event_organizer']::public.event_role[])
+  ) then raise exception 'Not authorized to remove event divisions'; end if;
+  if v_event.status not in ('draft','published') then
+    raise exception 'Live or historical event divisions cannot be changed';
+  end if;
+  if p_expected_updated_at is null or v_row.updated_at <> p_expected_updated_at then
+    raise exception 'Event division changed on another device';
+  end if;
+
+  delete from public.event_divisions where id=v_row.id;
+
+  insert into public.audit_log(organization_id,event_id,actor_user_id,table_name,record_id,action,payload)
+  values (
+    v_event.organization_id,v_event.id,(select auth.uid()),'event_divisions',v_row.id,'remove_event_division',
+    jsonb_build_object('divisionId',v_row.division_id,'rulesetSnapshotId',v_row.ruleset_snapshot_id)
+  );
+end;
+$;
+
+revoke execute on function public.assign_event_division_guarded(uuid,uuid,integer) from public,anon;
+grant execute on function public.assign_event_division_guarded(uuid,uuid,integer) to authenticated;
+revoke execute on function public.remove_event_division_guarded(uuid,timestamptz) from public,anon;
+grant execute on function public.remove_event_division_guarded(uuid,timestamptz) to authenticated;
+
+create or replace function private.govern_event_division()
+returns trigger
+language plpgsql
+security definer
+set search_path=''
+as $
+declare
+  v_event public.events%rowtype;
+  v_division public.competition_divisions%rowtype;
+  v_snapshot public.event_ruleset_snapshots%rowtype;
+  v_effective_ruleset_id uuid;
+begin
+  select * into v_event from public.events where id=coalesce(new.event_id,old.event_id);
+  if not found then raise exception 'Event not found'; end if;
+
+  if tg_op='DELETE' then
+    if v_event.status not in ('draft','published') then raise exception 'Live or historical event divisions cannot be removed'; end if;
+    return old;
+  end if;
+
+  if v_event.status not in ('draft','published') then raise exception 'Live or historical event divisions cannot be changed'; end if;
+
+  if tg_op='UPDATE' then
+    if old.division_id is distinct from new.division_id
+      or old.division_snapshot is distinct from new.division_snapshot
+      or old.ruleset_id is distinct from new.ruleset_id
+      or old.ruleset_snapshot_id is distinct from new.ruleset_snapshot_id
+    then raise exception 'Event division identity and snapshots are immutable'; end if;
+    return new;
+  end if;
+
+  select * into v_division from public.competition_divisions where id=new.division_id;
+  if not found or v_division.status <> 'published' then raise exception 'Only published divisions can be assigned to events'; end if;
+  if v_division.organization_id is not null and v_division.organization_id <> v_event.organization_id then
+    raise exception 'Division belongs to another organization';
+  end if;
+
+  v_effective_ruleset_id := coalesce(new.ruleset_id,v_division.ruleset_id,v_event.ruleset_id);
+  if v_effective_ruleset_id is null or new.ruleset_snapshot_id is null then
+    raise exception 'Event division requires an immutable ruleset snapshot';
+  end if;
+
+  select * into v_snapshot from public.event_ruleset_snapshots where id=new.ruleset_snapshot_id;
+  if not found or v_snapshot.event_id <> v_event.id or v_snapshot.ruleset_id <> v_effective_ruleset_id then
+    raise exception 'Event division ruleset snapshot does not match its effective ruleset';
+  end if;
+
+  new.ruleset_id := v_effective_ruleset_id;
+  new.division_snapshot := jsonb_build_object(
+    'id',v_division.id,'name',v_division.name,'slug',v_division.slug,'version',v_division.version,
+    'competitionFormatId',v_division.competition_format_id,'rulesetId',v_division.ruleset_id,
+    'teamSize',v_division.team_size,'minWeightKg',v_division.min_weight_kg,'maxWeightKg',v_division.max_weight_kg,
+    'ageMin',v_division.age_min,'ageMax',v_division.age_max,'minExperienceYears',v_division.min_experience_years,
+    'maxExperienceYears',v_division.max_experience_years,'eligibilityLabel',v_division.eligibility_label,
+    'eligibilityRules',v_division.eligibility_rules,'eligibilityExplanation',v_division.eligibility_explanation
+  );
+  return new;
+end;
+$;
+
+revoke execute on function private.govern_event_division() from public,anon,authenticated;
+
 create or replace function private.enforce_event_season_and_snapshot()
 returns trigger
 language plpgsql
@@ -1204,6 +1462,13 @@ begin
 
   if tg_op='UPDATE' and old.status in ('live','completed','archived') and old.season_id is distinct from new.season_id then
     raise exception 'Live or historical events cannot move to another season';
+  end if;
+
+  if tg_op='UPDATE'
+    and old.ruleset_id is distinct from new.ruleset_id
+    and exists (select 1 from public.event_divisions ed where ed.event_id=old.id)
+  then
+    raise exception 'Remove event divisions before changing the event ruleset';
   end if;
 
   if new.ruleset_snapshot_id is not null then
