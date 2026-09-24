@@ -19,13 +19,13 @@ describe('Pack 5 competition format support',()=>{
     expect(verifiedCompetitionFormats.length).toBeGreaterThan(0);
     expect(verifiedCompetitionFormats.every(format=>format.supportLevel==='verified')).toBe(true);
     expect(verifiedCompetitionFormats.map(format=>format.id)).toEqual(
-      expect.arrayContaining(['longsword','sword_buckler','sword_shield','polearm','3v3','5v5','12v12'])
+      expect.arrayContaining(['longsword','sword_buckler','sword_shield','polearm','3v3','5v5','12v12','outrance'])
     );
   });
 
   it('labels organization templates instead of presenting them as verified rules',()=>{
     expect(competitionFormats.find(format=>format.id==='21v21')?.supportLevel).toBe('custom_template');
-    expect(competitionFormats.find(format=>format.id==='outrance')?.supportLevel).toBe('configurable');
+    expect(competitionFormats.find(format=>format.id==='outrance')?.supportLevel).toBe('verified');
   });
 });
 
