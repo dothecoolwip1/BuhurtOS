@@ -208,7 +208,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       throw writeError;
     }
     await reload();
-  }, [roster, online, refreshPending]);
+  }, [roster, online, refreshPending, reload]);
 
   const finalizeResult = useCallback(async (matchId: string, rounds: ScoreRound[], forfeit?: { side: 1 | 2; reason: string }) => {
     const match = matches.find(m => m.id === matchId);
@@ -281,7 +281,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       throw rpcError;
     }
     await reload();
-  }, [matches, online, refreshPending]);
+  }, [matches, online, refreshPending, reload]);
 
   const setMatchStatus = useCallback(async (matchId: string, status: MatchStatus) => {
     const match = matches.find(m => m.id === matchId);
