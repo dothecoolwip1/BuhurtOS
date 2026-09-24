@@ -222,10 +222,13 @@ export async function listEventDivisions(eventId:string):Promise<EventDivision[]
   return (data??[]).map(eventDivisionRow);
 }
 
-export async function assignEventDivision(event:EventRecord,divisionId:string,registrationLimit?:number):Promise<void>{
+export async function assignEventDivision(
+  event:EventRecord,divisionId:string,registrationLimit?:number,effectiveWindowExceptionReason?:string
+):Promise<void>{
   if(!supabase)return;
   const {error}=await supabase.rpc('assign_event_division_guarded',{
-    p_event_id:event.id,p_division_id:divisionId,p_registration_limit:registrationLimit??null
+    p_event_id:event.id,p_division_id:divisionId,p_registration_limit:registrationLimit??null,
+    p_effective_window_exception_reason:effectiveWindowExceptionReason?.trim()||null
   });
   if(error)throw error;
 }
