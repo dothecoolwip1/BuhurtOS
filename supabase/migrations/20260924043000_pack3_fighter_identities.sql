@@ -92,8 +92,7 @@ create table public.fighter_identity_private_profiles (
   revision bigint not null default 1 check (revision > 0),
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
-  last_edited_by uuid references public.profiles(id) on delete set null,
-  check (birth_date is null or birth_date <= current_date)
+  last_edited_by uuid references public.profiles(id) on delete set null
 );
 
 create trigger fighter_identity_private_profiles_updated
@@ -1299,7 +1298,7 @@ begin
     and a.revoked_at is null
   on conflict (identity_id, user_id, relationship)
   do update set
-    verified_at = greatest(public.fighter_identity_accounts.verified_at, excluded.verified_at),
+    verified_at = greatest(fighter_identity_accounts.verified_at, excluded.verified_at),
     revoked_at = null;
 
   insert into public.fighter_identity_aliases(
