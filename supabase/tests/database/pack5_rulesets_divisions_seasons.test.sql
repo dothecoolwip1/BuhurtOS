@@ -252,11 +252,11 @@ select throws_ok(
 );
 
 select lives_ok(
-  $select public.assign_event_division_guarded(
+  $$select public.assign_event_division_guarded(
     '51000000-0000-0000-0000-000000000030',
     '51000000-0000-0000-0000-000000000200',
     32
-  )$,
+  )$$,
   'published division can be assigned to a draft event through governed mutation'
 );
 
@@ -308,11 +308,11 @@ set status='published'
 where id='51000000-0000-0000-0000-000000000201';
 
 select lives_ok(
-  $select public.assign_event_division_guarded(
+  $$select public.assign_event_division_guarded(
     '51000000-0000-0000-0000-000000000030',
     '51000000-0000-0000-0000-000000000201',
     8
-  )$,
+  )$$,
   'division-specific published ruleset can override the event default'
 );
 
