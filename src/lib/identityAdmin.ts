@@ -53,6 +53,10 @@ function rowToClub(row: any): Club {
     region: row.region || undefined,
     websiteUrl: row.website_url || undefined,
     isActive: row.is_active,
+    visibility: row.visibility || undefined,
+    publicDescription: row.public_description || undefined,
+    logoPath: row.logo_path || undefined,
+    publicContactEmail: row.public_contact_email || undefined,
     deletedAt: row.deleted_at || undefined
   };
 }
@@ -136,7 +140,19 @@ export async function listTeams(organizationId: string): Promise<Team[]> {
   if (!supabase) return [];
   const { data, error } = await supabase.from('teams').select('id,organization_id,name,city_or_region,club_id').eq('organization_id', organizationId).is('deleted_at', null).order('name');
   if (error) throw error;
-  return (data || []).map((row: any) => ({ id: row.id, organizationId: row.organization_id, name: row.name, cityOrRegion: row.city_or_region || undefined, clubId: row.club_id || undefined }));
+  return (data || []).map((row: any) => ({
+    id: row.id,
+    organizationId: row.organization_id,
+    name: row.name,
+    shortName: row.short_name || undefined,
+    cityOrRegion: row.city_or_region || undefined,
+    clubId: row.club_id || undefined,
+    status: row.status || undefined,
+    isActive: row.is_active,
+    visibility: row.visibility || undefined,
+    publicDescription: row.public_description || undefined,
+    deletedAt: row.deleted_at || undefined
+  }));
 }
 
 export async function listClubs(organizationId: string): Promise<Club[]> {
@@ -155,9 +171,19 @@ export async function createClub(organizationId: string, input: { name: string; 
     writeDemo(key, [...readDemo<Club>(key), row]);
     return row;
   }
-  const { data, error } = await supabase.from('clubs').insert({ organization_id: organizationId, name: cleanName, short_name: input.shortName?.trim() || null, region: input.region?.trim() || null, website_url: input.websiteUrl?.trim() || null }).select('*').single();
+  const { data: clubId, error } = await supabase.rpc('create_club', {
+    p_organization: organizationId,
+    p_name: cleanName,
+    p_short_name: input.shortName?.trim() || null,
+    p_region: input.region?.trim() || null,
+    p_visibility: 'members',
+    p_description: null,
+    p_website: input.websiteUrl?.trim() || null
+  });
   if (error) throw error;
-  return rowToClub(data);
+  const result = await supabase.from('clubs').select('*').eq('id', clubId as string).single();
+  if (result.error) throw result.error;
+  return rowToClub(result.data);
 }
 
 export async function updateClub(organizationId: string, clubId: string, input: { name: string; shortName?: string; region?: string; websiteUrl?: string }): Promise<void> {
@@ -168,12 +194,17 @@ export async function updateClub(organizationId: string, clubId: string, input: 
     writeDemo(key, readDemo<Club>(key).map(row => row.id === clubId ? { ...row, name: cleanName, shortName: input.shortName?.trim() || undefined, region: input.region?.trim() || undefined, websiteUrl: input.websiteUrl?.trim() || undefined } : row));
     return;
   }
-  const { error } = await supabase.from('clubs').update({
-    name: cleanName,
-    short_name: input.shortName?.trim() || null,
-    region: input.region?.trim() || null,
-    website_url: input.websiteUrl?.trim() || null
-  }).eq('id', clubId).eq('organization_id', organizationId).is('deleted_at', null);
+  const existing = await supabase.from('clubs').select('visibility,public_description').eq('id', clubId).eq('organization_id', organizationId).single();
+  if (existing.error) throw existing.error;
+  const { error } = await supabase.rpc('update_club', {
+    p_club: clubId,
+    p_name: cleanName,
+    p_short_name: input.shortName?.trim() || null,
+    p_region: input.region?.trim() || null,
+    p_visibility: existing.data.visibility || 'members',
+    p_description: existing.data.public_description || null,
+    p_website: input.websiteUrl?.trim() || null
+  });
   if (error) throw error;
 }
 
@@ -184,7 +215,7 @@ export async function archiveClub(organizationId: string, clubId: string): Promi
     writeDemo(key, readDemo<Club>(key).map(row => row.id === clubId ? { ...row, isActive: false, deletedAt } : row));
     return;
   }
-  const { error } = await supabase.from('clubs').update({ is_active: false, deleted_at: deletedAt }).eq('id', clubId).eq('organization_id', organizationId).is('deleted_at', null);
+  const { error } = await supabase.rpc('archive_club', { p_club: clubId });
   if (error) throw error;
 }
 
