@@ -1,0 +1,458 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select no_plan();
+
+insert into auth.users(
+  id,aud,role,email,encrypted_password,email_confirmed_at,
+  raw_app_meta_data,raw_user_meta_data,created_at,updated_at
+) values
+('51000000-0000-0000-0000-000000000001','authenticated','authenticated','pack5-admin-a@buhurtos.test','',timezone('utc',now()),'{}','{"display_name":"Pack 5 Admin A"}',timezone('utc',now()),timezone('utc',now())),
+('51000000-0000-0000-0000-000000000002','authenticated','authenticated','pack5-organizer@buhurtos.test','',timezone('utc',now()),'{}','{"display_name":"Pack 5 Organizer"}',timezone('utc',now()),timezone('utc',now())),
+('52000000-0000-0000-0000-000000000001','authenticated','authenticated','pack5-admin-b@buhurtos.test','',timezone('utc',now()),'{}','{"display_name":"Pack 5 Admin B"}',timezone('utc',now()),timezone('utc',now()));
+
+insert into public.profiles(id,display_name)
+values
+('51000000-0000-0000-0000-000000000001','Pack 5 Admin A'),
+('51000000-0000-0000-0000-000000000002','Pack 5 Organizer'),
+('52000000-0000-0000-0000-000000000001','Pack 5 Admin B')
+on conflict(id) do nothing;
+
+insert into public.organizations(id,name,short_name,region,status)
+values
+('51000000-0000-0000-0000-000000000010','Pack Five Org A','P5A','Test A','active'),
+('52000000-0000-0000-0000-000000000010','Pack Five Org B','P5B','Test B','active');
+
+insert into public.organization_memberships(organization_id,user_id,role)
+values
+('51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000001','organization_admin'),
+('52000000-0000-0000-0000-000000000010','52000000-0000-0000-0000-000000000001','organization_admin');
+
+insert into public.seasons(
+  id,organization_id,name,starts_at,ends_at,status,created_by,last_edited_by
+) values
+('51000000-0000-0000-0000-000000000020','51000000-0000-0000-0000-000000000010','2026 Season','2026-01-01T00:00:00Z','2026-12-31T23:59:59Z','active','51000000-0000-0000-0000-000000000001','51000000-0000-0000-0000-000000000001'),
+('52000000-0000-0000-0000-000000000020','52000000-0000-0000-0000-000000000010','2026 Season B','2026-01-01T00:00:00Z','2026-12-31T23:59:59Z','active','52000000-0000-0000-0000-000000000001','52000000-0000-0000-0000-000000000001');
+
+insert into public.events(
+  id,organization_id,season_id,name,venue,starts_at,ends_at,event_type,standings_mode,status,timezone,created_by,last_edited_by
+) values
+('51000000-0000-0000-0000-000000000030','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000020','Pack Five Event','Arena','2026-09-26T15:00:00Z','2026-09-27T23:00:00Z','ranked_competitive','season_and_event','draft','UTC','51000000-0000-0000-0000-000000000001','51000000-0000-0000-0000-000000000001');
+
+insert into public.event_memberships(event_id,user_id,role)
+values('51000000-0000-0000-0000-000000000030','51000000-0000-0000-0000-000000000002','event_organizer');
+
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','51000000-0000-0000-0000-000000000001',true);
+
+insert into public.rulesets(
+  id,organization_id,name,short_name,version,status,settings,
+  eligibility_policy,scoring_policy,tournament_policy,ranking_policy
+) values (
+  '51000000-0000-0000-0000-000000000100',
+  '51000000-0000-0000-0000-000000000010',
+  'Pack Five Base Rules','P5 BASE','2026.1','draft',
+  '{"enabledFormats":["longsword","5v5"],"compliance":{"requireWeighIn":true},"discipline":{"yellowCardsBeforeSuspension":2},"bracket":{"antiFratricide":true}}',
+  '{"minimumAge":18}',
+  '{"duels":{"sourceDriven":true}}',
+  '{"bracketPolicy":"source-driven"}',
+  '{"method":"organization-defined"}'
+);
+
+select lives_ok(
+  $$insert into public.ruleset_sources(
+    id,ruleset_id,label,source_url,version_label,source_kind,accessed_on
+  ) values(
+    '51000000-0000-0000-0000-000000000110',
+    '51000000-0000-0000-0000-000000000100',
+    'Official governing rules',
+    'https://www.buhurtinternational.com/rules',
+    '2026 source review',
+    'official',
+    '2026-09-24'
+  )$$,
+  'organization admin can attach a source to a draft ruleset'
+);
+
+select lives_ok(
+  format(
+    'select public.transition_ruleset_guarded(%L::uuid,%L::timestamptz,%L)',
+    '51000000-0000-0000-0000-000000000100',
+    (select updated_at::text from public.rulesets where id='51000000-0000-0000-0000-000000000100'),
+    'review'
+  ),
+  'draft ruleset can enter review'
+);
+
+select lives_ok(
+  format(
+    'select public.transition_ruleset_guarded(%L::uuid,%L::timestamptz,%L)',
+    '51000000-0000-0000-0000-000000000100',
+    (select updated_at::text from public.rulesets where id='51000000-0000-0000-0000-000000000100'),
+    'published'
+  ),
+  'reviewed sourced ruleset can be published'
+);
+
+select throws_ok(
+  $$update public.rulesets
+    set description='silently changed after publication'
+    where id='51000000-0000-0000-0000-000000000100'$$,
+  'P0001',
+  'Only draft rulesets can be edited',
+  'published ruleset content is immutable'
+);
+
+insert into public.rulesets(
+  id,organization_id,parent_ruleset_id,name,short_name,version,status,settings,
+  eligibility_policy,scoring_policy,tournament_policy,ranking_policy,
+  effective_from,effective_to
+) values (
+  '51000000-0000-0000-0000-000000000101',
+  '51000000-0000-0000-0000-000000000010',
+  '51000000-0000-0000-0000-000000000100',
+  'Pack Five Child Rules','P5 CHILD','2026.2','draft',
+  '{"enabledFormats":["longsword"],"compliance":{"requireWeighIn":false},"scoringOverrides":{"longsword":{"roundsRequired":5}}}',
+  '{"medicalDeclarationRequired":true}',
+  '{"duels":{"localOverride":"documented"}}',
+  '{"fieldCount":3}',
+  '{"minimumRankedEntrants":3}',
+  '2026-01-01T00:00:00Z','2027-01-01T00:00:00Z'
+);
+
+insert into public.ruleset_sources(
+  ruleset_id,label,source_url,version_label,source_kind,accessed_on
+) values (
+  '51000000-0000-0000-0000-000000000101',
+  'Organization amendment',
+  'https://www.hacsacanada.com/buhurt-international-rules',
+  'Reviewed 2026-09-24',
+  'organization',
+  '2026-09-24'
+);
+
+select public.transition_ruleset_guarded(
+  '51000000-0000-0000-0000-000000000101',
+  (select updated_at from public.rulesets where id='51000000-0000-0000-0000-000000000101'),
+  'review'
+);
+select public.transition_ruleset_guarded(
+  '51000000-0000-0000-0000-000000000101',
+  (select updated_at from public.rulesets where id='51000000-0000-0000-0000-000000000101'),
+  'published'
+);
+
+select is(
+  private.resolve_ruleset_settings('51000000-0000-0000-0000-000000000101') #>> '{compliance,requireWeighIn}',
+  'false',
+  'child ruleset overrides parent compliance without losing inheritance'
+);
+
+select is(
+  private.resolve_ruleset_settings('51000000-0000-0000-0000-000000000101') #>> '{bracket,antiFratricide}',
+  'true',
+  'child ruleset preserves inherited bracket policy'
+);
+
+select is(
+  private.resolve_ruleset_policy('51000000-0000-0000-0000-000000000101','eligibility') #>> '{minimumAge}',
+  '18',
+  'eligibility policy inherits independently'
+);
+
+select is(
+  private.resolve_ruleset_policy('51000000-0000-0000-0000-000000000101','eligibility') #>> '{medicalDeclarationRequired}',
+  'true',
+  'child eligibility policy merges independently'
+);
+
+select lives_ok(
+  format(
+    'select public.assign_event_ruleset_guarded(%L::uuid,%L::uuid,%L::timestamptz,null)',
+    '51000000-0000-0000-0000-000000000030',
+    '51000000-0000-0000-0000-000000000101',
+    (select updated_at::text from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  'event can lock a published ruleset snapshot'
+);
+
+select is(
+  (
+    select resolved_settings #>> '{scoringOverrides,longsword,roundsRequired}'
+    from public.event_ruleset_snapshots
+    where id=(select ruleset_snapshot_id from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  '5',
+  'event snapshot stores resolved scoring configuration'
+);
+
+select is(
+  (
+    select eligibility_policy #>> '{minimumAge}'
+    from public.event_ruleset_snapshots
+    where id=(select ruleset_snapshot_id from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  '18',
+  'event snapshot stores inherited eligibility policy'
+);
+
+select cmp_ok(
+  (
+    select jsonb_array_length(source_snapshot)
+    from public.event_ruleset_snapshots
+    where id=(select ruleset_snapshot_id from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  '>=',
+  2,
+  'event snapshot stores source provenance from the inheritance chain'
+);
+
+insert into public.competition_divisions(
+  id,organization_id,name,slug,competition_format_id,ruleset_id,team_size,
+  age_min,min_experience_years,eligibility_label,eligibility_rules,eligibility_explanation,status
+) values (
+  '51000000-0000-0000-0000-000000000200',
+  '51000000-0000-0000-0000-000000000010',
+  'Adult Longsword','adult-longsword','longsword',
+  '51000000-0000-0000-0000-000000000101',
+  1,18,0,
+  'Adult division',
+  '[{"kind":"age","min":18,"label":"At least 18 on event start"},{"kind":"declaration","key":"equipment_check","label":"Pass equipment check"}]',
+  'Age is evaluated on the event date. Equipment eligibility requires organizer confirmation.',
+  'draft'
+);
+
+update public.competition_divisions
+set status='published'
+where id='51000000-0000-0000-0000-000000000200';
+
+select throws_ok(
+  $$update public.competition_divisions
+    set age_min=21
+    where id='51000000-0000-0000-0000-000000000200'$$,
+  'P0001',
+  'Published and retired divisions are immutable; create a new version',
+  'published division eligibility cannot be rewritten'
+);
+
+select lives_ok(
+  $$insert into public.event_divisions(event_id,division_id,registration_limit)
+    values(
+      '51000000-0000-0000-0000-000000000030',
+      '51000000-0000-0000-0000-000000000200',
+      32
+    )$$,
+  'published division can be assigned to a draft event'
+);
+
+select is(
+  (
+    select division_snapshot #>> '{version}'
+    from public.event_divisions
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and division_id='51000000-0000-0000-0000-000000000200'
+  ),
+  '1',
+  'event division records immutable division version snapshot'
+);
+
+select lives_ok(
+  $$select public.create_division_version('51000000-0000-0000-0000-000000000200')$$,
+  'published division can be cloned into a new draft version'
+);
+
+select is(
+  (
+    select max(version)::text
+    from public.competition_divisions
+    where organization_id='51000000-0000-0000-0000-000000000010'
+      and slug='adult-longsword'
+  ),
+  '2',
+  'division versioning increments without rewriting version one'
+);
+
+update public.competition_divisions
+set status='retired'
+where id='51000000-0000-0000-0000-000000000200';
+
+select is(
+  (
+    select division_snapshot #>> '{ageMin}'
+    from public.event_divisions
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and division_id='51000000-0000-0000-0000-000000000200'
+  ),
+  '18',
+  'retiring a division does not alter the event snapshot'
+);
+
+insert into public.rulesets(
+  id,organization_id,name,short_name,version,status,settings,effective_from
+) values (
+  '51000000-0000-0000-0000-000000000102',
+  '51000000-0000-0000-0000-000000000010',
+  'Future Rules','FUTURE','2027.1','draft',
+  '{"enabledFormats":["longsword"]}',
+  '2027-01-01T00:00:00Z'
+);
+insert into public.ruleset_sources(ruleset_id,label,source_url,version_label,source_kind,accessed_on)
+values(
+  '51000000-0000-0000-0000-000000000102',
+  'Future source',
+  'https://www.buhurtinternational.com/rules',
+  'Future test source',
+  'official',
+  '2026-09-24'
+);
+select public.transition_ruleset_guarded(
+  '51000000-0000-0000-0000-000000000102',
+  (select updated_at from public.rulesets where id='51000000-0000-0000-0000-000000000102'),
+  'review'
+);
+select public.transition_ruleset_guarded(
+  '51000000-0000-0000-0000-000000000102',
+  (select updated_at from public.rulesets where id='51000000-0000-0000-0000-000000000102'),
+  'published'
+);
+
+select throws_ok(
+  format(
+    'select public.assign_event_ruleset_guarded(%L::uuid,%L::uuid,%L::timestamptz,%L)',
+    '51000000-0000-0000-0000-000000000030',
+    '51000000-0000-0000-0000-000000000102',
+    (select updated_at::text from public.events where id='51000000-0000-0000-0000-000000000030'),
+    ''
+  ),
+  'P0001',
+  'Event date is outside the ruleset effective window; record an exception reason',
+  'out-of-window rules require an explicit exception reason'
+);
+
+select lives_ok(
+  format(
+    'select public.assign_event_ruleset_guarded(%L::uuid,%L::uuid,%L::timestamptz,%L)',
+    '51000000-0000-0000-0000-000000000030',
+    '51000000-0000-0000-0000-000000000102',
+    (select updated_at::text from public.events where id='51000000-0000-0000-0000-000000000030'),
+    'Organizer approved this documented one-event exception.'
+  ),
+  'out-of-window rules can only be assigned with an audited exception'
+);
+
+select is(
+  (
+    select count(*)::integer
+    from public.event_policy_exceptions
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and rule_key='ruleset_effective_window'
+      and status='approved'
+  ),
+  1,
+  'effective-window exception is explicitly recorded'
+);
+
+update public.events
+set status='live'
+where id='51000000-0000-0000-0000-000000000030';
+
+select throws_ok(
+  format(
+    'select public.assign_event_ruleset_guarded(%L::uuid,%L::uuid,%L::timestamptz,null)',
+    '51000000-0000-0000-0000-000000000030',
+    '51000000-0000-0000-0000-000000000101',
+    (select updated_at::text from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  'P0001',
+  'Live or historical events cannot change rulesets',
+  'live event cannot switch ruleset snapshots'
+);
+
+select throws_ok(
+  $$update public.seasons
+    set ends_at='2026-09-01T00:00:00Z'
+    where id='51000000-0000-0000-0000-000000000020'$$,
+  'P0001',
+  'Season policy and dates are locked after live competition begins',
+  'season dates cannot be rewritten after live competition begins'
+);
+
+select throws_ok(
+  $$update public.seasons
+    set status='archived'
+    where id='51000000-0000-0000-0000-000000000020'$$,
+  'P0001',
+  'A season cannot be archived while it has unfinished events',
+  'season cannot archive while a live event remains unfinished'
+);
+
+update public.events
+set status='completed'
+where id='51000000-0000-0000-0000-000000000030';
+
+select lives_ok(
+  $$update public.seasons
+    set status='archived'
+    where id='51000000-0000-0000-0000-000000000020'$$,
+  'completed season can be archived'
+);
+
+select throws_ok(
+  $$update public.seasons
+    set name='Rewritten historical season'
+    where id='51000000-0000-0000-0000-000000000020'$$,
+  'P0001',
+  'Archived seasons are immutable',
+  'archived season cannot be rewritten'
+);
+
+insert into public.rulesets(
+  id,organization_id,name,short_name,version,status,settings
+) values (
+  '51000000-0000-0000-0000-000000000103',
+  '51000000-0000-0000-0000-000000000010',
+  'Unsourced Rules','NO SOURCE','1.0','draft','{}'
+);
+select public.transition_ruleset_guarded(
+  '51000000-0000-0000-0000-000000000103',
+  (select updated_at from public.rulesets where id='51000000-0000-0000-0000-000000000103'),
+  'review'
+);
+
+select throws_ok(
+  format(
+    'select public.transition_ruleset_guarded(%L::uuid,%L::timestamptz,%L)',
+    '51000000-0000-0000-0000-000000000103',
+    (select updated_at::text from public.rulesets where id='51000000-0000-0000-0000-000000000103'),
+    'published'
+  ),
+  'P0001',
+  'A reviewed ruleset needs at least one source before publication',
+  'unsourced rulesets cannot be silently published'
+);
+
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','52000000-0000-0000-0000-000000000001',true);
+
+select throws_ok(
+  $$update public.rulesets
+    set description='cross organization change'
+    where id='51000000-0000-0000-0000-000000000101'$$,
+  '42501',
+  null,
+  'unrelated organization admin cannot mutate another organization ruleset'
+);
+
+select is(
+  (
+    select count(*)::integer
+    from public.event_policy_exceptions
+    where event_id='51000000-0000-0000-0000-000000000030'
+  ),
+  0,
+  'unrelated organization cannot read another event policy exceptions'
+);
+
+select * from finish();
+rollback;
