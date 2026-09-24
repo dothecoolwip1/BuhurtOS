@@ -32,6 +32,8 @@ import { PublicPage } from './pages/PublicPage';
 import { EventManagementPage } from './pages/EventManagementPage';
 import { FoundationPage } from './pages/FoundationPage';
 import { RulesetsPage } from './pages/RulesetsPage';
+import { IdentityPage } from './pages/IdentityPage';
+import { IdentityReviewPage } from './pages/IdentityReviewPage';
 
 function OperationsProvider() {
   return <AppStateProvider><Outlet /></AppStateProvider>;
@@ -82,6 +84,8 @@ export function App(){
         <Route path="admin" element={<RequirePermission permission="bracket.manage"><AdminPage/></RequirePermission>}/>
         <Route path="discipline" element={<RequirePermission permission="discipline.manage"><DisciplinePage/></RequirePermission>}/>
         <Route path="notes" element={<RequirePermission permission="notes.team"><NotesPage/></RequirePermission>}/>
+        <Route path="identity" element={<IdentityPage/>}/>
+        <Route path="identity-review" element={<IdentityReviewPage/>}/>
         <Route path="foundation" element={<FoundationPage/>}/>
         <Route path="rulesets" element={<RulesetsPage/>}/>
         <Route path="sync" element={<SyncPage/>}/>

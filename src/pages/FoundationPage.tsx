@@ -16,11 +16,11 @@ import {
   listDivisions,
   listFoundationFighters,
   listTeams,
-  mergeFoundationFighters,
   setDivisionStatus,
   updateClub,
   updateDivision
 } from '../lib/identityAdmin';
+import { requestFighterIdentityMerge } from '../lib/fighterIdentity';
 import type { AffiliationType, Club, CompetitionDivision, FighterAffiliation, FoundationFighter, Team } from '../types';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -152,9 +152,16 @@ export function FoundationPage() {
   };
 
   const merge = () => run(async () => {
-    await mergeFoundationFighters(event, roster, mergeForm.canonical, mergeForm.duplicate);
+    const canonical = fighters.find(row => row.id === mergeForm.canonical);
+    const duplicate = fighters.find(row => row.id === mergeForm.duplicate);
+    if (!canonical || !duplicate) throw new Error('Choose two fighter records to review.');
+    await requestFighterIdentityMerge(
+      canonical.identityId,
+      duplicate.identityId,
+      'Duplicate review requested from the organization identity foundation.'
+    );
     setMergeForm({ canonical: '', duplicate: '' });
-  }, 'Duplicate fighter merged into the canonical record. Event history now points to the canonical fighter.');
+  }, 'Merge review requested. No fighter history has been changed.');
 
   const addAffiliation = () => {
     const fighter = fighters.find(row => row.id === affiliationForm.fighterId);
@@ -216,8 +223,8 @@ export function FoundationPage() {
       </section>
 
       <section className="panel-card">
-        <h2>Merge duplicate fighters</h2>
-        <p>The canonical fighter survives. Roster entries, discipline records and affiliation history are rewired while the duplicate is soft-deleted for auditability.</p>
+        <h2>Review duplicate fighters</h2>
+        <p>Possible duplicates are suggestions only. Request a governed identity merge so completed roster entries, results and match history are never silently rewritten.</p>
         {duplicatePairs.length > 0 && <div className="state-card">{duplicatePairs.length} exact-name duplicate pair{duplicatePairs.length === 1 ? '' : 's'} detected.</div>}
         <div className="form-stack">
           <label>Keep
@@ -232,7 +239,7 @@ export function FoundationPage() {
               {fighters.filter(fighter => fighter.id !== mergeForm.canonical).map(fighter => <option key={fighter.id} value={fighter.id}>{fighter.name}</option>)}
             </select>
           </label>
-          <button disabled={busy || !mergeForm.canonical || !mergeForm.duplicate} onClick={merge}>Merge Fighter Records</button>
+          <button disabled={busy || !mergeForm.canonical || !mergeForm.duplicate} onClick={merge}>Request Merge Review</button>
         </div>
         <div className="membership-list">
           {fighters.slice(0, 12).map(fighter => <article key={fighter.id}><div className="grow"><strong>{fighter.name}</strong><small>{fighter.userId ? 'Claimed account' : 'Unclaimed identity'}{fighter.teamId ? ' · team linked' : ''}</small></div><button disabled={busy} onClick={() => archiveFighter(fighter)}>Archive</button></article>)}
