@@ -411,7 +411,11 @@ begin
   )
   values (
     v_identity_id, v_uid, 'self', timezone('utc', now()), v_uid
-  );
+  )
+  on conflict (identity_id, user_id, relationship)
+  do update set
+    verified_at = excluded.verified_at,
+    revoked_at = null;
 
   insert into public.fighter_identity_aliases(
     identity_id, alias, normalized_alias, is_public, source, created_by
