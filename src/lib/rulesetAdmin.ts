@@ -99,6 +99,40 @@ export function resolveRulesetSettings(rulesets:RulesetRecord[],rulesetId?:strin
   return resolve(rulesetId);
 }
 
+export function deriveRulesetSettingsPatch(parent:RulesetSettings,effective:RulesetSettings):RulesetSettingsPatch {
+  const patch:RulesetSettingsPatch={};
+  const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+
+  if(!same(parent.enabledFormats,effective.enabledFormats))patch.enabledFormats=[...effective.enabledFormats];
+
+  const scoringOverrides:RulesetSettings['scoringOverrides']={};
+  for(const formatId of new Set([...Object.keys(parent.scoringOverrides),...Object.keys(effective.scoringOverrides)])){
+    const next=effective.scoringOverrides[formatId];
+    if(next!==undefined&&!same(parent.scoringOverrides[formatId]??{},next))scoringOverrides[formatId]={...next};
+  }
+  if(Object.keys(scoringOverrides).length)patch.scoringOverrides=scoringOverrides;
+
+  const compliance:Partial<RulesetSettings['compliance']>={};
+  for(const key of Object.keys(effective.compliance) as Array<keyof RulesetSettings['compliance']>){
+    if(effective.compliance[key]!==parent.compliance[key])compliance[key]=effective.compliance[key];
+  }
+  if(Object.keys(compliance).length)patch.compliance=compliance;
+
+  const discipline:Partial<RulesetSettings['discipline']>={};
+  for(const key of Object.keys(effective.discipline) as Array<keyof RulesetSettings['discipline']>){
+    if(effective.discipline[key]!==parent.discipline[key])discipline[key]=effective.discipline[key];
+  }
+  if(Object.keys(discipline).length)patch.discipline=discipline;
+
+  const bracket:Partial<RulesetSettings['bracket']>={};
+  for(const key of Object.keys(effective.bracket) as Array<keyof RulesetSettings['bracket']>){
+    if(effective.bracket[key]!==parent.bracket[key])bracket[key]=effective.bracket[key];
+  }
+  if(Object.keys(bracket).length)patch.bracket=bracket;
+
+  return patch;
+}
+
 export function applyRulesetToFormat(preset:CompetitionFormatPreset,settings:RulesetSettings):CompetitionFormatPreset {
   const override=settings.scoringOverrides[preset.id]??{};
   return {...preset,scoringConfig:{...preset.scoringConfig,...override} as ScoringConfig};
