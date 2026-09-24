@@ -51,7 +51,10 @@ using (
     from public.rulesets r
     where r.id = ruleset_sources.ruleset_id
       and (
-        r.status in ('published','retired')
+        (
+          ruleset_sources.source_kind <> 'internal'
+          and r.status in ('published','retired')
+        )
         or private.is_platform_admin((select auth.uid()))
         or (
           r.organization_id is not null
@@ -712,7 +715,8 @@ begin
   ),'[]'::jsonb)
   into v_sources
   from public.ruleset_sources s
-  where s.ruleset_id in (select id from chain_ids);
+  where s.ruleset_id in (select id from chain_ids)
+    and s.source_kind <> 'internal';
 
   insert into public.event_ruleset_snapshots(
     event_id,ruleset_id,ruleset_name,ruleset_short_name,ruleset_version,
