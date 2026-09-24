@@ -34,6 +34,8 @@ import { FoundationPage } from './pages/FoundationPage';
 import { RulesetsPage } from './pages/RulesetsPage';
 import { IdentityPage } from './pages/IdentityPage';
 import { IdentityReviewPage } from './pages/IdentityReviewPage';
+import { OrganizationManagementPage } from './pages/OrganizationManagementPage';
+import { MembershipInvitePage } from './pages/MembershipInvitePage';
 
 function OperationsProvider() {
   return <AppStateProvider><Outlet /></AppStateProvider>;
@@ -87,6 +89,8 @@ export function App(){
         <Route path="identity" element={<IdentityPage/>}/>
         <Route path="identity-review" element={<IdentityReviewPage/>}/>
         <Route path="foundation" element={<FoundationPage/>}/>
+        <Route path="governance" element={<OrganizationManagementPage/>}/>
+        <Route path="invite" element={<MembershipInvitePage/>}/>
         <Route path="rulesets" element={<RulesetsPage/>}/>
         <Route path="sync" element={<SyncPage/>}/>
         <Route path="setup" element={<SetupPage/>}/>
