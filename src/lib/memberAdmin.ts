@@ -32,6 +32,6 @@ export async function inviteEventMember(input: { eventId: string; email: string;
 
 export async function removeEventMembership(id: string): Promise<void> {
   if (!supabase) return;
-  const { error } = await supabase.from('event_memberships').delete().eq('id', id);
+  const { error } = await supabase.rpc('revoke_event_membership', { p_membership_id: id });
   if (error) throw error;
 }
