@@ -1,4 +1,4 @@
-import { HashRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { HashRouter, Link, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { ShowcaseShell } from './components/ShowcaseShell';
 import { Layout } from './components/Layout';
 import { RequirePermission } from './components/RequirePermission';
@@ -32,6 +32,7 @@ import { PublicPage } from './pages/PublicPage';
 import { EventManagementPage } from './pages/EventManagementPage';
 import { FoundationPage } from './pages/FoundationPage';
 import { RulesetsPage } from './pages/RulesetsPage';
+import { signOut } from './lib/auth';
 
 function OperationsProvider() {
   return <AppStateProvider><Outlet /></AppStateProvider>;
@@ -41,7 +42,13 @@ function OperationalGate() {
   const { loading, user, dataMode } = useAppState();
   const location = useLocation();
   if (loading) return <div className="state-card">Loading tournament operations…</div>;
-  if (dataMode === 'supabase' && !user) return <Navigate to={'/ops/login' + location.search} replace />;
+  if (dataMode === 'supabase' && !user) {
+    const next = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/ops/login?next=${next}`} replace />;
+  }
+  if (dataMode === 'supabase' && user && user.platformRoles.length === 0 && user.organizationRoles.length === 0 && user.eventRoles.length === 0) {
+    return <main className="auth-shell"><section className="auth-card"><span className="eyebrow">Access pending</span><h1>No operational role assigned</h1><p>Your account is signed in, but it has not been granted access to an organization, team, event, or fighter workspace yet.</p><Link className="primary big button-link" to="/live">View public coverage</Link><button className="big" onClick={() => signOut()}>Sign Out</button></section></main>;
+  }
   return <Layout />;
 }
 
