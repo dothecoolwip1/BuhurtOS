@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { publicSupabase } from './supabase';
 
 export interface RegistrationInput {
   eventId: string;
@@ -20,7 +20,7 @@ export interface RegistrationResult {
 }
 
 export async function submitRegistration(input: RegistrationInput): Promise<RegistrationResult> {
-  if (!supabase) {
+  if (!publicSupabase) {
     const key = 'buhurtos-demo-registrations-' + input.eventId;
     const existing = JSON.parse(localStorage.getItem(key) ?? '[]') as Array<Record<string, any>>;
     if (existing.some(item => item.email?.toLowerCase() === input.email.trim().toLowerCase() && item.category === input.category)) {
@@ -47,7 +47,7 @@ export async function submitRegistration(input: RegistrationInput): Promise<Regi
     localStorage.setItem(key, JSON.stringify(existing));
     return { registrationId, registrationToken, paymentRequired: true, amountCents: 2500, currency: 'CAD' };
   }
-  const { data, error } = await supabase.rpc('submit_public_registration', {
+  const { data, error } = await publicSupabase.rpc('submit_public_registration', {
     p_event_id: input.eventId,
     p_email: input.email,
     p_display_name: input.displayName,
@@ -62,19 +62,19 @@ export async function submitRegistration(input: RegistrationInput): Promise<Regi
 }
 
 export async function uploadWaiver(result: RegistrationResult, file: File): Promise<void> {
-  if (!supabase) return;
+  if (!publicSupabase) return;
   const form = new FormData();
   form.set('registrationId', result.registrationId);
   form.set('registrationToken', result.registrationToken);
   form.set('file', file);
-  const { error } = await supabase.functions.invoke('upload-waiver', { body: form });
+  const { error } = await publicSupabase.functions.invoke('upload-waiver', { body: form });
   if (error) throw error;
 }
 
 export async function createRegistrationCheckout(result: RegistrationResult): Promise<string | null> {
   if (!result.paymentRequired) return null;
-  if (!supabase) return 'demo://checkout';
-  const { data, error } = await supabase.functions.invoke('create-registration-checkout', { body: { registrationId: result.registrationId, registrationToken: result.registrationToken } });
+  if (!publicSupabase) return 'demo://checkout';
+  const { data, error } = await publicSupabase.functions.invoke('create-registration-checkout', { body: { registrationId: result.registrationId, registrationToken: result.registrationToken } });
   if (error) throw error;
   return data?.checkoutUrl ?? null;
 }
