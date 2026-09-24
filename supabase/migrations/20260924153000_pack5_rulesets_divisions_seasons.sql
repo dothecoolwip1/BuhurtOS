@@ -1278,7 +1278,8 @@ grant execute on function private.create_event_ruleset_snapshot(uuid,uuid) to au
 create or replace function public.assign_event_division_guarded(
   p_event_id uuid,
   p_division_id uuid,
-  p_registration_limit integer default null
+  p_registration_limit integer default null,
+  p_effective_window_exception_reason text default null
 )
 returns uuid
 language plpgsql
@@ -1289,8 +1290,10 @@ declare
   v_event public.events%rowtype;
   v_division public.competition_divisions%rowtype;
   v_ruleset_id uuid;
+  v_ruleset public.rulesets%rowtype;
   v_snapshot_id uuid;
   v_id uuid;
+  v_outside_window boolean;
 begin
   select * into v_event from public.events where id=p_event_id;
   if not found then raise exception 'Event not found'; end if;
@@ -1319,10 +1322,25 @@ begin
     raise exception 'Lock a published event or division ruleset before assigning this division';
   end if;
 
+  select * into v_ruleset from public.rulesets where id=v_ruleset_id;
+  if not found or v_ruleset.status <> 'published' then
+    raise exception 'Division effective ruleset must be published';
+  end if;
+  v_outside_window := (v_ruleset.effective_from is not null and v_event.starts_at < v_ruleset.effective_from)
+    or (v_ruleset.effective_to is not null and v_event.starts_at >= v_ruleset.effective_to);
+  if v_outside_window and length(trim(coalesce(p_effective_window_exception_reason,''))) < 8 then
+    raise exception 'Division ruleset is outside its effective window; record an exception reason';
+  end if;
+
   if v_ruleset_id = v_event.ruleset_id and v_event.ruleset_snapshot_id is not null then
     v_snapshot_id := v_event.ruleset_snapshot_id;
   else
     v_snapshot_id := private.create_event_ruleset_snapshot(p_event_id,v_ruleset_id);
+    if v_ruleset_id = v_event.ruleset_id and v_event.ruleset_snapshot_id is null then
+      update public.events
+      set ruleset_snapshot_id=v_snapshot_id,last_edited_by=(select auth.uid())
+      where id=v_event.id;
+    end if;
   end if;
 
   insert into public.event_divisions(
@@ -1331,6 +1349,14 @@ begin
     p_event_id,p_division_id,v_ruleset_id,v_snapshot_id,p_registration_limit,true
   )
   returning id into v_id;
+
+  if v_outside_window then
+    perform public.record_event_policy_exception(
+      p_event_id,p_division_id,'tournament','ruleset_effective_window',
+      trim(p_effective_window_exception_reason),
+      jsonb_build_object('rulesetId',v_ruleset_id,'eventStartsAt',v_event.starts_at)
+    );
+  end if;
 
   insert into public.audit_log(organization_id,event_id,actor_user_id,table_name,record_id,action,payload)
   values (
@@ -1381,8 +1407,8 @@ begin
 end;
 $;
 
-revoke execute on function public.assign_event_division_guarded(uuid,uuid,integer) from public,anon;
-grant execute on function public.assign_event_division_guarded(uuid,uuid,integer) to authenticated;
+revoke execute on function public.assign_event_division_guarded(uuid,uuid,integer,text) from public,anon;
+grant execute on function public.assign_event_division_guarded(uuid,uuid,integer,text) to authenticated;
 revoke execute on function public.remove_event_division_guarded(uuid,timestamptz) from public,anon;
 grant execute on function public.remove_event_division_guarded(uuid,timestamptz) to authenticated;
 
@@ -1465,6 +1491,10 @@ begin
     raise exception 'Event dates must be inside the selected season';
   end if;
   if tg_op='INSERT' and v_season.status='archived' then raise exception 'Cannot create an event in an archived season'; end if;
+
+  if tg_op='INSERT' and new.ruleset_id is null and v_season.default_ruleset_id is not null then
+    new.ruleset_id := v_season.default_ruleset_id;
+  end if;
 
   if tg_op='UPDATE' and old.status in ('live','completed','archived') and old.season_id is distinct from new.season_id then
     raise exception 'Live or historical events cannot move to another season';
