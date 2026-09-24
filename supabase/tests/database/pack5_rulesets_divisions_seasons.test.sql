@@ -442,12 +442,12 @@ select is(
 );
 
 select lives_ok(
-  $select public.assign_event_division_guarded(
+  $$select public.assign_event_division_guarded(
     '51000000-0000-0000-0000-000000000031',
     '51000000-0000-0000-0000-000000000200',
     16,
     null
-  )$,
+  )$$,
   'assigning a formal division locks the inherited season ruleset snapshot'
 );
 
@@ -459,7 +459,7 @@ insert into public.event_roster_entries(
 ('51000000-0000-0000-0000-000000000301','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000031','fighter','Bracket Fighter Two',true,true,true,true,true,'approved');
 
 select lives_ok(
-  $select public.save_bracket_plan(
+  $$select public.save_bracket_plan(
     '{
       "id":"51000000-0000-0000-0000-000000000400",
       "eventId":"51000000-0000-0000-0000-000000000031",
@@ -489,7 +489,7 @@ select lives_ok(
         ]
       }
     ]'::jsonb
-  )$,
+  )$$,
   'bracket creation accepts scoring that contains the locked snapshot override'
 );
 
@@ -527,7 +527,7 @@ select is(
 );
 
 select throws_ok(
-  $select public.save_bracket_plan(
+  $$select public.save_bracket_plan(
     '{
       "id":"51000000-0000-0000-0000-000000000401",
       "eventId":"51000000-0000-0000-0000-000000000031",
@@ -552,7 +552,7 @@ select throws_ok(
         "participants":[]
       }
     ]'::jsonb
-  )$,
+  )$$,
   'P0001',
   'Match scoring does not include the locked ruleset override',
   'database rejects bracket scoring that contradicts the locked rules snapshot'
