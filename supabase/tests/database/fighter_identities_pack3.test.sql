@@ -424,7 +424,7 @@ select is(
 );
 
 select is(
-  (select count(*)::integer from public.fighter_identities where display_name='Merge Person' and deleted_at is null),
+  (select count(id)::integer from public.fighter_identities where display_name='Merge Person' and deleted_at is null),
   2,
   'shared fighter names are allowed and do not force automatic deduplication'
 );
