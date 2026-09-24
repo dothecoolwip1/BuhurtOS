@@ -9,6 +9,7 @@ import {
   createAffiliation,
   createClub,
   createDivision,
+  createNewDivisionVersion,
   endAffiliation,
   findDuplicateFighterCandidates,
   listAffiliations,
@@ -20,8 +21,10 @@ import {
   updateClub,
   updateDivision
 } from '../lib/identityAdmin';
+import { assignEventDivision, evaluateDivisionEligibility, listEventDivisions, parseEligibilityRulesJson, removeEventDivision } from '../lib/governance';
+import { listRulesets } from '../lib/rulesetAdmin';
 import { requestFighterIdentityMerge } from '../lib/fighterIdentity';
-import type { AffiliationType, Club, CompetitionDivision, FighterAffiliation, FoundationFighter, Team } from '../types';
+import type { AffiliationType, Club, CompetitionDivision, EventDivision, FighterAffiliation, FoundationFighter, RulesetRecord, Team } from '../types';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -30,12 +33,21 @@ export function FoundationPage() {
   const [fighters, setFighters] = useState<FoundationFighter[]>([]);
   const [clubs, setClubs] = useState<Club[]>([]);
   const [divisions, setDivisions] = useState<CompetitionDivision[]>([]);
+  const [eventDivisions, setEventDivisions] = useState<EventDivision[]>([]);
+  const [rulesets, setRulesets] = useState<RulesetRecord[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [affiliations, setAffiliations] = useState<FighterAffiliation[]>([]);
   const [clubForm, setClubForm] = useState({ name: '', shortName: '', region: '', websiteUrl: '' });
   const [editingClubId, setEditingClubId] = useState('');
-  const [divisionForm, setDivisionForm] = useState({ name: '', competitionFormatId: competitionFormats[0]?.id || 'longsword', teamSize: '', eligibilityLabel: '' });
+  const emptyDivisionForm = () => ({
+    name: '', competitionFormatId: competitionFormats[0]?.id || 'longsword', rulesetId: '', teamSize: '',
+    minWeightKg: '', maxWeightKg: '', ageMin: '', ageMax: '', minExperienceYears: '', maxExperienceYears: '',
+    eligibilityLabel: '', eligibilityRulesText: '[]', eligibilityExplanation: ''
+  });
+  const [divisionForm, setDivisionForm] = useState(emptyDivisionForm);
   const [editingDivisionId, setEditingDivisionId] = useState('');
+  const [eventDivisionForm, setEventDivisionForm] = useState({ divisionId: '', registrationLimit: '', exceptionReason: '' });
+  const [eligibilityPreview,setEligibilityPreview]=useState({divisionId:'',birthDate:'',ageYears:'',weightKg:'',experienceYears:'',teamSize:''});
   const [claimForm, setClaimForm] = useState({ rosterEntryId: '', fighterId: '' });
   const [mergeForm, setMergeForm] = useState({ canonical: '', duplicate: '' });
   const [affiliationForm, setAffiliationForm] = useState({ fighterId: '', clubId: '', teamId: '', affiliationType: 'member' as AffiliationType, startsOn: today(), endsOn: '', isPrimary: true });
@@ -50,19 +62,35 @@ export function FoundationPage() {
 
   const temporaryEntries = useMemo(() => roster.filter(entry => entry.entryType === 'ghost_fighter' || entry.entryType === 'guest_fighter'), [roster]);
   const duplicatePairs = useMemo(() => findDuplicateFighterCandidates(fighters), [fighters]);
+  const previewDivision=useMemo(()=>divisions.find(row=>row.id===eligibilityPreview.divisionId),[divisions,eligibilityPreview.divisionId]);
+  const eligibilityEvaluation=useMemo(()=>{
+    if(!previewDivision)return null;
+    const numberOrUndefined=(value:string)=>value.trim()===''?undefined:Number(value);
+    return evaluateDivisionEligibility(previewDivision,{
+      birthDate:eligibilityPreview.birthDate||undefined,
+      ageYears:numberOrUndefined(eligibilityPreview.ageYears),
+      weightKg:numberOrUndefined(eligibilityPreview.weightKg),
+      experienceYears:numberOrUndefined(eligibilityPreview.experienceYears),
+      teamSize:numberOrUndefined(eligibilityPreview.teamSize)
+    },event?.startsAt);
+  },[previewDivision,eligibilityPreview,event?.startsAt]);
 
   const refresh = async () => {
     if (!event) return;
-    const [fighterRows, clubRows, divisionRows, teamRows, affiliationRows] = await Promise.all([
+    const [fighterRows, clubRows, divisionRows, eventDivisionRows, rulesetRows, teamRows, affiliationRows] = await Promise.all([
       listFoundationFighters(event, roster),
       listClubs(event.organizationId),
       listDivisions(event.organizationId),
+      listEventDivisions(event.id),
+      listRulesets(event.organizationId),
       listTeams(event.organizationId),
       listAffiliations(event.organizationId)
     ]);
     setFighters(fighterRows);
     setClubs(clubRows);
     setDivisions(divisionRows);
+    setEventDivisions(eventDivisionRows);
+    setRulesets(rulesetRows);
     setTeams(teamRows);
     setAffiliations(affiliationRows);
   };
@@ -110,37 +138,84 @@ export function FoundationPage() {
   };
 
   const saveDivision = () => run(async () => {
+    const rules=parseEligibilityRulesJson(divisionForm.eligibilityRulesText||'[]');
     const input = {
       name: divisionForm.name,
       competitionFormatId: divisionForm.competitionFormatId,
+      rulesetId: divisionForm.rulesetId || undefined,
       teamSize: divisionForm.teamSize ? Number(divisionForm.teamSize) : undefined,
-      eligibilityLabel: divisionForm.eligibilityLabel || undefined
+      minWeightKg: divisionForm.minWeightKg ? Number(divisionForm.minWeightKg) : undefined,
+      maxWeightKg: divisionForm.maxWeightKg ? Number(divisionForm.maxWeightKg) : undefined,
+      ageMin: divisionForm.ageMin ? Number(divisionForm.ageMin) : undefined,
+      ageMax: divisionForm.ageMax ? Number(divisionForm.ageMax) : undefined,
+      minExperienceYears: divisionForm.minExperienceYears ? Number(divisionForm.minExperienceYears) : undefined,
+      maxExperienceYears: divisionForm.maxExperienceYears ? Number(divisionForm.maxExperienceYears) : undefined,
+      eligibilityLabel: divisionForm.eligibilityLabel || undefined,
+      eligibilityRules: rules,
+      eligibilityExplanation: divisionForm.eligibilityExplanation || undefined,
+      expectedUpdatedAt: editingDivisionId ? divisions.find(row=>row.id===editingDivisionId)?.updatedAt : undefined
     };
     if (editingDivisionId) await updateDivision(event.organizationId, editingDivisionId, input);
     else await createDivision(event.organizationId, input);
-    setDivisionForm({ name: '', competitionFormatId: competitionFormats[0]?.id || 'longsword', teamSize: '', eligibilityLabel: '' });
+    setDivisionForm(emptyDivisionForm());
     setEditingDivisionId('');
-  }, editingDivisionId ? 'Division updated.' : 'Division created as a draft.');
+  }, editingDivisionId ? 'Division draft updated.' : 'Division created as a draft.');
 
   const editDivision = (division: CompetitionDivision) => {
+    if(division.status!=='draft')return setMessage('Published divisions are immutable. Create a new version to change eligibility.');
     setEditingDivisionId(division.id);
     setDivisionForm({
       name: division.name,
       competitionFormatId: division.competitionFormatId,
+      rulesetId: division.rulesetId || '',
       teamSize: division.teamSize ? String(division.teamSize) : '',
-      eligibilityLabel: division.eligibilityLabel || ''
+      minWeightKg: division.minWeightKg == null ? '' : String(division.minWeightKg),
+      maxWeightKg: division.maxWeightKg == null ? '' : String(division.maxWeightKg),
+      ageMin: division.ageMin == null ? '' : String(division.ageMin),
+      ageMax: division.ageMax == null ? '' : String(division.ageMax),
+      minExperienceYears: division.minExperienceYears == null ? '' : String(division.minExperienceYears),
+      maxExperienceYears: division.maxExperienceYears == null ? '' : String(division.maxExperienceYears),
+      eligibilityLabel: division.eligibilityLabel || '',
+      eligibilityRulesText: JSON.stringify(division.eligibilityRules??[],null,2),
+      eligibilityExplanation: division.eligibilityExplanation || ''
     });
   };
 
   const publishDivision = (division: CompetitionDivision) => run(
-    () => setDivisionStatus(event.organizationId, division.id, division.status === 'published' ? 'draft' : 'published'),
-    division.status === 'published' ? 'Division returned to draft.' : 'Division published.'
+    () => setDivisionStatus(event.organizationId, division.id, 'published', division.updatedAt),
+    'Division version published and locked.'
   );
 
   const removeDivision = (division: CompetitionDivision) => {
-    if (!window.confirm('Archive ' + division.name + '? Existing event, bracket, match, and registration references will remain intact.')) return;
-    return run(() => archiveDivision(event.organizationId, division.id), 'Division retired and archived without deleting history.');
+    if (!window.confirm('Retire ' + division.name + ' v' + (division.version??1) + '? Existing event snapshots and historical references remain intact.')) return;
+    return run(
+      () => archiveDivision(event.organizationId, division.id, division.updatedAt),
+      'Division version retired without changing event history.'
+    );
   };
+
+  const newDivisionVersion = (division: CompetitionDivision) => run(async()=>{
+    const id=await createNewDivisionVersion(event.organizationId,division.id);
+    const rows=await listDivisions(event.organizationId);
+    setDivisions(rows);
+    const next=rows.find(row=>row.id===id);
+    if(next)editDivision(next);
+  },'New draft division version created and opened for editing.');
+
+  const addEventDivision = () => run(async()=>{
+    if(!eventDivisionForm.divisionId)throw new Error('Choose a published division.');
+    await assignEventDivision(
+      event,eventDivisionForm.divisionId,
+      eventDivisionForm.registrationLimit?Number(eventDivisionForm.registrationLimit):undefined,
+      eventDivisionForm.exceptionReason||undefined
+    );
+    setEventDivisionForm({divisionId:'',registrationLimit:'',exceptionReason:''});
+  },'Division assigned to this event with an immutable version snapshot.');
+
+  const deleteEventDivision = (row:EventDivision) => run(
+    ()=>removeEventDivision(event,row),
+    'Event division removed before competition began.'
+  );
 
   const claim = () => {
     const entry = temporaryEntries.find(row => row.id === claimForm.rosterEntryId);
@@ -264,22 +339,47 @@ export function FoundationPage() {
 
       <section className="panel-card">
         <h2>Competition divisions</h2>
-        <p>Define reusable divisions independently from a tournament bracket. A division can later be attached to an event and a versioned ruleset.</p>
+        <p>Division definitions are versioned. Published eligibility can never be edited in place.</p>
         <div className="form-stack">
-          <input placeholder="Division name" value={divisionForm.name} onChange={e => setDivisionForm(form => ({ ...form, name: e.target.value }))}/>
-          <label>Competition format
-            <select value={divisionForm.competitionFormatId} onChange={e => setDivisionForm(form => ({ ...form, competitionFormatId: e.target.value }))}>
-              {competitionFormats.map(format => <option key={format.id} value={format.id}>{format.name}</option>)}
-            </select>
-          </label>
-          <input type="number" min="1" placeholder="Team size, if fixed" value={divisionForm.teamSize} onChange={e => setDivisionForm(form => ({ ...form, teamSize: e.target.value }))}/>
-          <input placeholder="Eligibility label, optional" value={divisionForm.eligibilityLabel} onChange={e => setDivisionForm(form => ({ ...form, eligibilityLabel: e.target.value }))}/>
-          <button disabled={busy || !divisionForm.name.trim()} onClick={saveDivision}>{editingDivisionId ? 'Save Division' : 'Create Draft Division'}</button>
-          {editingDivisionId && <button disabled={busy} onClick={() => { setEditingDivisionId(''); setDivisionForm({ name: '', competitionFormatId: competitionFormats[0]?.id || 'longsword', teamSize: '', eligibilityLabel: '' }); }}>Cancel Edit</button>}
+          <input placeholder="Division name" value={divisionForm.name} onChange={e=>setDivisionForm(form=>({...form,name:e.target.value}))}/>
+          <label>Competition format<select value={divisionForm.competitionFormatId} onChange={e=>setDivisionForm(form=>({...form,competitionFormatId:e.target.value}))}>{competitionFormats.map(format=><option key={format.id} value={format.id}>{format.name} · {format.supportLevel.replaceAll('_',' ')}</option>)}</select></label>
+          <label>Division ruleset<select value={divisionForm.rulesetId} onChange={e=>setDivisionForm(form=>({...form,rulesetId:e.target.value}))}><option value="">No division-specific override</option>{rulesets.filter(row=>row.status==='published').map(row=><option key={row.id} value={row.id}>{row.shortName} {row.version}</option>)}</select></label>
+          <div className="form-grid-two"><input type="number" min="1" placeholder="Team size" value={divisionForm.teamSize} onChange={e=>setDivisionForm(form=>({...form,teamSize:e.target.value}))}/><input placeholder="Eligibility label" value={divisionForm.eligibilityLabel} onChange={e=>setDivisionForm(form=>({...form,eligibilityLabel:e.target.value}))}/></div>
+          <div className="form-grid-two"><input type="number" min="0" placeholder="Minimum age" value={divisionForm.ageMin} onChange={e=>setDivisionForm(form=>({...form,ageMin:e.target.value}))}/><input type="number" min="0" placeholder="Maximum age" value={divisionForm.ageMax} onChange={e=>setDivisionForm(form=>({...form,ageMax:e.target.value}))}/></div>
+          <div className="form-grid-two"><input type="number" min="0" step="0.1" placeholder="Min weight kg" value={divisionForm.minWeightKg} onChange={e=>setDivisionForm(form=>({...form,minWeightKg:e.target.value}))}/><input type="number" min="0" step="0.1" placeholder="Max weight kg" value={divisionForm.maxWeightKg} onChange={e=>setDivisionForm(form=>({...form,maxWeightKg:e.target.value}))}/></div>
+          <div className="form-grid-two"><input type="number" min="0" step="0.1" placeholder="Min experience years" value={divisionForm.minExperienceYears} onChange={e=>setDivisionForm(form=>({...form,minExperienceYears:e.target.value}))}/><input type="number" min="0" step="0.1" placeholder="Max experience years" value={divisionForm.maxExperienceYears} onChange={e=>setDivisionForm(form=>({...form,maxExperienceYears:e.target.value}))}/></div>
+          <label>Additional eligibility rules<textarea rows={7} value={divisionForm.eligibilityRulesText} onChange={e=>setDivisionForm(form=>({...form,eligibilityRulesText:e.target.value}))}/></label>
+          <small>JSON array examples: age/weight/experience/team-size ranges, declarations, or manual custom checks. Missing facts become “needs review”, never an automatic pass.</small>
+          <label>Human explanation<textarea rows={4} value={divisionForm.eligibilityExplanation} onChange={e=>setDivisionForm(form=>({...form,eligibilityExplanation:e.target.value}))}/></label>
+          <button disabled={busy||!divisionForm.name.trim()} onClick={saveDivision}>{editingDivisionId?'Save Draft Division':'Create Draft Division'}</button>
+          {editingDivisionId&&<button disabled={busy} onClick={()=>{setEditingDivisionId('');setDivisionForm(emptyDivisionForm());}}>Cancel Edit</button>}
         </div>
         <div className="membership-list">
-          {divisions.length === 0 ? <div className="state-card">No formal divisions created yet.</div> : divisions.map(division => <article key={division.id}><div className="grow"><strong>{division.name}</strong><small>{division.competitionFormatId.replaceAll('_', ' ')} · {division.status}</small></div><div className="header-actions"><button disabled={busy} onClick={() => editDivision(division)}>Edit</button><button disabled={busy} onClick={() => publishDivision(division)}>{division.status === 'published' ? 'Unpublish' : 'Publish'}</button><button disabled={busy} onClick={() => removeDivision(division)}>Archive</button></div></article>)}
+          {divisions.length===0?<div className="state-card">No formal divisions created yet.</div>:divisions.map(division=><article key={division.id}><div className="grow"><strong>{division.name} · v{division.version??1}</strong><small>{division.competitionFormatId.replaceAll('_',' ')} · {division.status}{division.eligibilityLabel?' · '+division.eligibilityLabel:''}</small></div><div className="header-actions">{division.status==='draft'&&<><button disabled={busy} onClick={()=>editDivision(division)}>Edit</button><button disabled={busy} onClick={()=>publishDivision(division)}>Publish</button></>}{division.status==='published'&&<><button disabled={busy} onClick={()=>newDivisionVersion(division)}>New Version</button><button disabled={busy} onClick={()=>removeDivision(division)}>Retire</button></>}{division.status==='retired'&&<button disabled={busy} onClick={()=>newDivisionVersion(division)}>New Version</button>}</div></article>)}
         </div>
+
+        <h3>Divisions on this event</h3>
+        <div className="form-stack setup-subform">
+          <label>Published division<select value={eventDivisionForm.divisionId} onChange={e=>setEventDivisionForm(form=>({...form,divisionId:e.target.value}))}><option value="">Choose division</option>{divisions.filter(row=>row.status==='published'&&!eventDivisions.some(ed=>ed.divisionId===row.id)).map(row=><option key={row.id} value={row.id}>{row.name} · v{row.version??1}</option>)}</select></label>
+          <input type="number" min="1" placeholder="Registration limit, optional" value={eventDivisionForm.registrationLimit} onChange={e=>setEventDivisionForm(form=>({...form,registrationLimit:e.target.value}))}/>
+          <textarea placeholder="Exception reason only if this division ruleset is outside its effective window" value={eventDivisionForm.exceptionReason} onChange={e=>setEventDivisionForm(form=>({...form,exceptionReason:e.target.value}))}/>
+          <button disabled={busy||!eventDivisionForm.divisionId||!['draft','published'].includes(event.status)} onClick={addEventDivision}>Assign to Event</button>
+          {!event.rulesetSnapshotId&&eventDivisionForm.divisionId&&!divisions.find(row=>row.id===eventDivisionForm.divisionId)?.rulesetId&&<small>Lock an event ruleset first, or choose a division with its own published ruleset.</small>}
+        </div>
+        <div className="membership-list">{eventDivisions.length===0?<div className="state-card">No divisions assigned to this event.</div>:eventDivisions.map(row=>{const division=divisions.find(item=>item.id===row.divisionId);const snap=row.divisionSnapshot;return <article key={row.id}><div className="grow"><strong>{String(snap?.name??division?.name??'Division')} · v{String(snap?.version??division?.version??1)}</strong><small>Registration {row.isRegistrationOpen?'open':'closed'}{row.registrationLimit?' · limit '+row.registrationLimit:''} · snapshot preserved</small></div>{['draft','published'].includes(event.status)&&<button disabled={busy} onClick={()=>deleteEventDivision(row)}>Remove</button>}</article>;})}</div>
+      </section>
+
+      <section className="panel-card">
+        <h2>Eligibility preview</h2>
+        <p>Explain a division decision before using it. These facts are evaluated in the browser for preview only and are not saved.</p>
+        <div className="form-stack">
+          <label>Division<select value={eligibilityPreview.divisionId} onChange={e=>setEligibilityPreview(form=>({...form,divisionId:e.target.value}))}><option value="">Choose division</option>{divisions.filter(row=>row.status!=='retired').map(row=><option key={row.id} value={row.id}>{row.name} · v{row.version??1}</option>)}</select></label>
+          <div className="form-grid-two"><label>Birth date<input type="date" value={eligibilityPreview.birthDate} onChange={e=>setEligibilityPreview(form=>({...form,birthDate:e.target.value}))}/></label><label>Age, if known directly<input type="number" min="0" value={eligibilityPreview.ageYears} onChange={e=>setEligibilityPreview(form=>({...form,ageYears:e.target.value}))}/></label></div>
+          <div className="form-grid-two"><label>Weight kg<input type="number" min="0" step="0.1" value={eligibilityPreview.weightKg} onChange={e=>setEligibilityPreview(form=>({...form,weightKg:e.target.value}))}/></label><label>Experience years<input type="number" min="0" step="0.1" value={eligibilityPreview.experienceYears} onChange={e=>setEligibilityPreview(form=>({...form,experienceYears:e.target.value}))}/></label></div>
+          <label>Team size<input type="number" min="1" value={eligibilityPreview.teamSize} onChange={e=>setEligibilityPreview(form=>({...form,teamSize:e.target.value}))}/></label>
+        </div>
+        {eligibilityEvaluation&&<div className="state-card" aria-live="polite"><strong>{eligibilityEvaluation.status.replace('_',' ').toUpperCase()}</strong>{eligibilityEvaluation.reasons.length>0&&<ul>{eligibilityEvaluation.reasons.map(reason=><li key={reason}>{reason}</li>)}</ul>}{eligibilityEvaluation.passed.length>0&&<><small>Confirmed</small><ul>{eligibilityEvaluation.passed.map(reason=><li key={reason}>{reason}</li>)}</ul></>}</div>}
+        <small>Missing facts never count as a pass. Declaration and custom rules remain needs-review until an organizer has the required evidence.</small>
       </section>
 
       <section className="panel-card">

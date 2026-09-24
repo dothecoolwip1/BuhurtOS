@@ -63,6 +63,8 @@ function rowToDivision(row: any): CompetitionDivision {
     organizationId: row.organization_id || undefined,
     name: row.name,
     slug: row.slug,
+    version: Number(row.version ?? 1),
+    supersedesDivisionId: row.supersedes_division_id || undefined,
     competitionFormatId: row.competition_format_id,
     rulesetId: row.ruleset_id || undefined,
     teamSize: row.team_size || undefined,
@@ -70,9 +72,17 @@ function rowToDivision(row: any): CompetitionDivision {
     maxWeightKg: row.max_weight_kg == null ? undefined : Number(row.max_weight_kg),
     ageMin: row.age_min == null ? undefined : row.age_min,
     ageMax: row.age_max == null ? undefined : row.age_max,
+    minExperienceYears: row.min_experience_years == null ? undefined : Number(row.min_experience_years),
+    maxExperienceYears: row.max_experience_years == null ? undefined : Number(row.max_experience_years),
     eligibilityLabel: row.eligibility_label || undefined,
+    eligibilityRules: row.eligibility_rules || [],
+    eligibilityExplanation: row.eligibility_explanation || undefined,
     status: row.status,
     metadata: row.metadata || {},
+    revision: Number(row.revision ?? 1),
+    publishedAt: row.published_at || undefined,
+    retiredAt: row.retired_at || undefined,
+    updatedAt: row.updated_at || undefined,
     deletedAt: row.deleted_at || undefined
   };
 }
@@ -188,28 +198,47 @@ export async function archiveClub(organizationId: string, clubId: string): Promi
   if (error) throw error;
 }
 
+export interface DivisionInput {
+  name: string;
+  competitionFormatId: string;
+  rulesetId?: string;
+  teamSize?: number;
+  minWeightKg?: number;
+  maxWeightKg?: number;
+  ageMin?: number;
+  ageMax?: number;
+  minExperienceYears?: number;
+  maxExperienceYears?: number;
+  eligibilityLabel?: string;
+  eligibilityRules?: CompetitionDivision['eligibilityRules'];
+  eligibilityExplanation?: string;
+  expectedUpdatedAt?: string;
+}
+
 export async function listDivisions(organizationId: string): Promise<CompetitionDivision[]> {
-  if (!supabase) return readDemo<CompetitionDivision>(demoKey('divisions', organizationId)).filter(row => !row.deletedAt).sort((a, b) => a.name.localeCompare(b.name));
-  const { data, error } = await supabase.from('competition_divisions').select('*').or('organization_id.is.null,organization_id.eq.' + organizationId).is('deleted_at', null).order('name');
+  if (!supabase) return readDemo<CompetitionDivision>(demoKey('divisions', organizationId))
+    .filter(row => !row.deletedAt)
+    .sort((a, b) => a.name.localeCompare(b.name) || (b.version ?? 1) - (a.version ?? 1));
+  const { data, error } = await supabase.from('competition_divisions').select('*')
+    .or('organization_id.is.null,organization_id.eq.' + organizationId)
+    .is('deleted_at', null).order('name').order('version',{ascending:false});
   if (error) throw error;
   return (data || []).map(rowToDivision);
 }
 
-export async function createDivision(organizationId: string, input: { name: string; competitionFormatId: string; teamSize?: number; eligibilityLabel?: string }): Promise<CompetitionDivision> {
+export async function createDivision(organizationId: string, input: DivisionInput): Promise<CompetitionDivision> {
   const cleanName = input.name.trim();
   if (!cleanName) throw new Error('Division name is required.');
   const slug = normalizeFighterName(cleanName).replace(/\s+/g, '-');
   if (!slug) throw new Error('Division name must contain letters or numbers.');
   const row: CompetitionDivision = {
-    id: crypto.randomUUID(),
-    organizationId,
-    name: cleanName,
-    slug,
-    competitionFormatId: input.competitionFormatId,
-    teamSize: input.teamSize,
-    eligibilityLabel: input.eligibilityLabel?.trim() || undefined,
-    status: 'draft',
-    metadata: {}
+    id: crypto.randomUUID(), organizationId, name: cleanName, slug, version: 1,
+    competitionFormatId: input.competitionFormatId, rulesetId: input.rulesetId,
+    teamSize: input.teamSize, minWeightKg: input.minWeightKg, maxWeightKg: input.maxWeightKg,
+    ageMin: input.ageMin, ageMax: input.ageMax, minExperienceYears: input.minExperienceYears,
+    maxExperienceYears: input.maxExperienceYears, eligibilityLabel: input.eligibilityLabel?.trim() || undefined,
+    eligibilityRules: input.eligibilityRules ?? [], eligibilityExplanation: input.eligibilityExplanation?.trim() || undefined,
+    status: 'draft', metadata: {}, revision: 1, updatedAt: new Date().toISOString()
   };
   if (!supabase) {
     const key = demoKey('divisions', organizationId);
@@ -217,56 +246,82 @@ export async function createDivision(organizationId: string, input: { name: stri
     return row;
   }
   const { data, error } = await supabase.from('competition_divisions').insert({
-    organization_id: organizationId,
-    name: cleanName,
-    slug,
-    competition_format_id: input.competitionFormatId,
-    team_size: input.teamSize || null,
-    eligibility_label: input.eligibilityLabel?.trim() || null,
-    status: 'draft'
+    organization_id: organizationId, name: cleanName, slug, competition_format_id: input.competitionFormatId,
+    ruleset_id: input.rulesetId || null, team_size: input.teamSize ?? null,
+    min_weight_kg: input.minWeightKg ?? null, max_weight_kg: input.maxWeightKg ?? null,
+    age_min: input.ageMin ?? null, age_max: input.ageMax ?? null,
+    min_experience_years: input.minExperienceYears ?? null, max_experience_years: input.maxExperienceYears ?? null,
+    eligibility_label: input.eligibilityLabel?.trim() || null, eligibility_rules: input.eligibilityRules ?? [],
+    eligibility_explanation: input.eligibilityExplanation?.trim() || null, status: 'draft', version: 1
   }).select('*').single();
   if (error) throw error;
   return rowToDivision(data);
 }
 
-export async function updateDivision(organizationId: string, divisionId: string, input: { name: string; competitionFormatId: string; teamSize?: number; eligibilityLabel?: string }): Promise<void> {
-  const cleanName = input.name.trim();
-  if (!cleanName) throw new Error('Division name is required.');
-  const slug = normalizeFighterName(cleanName).replace(/\s+/g, '-');
+export async function updateDivision(organizationId: string, divisionId: string, input: DivisionInput): Promise<void> {
+  if (!input.name.trim()) throw new Error('Division name is required.');
   if (!supabase) {
     const key = demoKey('divisions', organizationId);
-    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? { ...row, name: cleanName, slug, competitionFormatId: input.competitionFormatId, teamSize: input.teamSize, eligibilityLabel: input.eligibilityLabel?.trim() || undefined } : row));
+    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? {
+      ...row, ...input, name: input.name.trim(), eligibilityLabel: input.eligibilityLabel?.trim() || undefined,
+      eligibilityExplanation: input.eligibilityExplanation?.trim() || undefined, updatedAt: new Date().toISOString()
+    } : row));
     return;
   }
-  const { error } = await supabase.from('competition_divisions').update({
-    name: cleanName,
-    slug,
-    competition_format_id: input.competitionFormatId,
-    team_size: input.teamSize || null,
-    eligibility_label: input.eligibilityLabel?.trim() || null
-  }).eq('id', divisionId).eq('organization_id', organizationId).is('deleted_at', null);
+  if (!input.expectedUpdatedAt) throw new Error('Division version is missing. Reload before saving.');
+  const { error } = await supabase.rpc('update_division_draft_guarded', {
+    p_division_id: divisionId, p_expected_updated_at: input.expectedUpdatedAt,
+    p_name: input.name.trim(), p_competition_format_id: input.competitionFormatId,
+    p_ruleset_id: input.rulesetId || null, p_team_size: input.teamSize ?? null,
+    p_min_weight_kg: input.minWeightKg ?? null, p_max_weight_kg: input.maxWeightKg ?? null,
+    p_age_min: input.ageMin ?? null, p_age_max: input.ageMax ?? null,
+    p_min_experience_years: input.minExperienceYears ?? null, p_max_experience_years: input.maxExperienceYears ?? null,
+    p_eligibility_label: input.eligibilityLabel?.trim() || null, p_eligibility_rules: input.eligibilityRules ?? [],
+    p_eligibility_explanation: input.eligibilityExplanation?.trim() || null
+  });
   if (error) throw error;
 }
 
-export async function setDivisionStatus(organizationId: string, divisionId: string, status: CompetitionDivision['status']): Promise<void> {
+export async function setDivisionStatus(
+  organizationId: string, divisionId: string, status: CompetitionDivision['status'], expectedUpdatedAt?: string
+): Promise<void> {
   if (!supabase) {
     const key = demoKey('divisions', organizationId);
-    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? { ...row, status } : row));
+    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? {
+      ...row, status, updatedAt: new Date().toISOString()
+    } : row));
     return;
   }
-  const { error } = await supabase.from('competition_divisions').update({ status }).eq('id', divisionId).eq('organization_id', organizationId).is('deleted_at', null);
+  if (!expectedUpdatedAt) throw new Error('Division version is missing. Reload before changing status.');
+  const { error } = await supabase.rpc('transition_division_guarded', {
+    p_division_id: divisionId, p_expected_updated_at: expectedUpdatedAt, p_status: status
+  });
   if (error) throw error;
 }
 
-export async function archiveDivision(organizationId: string, divisionId: string): Promise<void> {
-  const deletedAt = new Date().toISOString();
+export async function archiveDivision(
+  organizationId: string, divisionId: string, expectedUpdatedAt?: string
+): Promise<void> {
+  return setDivisionStatus(organizationId, divisionId, 'retired', expectedUpdatedAt);
+}
+
+export async function createNewDivisionVersion(
+  organizationId: string, divisionId: string
+): Promise<string> {
   if (!supabase) {
-    const key = demoKey('divisions', organizationId);
-    writeDemo(key, readDemo<CompetitionDivision>(key).map(row => row.id === divisionId ? { ...row, status: 'retired', deletedAt } : row));
-    return;
+    const key=demoKey('divisions',organizationId);
+    const current=readDemo<CompetitionDivision>(key);
+    const source=current.find(row=>row.id===divisionId);
+    if(!source) throw new Error('Division not found.');
+    const version=Math.max(0,...current.filter(row=>row.slug===source.slug).map(row=>row.version??1))+1;
+    const id=crypto.randomUUID();
+    writeDemo(key,[...current,{...source,id,version,supersedesDivisionId:source.id,status:'draft',
+      publishedAt:undefined,retiredAt:undefined,revision:1,updatedAt:new Date().toISOString()}]);
+    return id;
   }
-  const { error } = await supabase.from('competition_divisions').update({ status: 'retired', deleted_at: deletedAt }).eq('id', divisionId).eq('organization_id', organizationId).is('deleted_at', null);
-  if (error) throw error;
+  const {data,error}=await supabase.rpc('create_division_version',{p_division_id:divisionId});
+  if(error) throw error;
+  return data as string;
 }
 
 export async function listAffiliations(organizationId: string): Promise<FighterAffiliation[]> {

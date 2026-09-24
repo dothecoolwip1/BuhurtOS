@@ -32,6 +32,10 @@ export interface Season {
   startsAt: string;
   endsAt: string;
   status: 'draft' | 'active' | 'archived';
+  defaultRulesetId?: UUID;
+  rankingPolicy?: Record<string, unknown>;
+  revision?: number;
+  updatedAt?: string;
 }
 
 export interface EventRecord {
@@ -49,6 +53,7 @@ export interface EventRecord {
   timezone: string;
   livestreamUrl?: string;
   rulesetId?: UUID;
+  rulesetSnapshotId?: UUID;
   registrationOpen?: boolean;
   registrationFeeCents?: number;
   currency?: string;
@@ -192,11 +197,24 @@ export interface FighterDuplicateSuggestion {
   score: number;
 }
 
+export type EligibilityRuleKind = 'age' | 'weight_kg' | 'experience_years' | 'team_size' | 'declaration' | 'custom';
+
+export interface EligibilityRule {
+  kind: EligibilityRuleKind;
+  label: string;
+  key?: string;
+  min?: number;
+  max?: number;
+  value?: string | number | boolean;
+}
+
 export interface CompetitionDivision {
   id: UUID;
   organizationId?: UUID;
   name: string;
   slug: string;
+  version?: number;
+  supersedesDivisionId?: UUID;
   competitionFormatId: string;
   rulesetId?: UUID;
   teamSize?: number;
@@ -204,9 +222,17 @@ export interface CompetitionDivision {
   maxWeightKg?: number;
   ageMin?: number;
   ageMax?: number;
+  minExperienceYears?: number;
+  maxExperienceYears?: number;
   eligibilityLabel?: string;
+  eligibilityRules?: EligibilityRule[];
+  eligibilityExplanation?: string;
   status: DivisionStatus;
   metadata: Record<string, unknown>;
+  revision?: number;
+  publishedAt?: string;
+  retiredAt?: string;
+  updatedAt?: string;
   deletedAt?: string;
 }
 
@@ -215,9 +241,12 @@ export interface EventDivision {
   eventId: UUID;
   divisionId: UUID;
   rulesetId?: UUID;
+  rulesetSnapshotId?: UUID;
+  divisionSnapshot?: Record<string, unknown>;
   registrationLimit?: number;
   isRegistrationOpen: boolean;
   metadata: Record<string, unknown>;
+  updatedAt?: string;
 }
 
 export interface RosterEntry {
@@ -253,6 +282,7 @@ export interface Bracket {
   eventId: UUID;
   fightCardId?: UUID;
   divisionId?: UUID;
+  rulesetSnapshotId?: UUID;
   name: string;
   format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'pools_to_bracket';
   category: string;
@@ -316,6 +346,9 @@ export interface RulesetSettingsPatch {
   bracket?: Partial<RulesetSettings['bracket']>;
 }
 
+export type RulesetStatus = 'draft' | 'review' | 'published' | 'retired';
+export type RulesetSourceKind = 'official' | 'organization' | 'event' | 'historical' | 'internal';
+
 export interface RulesetRecord {
   id: UUID;
   organizationId?: UUID;
@@ -325,13 +358,66 @@ export interface RulesetRecord {
   shortName: string;
   version: string;
   description?: string;
-  status: 'draft' | 'published' | 'retired';
+  status: RulesetStatus;
   effectiveFrom?: string;
   effectiveTo?: string;
   settings: RulesetSettings;
   overrides?: RulesetSettingsPatch;
+  eligibilityPolicy?: Record<string, unknown>;
+  scoringPolicy?: Record<string, unknown>;
+  tournamentPolicy?: Record<string, unknown>;
+  rankingPolicy?: Record<string, unknown>;
+  revision?: number;
+  publishedAt?: string;
+  retiredAt?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface RulesetSource {
+  id: UUID;
+  rulesetId: UUID;
+  label: string;
+  sourceUrl?: string;
+  versionLabel?: string;
+  effectiveFrom?: string;
+  effectiveTo?: string;
+  sourceKind: RulesetSourceKind;
+  notes?: string;
+  accessedOn?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface EventRulesetSnapshot {
+  id: UUID;
+  eventId: UUID;
+  rulesetId: UUID;
+  rulesetName: string;
+  rulesetShortName: string;
+  rulesetVersion: string;
+  resolvedSettings: RulesetSettings;
+  eligibilityPolicy: Record<string, unknown>;
+  scoringPolicy: Record<string, unknown>;
+  tournamentPolicy: Record<string, unknown>;
+  rankingPolicy: Record<string, unknown>;
+  rulesetChain: Array<{ id: UUID; name: string; shortName: string; version: string }>;
+  sourceSnapshot: Array<Record<string, unknown>>;
+  lockedAt: string;
+}
+
+export interface EventPolicyException {
+  id: UUID;
+  organizationId: UUID;
+  eventId: UUID;
+  divisionId?: UUID;
+  rulesetSnapshotId?: UUID;
+  policyDomain: 'eligibility' | 'scoring' | 'tournament' | 'ranking';
+  ruleKey: string;
+  reason: string;
+  status: 'approved' | 'revoked';
+  approvedAt: string;
+  metadata: Record<string, unknown>;
 }
 
 export interface MatchRecord {
@@ -342,6 +428,7 @@ export interface MatchRecord {
   fightCardId?: UUID;
   bracketId?: UUID;
   divisionId?: UUID;
+  rulesetSnapshotId?: UUID;
   label: string;
   category: string;
   matchType: string;

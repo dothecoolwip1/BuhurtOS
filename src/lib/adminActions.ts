@@ -18,7 +18,7 @@ export async function addGhostFighter(event: EventRecord, displayName: string, t
   return { ...row, id: data.id };
 }
 
-export async function saveBracketPlan(event: EventRecord, plan: GeneratedBracket, options: { id: string; name: string; fightCardId?: string; category: string; format?: Bracket['format']; metadata?: Record<string, unknown> }): Promise<string> {
+export async function saveBracketPlan(event: EventRecord, plan: GeneratedBracket, options: { id: string; name: string; fightCardId?: string; divisionId?: string; category: string; format?: Bracket['format']; metadata?: Record<string, unknown> }): Promise<string> {
   if (!supabase) {
     const existing = JSON.parse(localStorage.getItem('buhurtos-demo-bracket-matches') ?? '[]');
     const ids = new Set(plan.matches.map(match => match.id));
@@ -26,7 +26,7 @@ export async function saveBracketPlan(event: EventRecord, plan: GeneratedBracket
     return options.id;
   }
   const { data, error } = await supabase.rpc('save_bracket_plan', {
-    p_bracket: { id: options.id, eventId: event.id, fightCardId: options.fightCardId ?? '', name: options.name, format: options.format ?? 'single_elimination', category: options.category, metadata: { generatedAt: new Date().toISOString(), antiFratricide: true, ...(options.metadata ?? {}) } },
+    p_bracket: { id: options.id, eventId: event.id, fightCardId: options.fightCardId ?? '', divisionId: options.divisionId ?? '', name: options.name, format: options.format ?? 'single_elimination', category: options.category, metadata: { generatedAt: new Date().toISOString(), antiFratricide: true, ...(options.metadata ?? {}) } },
     p_matches: plan.matches
   });
   if (error) throw error;

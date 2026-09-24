@@ -18,6 +18,8 @@ function snakeMatch(row: Record<string, any>): MatchRecord {
     eventId: row.event_id,
     fightCardId: row.fight_card_id ?? undefined,
     bracketId: row.bracket_id ?? undefined,
+    divisionId: row.division_id ?? undefined,
+    rulesetSnapshotId: row.ruleset_snapshot_id ?? undefined,
     label: row.label,
     category: row.category,
     matchType: row.match_type,
@@ -72,7 +74,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
   if (!resolvedEventId) throw new Error('No accessible BuhurtOS event was found. Set VITE_DEFAULT_EVENT_ID or publish an event.');
 
   const eventColumns = accessMode === 'public'
-    ? 'id,organization_id,season_id,name,venue,starts_at,ends_at,organizer_name,event_type,standings_mode,status,timezone,livestream_url,registration_open,registration_fee_cents,currency,ruleset_id'
+    ? 'id,organization_id,season_id,name,venue,starts_at,ends_at,organizer_name,event_type,standings_mode,status,timezone,livestream_url,registration_open,registration_fee_cents,currency,ruleset_id,ruleset_snapshot_id'
     : '*';
   const rosterColumns = accessMode === 'public'
     ? 'id,event_id,team_id,entry_type,display_name,attendance_status'
@@ -81,7 +83,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
     ? 'id,event_id,name,list_name,status,sort_order'
     : '*';
   const matchColumns = accessMode === 'public'
-    ? 'id,organization_id,season_id,event_id,fight_card_id,bracket_id,division_id,label,category,match_type,scoring_config,status,stage,scheduled_order,bracket_round,bracket_slot,winner_advances_to_match_id,winner_advances_to_slot,loser_advances_to_match_id,loser_advances_to_slot,result_summary,match_participants(*),match_rounds(id,match_id,round_number,side_1_score,side_2_score,created_at)'
+    ? 'id,organization_id,season_id,event_id,fight_card_id,bracket_id,division_id,ruleset_snapshot_id,label,category,match_type,scoring_config,status,stage,scheduled_order,bracket_round,bracket_slot,winner_advances_to_match_id,winner_advances_to_slot,loser_advances_to_match_id,loser_advances_to_slot,result_summary,match_participants(*),match_rounds(id,match_id,round_number,side_1_score,side_2_score,created_at)'
     : '*,match_participants(*),match_rounds(*)';
   const announcementColumns = accessMode === 'public'
     ? 'id,event_id,title,body,is_public,scheduled_for,created_at'
@@ -102,7 +104,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
     event: {
       id: e.id, organizationId: e.organization_id, seasonId: e.season_id, name: e.name, venue: e.venue,
       startsAt: e.starts_at, endsAt: e.ends_at, organizerName: e.organizer_name ?? undefined,
-      eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined, rulesetId: e.ruleset_id ?? undefined,
+      eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined, rulesetId: e.ruleset_id ?? undefined, rulesetSnapshotId: e.ruleset_snapshot_id ?? undefined,
       registrationOpen: e.registration_open, registrationFeeCents: e.registration_fee_cents, currency: e.currency,
       updatedAt: e.updated_at ?? undefined
     },
