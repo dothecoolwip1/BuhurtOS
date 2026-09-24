@@ -10,6 +10,7 @@ import { loadUserContext } from '../lib/userContext';
 
 interface AppStateValue {
   loading: boolean;
+  authReady: boolean;
   error: string | null;
   event: EventRecord | null;
   matches: MatchRecord[];
@@ -42,6 +43,7 @@ function requestedEventIdFromLocation(): string | undefined {
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(!isSupabaseConfigured);
   const [error, setError] = useState<string | null>(null);
   const [event, setEvent] = useState<EventRecord | null>(null);
   const [matches, setMatches] = useState<MatchRecord[]>([]);
@@ -83,16 +85,35 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }, [reload]);
 
   useEffect(() => {
-    if (!supabase) return;
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) return setUser(null);
-      setUser(await loadUserContext(data.user.id, data.user.email ?? 'Signed in user'));
-    }).catch(() => setUser(null));
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session?.user) setUser(null);
-      else loadUserContext(session.user.id, session.user.email ?? 'Signed in user').then(setUser).catch(() => setUser(null));
+    if (!supabase) { setAuthReady(true); return; }
+    let active = true;
+    const resolveUser = async () => {
+      try {
+        const { data, error: authError } = await supabase.auth.getUser();
+        if (authError) throw authError;
+        if (!active) return;
+        if (!data.user) setUser(null);
+        else setUser(await loadUserContext(data.user.id, data.user.user_metadata?.display_name ?? data.user.email ?? 'Signed in user'));
+      } catch {
+        if (active) setUser(null);
+      } finally {
+        if (active) setAuthReady(true);
+      }
+    };
+    resolveUser();
+    const { data } = supabase.auth.onAuthStateChange((eventName, session) => {
+      if (!active) return;
+      if (!session?.user || eventName === 'SIGNED_OUT') {
+        setUser(null);
+        setAuthReady(true);
+        return;
+      }
+      loadUserContext(session.user.id, session.user.user_metadata?.display_name ?? session.user.email ?? 'Signed in user')
+        .then(context => { if (active) setUser(context); })
+        .catch(() => { if (active) setUser(null); })
+        .finally(() => { if (active) setAuthReady(true); });
     });
-    return () => data.subscription.unsubscribe();
+    return () => { active = false; data.subscription.unsubscribe(); };
   }, []);
 
   useEffect(() => {
@@ -283,7 +304,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return () => navigator.serviceWorker.removeEventListener('message', handler);
   }, [syncNow]);
 
-  const value = useMemo<AppStateValue>(() => ({ loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
+  const value = useMemo<AppStateValue>(() => ({ loading: loading || !authReady, authReady, error: event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, authReady, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }
 
