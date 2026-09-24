@@ -1010,6 +1010,98 @@ $$;
 revoke execute on function public.create_division_version(uuid) from public,anon;
 grant execute on function public.create_division_version(uuid) to authenticated;
 
+create or replace function public.update_division_draft_guarded(
+  p_division_id uuid,
+  p_expected_updated_at timestamptz,
+  p_name text,
+  p_competition_format_id text,
+  p_ruleset_id uuid,
+  p_team_size integer,
+  p_min_weight_kg numeric,
+  p_max_weight_kg numeric,
+  p_age_min integer,
+  p_age_max integer,
+  p_min_experience_years numeric,
+  p_max_experience_years numeric,
+  p_eligibility_label text,
+  p_eligibility_rules jsonb,
+  p_eligibility_explanation text
+)
+returns timestamptz
+language plpgsql
+security invoker
+set search_path=''
+as $
+declare
+  v_row public.competition_divisions%rowtype;
+  v_updated timestamptz;
+begin
+  select * into v_row from public.competition_divisions where id=p_division_id for update;
+  if not found then raise exception 'Division not found'; end if;
+  if v_row.status <> 'draft' then raise exception 'Only draft divisions can be edited'; end if;
+  if p_expected_updated_at is null or v_row.updated_at <> p_expected_updated_at then
+    raise exception 'Division changed on another device';
+  end if;
+  if length(trim(coalesce(p_name,''))) < 1 or length(trim(coalesce(p_competition_format_id,''))) < 1 then
+    raise exception 'Division name and competition format are required';
+  end if;
+  if jsonb_typeof(coalesce(p_eligibility_rules,'[]'::jsonb)) <> 'array' then
+    raise exception 'Division eligibility rules must be a JSON array';
+  end if;
+
+  update public.competition_divisions set
+    name=trim(p_name),
+    competition_format_id=trim(p_competition_format_id),
+    ruleset_id=p_ruleset_id,
+    team_size=p_team_size,
+    min_weight_kg=p_min_weight_kg,
+    max_weight_kg=p_max_weight_kg,
+    age_min=p_age_min,
+    age_max=p_age_max,
+    min_experience_years=p_min_experience_years,
+    max_experience_years=p_max_experience_years,
+    eligibility_label=nullif(trim(coalesce(p_eligibility_label,'')),''),
+    eligibility_rules=coalesce(p_eligibility_rules,'[]'::jsonb),
+    eligibility_explanation=nullif(trim(coalesce(p_eligibility_explanation,'')),''),
+    last_edited_by=(select auth.uid())
+  where id=p_division_id
+  returning updated_at into v_updated;
+  return v_updated;
+end;
+$;
+
+create or replace function public.transition_division_guarded(
+  p_division_id uuid,
+  p_expected_updated_at timestamptz,
+  p_status public.division_status
+)
+returns timestamptz
+language plpgsql
+security invoker
+set search_path=''
+as $
+declare
+  v_row public.competition_divisions%rowtype;
+  v_updated timestamptz;
+begin
+  select * into v_row from public.competition_divisions where id=p_division_id for update;
+  if not found then raise exception 'Division not found'; end if;
+  if p_expected_updated_at is null or v_row.updated_at <> p_expected_updated_at then
+    raise exception 'Division changed on another device';
+  end if;
+  update public.competition_divisions
+  set status=p_status,last_edited_by=(select auth.uid())
+  where id=p_division_id
+  returning updated_at into v_updated;
+  return v_updated;
+end;
+$;
+
+revoke execute on function public.update_division_draft_guarded(uuid,timestamptz,text,text,uuid,integer,numeric,numeric,integer,integer,numeric,numeric,text,jsonb,text) from public,anon;
+grant execute on function public.update_division_draft_guarded(uuid,timestamptz,text,text,uuid,integer,numeric,numeric,integer,integer,numeric,numeric,text,jsonb,text) to authenticated;
+revoke execute on function public.transition_division_guarded(uuid,timestamptz,public.division_status) from public,anon;
+grant execute on function public.transition_division_guarded(uuid,timestamptz,public.division_status) to authenticated;
+
 alter table public.event_divisions
   add column if not exists division_snapshot jsonb,
   add column if not exists ruleset_snapshot_id uuid references public.event_ruleset_snapshots(id) on delete set null;
