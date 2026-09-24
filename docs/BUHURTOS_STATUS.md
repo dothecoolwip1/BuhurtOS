@@ -172,6 +172,44 @@ Verification:
 * The frontend job passed TypeScript, unit/regression tests, and the production Vite build.
 * The database job started local Supabase, rebuilt the schema from all migrations, and passed all pgTAP suites including Mega Pack 4 concurrency and RLS abuse tests.
 
+## Pack 5 completed and merged
+
+Governed rulesets:
+
+* Rulesets move through draft, review, published, and retired states.
+* Published and retired versions are historical records and cannot be silently rewritten.
+* Parent inheritance is restricted to valid same-organization chains and protects against cycles.
+* Effective settings are snapshotted for events so later ruleset versions do not rewrite historical competition.
+* Eligibility, scoring, tournament, and ranking policy are modeled as separate domains.
+* Public provenance is retained separately from internal drafting notes.
+* Out-of-window use requires an explicit audited event exception.
+* Approved exception details are immutable; revocation is explicit and audited.
+
+Divisions and eligibility:
+
+* Competition divisions are versioned and can express age, weight, experience, team-size, declaration, and custom requirements.
+* Missing required facts produce a needs-review result rather than a silent pass.
+* Event divisions capture immutable division and effective-ruleset snapshots.
+* Current source-backed BI format classifications are distinguished from organization-defined configurable templates.
+
+Seasons and competition history:
+
+* Seasons have enforced boundaries, default published rulesets, ranking policy, and guarded lifecycle transitions.
+* New events can inherit the season default, but governed competition locks an immutable snapshot.
+* Brackets and matches retain their division and ruleset snapshot references.
+* Bracket generation uses the selected event division's locked scoring policy.
+* Database validation rejects scoring overrides that contradict the locked ruleset.
+
+Security and verification:
+
+* Pack 5 tables and mutations are protected by RLS plus explicit Data API grants.
+* Cross-organization mutation attempts are filtered or rejected without changing protected records.
+* Invalid scoring and malformed eligibility configuration are rejected at the PostgreSQL boundary.
+* Verified implementation head `d357c6414edeabc2f0034c420207ca1d29fa36ae` passed GitHub Actions workflow `36069252396`.
+* The frontend job passed TypeScript, all unit/regression tests, and the production Vite build.
+* The database job rebuilt Supabase from every migration and passed all pgTAP suites.
+* PR #9 merged Pack 5 to `main` as `178874356d4a8c4076d1deaa3ffd742d6490f515`.
+
 ## Verification status
 
 Verified in GitHub Actions on an earlier Pack 2 branch head:
@@ -186,7 +224,7 @@ Added for final Pack 2 verification:
 * `supabase/tests/database/accounts_permissions.test.sql` performs direct anonymous and authenticated access attempts across two unrelated organizations and includes revoked membership and self-escalation cases.
 * The repository CI rebuilds local Supabase from all migrations and runs pgTAP tests.
 
-Final Pack 2 head `bef3d41c7fd509269535f13a85b2555961edd483` passed GitHub Actions workflow run `35945001693`. Pack 3 implementation head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e` then passed GitHub Actions workflow run `35954642255`, including frontend checks, a clean rebuild through the Pack 3 migration, and all database tests. PR #6 merged that verified implementation as `e6fde086939f3c4e74353affb5a82a4aa1977a45`. Mega Pack 4 implementation head `07107630551711945284cabfac3de1c3ca86cc58` passed workflow `35999176785` with frontend, production-build, clean-migration, and pgTAP verification.
+Final Pack 2 head `bef3d41c7fd509269535f13a85b2555961edd483` passed GitHub Actions workflow run `35945001693`. Pack 3 implementation head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e` then passed GitHub Actions workflow run `35954642255`, including frontend checks, a clean rebuild through the Pack 3 migration, and all database tests. PR #6 merged that verified implementation as `e6fde086939f3c4e74353affb5a82a4aa1977a45`. Mega Pack 4 implementation head `07107630551711945284cabfac3de1c3ca86cc58` passed workflow `35999176785` with frontend, production-build, clean-migration, and pgTAP verification. Pack 5 implementation head `d357c6414edeabc2f0034c420207ca1d29fa36ae` passed workflow `36069252396` with the same frontend and clean-database verification, then merged in PR #9 as `178874356d4a8c4076d1deaa3ffd742d6490f515`.
 
 ## Explicitly unverified infrastructure
 

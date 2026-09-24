@@ -4,17 +4,47 @@ Last updated: 2026-09-24
 
 ## Resume here
 
-Mega Pack 4 implementation is complete in pull request #8.
+Pack 5 is complete and merged to `main` in PR #9.
 
-Verified Mega Pack 4 implementation head: `07107630551711945284cabfac3de1c3ca86cc58`.
+Verified Pack 5 implementation head: `d357c6414edeabc2f0034c420207ca1d29fa36ae`.
 
-Successful Mega Pack 4 verification workflow: `35999176785`.
+Successful Pack 5 verification workflow: `36069252396`.
+
+Pack 5 merge commit: `178874356d4a8c4076d1deaa3ffd742d6490f515`.
 
 That workflow passed both required jobs: frontend typecheck/tests/production build and a clean Supabase rebuild with all pgTAP database tests.
 
-Pack 3 remains complete underneath Mega Pack 4. Its merge commit was `e6fde086939f3c4e74353affb5a82a4aa1977a45`.
-
 Do not apply BuhurtOS migrations to the currently connected Supabase project unless it is independently confirmed to be a dedicated BuhurtOS project. The project inspected during Pack 2 contains Northborn, Mallard, and Reavers data and is not the BuhurtOS target.
+
+## Pack 5 files to know
+
+Governance and frontend workflows:
+
+* `src/lib/governance.ts`
+* `src/lib/rulesetAdmin.ts`
+* `src/lib/competitionFormats.ts`
+* `src/pages/RulesetWorkbenchPage.tsx`
+* `src/pages/SeasonManagementPage.tsx`
+* `src/pages/EventSetupPage.tsx`
+* `src/types.ts`
+
+Database and tests:
+
+* `supabase/migrations/20260924153000_pack5_rulesets_divisions_seasons.sql`
+* `supabase/tests/database/pack5_rulesets_divisions_seasons.test.sql`
+* `tests/governance.test.ts`
+* `tests/permissionsRules.test.ts`
+
+## Pack 5 rules that must remain
+
+* Published and retired ruleset versions are historical records and must not be rewritten in place.
+* Event competition history must use immutable ruleset and division snapshots.
+* Out-of-window rule use requires an explicit audited exception.
+* Missing eligibility facts must not silently qualify a fighter.
+* Season boundaries and lifecycle guards must not be bypassed by direct browser writes.
+* Generated brackets must use the selected event division's locked scoring policy.
+* Organization-defined competition templates must not be presented as source-verified official categories unless a sourced ruleset defines them.
+* Cross-organization writes remain protected by server authorization and RLS.
 
 ## Mega Pack 4 files to know
 
@@ -166,10 +196,10 @@ A dedicated BuhurtOS Supabase project is still required before any remote migrat
 
 ## Next session
 
-Read `BUHURTOS_PLAN.md`, `BUHURTOS_STATUS.md`, `MEGA_PACK_4_RELEASE.md`, and this handoff before continuing.
+Read `BUHURTOS_PLAN.md`, `BUHURTOS_STATUS.md`, and this handoff before continuing.
 
-Treat Mega Pack 4 implementation head `07107630551711945284cabfac3de1c3ca86cc58` and workflow `35999176785` as the verified release-hardening checkpoint. Later documentation-only closeout commits do not supersede that implementation verification.
+Treat Pack 5 implementation head `d357c6414edeabc2f0034c420207ca1d29fa36ae`, workflow `36069252396`, and merge commit `178874356d4a8c4076d1deaa3ffd742d6490f515` as the verified governance checkpoint.
 
-Before any hosted production claim, select a dedicated BuhurtOS Supabase project and complete the hosted checklist in `MEGA_PACK_4_RELEASE.md`.
+Before any hosted production claim, select a dedicated BuhurtOS Supabase project and complete the existing hosted verification checklist. Do not use the Northborn/Mallard/Reavers project as a BuhurtOS target.
 
-The separate branch `pack4-organizations-clubs-teams` and closed draft PR #7 contain preserved feature work that is not part of Mega Pack 4 and was intentionally excluded from the release-hardening branch.
+The separate branch `pack4-organizations-clubs-teams` and closed draft PR #7 contain preserved feature work that is not part of the verified Pack 5 line unless deliberately reviewed and integrated later.

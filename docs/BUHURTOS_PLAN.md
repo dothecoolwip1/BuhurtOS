@@ -112,13 +112,45 @@ Scope completed:
 
 Mega Pack 4 local verification is complete. Hosted production verification remains intentionally separate because no dedicated BuhurtOS Supabase project has been confirmed.
 
+## Pack 5: Rulesets, divisions and seasons
+
+Status: completed and merged to `main` in PR #9. Verified implementation head `d357c6414edeabc2f0034c420207ca1d29fa36ae` passed GitHub Actions workflow `36069252396` before merge commit `178874356d4a8c4076d1deaa3ffd742d6490f515`.
+
+Scope completed:
+
+* Governed ruleset lifecycle covering draft, review, publish, and retire.
+* Immutable published and retired ruleset versions with same-organization inheritance and cycle protection.
+* Public source provenance separated from private drafting evidence.
+* Separate eligibility, scoring, tournament, and ranking policy domains.
+* Effective windows plus explicit audited event exceptions.
+* Immutable event ruleset snapshots containing resolved policy, inheritance, and provenance.
+* Versioned competition divisions with age, weight, experience, team-size, declaration, and custom eligibility constraints.
+* Explainable eligibility decisions that return needs-review when required facts are missing.
+* Governed event-division assignment with immutable division and ruleset snapshots.
+* Season date boundaries, default published rulesets, ranking policy, guarded lifecycle, and event-boundary enforcement.
+* New-event inheritance of season defaults with snapshot locking before governed competition.
+* Brackets and matches retain division and ruleset snapshot references.
+* Generated competition uses the locked division ruleset scoring, and conflicting scoring overrides are rejected.
+* Approved policy exceptions are immutable and revocations are audited.
+* PostgreSQL validation rejects malformed eligibility and invalid scoring configuration.
+* RLS and explicit Data API grants protect new Pack 5 tables and cross-organization writes.
+* Current source-backed competition formats are distinguished from configurable organization templates.
+* Frontend and pgTAP regression coverage for lifecycle transitions, snapshots, RLS, conflicts, exceptions, scoring, eligibility, and historical preservation.
+
+Pack 5 verification requires both repository CI jobs:
+
+1. Typecheck, tests and production build.
+2. Clean Supabase startup, database reset from all migrations, and all pgTAP database tests.
+
+Workflow `36069252396` passed both jobs on the verified implementation head. Hosted Supabase verification remains separate until a dedicated BuhurtOS project is selected.
+
 ## Later packs
 
-Later product work is out of scope for Pack 3. Do not add tournament features, ranking features, streaming features, new competition workflows, or unrelated visual redesigns while closing this pack.
+Later product work should start from the verified Pack 5 checkpoint. Preserve the completed identity, authorization, release-hardening, governance, division, and season foundations unless a targeted defect requires change.
 
 Before starting a later pack:
 
 * Read `BUHURTOS_STATUS.md`.
 * Read `BUHURTOS_HANDOFF.md`.
-* Confirm Pack 3 CI is green on the verified implementation head and that PR #6 is merged.
+* Confirm Pack 5 CI is green on verified implementation head `d357c6414edeabc2f0034c420207ca1d29fa36ae` and that PR #9 is merged.
 * Confirm a dedicated BuhurtOS Supabase project is selected before applying migrations remotely.
