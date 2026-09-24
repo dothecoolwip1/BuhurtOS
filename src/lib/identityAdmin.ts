@@ -290,29 +290,32 @@ export async function createAffiliation(input: Omit<FighterAffiliation, 'id'>): 
     writeDemo(key, [row, ...current]);
     return row;
   }
-  const { data, error } = await supabase.from('fighter_affiliations').insert({
-    identity_id: input.identityId,
-    organization_id: input.organizationId,
-    club_id: input.clubId || null,
-    team_id: input.teamId || null,
-    affiliation_type: input.affiliationType,
-    starts_on: input.startsOn,
-    ends_on: input.endsOn || null,
-    is_primary: input.isPrimary,
-    source_event_id: input.sourceEventId || null,
-    notes: input.notes || null
-  }).select('*').single();
+  const { data, error } = await supabase.rpc('create_fighter_affiliation', {
+    p_identity_id: input.identityId,
+    p_organization_id: input.organizationId,
+    p_club_id: input.clubId || null,
+    p_team_id: input.teamId || null,
+    p_affiliation_type: input.affiliationType,
+    p_starts_on: input.startsOn,
+    p_ends_on: input.endsOn || null,
+    p_is_primary: input.isPrimary,
+    p_source_event_id: input.sourceEventId || null,
+    p_notes: input.notes || null
+  });
   if (error) throw error;
-  return rowToAffiliation(data);
+  return { ...input, id: data as string };
 }
 
 export async function endAffiliation(organizationId: string, affiliationId: string, endsOn = new Date().toISOString().slice(0, 10)): Promise<void> {
   if (!supabase) {
     const key = demoKey('affiliations', organizationId);
-    writeDemo(key, readDemo<FighterAffiliation>(key).map(row => row.id === affiliationId ? { ...row, endsOn } : row));
+    writeDemo(key, readDemo<FighterAffiliation>(key).map(row => row.id === affiliationId ? { ...row, endsOn, isPrimary: false } : row));
     return;
   }
-  const { error } = await supabase.from('fighter_affiliations').update({ ends_on: endsOn, is_primary: false }).eq('id', affiliationId).eq('organization_id', organizationId);
+  const { error } = await supabase.rpc('end_fighter_affiliation', {
+    p_affiliation_id: affiliationId,
+    p_ends_on: endsOn
+  });
   if (error) throw error;
 }
 
@@ -353,22 +356,6 @@ function readObject(key: string): Record<string, any> {
   try { return JSON.parse(localStorage.getItem(key) || '{}') as Record<string, any>; } catch { return {}; }
 }
 
-export async function mergeFoundationFighters(event: EventRecord, roster: RosterEntry[], canonicalFighterId: string, duplicateFighterId: string): Promise<void> {
-  if (canonicalFighterId === duplicateFighterId) throw new Error('Choose two different fighters.');
-  if (!supabase) {
-    const key = demoKey('fighters', event.organizationId);
-    const current = await listFoundationFighters(event, roster);
-    const stamp = new Date().toISOString();
-    const next = current.map(row => row.id === duplicateFighterId ? { ...row, mergedIntoFighterId: canonicalFighterId, deletedAt: stamp } : row);
-    writeDemo(key, next);
-    const overrideKey = 'buhurtos-demo-roster-overrides';
-    const overrides = readObject(overrideKey);
-    for (const entry of roster) {
-      if (entry.fighterId === duplicateFighterId) overrides[entry.id] = { ...(overrides[entry.id] || {}), fighterId: canonicalFighterId };
-    }
-    localStorage.setItem(overrideKey, JSON.stringify(overrides));
-    return;
-  }
-  const { error } = await supabase.rpc('merge_fighters', { p_canonical_fighter_id: canonicalFighterId, p_duplicate_fighter_id: duplicateFighterId });
-  if (error) throw error;
+export async function mergeFoundationFighters(): Promise<void> {
+  throw new Error('Direct fighter merges are disabled. Use the identity merge review workflow.');
 }
