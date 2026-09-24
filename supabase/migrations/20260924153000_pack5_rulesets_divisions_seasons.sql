@@ -124,7 +124,7 @@ for each row execute function private.stamp_foundation_actor();
 create or replace function private.jsonb_deep_merge(p_base jsonb, p_patch jsonb)
 returns jsonb
 language plpgsql
-security definer
+security invoker
 immutable
 set search_path = ''
 as $$
@@ -155,7 +155,7 @@ revoke execute on function private.jsonb_deep_merge(jsonb,jsonb) from public, an
 create or replace function private.resolve_ruleset_settings(p_ruleset_id uuid, p_seen uuid[] default '{}'::uuid[])
 returns jsonb
 language plpgsql
-security definer
+security invoker
 stable
 set search_path = ''
 as $$
@@ -196,10 +196,10 @@ create or replace function private.resolve_ruleset_policy(
 )
 returns jsonb
 language plpgsql
-security definer
+security invoker
 stable
 set search_path = ''
-as $$
+as $
 declare
   v_row public.rulesets%rowtype;
   v_own jsonb;
@@ -228,8 +228,11 @@ begin
 end;
 $$;
 
-revoke execute on function private.resolve_ruleset_settings(uuid,uuid[]) from public, anon, authenticated;
-revoke execute on function private.resolve_ruleset_policy(uuid,text,uuid[]) from public, anon, authenticated;
+revoke execute on function private.resolve_ruleset_settings(uuid,uuid[]) from public, anon;
+grant execute on function private.resolve_ruleset_settings(uuid,uuid[]) to authenticated;
+revoke execute on function private.resolve_ruleset_policy(uuid,text,uuid[]) from public, anon;
+grant execute on function private.resolve_ruleset_policy(uuid,text,uuid[]) to authenticated;
+grant execute on function private.jsonb_deep_merge(jsonb,jsonb) to authenticated;
 
 create or replace function private.guard_ruleset_parent()
 returns trigger
@@ -633,9 +636,9 @@ create or replace function public.assign_event_ruleset_guarded(
 )
 returns uuid
 language plpgsql
-security definer
+security invoker
 set search_path=''
-as $$
+as $
 declare
   v_event public.events%rowtype;
   v_ruleset public.rulesets%rowtype;
