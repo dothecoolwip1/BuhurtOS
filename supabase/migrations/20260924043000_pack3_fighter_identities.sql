@@ -271,12 +271,15 @@ create policy fighter_identities_authenticated_read
 on public.fighter_identities
 for select to authenticated
 using (
-  deleted_at is null
-  and merged_into_identity_id is null
-  and (
-    profile_visibility in ('public', 'members')
-    or private.user_controls_identity((select auth.uid()), id)
-    or private.can_admin_identity((select auth.uid()), id)
+  private.is_platform_admin((select auth.uid()))
+  or (
+    deleted_at is null
+    and merged_into_identity_id is null
+    and (
+      profile_visibility in ('public', 'members')
+      or private.user_controls_identity((select auth.uid()), id)
+      or private.can_admin_identity((select auth.uid()), id)
+    )
   )
 );
 
