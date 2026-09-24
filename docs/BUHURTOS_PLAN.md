@@ -33,7 +33,7 @@ Do not replace or redesign these foundations while completing Pack 2 unless a se
 
 ## Pack 2: Accounts and permissions
 
-Status: implementation in progress on `pack2-accounts-permissions`, PR #4.
+Status: completed and merged to `main` in PR #4. Final Pack 2 head `bef3d41c7fd509269535f13a85b2555961edd483` passed the combined frontend and local Supabase CI workflow.
 
 Scope is deliberately limited to account and access control work:
 
