@@ -21,6 +21,11 @@ select ok(
   'waiver storage has no anonymous object policy'
 );
 
+select ok(
+  not has_column_privilege('anon','public.match_rounds','notes','SELECT'),
+  'anonymous spectators cannot read free-form round notes'
+);
+
 insert into auth.users (
   id, aud, role, email, encrypted_password, email_confirmed_at,
   raw_app_meta_data, raw_user_meta_data, created_at, updated_at
