@@ -201,7 +201,7 @@ language plpgsql
 security invoker
 stable
 set search_path = ''
-as $
+as $$
 declare
   v_row public.rulesets%rowtype;
   v_own jsonb;
@@ -644,7 +644,7 @@ returns uuid
 language plpgsql
 security invoker
 set search_path=''
-as $
+as $$
 declare
   v_event public.events%rowtype;
   v_ruleset public.rulesets%rowtype;
@@ -1198,7 +1198,7 @@ returns uuid
 language plpgsql
 security invoker
 set search_path=''
-as $
+as $$
 declare
   v_event public.events%rowtype;
   v_ruleset public.rulesets%rowtype;
@@ -1270,7 +1270,7 @@ begin
 
   return v_snapshot_id;
 end;
-$;
+$$;
 
 revoke execute on function private.create_event_ruleset_snapshot(uuid,uuid) from public,anon;
 grant execute on function private.create_event_ruleset_snapshot(uuid,uuid) to authenticated;
@@ -1285,7 +1285,7 @@ returns uuid
 language plpgsql
 security invoker
 set search_path=''
-as $
+as $$
 declare
   v_event public.events%rowtype;
   v_division public.competition_divisions%rowtype;
@@ -1366,7 +1366,7 @@ begin
 
   return v_id;
 end;
-$;
+$$;
 
 create or replace function public.remove_event_division_guarded(
   p_event_division_id uuid,
@@ -1376,7 +1376,7 @@ returns void
 language plpgsql
 security invoker
 set search_path=''
-as $
+as $$
 declare
   v_row public.event_divisions%rowtype;
   v_event public.events%rowtype;
@@ -1405,7 +1405,7 @@ begin
     jsonb_build_object('divisionId',v_row.division_id,'rulesetSnapshotId',v_row.ruleset_snapshot_id)
   );
 end;
-$;
+$$;
 
 revoke execute on function public.assign_event_division_guarded(uuid,uuid,integer,text) from public,anon;
 grant execute on function public.assign_event_division_guarded(uuid,uuid,integer,text) to authenticated;
@@ -1417,7 +1417,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path=''
-as $
+as $$
 declare
   v_event public.events%rowtype;
   v_division public.competition_divisions%rowtype;
@@ -1470,7 +1470,7 @@ begin
   );
   return new;
 end;
-$;
+$$;
 
 revoke execute on function private.govern_event_division() from public,anon,authenticated;
 
