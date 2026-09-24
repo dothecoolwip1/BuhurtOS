@@ -191,13 +191,23 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       await refreshPending();
       return;
     }
+    if (!before.updatedAt) {
+      setRoster(current => current.map(r => r.id === entryId ? before : r));
+      throw new Error('Roster version is missing. Reload before changing clearance.');
+    }
     const client = supabase;
     const column = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' }[field];
-    const { error: writeError } = await client.from('event_roster_entries').update({ [column]: value }).eq('id', entryId);
+    const { error: writeError } = await client.rpc('update_roster_clearance_guarded', {
+      p_roster_entry_id: entryId,
+      p_expected_updated_at: before.updatedAt,
+      p_field: column,
+      p_value: value
+    });
     if (writeError) {
       setRoster(current => current.map(r => r.id === entryId ? before : r));
       throw writeError;
     }
+    await reload();
   }, [roster, online, refreshPending]);
 
   const finalizeResult = useCallback(async (matchId: string, rounds: ScoreRound[], forfeit?: { side: 1 | 2; reason: string }) => {
@@ -250,13 +260,27 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setMatches(nextMatches);
     if (!supabase) { localStorage.setItem('buhurtos-demo-matches', JSON.stringify(nextMatches)); return; }
     if (!online) {
-      await enqueueMutation({ entity: 'fight_card_order', entityId: matchId, operation: 'rpc', payload: { direction } });
+      await enqueueMutation({
+        entity: 'fight_card_order',
+        entityId: matchId,
+        operation: 'rpc',
+        payload: { direction },
+        baseVersion: String(source.scheduledOrder)
+      });
       await refreshPending();
       return;
     }
     const client = supabase;
-    const { error: rpcError } = await client.rpc('reorder_match', { p_match_id: matchId, p_direction: direction });
-    if (rpcError) throw rpcError;
+    const { error: rpcError } = await client.rpc('reorder_match_guarded', {
+      p_match_id: matchId,
+      p_direction: direction,
+      p_expected_order: source.scheduledOrder
+    });
+    if (rpcError) {
+      setMatches(matches);
+      throw rpcError;
+    }
+    await reload();
   }, [matches, online, refreshPending]);
 
   const setMatchStatus = useCallback(async (matchId: string, status: MatchStatus) => {
@@ -306,27 +330,37 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       }
       if (mutation.operation === 'rpc' && mutation.entity === 'fight_card_order') {
         const payload = mutation.payload as { direction: -1 | 1 };
-        const { error: e } = await client.rpc('reorder_match', { p_match_id: mutation.entityId, p_direction: payload.direction });
-        return e ? { ok: false, error: e.message } : { ok: true };
+        const expectedOrder = Number(mutation.baseVersion);
+        if (!Number.isInteger(expectedOrder)) return { ok: false, conflict: true, error: 'Queued fight-card order is missing its original position.' };
+        const { error: e } = await client.rpc('reorder_match_guarded', {
+          p_match_id: mutation.entityId,
+          p_direction: payload.direction,
+          p_expected_order: expectedOrder
+        });
+        return e
+          ? { ok: false, conflict: e.code === 'P0001' || /changed on another device/i.test(e.message), error: e.message }
+          : { ok: true };
       }
       if (mutation.operation === 'update' && mutation.entity === 'event_roster_entries') {
         const payload = mutation.payload as Record<string, unknown>;
-        const mapped: Record<string, unknown> = {};
         const map: Record<string, string> = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' };
         const base = mutation.baseVersion ? JSON.parse(mutation.baseVersion) as Record<string, unknown> : null;
-        const { data: current, error: readError } = await client.from('event_roster_entries').select('checked_in,armor_cleared,medical_cleared,waiver_confirmed,weigh_in_cleared').eq('id', mutation.entityId).single();
-        if (readError) return { ok: false, error: readError.message };
-        for (const [key, value] of Object.entries(payload)) {
-          const column = map[key] ?? key;
-          mapped[column] = value;
-          if (base) {
-            const before = base[key];
-            const remote = (current as Record<string, unknown>)[column];
-            if (remote !== before && remote !== value) return { ok: false, conflict: true, error: `Roster field ${key} changed on another device.` };
-          }
-        }
-        const { error: e } = await client.from('event_roster_entries').update(mapped).eq('id', mutation.entityId);
-        return e ? { ok: false, error: e.message } : { ok: true };
+        const expectedUpdatedAt = typeof base?.updatedAt === 'string' ? base.updatedAt : null;
+        if (!expectedUpdatedAt) return { ok: false, conflict: true, error: 'Queued roster action is missing its original record version.' };
+        const entries = Object.entries(payload);
+        if (entries.length !== 1) return { ok: false, conflict: true, error: 'Queued roster action contains an unsupported multi-field change.' };
+        const [key, value] = entries[0];
+        const column = map[key];
+        if (!column || typeof value !== 'boolean') return { ok: false, conflict: true, error: 'Queued roster action is invalid.' };
+        const { error: e } = await client.rpc('update_roster_clearance_guarded', {
+          p_roster_entry_id: mutation.entityId,
+          p_expected_updated_at: expectedUpdatedAt,
+          p_field: column,
+          p_value: value
+        });
+        return e
+          ? { ok: false, conflict: e.code === 'P0001' || /changed on another device/i.test(e.message), error: e.message }
+          : { ok: true };
       }
       return { ok: false, error: 'Unsupported queued mutation type.' };
     });
