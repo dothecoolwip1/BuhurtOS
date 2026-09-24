@@ -1,6 +1,6 @@
 # BuhurtOS Status
 
-Last updated: 2026-09-23
+Last updated: 2026-09-24
 
 ## Current recovery point
 
@@ -23,6 +23,14 @@ Pack 3 verified implementation head: `2ffab73e9e403ab8c0325ef18a441ed5fe09319e`
 Pack 3 merge commit: `e6fde086939f3c4e74353affb5a82a4aa1977a45`
 
 Pack 3 successful pre-merge workflow: `35954642255`
+
+Mega Pack 4 branch: `mega4-production-hardening`
+
+Mega Pack 4 pull request: #8, `Mega Pack 4: production hardening and release readiness`
+
+Mega Pack 4 verified implementation head: `07107630551711945284cabfac3de1c3ca86cc58`
+
+Mega Pack 4 successful verification workflow: `35999176785`
 
 The original `BUHURTOS_PLAN.md`, `BUHURTOS_STATUS.md`, and `BUHURTOS_HANDOFF.md` files were absent from `main` at the start of Pack 2. These files were reconstructed from repository evidence rather than guessed historical content.
 
@@ -134,6 +142,36 @@ UI:
 * `/ops/identity-review` provides administrator claim review, duplicate suggestions, merge requests, and platform merge review.
 * The older foundation merge control now requests review rather than executing a direct merge.
 
+## Mega Pack 4 implementation complete
+
+Production security and privacy:
+
+* The PWA service worker caches only same-origin application navigation and static assets and excludes authorization-bearing requests.
+* Organization-administrator operational writes are aligned between application permissions and RLS.
+* Public waiver upload is implemented as a token-protected Edge Function using private Storage.
+* Registration checkout validates the registration capability token and fails closed when no payment provider exists.
+* Production source maps are disabled.
+
+Concurrency and field reliability:
+
+* Event settings, roster clearances, field configuration, registration review, and fight-card reorder operations use server-side expected-version guards.
+* Existing match-status and result-submission concurrency guards remain in place.
+* Offline mutations preserve their base version and surface conflicts for explicit retry or discard.
+* Event-setting changes are included in realtime subscriptions.
+
+Release UX and performance:
+
+* Misleading showcase-only controls were replaced by working search, share, export, navigation, or explicit read-only states.
+* Route-level code splitting reduced the initial minified JavaScript bundle from about 510 kB to about 312 kB.
+* The PWA now includes 192px and 512px icons and updated install metadata.
+* Score-dialog controls include accessible labels and live validation messaging.
+
+Verification:
+
+* Implementation head `07107630551711945284cabfac3de1c3ca86cc58` passed GitHub Actions workflow `35999176785`.
+* The frontend job passed TypeScript, unit/regression tests, and the production Vite build.
+* The database job started local Supabase, rebuilt the schema from all migrations, and passed all pgTAP suites including Mega Pack 4 concurrency and RLS abuse tests.
+
 ## Verification status
 
 Verified in GitHub Actions on an earlier Pack 2 branch head:
@@ -148,7 +186,7 @@ Added for final Pack 2 verification:
 * `supabase/tests/database/accounts_permissions.test.sql` performs direct anonymous and authenticated access attempts across two unrelated organizations and includes revoked membership and self-escalation cases.
 * The repository CI rebuilds local Supabase from all migrations and runs pgTAP tests.
 
-Final Pack 2 head `bef3d41c7fd509269535f13a85b2555961edd483` passed GitHub Actions workflow run `35945001693`. Pack 3 implementation head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e` then passed GitHub Actions workflow run `35954642255`, including frontend checks, a clean rebuild through the Pack 3 migration, and all database tests. PR #6 merged that verified implementation as `e6fde086939f3c4e74353affb5a82a4aa1977a45`.
+Final Pack 2 head `bef3d41c7fd509269535f13a85b2555961edd483` passed GitHub Actions workflow run `35945001693`. Pack 3 implementation head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e` then passed GitHub Actions workflow run `35954642255`, including frontend checks, a clean rebuild through the Pack 3 migration, and all database tests. PR #6 merged that verified implementation as `e6fde086939f3c4e74353affb5a82a4aa1977a45`. Mega Pack 4 implementation head `07107630551711945284cabfac3de1c3ca86cc58` passed workflow `35999176785` with frontend, production-build, clean-migration, and pgTAP verification.
 
 ## Explicitly unverified infrastructure
 
@@ -163,5 +201,9 @@ Until a dedicated BuhurtOS project is available, these remain unverified:
 * Deployed `invite-event-member` Edge Function behavior.
 * Hosted JWT expiry and refresh behavior through the Supabase gateway.
 * Hosted waiver Storage behavior.
+* Deployed `upload-waiver` behavior.
+* Deployed `create-registration-checkout` behavior.
+* Real payment-provider checkout and webhook reconciliation.
+* Real multi-device reconnect behavior on hosted infrastructure.
 
 These are infrastructure verification items, not claims of successful production deployment.

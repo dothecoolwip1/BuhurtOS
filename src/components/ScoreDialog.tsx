@@ -23,13 +23,13 @@ export function ScoreDialog({ match, roster, onClose, onSubmit }: { match: Match
   };
   return <div className="dialog-backdrop" role="presentation" onMouseDown={e => e.currentTarget === e.target && onClose()}>
     <section className="dialog" role="dialog" aria-modal="true" aria-label={`Score ${match.label}`}>
-      <div className="dialog-head"><div><span className="eyebrow">Guided scoring</span><h2>{match.label}</h2></div><button className="icon-btn" onClick={onClose}>×</button></div>
+      <div className="dialog-head"><div><span className="eyebrow">Guided scoring</span><h2>{match.label}</h2></div><button className="icon-btn" aria-label="Close scoring dialog" onClick={onClose}>×</button></div>
       <div className="score-names"><strong>{name(1)}</strong><span>vs</span><strong>{name(2)}</strong></div>
-      {!forfeitSide && <div className="round-list">{rounds.map((round, index) => <div className="round-row" key={round.roundNumber}><b>Round {round.roundNumber}</b><input type="number" min="0" inputMode="numeric" value={round.side1Score} onChange={e => change(index, 1, Number(e.target.value))}/><span>:</span><input type="number" min="0" inputMode="numeric" value={round.side2Score} onChange={e => change(index, 2, Number(e.target.value))}/></div>)}</div>}
+      {!forfeitSide && <div className="round-list">{rounds.map((round, index) => <div className="round-row" key={round.roundNumber}><b>Round {round.roundNumber}</b><input aria-label={`${name(1)} round ${round.roundNumber} score`} type="number" min="0" inputMode="numeric" value={round.side1Score} onChange={e => change(index, 1, Number(e.target.value))}/><span>:</span><input aria-label={`${name(2)} round ${round.roundNumber} score`} type="number" min="0" inputMode="numeric" value={round.side2Score} onChange={e => change(index, 2, Number(e.target.value))}/></div>)}</div>}
       <div className="forfeit-box"><label>Forfeit side<select value={forfeitSide} onChange={e => setForfeitSide(e.target.value as '' | '1' | '2')}><option value="">No forfeit</option><option value="1">{name(1)}</option><option value="2">{name(2)}</option></select></label>{forfeitSide && <label>Reason<input value={forfeitReason} onChange={e => setForfeitReason(e.target.value)} placeholder="Required reason"/></label>}</div>
-      {!validation.valid && <div className="validation-errors">{validation.errors.map(error => <div key={error}>{error}</div>)}</div>}
-      {validation.valid && validation.result && <div className="result-preview"><b>Auto result:</b> {validation.result.winnerSide ? `${name(validation.result.winnerSide)} wins` : 'Draw'} • {validation.result.side1Total} : {validation.result.side2Total}</div>}
-      {serverError && <div className="validation-errors">{serverError}</div>}
+      {!validation.valid && <div className="validation-errors" role="alert">{validation.errors.map(error => <div key={error}>{error}</div>)}</div>}
+      {validation.valid && validation.result && <div className="result-preview" aria-live="polite"><b>Auto result:</b> {validation.result.winnerSide ? `${name(validation.result.winnerSide)} wins` : 'Draw'} • {validation.result.side1Total} : {validation.result.side2Total}</div>}
+      {serverError && <div className="validation-errors" role="alert">{serverError}</div>}
       <div className="dialog-actions"><button onClick={onClose}>Cancel</button><button className="primary" disabled={!validation.valid || submitting} onClick={submit}>{submitting ? 'Saving…' : 'Finalize Result'}</button></div>
     </section>
   </div>;

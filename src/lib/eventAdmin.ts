@@ -64,7 +64,7 @@ export async function listEventRegistrations(eventId: string): Promise<EventRegi
   }));
 }
 
-export async function reviewRegistration(event: EventRecord, registrationId: string, status: Exclude<RegistrationReviewStatus, 'pending'>): Promise<void> {
+export async function reviewRegistration(event: EventRecord, registrationId: string, status: Exclude<RegistrationReviewStatus, 'pending'>, expectedUpdatedAt?: string): Promise<void> {
   if (!supabase) {
     const items = readDemo<EventRegistrationAdmin[]>(registrationsKey(event.id), []);
     const next = items.map(item => item.id === registrationId ? { ...item, status, updatedAt: new Date().toISOString() } : item);
@@ -94,8 +94,10 @@ export async function reviewRegistration(event: EventRecord, registrationId: str
     }
     return;
   }
-  const { error } = await supabase.rpc('review_event_registration', {
+  if (!expectedUpdatedAt) throw new Error('Registration version is missing. Reload before reviewing it.');
+  const { error } = await supabase.rpc('review_event_registration_guarded', {
     p_registration_id: registrationId,
+    p_expected_updated_at: expectedUpdatedAt,
     p_status: status
   });
   if (error) throw error;
@@ -106,13 +108,16 @@ export async function updateEventSettings(event: EventRecord, input: EventSettin
     localStorage.setItem(eventKey(event.id), JSON.stringify({ ...event, ...input }));
     return;
   }
-  const { error } = await supabase.from('events').update({
-    status: input.status,
-    event_type: input.eventType,
-    standings_mode: input.standingsMode,
-    registration_open: input.registrationOpen,
-    livestream_url: input.livestreamUrl?.trim() || null
-  }).eq('id', event.id);
+  if (!event.updatedAt) throw new Error('Event version is missing. Reload before saving settings.');
+  const { error } = await supabase.rpc('update_event_settings_guarded', {
+    p_event_id: event.id,
+    p_expected_updated_at: event.updatedAt,
+    p_status: input.status,
+    p_event_type: input.eventType,
+    p_standings_mode: input.standingsMode,
+    p_registration_open: input.registrationOpen,
+    p_livestream_url: input.livestreamUrl?.trim() || null
+  });
   if (error) throw error;
 }
 
@@ -169,12 +174,9 @@ export async function createFightCard(eventId: string, name: string, existing: F
     localStorage.setItem(fightCardsKey(eventId), JSON.stringify([...existing, next]));
     return;
   }
-  const { error } = await supabase.from('fight_cards').insert({
-    event_id: eventId,
-    name: cleanName,
-    list_name: cleanName,
-    status: 'live',
-    sort_order: existing.length
+  const { error } = await supabase.rpc('create_fight_card_guarded', {
+    p_event_id: eventId,
+    p_name: cleanName
   });
   if (error) throw error;
 }
@@ -187,10 +189,12 @@ export async function updateFightCard(eventId: string, card: FightCard, input: {
     localStorage.setItem(fightCardsKey(eventId), JSON.stringify(next));
     return;
   }
-  const { error } = await supabase.from('fight_cards').update({
-    name: nextName,
-    list_name: nextName,
-    status: nextStatus
-  }).eq('id', card.id).eq('event_id', eventId);
+  if (!card.updatedAt) throw new Error('Tournament field version is missing. Reload before saving it.');
+  const { error } = await supabase.rpc('update_fight_card_guarded', {
+    p_fight_card_id: card.id,
+    p_expected_updated_at: card.updatedAt,
+    p_name: nextName,
+    p_status: nextStatus
+  });
   if (error) throw error;
 }

@@ -1,6 +1,6 @@
 # BuhurtOS Build Plan
 
-Last updated: 2026-09-23
+Last updated: 2026-09-24
 
 ## Recovery provenance
 
@@ -90,6 +90,27 @@ Pack 3 verification requires both repository CI jobs:
 2. Clean Supabase startup, database reset from all migrations, and all pgTAP database tests.
 
 Hosted Supabase application remains intentionally unverified until a dedicated BuhurtOS Supabase project exists.
+
+## Mega Pack 4: Production hardening and release readiness
+
+Status: implementation complete in pull request #8. Verified implementation head `07107630551711945284cabfac3de1c3ca86cc58` passed GitHub Actions workflow `35999176785`, including typecheck, all frontend tests, production build, a clean Supabase rebuild from every migration, and all pgTAP suites.
+
+Scope completed:
+
+* Hardened the service worker so private or cross-origin authenticated API responses are not cached.
+* Aligned organization-administrator RLS writes with the permissions exposed by secured operations screens.
+* Added optimistic concurrency guards for event settings, roster clearances, tournament fields, registration review, and fight-card ordering.
+* Preserved explicit conflict resolution for offline reconnects instead of last-write-wins behavior.
+* Added token-protected private waiver upload with validation, safe replacement, and audit logging.
+* Added a fail-closed registration checkout endpoint. Paid registration checkout remains unavailable until a real payment provider and verified webhook are configured.
+* Removed or replaced showcase controls that appeared functional but did not perform real work.
+* Added offline failure/conflict and scoring/stream abuse regression coverage.
+* Added deterministic dependency installation with a committed lockfile and `npm ci`.
+* Added route-level code splitting, disabled production source maps, and reduced the initial minified JavaScript bundle from about 510 kB to about 312 kB.
+* Added installable PWA icons, manifest metadata, and targeted accessibility improvements.
+* Documented hosted-production dependencies in `docs/MEGA_PACK_4_RELEASE.md`.
+
+Mega Pack 4 local verification is complete. Hosted production verification remains intentionally separate because no dedicated BuhurtOS Supabase project has been confirmed.
 
 ## Later packs
 
