@@ -183,8 +183,11 @@ export function FoundationPage() {
 
   const newDivisionVersion = (division: CompetitionDivision) => run(async()=>{
     const id=await createNewDivisionVersion(event.organizationId,division.id);
-    setEditingDivisionId(id);
-  },'New draft division version created.');
+    const rows=await listDivisions(event.organizationId);
+    setDivisions(rows);
+    const next=rows.find(row=>row.id===id);
+    if(next)editDivision(next);
+  },'New draft division version created and opened for editing.');
 
   const addEventDivision = () => run(async()=>{
     if(!eventDivisionForm.divisionId)throw new Error('Choose a published division.');
@@ -196,7 +199,7 @@ export function FoundationPage() {
   },'Division assigned to this event with an immutable version snapshot.');
 
   const deleteEventDivision = (row:EventDivision) => run(
-    ()=>removeEventDivision(event,row.id),
+    ()=>removeEventDivision(event,row),
     'Event division removed before competition began.'
   );
 
@@ -346,6 +349,7 @@ export function FoundationPage() {
           <label>Published division<select value={eventDivisionForm.divisionId} onChange={e=>setEventDivisionForm(form=>({...form,divisionId:e.target.value}))}><option value="">Choose division</option>{divisions.filter(row=>row.status==='published'&&!eventDivisions.some(ed=>ed.divisionId===row.id)).map(row=><option key={row.id} value={row.id}>{row.name} · v{row.version??1}</option>)}</select></label>
           <input type="number" min="1" placeholder="Registration limit, optional" value={eventDivisionForm.registrationLimit} onChange={e=>setEventDivisionForm(form=>({...form,registrationLimit:e.target.value}))}/>
           <button disabled={busy||!eventDivisionForm.divisionId||!['draft','published'].includes(event.status)} onClick={addEventDivision}>Assign to Event</button>
+          {!event.rulesetSnapshotId&&eventDivisionForm.divisionId&&!divisions.find(row=>row.id===eventDivisionForm.divisionId)?.rulesetId&&<small>Lock an event ruleset first, or choose a division with its own published ruleset.</small>}
         </div>
         <div className="membership-list">{eventDivisions.length===0?<div className="state-card">No divisions assigned to this event.</div>:eventDivisions.map(row=>{const division=divisions.find(item=>item.id===row.divisionId);const snap=row.divisionSnapshot;return <article key={row.id}><div className="grow"><strong>{String(snap?.name??division?.name??'Division')} · v{String(snap?.version??division?.version??1)}</strong><small>Registration {row.isRegistrationOpen?'open':'closed'}{row.registrationLimit?' · limit '+row.registrationLimit:''} · snapshot preserved</small></div>{['draft','published'].includes(event.status)&&<button disabled={busy} onClick={()=>deleteEventDivision(row)}>Remove</button>}</article>;})}</div>
       </section>
