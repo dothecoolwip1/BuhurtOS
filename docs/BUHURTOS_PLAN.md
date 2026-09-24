@@ -1,6 +1,6 @@
 # BuhurtOS Build Plan
 
-Last reconstructed: 2026-09-23
+Last updated: 2026-09-23
 
 ## Recovery provenance
 
@@ -60,13 +60,44 @@ Pack 2 is complete only when both GitHub Actions jobs pass on the final Pack 2 h
 
 Any hosted Supabase deployment or email delivery check that cannot be performed against a dedicated BuhurtOS project must remain explicitly unverified.
 
+## Pack 3: Fighter identities
+
+Status: completed and merged to `main` in PR #6. Implementation head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e` passed GitHub Actions workflow `35954642255` before merge commit `e6fde086939f3c4e74353affb5a82a4aa1977a45`.
+
+Scope completed:
+
+* Permanent fighter identity IDs independent from login accounts, names, teams, clubs, and organizations.
+* Authenticated self and guardian account links separated from the sporting identity.
+* Public, members-only, and private profile visibility enforced by row-level security and column grants.
+* Separate private administrative profiles for legal name, birth date, contact, emergency, and guardian information.
+* Youth public-profile protection requiring verified guardian consent when a recorded birth date identifies the fighter as under 18.
+* Optimistic public and private profile revisions that reject stale-device overwrites.
+* Historical display-name aliases and duplicate suggestions without automatic merging.
+* Existing-record claim workflows with approval, rejection, cancellation, dispute escalation, and audited ownership transfer.
+* Merge requests separated from merge approval. A platform super administrator other than the requester performs the final review.
+* Transactional merge conflict checks for changed revisions and conflicting verified owners.
+* Historical roster and result references preserved instead of rewritten during identity merges.
+* Archived duplicate identities and organization fighter rows retained with canonical provenance.
+* Dated team, club, independent, mercenary, and guest affiliation history.
+* Direct browser writes removed from identity and affiliation mutation paths in favor of authorized RPCs.
+* Compatibility synchronization for trusted legacy `fighter_identities.user_id` ownership records.
+* Self-service fighter identity UI and administrator claim/merge review UI.
+* Pack 3 unit and pgTAP coverage, including 49 identity-specific database assertions plus the preserved Pack 1 and Pack 2 suites.
+
+Pack 3 verification requires both repository CI jobs:
+
+1. Typecheck, tests and production build.
+2. Clean Supabase startup, database reset from all migrations, and all pgTAP database tests.
+
+Hosted Supabase application remains intentionally unverified until a dedicated BuhurtOS Supabase project exists.
+
 ## Later packs
 
-Later product work is out of scope for Pack 2. Do not add tournament features, ranking features, streaming features, new competition workflows, or unrelated visual redesigns while closing this pack.
+Later product work is out of scope for Pack 3. Do not add tournament features, ranking features, streaming features, new competition workflows, or unrelated visual redesigns while closing this pack.
 
 Before starting a later pack:
 
 * Read `BUHURTOS_STATUS.md`.
 * Read `BUHURTOS_HANDOFF.md`.
-* Confirm Pack 2 CI is green on the merged commit.
+* Confirm Pack 3 CI is green on the verified implementation head and that PR #6 is merged.
 * Confirm a dedicated BuhurtOS Supabase project is selected before applying migrations remotely.
