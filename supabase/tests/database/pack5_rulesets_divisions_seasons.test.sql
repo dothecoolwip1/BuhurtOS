@@ -429,6 +429,16 @@ insert into public.rulesets(
   '51000000-0000-0000-0000-000000000010',
   'Unsourced Rules','NO SOURCE','1.0','draft','{}'
 );
+insert into public.ruleset_sources(
+  ruleset_id,label,version_label,source_kind,notes,accessed_on
+) values (
+  '51000000-0000-0000-0000-000000000103',
+  'Internal drafting memo',
+  'Internal working note',
+  'internal',
+  'This may support drafting but is intentionally not public provenance.',
+  '2026-09-24'
+);
 select public.transition_ruleset_guarded(
   '51000000-0000-0000-0000-000000000103',
   (select updated_at from public.rulesets where id='51000000-0000-0000-0000-000000000103'),
@@ -443,8 +453,8 @@ select throws_ok(
     'published'
   ),
   'P0001',
-  'A reviewed ruleset needs at least one source before publication',
-  'unsourced rulesets cannot be silently published'
+  'A reviewed ruleset needs at least one public source before publication',
+  'internal-only evidence cannot be used to silently publish a ruleset'
 );
 
 reset role;
