@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAppState } from '../features/AppState';
 import { hasPermission } from '../lib/permissions';
 import { signOut } from '../lib/auth';
@@ -13,23 +13,26 @@ const nav = [
 
 export function Layout() {
   const { event, online, pendingCount, dataMode, syncNow, user } = useAppState();
+  const location = useLocation();
+  const selectedEvent = new URLSearchParams(location.search).get('event') || event?.id;
+  const eventPath = (path: string) => selectedEvent ? `${path}?event=${encodeURIComponent(selectedEvent)}` : path;
   const can = (permission: Parameters<typeof hasPermission>[1]) => Boolean(event && hasPermission(user, permission, event.id, event.organizationId));
   const canSetup = Boolean(user?.platformRoles.includes('platform_super_admin') || user?.organizationRoles.some(role => role.role === 'organization_admin'));
   return (
     <div className="app-shell">
       <aside className="side-rail">
         <div className="brand-block"><span className="brand-mark">B</span><div><b>BuhurtOS</b><small>Buhurt Tournament Operations</small></div></div>
-        <nav>{nav.map(([to, label, icon]) => <NavLink key={to} to={to} end={to === '/ops'}><span>{icon}</span>{label}</NavLink>)}</nav>
+        <nav>{nav.map(([to, label, icon]) => <NavLink key={to} to={eventPath(to)} end={to === '/ops'}><span>{icon}</span>{label}</NavLink>)}</nav>
         <div className="utility-nav">
-          {can('event.manage') && <NavLink to="/ops/manage">Event Command Centre</NavLink>}
-          {can('bracket.manage') && <NavLink to="/ops/admin">Bracket & Access Tools</NavLink>}
-          {can('discipline.manage') && <NavLink to="/ops/discipline">Discipline</NavLink>}
-          {can('notes.team') && <NavLink to="/ops/notes">Fight Notes</NavLink>}
-          {canSetup && <NavLink to="/ops/foundation">Identity & Divisions</NavLink>}
-          {canSetup && <NavLink to="/ops/rulesets">Rulesets</NavLink>}
-          <NavLink to="/ops/sync">Sync Queue</NavLink>
-          {canSetup && <NavLink to="/ops/setup">Setup</NavLink>}
-          <NavLink to={'/register' + (event ? '?event=' + event.id : '')}>Registration</NavLink>
+          {can('event.manage') && <NavLink to={eventPath('/ops/manage')}>Event Command Centre</NavLink>}
+          {can('bracket.manage') && <NavLink to={eventPath('/ops/admin')}>Bracket & Access Tools</NavLink>}
+          {can('discipline.manage') && <NavLink to={eventPath('/ops/discipline')}>Discipline</NavLink>}
+          {can('notes.team') && <NavLink to={eventPath('/ops/notes')}>Fight Notes</NavLink>}
+          {canSetup && <NavLink to={eventPath('/ops/foundation')}>Identity & Divisions</NavLink>}
+          {canSetup && <NavLink to={eventPath('/ops/rulesets')}>Rulesets</NavLink>}
+          <NavLink to={eventPath('/ops/sync')}>Sync Queue</NavLink>
+          {canSetup && <NavLink to={eventPath('/ops/setup')}>Setup</NavLink>}
+          <NavLink to={eventPath('/register')}>Registration</NavLink>
           <NavLink to="/">Platform Home</NavLink>
           {dataMode === 'supabase' && <button className="link-button" onClick={() => signOut()}>Sign Out</button>}
         </div>
@@ -45,7 +48,7 @@ export function Layout() {
         </header>
         <div className="page-wrap"><Outlet /></div>
       </main>
-      <nav className="bottom-nav">{nav.map(([to, label, icon]) => <NavLink key={to} to={to} end={to === '/ops'}><span>{icon}</span><small>{label}</small></NavLink>)}</nav>
+      <nav className="bottom-nav">{nav.map(([to, label, icon]) => <NavLink key={to} to={eventPath(to)} end={to === '/ops'}><span>{icon}</span><small>{label}</small></NavLink>)}</nav>
     </div>
   );
 }
