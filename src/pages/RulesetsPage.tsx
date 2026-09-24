@@ -267,7 +267,7 @@ export function RulesetsPage(){
       <div className="header-actions">
         {draft.status==='draft'&&<><button className="primary" disabled={busy} onClick={saveDraft}>Save Draft</button><button disabled={busy} onClick={()=>transition(draft,'review')}>Send to Review</button></>}
         {draft.status==='review'&&<><button disabled={busy} onClick={()=>transition(draft,'draft')}>Return to Draft</button><button className="primary" disabled={busy||!hasPublicSource} onClick={()=>transition(draft,'published')}>Publish Exact Version</button></>}
-        {draft.status==='published'&&!eventRulesLocked&&<button className={event.rulesetId===draft.id?'primary':''} disabled={busy} onClick={()=>activate(draft)}>{event.rulesetId===draft.id?'Snapshot Again':'Use for Event'}</button>}
+        {draft.status==='published'&&!eventRulesLocked&&<button className={event.rulesetId===draft.id?'primary':''} disabled={busy||event.rulesetId===draft.id} onClick={()=>activate(draft)}>{event.rulesetId===draft.id?'Active on Event':'Use for Event'}</button>}
         {draft.status==='published'&&<button disabled={busy||event.rulesetId===draft.id} onClick={()=>transition(draft,'retired')}>Retire Version</button>}
       </div>
       {effective&&<div className="state-card">Effective configuration: {effective.enabledFormats.length} formats · armor {effective.compliance.requireArmorClearance?'required':'optional'} · medical {effective.compliance.requireMedicalClearance?'required':'optional'} · anti-fratricide {effective.bracket.antiFratricide?'on':'off'}.</div>}
