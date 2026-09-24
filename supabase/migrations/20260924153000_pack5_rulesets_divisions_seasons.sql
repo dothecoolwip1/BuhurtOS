@@ -1519,9 +1519,12 @@ begin
 
   if tg_op='UPDATE'
     and old.ruleset_id is distinct from new.ruleset_id
-    and exists (select 1 from public.event_divisions ed where ed.event_id=old.id)
+    and (
+      exists (select 1 from public.event_divisions ed where ed.event_id=old.id)
+      or exists (select 1 from public.brackets b where b.event_id=old.id)
+    )
   then
-    raise exception 'Remove event divisions before changing the event ruleset';
+    raise exception 'Remove event divisions and competition structures before changing the event ruleset';
   end if;
 
   if new.ruleset_snapshot_id is not null then
@@ -1562,3 +1565,220 @@ begin
   end if;
 end;
 $$;
+
+
+-- Pack 5 competition structures retain the exact formal division and ruleset snapshot used.
+alter table public.brackets
+  add column if not exists ruleset_snapshot_id uuid references public.event_ruleset_snapshots(id) on delete restrict;
+
+alter table public.matches
+  add column if not exists ruleset_snapshot_id uuid references public.event_ruleset_snapshots(id) on delete restrict;
+
+create index if not exists brackets_ruleset_snapshot_idx on public.brackets(ruleset_snapshot_id);
+create index if not exists matches_ruleset_snapshot_idx on public.matches(ruleset_snapshot_id);
+
+create or replace function public.save_bracket_plan(p_bracket jsonb, p_matches jsonb)
+returns uuid
+language plpgsql
+security invoker
+set search_path = ''
+as $pack5$
+declare
+  v_bracket_id uuid := (p_bracket->>'id')::uuid;
+  v_event_id uuid := (p_bracket->>'eventId')::uuid;
+  v_division_id uuid := nullif(p_bracket->>'divisionId','')::uuid;
+  v_event public.events%rowtype;
+  v_event_division public.event_divisions%rowtype;
+  v_snapshot public.event_ruleset_snapshots%rowtype;
+  v_snapshot_id uuid;
+  v_match jsonb;
+  v_participant jsonb;
+  v_roster uuid;
+  v_format_id text;
+  v_scoring_override jsonb;
+  v_match_scoring jsonb;
+begin
+  select * into v_event from public.events where id = v_event_id;
+  if not found then raise exception 'Event not found'; end if;
+  if v_event.status not in ('draft','published') then
+    raise exception 'Competition structures are locked once an event is live or historical';
+  end if;
+  if not (
+    private.is_platform_admin((select auth.uid()))
+    or private.has_org_role((select auth.uid()),v_event.organization_id,array['organization_admin']::public.organization_role[])
+    or private.has_event_role((select auth.uid()),v_event_id,array['event_organizer','field_marshal']::public.event_role[])
+  ) then
+    raise exception 'Not authorized to create brackets';
+  end if;
+  if jsonb_typeof(p_matches) <> 'array' or jsonb_array_length(p_matches) < 1 then
+    raise exception 'Bracket plan has no matches';
+  end if;
+
+  if exists (select 1 from public.event_divisions ed where ed.event_id=v_event_id) and v_division_id is null then
+    raise exception 'Choose a formal event division before creating competition';
+  end if;
+
+  if v_division_id is not null then
+    select * into v_event_division
+    from public.event_divisions
+    where event_id=v_event_id and division_id=v_division_id;
+    if not found then raise exception 'Selected division is not assigned to this event'; end if;
+    if v_event_division.ruleset_snapshot_id is null then
+      raise exception 'Event division does not have a locked ruleset snapshot';
+    end if;
+    v_snapshot_id := v_event_division.ruleset_snapshot_id;
+    v_format_id := v_event_division.division_snapshot->>'competitionFormatId';
+  else
+    v_snapshot_id := v_event.ruleset_snapshot_id;
+  end if;
+
+  if v_event.ruleset_id is not null and v_snapshot_id is null then
+    raise exception 'Lock the event ruleset snapshot before creating competition';
+  end if;
+
+  if v_snapshot_id is not null then
+    select * into v_snapshot
+    from public.event_ruleset_snapshots
+    where id=v_snapshot_id and event_id=v_event_id;
+    if not found then raise exception 'Ruleset snapshot does not belong to this event'; end if;
+  end if;
+
+  insert into public.brackets(
+    id,event_id,fight_card_id,division_id,ruleset_snapshot_id,name,format,category,metadata,created_by
+  )
+  values (
+    v_bracket_id,v_event_id,nullif(p_bracket->>'fightCardId','')::uuid,v_division_id,v_snapshot_id,
+    p_bracket->>'name',p_bracket->>'format',p_bracket->>'category',
+    coalesce(p_bracket->'metadata','{}'::jsonb) || jsonb_build_object('rulesetSnapshotId',v_snapshot_id),
+    (select auth.uid())
+  );
+
+  for v_match in select value from jsonb_array_elements(p_matches) loop
+    if v_division_id is not null and coalesce(v_match->>'matchType','') <> coalesce(v_format_id,'') then
+      raise exception 'Match format does not match the selected event division';
+    end if;
+    if v_division_id is null then
+      v_format_id := v_match->>'matchType';
+    end if;
+
+    v_match_scoring := coalesce(v_match->'scoringConfig','{}'::jsonb);
+    if v_snapshot_id is not null then
+      if jsonb_array_length(coalesce(v_snapshot.resolved_settings->'enabledFormats','[]'::jsonb)) > 0
+        and not (coalesce(v_snapshot.resolved_settings->'enabledFormats','[]'::jsonb) ? v_format_id)
+      then
+        raise exception 'Competition format is not enabled by the locked ruleset snapshot';
+      end if;
+
+      v_scoring_override := coalesce(
+        v_snapshot.resolved_settings->'scoringOverrides'->v_format_id,
+        '{}'::jsonb
+      );
+      if not (v_match_scoring @> v_scoring_override) then
+        raise exception 'Match scoring does not include the locked ruleset override';
+      end if;
+    end if;
+
+    insert into public.matches(
+      id,organization_id,season_id,event_id,fight_card_id,bracket_id,division_id,ruleset_snapshot_id,
+      label,category,match_type,scoring_config,status,stage,scheduled_order,bracket_round,bracket_slot,
+      winner_advances_to_match_id,winner_advances_to_slot,loser_advances_to_match_id,loser_advances_to_slot,
+      result_summary,created_by
+    )
+    values (
+      (v_match->>'id')::uuid,v_event.organization_id,v_event.season_id,v_event.id,
+      nullif(v_match->>'fightCardId','')::uuid,v_bracket_id,v_division_id,v_snapshot_id,
+      v_match->>'label',v_match->>'category',v_match->>'matchType',v_match_scoring,
+      coalesce((v_match->>'status')::public.match_status,'scheduled'::public.match_status),
+      coalesce((v_match->>'stage')::public.match_stage,'bracket'::public.match_stage),
+      coalesce((v_match->>'scheduledOrder')::integer,0),
+      nullif(v_match->>'bracketRound','')::integer,v_match->>'bracketSlot',
+      nullif(v_match->>'winnerAdvancesToMatchId','')::uuid,nullif(v_match->>'winnerAdvancesToSlot','')::smallint,
+      nullif(v_match->>'loserAdvancesToMatchId','')::uuid,nullif(v_match->>'loserAdvancesToSlot','')::smallint,
+      coalesce(v_match->'resultSummary','{}'::jsonb),(select auth.uid())
+    );
+  end loop;
+
+  for v_match in select value from jsonb_array_elements(p_matches) loop
+    for v_participant in select value from jsonb_array_elements(coalesce(v_match->'participants','[]'::jsonb)) loop
+      v_roster := nullif(v_participant->>'rosterEntryId','')::uuid;
+      if v_roster is not null and not exists (
+        select 1 from public.event_roster_entries r
+        where r.id=v_roster and r.event_id=v_event_id and r.can_compete
+      ) then
+        raise exception 'Bracket contains a competitor who is not cleared';
+      end if;
+      insert into public.match_participants(
+        match_id,roster_entry_id,side_index,seed,is_placeholder,placeholder_label,source_match_id,source_slot,is_winner_source
+      )
+      values (
+        (v_match->>'id')::uuid,v_roster,(v_participant->>'sideIndex')::smallint,
+        nullif(v_participant->>'seed','')::integer,coalesce((v_participant->>'isPlaceholder')::boolean,false),
+        v_participant->>'placeholderLabel',nullif(v_participant->>'sourceMatchId','')::uuid,
+        nullif(v_participant->>'sourceSlot','')::smallint,nullif(v_participant->>'isWinnerSource','')::boolean
+      );
+    end loop;
+  end loop;
+
+  insert into public.audit_log(organization_id,event_id,actor_user_id,table_name,record_id,action,payload)
+  values (
+    v_event.organization_id,v_event_id,(select auth.uid()),'brackets',v_bracket_id,'create_bracket',
+    jsonb_build_object(
+      'matchCount',jsonb_array_length(p_matches),
+      'divisionId',v_division_id,
+      'rulesetSnapshotId',v_snapshot_id
+    )
+  );
+  return v_bracket_id;
+end;
+$pack5$;
+
+revoke execute on function public.save_bracket_plan(jsonb,jsonb) from public,anon;
+grant execute on function public.save_bracket_plan(jsonb,jsonb) to authenticated;
+
+create or replace function public.remove_event_division_guarded(
+  p_event_division_id uuid,
+  p_expected_updated_at timestamptz
+)
+returns void
+language plpgsql
+security invoker
+set search_path=''
+as $pack5$
+declare
+  v_row public.event_divisions%rowtype;
+  v_event public.events%rowtype;
+begin
+  select * into v_row from public.event_divisions where id=p_event_division_id for update;
+  if not found then raise exception 'Event division not found'; end if;
+  select * into v_event from public.events where id=v_row.event_id;
+  if not found then raise exception 'Event not found'; end if;
+  if not (
+    private.is_platform_admin((select auth.uid()))
+    or private.has_org_role((select auth.uid()),v_event.organization_id,array['organization_admin']::public.organization_role[])
+    or private.has_event_role((select auth.uid()),v_event.id,array['event_organizer']::public.event_role[])
+  ) then raise exception 'Not authorized to remove event divisions'; end if;
+  if v_event.status not in ('draft','published') then
+    raise exception 'Live or historical event divisions cannot be changed';
+  end if;
+  if p_expected_updated_at is null or v_row.updated_at <> p_expected_updated_at then
+    raise exception 'Event division changed on another device';
+  end if;
+  if exists (
+    select 1 from public.brackets b
+    where b.event_id=v_row.event_id and b.division_id=v_row.division_id
+  ) then
+    raise exception 'Remove the division competition structure before removing the event division';
+  end if;
+
+  delete from public.event_divisions where id=v_row.id;
+
+  insert into public.audit_log(organization_id,event_id,actor_user_id,table_name,record_id,action,payload)
+  values (
+    v_event.organization_id,v_event.id,(select auth.uid()),'event_divisions',v_row.id,'remove_event_division',
+    jsonb_build_object('divisionId',v_row.division_id,'rulesetSnapshotId',v_row.ruleset_snapshot_id)
+  );
+end;
+$pack5$;
+
+revoke execute on function public.remove_event_division_guarded(uuid,timestamptz) from public,anon;
+grant execute on function public.remove_event_division_guarded(uuid,timestamptz) to authenticated;

@@ -282,6 +282,7 @@ export interface Bracket {
   eventId: UUID;
   fightCardId?: UUID;
   divisionId?: UUID;
+  rulesetSnapshotId?: UUID;
   name: string;
   format: 'single_elimination' | 'double_elimination' | 'round_robin' | 'pools_to_bracket';
   category: string;
@@ -427,6 +428,7 @@ export interface MatchRecord {
   fightCardId?: UUID;
   bracketId?: UUID;
   divisionId?: UUID;
+  rulesetSnapshotId?: UUID;
   label: string;
   category: string;
   matchType: string;

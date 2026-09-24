@@ -5,7 +5,9 @@ import { computePoolQualificationState, generateDoubleElimination, generateRound
 import { addGhostFighter, saveBracketPlan } from '../lib/adminActions';
 import { inviteEventMember, listEventMemberships, removeEventMembership, type EventMembershipView } from '../lib/memberAdmin';
 import { competitionFormatById, competitionFormats } from '../lib/competitionFormats';
-import type { Bracket, EventRole } from '../types';
+import { listEventDivisions, listEventRulesetSnapshots } from '../lib/governance';
+import { applyRulesetToFormat } from '../lib/rulesetAdmin';
+import type { Bracket, EventDivision, EventRole, EventRulesetSnapshot } from '../types';
 
 const assignableRoles: Array<{value: EventRole; label: string}> = [
   { value: 'event_organizer', label: 'Event Organizer' },
@@ -21,6 +23,9 @@ export function AdminPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [bracketFormat, setBracketFormat] = useState<Bracket['format']>('single_elimination');
   const [competitionFormatId, setCompetitionFormatId] = useState('longsword');
+  const [eventDivisionId, setEventDivisionId] = useState('');
+  const [eventDivisions, setEventDivisions] = useState<EventDivision[]>([]);
+  const [rulesetSnapshots, setRulesetSnapshots] = useState<EventRulesetSnapshot[]>([]);
   const [poolSize, setPoolSize] = useState(4);
   const [fightCardId, setFightCardId] = useState('');
   const [qualifiersPerPool, setQualifiersPerPool] = useState(2);
@@ -34,13 +39,42 @@ export function AdminPage() {
     bracketId,
     first: matches.find(match => match.bracketId === bracketId && match.stage === 'pool')!
   })), [matches]);
+  const selectedEventDivision = useMemo(
+    () => eventDivisions.find(row => row.id === eventDivisionId),
+    [eventDivisions,eventDivisionId]
+  );
+  const selectedRulesSnapshot = useMemo(() => {
+    const snapshotId = selectedEventDivision?.rulesetSnapshotId || event?.rulesetSnapshotId;
+    return rulesetSnapshots.find(row => row.id === snapshotId);
+  }, [selectedEventDivision?.rulesetSnapshotId,event?.rulesetSnapshotId,rulesetSnapshots]);
+  const enabledFormatIds = selectedRulesSnapshot?.resolvedSettings.enabledFormats ?? competitionFormats.map(format=>format.id);
+  const selectableFormats = competitionFormats.filter(format => enabledFormatIds.includes(format.id));
 
   const loadMembers = async () => {
     if (!event) return;
     try { setMemberships(await listEventMemberships(event.id)); }
     catch (error) { setMessage(error instanceof Error ? error.message : 'Unable to load event access.'); }
   };
-  useEffect(() => { loadMembers(); }, [event?.id]);
+  const loadCompetitionPolicy = async () => {
+    if (!event) return;
+    try {
+      const [divisions,snapshots]=await Promise.all([
+        listEventDivisions(event.id),
+        listEventRulesetSnapshots(event.id)
+      ]);
+      setEventDivisions(divisions);
+      setRulesetSnapshots(snapshots);
+      setEventDivisionId(current=>current&&divisions.some(row=>row.id===current)?current:(divisions[0]?.id||''));
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to load event division policy.');
+    }
+  };
+  useEffect(() => { loadMembers(); loadCompetitionPolicy(); }, [event?.id]);
+  useEffect(() => {
+    if(!selectedEventDivision)return;
+    const formatId=String(selectedEventDivision.divisionSnapshot?.competitionFormatId||'');
+    if(formatId)setCompetitionFormatId(formatId);
+  }, [selectedEventDivision?.id]);
   if (!event) return null;
 
   const addGhost = async () => {
@@ -55,10 +89,26 @@ export function AdminPage() {
     if (chosen.length < 2) return setMessage('Choose at least two cleared competitors.');
     setBusy(true); setMessage('');
     try {
+      if(eventDivisions.length>0&&!selectedEventDivision)throw new Error('Choose a formal event division.');
       const bracketId = crypto.randomUUID();
-      const preset = competitionFormatById(competitionFormatId);
+      const formatId=selectedEventDivision
+        ? String(selectedEventDivision.divisionSnapshot?.competitionFormatId||competitionFormatId)
+        : competitionFormatId;
+      const preset = competitionFormatById(formatId);
+      if(selectedRulesSnapshot&&!selectedRulesSnapshot.resolvedSettings.enabledFormats.includes(formatId)){
+        throw new Error('The selected competition format is not enabled by the locked ruleset snapshot.');
+      }
+      if((event.rulesetId||selectedEventDivision)&&!selectedRulesSnapshot){
+        throw new Error('Lock the effective ruleset snapshot before generating competition.');
+      }
+      const governedPreset=selectedRulesSnapshot
+        ? applyRulesetToFormat(preset,selectedRulesSnapshot.resolvedSettings)
+        : preset;
+      const category=selectedEventDivision
+        ? String(selectedEventDivision.divisionSnapshot?.name||preset.name)
+        : preset.name;
       const entries = chosen.map((entry,index) => ({ entry, seed: index + 1 }));
-      const common = { organizationId: event.organizationId, seasonId: event.seasonId, eventId: event.id, fightCardId: fightCardId || undefined, bracketId, category: preset.name, matchType: preset.matchType, entries, scoringConfig: preset.scoringConfig };
+      const common = { organizationId: event.organizationId, seasonId: event.seasonId, eventId: event.id, fightCardId: fightCardId || undefined, bracketId, category, matchType: governedPreset.matchType, entries, scoringConfig: governedPreset.scoringConfig };
       const plan = bracketFormat === 'round_robin'
         ? generateRoundRobin(common)
         : bracketFormat === 'pools_to_bracket'
@@ -66,14 +116,19 @@ export function AdminPage() {
           : bracketFormat === 'double_elimination'
             ? generateDoubleElimination(common)
             : generateSingleElimination(common);
+      plan.matches.forEach(match=>{
+        match.divisionId=selectedEventDivision?.divisionId;
+        match.rulesetSnapshotId=selectedRulesSnapshot?.id;
+      });
       const poolMetadata = 'pools' in plan ? { pools: plan.pools, targetPoolSize: poolSize } : {};
       await saveBracketPlan(event, plan, {
         id: bracketId,
-        name: preset.name + ' ' + bracketFormat.replaceAll('_',' ') + ' ' + new Date().toLocaleDateString(),
+        name: category + ' ' + bracketFormat.replaceAll('_',' ') + ' ' + new Date().toLocaleDateString(),
         fightCardId: fightCardId || undefined,
-        category: preset.name,
+        divisionId:selectedEventDivision?.divisionId,
+        category,
         format: bracketFormat,
-        metadata: poolMetadata
+        metadata: { ...poolMetadata, rulesetSnapshotId:selectedRulesSnapshot?.id }
       });
       await reload();
       setMessage('Competition structure created with ' + plan.matches.length + ' matches.');
@@ -100,10 +155,15 @@ export function AdminPage() {
         entries: qualification.qualifiers,
         scoringConfig: source.scoringConfig
       });
+      playoff.matches.forEach(match=>{
+        match.divisionId=source.divisionId;
+        match.rulesetSnapshotId=source.rulesetSnapshotId;
+      });
       await saveBracketPlan(event, playoff, {
         id: bracketId,
         name: source.category + ' Playoff',
         fightCardId: fightCardId || source.fightCardId,
+        divisionId:source.divisionId,
         category: source.category,
         format: 'single_elimination',
         metadata: {
@@ -144,7 +204,7 @@ export function AdminPage() {
     <section className="section-head"><div><span className="eyebrow">Event setup</span><h1>Organizer Tools</h1><p>Administrative actions are kept separate from live field controls.</p></div></section>
     <div className="admin-grid">
       <section className="panel-card"><h2>Add ghost fighter</h2><p>Create an event-only identity immediately. It can later be linked to a permanent fighter without changing historical match references.</p><div className="inline-form"><input value={ghostName} onChange={e => setGhostName(e.target.value)} placeholder="Display name"/><button className="primary" disabled={busy} onClick={addGhost}>Add</button></div></section>
-      <section className="panel-card"><h2>Build competition structure</h2><p>Choose the division and competition format. Only cleared competitors can be placed into live competition.</p><div className="form-stack"><label>Division<select value={competitionFormatId} onChange={e=>setCompetitionFormatId(e.target.value)}>{competitionFormats.map(format=><option key={format.id} value={format.id}>{format.name}</option>)}</select></label><label>Format<select value={bracketFormat} onChange={e=>setBracketFormat(e.target.value as Bracket['format'])}><option value="single_elimination">Single elimination</option><option value="double_elimination">Double elimination</option><option value="round_robin">Round robin</option><option value="pools_to_bracket">Pools</option></select></label><label>Field / list<select value={fightCardId} onChange={e=>setFightCardId(e.target.value)}><option value="">Unassigned</option>{[...fightCards].filter(card=>card.status!=='archived').sort((a,b)=>a.sortOrder-b.sortOrder).map(card=><option key={card.id} value={card.id}>{card.name}</option>)}</select></label>{bracketFormat==='pools_to_bracket'&&<label>Target pool size<input type="number" min="3" max="12" value={poolSize} onChange={e=>setPoolSize(Math.max(3,Number(e.target.value)||4))}/></label>}</div><div className="selector-list">{eligible.map(entry => <label key={entry.id}><input type="checkbox" checked={selected.includes(entry.id)} onChange={e => setSelected(current => e.target.checked ? [...current, entry.id] : current.filter(id => id !== entry.id))}/><span>{entry.displayName}</span></label>)}</div><button className="primary big" disabled={busy || selected.length < 2} onClick={generate}>Generate Competition</button></section>
+      <section className="panel-card"><h2>Build competition structure</h2><p>Generated matches inherit the immutable scoring rules locked to the selected event division. Only cleared competitors can be placed into competition.</p><div className="form-stack">{eventDivisions.length>0?<label>Formal event division<select value={eventDivisionId} onChange={e=>setEventDivisionId(e.target.value)}><option value="">Choose event division</option>{eventDivisions.map(row=><option key={row.id} value={row.id}>{String(row.divisionSnapshot?.name||'Division')} · v{String(row.divisionSnapshot?.version||1)}</option>)}</select></label>:<label>Competition format<select value={competitionFormatId} onChange={e=>setCompetitionFormatId(e.target.value)}>{selectableFormats.map(format=><option key={format.id} value={format.id}>{format.name}</option>)}</select></label>}{selectedRulesSnapshot&&<div className="state-card"><strong>{selectedRulesSnapshot.rulesetShortName} {selectedRulesSnapshot.rulesetVersion}</strong><br/>Scoring is locked from snapshot {selectedRulesSnapshot.id.slice(0,8)}.</div>}<label>Format<select value={bracketFormat} onChange={e=>setBracketFormat(e.target.value as Bracket['format'])}><option value="single_elimination">Single elimination</option><option value="double_elimination">Double elimination</option><option value="round_robin">Round robin</option><option value="pools_to_bracket">Pools</option></select></label><label>Field / list<select value={fightCardId} onChange={e=>setFightCardId(e.target.value)}><option value="">Unassigned</option>{[...fightCards].filter(card=>card.status!=='archived').sort((a,b)=>a.sortOrder-b.sortOrder).map(card=><option key={card.id} value={card.id}>{card.name}</option>)}</select></label>{bracketFormat==='pools_to_bracket'&&<label>Target pool size<input type="number" min="3" max="12" value={poolSize} onChange={e=>setPoolSize(Math.max(3,Number(e.target.value)||4))}/></label>}</div><div className="selector-list">{eligible.map(entry => <label key={entry.id}><input type="checkbox" checked={selected.includes(entry.id)} onChange={e => setSelected(current => e.target.checked ? [...current, entry.id] : current.filter(id => id !== entry.id))}/><span>{entry.displayName}</span></label>)}</div><button className="primary big" disabled={busy || selected.length < 2} onClick={generate}>Generate Competition</button></section>
       <section className="panel-card"><h2>Advance pool qualifiers</h2><p>Completed pools can seed directly into an elimination playoff. Rankings use wins, standing points, score differential and points scored as deterministic tie-breakers.</p><div className="form-stack"><label>Qualifiers per pool<input type="number" min="1" max="8" value={qualifiersPerPool} onChange={e=>setQualifiersPerPool(Math.max(1,Number(e.target.value)||2))}/></label><label>Playoff field<select value={fightCardId} onChange={e=>setFightCardId(e.target.value)}><option value="">Keep pool field</option>{[...fightCards].filter(card=>card.status!=='archived').sort((a,b)=>a.sortOrder-b.sortOrder).map(card=><option key={card.id} value={card.id}>{card.name}</option>)}</select></label></div><div className="pool-advance-list">{poolStructures.length===0?<div className="state-card">No pool competitions have been created yet.</div>:poolStructures.map(structure=>{const state=computePoolQualificationState(matches,roster,structure.bracketId,qualifiersPerPool);return <article key={structure.bracketId}><div className="grow"><b>{structure.first.category}</b><small>{state.pools.length} pool{state.pools.length===1?'':'s'} · {state.ready?state.qualifiers.length+' qualifiers ready':state.incompleteMatchIds.length+' pool matches remaining'}</small></div><button className={state.ready?'primary':''} disabled={busy||!state.ready} onClick={()=>advancePools(structure.bracketId)}>{state.ready?'Create Playoff':'Pools Incomplete'}</button></article>;})}</div></section>
       <section className="panel-card"><h2>Assign event member</h2><p>Assign an existing verified BuhurtOS account by email. Account lookup happens server-side, privileged credentials never enter the browser, and no email is sent automatically.</p><div className="form-stack"><label>Email<input type="email" value={memberForm.email} onChange={e=>setMemberForm(f=>({...f,email:e.target.value}))}/></label><label>Display name<input value={memberForm.displayName} onChange={e=>setMemberForm(f=>({...f,displayName:e.target.value}))}/></label><label>Role<select value={memberForm.role} onChange={e=>setMemberForm(f=>({...f,role:e.target.value as EventRole,teamId:e.target.value === 'team_captain' ? f.teamId : ''}))}>{assignableRoles.map(role=><option key={role.value} value={role.value}>{role.label}</option>)}</select></label>{memberForm.role === 'team_captain' && <label>Captain team<select value={memberForm.teamId} onChange={e=>setMemberForm(f=>({...f,teamId:e.target.value}))}><option value="">Choose team</option>{teamOptions.map(team=><option key={team.id} value={team.id}>{team.label}</option>)}</select></label>}<button className="primary big" disabled={busy || !memberForm.email} onClick={addMember}>Assign Existing Account</button></div></section>
       <section className="panel-card"><h2>Event access</h2><p>Removing a role only removes access for this event. It does not delete the account or fighter history.</p><div className="membership-list">{memberships.length === 0 ? <div className="state-card">No managed event roles are visible yet.</div> : memberships.map(member=><article key={member.id}><div><strong>{member.displayName}</strong><small>{member.role.replaceAll('_',' ')}{member.teamId ? ` · team ${member.teamId.slice(0,8)}` : ''}</small></div><button disabled={busy} onClick={()=>removeMember(member.id)}>Remove</button></article>)}</div></section>

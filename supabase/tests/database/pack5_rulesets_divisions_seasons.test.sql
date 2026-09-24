@@ -289,7 +289,7 @@ select throws_ok(
     (select updated_at::text from public.events where id='51000000-0000-0000-0000-000000000030')
   ),
   'P0001',
-  'Remove event divisions before changing the event ruleset',
+  'Remove event divisions and competition structures before changing the event ruleset',
   'event rules cannot be cleared underneath assigned divisions'
 );
 
@@ -387,6 +387,162 @@ select lives_ok(
   ),
   'division-specific event assignment can be removed before competition'
 );
+
+
+update public.seasons
+set default_ruleset_id='51000000-0000-0000-0000-000000000101'
+where id='51000000-0000-0000-0000-000000000020';
+
+insert into public.events(
+  id,organization_id,season_id,name,venue,starts_at,ends_at,event_type,standings_mode,status,timezone,created_by,last_edited_by
+) values (
+  '51000000-0000-0000-0000-000000000031',
+  '51000000-0000-0000-0000-000000000010',
+  '51000000-0000-0000-0000-000000000020',
+  'Pack Five Bracket Event','Second Arena',
+  '2026-10-10T15:00:00Z','2026-10-10T23:00:00Z',
+  'ranked_competitive','season_and_event','draft','UTC',
+  '51000000-0000-0000-0000-000000000001',
+  '51000000-0000-0000-0000-000000000001'
+);
+
+select is(
+  (select ruleset_id::text from public.events where id='51000000-0000-0000-0000-000000000031'),
+  '51000000-0000-0000-0000-000000000101',
+  'new event inherits the season default published ruleset'
+);
+
+select lives_ok(
+  $select public.assign_event_division_guarded(
+    '51000000-0000-0000-0000-000000000031',
+    '51000000-0000-0000-0000-000000000200',
+    16,
+    null
+  )$,
+  'assigning a formal division locks the inherited season ruleset snapshot'
+);
+
+insert into public.event_roster_entries(
+  id,organization_id,event_id,entry_type,display_name,
+  checked_in,armor_cleared,medical_cleared,waiver_confirmed,weigh_in_cleared,attendance_status
+) values
+('51000000-0000-0000-0000-000000000300','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000031','fighter','Bracket Fighter One',true,true,true,true,true,'approved'),
+('51000000-0000-0000-0000-000000000301','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000031','fighter','Bracket Fighter Two',true,true,true,true,true,'approved');
+
+select lives_ok(
+  $select public.save_bracket_plan(
+    '{
+      "id":"51000000-0000-0000-0000-000000000400",
+      "eventId":"51000000-0000-0000-0000-000000000031",
+      "divisionId":"51000000-0000-0000-0000-000000000200",
+      "fightCardId":"",
+      "name":"Adult Longsword Test",
+      "format":"single_elimination",
+      "category":"Adult Longsword",
+      "metadata":{}
+    }'::jsonb,
+    '[
+      {
+        "id":"51000000-0000-0000-0000-000000000410",
+        "fightCardId":"",
+        "label":"Final",
+        "category":"Adult Longsword",
+        "matchType":"longsword",
+        "scoringConfig":{"kind":"duel","roundsRequired":5,"allowDrawRound":false,"requireReasonOnForfeit":true},
+        "status":"scheduled",
+        "stage":"final",
+        "scheduledOrder":1,
+        "bracketRound":1,
+        "bracketSlot":"1-1",
+        "participants":[
+          {"rosterEntryId":"51000000-0000-0000-0000-000000000300","sideIndex":1,"seed":1},
+          {"rosterEntryId":"51000000-0000-0000-0000-000000000301","sideIndex":2,"seed":2}
+        ]
+      }
+    ]'::jsonb
+  )$,
+  'bracket creation accepts scoring that contains the locked snapshot override'
+);
+
+select is(
+  (select division_id::text from public.brackets where id='51000000-0000-0000-0000-000000000400'),
+  '51000000-0000-0000-0000-000000000200',
+  'bracket retains its formal division version'
+);
+
+select is(
+  (
+    select ruleset_snapshot_id::text
+    from public.brackets
+    where id='51000000-0000-0000-0000-000000000400'
+  ),
+  (
+    select ruleset_snapshot_id::text
+    from public.event_divisions
+    where event_id='51000000-0000-0000-0000-000000000031'
+      and division_id='51000000-0000-0000-0000-000000000200'
+  ),
+  'bracket retains the event division ruleset snapshot'
+);
+
+select is(
+  (select ruleset_snapshot_id::text from public.matches where id='51000000-0000-0000-0000-000000000410'),
+  (select ruleset_snapshot_id::text from public.brackets where id='51000000-0000-0000-0000-000000000400'),
+  'match inherits the bracket ruleset snapshot'
+);
+
+select is(
+  (select scoring_config #>> '{roundsRequired}' from public.matches where id='51000000-0000-0000-0000-000000000410'),
+  '5',
+  'match persists scoring resolved from the locked ruleset'
+);
+
+select throws_ok(
+  $select public.save_bracket_plan(
+    '{
+      "id":"51000000-0000-0000-0000-000000000401",
+      "eventId":"51000000-0000-0000-0000-000000000031",
+      "divisionId":"51000000-0000-0000-0000-000000000200",
+      "fightCardId":"",
+      "name":"Bad Scoring Test",
+      "format":"single_elimination",
+      "category":"Adult Longsword",
+      "metadata":{}
+    }'::jsonb,
+    '[
+      {
+        "id":"51000000-0000-0000-0000-000000000411",
+        "fightCardId":"",
+        "label":"Final",
+        "category":"Adult Longsword",
+        "matchType":"longsword",
+        "scoringConfig":{"kind":"duel","roundsRequired":3},
+        "status":"scheduled",
+        "stage":"final",
+        "scheduledOrder":1,
+        "participants":[]
+      }
+    ]'::jsonb
+  )$,
+  'P0001',
+  'Match scoring does not include the locked ruleset override',
+  'database rejects bracket scoring that contradicts the locked rules snapshot'
+);
+
+select throws_ok(
+  format(
+    'select public.remove_event_division_guarded(%L::uuid,%L::timestamptz)',
+    (select id::text from public.event_divisions where event_id='51000000-0000-0000-0000-000000000031' and division_id='51000000-0000-0000-0000-000000000200'),
+    (select updated_at::text from public.event_divisions where event_id='51000000-0000-0000-0000-000000000031' and division_id='51000000-0000-0000-0000-000000000200')
+  ),
+  'P0001',
+  'Remove the division competition structure before removing the event division',
+  'event division cannot be removed underneath an existing bracket'
+);
+
+update public.events
+set status='completed'
+where id='51000000-0000-0000-0000-000000000031';
 
 insert into public.rulesets(
   id,organization_id,name,short_name,version,status,settings,effective_from
