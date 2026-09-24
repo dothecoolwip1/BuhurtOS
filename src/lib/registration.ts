@@ -76,5 +76,8 @@ export async function createRegistrationCheckout(result: RegistrationResult): Pr
   if (!publicSupabase) return 'demo://checkout';
   const { data, error } = await publicSupabase.functions.invoke('create-registration-checkout', { body: { registrationId: result.registrationId, registrationToken: result.registrationToken } });
   if (error) throw error;
+  if (data?.paymentUnavailable) {
+    throw new Error(data.error || 'Online payment is not configured. Your registration is saved and no charge was attempted.');
+  }
   return data?.checkoutUrl ?? null;
 }
