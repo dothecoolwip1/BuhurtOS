@@ -32,15 +32,15 @@ export const knownRulesetSources: KnownRulesetSource[] = [
     id: 'hacsa-bi',
     label: 'HACSA · Buhurt International Rules',
     sourceUrl: 'https://www.hacsacanada.com/buhurt-international-rules',
-    versionLabel: 'HACSA BI reference page',
+    versionLabel: 'HACSA files marked current as of 2025-01-23',
     sourceKind: 'organization',
-    note: 'HACSA reference page. Record the file/version and effective date actually adopted.'
+    note: 'Dated HACSA reference page. Record the exact BI file/version actually adopted rather than assuming these downloads are current.'
   },
   {
     id: 'hacsa-imcf-historical',
     label: 'HACSA · IMCF Rules',
     sourceUrl: 'https://www.hacsacanada.com/imcf-rules',
-    versionLabel: 'IMCF Version 5 reference',
+    versionLabel: 'IMCF Version 5 · HACSA page current as of 2025-01-23',
     sourceKind: 'historical',
     note: 'Historical reference. Do not treat as current BI rules without an explicit organization decision.'
   }
