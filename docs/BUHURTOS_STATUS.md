@@ -8,9 +8,9 @@ Repository: `dothecoolwip1/BuhurtOS`
 
 Base branch: `main`
 
-Pack 2 branch: `pack2-accounts-permissions`
+Pack 2 branch: `pack2-accounts-permissions` (merged)
 
-Pull request: #4, `Complete Pack 2 accounts and permissions`
+Pull request: #4, `Complete Pack 2 accounts and permissions` (merged)
 
 Pack 2 base commit: `32240b2d6b8130a317ce5815a09e6d52d1bcac11`
 
@@ -27,7 +27,7 @@ Pack 1 foundation work is present and must be preserved:
 * Organization and season lifecycle administration.
 * Frontend and pgTAP coverage associated with those foundations.
 
-## Pack 2 implemented on the working branch
+## Pack 2 completed and merged
 
 Account lifecycle:
 
@@ -86,7 +86,7 @@ Added for final Pack 2 verification:
 * `supabase/tests/database/accounts_permissions.test.sql` performs direct anonymous and authenticated access attempts across two unrelated organizations and includes revoked membership and self-escalation cases.
 * The repository CI rebuilds local Supabase from all migrations and runs pgTAP tests.
 
-Final CI on the final Pack 2 head must be green before merge. A cancelled CI job caused by a newer commit is not test evidence.
+Final Pack 2 head `bef3d41c7fd509269535f13a85b2555961edd483` passed GitHub Actions workflow run `35945001693`. The workflow completed successfully with frontend checks and local Supabase rebuild plus pgTAP coverage recorded in PR #4.
 
 ## Explicitly unverified infrastructure
 
