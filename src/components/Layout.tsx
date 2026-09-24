@@ -25,6 +25,8 @@ export function Layout() {
           {can('bracket.manage') && <NavLink to="/ops/admin">Bracket & Access Tools</NavLink>}
           {can('discipline.manage') && <NavLink to="/ops/discipline">Discipline</NavLink>}
           {can('notes.team') && <NavLink to="/ops/notes">Fight Notes</NavLink>}
+          <NavLink to="/ops/identity">My Fighter Identity</NavLink>
+          {canSetup && <NavLink to="/ops/identity-review">Identity Review</NavLink>}
           {canSetup && <NavLink to="/ops/foundation">Identity & Divisions</NavLink>}
           {canSetup && <NavLink to="/ops/rulesets">Rulesets</NavLink>}
           <NavLink to="/ops/sync">Sync Queue</NavLink>
