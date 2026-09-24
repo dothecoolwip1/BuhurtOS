@@ -22,7 +22,7 @@ export async function createOrganization(input:{name:string;shortName:string;reg
   if(!supabase) return {id:crypto.randomUUID(),name:input.name,shortName:input.shortName,region:input.region,status:'active'};
   const {data,error}=await supabase.from('organizations').insert({name:input.name,short_name:input.shortName,region:input.region,created_by:input.userId,last_edited_by:input.userId}).select('id,name,short_name,region,status').single();
   if(error)throw error;
-  const {error:membershipError}=await supabase.from('organization_memberships').insert({organization_id:data.id,user_id:input.userId,role:'organization_admin'});
+  const {error:membershipError}=await supabase.rpc('assign_organization_role',{p_organization_id:data.id,p_user_id:input.userId,p_role:'organization_admin'});
   if(membershipError)throw membershipError;
   return {id:data.id,name:data.name,shortName:data.short_name,region:data.region,status:data.status};
 }
@@ -88,7 +88,7 @@ export async function createEvent(input:{organizationId:string;seasonId:string;n
   if(!supabase)return 'event-hacsa-demo';
   const {data,error}=await supabase.from('events').insert({organization_id:input.organizationId,season_id:input.seasonId,name:input.name,venue:input.venue,starts_at:input.startsAt,ends_at:input.endsAt,timezone:input.timezone,event_type:input.eventType,standings_mode:input.standingsMode,status:'draft',created_by:input.userId,last_edited_by:input.userId}).select('id').single();
   if(error)throw error;
-  const {error:roleError}=await supabase.from('event_memberships').insert({event_id:data.id,user_id:input.userId,role:'event_organizer'});
+  const {error:roleError}=await supabase.rpc('assign_event_role',{p_event_id:data.id,p_user_id:input.userId,p_role:'event_organizer',p_team_id:null});
   if(roleError)throw roleError;
   return data.id;
 }

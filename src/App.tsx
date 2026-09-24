@@ -38,10 +38,15 @@ function OperationsProvider() {
 }
 
 function OperationalGate() {
-  const { loading, user, dataMode } = useAppState();
+  const { loading, authReady, authNotice, user, dataMode } = useAppState();
   const location = useLocation();
+  if (dataMode === 'supabase' && !authReady) return <div className="state-card">Checking account access…</div>;
+  if (dataMode === 'supabase' && !user) {
+    const next = encodeURIComponent(location.pathname + location.search);
+    const reason = authNotice ? `&reason=${encodeURIComponent(authNotice)}` : '';
+    return <Navigate to={`/ops/login?next=${next}${reason}`} replace />;
+  }
   if (loading) return <div className="state-card">Loading tournament operations…</div>;
-  if (dataMode === 'supabase' && !user) return <Navigate to={'/ops/login' + location.search} replace />;
   return <Layout />;
 }
 
