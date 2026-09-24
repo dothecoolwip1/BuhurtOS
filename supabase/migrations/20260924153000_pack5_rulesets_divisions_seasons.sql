@@ -110,8 +110,10 @@ with check (
   )
 );
 
+revoke all on public.ruleset_sources from anon, authenticated;
 grant select on public.ruleset_sources to anon, authenticated;
 grant insert, update, delete on public.ruleset_sources to authenticated;
+grant all on public.ruleset_sources to service_role;
 
 create trigger ruleset_sources_updated
 before update on public.ruleset_sources
@@ -409,8 +411,10 @@ with check (
   )
 );
 
+revoke all on public.event_ruleset_snapshots from anon, authenticated;
 grant select on public.event_ruleset_snapshots to anon, authenticated;
 grant insert on public.event_ruleset_snapshots to authenticated;
+grant select, insert on public.event_ruleset_snapshots to service_role;
 
 create or replace function private.prevent_snapshot_mutation()
 returns trigger
@@ -480,7 +484,9 @@ with check (
   or private.has_event_role((select auth.uid()),event_id,array['event_organizer']::public.event_role[])
 );
 
+revoke all on public.event_policy_exceptions from anon, authenticated;
 grant select,insert,update on public.event_policy_exceptions to authenticated;
+grant all on public.event_policy_exceptions to service_role;
 
 create or replace function public.update_ruleset_draft_guarded(
   p_ruleset_id uuid,
