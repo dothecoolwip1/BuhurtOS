@@ -7,12 +7,14 @@ import {
   knownRulesetSources,
   listEventPolicyExceptions,
   listEventRulesetSnapshots,
-  listRulesetSources
+  listRulesetSources,
+  recordEventPolicyException
 } from '../lib/governance';
 import {
   activateEventRuleset,
   createRuleset,
   defaultRulesetSettings,
+  deriveRulesetSettingsPatch,
   listRulesets,
   resolveRulesetSettings,
   setRulesetStatus,
@@ -47,6 +49,9 @@ export function RulesetsPage(){
   });
   const [policyText,setPolicyText]=useState({eligibility:'{}',scoring:'{}',tournament:'{}',ranking:'{}'});
   const [eventExceptionReason,setEventExceptionReason]=useState('');
+  const [exceptionForm,setExceptionForm]=useState({
+    policyDomain:'eligibility' as EventPolicyException['policyDomain'],ruleKey:'',reason:''
+  });
   const [message,setMessage]=useState('');
   const [busy,setBusy]=useState(false);
 
@@ -128,7 +133,13 @@ export function RulesetsPage(){
 
   const saveDraft=()=>{
     if(!draft)return;
-    return run(()=>updateDraftRuleset(event,{...draft,...parsedPolicies(),overrides:draft.settings}),'Draft ruleset saved.');
+    const parentSettings=draft.parentRulesetId
+      ? resolveRulesetSettings(rulesets,draft.parentRulesetId)
+      : structuredClone(defaultRulesetSettings);
+    const overrides=draft.parentRulesetId
+      ? deriveRulesetSettingsPatch(parentSettings,draft.settings)
+      : draft.settings;
+    return run(()=>updateDraftRuleset(event,{...draft,...parsedPolicies(),overrides}),'Draft ruleset saved.');
   };
 
   const transition=(record:RulesetRecord,status:RulesetStatus)=>run(
@@ -169,6 +180,18 @@ export function RulesetsPage(){
     if(draft)setSources(await listRulesetSources(draft.id));
   },'Draft source removed.');
 
+  const addException=()=>run(async()=>{
+    if(!exceptionForm.ruleKey.trim())throw new Error('Rule key is required.');
+    await recordEventPolicyException(event.id,{
+      policyDomain:exceptionForm.policyDomain,
+      ruleKey:exceptionForm.ruleKey,
+      reason:exceptionForm.reason
+    });
+    setExceptionForm({policyDomain:'eligibility',ruleKey:'',reason:''});
+  },'Event policy exception recorded and audited.');
+
+  const hasPublicSource=sources.some(source=>source.sourceKind!=='internal');
+
   return <>
     <section className="section-head"><div><span className="eyebrow">Versioned policy engine</span><h1>Rulesets</h1><p>Source, review, publish, inherit, and snapshot the exact policy version used by an event. Eligibility, scoring, tournament, and ranking policy stay separate.</p></div></section>
 
@@ -177,7 +200,7 @@ export function RulesetsPage(){
         <input placeholder="Ruleset name" value={createForm.name} onChange={e=>setCreateForm(form=>({...form,name:e.target.value}))}/>
         <input placeholder="Short name" value={createForm.shortName} onChange={e=>setCreateForm(form=>({...form,shortName:e.target.value}))}/>
         <input placeholder="Version" value={createForm.version} onChange={e=>setCreateForm(form=>({...form,version:e.target.value}))}/>
-        <label>Inherit from<select value={createForm.parentRulesetId} onChange={e=>setCreateForm(form=>({...form,parentRulesetId:e.target.value}))}><option value="">BuhurtOS verified-format defaults</option>{rulesets.filter(row=>row.status==='published').map(row=><option key={row.id} value={row.id}>{row.shortName} {row.version}</option>)}</select></label>
+        <label>Inherit from<select value={createForm.parentRulesetId} onChange={e=>setCreateForm(form=>({...form,parentRulesetId:e.target.value}))}><option value="">BuhurtOS verified-format defaults</option>{rulesets.filter(row=>row.status==='published'||row.status==='retired').map(row=><option key={row.id} value={row.id}>{row.shortName} {row.version}{row.status==='retired'?' · retired base':''}</option>)}</select></label>
         <textarea placeholder="Description" value={createForm.description} onChange={e=>setCreateForm(form=>({...form,description:e.target.value}))}/>
         <button className="primary big" disabled={busy||!createForm.name.trim()||!createForm.shortName.trim()} onClick={create}>Create Draft</button>
       </div></section>
@@ -243,7 +266,7 @@ export function RulesetsPage(){
       </div>
       <div className="header-actions">
         {draft.status==='draft'&&<><button className="primary" disabled={busy} onClick={saveDraft}>Save Draft</button><button disabled={busy} onClick={()=>transition(draft,'review')}>Send to Review</button></>}
-        {draft.status==='review'&&<><button disabled={busy} onClick={()=>transition(draft,'draft')}>Return to Draft</button><button className="primary" disabled={busy||sources.length===0} onClick={()=>transition(draft,'published')}>Publish Exact Version</button></>}
+        {draft.status==='review'&&<><button disabled={busy} onClick={()=>transition(draft,'draft')}>Return to Draft</button><button className="primary" disabled={busy||!hasPublicSource} onClick={()=>transition(draft,'published')}>Publish Exact Version</button></>}
         {draft.status==='published'&&!eventRulesLocked&&<button className={event.rulesetId===draft.id?'primary':''} disabled={busy} onClick={()=>activate(draft)}>{event.rulesetId===draft.id?'Snapshot Again':'Use for Event'}</button>}
         {draft.status==='published'&&<button disabled={busy||event.rulesetId===draft.id} onClick={()=>transition(draft,'retired')}>Retire Version</button>}
       </div>
@@ -254,6 +277,13 @@ export function RulesetsPage(){
         {currentSnapshot?<><div className="state-card"><strong>{currentSnapshot.rulesetName} · {currentSnapshot.rulesetVersion}</strong><br/>Locked {new Date(currentSnapshot.lockedAt).toLocaleString()} · {currentSnapshot.sourceSnapshot.length} public source record{currentSnapshot.sourceSnapshot.length===1?'':'s'} · inheritance depth {currentSnapshot.rulesetChain.length}.</div><details><summary>Resolved policy snapshot</summary><pre>{JSON.stringify({eligibility:currentSnapshot.eligibilityPolicy,scoring:currentSnapshot.scoringPolicy,tournament:currentSnapshot.tournamentPolicy,ranking:currentSnapshot.rankingPolicy},null,2)}</pre></details></>:<div className="state-card">No immutable rules snapshot has been locked to this event yet.</div>}
         {!eventRulesLocked&&<label className="form-stack">Exception reason for out-of-window rules, only when needed<textarea value={eventExceptionReason} onChange={e=>setEventExceptionReason(e.target.value)} placeholder="Explain why this event is authorized to use a ruleset outside its effective window."/></label>}
         <h3>Approved exceptions</h3><div className="membership-list">{exceptions.length===0?<div className="state-card">No event policy exceptions recorded.</div>:exceptions.map(row=><article key={row.id}><div><strong>{row.policyDomain} · {row.ruleKey}</strong><small>{row.reason} · {row.status}</small></div></article>)}</div>
+        {event.status!=='archived'&&<div className="form-stack setup-subform">
+          <h3>Record governed exception</h3>
+          <label>Policy domain<select value={exceptionForm.policyDomain} onChange={e=>setExceptionForm(form=>({...form,policyDomain:e.target.value as EventPolicyException['policyDomain']}))}><option value="eligibility">Eligibility</option><option value="scoring">Scoring</option><option value="tournament">Tournament</option><option value="ranking">Ranking</option></select></label>
+          <input placeholder="Rule key, e.g. minimum_age" value={exceptionForm.ruleKey} onChange={e=>setExceptionForm(form=>({...form,ruleKey:e.target.value}))}/>
+          <textarea placeholder="Required reason for this one-event exception" value={exceptionForm.reason} onChange={e=>setExceptionForm(form=>({...form,reason:e.target.value}))}/>
+          <button disabled={busy||!exceptionForm.ruleKey.trim()||exceptionForm.reason.trim().length<8} onClick={addException}>Record Exception</button>
+        </div>}
       </section>
     </div>
 
