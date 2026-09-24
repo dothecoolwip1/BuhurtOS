@@ -10,3 +10,10 @@ enabled = false
 
 [inbucket]
 enabled = false
+
+
+[functions.upload-waiver]
+verify_jwt = false
+
+[functions.create-registration-checkout]
+verify_jwt = false
