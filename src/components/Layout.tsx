@@ -15,6 +15,7 @@ export function Layout() {
   const { event, online, pendingCount, dataMode, syncNow, user } = useAppState();
   const can = (permission: Parameters<typeof hasPermission>[1]) => Boolean(event && hasPermission(user, permission, event.id, event.organizationId));
   const canSetup = Boolean(user?.platformRoles.includes('platform_super_admin') || user?.organizationRoles.some(role => role.role === 'organization_admin'));
+  const canGovern = Boolean(canSetup || user?.clubRoles.some(role => role.role === 'club_admin') || user?.teamRoles.some(role => role.role === 'team_admin' || role.role === 'captain'));
   return (
     <div className="app-shell">
       <aside className="side-rail">
@@ -28,6 +29,7 @@ export function Layout() {
           <NavLink to="/ops/identity">My Fighter Identity</NavLink>
           {canSetup && <NavLink to="/ops/identity-review">Identity Review</NavLink>}
           {canSetup && <NavLink to="/ops/foundation">Identity & Divisions</NavLink>}
+          {canGovern && <NavLink to="/ops/governance">Organizations & Teams</NavLink>}
           {canSetup && <NavLink to="/ops/rulesets">Rulesets</NavLink>}
           <NavLink to="/ops/sync">Sync Queue</NavLink>
           {canSetup && <NavLink to="/ops/setup">Setup</NavLink>}
