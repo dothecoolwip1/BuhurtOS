@@ -80,7 +80,7 @@ select public.request_fighter_identity_merge(
 
 select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000003',true);
 
-do $
+do $merge_review$
 begin
   perform public.review_fighter_identity_merge(
     (select id from merge_review),
@@ -88,7 +88,7 @@ begin
     'Independent platform review'
   );
 end;
-$;
+$merge_review$;
 
 select is(
   (select fighter_id from public.event_roster_entries where id='00000000-0000-0000-0000-000000000042'),
