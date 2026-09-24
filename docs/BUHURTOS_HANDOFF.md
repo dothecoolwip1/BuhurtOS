@@ -4,9 +4,15 @@ Last updated: 2026-09-23
 
 ## Resume here
 
-Continue from branch `pack2-accounts-permissions` and pull request #4.
+Pack 2 is complete and merged to `main` in pull request #4.
 
-Base commit before Pack 2 is `32240b2d6b8130a317ce5815a09e6d52d1bcac11`.
+Merged commit: `04ac4bb4fbdcf7789d21aed1a3998da64d349388`.
+
+Verified Pack 2 head: `bef3d41c7fd509269535f13a85b2555961edd483`.
+
+Successful GitHub Actions workflow run: `35945001693`.
+
+Base commit before Pack 2 was `32240b2d6b8130a317ce5815a09e6d52d1bcac11`.
 
 Do not apply the BuhurtOS migrations to the currently connected Supabase project unless it is independently confirmed to be a dedicated BuhurtOS project. The project inspected during this work contains Northborn, Mallard, and Reavers tables and migrations and is not the BuhurtOS target.
 
@@ -96,8 +102,8 @@ Keep these marked unverified until they are actually run:
 8. Verify the private `waivers` bucket cannot be listed or read anonymously.
 9. Run Supabase security advisors and record only findings that apply to the dedicated BuhurtOS project.
 
-## Stop condition for Pack 2
+## Pack 2 closeout
 
-Pack 2 is complete when the final pull-request head has green frontend CI and green local Supabase rebuild/pgTAP CI, the checkpoint documents reflect that result, and any unavailable hosted checks remain plainly marked unverified.
+The final Pack 2 pull-request head passed the repository CI and local Supabase pgTAP workflow and was merged. Hosted checks that require a dedicated BuhurtOS Supabase project remain explicitly unverified above.
 
-Do not expand into later product features while closing this pack.
+The next session may proceed to the next planned pack only after reading these checkpoint files and confirming the current `main` state.
