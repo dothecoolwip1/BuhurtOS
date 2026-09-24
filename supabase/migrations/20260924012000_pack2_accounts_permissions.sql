@@ -629,6 +629,11 @@ grant select (
   finalized_at, result_summary
 ) on public.matches to anon;
 
+revoke select on public.match_rounds from anon;
+grant select (
+  id, match_id, round_number, side_1_score, side_2_score, created_at
+) on public.match_rounds to anon;
+
 revoke select on public.announcements from anon;
 grant select (
   id, event_id, title, body, is_public, scheduled_for, created_at
