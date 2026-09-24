@@ -68,10 +68,12 @@ Deno.serve(async request => {
     return response(200, { checkoutUrl: null, paymentRequired: false, alreadyPaid: true, amountCents, currency });
   }
 
-  return response(503, {
+  return response(200, {
+    checkoutUrl: null,
     error: 'Online payment provider is not configured for BuhurtOS yet. Your registration is saved, but no charge was attempted.',
     code: 'PAYMENT_PROVIDER_NOT_CONFIGURED',
     paymentRequired: true,
+    paymentUnavailable: true,
     amountCents,
     currency
   });
