@@ -1042,7 +1042,7 @@ returns timestamptz
 language plpgsql
 security invoker
 set search_path=''
-as $
+as $$
 declare
   v_row public.competition_divisions%rowtype;
   v_updated timestamptz;
@@ -1079,7 +1079,7 @@ begin
   returning updated_at into v_updated;
   return v_updated;
 end;
-$;
+$$;
 
 create or replace function public.transition_division_guarded(
   p_division_id uuid,
@@ -1090,7 +1090,7 @@ returns timestamptz
 language plpgsql
 security invoker
 set search_path=''
-as $
+as $$
 declare
   v_row public.competition_divisions%rowtype;
   v_updated timestamptz;
@@ -1106,7 +1106,7 @@ begin
   returning updated_at into v_updated;
   return v_updated;
 end;
-$;
+$$;
 
 revoke execute on function public.update_division_draft_guarded(uuid,timestamptz,text,text,uuid,integer,numeric,numeric,integer,integer,numeric,numeric,text,jsonb,text) from public,anon;
 grant execute on function public.update_division_draft_guarded(uuid,timestamptz,text,text,uuid,integer,numeric,numeric,integer,integer,numeric,numeric,text,jsonb,text) to authenticated;
