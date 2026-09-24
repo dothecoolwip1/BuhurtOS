@@ -3,6 +3,7 @@ import type { Announcement, EventRecord, FightCard, MatchRecord, MatchStatus, Ro
 import { demoUser } from '../data/demo';
 import { loadEventSnapshot } from '../lib/repository';
 import { isSupabaseConfigured, subscribeToEvent, supabase } from '../lib/supabase';
+import { authNoticeForEvent, finishExternalAuthReturn, readExternalAuthReturn, type AuthNotice } from '../lib/auth';
 import { validateScore } from '../lib/scoring';
 import { advanceOutcome } from '../lib/bracket';
 import { enqueueMutation, flushMutationQueue, listMutations } from '../lib/offlineQueue';
@@ -10,6 +11,8 @@ import { loadUserContext } from '../lib/userContext';
 
 interface AppStateValue {
   loading: boolean;
+  authReady: boolean;
+  authNotice: AuthNotice;
   error: string | null;
   event: EventRecord | null;
   matches: MatchRecord[];
@@ -31,6 +34,12 @@ interface AppStateValue {
 
 const AppStateContext = createContext<AppStateValue | null>(null);
 
+function isProtectedOperationsRoute(): boolean {
+  if (typeof window === 'undefined') return false;
+  const route = window.location.hash.replace(/^#/, '').split('?')[0];
+  return (route === '/ops' || route.startsWith('/ops/')) && route !== '/ops/login';
+}
+
 function requestedEventIdFromLocation(): string | undefined {
   if (typeof window === 'undefined') return undefined;
   const direct = new URLSearchParams(window.location.search).get('event');
@@ -42,6 +51,8 @@ function requestedEventIdFromLocation(): string | undefined {
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(!isSupabaseConfigured);
+  const [authNotice, setAuthNotice] = useState<AuthNotice>(null);
   const [error, setError] = useState<string | null>(null);
   const [event, setEvent] = useState<EventRecord | null>(null);
   const [matches, setMatches] = useState<MatchRecord[]>([]);
@@ -58,7 +69,17 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     try {
       setError(null);
       const requestedEventId = requestedEventIdFromLocation();
-      const snap = await loadEventSnapshot(requestedEventId);
+      let accessMode: 'public' | 'private' = 'public';
+      if (supabase) {
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) {
+          setUser(null);
+        } else {
+          setUser(await loadUserContext(authData.user.id, authData.user.email ?? 'Signed in user'));
+          if (isProtectedOperationsRoute()) accessMode = 'private';
+        }
+      }
+      const snap = await loadEventSnapshot(requestedEventId, accessMode);
       setEvent(snap.event);
       setMatches(snap.matches);
       setRoster(snap.roster);
@@ -72,9 +93,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    reload();
     refreshPending();
-  }, [reload, refreshPending]);
+  }, [refreshPending]);
+
+  useEffect(() => {
+    if (!authReady) return;
+    reload().catch(() => undefined);
+  }, [authReady, reload]);
 
   useEffect(() => {
     const handleRouteChange = () => { reload().catch(() => undefined); };
@@ -84,15 +109,56 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!supabase) return;
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user) return setUser(null);
-      setUser(await loadUserContext(data.user.id, data.user.email ?? 'Signed in user'));
-    }).catch(() => setUser(null));
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session?.user) setUser(null);
-      else loadUserContext(session.user.id, session.user.email ?? 'Signed in user').then(setUser).catch(() => setUser(null));
+    let active = true;
+    let hadAuthenticatedSession = false;
+
+    const loadContext = async (authUser: { id: string; email?: string | null }) => {
+      const context = await loadUserContext(authUser.id, authUser.email ?? 'Signed in user');
+      if (active) setUser(context);
+    };
+
+    supabase.auth.getUser().then(async ({ data, error: authError }) => {
+      if (!active) return;
+      if (authError || !data.user) {
+        setUser(null);
+      } else {
+        hadAuthenticatedSession = true;
+        await loadContext(data.user);
+      }
+    }).catch(() => {
+      if (active) setUser(null);
+    }).finally(() => {
+      if (active) setAuthReady(true);
     });
-    return () => data.subscription.unsubscribe();
+
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      const intentional = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('buhurtos:intentional-signout') === '1';
+      if (event === 'SIGNED_OUT') {
+        if (intentional) sessionStorage.removeItem('buhurtos:intentional-signout');
+        setAuthNotice(authNoticeForEvent(event, hadAuthenticatedSession, intentional));
+        setUser(null);
+        setAuthReady(true);
+        return;
+      }
+
+      if (!session?.user) {
+        setAuthReady(true);
+        return;
+      }
+
+      hadAuthenticatedSession = true;
+      setAuthNotice(null);
+      const external = readExternalAuthReturn();
+      if (external && (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY' || event === 'INITIAL_SESSION')) {
+        finishExternalAuthReturn(event === 'PASSWORD_RECOVERY' ? 'recovery' : external.mode, external.next);
+      }
+      loadContext(session.user).catch(() => setUser(null)).finally(() => setAuthReady(true));
+    });
+
+    return () => {
+      active = false;
+      data.subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -283,7 +349,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return () => navigator.serviceWorker.removeEventListener('message', handler);
   }, [syncNow]);
 
-  const value = useMemo<AppStateValue>(() => ({ loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
+  const value = useMemo<AppStateValue>(() => ({ loading, authReady, authNotice, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, authReady, authNotice, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }
 
