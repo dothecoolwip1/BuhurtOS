@@ -702,13 +702,11 @@ reset role;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','52000000-0000-0000-0000-000000000001',true);
 
-select throws_ok(
-  $$update public.rulesets
+select lives_ok(
+  $update public.rulesets
     set description='cross organization change'
-    where id='51000000-0000-0000-0000-000000000101'$$,
-  '42501',
-  null,
-  'unrelated organization admin cannot mutate another organization ruleset'
+    where id='51000000-0000-0000-0000-000000000101'$,
+  'unrelated organization update is safely filtered by RLS'
 );
 
 select is(
@@ -719,6 +717,15 @@ select is(
   ),
   0,
   'unrelated organization cannot read another event policy exceptions'
+);
+
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','51000000-0000-0000-0000-000000000001',true);
+
+select ok(
+  (select description is null from public.rulesets where id='51000000-0000-0000-0000-000000000101'),
+  'unrelated organization update did not mutate the protected ruleset'
 );
 
 select * from finish();
