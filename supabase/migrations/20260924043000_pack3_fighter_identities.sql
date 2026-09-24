@@ -1690,6 +1690,20 @@ $$;
 
 revoke all on function public.merge_fighters(uuid, uuid) from authenticated;
 
+drop policy if exists affiliations_read on public.fighter_affiliations;
+create policy affiliations_read
+on public.fighter_affiliations
+for select to authenticated
+using (
+  private.is_platform_admin((select auth.uid()))
+  or private.has_org_role(
+    (select auth.uid()),
+    organization_id,
+    array['organization_admin', 'organization_staff']::public.organization_role[]
+  )
+  or private.user_controls_identity((select auth.uid()), identity_id)
+);
+
 drop policy if exists fighters_org_read on public.fighters;
 create policy fighters_org_read
 on public.fighters
