@@ -499,6 +499,10 @@ select throws_ok(
   'invitation token cannot be accepted by a different signed-in email'
 );
 
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub','41000000-0000-0000-0000-000000000002',true);
+
 select throws_ok(
   format(
     'select public.end_membership(%L::public.membership_scope,%L::uuid,current_date)',
@@ -507,6 +511,7 @@ select throws_ok(
       select id
       from public.team_memberships
       where team_id=(select id from pack4_runtime where label='team')
+        and user_id='41000000-0000-0000-0000-000000000002'
         and role='team_admin'
         and ends_on is null
       limit 1
