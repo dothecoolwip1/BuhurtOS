@@ -124,6 +124,6 @@ A dedicated BuhurtOS Supabase project is still required before any remote migrat
 
 ## Next session
 
-Read `BUHURTOS_PLAN.md`, `BUHURTOS_STATUS.md`, and this handoff before continuing. Confirm `main` contains merge commit `e6fde086939f3c4e74353affb5a82a4aa1977a45` and that the checkpoint-only documentation commit has green CI.
+Read `BUHURTOS_PLAN.md`, `BUHURTOS_STATUS.md`, and this handoff before continuing. Confirm `main` contains merge commit `e6fde086939f3c4e74353affb5a82a4aa1977a45`. The verified Pack 3 implementation record is workflow `35954642255` on head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e`; the later checkpoint commits change documentation only.
 
 Do not begin Pack 4 work as part of Pack 3 closeout.
