@@ -774,6 +774,12 @@ begin
     ) then
       raise exception 'Invalid season lifecycle transition from % to %',old.status,new.status;
     end if;
+    if old.status <> 'archived' and new.status='archived' and exists (
+      select 1 from public.events e
+      where e.season_id=old.id and e.status not in ('completed','archived')
+    ) then
+      raise exception 'A season cannot be archived while it has unfinished events';
+    end if;
     if (
       old.starts_at is distinct from new.starts_at
       or old.ends_at is distinct from new.ends_at
