@@ -52,6 +52,7 @@ export interface EventRecord {
   registrationOpen?: boolean;
   registrationFeeCents?: number;
   currency?: string;
+  updatedAt?: string;
 }
 
 export interface Club {
@@ -234,6 +235,7 @@ export interface RosterEntry {
   weighInCleared: boolean;
   attendanceStatus: RosterStatus;
   metadata?: Record<string, unknown>;
+  updatedAt?: string;
 }
 
 export interface FightCard {
@@ -243,6 +245,7 @@ export interface FightCard {
   listName: string;
   status: 'draft' | 'live' | 'locked' | 'archived';
   sortOrder: number;
+  updatedAt?: string;
 }
 
 export interface Bracket {
