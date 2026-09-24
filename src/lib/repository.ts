@@ -1,6 +1,6 @@
 import type { Announcement, EventRecord, FightCard, MatchRecord, RosterEntry } from '../types';
 import { demoAnnouncements, demoEvent, demoMatches, demoRoster } from '../data/demo';
-import { supabase } from './supabase';
+import { publicSupabase, supabase } from './supabase';
 
 export interface EventSnapshot {
   event: EventRecord;
@@ -37,7 +37,7 @@ function snakeMatch(row: Record<string, any>): MatchRecord {
   };
 }
 
-export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot> {
+export async function loadEventSnapshot(eventId?: string, accessMode: 'public' | 'private' = 'private'): Promise<EventSnapshot> {
   if (!supabase) {
     const ghosts = typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('buhurtos-demo-ghosts') ?? '[]');
     const savedMatches = typeof localStorage === 'undefined' ? null : localStorage.getItem('buhurtos-demo-matches');
@@ -59,22 +59,40 @@ export async function loadEventSnapshot(eventId?: string): Promise<EventSnapshot
     return { event, matches: allMatches, roster, fightCards, announcements };
   }
 
+  const client = accessMode === 'public' ? publicSupabase : supabase;
+  if (!client) throw new Error('Supabase is not configured.');
+
   let resolvedEventId = eventId || (import.meta.env.VITE_DEFAULT_EVENT_ID as string | undefined);
   if (!resolvedEventId) {
-    const candidate = await supabase.from('events').select('id').in('status', ['live','published','draft']).order('starts_at', { ascending: false }).limit(1).maybeSingle();
+    const statuses = accessMode === 'public' ? ['live','published','completed'] : ['live','published','draft','completed'];
+    const candidate = await client.from('events').select('id').in('status', statuses).order('starts_at', { ascending: false }).limit(1).maybeSingle();
     if (candidate.error) throw candidate.error;
     resolvedEventId = candidate.data?.id;
   }
   if (!resolvedEventId) throw new Error('No accessible BuhurtOS event was found. Set VITE_DEFAULT_EVENT_ID or publish an event.');
 
-  const { data: sessionData } = await supabase.auth.getSession();
-  const rosterColumns = sessionData.session ? '*' : 'id,event_id,team_id,entry_type,display_name,attendance_status';
+  const eventColumns = accessMode === 'public'
+    ? 'id,organization_id,season_id,name,venue,starts_at,ends_at,organizer_name,event_type,standings_mode,status,timezone,livestream_url,registration_open,registration_fee_cents,currency,ruleset_id'
+    : '*';
+  const rosterColumns = accessMode === 'public'
+    ? 'id,event_id,team_id,entry_type,display_name,attendance_status'
+    : '*';
+  const fightCardColumns = accessMode === 'public'
+    ? 'id,event_id,name,list_name,status,sort_order'
+    : '*';
+  const matchColumns = accessMode === 'public'
+    ? 'id,organization_id,season_id,event_id,fight_card_id,bracket_id,division_id,label,category,match_type,scoring_config,status,stage,scheduled_order,bracket_round,bracket_slot,winner_advances_to_match_id,winner_advances_to_slot,loser_advances_to_match_id,loser_advances_to_slot,result_summary,match_participants(*),match_rounds(*)'
+    : '*,match_participants(*),match_rounds(*)';
+  const announcementColumns = accessMode === 'public'
+    ? 'id,event_id,title,body,is_public,scheduled_for,created_at'
+    : '*';
+
   const [eventQuery, rosterQuery, fightCardQuery, matchQuery, announcementQuery] = await Promise.all([
-    supabase.from('events').select('*').eq('id', resolvedEventId).single(),
-    supabase.from('event_roster_entries').select(rosterColumns).eq('event_id', resolvedEventId).order('display_name'),
-    supabase.from('fight_cards').select('*').eq('event_id', resolvedEventId).order('sort_order'),
-    supabase.from('matches').select('*,match_participants(*),match_rounds(*)').eq('event_id', resolvedEventId).order('scheduled_order'),
-    supabase.from('announcements').select('*').eq('event_id', resolvedEventId).order('created_at', { ascending: false })
+    client.from('events').select(eventColumns).eq('id', resolvedEventId).single(),
+    client.from('event_roster_entries').select(rosterColumns).eq('event_id', resolvedEventId).order('display_name'),
+    client.from('fight_cards').select(fightCardColumns).eq('event_id', resolvedEventId).order('sort_order'),
+    client.from('matches').select(matchColumns).eq('event_id', resolvedEventId).order('scheduled_order'),
+    client.from('announcements').select(announcementColumns).eq('event_id', resolvedEventId).order('created_at', { ascending: false })
   ]);
 
   const error = eventQuery.error || rosterQuery.error || fightCardQuery.error || matchQuery.error || announcementQuery.error;
