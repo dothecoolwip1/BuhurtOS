@@ -11,7 +11,7 @@ for (const route of routes) {
   test(`demo screen loads: ${route}`, async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto(`./#${route}`);
+    await page.goto(`./#${route}`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('h1').first()).toBeVisible();
     await expect(page.locator('#root')).not.toBeEmpty();
     await expect(page.locator('.state-card.error')).toHaveCount(0);

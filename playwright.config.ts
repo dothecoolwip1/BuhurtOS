@@ -6,6 +6,7 @@ export default defineConfig({
   timeout: 20_000,
   globalTimeout: 180_000,
   retries: 0,
+  maxFailures: 3,
   workers: 1,
   use: { baseURL: 'http://127.0.0.1:4174/BuhurtOS/', trace: 'retain-on-failure' },
   projects: [
@@ -13,7 +14,7 @@ export default defineConfig({
     { name: 'mobile', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } }
   ],
   webServer: {
-    command: 'npm run preview -- --host 127.0.0.1 --port 4174 --strictPort',
+    command: 'npm run preview -- --mode github-pages --host 127.0.0.1 --port 4174 --strictPort',
     url: 'http://127.0.0.1:4174/BuhurtOS/',
     reuseExistingServer: false,
     timeout: 20_000
