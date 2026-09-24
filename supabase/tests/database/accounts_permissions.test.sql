@@ -166,11 +166,15 @@ select is(
   'ordinary organization staff can read their own organization'
 );
 
-select throws_ok(
-  $$update public.organizations set region='Escalated' where id='10000000-0000-0000-0000-000000000010'$$,
-  '42501',
-  null,
-  'ordinary organization staff cannot administer their organization'
+select lives_ok(
+  $update public.organizations set region='Escalated' where id='10000000-0000-0000-0000-000000000010'$,
+  'ordinary organization staff direct update attempt is safely filtered by RLS'
+);
+
+select is(
+  (select region from public.organizations where id='10000000-0000-0000-0000-000000000010'),
+  'Test A',
+  'ordinary organization staff cannot change their organization'
 );
 
 select ok(
