@@ -2,6 +2,10 @@
 
 **BuhurtOS** is a mobile first tournament operations platform for Buhurt and armored combat events.
 
+## Project status
+
+The application combines showcase screens with operational workflows. Read [verified status](docs/BUHURTOS_STATUS.md), the [twelve-pack roadmap](docs/BUHURTOS_PLAN.md), and the [handoff](docs/BUHURTOS_HANDOFF.md) before continuing development. Source presence is not proof of a working production integration.
+
 ## What is included
 
 The current project contains:
@@ -30,12 +34,12 @@ The current project contains:
 
 `tests/` contains the core tournament rule regression checks.
 
-`site/` contains the standalone GitHub Pages demo build. It intentionally runs in demo mode and contains no production Supabase credentials.
+`site/` is a legacy standalone demo. The current GitHub Pages workflow builds `src/` into `dist/`. Without Supabase environment values, operational screens use local demo data; showcase pages use fixtures independently.
 
 ## Local development
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -49,8 +53,10 @@ npm run build
 
 ## GitHub Pages
 
-The repository deploys the safe demo build in `site/` to:
+The repository builds the React application in GitHub Pages mode and deploys `dist/` to:
 
 `https://dothecoolwip1.github.io/BuhurtOS/`
 
-The Vite source configuration also supports deployment under the `/BuhurtOS/` base path when a production source build is used later.
+The GitHub Pages build uses the `/BuhurtOS/` base path and hash routing. CI runs clean installation, type checking, unit tests, desktop/mobile browser smoke checks, and a clean Supabase schema rebuild with pgTAP tests before deployment. Pull requests run checks without deploying.
+
+To run browser smoke checks locally, install Chromium with `npx playwright install chromium`, then run `npm run test:browser`. Use Node 24 to match CI. For a live backend, copy `.env.example` to `.env` and configure the intended Supabase project; never put a secret/service-role key in a Vite environment variable. No live backend is configured by the current Pages workflow.

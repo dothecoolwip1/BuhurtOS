@@ -14,6 +14,7 @@ concurrency:
 jobs:
   quality:
     name: Typecheck, tests and production build
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,16 +27,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: package.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Capture lockfile
-        run: |
-          echo LOCKFILE_BEGIN
-          base64 -w 76 package-lock.json
-          echo LOCKFILE_END
+        run: npm ci --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
@@ -46,8 +41,23 @@ jobs:
       - name: Production build
         run: npx vite build --mode github-pages
 
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser smoke tests
+        run: npx playwright test
+
+      - name: Upload browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-failure-evidence
+          path: test-results/
+          if-no-files-found: ignore
+
   database:
     name: Rebuild and test Supabase schema
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -71,6 +81,7 @@ jobs:
 
   deploy:
     name: Deploy GitHub Pages
+    timeout-minutes: 10
     if: github.event_name != 'pull_request'
     needs: [quality, database]
     runs-on: ubuntu-latest
@@ -90,10 +101,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: package.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Build GitHub Pages artifact
         run: npx vite build --mode github-pages
