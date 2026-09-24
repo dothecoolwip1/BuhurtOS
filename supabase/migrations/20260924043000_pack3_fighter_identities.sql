@@ -56,6 +56,52 @@ from public.fighter_identities i
 where i.user_id is not null
 on conflict (identity_id, user_id, relationship) do nothing;
 
+create or replace function private.sync_legacy_fighter_identity_owner()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  if tg_op = 'UPDATE'
+     and old.user_id is distinct from new.user_id
+     and old.user_id is not null
+  then
+    update public.fighter_identity_accounts
+    set revoked_at = coalesce(revoked_at, timezone('utc', now()))
+    where identity_id = new.id
+      and user_id = old.user_id
+      and relationship = 'self'
+      and revoked_at is null;
+  end if;
+
+  if new.user_id is not null then
+    insert into public.fighter_identity_accounts(
+      identity_id, user_id, relationship, verified_at, created_by
+    )
+    values (
+      new.id,
+      new.user_id,
+      'self',
+      timezone('utc', now()),
+      coalesce((select auth.uid()), new.created_by)
+    )
+    on conflict (identity_id, user_id, relationship)
+    do update set
+      verified_at = excluded.verified_at,
+      revoked_at = null;
+  end if;
+
+  return new;
+end;
+$;
+
+revoke all on function private.sync_legacy_fighter_identity_owner() from public, anon, authenticated;
+
+create trigger sync_legacy_fighter_identity_owner
+after insert or update of user_id on public.fighter_identities
+for each row execute function private.sync_legacy_fighter_identity_owner();
+
 create table public.fighter_identity_aliases (
   id uuid primary key default gen_random_uuid(),
   identity_id uuid not null references public.fighter_identities(id) on delete restrict,
