@@ -77,7 +77,9 @@ test('event permissions stay scoped to the assigned event and organization', () 
     displayName: 'Org Admin',
     platformRoles: [],
     organizationRoles: [{ organizationId: 'org', role: 'organization_admin' }],
-    eventRoles: []
+    eventRoles: [],
+    clubRoles: [],
+    teamRoles: []
   };
   expect(hasPermission(orgAdmin, 'bracket.manage', 'event-b', 'org')).toBe(true);
   expect(hasPermission(orgAdmin, 'bracket.manage', 'event-b', 'other')).toBe(false);
