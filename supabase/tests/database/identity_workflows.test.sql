@@ -8,13 +8,17 @@ insert into auth.users (
   raw_app_meta_data, raw_user_meta_data, created_at, updated_at
 ) values
 ('00000000-0000-0000-0000-000000000001','authenticated','authenticated','admin@buhurtos.test','',timezone('utc',now()),'{}','{"display_name":"Pack One Admin"}',timezone('utc',now()),timezone('utc',now())),
-('00000000-0000-0000-0000-000000000002','authenticated','authenticated','outsider@buhurtos.test','',timezone('utc',now()),'{}','{"display_name":"Outsider"}',timezone('utc',now()),timezone('utc',now()));
+('00000000-0000-0000-0000-000000000002','authenticated','authenticated','outsider@buhurtos.test','',timezone('utc',now()),'{}','{"display_name":"Outsider"}',timezone('utc',now()),timezone('utc',now())),
+('00000000-0000-0000-0000-000000000003','authenticated','authenticated','merge-reviewer@buhurtos.test','',timezone('utc',now()),'{}','{"display_name":"Merge Reviewer"}',timezone('utc',now()),timezone('utc',now()));
 
 insert into public.organizations(id,name,short_name,region)
 values ('00000000-0000-0000-0000-000000000010','Pack One Org','P1','Test');
 
 insert into public.organization_memberships(organization_id,user_id,role)
 values ('00000000-0000-0000-0000-000000000010','00000000-0000-0000-0000-000000000001','organization_admin');
+
+insert into public.platform_memberships(user_id,role)
+values ('00000000-0000-0000-0000-000000000003','platform_super_admin');
 
 insert into public.seasons(id,organization_id,name,starts_at,ends_at,status)
 values ('00000000-0000-0000-0000-000000000020','00000000-0000-0000-0000-000000000010','2026 Test','2026-01-01','2026-12-31','active');
@@ -66,21 +70,30 @@ select is(
   'claim preserves the historical roster entry id'
 );
 
-do $$
-declare
-  canonical_id uuid;
-  duplicate_id uuid;
+create temp table merge_review(id uuid);
+insert into merge_review
+select public.request_fighter_identity_merge(
+  (select identity_id from public.fighters where id=(select fighter_id from claimed where label='one')),
+  (select identity_id from public.fighters where id=(select fighter_id from claimed where label='two')),
+  'Pack One regression upgraded to governed merge review'
+);
+
+select set_config('request.jwt.claim.sub','00000000-0000-0000-0000-000000000003',true);
+
+do $
 begin
-  select fighter_id into canonical_id from claimed where label='one';
-  select fighter_id into duplicate_id from claimed where label='two';
-  perform public.merge_fighters(canonical_id,duplicate_id);
+  perform public.review_fighter_identity_merge(
+    (select id from merge_review),
+    'approve',
+    'Independent platform review'
+  );
 end;
-$$;
+$;
 
 select is(
   (select fighter_id from public.event_roster_entries where id='00000000-0000-0000-0000-000000000042'),
-  (select fighter_id from claimed where label='one'),
-  'merge rewires duplicate roster references to canonical fighter'
+  (select fighter_id from claimed where label='two'),
+  'merge preserves historical roster references to the retained duplicate fighter row'
 );
 
 select ok(
@@ -95,8 +108,8 @@ select ok(
 );
 
 select ok(
-  exists(select 1 from public.audit_log where action='merge_fighter'),
-  'fighter merge is audited'
+  exists(select 1 from public.audit_log where action='complete_fighter_identity_merge'),
+  'governed fighter identity merge is audited'
 );
 
 reset role;
