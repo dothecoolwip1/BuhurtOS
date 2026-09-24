@@ -4,8 +4,25 @@ const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const publishableKey = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY) as string | undefined;
 
 export const isSupabaseConfigured = Boolean(url && publishableKey);
+
 export const supabase: SupabaseClient | null = isSupabaseConfigured ? createClient(url!, publishableKey!, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce'
+  }
+}) : null;
+
+export const publicSupabase: SupabaseClient | null = isSupabaseConfigured ? createClient(url!, publishableKey!, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false
+  },
+  global: {
+    headers: { 'x-buhurtos-access': 'public' }
+  }
 }) : null;
 
 export function subscribeToEvent(eventId: string, onChange: () => void): RealtimeChannel | null {
