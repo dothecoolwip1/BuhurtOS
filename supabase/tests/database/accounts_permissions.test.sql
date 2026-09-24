@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(18);
+select plan(19);
 
 insert into auth.users (
   id,aud,role,email,encrypted_password,email_confirmed_at,raw_app_meta_data,raw_user_meta_data,created_at,updated_at
@@ -53,7 +53,8 @@ select lives_ok($$select public.set_event_membership('10000000-0000-0000-0000-00
 select ok(exists(select 1 from public.event_memberships where event_id='10000000-0000-0000-0000-000000000030' and user_id='10000000-0000-0000-0000-000000000004' and role='field_marshal'),'assigned official membership exists');
 select lives_ok($$select public.revoke_event_membership((select id from public.event_memberships where event_id='10000000-0000-0000-0000-000000000030' and user_id='10000000-0000-0000-0000-000000000004' and role='field_marshal'))$$,'organization admin can revoke an official');
 select ok(not exists(select 1 from public.event_memberships where event_id='10000000-0000-0000-0000-000000000030' and user_id='10000000-0000-0000-0000-000000000004' and role='field_marshal'),'revoked membership is immediately absent');
-select throws_ok($$select public.revoke_organization_membership('10000000-0000-0000-0000-000000000010','10000000-0000-0000-0000-000000000001')$$,'P0001',null,'last organization admin cannot remove own access');
+select throws_ok($select public.revoke_organization_membership('10000000-0000-0000-0000-000000000010','10000000-0000-0000-0000-000000000001')$,'P0001',null,'last organization admin cannot remove own access');
+select throws_ok($select public.set_organization_membership('10000000-0000-0000-0000-000000000010','10000000-0000-0000-0000-000000000001','organization_staff')$,'P0001',null,'last organization admin cannot demote own access');
 select ok(exists(select 1 from public.audit_log where action='set_event_membership'),'role assignment is audited');
 select ok(exists(select 1 from public.audit_log where action='revoke_event_membership'),'role revocation is audited');
 
