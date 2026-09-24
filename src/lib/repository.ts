@@ -103,15 +103,16 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
       id: e.id, organizationId: e.organization_id, seasonId: e.season_id, name: e.name, venue: e.venue,
       startsAt: e.starts_at, endsAt: e.ends_at, organizerName: e.organizer_name ?? undefined,
       eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined, rulesetId: e.ruleset_id ?? undefined,
-      registrationOpen: e.registration_open, registrationFeeCents: e.registration_fee_cents, currency: e.currency
+      registrationOpen: e.registration_open, registrationFeeCents: e.registration_fee_cents, currency: e.currency,
+      updatedAt: e.updated_at ?? undefined
     },
     roster: (rosterQuery.data ?? []).map((r: any) => ({
       id: r.id, organizationId: r.organization_id, eventId: r.event_id, teamId: r.team_id ?? undefined, fighterId: r.fighter_id ?? undefined,
       entryType: r.entry_type, displayName: r.display_name, checkedIn: r.checked_in ?? false, armorCleared: r.armor_cleared ?? false,
       medicalCleared: r.medical_cleared ?? false, waiverConfirmed: r.waiver_confirmed ?? false, weighInCleared: r.weigh_in_cleared ?? false,
-      attendanceStatus: r.attendance_status, metadata: r.metadata
+      attendanceStatus: r.attendance_status, metadata: r.metadata, updatedAt: r.updated_at ?? undefined
     })),
-    fightCards: (fightCardQuery.data ?? []).map((card: any) => ({ id: card.id, eventId: card.event_id, name: card.name, listName: card.list_name, status: card.status, sortOrder: card.sort_order })),
+    fightCards: (fightCardQuery.data ?? []).map((card: any) => ({ id: card.id, eventId: card.event_id, name: card.name, listName: card.list_name, status: card.status, sortOrder: card.sort_order, updatedAt: card.updated_at ?? undefined })),
     matches: (matchQuery.data ?? []).map(snakeMatch),
     announcements: (announcementQuery.data ?? []).map((a: any) => ({ id: a.id, eventId: a.event_id, title: a.title, body: a.body, isPublic: a.is_public, scheduledFor: a.scheduled_for ?? undefined, createdAt: a.created_at }))
   };
