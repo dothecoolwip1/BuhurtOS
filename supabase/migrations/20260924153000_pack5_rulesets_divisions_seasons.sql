@@ -249,7 +249,7 @@ begin
 
   select * into v_parent from public.rulesets where id = new.parent_ruleset_id;
   if not found then raise exception 'Parent ruleset not found'; end if;
-  if v_parent.status <> 'published' then raise exception 'Parent ruleset must be published'; end if;
+  if v_parent.status not in ('published','retired') then raise exception 'Parent ruleset must be published or retired'; end if;
 
   if new.organization_id is null and v_parent.organization_id is not null then
     raise exception 'Platform rulesets cannot inherit from organization rulesets';
@@ -308,11 +308,11 @@ begin
   end if;
 
   if new.status = 'published' and old.status <> 'published' then
-    if not exists (select 1 from public.ruleset_sources s where s.ruleset_id = old.id) then
-      raise exception 'A reviewed ruleset needs at least one source before publication';
+    if not exists (select 1 from public.ruleset_sources s where s.ruleset_id = old.id and s.source_kind <> 'internal') then
+      raise exception 'A reviewed ruleset needs at least one public source before publication';
     end if;
     if new.parent_ruleset_id is not null and not exists (
-      select 1 from public.rulesets p where p.id=new.parent_ruleset_id and p.status='published'
+      select 1 from public.rulesets p where p.id=new.parent_ruleset_id and p.status in ('published','retired')
     ) then
       raise exception 'Parent ruleset must remain published';
     end if;
