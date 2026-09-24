@@ -224,15 +224,18 @@ export async function listEventDivisions(eventId:string):Promise<EventDivision[]
 
 export async function assignEventDivision(event:EventRecord,divisionId:string,registrationLimit?:number):Promise<void>{
   if(!supabase)return;
-  const {error}=await supabase.from('event_divisions').insert({
-    event_id:event.id,division_id:divisionId,registration_limit:registrationLimit??null,is_registration_open:true
+  const {error}=await supabase.rpc('assign_event_division_guarded',{
+    p_event_id:event.id,p_division_id:divisionId,p_registration_limit:registrationLimit??null
   });
   if(error)throw error;
 }
 
-export async function removeEventDivision(event:EventRecord,eventDivisionId:string):Promise<void>{
+export async function removeEventDivision(event:EventRecord,row:EventDivision):Promise<void>{
   if(!supabase)return;
-  const {error}=await supabase.from('event_divisions').delete().eq('id',eventDivisionId).eq('event_id',event.id);
+  if(!row.updatedAt)throw new Error('Event division version is missing. Reload before removing it.');
+  const {error}=await supabase.rpc('remove_event_division_guarded',{
+    p_event_division_id:row.id,p_expected_updated_at:row.updatedAt
+  });
   if(error)throw error;
 }
 
