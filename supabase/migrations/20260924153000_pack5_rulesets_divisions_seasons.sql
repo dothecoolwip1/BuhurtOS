@@ -11,6 +11,23 @@ alter table public.rulesets
   add column if not exists retired_at timestamptz,
   add column if not exists revision integer not null default 1 check (revision > 0);
 
+drop policy if exists rulesets_public_read on public.rulesets;
+create policy rulesets_public_read
+on public.rulesets for select
+to anon, authenticated
+using (
+  status in ('published','retired')
+  or private.is_platform_admin((select auth.uid()))
+  or (
+    organization_id is not null
+    and private.has_org_role(
+      (select auth.uid()),
+      organization_id,
+      array['organization_admin','organization_staff']::public.organization_role[]
+    )
+  )
+);
+
 alter table public.rulesets
   add constraint rulesets_policy_domains_are_objects check (
     jsonb_typeof(eligibility_policy) = 'object'
