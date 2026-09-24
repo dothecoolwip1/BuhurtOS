@@ -61,7 +61,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $legacy_owner$
 begin
   if tg_op = 'UPDATE'
      and old.user_id is distinct from new.user_id
@@ -94,7 +94,7 @@ begin
 
   return new;
 end;
-$;
+$legacy_owner$;
 
 revoke all on function private.sync_legacy_fighter_identity_owner() from public, anon, authenticated;
 
