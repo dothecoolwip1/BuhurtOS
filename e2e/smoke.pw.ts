@@ -12,7 +12,11 @@ for (const route of routes) {
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(`./#${route}`, { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1').first()).toBeVisible();
+    if (route === '/ops/setup') {
+      await expect(page.getByText('Demo mode already contains a seeded organization, season, and event.', { exact: false })).toBeVisible();
+    } else {
+      await expect(page.locator('h1').first()).toBeVisible();
+    }
     await expect(page.locator('#root')).not.toBeEmpty();
     await expect(page.locator('.state-card.error')).toHaveCount(0);
     expect(errors).toEqual([]);
