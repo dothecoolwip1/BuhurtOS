@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { hasPermission } from '../src/lib/permissions';
-import { defaultRulesetSettings, resolveRulesetSettings } from '../src/lib/rulesetAdmin';
+import { defaultRulesetSettings, deriveRulesetSettingsPatch, resolveRulesetSettings } from '../src/lib/rulesetAdmin';
 import type { RulesetRecord, UserContext } from '../src/types';
 
 test('ruleset inheritance keeps parent values and deep merges child overrides', () => {
@@ -81,4 +81,23 @@ test('event permissions stay scoped to the assigned event and organization', () 
   };
   expect(hasPermission(orgAdmin, 'bracket.manage', 'event-b', 'org')).toBe(true);
   expect(hasPermission(orgAdmin, 'bracket.manage', 'event-b', 'other')).toBe(false);
+});
+
+
+test('child ruleset saves only settings that differ from its immutable parent', () => {
+  const parent = structuredClone(defaultRulesetSettings);
+  parent.enabledFormats = ['longsword', '5v5'];
+  parent.compliance.requireWeighIn = false;
+  parent.discipline.yellowCardsBeforeSuspension = 3;
+
+  const effective = structuredClone(parent);
+  effective.enabledFormats = ['longsword'];
+  effective.compliance.requireMedicalClearance = false;
+  effective.bracket.antiFratricide = false;
+
+  expect(deriveRulesetSettingsPatch(parent, effective)).toEqual({
+    enabledFormats: ['longsword'],
+    compliance: { requireMedicalClearance: false },
+    bracket: { antiFratricide: false }
+  });
 });
