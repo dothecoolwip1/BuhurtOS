@@ -252,13 +252,12 @@ select throws_ok(
 );
 
 select lives_ok(
-  $$insert into public.event_divisions(event_id,division_id,registration_limit)
-    values(
-      '51000000-0000-0000-0000-000000000030',
-      '51000000-0000-0000-0000-000000000200',
-      32
-    )$$,
-  'published division can be assigned to a draft event'
+  $select public.assign_event_division_guarded(
+    '51000000-0000-0000-0000-000000000030',
+    '51000000-0000-0000-0000-000000000200',
+    32
+  )$,
+  'published division can be assigned to a draft event through governed mutation'
 );
 
 select is(
@@ -270,6 +269,74 @@ select is(
   ),
   '1',
   'event division records immutable division version snapshot'
+);
+
+select is(
+  (
+    select ruleset_snapshot_id::text
+    from public.event_divisions
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and division_id='51000000-0000-0000-0000-000000000200'
+  ),
+  (select ruleset_snapshot_id::text from public.events where id='51000000-0000-0000-0000-000000000030'),
+  'division using the event default ruleset reuses the event rules snapshot'
+);
+
+select throws_ok(
+  format(
+    'select public.assign_event_ruleset_guarded(%L::uuid,null,%L::timestamptz,null)',
+    '51000000-0000-0000-0000-000000000030',
+    (select updated_at::text from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  'P0001',
+  'Remove event divisions before changing the event ruleset',
+  'event rules cannot be cleared underneath assigned divisions'
+);
+
+insert into public.competition_divisions(
+  id,organization_id,name,slug,competition_format_id,ruleset_id,team_size,
+  eligibility_label,eligibility_rules,status
+) values (
+  '51000000-0000-0000-0000-000000000201',
+  '51000000-0000-0000-0000-000000000010',
+  'Base Rules Five on Five','base-rules-five','5v5',
+  '51000000-0000-0000-0000-000000000100',
+  5,'Base rules team division','[]','draft'
+);
+update public.competition_divisions
+set status='published'
+where id='51000000-0000-0000-0000-000000000201';
+
+select lives_ok(
+  $select public.assign_event_division_guarded(
+    '51000000-0000-0000-0000-000000000030',
+    '51000000-0000-0000-0000-000000000201',
+    8
+  )$,
+  'division-specific published ruleset can override the event default'
+);
+
+select is(
+  (
+    select ruleset_id::text
+    from public.event_divisions
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and division_id='51000000-0000-0000-0000-000000000201'
+  ),
+  '51000000-0000-0000-0000-000000000100',
+  'event division stores its effective division-specific ruleset'
+);
+
+select is(
+  (
+    select s.ruleset_id::text
+    from public.event_divisions ed
+    join public.event_ruleset_snapshots s on s.id=ed.ruleset_snapshot_id
+    where ed.event_id='51000000-0000-0000-0000-000000000030'
+      and ed.division_id='51000000-0000-0000-0000-000000000201'
+  ),
+  '51000000-0000-0000-0000-000000000100',
+  'division-specific ruleset is independently snapshotted for the event'
 );
 
 select lives_ok(
@@ -301,6 +368,24 @@ select is(
   ),
   '18',
   'retiring a division does not alter the event snapshot'
+);
+
+select lives_ok(
+  format(
+    'select public.remove_event_division_guarded(%L::uuid,%L::timestamptz)',
+    (select id::text from public.event_divisions where event_id='51000000-0000-0000-0000-000000000030' and division_id='51000000-0000-0000-0000-000000000200'),
+    (select updated_at::text from public.event_divisions where event_id='51000000-0000-0000-0000-000000000030' and division_id='51000000-0000-0000-0000-000000000200')
+  ),
+  'event division can be removed with its current record version'
+);
+
+select lives_ok(
+  format(
+    'select public.remove_event_division_guarded(%L::uuid,%L::timestamptz)',
+    (select id::text from public.event_divisions where event_id='51000000-0000-0000-0000-000000000030' and division_id='51000000-0000-0000-0000-000000000201'),
+    (select updated_at::text from public.event_divisions where event_id='51000000-0000-0000-0000-000000000030' and division_id='51000000-0000-0000-0000-000000000201')
+  ),
+  'division-specific event assignment can be removed before competition'
 );
 
 insert into public.rulesets(
