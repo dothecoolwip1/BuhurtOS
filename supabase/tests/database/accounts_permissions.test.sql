@@ -255,14 +255,19 @@ select throws_ok(
 );
 
 select throws_ok(
-  $$select public.assign_organization_role('10000000-0000-0000-0000-000000000010','10000000-0000-0000-0000-000000000001','organization_staff')$$,
+  $select public.assign_organization_role('10000000-0000-0000-0000-000000000010','10000000-0000-0000-0000-000000000001','organization_staff')$,
   'P0001',
   'Organization administrators cannot change their own role',
   'organization administrator cannot mutate their own organization roles'
 );
 
 select lives_ok(
-  $$select public.revoke_event_membership(id) from public.event_memberships where event_id='10000000-0000-0000-0000-000000000031' and user_id='10000000-0000-0000-0000-000000000005' and role='fighter'$$,
+  $select public.revoke_organization_role('10000000-0000-0000-0000-000000000010','10000000-0000-0000-0000-000000000005','organization_staff')$,
+  'organization administrator can revoke organization staff assigned to another account'
+);
+
+select lives_ok(
+  $select public.revoke_event_membership(id) from public.event_memberships where event_id='10000000-0000-0000-0000-000000000031' and user_id='10000000-0000-0000-0000-000000000005' and role='fighter'$,
   'organization administrator can revoke a fighter event membership'
 );
 
