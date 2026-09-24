@@ -93,9 +93,11 @@ export function EventManagementPage(){
   };
 
   const review=async(id:string,status:Exclude<RegistrationReviewStatus,'pending'>)=>{
+    const registration=registrations.find(item=>item.id===id);
+    if(!registration)return;
     setBusy(true);setMessage('');
     try{
-      await reviewRegistration(event,id,status);
+      await reviewRegistration(event,id,status,registration.updatedAt);
       setRegistrations(await listEventRegistrations(event.id));
       await reload();
       setMessage(status==='approved'?'Registration approved and added to the event roster.':'Registration status updated.');
