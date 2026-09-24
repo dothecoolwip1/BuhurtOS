@@ -30,8 +30,20 @@ export async function inviteEventMember(input: { eventId: string; email: string;
   return { invited: Boolean(data?.invited) };
 }
 
+export async function setEventMembership(input: { eventId: string; userId: string; role: EventRole; teamId?: string }): Promise<string> {
+  if (!supabase) return crypto.randomUUID();
+  const { data, error } = await supabase.rpc('set_event_membership', {
+    p_event_id: input.eventId,
+    p_user_id: input.userId,
+    p_role: input.role,
+    p_team_id: input.teamId ?? null
+  });
+  if (error) throw error;
+  return data as string;
+}
+
 export async function removeEventMembership(id: string): Promise<void> {
   if (!supabase) return;
-  const { error } = await supabase.from('event_memberships').delete().eq('id', id);
+  const { error } = await supabase.rpc('revoke_event_membership', { p_membership_id: id });
   if (error) throw error;
 }
