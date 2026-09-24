@@ -384,21 +384,6 @@ select is(
   'division versioning increments without rewriting version one'
 );
 
-update public.competition_divisions
-set status='retired'
-where id='51000000-0000-0000-0000-000000000200';
-
-select is(
-  (
-    select division_snapshot #>> '{ageMin}'
-    from public.event_divisions
-    where event_id='51000000-0000-0000-0000-000000000030'
-      and division_id='51000000-0000-0000-0000-000000000200'
-  ),
-  '18',
-  'retiring a division does not alter the event snapshot'
-);
-
 select lives_ok(
   format(
     'select public.remove_event_division_guarded(%L::uuid,%L::timestamptz)',
@@ -567,6 +552,21 @@ select throws_ok(
   'P0001',
   'Remove the division competition structure before removing the event division',
   'event division cannot be removed underneath an existing bracket'
+);
+
+update public.competition_divisions
+set status='retired'
+where id='51000000-0000-0000-0000-000000000200';
+
+select is(
+  (
+    select division_snapshot #>> '{ageMin}'
+    from public.event_divisions
+    where event_id='51000000-0000-0000-0000-000000000031'
+      and division_id='51000000-0000-0000-0000-000000000200'
+  ),
+  '18',
+  'retiring a division after bracket creation does not alter the event snapshot'
 );
 
 update public.events
