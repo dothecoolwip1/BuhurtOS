@@ -16,6 +16,15 @@ export type FighterProfileVisibility = 'public' | 'members' | 'private';
 export type IdentityAccountRole = 'self' | 'guardian';
 export type IdentityClaimStatus = 'pending' | 'approved' | 'rejected' | 'disputed' | 'cancelled';
 export type IdentityMergeStatus = 'pending' | 'completed' | 'rejected' | 'cancelled';
+export type OrganizationKind = 'international_federation' | 'national_federation' | 'regional_organization' | 'local_organization' | 'independent_organization';
+export type EntityVisibility = 'public' | 'members' | 'private';
+export type OrganizationRelationshipKind = 'governs' | 'recognizes' | 'affiliate';
+export type ClubRole = 'club_admin' | 'coach' | 'member';
+export type TeamRole = 'team_admin' | 'captain' | 'coach' | 'fighter' | 'support';
+export type TeamStatus = 'forming' | 'pending' | 'active' | 'suspended' | 'archived';
+export type MembershipScope = 'club' | 'team';
+export type MembershipRequestKind = 'invitation' | 'application';
+export type MembershipRequestStatus = 'pending' | 'accepted' | 'rejected' | 'cancelled' | 'expired';
 
 export interface Organization {
   id: UUID;
@@ -23,6 +32,20 @@ export interface Organization {
   shortName: string;
   region: string;
   status: 'active' | 'inactive';
+  kind?: OrganizationKind;
+  visibility?: EntityVisibility;
+  countryCode?: string;
+  websiteUrl?: string;
+  publicContactEmail?: string;
+}
+
+export interface OrganizationRelationship {
+  id: UUID;
+  parentOrganizationId: UUID;
+  childOrganizationId: UUID;
+  relationshipKind: OrganizationRelationshipKind;
+  startsOn: string;
+  endsOn?: string;
 }
 
 export interface Season {
@@ -62,6 +85,10 @@ export interface Club {
   region?: string;
   websiteUrl?: string;
   isActive: boolean;
+  visibility?: EntityVisibility;
+  publicDescription?: string;
+  logoPath?: string;
+  publicContactEmail?: string;
   deletedAt?: string;
 }
 
@@ -70,8 +97,57 @@ export interface Team {
   organizationId: UUID;
   clubId?: UUID;
   name: string;
+  shortName?: string;
   cityOrRegion?: string;
+  status?: TeamStatus;
+  isActive?: boolean;
+  visibility?: EntityVisibility;
+  publicDescription?: string;
+  websiteUrl?: string;
+  publicContactEmail?: string;
+  foundedOn?: string;
+  deletedAt?: string;
 }
+
+export interface ClubMembership {
+  id: UUID;
+  clubId: UUID;
+  userId: UUID;
+  role: ClubRole;
+  displayName: string;
+  startsOn: string;
+  endsOn?: string;
+}
+
+export interface TeamMembership {
+  id: UUID;
+  teamId: UUID;
+  userId: UUID;
+  fighterIdentityId?: UUID;
+  role: TeamRole;
+  displayName: string;
+  startsOn: string;
+  endsOn?: string;
+}
+
+export interface MembershipRequest {
+  id: UUID;
+  scope: MembershipScope;
+  requestKind: MembershipRequestKind;
+  status: MembershipRequestStatus;
+  clubId?: UUID;
+  teamId?: UUID;
+  requestedClubRole?: ClubRole;
+  requestedTeamRole?: TeamRole;
+  requesterUserId?: UUID;
+  inviteEmail?: string;
+  inviteToken?: UUID;
+  expiresAt?: string;
+  message?: string;
+  createdBy?: UUID;
+  createdAt: string;
+}
+
 
 export interface Fighter {
   id: UUID;
@@ -396,6 +472,8 @@ export interface UserContext {
   platformRoles: PlatformRole[];
   organizationRoles: Array<{ organizationId: UUID; role: OrganizationRole }>;
   eventRoles: Array<{ eventId: UUID; role: EventRole; teamId?: UUID }>;
+  clubRoles: Array<{ clubId: UUID; role: ClubRole }>;
+  teamRoles: Array<{ teamId: UUID; role: TeamRole }>;
 }
 
 export interface OfflineMutation {
