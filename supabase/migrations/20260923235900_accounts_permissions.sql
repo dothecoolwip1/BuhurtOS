@@ -47,6 +47,8 @@ as $$
 declare
   v_uid uuid := (select auth.uid());
   v_membership_id uuid;
+  v_target_is_admin boolean;
+  v_other_admins integer;
 begin
   if v_uid is null then raise exception 'Authentication required'; end if;
   if not private.can_manage_org_memberships(v_uid, p_organization_id) then
@@ -54,6 +56,19 @@ begin
   end if;
   if not exists (select 1 from public.profiles where id = p_user_id) then
     raise exception 'User profile not found';
+  end if;
+
+  select exists(
+    select 1 from public.organization_memberships
+    where organization_id=p_organization_id and user_id=p_user_id and role='organization_admin'
+  ) into v_target_is_admin;
+  if v_target_is_admin and p_role <> 'organization_admin' then
+    select count(*)::integer into v_other_admins
+    from public.organization_memberships
+    where organization_id=p_organization_id and user_id<>p_user_id and role='organization_admin';
+    if v_other_admins = 0 and not private.is_platform_admin(v_uid) then
+      raise exception 'Cannot demote the last organization administrator';
+    end if;
   end if;
 
   delete from public.organization_memberships
