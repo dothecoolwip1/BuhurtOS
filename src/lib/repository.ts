@@ -72,7 +72,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
   if (!resolvedEventId) throw new Error('No accessible BuhurtOS event was found. Set VITE_DEFAULT_EVENT_ID or publish an event.');
 
   const eventColumns = accessMode === 'public'
-    ? 'id,organization_id,season_id,name,venue,starts_at,ends_at,organizer_name,event_type,standings_mode,status,timezone,livestream_url,registration_open,registration_fee_cents,currency,ruleset_id'
+    ? 'id,organization_id,season_id,name,venue,starts_at,ends_at,organizer_name,event_type,standings_mode,status,timezone,livestream_url,registration_open,registration_fee_cents,currency,ruleset_id,ruleset_snapshot_id'
     : '*';
   const rosterColumns = accessMode === 'public'
     ? 'id,event_id,team_id,entry_type,display_name,attendance_status'
@@ -102,7 +102,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
     event: {
       id: e.id, organizationId: e.organization_id, seasonId: e.season_id, name: e.name, venue: e.venue,
       startsAt: e.starts_at, endsAt: e.ends_at, organizerName: e.organizer_name ?? undefined,
-      eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined, rulesetId: e.ruleset_id ?? undefined,
+      eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined, rulesetId: e.ruleset_id ?? undefined, rulesetSnapshotId: e.ruleset_snapshot_id ?? undefined,
       registrationOpen: e.registration_open, registrationFeeCents: e.registration_fee_cents, currency: e.currency,
       updatedAt: e.updated_at ?? undefined
     },
