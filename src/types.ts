@@ -12,6 +12,10 @@ export type OrganizationRole = 'organization_admin' | 'organization_staff';
 export type PlatformRole = 'platform_super_admin' | 'platform_staff';
 export type AffiliationType = 'member' | 'mercenary' | 'guest' | 'independent';
 export type DivisionStatus = 'draft' | 'published' | 'retired';
+export type FighterProfileVisibility = 'public' | 'members' | 'private';
+export type IdentityAccountRole = 'self' | 'guardian';
+export type IdentityClaimStatus = 'pending' | 'approved' | 'rejected' | 'disputed' | 'cancelled';
+export type IdentityMergeStatus = 'pending' | 'completed' | 'rejected' | 'cancelled';
 
 export interface Organization {
   id: UUID;
@@ -98,6 +102,93 @@ export interface FighterAffiliation {
   isPrimary: boolean;
   sourceEventId?: UUID;
   notes?: string;
+}
+
+export interface FighterIdentity {
+  id: UUID;
+  displayName: string;
+  nickname?: string;
+  avatarPath?: string;
+  bio?: string;
+  publicRegion?: string;
+  profileVisibility: FighterProfileVisibility;
+  profileRevision: number;
+  verifiedAt?: string;
+}
+
+export interface FighterIdentityAccount {
+  id: UUID;
+  identityId: UUID;
+  userId: UUID;
+  relationship: IdentityAccountRole;
+  verifiedAt: string;
+  revokedAt?: string;
+}
+
+export interface FighterIdentityPrivateProfile {
+  identityId: UUID;
+  legalName?: string;
+  birthDate?: string;
+  contactEmail?: string;
+  phone?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  guardianName?: string;
+  guardianEmail?: string;
+  guardianPhone?: string;
+  guardianConsentAt?: string;
+  revision: number;
+}
+
+export interface FighterIdentityClaim {
+  id: UUID;
+  identityId: UUID;
+  claimantUserId: UUID;
+  relationship: IdentityAccountRole;
+  status: IdentityClaimStatus;
+  claimNote?: string;
+  reviewNote?: string;
+  disputeReason?: string;
+  reviewedBy?: UUID;
+  reviewedAt?: string;
+  disputedBy?: UUID;
+  disputedAt?: string;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FighterIdentityMergeReview {
+  id: UUID;
+  canonicalIdentityId: UUID;
+  duplicateIdentityId: UUID;
+  requestedBy: UUID;
+  reason?: string;
+  status: IdentityMergeStatus;
+  canonicalRevision: number;
+  duplicateRevision: number;
+  requestSnapshot: Record<string, unknown>;
+  reviewedBy?: UUID;
+  reviewNote?: string;
+  reviewedAt?: string;
+  completedAt?: string;
+  createdAt: string;
+}
+
+export interface FighterIdentitySearchResult {
+  identityId: UUID;
+  displayName: string;
+  nickname?: string;
+  publicRegion?: string;
+  isClaimed: boolean;
+  isVerified: boolean;
+}
+
+export interface FighterDuplicateSuggestion {
+  candidateIdentityId: UUID;
+  candidateDisplayName: string;
+  reason: string;
+  score: number;
 }
 
 export interface CompetitionDivision {
