@@ -138,7 +138,7 @@ export async function listFoundationFighters(event: EventRecord, roster: RosterE
 
 export async function listTeams(organizationId: string): Promise<Team[]> {
   if (!supabase) return [];
-  const { data, error } = await supabase.from('teams').select('id,organization_id,name,city_or_region,club_id').eq('organization_id', organizationId).is('deleted_at', null).order('name');
+  const { data, error } = await supabase.from('teams').select('id,organization_id,name,short_name,city_or_region,club_id,status,is_active,visibility,public_description,deleted_at').eq('organization_id', organizationId).is('deleted_at', null).order('name');
   if (error) throw error;
   return (data || []).map((row: any) => ({
     id: row.id,
