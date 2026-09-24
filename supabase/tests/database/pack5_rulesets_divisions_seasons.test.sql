@@ -76,13 +76,13 @@ select lives_ok(
 
 
 select throws_ok(
-  $insert into public.rulesets(
+  $$insert into public.rulesets(
     organization_id,name,short_name,version,status,settings
   ) values (
     '51000000-0000-0000-0000-000000000010',
     'Invalid Scoring Rules','INVALID','0','draft',
     '{"scoringOverrides":{"longsword":{"roundsRequired":0}}}'
-  )$,
+  )$$,
   'P0001',
   'roundsRequired must be a positive number',
   'invalid scoring overrides are rejected at the database boundary'
@@ -239,14 +239,14 @@ select cmp_ok(
 
 
 select throws_ok(
-  $insert into public.competition_divisions(
+  $$insert into public.competition_divisions(
     organization_id,name,slug,competition_format_id,eligibility_rules,status
   ) values (
     '51000000-0000-0000-0000-000000000010',
     'Invalid Eligibility','invalid-eligibility','longsword',
     '[{"kind":"age","label":"Age","min":"eighteen"}]'::jsonb,
     'draft'
-  )$,
+  )$$,
   'P0001',
   'Eligibility rule min must be numeric',
   'malformed division eligibility rules are rejected at the database boundary'
@@ -640,22 +640,22 @@ select is(
 
 
 select throws_ok(
-  $update public.event_policy_exceptions
+  $$update public.event_policy_exceptions
     set reason='rewritten exception reason'
     where event_id='51000000-0000-0000-0000-000000000030'
       and rule_key='ruleset_effective_window'
-      and status='approved'$,
+      and status='approved'$$,
   'P0001',
   'Approved policy exception details are immutable',
   'approved exception reasoning cannot be rewritten'
 );
 
 select lives_ok(
-  $update public.event_policy_exceptions
+  $$update public.event_policy_exceptions
     set status='revoked'
     where event_id='51000000-0000-0000-0000-000000000030'
       and rule_key='ruleset_effective_window'
-      and status='approved'$,
+      and status='approved'$$,
   'approved policy exception can be explicitly revoked'
 );
 
@@ -765,9 +765,9 @@ set local role authenticated;
 select set_config('request.jwt.claim.sub','52000000-0000-0000-0000-000000000001',true);
 
 select lives_ok(
-  $update public.rulesets
+  $$update public.rulesets
     set description='cross organization change'
-    where id='51000000-0000-0000-0000-000000000101'$,
+    where id='51000000-0000-0000-0000-000000000101'$$,
   'unrelated organization update is safely filtered by RLS'
 );
 
