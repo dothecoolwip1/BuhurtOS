@@ -46,7 +46,7 @@ export function FoundationPage() {
   });
   const [divisionForm, setDivisionForm] = useState(emptyDivisionForm);
   const [editingDivisionId, setEditingDivisionId] = useState('');
-  const [eventDivisionForm, setEventDivisionForm] = useState({ divisionId: '', registrationLimit: '' });
+  const [eventDivisionForm, setEventDivisionForm] = useState({ divisionId: '', registrationLimit: '', exceptionReason: '' });
   const [claimForm, setClaimForm] = useState({ rosterEntryId: '', fighterId: '' });
   const [mergeForm, setMergeForm] = useState({ canonical: '', duplicate: '' });
   const [affiliationForm, setAffiliationForm] = useState({ fighterId: '', clubId: '', teamId: '', affiliationType: 'member' as AffiliationType, startsOn: today(), endsOn: '', isPrimary: true });
@@ -193,9 +193,10 @@ export function FoundationPage() {
     if(!eventDivisionForm.divisionId)throw new Error('Choose a published division.');
     await assignEventDivision(
       event,eventDivisionForm.divisionId,
-      eventDivisionForm.registrationLimit?Number(eventDivisionForm.registrationLimit):undefined
+      eventDivisionForm.registrationLimit?Number(eventDivisionForm.registrationLimit):undefined,
+      eventDivisionForm.exceptionReason||undefined
     );
-    setEventDivisionForm({divisionId:'',registrationLimit:''});
+    setEventDivisionForm({divisionId:'',registrationLimit:'',exceptionReason:''});
   },'Division assigned to this event with an immutable version snapshot.');
 
   const deleteEventDivision = (row:EventDivision) => run(
@@ -348,6 +349,7 @@ export function FoundationPage() {
         <div className="form-stack setup-subform">
           <label>Published division<select value={eventDivisionForm.divisionId} onChange={e=>setEventDivisionForm(form=>({...form,divisionId:e.target.value}))}><option value="">Choose division</option>{divisions.filter(row=>row.status==='published'&&!eventDivisions.some(ed=>ed.divisionId===row.id)).map(row=><option key={row.id} value={row.id}>{row.name} · v{row.version??1}</option>)}</select></label>
           <input type="number" min="1" placeholder="Registration limit, optional" value={eventDivisionForm.registrationLimit} onChange={e=>setEventDivisionForm(form=>({...form,registrationLimit:e.target.value}))}/>
+          <textarea placeholder="Exception reason only if this division ruleset is outside its effective window" value={eventDivisionForm.exceptionReason} onChange={e=>setEventDivisionForm(form=>({...form,exceptionReason:e.target.value}))}/>
           <button disabled={busy||!eventDivisionForm.divisionId||!['draft','published'].includes(event.status)} onClick={addEventDivision}>Assign to Event</button>
           {!event.rulesetSnapshotId&&eventDivisionForm.divisionId&&!divisions.find(row=>row.id===eventDivisionForm.divisionId)?.rulesetId&&<small>Lock an event ruleset first, or choose a division with its own published ruleset.</small>}
         </div>
