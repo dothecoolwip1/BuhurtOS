@@ -206,6 +206,12 @@ export async function recordEventPolicyException(
   return data as string;
 }
 
+export async function revokeEventPolicyException(exceptionId:string):Promise<void>{
+  if(!supabase)return;
+  const {error}=await supabase.from('event_policy_exceptions').update({status:'revoked'}).eq('id',exceptionId).eq('status','approved');
+  if(error)throw error;
+}
+
 function eventDivisionRow(row:any):EventDivision{
   return {
     id:row.id,eventId:row.event_id,divisionId:row.division_id,rulesetId:row.ruleset_id??undefined,

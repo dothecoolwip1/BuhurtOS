@@ -8,7 +8,8 @@ import {
   listEventPolicyExceptions,
   listEventRulesetSnapshots,
   listRulesetSources,
-  recordEventPolicyException
+  recordEventPolicyException,
+  revokeEventPolicyException
 } from '../lib/governance';
 import {
   activateEventRuleset,
@@ -190,6 +191,11 @@ export function RulesetsPage(){
     setExceptionForm({policyDomain:'eligibility',ruleKey:'',reason:''});
   },'Event policy exception recorded and audited.');
 
+  const revokeException=(id:string)=>run(
+    ()=>revokeEventPolicyException(id),
+    'Event policy exception revoked and audit history retained.'
+  );
+
   const hasPublicSource=sources.some(source=>source.sourceKind!=='internal');
 
   return <>
@@ -276,7 +282,7 @@ export function RulesetsPage(){
       <section className="panel-card"><h2>Event rules snapshot</h2>
         {currentSnapshot?<><div className="state-card"><strong>{currentSnapshot.rulesetName} · {currentSnapshot.rulesetVersion}</strong><br/>Locked {new Date(currentSnapshot.lockedAt).toLocaleString()} · {currentSnapshot.sourceSnapshot.length} public source record{currentSnapshot.sourceSnapshot.length===1?'':'s'} · inheritance depth {currentSnapshot.rulesetChain.length}.</div><details><summary>Resolved policy snapshot</summary><pre>{JSON.stringify({eligibility:currentSnapshot.eligibilityPolicy,scoring:currentSnapshot.scoringPolicy,tournament:currentSnapshot.tournamentPolicy,ranking:currentSnapshot.rankingPolicy},null,2)}</pre></details></>:<div className="state-card">No immutable rules snapshot has been locked to this event yet.</div>}
         {!eventRulesLocked&&<label className="form-stack">Exception reason for out-of-window rules, only when needed<textarea value={eventExceptionReason} onChange={e=>setEventExceptionReason(e.target.value)} placeholder="Explain why this event is authorized to use a ruleset outside its effective window."/></label>}
-        <h3>Approved exceptions</h3><div className="membership-list">{exceptions.length===0?<div className="state-card">No event policy exceptions recorded.</div>:exceptions.map(row=><article key={row.id}><div><strong>{row.policyDomain} · {row.ruleKey}</strong><small>{row.reason} · {row.status}</small></div></article>)}</div>
+        <h3>Approved exceptions</h3><div className="membership-list">{exceptions.length===0?<div className="state-card">No event policy exceptions recorded.</div>:exceptions.map(row=><article key={row.id}><div className="grow"><strong>{row.policyDomain} · {row.ruleKey}</strong><small>{row.reason} · {row.status}</small></div>{row.status==='approved'&&<button disabled={busy} onClick={()=>revokeException(row.id)}>Revoke</button>}</article>)}</div>
         {event.status!=='archived'&&<div className="form-stack setup-subform">
           <h3>Record governed exception</h3>
           <label>Policy domain<select value={exceptionForm.policyDomain} onChange={e=>setExceptionForm(form=>({...form,policyDomain:e.target.value as EventPolicyException['policyDomain']}))}><option value="eligibility">Eligibility</option><option value="scoring">Scoring</option><option value="tournament">Tournament</option><option value="ranking">Ranking</option></select></label>

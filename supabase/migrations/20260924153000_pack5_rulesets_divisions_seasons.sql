@@ -1782,3 +1782,216 @@ $pack5$;
 
 revoke execute on function public.remove_event_division_guarded(uuid,timestamptz) from public,anon;
 grant execute on function public.remove_event_division_guarded(uuid,timestamptz) to authenticated;
+
+
+-- Pack 5 validates rule overrides and keeps event exceptions append-only except for audited revocation.
+create or replace function private.validate_ruleset_settings()
+returns trigger
+language plpgsql
+security invoker
+set search_path=''
+as $pack5validate$
+declare
+  v_value jsonb;
+  v_override jsonb;
+  v_key text;
+begin
+  if jsonb_typeof(new.settings) <> 'object' then
+    raise exception 'Ruleset settings must be a JSON object';
+  end if;
+
+  if new.settings ? 'enabledFormats' then
+    if jsonb_typeof(new.settings->'enabledFormats') <> 'array'
+      or exists (
+        select 1 from jsonb_array_elements(new.settings->'enabledFormats') item
+        where jsonb_typeof(item) <> 'string'
+      )
+    then raise exception 'enabledFormats must be an array of strings'; end if;
+  end if;
+
+  if new.settings ? 'scoringOverrides' then
+    if jsonb_typeof(new.settings->'scoringOverrides') <> 'object' then
+      raise exception 'scoringOverrides must be a JSON object';
+    end if;
+    for v_key,v_override in select key,value from jsonb_each(new.settings->'scoringOverrides')
+    loop
+      if jsonb_typeof(v_override) <> 'object' then
+        raise exception 'Scoring override for % must be a JSON object',v_key;
+      end if;
+      if v_override ? 'roundsRequired' then
+        v_value := v_override->'roundsRequired';
+        if jsonb_typeof(v_value) <> 'number' or (v_value #>> '{}')::numeric < 1 then
+          raise exception 'roundsRequired must be a positive number';
+        end if;
+      end if;
+      if v_override ? 'winsRequired' then
+        v_value := v_override->'winsRequired';
+        if jsonb_typeof(v_value) <> 'number' or (v_value #>> '{}')::numeric < 1 then
+          raise exception 'winsRequired must be a positive number';
+        end if;
+      end if;
+      if v_override ? 'scoreCapPerRound' then
+        v_value := v_override->'scoreCapPerRound';
+        if jsonb_typeof(v_value) <> 'number' or (v_value #>> '{}')::numeric < 1 then
+          raise exception 'scoreCapPerRound must be a positive number';
+        end if;
+      end if;
+      if v_override ? 'allowDrawRound' and jsonb_typeof(v_override->'allowDrawRound') <> 'boolean' then
+        raise exception 'allowDrawRound must be boolean';
+      end if;
+      if v_override ? 'requireReasonOnForfeit' and jsonb_typeof(v_override->'requireReasonOnForfeit') <> 'boolean' then
+        raise exception 'requireReasonOnForfeit must be boolean';
+      end if;
+      if v_override ? 'teamFightMode'
+        and (
+          jsonb_typeof(v_override->'teamFightMode') <> 'string'
+          or v_override->>'teamFightMode' not in ('survivors','round_wins')
+        )
+      then raise exception 'Unsupported teamFightMode'; end if;
+    end loop;
+  end if;
+
+  foreach v_key in array array['compliance','discipline','bracket']
+  loop
+    if new.settings ? v_key and jsonb_typeof(new.settings->v_key) <> 'object' then
+      raise exception '% must be a JSON object',v_key;
+    end if;
+  end loop;
+
+  if new.settings ? 'compliance' then
+    for v_key in
+      select unnest(array['requireCheckIn','requireArmorClearance','requireMedicalClearance','requireWaiver','requireWeighIn'])
+    loop
+      if new.settings->'compliance' ? v_key and jsonb_typeof(new.settings->'compliance'->v_key) <> 'boolean' then
+        raise exception 'Compliance flag % must be boolean',v_key;
+      end if;
+    end loop;
+  end if;
+
+  if new.settings ? 'discipline' then
+    foreach v_key in array array['yellowCardsBeforeSuspension','redCardSuspensionMatches']
+    loop
+      if new.settings->'discipline' ? v_key then
+        v_value := new.settings->'discipline'->v_key;
+        if jsonb_typeof(v_value) <> 'number' or (v_value #>> '{}')::numeric < 1 then
+          raise exception 'Discipline value % must be positive',v_key;
+        end if;
+      end if;
+    end loop;
+  end if;
+
+  if new.settings ? 'bracket'
+    and new.settings->'bracket' ? 'antiFratricide'
+    and jsonb_typeof(new.settings->'bracket'->'antiFratricide') <> 'boolean'
+  then raise exception 'antiFratricide must be boolean'; end if;
+
+  return new;
+end;
+$pack5validate$;
+
+revoke execute on function private.validate_ruleset_settings() from public,anon,authenticated;
+
+drop trigger if exists pack5_ruleset_settings_validation on public.rulesets;
+create trigger pack5_ruleset_settings_validation
+before insert or update of settings on public.rulesets
+for each row execute function private.validate_ruleset_settings();
+
+create or replace function private.validate_division_eligibility_rules()
+returns trigger
+language plpgsql
+security invoker
+set search_path=''
+as $pack5validate$
+declare
+  v_rule jsonb;
+  v_kind text;
+begin
+  if jsonb_typeof(new.eligibility_rules) <> 'array' then
+    raise exception 'Division eligibility rules must be a JSON array';
+  end if;
+  for v_rule in select value from jsonb_array_elements(new.eligibility_rules)
+  loop
+    if jsonb_typeof(v_rule) <> 'object' then
+      raise exception 'Each eligibility rule must be a JSON object';
+    end if;
+    v_kind := v_rule->>'kind';
+    if v_kind not in ('age','weight_kg','experience_years','team_size','declaration','custom') then
+      raise exception 'Unsupported eligibility rule kind';
+    end if;
+    if length(trim(coalesce(v_rule->>'label',''))) < 1 then
+      raise exception 'Eligibility rule label is required';
+    end if;
+    if v_rule ? 'min' and jsonb_typeof(v_rule->'min') <> 'number' then
+      raise exception 'Eligibility rule min must be numeric';
+    end if;
+    if v_rule ? 'max' and jsonb_typeof(v_rule->'max') <> 'number' then
+      raise exception 'Eligibility rule max must be numeric';
+    end if;
+    if v_rule ? 'min' and v_rule ? 'max'
+      and (v_rule->>'max')::numeric < (v_rule->>'min')::numeric
+    then raise exception 'Eligibility rule maximum cannot be below minimum'; end if;
+    if v_kind in ('declaration','custom') and length(trim(coalesce(v_rule->>'key',''))) < 1 then
+      raise exception 'Declaration and custom eligibility rules require a key';
+    end if;
+  end loop;
+  return new;
+end;
+$pack5validate$;
+
+revoke execute on function private.validate_division_eligibility_rules() from public,anon,authenticated;
+
+drop trigger if exists pack5_division_eligibility_validation on public.competition_divisions;
+create trigger pack5_division_eligibility_validation
+before insert or update of eligibility_rules on public.competition_divisions
+for each row execute function private.validate_division_eligibility_rules();
+
+create or replace function private.enforce_event_policy_exception_lifecycle()
+returns trigger
+language plpgsql
+security definer
+set search_path=''
+as $pack5validate$
+begin
+  if old.status='revoked' then
+    raise exception 'Revoked policy exceptions are immutable';
+  end if;
+
+  if old.organization_id is distinct from new.organization_id
+    or old.event_id is distinct from new.event_id
+    or old.division_id is distinct from new.division_id
+    or old.ruleset_snapshot_id is distinct from new.ruleset_snapshot_id
+    or old.policy_domain is distinct from new.policy_domain
+    or old.rule_key is distinct from new.rule_key
+    or old.reason is distinct from new.reason
+    or old.approved_by is distinct from new.approved_by
+    or old.approved_at is distinct from new.approved_at
+    or old.metadata is distinct from new.metadata
+  then
+    raise exception 'Approved policy exception details are immutable';
+  end if;
+
+  if new.status <> 'revoked' then
+    raise exception 'Approved policy exceptions can only be revoked';
+  end if;
+
+  new.revoked_by := (select auth.uid());
+  new.revoked_at := timezone('utc',now());
+
+  insert into public.audit_log(
+    organization_id,event_id,actor_user_id,table_name,record_id,action,payload
+  ) values (
+    old.organization_id,old.event_id,(select auth.uid()),'event_policy_exceptions',old.id,
+    'revoke_policy_exception',
+    jsonb_build_object('domain',old.policy_domain,'ruleKey',old.rule_key,'reason',old.reason)
+  );
+
+  return new;
+end;
+$pack5validate$;
+
+revoke execute on function private.enforce_event_policy_exception_lifecycle() from public,anon,authenticated;
+
+drop trigger if exists pack5_event_policy_exception_lifecycle on public.event_policy_exceptions;
+create trigger pack5_event_policy_exception_lifecycle
+before update on public.event_policy_exceptions
+for each row execute function private.enforce_event_policy_exception_lifecycle();

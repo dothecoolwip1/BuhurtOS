@@ -74,6 +74,20 @@ select lives_ok(
   'organization admin can attach a source to a draft ruleset'
 );
 
+
+select throws_ok(
+  $insert into public.rulesets(
+    organization_id,name,short_name,version,status,settings
+  ) values (
+    '51000000-0000-0000-0000-000000000010',
+    'Invalid Scoring Rules','INVALID','0','draft',
+    '{"scoringOverrides":{"longsword":{"roundsRequired":0}}}'
+  )$,
+  'P0001',
+  'roundsRequired must be a positive number',
+  'invalid scoring overrides are rejected at the database boundary'
+);
+
 select lives_ok(
   format(
     'select public.transition_ruleset_guarded(%L::uuid,%L::timestamptz,%L)',
@@ -221,6 +235,21 @@ select cmp_ok(
   '>=',
   2,
   'event snapshot stores source provenance from the inheritance chain'
+);
+
+
+select throws_ok(
+  $insert into public.competition_divisions(
+    organization_id,name,slug,competition_format_id,eligibility_rules,status
+  ) values (
+    '51000000-0000-0000-0000-000000000010',
+    'Invalid Eligibility','invalid-eligibility','longsword',
+    '[{"kind":"age","label":"Age","min":"eighteen"}]'::jsonb,
+    'draft'
+  )$,
+  'P0001',
+  'Eligibility rule min must be numeric',
+  'malformed division eligibility rules are rejected at the database boundary'
 );
 
 insert into public.competition_divisions(
@@ -607,6 +636,39 @@ select is(
   ),
   1,
   'effective-window exception is explicitly recorded'
+);
+
+
+select throws_ok(
+  $update public.event_policy_exceptions
+    set reason='rewritten exception reason'
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and rule_key='ruleset_effective_window'
+      and status='approved'$,
+  'P0001',
+  'Approved policy exception details are immutable',
+  'approved exception reasoning cannot be rewritten'
+);
+
+select lives_ok(
+  $update public.event_policy_exceptions
+    set status='revoked'
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and rule_key='ruleset_effective_window'
+      and status='approved'$,
+  'approved policy exception can be explicitly revoked'
+);
+
+select is(
+  (
+    select count(*)::integer
+    from public.audit_log
+    where event_id='51000000-0000-0000-0000-000000000030'
+      and table_name='event_policy_exceptions'
+      and action='revoke_policy_exception'
+  ),
+  1,
+  'policy exception revocation is audited'
 );
 
 update public.events
