@@ -142,30 +142,6 @@ select public.transition_ruleset_guarded(
   'published'
 );
 
-select is(
-  private.resolve_ruleset_settings('51000000-0000-0000-0000-000000000101') #>> '{compliance,requireWeighIn}',
-  'false',
-  'child ruleset overrides parent compliance without losing inheritance'
-);
-
-select is(
-  private.resolve_ruleset_settings('51000000-0000-0000-0000-000000000101') #>> '{bracket,antiFratricide}',
-  'true',
-  'child ruleset preserves inherited bracket policy'
-);
-
-select is(
-  private.resolve_ruleset_policy('51000000-0000-0000-0000-000000000101','eligibility') #>> '{minimumAge}',
-  '18',
-  'eligibility policy inherits independently'
-);
-
-select is(
-  private.resolve_ruleset_policy('51000000-0000-0000-0000-000000000101','eligibility') #>> '{medicalDeclarationRequired}',
-  'true',
-  'child eligibility policy merges independently'
-);
-
 select lives_ok(
   format(
     'select public.assign_event_ruleset_guarded(%L::uuid,%L::uuid,%L::timestamptz,null)',
@@ -174,6 +150,46 @@ select lives_ok(
     (select updated_at::text from public.events where id='51000000-0000-0000-0000-000000000030')
   ),
   'event can lock a published ruleset snapshot'
+);
+
+select is(
+  (
+    select resolved_settings #>> '{compliance,requireWeighIn}'
+    from public.event_ruleset_snapshots
+    where id=(select ruleset_snapshot_id from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  'false',
+  'child ruleset overrides parent compliance in immutable event snapshot'
+);
+
+select is(
+  (
+    select resolved_settings #>> '{bracket,antiFratricide}'
+    from public.event_ruleset_snapshots
+    where id=(select ruleset_snapshot_id from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  'true',
+  'child ruleset preserves inherited bracket policy in event snapshot'
+);
+
+select is(
+  (
+    select eligibility_policy #>> '{minimumAge}'
+    from public.event_ruleset_snapshots
+    where id=(select ruleset_snapshot_id from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  '18',
+  'event snapshot inherits eligibility policy independently'
+);
+
+select is(
+  (
+    select eligibility_policy #>> '{medicalDeclarationRequired}'
+    from public.event_ruleset_snapshots
+    where id=(select ruleset_snapshot_id from public.events where id='51000000-0000-0000-0000-000000000030')
+  ),
+  'true',
+  'event snapshot merges child eligibility overrides'
 );
 
 select is(
