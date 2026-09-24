@@ -24,7 +24,7 @@ from (
 where state.singleton
   and state.claimed_at is null;
 
-create or replace function public.claim_first_super_admin()
+create or replace function private.claim_first_super_admin()
 returns boolean
 language plpgsql
 security definer
@@ -75,6 +75,16 @@ begin
   return true;
 end;
 $$;
+
+revoke all on function private.claim_first_super_admin() from public, anon, authenticated;
+grant execute on function private.claim_first_super_admin() to authenticated;
+
+create or replace function public.claim_first_super_admin()
+returns boolean
+language sql
+security invoker
+set search_path = ''
+as $$ select private.claim_first_super_admin(); $$;
 
 revoke all on function public.claim_first_super_admin() from public, anon;
 grant execute on function public.claim_first_super_admin() to authenticated;
