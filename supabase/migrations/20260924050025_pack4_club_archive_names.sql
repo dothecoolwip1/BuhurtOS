@@ -1,6 +1,2 @@
-alter table public.clubs
-  drop constraint if exists clubs_organization_id_name_key;
-
-create unique index clubs_org_name_active_unique_idx
-  on public.clubs(organization_id,lower(name))
-  where deleted_at is null;
+-- Pack 1 already established a partial unique club-name index scoped to active records.
+-- This checkpoint is intentionally retained so Pack 4 migration ordering remains stable.
