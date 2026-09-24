@@ -3,6 +3,24 @@ create extension if not exists pgtap with schema extensions;
 
 select no_plan();
 
+select is(
+  (select public from storage.buckets where id='waivers'),
+  false,
+  'waiver storage bucket is private'
+);
+
+select ok(
+  not exists (
+    select 1
+    from pg_policies
+    where schemaname='storage'
+      and tablename='objects'
+      and policyname like 'waiver%'
+      and 'anon' = any(roles)
+  ),
+  'waiver storage has no anonymous object policy'
+);
+
 insert into auth.users (
   id, aud, role, email, encrypted_password, email_confirmed_at,
   raw_app_meta_data, raw_user_meta_data, created_at, updated_at
