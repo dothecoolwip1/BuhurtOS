@@ -1,6 +1,6 @@
 # BuhurtOS verified status
 
-Audit date: 2026-09-24. Milestone: Pack 1 recovery and stabilization. This is not a completed production platform.
+Audit date: 2026-09-24. Milestone: Pack 1 recovery and stabilization complete within the audit scope; Pack 2 is next. This is not a completed production platform.
 
 ## Repository and recovery
 
@@ -21,13 +21,16 @@ Started at `main` commit `32240b2d6b8130a317ce5815a09e6d52d1bcac11`. No existing
 | Local repaired source | `npm ci`, typecheck, root build, Pages build, regression suite | All passed. 5 Vitest files / 15 tests. |
 | Local HTTP preview | Asset MIME check in one process | Pages preview mode serves the built JavaScript correctly. Default preview mode serves HTML at the prefixed asset URL; test harness corrected. No local browser pass. |
 | CI repaired branch | Run `35941440716`, commit `18d5be1` | Database reset and 35 pgTAP assertions passed. Initial browser harness had a mismatched base path and failed; this was diagnosed and corrected. |
-| CI browser audit | Run `35941794487`, commit `b072c8e` | 52 of 54 browser checks passed. Two failed because the setup route intentionally shows a demo configuration notice, not a heading. Assertion corrected to check that exact notice; full rerun pending. |
+| CI browser audit | Run `35941794487`, commit `b072c8e` | 52 of 54 browser checks passed. Two failed because the setup route intentionally shows a demo configuration notice, not a heading. Assertion corrected to check that exact notice; the subsequent run below passed all browser checks. |
 | CI baseline | GitHub Actions run `35930637116`, source `32240b2` | Quality, database and Pages deployment jobs succeeded. Database job logs show clean migration reset and 2 pgTAP files / 35 assertions passed. |
+| CI final application verification | Run `35942005520`, commit `883d49b` | Clean install, typecheck, 15 unit tests, Pages build and all 54 desktop/mobile browser checks passed. Clean database rebuild and all 35 pgTAP assertions also passed. Deployment intentionally skipped for the pull request. |
 | Database local | Docker and Supabase CLI unavailable | No local database reset performed. Existing CI database proof is for the unchanged timestamped migrations, not a live backend. |
 | Backend configuration | `.env.example`; no local project credentials; connected Supabase discovery | One generically named project is visible, with no repository evidence establishing it as BuhurtOS. No live database was modified or tested. |
 | Production | Existing Pages deployment job succeeded | No claim of authenticated production readiness. Workflow supplies no Supabase values, so its build uses demo data. |
 
 Baseline CI: https://github.com/dothecoolwip1/BuhurtOS/actions/runs/35930637116
+
+Final application CI: https://github.com/dothecoolwip1/BuhurtOS/actions/runs/35942005520
 
 ## What exists and what is verified
 
