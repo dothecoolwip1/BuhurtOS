@@ -81,7 +81,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
     ? 'id,event_id,name,list_name,status,sort_order'
     : '*';
   const matchColumns = accessMode === 'public'
-    ? 'id,organization_id,season_id,event_id,fight_card_id,bracket_id,division_id,label,category,match_type,scoring_config,status,stage,scheduled_order,bracket_round,bracket_slot,winner_advances_to_match_id,winner_advances_to_slot,loser_advances_to_match_id,loser_advances_to_slot,result_summary,match_participants(*),match_rounds(*)'
+    ? 'id,organization_id,season_id,event_id,fight_card_id,bracket_id,division_id,label,category,match_type,scoring_config,status,stage,scheduled_order,bracket_round,bracket_slot,winner_advances_to_match_id,winner_advances_to_slot,loser_advances_to_match_id,loser_advances_to_slot,result_summary,match_participants(*),match_rounds(id,match_id,round_number,side_1_score,side_2_score,created_at)'
     : '*,match_participants(*),match_rounds(*)';
   const announcementColumns = accessMode === 'public'
     ? 'id,event_id,title,body,is_public,scheduled_for,created_at'
