@@ -209,8 +209,8 @@ export async function updateClub(organizationId: string, clubId: string, input: 
 }
 
 export async function archiveClub(organizationId: string, clubId: string): Promise<void> {
-  const deletedAt = new Date().toISOString();
   if (!supabase) {
+    const deletedAt = new Date().toISOString();
     const key = demoKey('clubs', organizationId);
     writeDemo(key, readDemo<Club>(key).map(row => row.id === clubId ? { ...row, isActive: false, deletedAt } : row));
     return;
