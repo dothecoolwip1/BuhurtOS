@@ -1,20 +1,48 @@
 # BuhurtOS Handoff
 
-Last updated: 2026-09-23
+Last updated: 2026-09-24
 
 ## Resume here
 
-Pack 3 is complete and merged to `main` in pull request #6.
+Mega Pack 4 implementation is complete in pull request #8.
 
-Pack 3 merge commit: `e6fde086939f3c4e74353affb5a82a4aa1977a45`.
+Verified Mega Pack 4 implementation head: `07107630551711945284cabfac3de1c3ca86cc58`.
 
-Verified Pack 3 implementation head: `2ffab73e9e403ab8c0325ef18a441ed5fe09319e`.
+Successful Mega Pack 4 verification workflow: `35999176785`.
 
-Successful pre-merge GitHub Actions workflow: `35954642255`.
+That workflow passed both required jobs: frontend typecheck/tests/production build and a clean Supabase rebuild with all pgTAP database tests.
 
-Pack 2 remains complete underneath Pack 3. Its merge commit was `04ac4bb4fbdcf7789d21aed1a3998da64d349388`.
+Pack 3 remains complete underneath Mega Pack 4. Its merge commit was `e6fde086939f3c4e74353affb5a82a4aa1977a45`.
 
 Do not apply BuhurtOS migrations to the currently connected Supabase project unless it is independently confirmed to be a dedicated BuhurtOS project. The project inspected during Pack 2 contains Northborn, Mallard, and Reavers data and is not the BuhurtOS target.
+
+## Mega Pack 4 files to know
+
+Release hardening and tests:
+
+* `supabase/migrations/20260924060000_mega4_release_hardening.sql`
+* `supabase/tests/database/mega4_release_hardening.test.sql`
+* `tests/offlineQueue.test.ts`
+* `tests/releaseHardening.test.ts`
+* `docs/MEGA_PACK_4_RELEASE.md`
+
+Field reliability and public registration:
+
+* `src/features/AppState.tsx`
+* `src/lib/eventAdmin.ts`
+* `src/lib/registration.ts`
+* `src/lib/offlineQueue.ts`
+* `supabase/functions/upload-waiver/index.ts`
+* `supabase/functions/create-registration-checkout/index.ts`
+
+Release and PWA:
+
+* `public/sw.js`
+* `public/manifest.webmanifest`
+* `src/App.tsx`
+* `vite.config.ts`
+* `.github/workflows/pages.yml`
+* `package-lock.json`
 
 ## Pack 3 files to know
 
@@ -80,6 +108,16 @@ Use `create_fighter_affiliation` and `end_fighter_affiliation` through the clien
 
 A new open primary affiliation closes the previous open primary affiliation on the prior day. Historical periods remain stored. Current fighter team assignment follows the active primary affiliation.
 
+## Mega Pack 4 operational rules that must remain
+
+* Do not cache Supabase Data API responses or authorization-bearing requests in the service worker.
+* Do not replace guarded live-operation RPCs with direct last-write-wins browser updates.
+* Do not silently resolve offline conflicts. A person must retry or discard conflicted work.
+* Do not expose organization-admin controls that RLS does not authorize, or widen RLS without a matching application permission.
+* Do not claim paid registration is operational until a payment provider and verified webhook are configured.
+* Keep waiver files private and require the registration capability token for public upload.
+* Keep production source maps disabled unless a deliberate protected error-reporting workflow requires them.
+
 ## Concurrency and privacy rules that must remain
 
 * Public profile updates require the current `profile_revision`.
@@ -105,7 +143,7 @@ supabase db reset
 supabase test db
 ```
 
-GitHub Actions workflow `35954642255` passed both jobs on Pack 3 implementation head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e` before merge.
+GitHub Actions workflow `35954642255` passed both jobs on Pack 3 implementation head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e` before merge. Mega Pack 4 workflow `35999176785` passed both jobs on implementation head `07107630551711945284cabfac3de1c3ca86cc58`.
 
 The Pack 3 database suite contains 49 identity-specific assertions in addition to the earlier Pack 1 and Pack 2 database suites. It covers public and private access, profile concurrency, youth privacy, claim approval, rejection and disputes, unauthorized edits, affiliation transitions, duplicate suggestions, merge preservation, conflicting owners, rollback, and auditing.
 
@@ -121,9 +159,17 @@ A dedicated BuhurtOS Supabase project is still required before any remote migrat
 6. Verify merge and claim RPCs through hosted JWTs.
 7. Verify private waiver Storage behavior.
 8. Deploy and verify the existing event-member Edge Function.
+9. Deploy and verify `upload-waiver` and private waiver replacement behavior.
+10. Deploy and verify `create-registration-checkout`.
+11. Connect and verify a real payment provider plus webhook before enabling paid checkout.
+12. Perform real multi-device offline/reconnect conflict testing.
 
 ## Next session
 
-Read `BUHURTOS_PLAN.md`, `BUHURTOS_STATUS.md`, and this handoff before continuing. Confirm `main` contains merge commit `e6fde086939f3c4e74353affb5a82a4aa1977a45`. The verified Pack 3 implementation record is workflow `35954642255` on head `2ffab73e9e403ab8c0325ef18a441ed5fe09319e`; the later checkpoint commits change documentation only.
+Read `BUHURTOS_PLAN.md`, `BUHURTOS_STATUS.md`, `MEGA_PACK_4_RELEASE.md`, and this handoff before continuing.
 
-Do not begin Pack 4 work as part of Pack 3 closeout.
+Treat Mega Pack 4 implementation head `07107630551711945284cabfac3de1c3ca86cc58` and workflow `35999176785` as the verified release-hardening checkpoint. Later documentation-only closeout commits do not supersede that implementation verification.
+
+Before any hosted production claim, select a dedicated BuhurtOS Supabase project and complete the hosted checklist in `MEGA_PACK_4_RELEASE.md`.
+
+The separate branch `pack4-organizations-clubs-teams` and closed draft PR #7 contain preserved feature work that is not part of Mega Pack 4 and was intentionally excluded from the release-hardening branch.

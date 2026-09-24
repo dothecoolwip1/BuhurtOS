@@ -10,9 +10,11 @@ Working branch: `mega4-production-hardening`
 
 Pull request: #8, `Mega Pack 4: production hardening and release readiness`
 
-Verified pre-polish checkpoint: GitHub Actions workflow `35998087659` passed both the frontend production job and the clean local Supabase rebuild with all pgTAP suites.
+Verified Mega Pack 4 implementation head: `07107630551711945284cabfac3de1c3ca86cc58`
 
-The final Mega Pack 4 head is not complete until the same two required jobs pass after the final release-polish commit.
+Verified workflow: `35999176785`
+
+The workflow passed the frontend typecheck, all frontend tests, the production Vite build, a clean Supabase rebuild from every migration, and all pgTAP suites.
 
 ## Security and privacy hardening
 
@@ -65,7 +67,7 @@ Controls that looked actionable but did not perform real work were removed or re
 
 * `package-lock.json` is committed.
 * CI and deployment use `npm ci`.
-* Route pages are loaded lazily to reduce initial JavaScript.
+* Route pages are loaded lazily to reduce initial JavaScript. The initial minified JavaScript bundle decreased from about 510 kB to about 312 kB.
 * Production source maps are disabled.
 * Installable 192px and 512px application icons are included.
 * The web app manifest has an app id, categories, and maskable icon declarations.
