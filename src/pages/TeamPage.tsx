@@ -1,15 +1,25 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { demoFighters, demoTeams } from '../data/showcase';
-import { Avatar, PageHeader, Panel, Pill } from '../components/ShowcaseUI';
+import { Avatar, Panel, Pill } from '../components/ShowcaseUI';
+import { shareCurrentPage } from '../lib/share';
 
 export function TeamPage(){
   const {teamId='reavers'}=useParams();
   const team=demoTeams.find(t=>t.id===teamId)??demoTeams[0];
   const members=demoFighters.filter(f=>f.teamId===team.id);
+  const [shareMessage,setShareMessage]=useState('');
+  const share=async()=>{
+    try{
+      const result=await shareCurrentPage(team.name,team.bio);
+      setShareMessage(result==='copied'?'Team link copied.':'Team shared.');
+    }catch(error){
+      setShareMessage(error instanceof Error?error.message:'Unable to share this team.');
+    }
+  };
   return <>
-    <div className="show-profile-hero team" style={{'--profile-accent':team.color} as CSSProperties}><div className="show-team-logo-xl">{team.logoText}</div><div className="grow"><span className="eyebrow">HACSA TEAM</span><h1>{team.name}</h1><p>{team.city} • Founded {team.founded}</p><div className="show-inline-pills"><Pill tone="green">{team.status}</Pill><Pill>{members.length} profiled fighters</Pill></div></div><button className="show-btn secondary">Share team</button></div>
-    <div className="show-profile-tabs"><button className="active">Overview</button><button>Roster</button><button>Results</button><button>History</button><button>Upcoming</button></div>
+    <div className="show-profile-hero team" style={{'--profile-accent':team.color} as CSSProperties}><div className="show-team-logo-xl">{team.logoText}</div><div className="grow"><span className="eyebrow">HACSA TEAM</span><h1>{team.name}</h1><p>{team.city} • Founded {team.founded}</p><div className="show-inline-pills"><Pill tone="green">{team.status}</Pill><Pill>{members.length} profiled fighters</Pill></div></div><button className="show-btn secondary" onClick={share}>Share team</button></div>
+    {shareMessage&&<div className="auth-message">{shareMessage}</div>}
     <div className="show-two-col wide-left">
       <div className="show-stack">
         <Panel title="About"><p className="show-long-copy">{team.bio} The team profile follows the team through seasons and leadership changes, while individual fighter records remain attached to permanent fighter identities.</p></Panel>
