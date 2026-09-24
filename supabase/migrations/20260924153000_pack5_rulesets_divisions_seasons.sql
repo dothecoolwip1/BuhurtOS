@@ -121,6 +121,7 @@ for each row execute function private.stamp_foundation_actor();
 create or replace function private.jsonb_deep_merge(p_base jsonb, p_patch jsonb)
 returns jsonb
 language plpgsql
+security definer
 immutable
 set search_path = ''
 as $$
@@ -151,6 +152,7 @@ revoke execute on function private.jsonb_deep_merge(jsonb,jsonb) from public, an
 create or replace function private.resolve_ruleset_settings(p_ruleset_id uuid, p_seen uuid[] default '{}'::uuid[])
 returns jsonb
 language plpgsql
+security definer
 stable
 set search_path = ''
 as $$
@@ -191,6 +193,7 @@ create or replace function private.resolve_ruleset_policy(
 )
 returns jsonb
 language plpgsql
+security definer
 stable
 set search_path = ''
 as $$
@@ -228,6 +231,7 @@ revoke execute on function private.resolve_ruleset_policy(uuid,text,uuid[]) from
 create or replace function private.guard_ruleset_parent()
 returns trigger
 language plpgsql
+security definer
 set search_path = ''
 as $$
 declare
@@ -275,6 +279,7 @@ for each row execute function private.guard_ruleset_parent();
 create or replace function private.enforce_ruleset_lifecycle()
 returns trigger
 language plpgsql
+security definer
 set search_path = ''
 as $$
 declare
@@ -625,7 +630,7 @@ create or replace function public.assign_event_ruleset_guarded(
 )
 returns uuid
 language plpgsql
-security invoker
+security definer
 set search_path=''
 as $$
 declare
@@ -759,6 +764,7 @@ alter table public.seasons
 create or replace function private.enforce_season_governance()
 returns trigger
 language plpgsql
+security definer
 set search_path=''
 as $$
 declare
@@ -918,6 +924,7 @@ create unique index competition_divisions_owner_slug_version_unique_idx
 create or replace function private.enforce_division_lifecycle()
 returns trigger
 language plpgsql
+security definer
 set search_path=''
 as $$
 declare
@@ -1109,6 +1116,7 @@ alter table public.event_divisions
 create or replace function private.govern_event_division()
 returns trigger
 language plpgsql
+security definer
 set search_path=''
 as $$
 declare
@@ -1172,6 +1180,7 @@ for each row execute function private.govern_event_division();
 create or replace function private.enforce_event_season_and_snapshot()
 returns trigger
 language plpgsql
+security definer
 set search_path=''
 as $$
 declare
