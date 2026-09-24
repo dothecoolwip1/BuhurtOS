@@ -30,6 +30,7 @@ import type {
   MembershipRequest,
   MembershipScope,
   OrganizationKind,
+  OrganizationRelationshipKind,
   Team,
   TeamRole,
   TeamStatus
@@ -74,7 +75,7 @@ export function OrganizationManagementPage() {
   const [relationshipForm, setRelationshipForm] = useState({
     parentId: '',
     childId: '',
-    kind: 'governs' as const
+    kind: 'governs' as OrganizationRelationshipKind
   });
   const [clubForm, setClubForm] = useState({
     name: '',
@@ -352,7 +353,7 @@ export function OrganizationManagementPage() {
             </select>
           </label>
           <label>Relationship
-            <select value={relationshipForm.kind} onChange={e => setRelationshipForm(form => ({ ...form, kind: e.target.value as 'governs' | 'recognizes' | 'affiliate' }))}>
+            <select value={relationshipForm.kind} onChange={e => setRelationshipForm(form => ({ ...form, kind: e.target.value as OrganizationRelationshipKind }))}>
               <option value="governs">Governs</option>
               <option value="recognizes">Recognizes</option>
               <option value="affiliate">Affiliate</option>
