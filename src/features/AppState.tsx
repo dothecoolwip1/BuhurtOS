@@ -25,6 +25,7 @@ interface AppStateValue {
   dataMode: 'demo' | 'supabase';
   reload: () => Promise<void>;
   updateCompliance: (entryId: string, field: 'checkedIn' | 'armorCleared' | 'medicalCleared' | 'waiverConfirmed' | 'weighInCleared', value: boolean) => Promise<void>;
+  setCompetitionClearance: (entryId: string, value: boolean) => Promise<void>;
   finalizeResult: (matchId: string, rounds: ScoreRound[], forfeit?: { side: 1 | 2; reason: string }) => Promise<void>;
   reorderMatch: (matchId: string, direction: -1 | 1) => Promise<void>;
   setMatchStatus: (matchId: string, status: MatchStatus) => Promise<void>;
@@ -210,6 +211,37 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     await reload();
   }, [roster, online, refreshPending, reload]);
 
+  const setCompetitionClearance = useCallback(async (entryId: string, value: boolean) => {
+    const before = roster.find(r => r.id === entryId);
+    if (!before) return;
+    setRoster(current => current.map(r => r.id === entryId ? { ...r, competitionCleared: value } : r));
+    if (!supabase) {
+      const overrides = JSON.parse(localStorage.getItem('buhurtos-demo-roster-overrides') ?? '{}');
+      overrides[entryId] = { ...(overrides[entryId] ?? {}), competitionCleared: value };
+      localStorage.setItem('buhurtos-demo-roster-overrides', JSON.stringify(overrides));
+      return;
+    }
+    if (!online) {
+      await enqueueMutation({ entity: 'competition_clearance', entityId: entryId, operation: 'rpc', payload: { value }, baseVersion: before.updatedAt ?? '' });
+      await refreshPending();
+      return;
+    }
+    if (!before.updatedAt) {
+      setRoster(current => current.map(r => r.id === entryId ? before : r));
+      throw new Error('Roster version is missing. Reload before changing competition clearance.');
+    }
+    const { error: writeError } = await supabase.rpc('set_roster_competition_clearance_guarded', {
+      p_roster_entry_id: entryId,
+      p_expected_updated_at: before.updatedAt,
+      p_cleared: value
+    });
+    if (writeError) {
+      setRoster(current => current.map(r => r.id === entryId ? before : r));
+      throw writeError;
+    }
+    await reload();
+  }, [roster, online, refreshPending, reload]);
+
   const finalizeResult = useCallback(async (matchId: string, rounds: ScoreRound[], forfeit?: { side: 1 | 2; reason: string }) => {
     const match = matches.find(m => m.id === matchId);
     if (!match) throw new Error('Match not found.');
@@ -341,6 +373,18 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
           ? { ok: false, conflict: e.code === 'P0001' || /changed on another device/i.test(e.message), error: e.message }
           : { ok: true };
       }
+      if (mutation.operation === 'rpc' && mutation.entity === 'competition_clearance') {
+        const payload = mutation.payload as { value: boolean };
+        if (!mutation.baseVersion) return { ok: false, conflict: true, error: 'Queued competition clearance is missing its original record version.' };
+        const { error: e } = await client.rpc('set_roster_competition_clearance_guarded', {
+          p_roster_entry_id: mutation.entityId,
+          p_expected_updated_at: mutation.baseVersion,
+          p_cleared: payload.value
+        });
+        return e
+          ? { ok: false, conflict: e.code === 'P0001' || /changed on another device/i.test(e.message), error: e.message }
+          : { ok: true };
+      }
       if (mutation.operation === 'update' && mutation.entity === 'event_roster_entries') {
         const payload = mutation.payload as Record<string, unknown>;
         const map: Record<string, string> = { checkedIn: 'checked_in', armorCleared: 'armor_cleared', medicalCleared: 'medical_cleared', waiverConfirmed: 'waiver_confirmed', weighInCleared: 'weigh_in_cleared' };
@@ -383,7 +427,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return () => navigator.serviceWorker.removeEventListener('message', handler);
   }, [syncNow]);
 
-  const value = useMemo<AppStateValue>(() => ({ loading, authReady, authNotice, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, authReady, authNotice, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
+  const value = useMemo<AppStateValue>(() => ({ loading, authReady, authNotice, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, dataMode: isSupabaseConfigured ? 'supabase' : 'demo', reload, updateCompliance, setCompetitionClearance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshQueue: refreshPending }), [loading, authReady, authNotice, error, event, matches, roster, fightCards, announcements, user, online, pendingCount, reload, updateCompliance, setCompetitionClearance, finalizeResult, reorderMatch, setMatchStatus, syncNow, refreshPending]);
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }
 

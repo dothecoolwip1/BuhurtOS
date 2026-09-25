@@ -438,10 +438,10 @@ select lives_ok(
 
 insert into public.event_roster_entries(
   id,organization_id,event_id,entry_type,display_name,
-  checked_in,armor_cleared,medical_cleared,waiver_confirmed,weigh_in_cleared,attendance_status
+  checked_in,armor_cleared,medical_cleared,waiver_confirmed,weigh_in_cleared,competition_cleared,attendance_status
 ) values
-('51000000-0000-0000-0000-000000000300','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000031','fighter','Bracket Fighter One',true,true,true,true,true,'approved'),
-('51000000-0000-0000-0000-000000000301','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000031','fighter','Bracket Fighter Two',true,true,true,true,true,'approved');
+('51000000-0000-0000-0000-000000000300','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000031','fighter','Bracket Fighter One',true,true,true,true,true,true,'approved'),
+('51000000-0000-0000-0000-000000000301','51000000-0000-0000-0000-000000000010','51000000-0000-0000-0000-000000000031','fighter','Bracket Fighter Two',true,true,true,true,true,true,'approved');
 
 select lives_ok(
   $$select public.save_bracket_plan(
@@ -570,6 +570,12 @@ select is(
 );
 
 update public.events
+set status='published'
+where id='51000000-0000-0000-0000-000000000031';
+update public.events
+set status='live'
+where id='51000000-0000-0000-0000-000000000031';
+update public.events
 set status='completed'
 where id='51000000-0000-0000-0000-000000000031';
 
@@ -671,6 +677,9 @@ select is(
   'policy exception revocation is audited'
 );
 
+update public.events
+set status='published'
+where id='51000000-0000-0000-0000-000000000030';
 update public.events
 set status='live'
 where id='51000000-0000-0000-0000-000000000030';

@@ -2,7 +2,7 @@ export type UUID = string;
 
 export type EventType = 'ranked_competitive' | 'demo_fun' | 'exhibition' | 'clinic_training' | 'custom';
 export type StandingsMode = 'season_and_event' | 'event_only' | 'no_standings';
-export type EventStatus = 'draft' | 'published' | 'live' | 'completed' | 'archived';
+export type EventStatus = 'draft' | 'published' | 'live' | 'completed' | 'cancelled' | 'archived';
 export type MatchStatus = 'scheduled' | 'on_deck' | 'in_the_hole' | 'active' | 'completed' | 'finalized' | 'forfeit' | 'cancelled';
 export type MatchStage = 'pool' | 'bracket' | 'showcase' | 'final';
 export type RosterEntryType = 'fighter' | 'team' | 'ghost_fighter' | 'guest_fighter';
@@ -57,6 +57,13 @@ export interface EventRecord {
   registrationOpen?: boolean;
   registrationFeeCents?: number;
   currency?: string;
+  publicDescription?: string;
+  registrationOpensAt?: string;
+  registrationClosesAt?: string;
+  registrationCapacity?: number;
+  waitlistEnabled?: boolean;
+  publishedAt?: string;
+  cancelledAt?: string;
   updatedAt?: string;
 }
 
@@ -262,6 +269,11 @@ export interface RosterEntry {
   medicalCleared: boolean;
   waiverConfirmed: boolean;
   weighInCleared: boolean;
+  competitionCleared?: boolean;
+  registrationId?: UUID;
+  eventDivisionId?: UUID;
+  checkedInAt?: string;
+  competitionClearedAt?: string;
   attendanceStatus: RosterStatus;
   metadata?: Record<string, unknown>;
   updatedAt?: string;

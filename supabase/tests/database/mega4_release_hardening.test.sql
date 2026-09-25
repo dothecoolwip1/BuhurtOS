@@ -43,7 +43,7 @@ insert into public.event_roster_entries(
   id,organization_id,event_id,entry_type,display_name,
   checked_in,armor_cleared,medical_cleared,waiver_confirmed,weigh_in_cleared,attendance_status
 ) values
-('44000000-0000-0000-0000-000000000060','44000000-0000-0000-0000-000000000010','44000000-0000-0000-0000-000000000030','guest_fighter','Guarded Fighter',false,false,false,false,false,'registered');
+('44000000-0000-0000-0000-000000000060','44000000-0000-0000-0000-000000000010','44000000-0000-0000-0000-000000000030','guest_fighter','Guarded Fighter',false,false,false,false,false,'approved');
 
 insert into public.fight_cards(id,event_id,name,list_name,status,sort_order)
 values
