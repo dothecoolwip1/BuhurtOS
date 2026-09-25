@@ -34,6 +34,7 @@ export interface RegistrationInput {
 }
 
 export interface RegistrationResult {
+  eventId: string;
   registrationId: string;
   registrationToken: string;
   status: RegistrationStatus;
@@ -104,6 +105,7 @@ export async function submitRegistration(input: RegistrationInput, division?: Re
     const row = {
       id: registrationId,
       eventId: input.eventId,
+      registrationToken,
       eventDivisionId: input.eventDivisionId,
       registrationKind: input.registrationKind,
       email: input.email.trim().toLowerCase(),
@@ -125,7 +127,7 @@ export async function submitRegistration(input: RegistrationInput, division?: Re
     existing.unshift(row);
     localStorage.setItem(key, JSON.stringify(existing));
     return {
-      registrationId, registrationToken, status: 'pending',
+      eventId: input.eventId, registrationId, registrationToken, status: 'pending',
       eligibilityStatus: eligibility.status, eligibilityReasons: eligibility.reasons,
       paymentRequired: true, amountCents: 2500, currency: 'CAD'
     };
@@ -151,6 +153,7 @@ export async function submitRegistration(input: RegistrationInput, division?: Re
   if (error) throw error;
   const row = data as any;
   return {
+    eventId: input.eventId,
     registrationId: row.registrationId,
     registrationToken: row.registrationToken,
     status: row.status,
@@ -163,7 +166,22 @@ export async function submitRegistration(input: RegistrationInput, division?: Re
 }
 
 export async function withdrawRegistration(result: RegistrationResult): Promise<void> {
-  if (!publicSupabase) return;
+  if (!publicSupabase) {
+    const key = 'buhurtos-demo-registrations-' + result.eventId;
+    const existing = JSON.parse(localStorage.getItem(key) ?? '[]') as Array<Record<string, any>>;
+    const found = existing.find(item => item.id === result.registrationId);
+    if (!found || found.registrationToken !== result.registrationToken) throw new Error('Registration not found.');
+    localStorage.setItem(key, JSON.stringify(existing.map(item => item.id === result.registrationId ? {
+      ...item, status: 'withdrawn', withdrawnAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+    } : item)));
+    const ghosts = JSON.parse(localStorage.getItem('buhurtos-demo-ghosts') ?? '[]') as Array<Record<string, any>>;
+    localStorage.setItem('buhurtos-demo-ghosts', JSON.stringify(ghosts.map(entry =>
+      entry.registrationId === result.registrationId || entry.metadata?.registrationId === result.registrationId
+        ? { ...entry, attendanceStatus: 'withdrawn', competitionCleared: false }
+        : entry
+    )));
+    return;
+  }
   const { error } = await publicSupabase.rpc('withdraw_event_registration', {
     p_registration_id: result.registrationId,
     p_registration_token: result.registrationToken

@@ -124,6 +124,13 @@ export async function reviewRegistration(
           localStorage.setItem('buhurtos-demo-ghosts', JSON.stringify(guests));
         }
       }
+    } else {
+      const guests = readDemo<any[]>('buhurtos-demo-ghosts', []);
+      localStorage.setItem('buhurtos-demo-ghosts', JSON.stringify(guests.map(entry =>
+        entry.registrationId === registrationId || entry.metadata?.registrationId === registrationId
+          ? { ...entry, attendanceStatus: 'withdrawn', competitionCleared: false }
+          : entry
+      )));
     }
     return;
   }
@@ -145,7 +152,22 @@ export async function updateRegistrationRoster(
   organizerNotes?: string
 ): Promise<void> {
   if (!registration.updatedAt) throw new Error('Registration version is missing. Reload before editing it.');
-  if (!supabase) return;
+  if (!supabase) {
+    const items = readDemo<any[]>(registrationsKey(registration.eventId), []);
+    const now = new Date().toISOString();
+    const next = items.map(item => item.id === registration.id ? {
+      ...item,
+      teamName: teamName.trim(),
+      teamRoster,
+      teamSize: teamRoster.length,
+      eligibilityStatus: 'needs_review',
+      eligibilityReasons: ['Organizer review is required after a demo team roster change.'],
+      organizerNotes: organizerNotes?.trim() || item.organizerNotes,
+      updatedAt: now
+    } : item);
+    localStorage.setItem(registrationsKey(registration.eventId), JSON.stringify(next));
+    return;
+  }
   const { error } = await supabase.rpc('update_registration_roster_guarded', {
     p_registration_id: registration.id,
     p_expected_updated_at: registration.updatedAt,
