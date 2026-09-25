@@ -678,6 +678,9 @@ select is(
 );
 
 update public.events
+set status='published'
+where id='51000000-0000-0000-0000-000000000030';
+update public.events
 set status='live'
 where id='51000000-0000-0000-0000-000000000030';
 
