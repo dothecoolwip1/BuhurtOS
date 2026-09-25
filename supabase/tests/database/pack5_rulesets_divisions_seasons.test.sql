@@ -570,6 +570,12 @@ select is(
 );
 
 update public.events
+set status='published'
+where id='51000000-0000-0000-0000-000000000031';
+update public.events
+set status='live'
+where id='51000000-0000-0000-0000-000000000031';
+update public.events
 set status='completed'
 where id='51000000-0000-0000-0000-000000000031';
 

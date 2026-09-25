@@ -154,6 +154,20 @@ begin
     raise exception 'Registration cannot close after the event ends';
   end if;
 
+  if tg_op='INSERT' then
+    if new.status::text in ('published','live','completed','cancelled','archived') then
+      new.published_at := coalesce(new.published_at,timezone('utc',now()));
+    end if;
+    if new.status::text='cancelled' then
+      new.cancelled_at := coalesce(new.cancelled_at,timezone('utc',now()));
+      new.registration_open := false;
+    end if;
+    if new.status::text='archived' then
+      new.archived_at := coalesce(new.archived_at,timezone('utc',now()));
+      new.registration_open := false;
+    end if;
+  end if;
+
   if tg_op='UPDATE' then
     v_old := old.status::text;
     v_new := new.status::text;
@@ -1295,11 +1309,11 @@ begin
   if p_expected_updated_at is null or v_entry.updated_at <> p_expected_updated_at then
     raise exception 'Roster entry changed on another device';
   end if;
-  if v_entry.attendance_status <> 'approved' then
-    raise exception 'Registration approval is required before check in or clearance';
-  end if;
   if p_field not in ('checked_in','armor_cleared','medical_cleared','waiver_confirmed','weigh_in_cleared') then
     raise exception 'Unsupported roster clearance field';
+  end if;
+  if v_entry.attendance_status <> 'approved' then
+    raise exception 'Registration approval is required before check in or clearance';
   end if;
 
   update public.event_roster_entries
