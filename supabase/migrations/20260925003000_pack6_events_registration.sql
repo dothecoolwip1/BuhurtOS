@@ -661,6 +661,9 @@ begin
   if v_event.registration_closes_at is not null and timezone('utc',now()) > v_event.registration_closes_at then
     raise exception 'Registration is closed';
   end if;
+  if exists (select 1 from public.event_divisions ed where ed.event_id=p_event_id) then
+    raise exception 'Choose an event division for registration';
+  end if;
   if length(trim(coalesce(p_email,''))) < 5 or position('@' in p_email)=0 then raise exception 'Valid email required'; end if;
   if length(trim(coalesce(p_display_name,''))) < 2 then raise exception 'Name required'; end if;
   if length(trim(coalesce(p_category,''))) < 1 then raise exception 'Category required'; end if;
@@ -996,6 +999,7 @@ as $$
   );
 $$;
 
+revoke all on function public.review_event_registration(uuid,public.registration_status) from public,anon,authenticated;
 revoke all on function public.review_event_registration_guarded(uuid,timestamptz,public.registration_status) from public,anon;
 grant execute on function public.review_event_registration_guarded(uuid,timestamptz,public.registration_status) to authenticated;
 revoke all on function public.review_event_registration_v2_guarded(uuid,timestamptz,public.registration_status,text,text) from public,anon;
