@@ -144,6 +144,30 @@ Pack 5 verification requires both repository CI jobs:
 
 Workflow `36069252396` passed both jobs on the verified implementation head. Hosted Supabase verification remains separate until a dedicated BuhurtOS project is selected.
 
+## Pack 6: Events and registration
+
+Status: in progress on branch `pack6-events-registration`.
+
+Scope:
+
+* Govern the event lifecycle from draft through published, closed, cancelled, and archived states.
+* Store and validate venue, timezone, event dates, registration window, capacity, divisions, and locked ruleset context.
+* Support individual and team registration without duplicating fighter identities or exposing private account data.
+* Evaluate configured division eligibility and preserve an explainable eligibility decision for organizer review.
+* Support approval, rejection, waitlist, withdrawal, and organizer-controlled roster changes.
+* Keep registration approval, physical check-in, and competition clearance as separate states.
+* Enforce registration deadlines, capacity, duplicate-entry rules, and concurrent overbooking protection in PostgreSQL.
+* Protect youth details, contact details, emergency contacts, waiver records, and organizer notes from public access.
+* Expose a deliberate public event view that contains only spectator-safe event and registration information.
+* Keep organizer mutations server-authorized, auditable, concurrency-safe, and protected by RLS and explicit grants.
+* Test unrelated organizations, ordinary members, organizers, fighters, anonymous users, deadlines, capacity, duplicate submissions, concurrent edits, withdrawals, cancellation, and historical preservation.
+* Do not expand payment processing in this pack. Existing paid registration behavior remains fail closed until a real provider and verified webhook exist.
+
+Pack 6 is complete only when the final branch head passes both repository CI jobs:
+
+1. Typecheck, tests and production build.
+2. Clean Supabase startup, database reset from all migrations, and all pgTAP database tests.
+
 ## Later packs
 
 Later product work should start from the verified Pack 5 checkpoint. Preserve the completed identity, authorization, release-hardening, governance, division, and season foundations unless a targeted defect requires change.
