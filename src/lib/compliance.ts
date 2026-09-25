@@ -13,7 +13,7 @@ export const defaultComplianceRequirements: RulesetSettings['compliance'] = {
   requireWeighIn: true
 };
 
-export function checkCompliance(
+export function checkPhysicalCompliance(
   entry: RosterEntry,
   requirements: RulesetSettings['compliance'] = defaultComplianceRequirements
 ): ComplianceResult {
@@ -23,7 +23,17 @@ export function checkCompliance(
   if (requirements.requireMedicalClearance && !entry.medicalCleared) missing.push('medical clearance');
   if (requirements.requireWaiver && !entry.waiverConfirmed) missing.push('waiver');
   if (requirements.requireWeighIn && !entry.weighInCleared) missing.push('weigh in');
-  if (entry.attendanceStatus === 'withdrawn' || entry.attendanceStatus === 'no_show') missing.push(entry.attendanceStatus.replace('_', ' '));
+  if (entry.attendanceStatus !== 'approved') missing.push('registration approval');
+  return { eligible: missing.length === 0, missing };
+}
+
+export function checkCompliance(
+  entry: RosterEntry,
+  requirements: RulesetSettings['compliance'] = defaultComplianceRequirements
+): ComplianceResult {
+  const physical = checkPhysicalCompliance(entry, requirements);
+  const missing = [...physical.missing];
+  if (!entry.competitionCleared) missing.push('competition clearance');
   return { eligible: missing.length === 0, missing };
 }
 

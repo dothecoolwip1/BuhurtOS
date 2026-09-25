@@ -39,7 +39,7 @@ export function PublicPage() {
     <section className="public-hero">
       <span className="live-dot">{event.status==='live'?'LIVE':event.status.toUpperCase()}</span>
       <h1>{event.name}</h1>
-      <p>{event.venue} · {new Date(event.startsAt).toLocaleString()}</p>
+      <p>{event.venue} · {new Date(event.startsAt).toLocaleString()}</p>{event.publicDescription&&<p>{event.publicDescription}</p>}{event.status==='cancelled'&&<div className="validation-errors">This event has been cancelled.</div>}
       <div className="header-actions">
         {event.livestreamUrl&&<a className="stream-btn" href={event.livestreamUrl} target="_blank" rel="noreferrer">Open Livestream</a>}
         {event.registrationOpen&&<Link className="stream-btn" to={"/register?event="+encodeURIComponent(event.id)}>Register</Link>}

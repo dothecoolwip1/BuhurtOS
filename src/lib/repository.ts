@@ -66,7 +66,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
 
   let resolvedEventId = eventId || (import.meta.env.VITE_DEFAULT_EVENT_ID as string | undefined);
   if (!resolvedEventId) {
-    const statuses = accessMode === 'public' ? ['live','published','completed'] : ['live','published','draft','completed'];
+    const statuses = accessMode === 'public' ? ['live','published','completed','cancelled'] : ['live','published','draft','completed','cancelled'];
     const candidate = await client.from('events').select('id').in('status', statuses).order('starts_at', { ascending: false }).limit(1).maybeSingle();
     if (candidate.error) throw candidate.error;
     resolvedEventId = candidate.data?.id;
@@ -74,7 +74,7 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
   if (!resolvedEventId) throw new Error('No accessible BuhurtOS event was found. Set VITE_DEFAULT_EVENT_ID or publish an event.');
 
   const eventColumns = accessMode === 'public'
-    ? 'id,organization_id,season_id,name,venue,starts_at,ends_at,organizer_name,event_type,standings_mode,status,timezone,livestream_url,registration_open,registration_fee_cents,currency,ruleset_id,ruleset_snapshot_id'
+    ? 'id,organization_id,season_id,name,venue,starts_at,ends_at,organizer_name,event_type,standings_mode,status,timezone,livestream_url,registration_open,registration_fee_cents,currency,ruleset_id,ruleset_snapshot_id,public_description,registration_opens_at,registration_closes_at,registration_capacity,waitlist_enabled,published_at,cancelled_at'
     : '*';
   const rosterColumns = accessMode === 'public'
     ? 'id,event_id,team_id,entry_type,display_name,attendance_status'
@@ -106,12 +106,18 @@ export async function loadEventSnapshot(eventId?: string, accessMode: 'public' |
       startsAt: e.starts_at, endsAt: e.ends_at, organizerName: e.organizer_name ?? undefined,
       eventType: e.event_type, standingsMode: e.standings_mode, status: e.status, timezone: e.timezone, livestreamUrl: e.livestream_url ?? undefined, rulesetId: e.ruleset_id ?? undefined, rulesetSnapshotId: e.ruleset_snapshot_id ?? undefined,
       registrationOpen: e.registration_open, registrationFeeCents: e.registration_fee_cents, currency: e.currency,
+      publicDescription: e.public_description ?? undefined, registrationOpensAt: e.registration_opens_at ?? undefined,
+      registrationClosesAt: e.registration_closes_at ?? undefined, registrationCapacity: e.registration_capacity ?? undefined,
+      waitlistEnabled: e.waitlist_enabled ?? undefined, publishedAt: e.published_at ?? undefined, cancelledAt: e.cancelled_at ?? undefined,
       updatedAt: e.updated_at ?? undefined
     },
     roster: (rosterQuery.data ?? []).map((r: any) => ({
       id: r.id, organizationId: r.organization_id, eventId: r.event_id, teamId: r.team_id ?? undefined, fighterId: r.fighter_id ?? undefined,
       entryType: r.entry_type, displayName: r.display_name, checkedIn: r.checked_in ?? false, armorCleared: r.armor_cleared ?? false,
       medicalCleared: r.medical_cleared ?? false, waiverConfirmed: r.waiver_confirmed ?? false, weighInCleared: r.weigh_in_cleared ?? false,
+      competitionCleared: r.competition_cleared ?? false, registrationId: r.registration_id ?? undefined,
+      eventDivisionId: r.event_division_id ?? undefined, checkedInAt: r.checked_in_at ?? undefined,
+      competitionClearedAt: r.competition_cleared_at ?? undefined,
       attendanceStatus: r.attendance_status, metadata: r.metadata, updatedAt: r.updated_at ?? undefined
     })),
     fightCards: (fightCardQuery.data ?? []).map((card: any) => ({ id: card.id, eventId: card.event_id, name: card.name, listName: card.list_name, status: card.status, sortOrder: card.sort_order, updatedAt: card.updated_at ?? undefined })),
