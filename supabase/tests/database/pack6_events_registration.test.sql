@@ -183,11 +183,14 @@ select lives_ok(
   'eligible individual can submit through the governed public RPC'
 );
 
+reset role;
 select is(
   (select eligibility_status::text from public.event_registrations where email='eligible-a@buhurtos.test'),
   'eligible',
   'eligible individual receives an explainable eligible decision'
 );
+set local role anon;
+select set_config('request.jwt.claim.sub','',true);
 
 select throws_ok(
   $$select public.submit_event_registration(
@@ -224,11 +227,14 @@ select lives_ok(
   'underage registration is saved for an explicit decision rather than silently passing'
 );
 
+reset role;
 select is(
   (select eligibility_status::text from public.event_registrations where email='underage@buhurtos.test'),
   'ineligible',
   'age failure is stored as ineligible'
 );
+set local role anon;
+select set_config('request.jwt.claim.sub','',true);
 
 select lives_ok(
   $$select public.submit_event_registration(
@@ -241,11 +247,14 @@ select lives_ok(
   'missing eligibility fact is accepted only as a needs-review registration'
 );
 
+reset role;
 select is(
   (select eligibility_status::text from public.event_registrations where email='review@buhurtos.test'),
   'needs_review',
   'missing age never silently qualifies the fighter'
 );
+set local role anon;
+select set_config('request.jwt.claim.sub','',true);
 
 select lives_ok(
   $$select public.submit_event_registration(
@@ -258,11 +267,14 @@ select lives_ok(
   'correct-size team registration is accepted'
 );
 
+reset role;
 select is(
   (select eligibility_status::text from public.event_registrations where email='team-a@buhurtos.test'),
   'eligible',
   'team size requirement is evaluated at submission'
 );
+set local role anon;
+select set_config('request.jwt.claim.sub','',true);
 
 select lives_ok(
   $$select public.submit_event_registration(
@@ -289,14 +301,24 @@ select throws_ok(
 );
 
 reset role;
+select set_config(
+  'pack6.eligible_a_id',
+  (select id::text from public.event_registrations where email='eligible-a@buhurtos.test'),
+  false
+);
+select set_config(
+  'pack6.eligible_a_updated',
+  (select updated_at::text from public.event_registrations where email='eligible-a@buhurtos.test'),
+  false
+);
 set local role authenticated;
 select set_config('request.jwt.claim.sub','61000000-0000-0000-0000-000000000002',true);
 
 select throws_ok(
   format(
     'select public.review_event_registration_v2_guarded(%L::uuid,%L::timestamptz,%L::public.registration_status,null,null)',
-    (select id::text from public.event_registrations where email='eligible-a@buhurtos.test'),
-    (select updated_at::text from public.event_registrations where email='eligible-a@buhurtos.test'),
+    current_setting('pack6.eligible_a_id'),
+    current_setting('pack6.eligible_a_updated'),
     'approved'
   ),
   'P0001',
