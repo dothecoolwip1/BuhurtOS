@@ -23,6 +23,16 @@ insert into public.seasons(id,organization_id,name,starts_at,ends_at,status)
 values
 ('61000000-0000-0000-0000-000000000020','61000000-0000-0000-0000-000000000010','Pack 6 Season',timezone('utc',now())-interval '1 year',timezone('utc',now())+interval '2 years','active');
 
+insert into public.rulesets(
+  id,organization_id,name,short_name,version,status,settings,published_at
+) values (
+  '61000000-0000-0000-0000-000000000150',
+  '61000000-0000-0000-0000-000000000010',
+  'Pack 6 Rules','P6R','1.0','published',
+  '{"compliance":{"requireCheckIn":true,"requireArmorClearance":true,"requireMedicalClearance":true,"requireWaiver":true,"requireWeighIn":true}}',
+  timezone('utc',now())
+);
+
 insert into public.competition_divisions(
   id,organization_id,name,slug,competition_format_id,team_size,age_min,status,metadata
 ) values
@@ -32,7 +42,7 @@ insert into public.competition_divisions(
 insert into public.events(
   id,organization_id,season_id,name,venue,starts_at,ends_at,event_type,standings_mode,
   status,timezone,registration_open,registration_opens_at,registration_closes_at,
-  registration_capacity,waitlist_enabled
+  registration_capacity,waitlist_enabled,ruleset_id
 ) values
 (
   '61000000-0000-0000-0000-000000000030',
@@ -40,7 +50,8 @@ insert into public.events(
   '61000000-0000-0000-0000-000000000020',
   'Pack 6 Open Event','Arena',timezone('utc',now())+interval '60 days',timezone('utc',now())+interval '61 days',
   'ranked_competitive','season_and_event','published','UTC',true,
-  timezone('utc',now())-interval '1 day',timezone('utc',now())+interval '30 days',2,true
+  timezone('utc',now())-interval '1 day',timezone('utc',now())+interval '30 days',2,true,
+  '61000000-0000-0000-0000-000000000150'
 ),
 (
   '61000000-0000-0000-0000-000000000031',
@@ -48,14 +59,67 @@ insert into public.events(
   '61000000-0000-0000-0000-000000000020',
   'Pack 6 Closed Event','Arena',timezone('utc',now())+interval '60 days',timezone('utc',now())+interval '61 days',
   'ranked_competitive','season_and_event','published','UTC',true,
-  timezone('utc',now())-interval '30 days',timezone('utc',now())-interval '1 day',null,true
+  timezone('utc',now())-interval '30 days',timezone('utc',now())-interval '1 day',null,true,
+  '61000000-0000-0000-0000-000000000150'
 );
 
-insert into public.event_divisions(id,event_id,division_id,registration_limit,is_registration_open)
+insert into public.event_ruleset_snapshots(
+  id,event_id,ruleset_id,ruleset_name,ruleset_short_name,ruleset_version,resolved_settings
+) values
+(
+  '61000000-0000-0000-0000-000000000160',
+  '61000000-0000-0000-0000-000000000030',
+  '61000000-0000-0000-0000-000000000150',
+  'Pack 6 Rules','P6R','1.0',
+  '{"compliance":{"requireCheckIn":true,"requireArmorClearance":true,"requireMedicalClearance":true,"requireWaiver":true,"requireWeighIn":true}}'
+),
+(
+  '61000000-0000-0000-0000-000000000161',
+  '61000000-0000-0000-0000-000000000031',
+  '61000000-0000-0000-0000-000000000150',
+  'Pack 6 Rules','P6R','1.0',
+  '{"compliance":{"requireCheckIn":true,"requireArmorClearance":true,"requireMedicalClearance":true,"requireWaiver":true,"requireWeighIn":true}}'
+);
+
+update public.events
+set ruleset_snapshot_id=case id
+  when '61000000-0000-0000-0000-000000000030'::uuid then '61000000-0000-0000-0000-000000000160'::uuid
+  when '61000000-0000-0000-0000-000000000031'::uuid then '61000000-0000-0000-0000-000000000161'::uuid
+  else ruleset_snapshot_id
+end
+where id in (
+  '61000000-0000-0000-0000-000000000030',
+  '61000000-0000-0000-0000-000000000031'
+);
+
+insert into public.event_divisions(
+  id,event_id,division_id,ruleset_id,ruleset_snapshot_id,registration_limit,is_registration_open
+)
 values
-('61000000-0000-0000-0000-000000000200','61000000-0000-0000-0000-000000000030','61000000-0000-0000-0000-000000000100',1,true),
-('61000000-0000-0000-0000-000000000201','61000000-0000-0000-0000-000000000030','61000000-0000-0000-0000-000000000101',2,true),
-('61000000-0000-0000-0000-000000000202','61000000-0000-0000-0000-000000000031','61000000-0000-0000-0000-000000000100',1,true);
+(
+  '61000000-0000-0000-0000-000000000200',
+  '61000000-0000-0000-0000-000000000030',
+  '61000000-0000-0000-0000-000000000100',
+  '61000000-0000-0000-0000-000000000150',
+  '61000000-0000-0000-0000-000000000160',
+  1,true
+),
+(
+  '61000000-0000-0000-0000-000000000201',
+  '61000000-0000-0000-0000-000000000030',
+  '61000000-0000-0000-0000-000000000101',
+  '61000000-0000-0000-0000-000000000150',
+  '61000000-0000-0000-0000-000000000160',
+  2,true
+),
+(
+  '61000000-0000-0000-0000-000000000202',
+  '61000000-0000-0000-0000-000000000031',
+  '61000000-0000-0000-0000-000000000100',
+  '61000000-0000-0000-0000-000000000150',
+  '61000000-0000-0000-0000-000000000161',
+  1,true
+);
 
 select ok(
   (select published_at is not null from public.events where id='61000000-0000-0000-0000-000000000030'),
