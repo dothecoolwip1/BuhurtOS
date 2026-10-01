@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { AdminLayout } from './admin/AdminLayout';
 import { CheckinPage, CompetitionsPage, OverviewPage, PeoplePage, RegistrationPage, RunPage, SetupPage } from './admin/pages';
 import { Layout } from './components/Layout';
+import { FieldPage } from './pages/FieldPage';
 import { EventRoute } from './pages/EventRoute';
 import { EventsPage } from './pages/EventsPage';
 import { FormatsPage } from './pages/FormatsPage';
@@ -30,6 +31,7 @@ export function App() {
         <Route path="events" element={<EventsPage />} />
         <Route path="events/:eventId" element={<EventRoute />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
+        <Route path="events/:eventId/field/:field" element={<FieldPage />} />
         <Route path="events/:eventId/manage" element={<ManagePage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="formats" element={<FormatsPage />} />
