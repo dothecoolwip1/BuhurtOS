@@ -1,5 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
+import { useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
+import { Avatar } from '../auth/account/shared';
+import { photoUrl, uploadTeamImage } from '../data/account';
+import { fetchIsTeamCaptain, fetchTeamImagePaths } from '../data/accountApi';
+import { downscaleImage } from '../lib/imageResize';
+import { pickError } from '../lib/accountView';
 import { Crest } from '../components/Crest';
 import { Chip } from '../components/ui';
 import { fetchTeamBySlug, fetchTeamEntries, type DirectoryEntry } from '../data/teamDirectory';
@@ -45,14 +51,19 @@ function Workspace({ t }: { t: DirectoryEntry }) {
   const basics = useAsync(() => fetchFighterBasics((roster.data ?? []).map(m => m.fighterId)), [(roster.data ?? []).map(m => m.fighterId).join(',')]);
   const today = todayIso();
   const upcomingEntries = (entries.data ?? []).filter(e => e.endsOn >= today && e.eventStatus !== 'cancelled').sort((a, b) => a.startsOn.localeCompare(b.startsOn));
+  const imgs = useAsync(() => fetchTeamImagePaths(t.id), [t.id]);
+  const [paths, setPaths] = useState<{ logoPath?: string | null; bannerPath?: string | null }>({});
+  const logoPath = paths.logoPath !== undefined ? paths.logoPath : imgs.data?.logoPath ?? null;
+  const bannerPath = paths.bannerPath !== undefined ? paths.bannerPath : imgs.data?.bannerPath ?? null;
   const where = locationText(t);
   const website = safeHttpsUrl(t.website);
   const socials = Object.entries(t.socialLinks).map(([k, v]) => ({ k, url: safeHttpsUrl(v) })).filter((s): s is { k: string; url: string } => s.url !== null);
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <Link className="more" to="/teams">← All teams</Link>
+      {bannerPath && <img src={photoUrl(bannerPath) ?? ''} alt={`${t.name} banner`} style={{ width: '100%', maxHeight: 220, objectFit: 'cover', borderRadius: 10 }} />}
       <div className="teamhead">
-        <Crest team={crestTeam(t)} size={88} />
+        {logoPath ? <Avatar path={logoPath} name={t.name} size={88} alt={`${t.name} logo`} /> : <Crest team={crestTeam(t)} size={88} />}
         <div style={{ minWidth: 0 }}>
           <p className="eyebrow">Team</p>
           <h1 style={{ fontSize: 'clamp(38px,6vw,72px)', marginTop: 8 }}>{t.name}</h1>
@@ -60,6 +71,8 @@ function Workspace({ t }: { t: DirectoryEntry }) {
           {t.status === 'pending' && <p style={{ marginTop: 10 }}><Chip tone="brass">{PENDING_LABEL}</Chip></p>}
         </div>
       </div>
+
+      {session && <TeamPhotoChange teamId={t.id} userId={session.user.id} onChanged={(kind, path) => setPaths(x => ({ ...x, [kind === 'logo' ? 'logoPath' : 'bannerPath']: path }))} />}
 
       {t.status === 'approved' && (
         <div className="evfilter">
@@ -230,5 +243,35 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         <p className="muted" style={{ fontSize: 13 }}>Only results recorded on BuhurtOS by event organizers appear here.</p>
       </div>
     </section>
+  );
+}
+
+/** Captain only (the database checks again). Pick a file, it is shrunk if large, uploaded under the team folder, then set as logo or banner. */
+function TeamPhotoChange({ teamId, userId, onChanged }: { teamId: string; userId: string; onChanged: (kind: 'logo' | 'banner', path: string) => void }) {
+  const captain = useAsync(() => fetchIsTeamCaptain(teamId, userId), [teamId, userId]);
+  const [kind, setKind] = useState<'logo' | 'banner'>('logo');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ bad: boolean; text: string } | null>(null);
+  const input = useRef<HTMLInputElement>(null);
+  if (!captain.data) return null;
+  const pick = async (file: File | undefined) => {
+    if (!file) return;
+    const early = pickError(file);
+    if (early) { setMsg({ bad: true, text: early }); return; }
+    setBusy(true); setMsg(null);
+    try { const path = await uploadTeamImage(teamId, kind, await downscaleImage(file)); onChanged(kind, path); setMsg({ bad: false, text: 'Team photo changed.' }); }
+    catch (e) { setMsg({ bad: true, text: friendlyError(e, 'Could not change the team photo.') }); }
+    finally { setBusy(false); if (input.current) input.current.value = ''; }
+  };
+  return (
+    <div className="panel info" style={{ padding: 14, display: 'grid', gap: 10 }}>
+      <h3>Change team photo</h3>
+      <div className="seg" role="group" aria-label="Which picture">
+        {([['logo', 'Logo'], ['banner', 'Banner']] as const).map(([k, l]) => <button key={k} type="button" aria-pressed={k === kind} onClick={() => setKind(k)}>{l}</button>)}
+      </div>
+      <input ref={input} id="team-photo" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={busy} onChange={e => void pick(e.target.files?.[0])} />
+      <label htmlFor="team-photo" role="button" className={`btn btn-ink acct-bigbtn${busy ? ' disabled' : ''}`}>{busy ? 'Uploading…' : `Choose a ${kind} picture`}</label>
+      {msg && <p role={msg.bad ? 'alert' : 'status'} className={msg.bad ? 'acct-err' : 'acct-ok'}>{msg.text}</p>}
+    </div>
   );
 }

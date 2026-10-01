@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
 import { supabase } from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
 import { PageHead, Seg } from '../components/ui';
+import { fetchRegistrationPrefill, saveMyPrivateProfile, validatePrivateForm, type RegistrationPrefill } from '../data/account';
+import { prefillRegForm, regDiffersFromSaved, regToPrivateForm } from '../lib/accountView';
 import {
   INSURANCE_OPTIONS, PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, emptyForm, feeFor, formatMoney, validate,
   type CompetitionOption, type EventFee, type LeagueKey, type RegForm
@@ -97,12 +99,29 @@ export function RegisterPage() {
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [prefill, setPrefill] = useState<RegistrationPrefill | null>(null);
+  const [filledIn, setFilledIn] = useState(false);
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'failed'>('idle');
+  const prefilled = useRef(false);
 
   useEffect(() => {
     if (preview) return;
     load(slug).then(setData).catch(e => setLoadError(friendlyError(e, 'Could not load this event.')));
   }, [slug, preview]);
   useEffect(() => { if (session?.user.email) setF(p => (p.email ? p : { ...p, email: session.user.email ?? '' })); }, [session]);
+
+  // Saved details fill EMPTY fields once when the form is ready; anything already typed wins. A failure here is silent: the form just stays empty.
+  const teamIdsKey = data?.teams.map(t => t.id).join(',') ?? '';
+  const ready = Boolean(data && data.mode === 'buhuros');
+  useEffect(() => {
+    if (preview || !session || !ready || prefilled.current) return;
+    prefilled.current = true;
+    const teamIds = teamIdsKey === '' ? [] : teamIdsKey.split(',');
+    fetchRegistrationPrefill().then(p => {
+      setPrefill(p);
+      setF(cur => { const r = prefillRegForm(cur, p, teamIds); if (r.filled) setFilledIn(true); return r.form; });
+    }).catch(() => { /* the form works without it */ });
+  }, [preview, session, ready, teamIdsKey]);
 
   const set = <K extends keyof RegForm>(k: K, v: RegForm[K]) => setF(p => ({ ...p, [k]: v }));
   const errors = useMemo(() => (data ? validate(f, data.comps, data.fee) : {}), [f, data]);
@@ -127,6 +146,19 @@ export function RegisterPage() {
         <PageHead eyebrow="Registration" title="Thank you, you are registered" lede="The organizers will review your registration. You can come back to this page at any time to see its status." />
         {f.isVolunteer && <VolunteerInfo info={data.volunteerInfo} />}
         <p>{fee > 0 ? <>Fee: <b>{formatMoney(fee)}</b>. Pay by e-transfer or cash as described on the event page; the organizer marks it paid.</> : 'No fee is due for you.'}</p>
+        {prefill && regDiffersFromSaved(f, prefill) && saveState !== 'saved' && (
+          <div className="panel info" style={{ padding: 16, display: 'grid', gap: 10 }}>
+            <p><b>Save these details to my account for next time?</b> Your name, emergency contact and health details will fill in your next registration. Only you can see them.</p>
+            <button type="button" className="btn btn-line" disabled={saveState === 'saving'} style={{ minHeight: 52 }} onClick={async () => {
+              const form = regToPrivateForm(f, prefill);
+              if (Object.keys(validatePrivateForm(form)).length) { setSaveState('failed'); return; }
+              setSaveState('saving');
+              try { await saveMyPrivateProfile(form); setSaveState('saved'); } catch { setSaveState('failed'); }
+            }}>{saveState === 'saving' ? 'Saving…' : 'Save these details to my account for next time'}</button>
+            {saveState === 'failed' && <p role="alert" style={{ color: 'var(--live)' }}>Could not save them. You can add them on your account page instead.</p>}
+          </div>
+        )}
+        {saveState === 'saved' && <p role="status" style={{ color: 'var(--win)' }}>Saved. They will fill in your next registration.</p>}
         <Link className="btn btn-ink" to="/events">Back to events</Link>
       </>
     );
@@ -156,6 +188,7 @@ export function RegisterPage() {
       <PageHead eyebrow={preview ? 'Preview: nothing is saved' : 'Registration'} title={`Register: ${data.name}`}
         lede={data.closesAt ? `Registration closes ${new Date(data.closesAt).toLocaleDateString('en-CA', { dateStyle: 'long', timeZone: 'America/Edmonton' })}. Teams are final when it closes.` : undefined} />
       <form onSubmit={submit} noValidate style={{ display: 'grid', gap: 16, maxWidth: 720 }}>
+        {filledIn && <p role="status" className="panel info" style={{ padding: 12 }}>Filled in from your saved details (edit any field). <Link to="/account?tab=medical">Change saved details</Link></p>}
         <section className="card field"><h3>About you</h3>
           {text('fullName', 'Full name', { autoComplete: 'name' })}
           {text('email', 'Email', { type: 'email', autoComplete: 'email' })}
