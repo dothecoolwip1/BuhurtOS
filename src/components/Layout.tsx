@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { setSampleMode, useSampleMode } from '../data/mode';
 import { useAuth } from '../auth/AuthContext';
+import { NotificationBell } from './NotificationBell';
 
 const NAV = [
   { to: '/', label: 'Home', end: true, icon: <path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z" /> },
@@ -46,6 +47,7 @@ export function Layout() {
             {NAV.map(n => <NavLink key={n.to} to={n.to} end={n.end}>{n.label}</NavLink>)}
           </nav>
           <div className="spacer" />
+          {session && <NotificationBell />}
           <NavLink className="btn btn-line" to="/account">{session ? 'Account' : 'Sign in'}</NavLink>
           <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Switch light or dark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></svg>

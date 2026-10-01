@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Chip } from '../components/ui';
+import { fetchNewTeamRequestDetails, fetchTeamProfileExtras, CLAIMED_LABEL } from '../data/teamManager';
 import { approveTeam, fetchAllTeams, mergeTeams, type TeamRow } from '../data/teams';
 import { friendlyError } from '../lib/friendlyError';
 import { likelyDuplicates, mergeProblem } from '../lib/teamMerge';
@@ -41,9 +42,12 @@ export function TeamsTab() {
         {!teams.loading && pending.length === 0 && <p className="muted">No teams are waiting.</p>}
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 }}>
           {pending.map(t => (
-            <li key={t.id} style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ overflowWrap: 'anywhere' }}><b>{t.name}</b>{place(t) ? ` · ${place(t)}` : ''}</span>
-              <button type="button" className="btn btn-ink" disabled={busy} onClick={() => run(() => approveTeam(t.id), `Approved ${t.name}.`)}>Approve</button>
+            <li key={t.id} style={{ display: 'grid', gap: 8 }}>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ overflowWrap: 'anywhere' }}><b>{t.name}</b>{place(t) ? ` · ${place(t)}` : ''}</span>
+                <button type="button" className="btn btn-ink" disabled={busy} onClick={() => run(() => approveTeam(t.id), `Approved ${t.name}.`)}>Approve</button>
+              </div>
+              <PendingDetails team={t} />
             </li>
           ))}
         </ul>
@@ -92,5 +96,48 @@ export function TeamsTab() {
         </div>
       </section>
     </div>
+  );
+}
+
+/** What was asked for: the public details, then the private reviewer-only ones. Loaded when opened. */
+function PendingDetails({ team }: { team: TeamRow }) {
+  const [open, setOpen] = useState(false);
+  const pub = useAsync(() => (open ? fetchTeamProfileExtras(team.slug) : Promise.resolve(undefined)), [open, team.slug]);
+  const priv = useAsync(() => (open ? fetchNewTeamRequestDetails(team.id) : Promise.resolve(undefined)), [open, team.id]);
+  const p = pub.data;
+  const d = priv.data;
+  const social = Object.entries(p?.socialLinks ?? {});
+  return (
+    <details onToggle={e => setOpen((e.currentTarget as HTMLDetailsElement).open)}>
+      <summary>Review what was requested</summary>
+      {open && (
+        <div style={{ display: 'grid', gap: 10, marginTop: 8 }}>
+          {(pub.loading || priv.loading) && <p className="muted">Loading…</p>}
+          {(pub.error != null || priv.error != null) && <p role="alert" style={{ color: 'var(--live)' }}>{friendlyError(pub.error ?? priv.error, 'Could not load the request.')}</p>}
+          {p && (
+            <div style={{ display: 'grid', gap: 4, overflowWrap: 'anywhere' }}>
+              <b>Public details (shown once approved)</b>
+              <span>Address: /teams/{team.slug}</span>
+              {p.description && <span>{p.description}</span>}
+              {p.website && <span>Website: {p.website}</span>}
+              {p.foundedYear && <span>Founded: {p.foundedYear}</span>}
+              {social.map(([k, v]) => <span key={k}>{k}: {v}</span>)}
+              {p.claimedOrganizations.length > 0 && <span>Organizations ({CLAIMED_LABEL}): {p.claimedOrganizations.join(', ')}</span>}
+            </div>
+          )}
+          {d === null && !priv.loading && <p className="muted">No request form is on file for this team.</p>}
+          {d && (
+            <div className="panel" style={{ display: 'grid', gap: 4, padding: 10, overflowWrap: 'anywhere' }}>
+              <b>Only organizers see this</b>
+              <span>Requested by: {d.requestedByName ?? 'unknown'}</span>
+              <span>Email: {d.contactEmail}</span>
+              {d.contactPhone && <span>Phone: {d.contactPhone}</span>}
+              <span>Why they are the captain: {d.captainReason}</span>
+              {d.notes && <span>Notes: {d.notes}</span>}
+            </div>
+          )}
+        </div>
+      )}
+    </details>
   );
 }
