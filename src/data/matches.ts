@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { UNNAMED_ENTRY } from '../lib/entryLabel';
 import type { PlannedMatch, PlannedStage } from '../lib/bracket';
 
 export type QueueState = 'scheduled' | 'on_deck' | 'in_the_hole' | 'active' | 'final';
@@ -46,7 +47,7 @@ export async function fetchEntries(competitionId: string): Promise<CompetitionEn
   const { data, error } = await supabase.from('entries').select(`id,competition_id,team_id,fighter_id,pool,seed,status,${NAMED}`).eq('competition_id', competitionId).order('created_at');
   if (error) throw error;
   return (data as unknown as EntryRow[]).map(r => ({
-    id: r.id, competitionId: r.competition_id, teamId: r.team_id, fighterId: r.fighter_id, pool: r.pool, seed: r.seed, status: r.status, name: nameOf(r) ?? 'Unnamed entry'
+    id: r.id, competitionId: r.competition_id, teamId: r.team_id, fighterId: r.fighter_id, pool: r.pool, seed: r.seed, status: r.status, name: nameOf(r) ?? UNNAMED_ENTRY
   }));
 }
 
@@ -59,21 +60,28 @@ export async function fetchStandings(competitionId: string): Promise<Standing[]>
 
 /**
  * Insert planned matches. Two passes: all rows first (ids are generated here), then the next_match_id links, because the
- * database checks that a linked match already exists. Refuses if matches exist, unless `replace` deletes the unfinished ones
- * (finished matches are never deleted, so that still refuses when any are final). `append` adds to existing matches instead
- * (used to build the bracket after pool play).
+ * database checks that a linked match already exists. Refuses if matches exist, unless `replace` is set. Replacing is ordered
+ * so a failure never leaves the competition empty: the new matches go in and are linked first, and only then are the old
+ * unfinished ones (ids captured beforehand) deleted. If anything before that fails, only the new ids are removed and the
+ * old schedule is untouched. Finished matches are never deleted, so replace refuses when any are final. `append` adds to
+ * existing matches instead (used to build the bracket after pool play).
  */
 export async function generateMatches(competitionId: string, planned: readonly PlannedMatch[], opts: { replace?: boolean; append?: boolean } = {}): Promise<number> {
   const { data: existing, error: e0 } = await supabase.from('matches').select('id,queue_state').eq('competition_id', competitionId);
   if (e0) throw e0;
   const rows = (existing ?? []) as { id: string; queue_state: QueueState }[];
+  let oldIds: string[] = [];
   if (rows.length > 0 && !opts.append) {
     if (!opts.replace) throw new Error('This competition already has matches. Replace them to start over.');
     if (rows.some(r => r.queue_state === 'final')) throw new Error('Some matches are already final. Reopen them before replacing the schedule.');
-    const { error } = await supabase.from('matches').delete().eq('competition_id', competitionId).neq('queue_state', 'final');
-    if (error) throw error;
+    oldIds = rows.filter(r => r.queue_state !== 'final').map(r => r.id);
   }
-  if (planned.length === 0) return 0;
+  const removeOld = async () => {
+    if (oldIds.length === 0) return;
+    const { error } = await supabase.from('matches').delete().in('id', oldIds);
+    if (error) throw error;
+  };
+  if (planned.length === 0) { await removeOld(); return 0; }
   const ids = new Map(planned.map(p => [p.key, crypto.randomUUID()]));
   const insert = planned.map(p => ({
     id: ids.get(p.key)!, competition_id: competitionId, stage: p.stage, round_label: p.roundLabel, position: p.position,
@@ -90,7 +98,12 @@ export async function generateMatches(competitionId: string, planned: readonly P
       if (error) throw error;
     }
   } catch (err) {
-    await supabase.from('matches').delete().in('id', [...ids.values()]); // best effort: do not leave a half-linked bracket
+    await supabase.from('matches').delete().in('id', [...ids.values()]); // best effort: remove only the new matches, the old ones stay
+    throw err;
+  }
+  try { await removeOld(); }
+  catch (err) {
+    await supabase.from('matches').delete().in('id', [...ids.values()]); // the old schedule is still whole, so drop the new one rather than leave two
     throw err;
   }
   return planned.length;
@@ -101,8 +114,11 @@ async function rpc(fn: string, args: Record<string, unknown>) {
   if (error) throw error;
   return data;
 }
+/** What the database is told about the field: '' clears it, null leaves it as it is, any other text sets it. */
+export const fieldArg = (field: string | null | undefined): string | null => (field === undefined || field === null ? null : field.trim());
+/** `field`: omit or null to keep the current field, '' to clear it, text to set it. */
 export const setQueue = (matchId: string, state: Exclude<QueueState, 'final'>, field?: string | null): Promise<void> =>
-  rpc('set_match_queue', { p_match: matchId, p_state: state, p_field: field ?? null }).then(() => undefined);
+  rpc('set_match_queue', { p_match: matchId, p_state: state, p_field: fieldArg(field) }).then(() => undefined);
 
 export interface FinalizeInput { matchId: string; result: MatchResult; scoreA: number; scoreB: number; detail?: Record<string, unknown>; expectedVersion: number }
 /** Returns the new match version. */

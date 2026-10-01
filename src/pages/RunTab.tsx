@@ -6,6 +6,7 @@ import {
   type CompetitionEntry, type CompetitionMatch, type QueueState
 } from '../data/matches';
 import type { PlannedMatch } from '../lib/bracket';
+import { sideLabel } from '../lib/entryLabel';
 import { friendlyError } from '../lib/friendlyError';
 import {
   DRAW_FORMATS, activeEntries, bracketFromPools, canBuildBracketFromPools, describePlan, drawProblem, maxPoolCount, moveItem, planDraw, randomSeed, rankPools,
@@ -62,7 +63,7 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
     if (!plan) return;
     setBusy(true); setError(null);
     try { await generateMatches(comp.id, plan.matches, { replace: replacing }); onDone(); }
-    catch (e) { setError(friendlyError(e, 'Could not build the draw. Nothing was changed that you can not redo.')); }
+    catch (e) { setError(friendlyError(e, 'Could not build the draw. Your existing matches were left as they were.')); }
     finally { setBusy(false); setConfirming(false); }
   };
 
@@ -129,7 +130,7 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
         </div>
       )}
 
-      {replacing && !hasFinal && <p className="src">This competition already has {existing.length} matches. Building a new draw will delete them.</p>}
+      {replacing && !hasFinal && <p className="src">This competition already has {existing.length} matches. The new draw is created first, then these are removed once it succeeds.</p>}
       {hasFinal && <p role="alert" style={errorStyle}>Some matches already have final results. Reopen them first, then you can build a new draw.</p>}
       {error && <p role="alert" style={errorStyle}>{error}</p>}
 
@@ -141,7 +142,7 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
       )}
       {confirming && plan && (
         <div className="panel info" role="alertdialog" aria-label="Confirm draw" style={{ display: 'grid', gap: 8 }}>
-          <p><b>{replacing ? `Replace the ${existing.length} existing matches with ${plan.matches.length} new ones?` : `Create ${plan.matches.length} matches for ${comp.name}?`}</b> {replacing ? 'The old matches are deleted and this cannot be undone.' : 'You can still change the order of play afterwards.'}</p>
+          <p><b>{replacing ? `Replace the ${existing.length} existing matches with ${plan.matches.length} new ones?` : `Create ${plan.matches.length} matches for ${comp.name}?`}</b> {replacing ? 'The new matches are created first, and the old ones are deleted only after that works. Deleting the old ones cannot be undone.' : 'You can still change the order of play afterwards.'}</p>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button type="button" className="btn btn-ink" disabled={busy} onClick={confirm}>{busy ? 'Building…' : replacing ? 'Yes, replace them' : 'Yes, create matches'}</button>
             <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirming(false)}>Not yet</button>
@@ -165,30 +166,31 @@ function MatchCard({ m, onChanged }: { m: CompetitionMatch; onChanged: () => voi
     setBusy(true); setError(null);
     try { await fn(); onChanged(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(false); }
   };
-  const winner = m.result === 'draw' ? 'Draw' : m.result === 'a' ? `${m.nameA ?? 'Side A'} won` : m.result === 'b' ? `${m.nameB ?? 'Side B'} won` : '';
+  const winner = m.result === 'draw' ? 'Draw' : m.result === 'a' ? `${sideLabel(m.entryA, m.nameA, 'Side A')} won` : m.result === 'b' ? `${sideLabel(m.entryB, m.nameB, 'Side B')} won` : '';
   const reasonOk = reason.trim().length >= 3;
+  const title = `${sideLabel(m.entryA, m.nameA, 'To be decided')} vs ${sideLabel(m.entryB, m.nameB, 'To be decided')}`;
 
   return (
-    <article className="panel info" style={{ display: 'grid', gap: 10 }} aria-label={`${m.nameA ?? 'To be decided'} vs ${m.nameB ?? 'To be decided'}`}>
+    <article className="panel info" style={{ display: 'grid', gap: 10 }} aria-label={title}>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-        <b style={{ overflowWrap: 'anywhere' }}>{m.nameA ?? 'To be decided'} vs {m.nameB ?? 'To be decided'}</b>
+        <b style={{ overflowWrap: 'anywhere' }}>{title}</b>
         {isFinal ? <Chip tone="win">Final</Chip> : m.queueState === 'active' ? <Chip tone="live">Active</Chip> : <Chip>{QUEUE_OPTIONS.find(([k]) => k === m.queueState)?.[1] ?? m.queueState}</Chip>}
         {m.field && <Chip tone="steel">{m.field}</Chip>}
       </div>
       {isFinal && <p>{winner}{m.scoreA !== null && m.scoreB !== null ? ` (${m.scoreA} to ${m.scoreB})` : ''}</p>}
 
-      {!isFinal && !ready && <p className="src">Waiting for earlier results before this match can be scheduled.</p>}
+      {!isFinal && !ready && <p className="src">{m.stage === 'third_place' && !m.entryA && !m.entryB ? 'Waiting for the semifinals to finish' : 'Waiting for earlier results before this match can be scheduled.'}</p>}
       {!isFinal && ready && (<>
         <div className="seg" role="group" aria-label="Queue state">
           {QUEUE_OPTIONS.map(([k, text]) => (
-            <button key={k} type="button" disabled={busy} aria-pressed={k === m.queueState} onClick={() => k !== m.queueState && run(() => setQueue(m.id, k as OpenQueue, m.field))}>{text}</button>
+            <button key={k} type="button" disabled={busy} aria-pressed={k === m.queueState} onClick={() => k !== m.queueState && run(() => setQueue(m.id, k as OpenQueue, null))}>{text}</button>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'end', flexWrap: 'wrap' }}>
           <label className="field-in" style={{ flex: '1 1 160px' }}>Field
             <input value={field} maxLength={40} placeholder="For example Field 1" onChange={e => setField(e.target.value)} />
           </label>
-          <button type="button" className="btn btn-line" disabled={busy || field.trim() === (m.field ?? '')} onClick={() => run(() => setQueue(m.id, m.queueState as Exclude<QueueState, 'final'>, field.trim() || null))}>Set field</button>
+          <button type="button" className="btn btn-line" disabled={busy || field.trim() === (m.field ?? '')} onClick={() => run(() => setQueue(m.id, m.queueState as Exclude<QueueState, 'final'>, field.trim()))}>Set field</button>
         </div>
       </>)}
 

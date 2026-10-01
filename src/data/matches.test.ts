@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../lib/supabase', () => ({ supabase: {} }));
+import { fieldArg } from './matches';
 import { groupIntoRounds, toMatch, type CompetitionMatch } from './matches';
 
 const m = (over: Partial<CompetitionMatch>): CompetitionMatch => ({
@@ -33,5 +34,15 @@ describe('toMatch', () => {
     expect(r.nameA).toBe('Iron Wolves');
     expect(r.nameB).toBe('Ana K');
     expect(r.detail).toEqual({});
+  });
+});
+
+describe('fieldArg', () => {
+  it('sends empty text to clear, null to keep, trimmed text to set', () => {
+    expect(fieldArg('')).toBe('');
+    expect(fieldArg('   ')).toBe('');
+    expect(fieldArg(null)).toBeNull();
+    expect(fieldArg(undefined)).toBeNull();
+    expect(fieldArg(' Field 2 ')).toBe('Field 2');
   });
 });

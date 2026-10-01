@@ -3,21 +3,24 @@ import type { OutboxEntry, SendResult, Sender } from './outbox';
 
 interface RpcErrorLike { message?: string; code?: string; status?: number }
 
+/** Codes the database uses to refuse an event on purpose. Anything else is retried, so a score event is never dropped silently. */
+const REJECT_CODES = new Set(['42501', 'P0001', 'P0002', 'PGRST202', 'PGRST204', 'PGRST116']);
+const isReject = (code: string) => REJECT_CODES.has(code) || /^22/.test(code) || /^23/.test(code);
+
 /**
  * Decide what a failed record_score_event call means for the outbox.
- * 'retry': nothing reached the database for good (no signal, server busy, signed out, token expired). Keep the entry.
  * 'reject': the database refused it on purpose (no permission, match final or missing, bad data). Drop and report it.
+ * 'retry': everything else (no signal, server busy, deadlock or serialization failure, lock timeout, signed out, token expired,
+ * and any code we do not recognise). Unknown failures are kept, never dropped; the outbox counts attempts so a stuck one is shown.
+ * `status` is the HTTP status of the response (PostgrestError has none; supabase-js returns it beside the error).
  */
-export function classifyRpcError(error: unknown): SendResult {
+export function classifyRpcError(error: unknown, status?: number): SendResult {
   const e = (error ?? {}) as RpcErrorLike;
-  if (typeof e.status === 'number' && e.status >= 500) return 'retry';
+  const http = typeof status === 'number' ? status : e.status;
+  if (typeof http === 'number' && http >= 500) return 'retry';
   const code = e.code ?? '';
   if (!code) return 'retry'; // fetch failed before the server answered
-  if (code === '28000') return 'retry'; // signed out or session expired: keep the events until they sign in again
-  if (/^PGRST30[1-3]$/.test(code)) return 'retry'; // JWT expired or invalid
-  if (code.startsWith('PGRST')) return 'reject';
-  if (/^(08|53|57|58|XX)/.test(code)) return 'retry'; // connection, resources, shutdown, internal
-  return 'reject';
+  return isReject(code) ? 'reject' : 'retry';
 }
 
 export interface ScoreEventArgs { p_id: string; p_match: string; p_kind: string; p_payload: unknown; p_client_at: string }
@@ -29,6 +32,6 @@ export const scoreEventArgs = (e: OutboxEntry): ScoreEventArgs => ({
 export const realSender: Sender = async entry => {
   const { data } = await supabase.auth.getSession();
   if (!data.session) return 'retry';
-  const { error } = await supabase.rpc('record_score_event', scoreEventArgs(entry));
-  return error ? classifyRpcError(error) : 'ok';
+  const { error, status } = await supabase.rpc('record_score_event', scoreEventArgs(entry));
+  return error ? classifyRpcError(error, status) : 'ok';
 };

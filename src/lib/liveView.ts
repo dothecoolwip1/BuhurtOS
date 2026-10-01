@@ -5,6 +5,7 @@
  */
 import type { CompetitionMatch, CompetitionEntry, Standing, QueueState } from '../data/matches';
 import { groupIntoRounds } from '../data/matches';
+import { sideLabel, UNNAMED_ENTRY } from './entryLabel';
 
 export const TBD = 'To be decided';
 
@@ -20,7 +21,7 @@ export function sortStandings(standings: readonly Standing[], entries: readonly 
   const byEntry = new Map(entries.map(e => [e.id, e]));
   const rows: StandingRow[] = standings.map(s => {
     const e = byEntry.get(s.entryId);
-    return { entryId: s.entryId, name: e?.name ?? 'Unnamed entry', pool: e?.pool ?? null, wins: s.wins, losses: s.losses, draws: s.draws, scoreFor: s.scoreFor, scoreAgainst: s.scoreAgainst, diff: s.scoreFor - s.scoreAgainst, tied: false };
+    return { entryId: s.entryId, name: e?.name ?? UNNAMED_ENTRY, pool: e?.pool ?? null, wins: s.wins, losses: s.losses, draws: s.draws, scoreFor: s.scoreFor, scoreAgainst: s.scoreAgainst, diff: s.scoreFor - s.scoreAgainst, tied: false };
   });
   rows.sort((a, b) => b.wins - a.wins || b.diff - a.diff || a.name.localeCompare(b.name));
   for (let i = 0; i < rows.length; i++) {
@@ -53,7 +54,7 @@ function slot(m: CompetitionMatch, side: 'a' | 'b'): BracketSlot {
   const winner = done && !!entryId && m.winnerEntryId === entryId;
   const loser = done && m.winnerEntryId !== null && !!entryId && m.winnerEntryId !== entryId;
   const score = done ? (side === 'a' ? m.scoreA : m.scoreB) : null;
-  return { entryId, name: entryId ? name ?? 'Unnamed entry' : TBD, tbd: !entryId, score, winner, loser };
+  return { entryId, name: sideLabel(entryId, name, TBD), tbd: !entryId, score, winner, loser };
 }
 
 /** Elimination rounds as columns, earliest first, then the final, then third place. Empty when there are no bracket matches. */
@@ -91,7 +92,7 @@ export function buildNowAndNext(matches: readonly CompetitionMatch[], competitio
     field,
     items: [...list].sort((x, y) => NOW_RANK[x.queueState] - NOW_RANK[y.queueState] || (x.scheduledAt ?? '').localeCompare(y.scheduledAt ?? '') || x.position - y.position).map(m => ({
       id: m.id, state: m.queueState, competition: competitionNames.get(m.competitionId) ?? 'Competition', round: m.pool ? `Pool ${m.pool}, ${m.roundLabel}` : m.roundLabel,
-      nameA: m.nameA ?? TBD, nameB: m.nameB ?? TBD
+      nameA: sideLabel(m.entryA, m.nameA, TBD), nameB: sideLabel(m.entryB, m.nameB, TBD)
     }))
   }));
 }

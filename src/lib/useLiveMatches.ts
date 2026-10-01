@@ -17,7 +17,7 @@ async function loadAll(ids: readonly string[]): Promise<Record<string, LiveCompe
 }
 
 /**
- * Live matches, entries and standings for the given competitions (one event). Subscribes to realtime changes on `matches`
+ * Live matches, entries and standings for the given competitions (one event). Subscribes to realtime changes on `matches` and `entries`
  * and refetches (debounced); polls every 15 s whenever the realtime channel is not connected. Everything is cleaned up on unmount.
  * The matches table has no event column, so the subscription is unfiltered and changes are matched to our competitions client-side.
  */
@@ -35,6 +35,7 @@ export function useLiveMatches(competitionIds: readonly string[]): LiveState {
     let debounce: ReturnType<typeof setTimeout> | undefined;
 
     const run = async () => {
+      if (!alive) return;
       if (inFlight) { again = true; return; }
       inFlight = true;
       try {
@@ -48,19 +49,29 @@ export function useLiveMatches(competitionIds: readonly string[]): LiveState {
       }
     };
     const stopPolling = () => { if (pollTimer) { clearInterval(pollTimer); pollTimer = undefined; } };
-    const startPolling = () => { if (!pollTimer) pollTimer = setInterval(() => { void run(); }, POLL_MS); };
+    const startPolling = () => { if (alive && !pollTimer) pollTimer = setInterval(() => { void run(); }, POLL_MS); };
 
     setState(s => ({ ...s, loading: true }));
     void run();
     startPolling(); // fallback until realtime reports it is connected
+    const onChange = () => {
+      if (!alive) return;
+      clearTimeout(debounce);
+      debounce = setTimeout(() => { void run(); }, DEBOUNCE_MS);
+    };
     const channel = supabase.channel(`live-matches-${key}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'matches' }, payload => {
         const row = (payload.new && 'competition_id' in payload.new ? payload.new : payload.old) as { competition_id?: string } | undefined;
         if (row?.competition_id && !ids.includes(row.competition_id)) return;
-        clearTimeout(debounce);
-        debounce = setTimeout(() => { void run(); }, DEBOUNCE_MS);
+        onChange();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'entries' }, payload => {
+        const row = (payload.new && 'competition_id' in payload.new ? payload.new : payload.old) as { competition_id?: string } | undefined;
+        if (row?.competition_id && !ids.includes(row.competition_id)) return;
+        onChange();
       })
       .subscribe(status => {
+        if (!alive) return;
         if (status === 'SUBSCRIBED') { stopPolling(); void run(); } // catch up on anything missed while connecting
         else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') startPolling();
       });

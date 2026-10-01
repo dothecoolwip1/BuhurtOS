@@ -24,6 +24,9 @@ export interface OutboxStorage {
 
 export interface FlushReport { sent: number; rejected: OutboxEntry[]; remaining: number; stoppedOffline: boolean }
 
+/** An entry that has been tried this many times and still not gone through is shown as stuck. */
+export const STUCK_ATTEMPTS = 20;
+
 export class Outbox {
   private entries: OutboxEntry[] = [];
   private ready: Promise<void>;
@@ -39,6 +42,8 @@ export class Outbox {
 
   async pending(): Promise<OutboxEntry[]> { await this.ready; return [...this.entries]; }
   get size() { return this.entries.length; }
+  /** How many saved entries have failed to send many times in a row (see STUCK_ATTEMPTS). */
+  get stuck() { return this.entries.filter(e => e.attempts >= STUCK_ATTEMPTS).length; }
 
   async enqueue<P>(kind: string, subject: string, payload: P): Promise<OutboxEntry<P>> {
     await this.ready;

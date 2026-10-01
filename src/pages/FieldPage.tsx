@@ -6,6 +6,7 @@ import { DuelBoard, GroupBoard, ProBoard } from '../components/ScoreBoards';
 import { Chip, PageHead } from '../components/ui';
 import { fetchEvent, fetchMyEventContext, type LiveEvent } from '../data/api';
 import { fetchEventMatches, fetchFieldCompetitions, type FieldCompetition } from '../data/field';
+import { sideLabel } from '../lib/entryLabel';
 import { finalizeMatch, setQueue, type CompetitionMatch } from '../data/matches';
 import { clearBoard, loadBoard, saveBoard } from '../lib/boardStore';
 import {
@@ -23,15 +24,16 @@ import { NotFoundPage } from './NotFoundPage';
 const SCORE_ROLES = ['organizer', 'marshal', 'scorekeeper', 'owner'];
 const POLL_MS = 10000;
 
-function SyncBar({ waiting }: { waiting: number }) {
+function SyncBar({ waiting, stuck = 0 }: { waiting: number; stuck?: number }) {
   return (
     <div className="syncbar" role="status">
       <span className={`chip ${waiting ? 'brass' : 'win'}`}>{waiting ? `${waiting} saved on this device, waiting for signal` : 'All saved and synced'}</span>
+      {stuck > 0 && <span className="chip brass" role="alert">{stuck} still not sent after many tries. Check your signal and sign-in, or tell an organizer.</span>}
     </div>
   );
 }
 
-const sideName = (m: CompetitionMatch) => ({ a: m.nameA ?? 'Side A', b: m.nameB ?? 'Side B' });
+const sideName = (m: CompetitionMatch) => ({ a: sideLabel(m.entryA, m.nameA, 'Side A'), b: sideLabel(m.entryB, m.nameB, 'Side B') });
 
 function QueueRow({ m, comp, busy, onOpen }: { m: CompetitionMatch; comp: FieldCompetition | undefined; busy: boolean; onOpen: () => void }) {
   const n = sideName(m);
@@ -43,7 +45,7 @@ function QueueRow({ m, comp, busy, onOpen }: { m: CompetitionMatch; comp: FieldC
         <span className="src">{comp?.name ?? 'Competition'} · {m.roundLabel || m.stage}{m.pool ? ` · Pool ${m.pool}` : ''}</span>
       </span>
       <b className="fq-names">{n.a} <span style={{ color: 'var(--faint)' }}>vs</span> {n.b}</b>
-      {!ready && <span className="src">Waiting for an earlier match to decide the other side.</span>}
+      {!ready && <span className="src">{m.stage === 'third_place' && !m.entryA && !m.entryB ? 'Waiting for the semifinals to finish' : 'Waiting for an earlier match to decide the other side.'}</span>}
       {ready && <span className="src">{m.queueState === 'active' ? 'Tap to continue scoring' : 'Tap to start scoring'}</span>}
     </button>
   );
@@ -152,7 +154,7 @@ export function FieldPage() {
   const field = rawField.trim();
   const { session, loading: authLoading } = useAuth();
   const userId = session?.user.id;
-  const { waiting } = useOutbox();
+  const { waiting, stuck } = useOutbox();
   const [reloadKey, setReloadKey] = useState(0);
   const [opened, setOpened] = useState<Opened | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -212,7 +214,7 @@ export function FieldPage() {
 
   return (
     <section className="marshal fade-in">
-      <SyncBar waiting={waiting} />
+      <SyncBar waiting={waiting} stuck={stuck} />
       {opened ? (
         <Scoring
           key={opened.match.id}

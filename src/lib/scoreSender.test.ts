@@ -11,12 +11,25 @@ describe('classifyRpcError', () => {
     expect(classifyRpcError({ code: '08006' })).toBe('retry');
     expect(classifyRpcError({ code: 'PGRST301' })).toBe('retry');
     expect(classifyRpcError({ code: '28000' })).toBe('retry');
+    for (const code of ['PGRST000', 'PGRST001', 'PGRST002', '40001', '40P01', '55P03', '57014', '53300']) expect(classifyRpcError({ code })).toBe('retry');
+  });
+  it('retries codes it does not know, so nothing is dropped silently', () => {
+    expect(classifyRpcError({ code: 'PGRST999' })).toBe('retry');
+    expect(classifyRpcError({ code: 'ZZ123' })).toBe('retry');
+  });
+  it('uses the response status when given', () => {
+    expect(classifyRpcError({ code: 'P0001' }, 503)).toBe('retry');
+    expect(classifyRpcError({ code: 'P0001' }, 400)).toBe('reject');
   });
   it('rejects permission and validation errors', () => {
     expect(classifyRpcError({ code: '42501' })).toBe('reject');
     expect(classifyRpcError({ code: 'P0001', message: 'this match is already final' })).toBe('reject');
     expect(classifyRpcError({ code: 'P0002' })).toBe('reject');
     expect(classifyRpcError({ code: '22P02' })).toBe('reject');
+    expect(classifyRpcError({ code: '22023' })).toBe('reject');
+    expect(classifyRpcError({ code: '23505' })).toBe('reject');
+    expect(classifyRpcError({ code: 'PGRST204' })).toBe('reject');
+    expect(classifyRpcError({ code: 'PGRST116' })).toBe('reject');
     expect(classifyRpcError({ code: 'PGRST202', status: 404 })).toBe('reject');
   });
 });

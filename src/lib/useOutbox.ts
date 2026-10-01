@@ -36,7 +36,7 @@ export function useOutbox(opts: { preview?: boolean } = {}) {
   const ch = opts.preview ? preview : real;
   useSyncExternalStore(
     cb => { ch.subs.add(cb); return () => { ch.subs.delete(cb); }; },
-    () => `${ch.version}:${ch.box.size}:${ch.rejected.length}`
+    () => `${ch.version}:${ch.box.size}:${ch.box.stuck}:${ch.rejected.length}`
   );
   const flush = useCallback(async (): Promise<FlushReport> => {
     const report = await ch.box.flush(ch.send);
@@ -64,5 +64,5 @@ export function useOutbox(opts: { preview?: boolean } = {}) {
     ch.rejected = subject ? ch.rejected.filter(e => e.subject !== subject) : [];
     ch.subs.forEach(f => f());
   }, [ch]);
-  return { waiting: ch.box.size, record, flush, drain, rejected: ch.rejected, dismissRejected };
+  return { waiting: ch.box.size, stuck: ch.box.stuck, record, flush, drain, rejected: ch.rejected, dismissRejected };
 }
