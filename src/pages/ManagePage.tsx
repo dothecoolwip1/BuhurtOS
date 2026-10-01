@@ -14,12 +14,14 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
 import { NotFoundPage } from './NotFoundPage';
+import { ExportRegistrations } from './ExportRegistrations';
 import { PeopleTab } from './PeopleTab';
 import { RunTab } from './RunTab';
 import { SetupTab } from './SetupTab';
+import { TeamsTab } from './TeamsTab';
 
-type Tab = 'review' | 'checkin' | 'run' | 'setup' | 'people';
-const TABS: Tab[] = ['review', 'checkin', 'run', 'setup', 'people'];
+type Tab = 'review' | 'checkin' | 'run' | 'setup' | 'people' | 'teams';
+const TABS: Tab[] = ['review', 'checkin', 'run', 'setup', 'people', 'teams'];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -160,12 +162,14 @@ export function ManagePage() {
     <section className="fade-in" style={{ display: 'grid', gap: 18 }}>
       <PageHead eyebrow="Organizers" title={`Manage ${event.name}`} />
       <Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link>
-      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People']] as const}
+      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People'], ['teams', 'Teams']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
+      {tab === 'teams' && <TeamsTab />}
       {tab === 'people' && <PeopleTab eventId={event.id} myUserId={userId} />}
       {(tab === 'review' || tab === 'checkin') && (<>
+      {tab === 'review' && <ExportRegistrations slug={event.slug} registrations={all} />}
       {tab === 'review' && (
         <Seg label="Show" value={filter} options={[['pending', `Pending ${counts.pending}`], ['accepted', `Accepted ${counts.accepted}`], ['declined', `Declined ${counts.declined}`], ['all', 'All']] as const} onChange={setFilter} />
       )}
