@@ -370,6 +370,7 @@ td.num,th.num{text-align:right;font-family:var(--f-data);font-variant-numeric:ta
 @media (max-width:760px){.calc{grid-template-columns:minmax(0,1fr)}}
 .field-in{display:grid;gap:6px;font-size:14px;color:var(--muted)}
 .field-in input,.field-in select{height:44px;border-radius:8px;border:1px solid var(--line);background:var(--raised);color:var(--ink);font:500 16px var(--f-body);padding:0 12px;width:100%}
+.field-in textarea{border-radius:8px;border:1px solid var(--line);background:var(--raised);color:var(--ink);font:500 16px var(--f-body);padding:10px 12px;width:100%}
 .result{display:grid;gap:8px;align-content:center;justify-items:start;padding:22px;border-radius:var(--r);background:var(--ink);color:var(--surface)}
 :root .result .eyebrow{color:var(--faint)}
 .result .nbig{color:var(--surface)}

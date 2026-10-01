@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { CompetitionMatch } from '../data/matches';
-import { boardModeFor, fieldQueue, isStaleVersionError, newBoard, perSideFor, resultFromBoard, resultSummary, type BoardState } from './fieldScoring';
+import { boardModeFor, canOfferFinish, fieldQueue, isStaleVersionError, newBoard, perSideFor, resultFromBoard, resultSummary, type BoardState } from './fieldScoring';
+import { configureSeries, newMarathon, newSeries, setSeriesRound, type SeriesState } from './marathon';
 import { confirmRound, duelEndRound, duelScore, newDuel, newGroupFight, newPro, toggleFighter, type ProState } from './scoring';
 
 const m = (over: Partial<CompetitionMatch>): CompetitionMatch => ({
@@ -15,6 +16,11 @@ describe('boardModeFor / perSideFor', () => {
     expect(boardModeFor('duels')).toBe('duel');
     expect(boardModeFor('outrance')).toBe('pro');
     expect(boardModeFor('hacsa')).toBeNull();
+    expect(boardModeFor('hacsa', 'marathon')).toBe('marathon');
+    expect(boardModeFor('hacsa', 'triathlon')).toBe('series');
+    expect(boardModeFor('hacsa', 'sabre')).toBe('series');
+    expect(boardModeFor('hacsa', 'greatsword')).toBe('series');
+    expect(boardModeFor('duels', 'longsword')).toBe('duel');
   });
   it('reads fighters per side from the category', () => {
     expect(perSideFor('5v5')).toBe(5);
@@ -91,5 +97,37 @@ describe('summaries and errors', () => {
     expect(isStaleVersionError({ message: 'this match changed since you opened it, reload and check it' })).toBe(true);
     expect(isStaleVersionError(new Error('nope'))).toBe(false);
     expect(isStaleVersionError(null)).toBe(false);
+  });
+});
+
+describe('resultFromBoard: marathon and series', () => {
+  const full = (s: SeriesState, rs: ('a' | 'b' | 'tie')[]) => rs.reduce((acc, r) => setSeriesRound(acc, r, 0), s);
+  it('is not finishable until all six rounds are in', () => {
+    const b: BoardState = { mode: 'marathon', s: full(newMarathon(), ['a']) };
+    expect(resultFromBoard(b, 'pool').ok).toBe(false);
+    expect(canOfferFinish(b, 'pool')).toBe(false);
+    expect(newBoard('marathon')).toMatchObject({ mode: 'marathon' });
+  });
+  it('maps total points to score and per-round results to detail', () => {
+    const b: BoardState = { mode: 'marathon', s: full(newMarathon(), ['a', 'a', 'tie', 'b', 'a', 'a']) };
+    const out = resultFromBoard(b, 'elimination');
+    expect(out).toMatchObject({ ok: true, value: { result: 'a', scoreA: 9, scoreB: 3, detail: { kind: 'marathon', totals: { a: 9, b: 3 } } } });
+    if (out.ok) expect((out.value.detail as { rounds: unknown[] }).rounds).toHaveLength(6);
+  });
+  it('level is a draw in a pool and needs a decider in elimination', () => {
+    const b: BoardState = { mode: 'marathon', s: full(newMarathon(), ['a', 'a', 'a', 'b', 'b', 'b']) };
+    expect(resultFromBoard(b, 'pool')).toMatchObject({ ok: true, value: { result: 'draw', scoreA: 6, scoreB: 6 } });
+    const out = resultFromBoard(b, 'final');
+    expect(out.ok).toBe(false);
+    if (!out.ok) expect(out.reason).toMatch(/decider/i);
+  });
+  it('series with rules not loaded needs organizer setup first', () => {
+    const fresh: BoardState = newBoard('series', { seriesKind: 'sabre' });
+    expect(fresh).toMatchObject({ mode: 'series', s: { kind: 'sabre', configured: false } });
+    const out = resultFromBoard(fresh, 'pool');
+    expect(out.ok).toBe(false);
+    if (!out.ok) expect(out.reason).toMatch(/organizer/i);
+    const s = full(configureSeries(newSeries('sabre'), { disciplines: ['Bout 1', 'Bout 2'], winPoints: 3, tiePoints: 1 }), ['a', 'tie']);
+    expect(resultFromBoard({ mode: 'series', s }, 'pool')).toMatchObject({ ok: true, value: { result: 'a', scoreA: 4, scoreB: 1, detail: { kind: 'series', rulesLoaded: false } } });
   });
 });
