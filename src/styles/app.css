@@ -556,3 +556,4 @@ main :where(div, section, article, label) { min-width: 0; }
 .rolebox .seg{display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:visible}
 .rolebox .seg button{white-space:nowrap}
 @media (max-width:560px){.top .btn{padding:0 12px;min-height:40px;font-size:14px}.top .btn-ink{display:none}}
+.linklike{background:none;border:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;padding:0 0 0 8px}

@@ -5,6 +5,10 @@ import { TeamCard } from '../components/TeamCard';
 import { Chip, Pips } from '../components/ui';
 import { LEAGUES } from '../content/leagues';
 import { EVENTS, MOVES, TEAMS } from '../data/fixtures';
+import { fetchEvents } from '../data/api';
+import { useSampleMode } from '../data/mode';
+import { toSummary } from '../components/EventSummaryMap';
+import { useAsync } from '../lib/useAsync';
 import { RankTable } from '../components/RankTable';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { LeagueIcon } from '../components/LeagueIcon';
@@ -27,6 +31,53 @@ function LiveCard() {
 
 export function HomePage() {
   useDocumentTitle('BuhurtOS');
+  return useSampleMode() ? <SampleHome /> : <LiveHome />;
+}
+
+/** The real home page: only what the database holds. */
+function LiveHome() {
+  const live = useAsync(fetchEvents, []);
+  const upcoming = (live.data ?? []).map(e => toSummary(e));
+  const next = upcoming[0];
+  return (
+    <>
+      <section className="hero fade-in">
+        <div>
+          <p className="eyebrow">Armored combat, in one place</p>
+          <h1 style={{ marginTop: 14 }}>Every list.<br />Every fight.<br /><span className="t">Every result.</span></h1>
+          <p className="lede">Group fights, duels and profights. Find events, register, follow the bracket, and look up the rule while the fight is still on.</p>
+          <div className="ctas">
+            <Link className="btn btn-ink" to={next ? `/events/${next.id}` : '/events'}>{next ? `See ${next.name}` : 'See events'}</Link>
+            <Link className="btn btn-line" to="/formats">How each style works</Link>
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="section-head"><h2>Pick your fight</h2><Link className="more" to="/formats">All formats and tournament tiers →</Link></div>
+        <div className="lg-cards">
+          {LEAGUES.map(l => (
+            <Link key={l.id} className="lgcard" to={`/formats?lg=${l.id}`}>
+              <span className="ic"><LeagueIcon id={l.id} /></span>
+              <div><p className="eyebrow">{l.tag}</p><h3 style={{ marginTop: 6 }}>{l.name}</h3></div>
+              <p>{l.summary}</p>
+              <div className="cats">{l.categories.map(c => <Chip key={c}>{c}</Chip>)}</div>
+              <span className="go">How it works →</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+      <section className="section">
+        <div className="section-head"><h2>Coming up</h2><Link className="more" to="/events">All events →</Link></div>
+        <div className="eventlist">
+          {upcoming.slice(0, 4).map(e => <EventRow key={e.id} e={e} />)}
+          {!live.loading && upcoming.length === 0 && <div className="panel info"><h3>No events published yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them.</p></div>}
+        </div>
+      </section>
+    </>
+  );
+}
+
+function SampleHome() {
   return (
     <>
       <section className="hero fade-in">

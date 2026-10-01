@@ -1,8 +1,13 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { EventRow } from '../components/EventRow';
+import { toSummary } from '../components/EventSummaryMap';
 import { PageHead, Seg } from '../components/ui';
+import { fetchEvents } from '../data/api';
 import { EVENTS } from '../data/fixtures';
+import { useSampleMode } from '../data/mode';
 import type { LeagueId } from '../data/types';
+import { friendlyError } from '../lib/friendlyError';
+import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 type Filter = 'all' | LeagueId;
@@ -10,22 +15,36 @@ const FILTERS: readonly (readonly [Filter, string])[] = [['all', 'All'], ['buhur
 
 export function EventsPage() {
   useDocumentTitle('Events');
+  const sample = useSampleMode();
   const [params, setParams] = useSearchParams();
   const raw = params.get('format');
   const filter: Filter = FILTERS.some(([k]) => k === raw) ? (raw as Filter) : 'all';
-  const list = EVENTS.filter(e => filter === 'all' || e.leagues.includes(filter));
+  const live = useAsync(fetchEvents, []);
+  const real = (live.data ?? []).map(e => toSummary(e));
+  const matches = (leagues: LeagueId[]) => filter === 'all' || leagues.includes(filter);
+  const list = real.filter(e => matches(e.leagues));
+  const samples = sample ? EVENTS.filter(e => matches(e.leagues)) : [];
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
-      <PageHead eyebrow="Calendar" title="Events" lede="One event can run several competitions: a men's 5v5, a women's 5v5, three duel categories and a profight card, each with its own tier and bracket." />
+      <PageHead eyebrow="Calendar" title="Events" lede="One event can run several competitions, each with its own ruleset and bracket." />
       <div className="evfilter">
         <Seg label="Format" value={filter} options={FILTERS} onChange={v => setParams(v === 'all' ? {} : { format: v }, { replace: true })} />
         <Link className="more" to="/formats?tab=tournaments">What are the tiers? →</Link>
       </div>
+      {live.loading && <p className="muted">Loading events…</p>}
+      {live.error != null && <p role="alert">{friendlyError(live.error, 'Could not load events.')}</p>}
       <div className="eventlist">
-        {list.length ? list.map(e => <EventRow key={e.id} e={e} />) : (
-          <div className="panel info"><h3>No events for this format yet</h3><p style={{ color: 'var(--muted)' }}>Organizers can submit one from their event page.</p></div>
+        {list.map(e => <EventRow key={e.id} e={e} />)}
+        {!live.loading && !live.error && list.length === 0 && samples.length === 0 && (
+          <div className="panel info"><h3>No events published yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them.</p></div>
         )}
       </div>
+      {samples.length > 0 && (
+        <>
+          <p className="eyebrow">Sample events (invented)</p>
+          <div className="eventlist">{samples.map(e => <EventRow key={e.id} e={e} />)}</div>
+        </>
+      )}
     </section>
   );
 }

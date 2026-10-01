@@ -24,7 +24,7 @@ export interface EventSummary {
   name: string;
   meta: string[];
   leagues: LeagueId[];
-  tier: TierName | 'Practice' | 'Matched fights';
+  tier: TierName | 'Practice' | 'Matched fights' | null;
   badges: { tone: ChipTone; label: string }[];
   /** Only some sample events have a full hub. */
   hasHub: boolean;

@@ -9,7 +9,7 @@ export function EventRow({ e }: { e: EventSummary }) {
       <div style={{ minWidth: 0 }}><h3>{e.name}</h3><div className="meta">{e.meta.map(m => <span key={m}>{m}</span>)}</div></div>
       <div className="tags">
         {e.badges.map(b => <Chip key={b.label} tone={b.tone}>{b.label}</Chip>)}
-        <TierChip tier={e.tier} />
+        {e.tier && <TierChip tier={e.tier} />}
         <LeagueChips leagues={e.leagues} />
       </div>
     </Link>

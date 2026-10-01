@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { SAMPLE_DATA } from '../data/fixtures';
+import { setSampleMode, useSampleMode } from '../data/mode';
 import { useAuth } from '../auth/AuthContext';
 
 const NAV = [
@@ -30,10 +30,11 @@ export function Layout() {
   const toggleTheme = useTheme();
   const { pathname } = useLocation();
   const { session } = useAuth();
+  const sample = useSampleMode();
   useEffect(() => { window.scrollTo({ top: 0 }); }, [pathname]);
   return (
     <>
-      {SAMPLE_DATA && <div className="mockflag">PREVIEW BUILD · <b>Teams, fighters, events and scores are invented sample data.</b></div>}
+      {sample && <div className="mockflag">SAMPLE MODE · <b>Teams, fighters, events and scores here are invented.</b> <button type="button" className="linklike" onClick={() => setSampleMode(false)}>Leave sample mode</button></div>}
       <header className="top">
         <div className="wrap">
           <NavLink className="brand" to="/" aria-label="BuhurtOS home">
@@ -45,14 +46,14 @@ export function Layout() {
           </nav>
           <div className="spacer" />
           <NavLink className="btn btn-line" to="/account">{session ? 'Account' : 'Sign in'}</NavLink>
-          <NavLink className="btn btn-ink" to="/admin">Manage</NavLink>
+          {sample && <NavLink className="btn btn-ink" to="/admin">Admin preview</NavLink>}
           <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Switch light or dark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></svg>
           </button>
         </div>
       </header>
       <main className="wrap"><Outlet /></main>
-      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat.</span><span className="mono">Preview build · sample data</span></div></footer>
+      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat.</span>{sample && <span className="mono">Sample mode</span>}</div></footer>
       <nav className="bottom" aria-label="Main">
         {NAV.map(n => (
           <NavLink key={n.to} to={n.to} end={n.end}>
