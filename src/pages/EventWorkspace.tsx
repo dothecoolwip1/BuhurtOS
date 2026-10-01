@@ -53,7 +53,8 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
         <b>{mine.pendingRegistrations ?? 0}</b> registration{mine.pendingRegistrations === 1 ? '' : 's'} waiting for review.
         {event.status === 'draft' && <> The event is a <b>draft</b>: only organizers can see it.</>}
       </p>
-      <p className="src">Review, check-in, setup and the draw are the next screens to arrive in this workspace.</p>
+      <p><Link className="btn btn-ink" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link></p>
+      <p className="src">Setup, people and the draw are the next screens to arrive in this workspace.</p>
     </section>
   );
 }
