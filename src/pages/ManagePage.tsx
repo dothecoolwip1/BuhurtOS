@@ -15,10 +15,11 @@ import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
 import { NotFoundPage } from './NotFoundPage';
 import { PeopleTab } from './PeopleTab';
+import { RunTab } from './RunTab';
 import { SetupTab } from './SetupTab';
 
-type Tab = 'review' | 'checkin' | 'setup' | 'people';
-const TABS: Tab[] = ['review', 'checkin', 'setup', 'people'];
+type Tab = 'review' | 'checkin' | 'run' | 'setup' | 'people';
+const TABS: Tab[] = ['review', 'checkin', 'run', 'setup', 'people'];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -139,7 +140,7 @@ export function ManagePage() {
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error)}</p>;
   if (!loaded.data) return <NotFoundPage />;
-  const { event } = loaded.data;
+  const { event, competitions } = loaded.data;
   if (!session) return <><PageHead eyebrow="Organizers" title={`Manage ${event.name}`} /><SignIn reason="Sign in with the account that organizes this event." /></>;
   if (mine.loading && !mine.data) return <p className="muted">Loading…</p>;
   if (!isOrganizer) {
@@ -159,8 +160,9 @@ export function ManagePage() {
     <section className="fade-in" style={{ display: 'grid', gap: 18 }}>
       <PageHead eyebrow="Organizers" title={`Manage ${event.name}`} />
       <Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link>
-      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['setup', 'Setup'], ['people', 'People']] as const}
+      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
+      {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'people' && <PeopleTab eventId={event.id} myUserId={userId} />}
       {(tab === 'review' || tab === 'checkin') && (<>

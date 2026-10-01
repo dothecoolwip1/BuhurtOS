@@ -60,13 +60,14 @@ export async function fetchStandings(competitionId: string): Promise<Standing[]>
 /**
  * Insert planned matches. Two passes: all rows first (ids are generated here), then the next_match_id links, because the
  * database checks that a linked match already exists. Refuses if matches exist, unless `replace` deletes the unfinished ones
- * (finished matches are never deleted, so that still refuses when any are final).
+ * (finished matches are never deleted, so that still refuses when any are final). `append` adds to existing matches instead
+ * (used to build the bracket after pool play).
  */
-export async function generateMatches(competitionId: string, planned: readonly PlannedMatch[], opts: { replace?: boolean } = {}): Promise<number> {
+export async function generateMatches(competitionId: string, planned: readonly PlannedMatch[], opts: { replace?: boolean; append?: boolean } = {}): Promise<number> {
   const { data: existing, error: e0 } = await supabase.from('matches').select('id,queue_state').eq('competition_id', competitionId);
   if (e0) throw e0;
   const rows = (existing ?? []) as { id: string; queue_state: QueueState }[];
-  if (rows.length > 0) {
+  if (rows.length > 0 && !opts.append) {
     if (!opts.replace) throw new Error('This competition already has matches. Replace them to start over.');
     if (rows.some(r => r.queue_state === 'final')) throw new Error('Some matches are already final. Reopen them before replacing the schedule.');
     const { error } = await supabase.from('matches').delete().eq('competition_id', competitionId).neq('queue_state', 'final');
