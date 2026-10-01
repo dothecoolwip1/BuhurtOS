@@ -51,13 +51,13 @@ select public.set_entry_roster('92304270-e6d3-5b42-bfc5-faa6ab3c52ac', '[{"fight
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('8d280348-174a-5835-859e-a95dea34e6ff', '8095d48d-6110-5d13-bed8-8a7b91498b63', 'round_robin', 'Round 1', 0, null, '163ee1c7-391d-573a-94c7-f736b7171586', '99efa9f3-1652-58be-8fe3-dcc58f93437d', 'Ring 1', (timestamp '2024-02-17 10:00' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
-select public.finalize_match(m.id, 'a', 2, 0, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":0},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '8d280348-174a-5835-859e-a95dea34e6ff' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 1, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":1,"b":2},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = '8d280348-174a-5835-859e-a95dea34e6ff' and m.queue_state <> 'final';
 select public.finish_competition('8095d48d-6110-5d13-bed8-8a7b91498b63', 'tournament_structure') where exists (select 1 from public.competitions where id = '8095d48d-6110-5d13-bed8-8a7b91498b63' and status <> 'finished');
 -- Male 3v3: round_robin, 2 entries
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('c2530f9d-0831-543b-bd8f-420f5e4a5d6b', '92da3975-9c7d-5d7f-b7d4-f4cb80899b23', 'round_robin', 'Round 1', 0, null, '92304270-e6d3-5b42-bfc5-faa6ab3c52ac', '01475bfb-1f70-5074-b8ed-a62942c9c281', 'Ring 2', (timestamp '2024-02-17 10:00' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
-select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = 'c2530f9d-0831-543b-bd8f-420f5e4a5d6b' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = 'c2530f9d-0831-543b-bd8f-420f5e4a5d6b' and m.queue_state <> 'final';
 select public.finish_competition('92da3975-9c7d-5d7f-b7d4-f4cb80899b23', 'tournament_structure') where exists (select 1 from public.competitions where id = '92da3975-9c7d-5d7f-b7d4-f4cb80899b23' and status <> 'finished');
 -- Male Longsword: elimination, 9 entries
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
@@ -80,15 +80,15 @@ update public.matches m set next_match_id = v.n, next_slot = v.s from (values
   ('a84eab93-bfa0-56cb-9b0e-d3af6dd8592a'::uuid, 'f647ffe5-af7a-505e-9dd8-7a9a96d57de7'::uuid, 'a'),
   ('f70d75e7-432a-5820-9a10-744d7b61057b'::uuid, 'f647ffe5-af7a-505e-9dd8-7a9a96d57de7'::uuid, 'b')
 ) v(id, n, s) where m.id = v.id and m.next_match_id is null;
-select public.finalize_match(m.id, 'b', 3, 6, '{"kind":"duel","rounds":{"a":[0,2,1],"b":[1,1,4]},"totals":{"a":3,"b":6}}'::jsonb, m.version) from public.matches m where m.id = '201f4d02-0ab4-50c4-9b2f-161f76fb7db3' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'b', 2, 4, '{"kind":"duel","rounds":{"a":[2,0],"b":[1,3]},"totals":{"a":2,"b":4}}'::jsonb, m.version) from public.matches m where m.id = '3b16da87-af25-5999-a67d-b4674f8740b6' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'a', 4, 2, '{"kind":"duel","rounds":{"a":[0,4],"b":[0,2]},"totals":{"a":4,"b":2}}'::jsonb, m.version) from public.matches m where m.id = '50e1b3fd-39a9-56c7-8954-a7976a437b05' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'b', 1, 5, '{"kind":"duel","rounds":{"a":[1,0],"b":[3,2]},"totals":{"a":1,"b":5}}'::jsonb, m.version) from public.matches m where m.id = '199de068-b398-56dd-a170-1724d0f7c48d' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'b', 1, 4, '{"kind":"duel","rounds":{"a":[1,0],"b":[2,2]},"totals":{"a":1,"b":4}}'::jsonb, m.version) from public.matches m where m.id = '539bff6b-70e5-5133-b6f7-9b5b7a9ce4cb' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'b', 3, 7, '{"kind":"duel","rounds":{"a":[0,2,0,1,0],"b":[0,2,1,0,4]},"totals":{"a":3,"b":7}}'::jsonb, m.version) from public.matches m where m.id = 'a84eab93-bfa0-56cb-9b0e-d3af6dd8592a' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'a', 3, 1, '{"kind":"duel","rounds":{"a":[1,2],"b":[0,1]},"totals":{"a":3,"b":1}}'::jsonb, m.version) from public.matches m where m.id = 'f70d75e7-432a-5820-9a10-744d7b61057b' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'b', 3, 7, '{"kind":"duel","rounds":{"a":[0,3],"b":[1,6]},"totals":{"a":3,"b":7}}'::jsonb, m.version) from public.matches m where m.id = 'f647ffe5-af7a-505e-9dd8-7a9a96d57de7' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'b', 0, 5, '{"kind":"duel","rounds":{"a":[0,0],"b":[3,2]},"totals":{"a":0,"b":5}}'::jsonb, m.version) from public.matches m where m.id = 'd878a35a-d20b-50b0-8798-61fe26910ba2' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 3, 5, '{"kind":"duel","rounds":{"a":[0,2,1],"b":[1,1,3]},"totals":{"a":3,"b":5}}'::jsonb, m.version) from public.matches m where m.id = '201f4d02-0ab4-50c4-9b2f-161f76fb7db3' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 8, 11, '{"kind":"duel","rounds":{"a":[3,0,0,4,1,0],"b":[1,3,0,2,3,2]},"totals":{"a":8,"b":11}}'::jsonb, m.version) from public.matches m where m.id = '3b16da87-af25-5999-a67d-b4674f8740b6' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 1, 4, '{"kind":"duel","rounds":{"a":[1,0],"b":[2,2]},"totals":{"a":1,"b":4}}'::jsonb, m.version) from public.matches m where m.id = '50e1b3fd-39a9-56c7-8954-a7976a437b05' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 3, 7, '{"kind":"duel","rounds":{"a":[0,2,0,1,0],"b":[0,2,1,0,4]},"totals":{"a":3,"b":7}}'::jsonb, m.version) from public.matches m where m.id = '199de068-b398-56dd-a170-1724d0f7c48d' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 3, 6, '{"kind":"duel","rounds":{"a":[1,2,0],"b":[1,1,4]},"totals":{"a":3,"b":6}}'::jsonb, m.version) from public.matches m where m.id = '539bff6b-70e5-5133-b6f7-9b5b7a9ce4cb' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'a', 7, 3, '{"kind":"duel","rounds":{"a":[5,2],"b":[2,1]},"totals":{"a":7,"b":3}}'::jsonb, m.version) from public.matches m where m.id = 'a84eab93-bfa0-56cb-9b0e-d3af6dd8592a' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'a', 8, 0, '{"kind":"duel","rounds":{"a":[5,3],"b":[0,0]},"totals":{"a":8,"b":0}}'::jsonb, m.version) from public.matches m where m.id = 'f70d75e7-432a-5820-9a10-744d7b61057b' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 3, 8, '{"kind":"duel","rounds":{"a":[3,0,0],"b":[1,3,4]},"totals":{"a":3,"b":8}}'::jsonb, m.version) from public.matches m where m.id = 'f647ffe5-af7a-505e-9dd8-7a9a96d57de7' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"duel","rounds":{"a":[0,0],"b":[0,2]},"totals":{"a":0,"b":2}}'::jsonb, m.version) from public.matches m where m.id = 'd878a35a-d20b-50b0-8798-61fe26910ba2' and m.queue_state <> 'final';
 select public.finish_competition('2b52f0d3-3cbd-5543-a08c-5f4caebad0ee', 'tournament_structure') where exists (select 1 from public.competitions where id = '2b52f0d3-3cbd-5543-a08c-5f4caebad0ee' and status <> 'finished');
 -- Female Longsword: elimination, 10 entries
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values

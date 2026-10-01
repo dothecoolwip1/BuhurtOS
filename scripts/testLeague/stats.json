@@ -1,0 +1,7128 @@
+{
+    "0306adb1-06e0-5a41-bf2b-3354dc84e782": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 11
+        },
+        "wins": 5,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 1
+            },
+            "2025": {
+                "m": 7,
+                "w": 4
+            },
+            "2026": {
+                "m": 1,
+                "w": 0
+            }
+        },
+        "events": 4,
+        "losses": 5,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 19.75,
+        "bronzes": 2,
+        "matches": 10,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "07376369-8ff2-5201-9e96-9e9ea8b5ac0b": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 10
+        },
+        "wins": 8,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 2
+            },
+            "2025": {
+                "m": 9,
+                "w": 6
+            }
+        },
+        "events": 2,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 22.25,
+        "bronzes": 2,
+        "matches": 12,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "0b508c1f-b0a2-524e-b471-331960200135": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 9
+        },
+        "wins": 5,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 6,
+                "w": 3
+            },
+            "2026": {
+                "m": 6,
+                "w": 2
+            }
+        },
+        "events": 5,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 19.00,
+        "bronzes": 1,
+        "matches": 13,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "0debf14e-901a-5dde-a288-533867b19c6e": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 3
+        },
+        "wins": 14,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 4,
+                "w": 2
+            },
+            "2025": {
+                "m": 11,
+                "w": 7
+            },
+            "2026": {
+                "m": 5,
+                "w": 5
+            }
+        },
+        "events": 6,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 41.00,
+        "bronzes": 2,
+        "matches": 20,
+        "podiums": 5,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "0e28a5bf-3ca5-50ce-bf11-142105c58181": {
+        "rank": {
+            "of": 31,
+            "div": "Male 3v3",
+            "rank": 12
+        },
+        "wins": 8,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 2
+            },
+            "2024": {
+                "m": 6,
+                "w": 1
+            },
+            "2025": {
+                "m": 5,
+                "w": 2
+            },
+            "2026": {
+                "m": 8,
+                "w": 3
+            }
+        },
+        "events": 5,
+        "losses": 16,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 39.00,
+        "bronzes": 2,
+        "matches": 24,
+        "podiums": 8,
+        "silvers": 4,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "0e9e0d00-70a7-5985-ac4a-8b379a5521bf": {
+        "rank": {
+            "of": 33,
+            "div": "Female 5v5",
+            "rank": 7
+        },
+        "wins": 1,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 1
+            },
+            "2025": {
+                "m": 2,
+                "w": 0
+            },
+            "2026": {
+                "m": 2,
+                "w": 0
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 17.00,
+        "bronzes": 0,
+        "matches": 5,
+        "podiums": 3,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "104dfdb9-1ffa-54a2-8eb7-59e80cd8dad9": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 10
+        },
+        "wins": 4,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 6,
+                "w": 4
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            }
+        },
+        "events": 3,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 3
+            }
+        ],
+        "points": 11.00,
+        "bronzes": 1,
+        "matches": 7,
+        "podiums": 2,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2024
+    },
+    "1272d6a3-febf-5533-8857-b004a37ad1bb": {
+        "rank": {
+            "of": 31,
+            "div": "Male 3v3",
+            "rank": 7
+        },
+        "wins": 7,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 8,
+                "w": 1
+            },
+            "2025": {
+                "m": 3,
+                "w": 2
+            },
+            "2026": {
+                "m": 9,
+                "w": 4
+            }
+        },
+        "events": 3,
+        "losses": 13,
+        "medals": [
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 21.50,
+        "bronzes": 1,
+        "matches": 20,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "1434a046-cc53-5391-86f0-ecf252a00d87": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 18
+        },
+        "wins": 4,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 13,
+                "w": 2
+            },
+            "2025": {
+                "m": 4,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 13,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 3
+            }
+        ],
+        "points": 15.50,
+        "bronzes": 2,
+        "matches": 17,
+        "podiums": 4,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "14aed5cd-7ebd-5bd5-a88c-b122058d9b5b": {
+        "rank": {
+            "of": 33,
+            "div": "Female 5v5",
+            "rank": 2
+        },
+        "wins": 7,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 3
+            },
+            "2025": {
+                "m": 6,
+                "w": 1
+            },
+            "2026": {
+                "m": 8,
+                "w": 3
+            }
+        },
+        "events": 5,
+        "losses": 11,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 40.75,
+        "bronzes": 3,
+        "matches": 18,
+        "podiums": 8,
+        "silvers": 4,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "151f1b02-af6f-5a34-b0cb-a056556d730a": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 4
+        },
+        "wins": 20,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 12,
+                "w": 9
+            },
+            "2024": {
+                "m": 5,
+                "w": 2
+            },
+            "2025": {
+                "m": 5,
+                "w": 4
+            },
+            "2026": {
+                "m": 12,
+                "w": 5
+            }
+        },
+        "events": 5,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            }
+        ],
+        "points": 59.25,
+        "bronzes": 3,
+        "matches": 34,
+        "podiums": 8,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "1a9c131f-3e6b-5182-868c-ad907a16b5b1": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 22
+        },
+        "wins": 2,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 7,
+                "w": 1
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 3,
+                "w": 1
+            }
+        },
+        "events": 4,
+        "losses": 9,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 9.75,
+        "bronzes": 0,
+        "matches": 11,
+        "podiums": 2,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "1b7a98f8-321b-5f82-a59c-55c84cab431b": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 8
+        },
+        "wins": 7,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 9,
+                "w": 4
+            },
+            "2025": {
+                "m": 7,
+                "w": 3
+            }
+        },
+        "events": 4,
+        "losses": 9,
+        "medals": [
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            }
+        ],
+        "points": 16.00,
+        "bronzes": 1,
+        "matches": 16,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "1c29a853-dcea-582a-9561-f92c4ef9b6a3": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 11
+        },
+        "wins": 6,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 3
+            },
+            "2025": {
+                "m": 2,
+                "w": 1
+            },
+            "2026": {
+                "m": 4,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 5,
+        "medals": [
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 21.00,
+        "bronzes": 1,
+        "matches": 11,
+        "podiums": 3,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "1fcb6cfe-8069-5c6d-96dd-56ea1b461f7b": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 7
+        },
+        "wins": 9,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 0
+            },
+            "2024": {
+                "m": 12,
+                "w": 4
+            },
+            "2025": {
+                "m": 5,
+                "w": 1
+            },
+            "2026": {
+                "m": 9,
+                "w": 4
+            }
+        },
+        "events": 7,
+        "losses": 21,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 34.50,
+        "bronzes": 2,
+        "matches": 30,
+        "podiums": 6,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "200ae42d-0337-5186-ab5e-51d6f011162f": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 19
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2024": {
+                "m": 5,
+                "w": 1
+            },
+            "2025": {
+                "m": 6,
+                "w": 1
+            }
+        },
+        "events": 4,
+        "losses": 10,
+        "medals": [
+        ],
+        "points": 1.50,
+        "bronzes": 0,
+        "matches": 12,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "27a1672b-da85-5cb1-b3d2-29f1d968da7a": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 3
+        },
+        "wins": 7,
+        "golds": 2,
+        "byYear": {
+            "2025": {
+                "m": 6,
+                "w": 3
+            },
+            "2026": {
+                "m": 5,
+                "w": 4
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 41.50,
+        "bronzes": 1,
+        "matches": 11,
+        "podiums": 5,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2025
+    },
+    "285f8b35-de1b-5ade-82c6-4fe0a0a132d9": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 2
+        },
+        "wins": 10,
+        "golds": 2,
+        "byYear": {
+            "2024": {
+                "m": 3,
+                "w": 3
+            },
+            "2025": {
+                "m": 6,
+                "w": 4
+            },
+            "2026": {
+                "m": 5,
+                "w": 3
+            }
+        },
+        "events": 4,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 40.00,
+        "bronzes": 1,
+        "matches": 14,
+        "podiums": 5,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "2a356b84-e99c-5a0b-a226-dc3cffe04d7d": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 15
+        },
+        "wins": 9,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 20,
+                "w": 7
+            },
+            "2026": {
+                "m": 8,
+                "w": 2
+            }
+        },
+        "events": 5,
+        "losses": 20,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 29.75,
+        "bronzes": 2,
+        "matches": 29,
+        "podiums": 5,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "31375f7d-13ba-5a5f-95ec-75173fd0c9a1": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 21
+        },
+        "wins": 6,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 5,
+                "w": 1
+            },
+            "2026": {
+                "m": 19,
+                "w": 5
+            }
+        },
+        "events": 5,
+        "losses": 19,
+        "medals": [
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 14.50,
+        "bronzes": 3,
+        "matches": 25,
+        "podiums": 3,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "334bbc46-99e7-573f-8be9-5c304f12e660": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 6
+        },
+        "wins": 12,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 2
+            },
+            "2025": {
+                "m": 7,
+                "w": 6
+            },
+            "2026": {
+                "m": 5,
+                "w": 4
+            }
+        },
+        "events": 5,
+        "losses": 5,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 2
+            }
+        ],
+        "points": 25.50,
+        "bronzes": 0,
+        "matches": 17,
+        "podiums": 2,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "33dae536-85e7-5060-a8b0-8eed569e82d3": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 1
+        },
+        "wins": 18,
+        "golds": 5,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 5
+            },
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 14,
+                "w": 13
+            }
+        },
+        "events": 5,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 59.75,
+        "bronzes": 0,
+        "matches": 21,
+        "podiums": 8,
+        "silvers": 3,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "3675139b-aab7-5d9b-b009-cb9386485d08": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 23
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 1
+            },
+            "2024": {
+                "m": 2,
+                "w": 1
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+        ],
+        "points": 3.00,
+        "bronzes": 0,
+        "matches": 6,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2024,
+        "firstYear": 2023
+    },
+    "3ce36aa6-ecae-5293-bac9-da3cebdd791a": {
+        "rank": {
+            "of": 33,
+            "div": "Female 5v5",
+            "rank": 14
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 1
+            },
+            "2025": {
+                "m": 2,
+                "w": 0
+            },
+            "2026": {
+                "m": 3,
+                "w": 1
+            }
+        },
+        "events": 4,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 13.00,
+        "bronzes": 1,
+        "matches": 9,
+        "podiums": 3,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "406ac370-6c4b-503e-b1f3-0d5cc9ca61e6": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 11
+        },
+        "wins": 6,
+        "golds": 1,
+        "byYear": {
+            "2025": {
+                "m": 17,
+                "w": 6
+            }
+        },
+        "events": 3,
+        "losses": 11,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 31.25,
+        "bronzes": 1,
+        "matches": 17,
+        "podiums": 5,
+        "silvers": 3,
+        "lastYear": 2025,
+        "firstYear": 2025
+    },
+    "40795962-8124-5345-9a23-2700087b535f": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 10
+        },
+        "wins": 1,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 3,
+                "w": 1
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+        ],
+        "points": 2.50,
+        "bronzes": 0,
+        "matches": 5,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "420bb04b-72ab-555c-8117-fb16672dd9e9": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 20
+        },
+        "wins": 4,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 2
+            },
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 7,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 11.50,
+        "bronzes": 0,
+        "matches": 12,
+        "podiums": 1,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "44de541c-49d9-5576-bad7-2bcd7f194801": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 4
+        },
+        "wins": 10,
+        "golds": 4,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 8,
+                "w": 5
+            },
+            "2026": {
+                "m": 5,
+                "w": 5
+            }
+        },
+        "events": 5,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 45.75,
+        "bronzes": 0,
+        "matches": 14,
+        "podiums": 5,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "460268e5-c451-567f-8916-b847f5089921": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 17
+        },
+        "wins": 4,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 3,
+                "w": 1
+            },
+            "2025": {
+                "m": 9,
+                "w": 3
+            }
+        },
+        "events": 4,
+        "losses": 8,
+        "medals": [
+        ],
+        "points": 7.50,
+        "bronzes": 0,
+        "matches": 12,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2024
+    },
+    "488ea1e6-aded-5c9c-b935-de30de9cf949": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 9
+        },
+        "wins": 9,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2024": {
+                "m": 5,
+                "w": 4
+            },
+            "2026": {
+                "m": 9,
+                "w": 5
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 15.75,
+        "bronzes": 2,
+        "matches": 15,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "48e29b2c-61a9-5986-88bf-44714334aa9d": {
+        "rank": {
+            "of": 33,
+            "div": "Female 5v5",
+            "rank": 2
+        },
+        "wins": 13,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 9,
+                "w": 6
+            },
+            "2024": {
+                "m": 3,
+                "w": 2
+            },
+            "2025": {
+                "m": 6,
+                "w": 4
+            },
+            "2026": {
+                "m": 3,
+                "w": 1
+            }
+        },
+        "events": 7,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 51.00,
+        "bronzes": 1,
+        "matches": 21,
+        "podiums": 7,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "49c189e3-a1f5-5342-b03f-965e69b3406c": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 1
+        },
+        "wins": 30,
+        "golds": 11,
+        "byYear": {
+            "2023": {
+                "m": 10,
+                "w": 9
+            },
+            "2024": {
+                "m": 9,
+                "w": 9
+            },
+            "2025": {
+                "m": 10,
+                "w": 9
+            },
+            "2026": {
+                "m": 4,
+                "w": 3
+            }
+        },
+        "events": 7,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 3
+            }
+        ],
+        "points": 100.50,
+        "bronzes": 1,
+        "matches": 33,
+        "podiums": 13,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "4a28fccb-ff24-506e-8459-b2a304fb4784": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 9
+        },
+        "wins": 11,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 8,
+                "w": 5
+            },
+            "2024": {
+                "m": 3,
+                "w": 0
+            },
+            "2025": {
+                "m": 5,
+                "w": 2
+            },
+            "2026": {
+                "m": 8,
+                "w": 4
+            }
+        },
+        "events": 6,
+        "losses": 13,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 29.25,
+        "bronzes": 4,
+        "matches": 24,
+        "podiums": 5,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "4ab1a10e-bf97-5cb4-882d-57cf6f0f9466": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 11
+        },
+        "wins": 0,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 0
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 2,
+                "w": 0
+            }
+        },
+        "events": 4,
+        "losses": 5,
+        "medals": [
+        ],
+        "points": 0.00,
+        "bronzes": 0,
+        "matches": 5,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "4c9434e0-b2f5-5d5c-9ed3-c342dcab2258": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 20
+        },
+        "wins": 1,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 1
+            },
+            "2025": {
+                "m": 4,
+                "w": 0
+            }
+        },
+        "events": 4,
+        "losses": 9,
+        "medals": [
+        ],
+        "points": 1.00,
+        "bronzes": 0,
+        "matches": 10,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "4cb4a51f-1606-5b8d-bf8b-4d859aef037c": {
+        "rank": {
+            "of": 33,
+            "div": "Female 5v5",
+            "rank": 8
+        },
+        "wins": 2,
+        "golds": 2,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 3,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 2,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 15.75,
+        "bronzes": 0,
+        "matches": 4,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2024
+    },
+    "4feb7fd3-dd4d-532d-a360-5869eb50cc97": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 20
+        },
+        "wins": 1,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 0
+            },
+            "2024": {
+                "m": 5,
+                "w": 1
+            }
+        },
+        "events": 3,
+        "losses": 6,
+        "medals": [
+        ],
+        "points": 1.00,
+        "bronzes": 0,
+        "matches": 7,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2024,
+        "firstYear": 2023
+    },
+    "5385df95-b791-5de5-a10f-9db8491e2dbc": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 3
+        },
+        "wins": 21,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 7,
+                "w": 6
+            },
+            "2024": {
+                "m": 9,
+                "w": 4
+            },
+            "2025": {
+                "m": 5,
+                "w": 3
+            },
+            "2026": {
+                "m": 14,
+                "w": 8
+            }
+        },
+        "events": 7,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 61.25,
+        "bronzes": 3,
+        "matches": 35,
+        "podiums": 10,
+        "silvers": 4,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "53ac4dfa-3d15-5881-8a92-361c7e59b120": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 15
+        },
+        "wins": 6,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 7,
+                "w": 5
+            },
+            "2025": {
+                "m": 5,
+                "w": 1
+            },
+            "2026": {
+                "m": 1,
+                "w": 0
+            }
+        },
+        "events": 4,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 25.75,
+        "bronzes": 1,
+        "matches": 13,
+        "podiums": 4,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "54a3231b-0712-5fe9-8b22-4e8cca02a99c": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 9
+        },
+        "wins": 17,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 5
+            },
+            "2024": {
+                "m": 4,
+                "w": 2
+            },
+            "2026": {
+                "m": 22,
+                "w": 10
+            }
+        },
+        "events": 4,
+        "losses": 15,
+        "medals": [
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 49.00,
+        "bronzes": 3,
+        "matches": 32,
+        "podiums": 7,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "55873e7f-d71e-57b1-9250-9a7b72b68e0a": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 4
+        },
+        "wins": 4,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 6,
+                "w": 4
+            }
+        },
+        "events": 3,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 19.50,
+        "bronzes": 1,
+        "matches": 7,
+        "podiums": 3,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "5777bdcc-18bc-518f-a88f-103441365171": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 12
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 0
+            },
+            "2024": {
+                "m": 3,
+                "w": 2
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 5,
+                "w": 0
+            }
+        },
+        "events": 5,
+        "losses": 12,
+        "medals": [
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 3
+            }
+        ],
+        "points": 6.00,
+        "bronzes": 1,
+        "matches": 14,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "58d24f9c-3ad4-50dc-befa-24ef2c80e2b1": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 6
+        },
+        "wins": 7,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 1
+            },
+            "2025": {
+                "m": 8,
+                "w": 6
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 33.25,
+        "bronzes": 1,
+        "matches": 11,
+        "podiums": 4,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "5c33e170-ecb6-5fbc-88c0-bb4894b6489d": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 1
+        },
+        "wins": 14,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 2
+            },
+            "2025": {
+                "m": 7,
+                "w": 7
+            },
+            "2026": {
+                "m": 6,
+                "w": 5
+            }
+        },
+        "events": 5,
+        "losses": 2,
+        "medals": [
+            {
+                "comp": "Female Polearm",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 58.50,
+        "bronzes": 1,
+        "matches": 16,
+        "podiums": 5,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "67c1cd1c-898d-5c7a-a7a8-1fceccb87ba3": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 11
+        },
+        "wins": 0,
+        "golds": 0,
+        "byYear": {
+            "2025": {
+                "m": 2,
+                "w": 0
+            },
+            "2026": {
+                "m": 2,
+                "w": 0
+            }
+        },
+        "events": 4,
+        "losses": 4,
+        "medals": [
+        ],
+        "points": 0.00,
+        "bronzes": 0,
+        "matches": 4,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2025
+    },
+    "695e3415-b6f8-5182-94d9-d8e4904c74e6": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 7
+        },
+        "wins": 16,
+        "golds": 4,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 0
+            },
+            "2024": {
+                "m": 11,
+                "w": 6
+            },
+            "2026": {
+                "m": 17,
+                "w": 10
+            }
+        },
+        "events": 5,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 54.25,
+        "bronzes": 3,
+        "matches": 30,
+        "podiums": 8,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "6bc467da-ab8c-5ac2-afc2-ad667738310c": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 6
+        },
+        "wins": 4,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 7,
+                "w": 4
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 19.75,
+        "bronzes": 1,
+        "matches": 8,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "6bf23048-0668-584a-895b-518e5f46dc88": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 8
+        },
+        "wins": 4,
+        "golds": 0,
+        "byYear": {
+            "2025": {
+                "m": 7,
+                "w": 4
+            }
+        },
+        "events": 3,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 13.50,
+        "bronzes": 1,
+        "matches": 7,
+        "podiums": 2,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2025
+    },
+    "72ab5bcb-c669-59a6-9865-86a0a151bc59": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 11
+        },
+        "wins": 16,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 2
+            },
+            "2024": {
+                "m": 14,
+                "w": 7
+            },
+            "2025": {
+                "m": 5,
+                "w": 3
+            },
+            "2026": {
+                "m": 11,
+                "w": 4
+            }
+        },
+        "events": 6,
+        "losses": 19,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 2
+            }
+        ],
+        "points": 48.75,
+        "bronzes": 4,
+        "matches": 35,
+        "podiums": 10,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "74aade55-9f48-5ddd-867a-c465dcdc36e0": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 2
+        },
+        "wins": 10,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 9,
+                "w": 4
+            },
+            "2026": {
+                "m": 7,
+                "w": 6
+            }
+        },
+        "events": 6,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 38.50,
+        "bronzes": 1,
+        "matches": 17,
+        "podiums": 4,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "76cd4d5a-eb01-5869-8182-cfd75385dc7f": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 5
+        },
+        "wins": 5,
+        "golds": 0,
+        "byYear": {
+            "2025": {
+                "m": 5,
+                "w": 2
+            },
+            "2026": {
+                "m": 7,
+                "w": 3
+            }
+        },
+        "events": 3,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 30.00,
+        "bronzes": 0,
+        "matches": 12,
+        "podiums": 4,
+        "silvers": 4,
+        "lastYear": 2026,
+        "firstYear": 2025
+    },
+    "7b2a7b7d-ddd2-595d-9269-7efa0dbacd1a": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 9
+        },
+        "wins": 6,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 5,
+                "w": 2
+            },
+            "2026": {
+                "m": 9,
+                "w": 4
+            }
+        },
+        "events": 5,
+        "losses": 9,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 20.50,
+        "bronzes": 1,
+        "matches": 15,
+        "podiums": 3,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "7b4eb64c-041e-55c7-ade2-755393281205": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 10
+        },
+        "wins": 4,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 2,
+                "w": 1
+            },
+            "2026": {
+                "m": 5,
+                "w": 3
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 18.75,
+        "bronzes": 0,
+        "matches": 8,
+        "podiums": 3,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "7ba3fceb-e85e-5ed0-84a0-76915d6c6f83": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 11
+        },
+        "wins": 8,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 1
+            },
+            "2024": {
+                "m": 3,
+                "w": 0
+            },
+            "2025": {
+                "m": 3,
+                "w": 2
+            },
+            "2026": {
+                "m": 8,
+                "w": 5
+            }
+        },
+        "events": 7,
+        "losses": 10,
+        "medals": [
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 18.00,
+        "bronzes": 1,
+        "matches": 18,
+        "podiums": 2,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "7df00fd3-0d78-5dbe-b0c7-eeaceda48ddb": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 22
+        },
+        "wins": 6,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 0
+            },
+            "2026": {
+                "m": 13,
+                "w": 6
+            }
+        },
+        "events": 3,
+        "losses": 10,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 19.50,
+        "bronzes": 1,
+        "matches": 16,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "7f46df0f-b1c8-527e-aff1-d8ababc108d8": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 13
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 10,
+                "w": 2
+            },
+            "2026": {
+                "m": 5,
+                "w": 0
+            }
+        },
+        "events": 5,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            }
+        ],
+        "points": 5.00,
+        "bronzes": 1,
+        "matches": 16,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "8120e2f4-1510-5cfd-a077-7320c47a52a9": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 1
+        },
+        "wins": 36,
+        "golds": 9,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 1
+            },
+            "2024": {
+                "m": 7,
+                "w": 6
+            },
+            "2025": {
+                "m": 17,
+                "w": 13
+            },
+            "2026": {
+                "m": 24,
+                "w": 16
+            }
+        },
+        "events": 10,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 118.75,
+        "bronzes": 3,
+        "matches": 50,
+        "podiums": 18,
+        "silvers": 6,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "8194d6b9-5987-5e8e-89eb-4daa5083284c": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 12
+        },
+        "wins": 4,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 7,
+                "w": 4
+            },
+            "2026": {
+                "m": 4,
+                "w": 0
+            }
+        },
+        "events": 4,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 3
+            }
+        ],
+        "points": 17.50,
+        "bronzes": 1,
+        "matches": 12,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "831b7043-6c86-5de6-9865-fba0592e1309": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 11
+        },
+        "wins": 0,
+        "golds": 0,
+        "byYear": {
+            "2025": {
+                "m": 2,
+                "w": 0
+            }
+        },
+        "events": 1,
+        "losses": 2,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 5.00,
+        "bronzes": 0,
+        "matches": 2,
+        "podiums": 1,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2025
+    },
+    "866f9797-f136-5e8e-9aad-a556a65b580a": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 12
+        },
+        "wins": 4,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 3
+            },
+            "2024": {
+                "m": 2,
+                "w": 0
+            },
+            "2025": {
+                "m": 2,
+                "w": 0
+            },
+            "2026": {
+                "m": 7,
+                "w": 1
+            }
+        },
+        "events": 5,
+        "losses": 11,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 20.00,
+        "bronzes": 1,
+        "matches": 15,
+        "podiums": 4,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "88383cff-3cd0-5e0a-91bd-8c375e39c4b5": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 13
+        },
+        "wins": 6,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 8,
+                "w": 6
+            }
+        },
+        "events": 3,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 14.00,
+        "bronzes": 0,
+        "matches": 9,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "88af5e4f-d812-5e43-837b-5eb6dbb92226": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 4
+        },
+        "wins": 18,
+        "golds": 5,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 1
+            },
+            "2024": {
+                "m": 11,
+                "w": 8
+            },
+            "2025": {
+                "m": 9,
+                "w": 6
+            },
+            "2026": {
+                "m": 9,
+                "w": 3
+            }
+        },
+        "events": 7,
+        "losses": 13,
+        "medals": [
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 64.75,
+        "bronzes": 0,
+        "matches": 31,
+        "podiums": 7,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "88d259b3-3d84-5796-bdcb-c2fdfd8b09ed": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 6
+        },
+        "wins": 14,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 2
+            },
+            "2024": {
+                "m": 8,
+                "w": 5
+            },
+            "2025": {
+                "m": 9,
+                "w": 3
+            },
+            "2026": {
+                "m": 9,
+                "w": 4
+            }
+        },
+        "events": 6,
+        "losses": 17,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 71.00,
+        "bronzes": 2,
+        "matches": 31,
+        "podiums": 12,
+        "silvers": 7,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "8a0b0f89-6e54-548f-938c-84238b1e23e1": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 13
+        },
+        "wins": 4,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 3,
+                "w": 1
+            },
+            "2025": {
+                "m": 2,
+                "w": 1
+            },
+            "2026": {
+                "m": 5,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 14.00,
+        "bronzes": 1,
+        "matches": 10,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "8a8305b0-ca44-5b4f-847e-7cb7d1c13988": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 2
+        },
+        "wins": 6,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 3
+            },
+            "2026": {
+                "m": 3,
+                "w": 3
+            }
+        },
+        "events": 2,
+        "losses": 0,
+        "medals": [
+            {
+                "comp": "Female Polearm",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Polearm",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 24.00,
+        "bronzes": 0,
+        "matches": 6,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "8bf5a2df-8b24-5bae-b6cf-03c0dad81870": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 3
+        },
+        "wins": 10,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 7,
+                "w": 3
+            },
+            "2025": {
+                "m": 9,
+                "w": 7
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 42.25,
+        "bronzes": 3,
+        "matches": 16,
+        "podiums": 7,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "8c9cc09b-4d19-5a87-b875-398e5233cd86": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 8
+        },
+        "wins": 6,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 4
+            },
+            "2025": {
+                "m": 4,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            }
+        ],
+        "points": 16.50,
+        "bronzes": 0,
+        "matches": 10,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "8d260975-f09a-5c86-83cb-b57714387355": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 11
+        },
+        "wins": 0,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 2,
+                "w": 0
+            }
+        },
+        "events": 3,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            }
+        ],
+        "points": 4.00,
+        "bronzes": 0,
+        "matches": 3,
+        "podiums": 1,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "97d5d06f-fcbe-5363-875c-abb48e8c9cbc": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 10
+        },
+        "wins": 8,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2024": {
+                "m": 6,
+                "w": 2
+            },
+            "2025": {
+                "m": 3,
+                "w": 2
+            },
+            "2026": {
+                "m": 6,
+                "w": 4
+            }
+        },
+        "events": 4,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 2
+            }
+        ],
+        "points": 21.50,
+        "bronzes": 1,
+        "matches": 16,
+        "podiums": 4,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "98146ed7-d388-5e3c-822d-f8d5285044bf": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 2
+        },
+        "wins": 17,
+        "golds": 2,
+        "byYear": {
+            "2024": {
+                "m": 5,
+                "w": 4
+            },
+            "2026": {
+                "m": 14,
+                "w": 13
+            }
+        },
+        "events": 4,
+        "losses": 2,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 39.00,
+        "bronzes": 0,
+        "matches": 19,
+        "podiums": 4,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "982d4f9a-fb1c-5e81-b7f7-62c231c79fb2": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 16
+        },
+        "wins": 1,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 2,
+                "w": 0
+            },
+            "2026": {
+                "m": 3,
+                "w": 1
+            }
+        },
+        "events": 4,
+        "losses": 5,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 7.00,
+        "bronzes": 1,
+        "matches": 6,
+        "podiums": 2,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "9890f7c8-373a-5cf8-b06c-34ea20a58304": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 16
+        },
+        "wins": 2,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 0
+            },
+            "2025": {
+                "m": 7,
+                "w": 1
+            },
+            "2026": {
+                "m": 3,
+                "w": 1
+            }
+        },
+        "events": 5,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            }
+        ],
+        "points": 9.50,
+        "bronzes": 0,
+        "matches": 16,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "9b130d30-471b-5ccf-9192-7e0c04af836e": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 13
+        },
+        "wins": 8,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 2
+            },
+            "2024": {
+                "m": 4,
+                "w": 1
+            },
+            "2026": {
+                "m": 6,
+                "w": 5
+            }
+        },
+        "events": 6,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 1
+            }
+        ],
+        "points": 16.75,
+        "bronzes": 0,
+        "matches": 16,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "9b2380a1-bda2-56dc-bf4b-5f04307838d7": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 7
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2025": {
+                "m": 4,
+                "w": 2
+            },
+            "2026": {
+                "m": 1,
+                "w": 0
+            }
+        },
+        "events": 3,
+        "losses": 3,
+        "medals": [
+            {
+                "comp": "Female Polearm",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 3
+            }
+        ],
+        "points": 6.00,
+        "bronzes": 1,
+        "matches": 5,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2025
+    },
+    "9d6c5769-9a00-5895-a943-8dd9f804984d": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 12
+        },
+        "wins": 6,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 14,
+                "w": 6
+            }
+        },
+        "events": 4,
+        "losses": 9,
+        "medals": [
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            }
+        ],
+        "points": 20.00,
+        "bronzes": 1,
+        "matches": 15,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2024
+    },
+    "a495403d-712c-5520-b2a2-f8c766eaaa6b": {
+        "rank": {
+            "of": 31,
+            "div": "Male 3v3",
+            "rank": 8
+        },
+        "wins": 12,
+        "golds": 4,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 18,
+                "w": 12
+            }
+        },
+        "events": 4,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 47.00,
+        "bronzes": 1,
+        "matches": 19,
+        "podiums": 7,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2024
+    },
+    "a6d7fbe4-0392-5679-9e83-3a4693aa452d": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 3
+        },
+        "wins": 31,
+        "golds": 5,
+        "byYear": {
+            "2023": {
+                "m": 8,
+                "w": 4
+            },
+            "2024": {
+                "m": 8,
+                "w": 3
+            },
+            "2025": {
+                "m": 22,
+                "w": 15
+            },
+            "2026": {
+                "m": 19,
+                "w": 9
+            }
+        },
+        "events": 11,
+        "losses": 26,
+        "medals": [
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 1
+            }
+        ],
+        "points": 106.25,
+        "bronzes": 3,
+        "matches": 57,
+        "podiums": 18,
+        "silvers": 10,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "a84d9159-737e-54fd-ad21-cbbe6152d754": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 10
+        },
+        "wins": 5,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2024": {
+                "m": 3,
+                "w": 1
+            },
+            "2025": {
+                "m": 7,
+                "w": 4
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            }
+        ],
+        "points": 14.00,
+        "bronzes": 3,
+        "matches": 11,
+        "podiums": 3,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "a8964f93-eda0-51d9-a592-43792c58b827": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 7
+        },
+        "wins": 5,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 4
+            },
+            "2025": {
+                "m": 5,
+                "w": 1
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            }
+        ],
+        "points": 11.25,
+        "bronzes": 0,
+        "matches": 11,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "a92a1c83-58d6-572d-9736-27fde0c87cf7": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 2
+        },
+        "wins": 24,
+        "golds": 4,
+        "byYear": {
+            "2023": {
+                "m": 8,
+                "w": 7
+            },
+            "2024": {
+                "m": 3,
+                "w": 2
+            },
+            "2025": {
+                "m": 12,
+                "w": 10
+            },
+            "2026": {
+                "m": 7,
+                "w": 5
+            }
+        },
+        "events": 7,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 67.50,
+        "bronzes": 1,
+        "matches": 30,
+        "podiums": 9,
+        "silvers": 4,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "aa6336d6-f73e-5fa9-987f-556bf20050d8": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 24
+        },
+        "wins": 6,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 2
+            },
+            "2024": {
+                "m": 3,
+                "w": 0
+            },
+            "2025": {
+                "m": 3,
+                "w": 1
+            },
+            "2026": {
+                "m": 7,
+                "w": 3
+            }
+        },
+        "events": 4,
+        "losses": 10,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 3
+            }
+        ],
+        "points": 16.75,
+        "bronzes": 2,
+        "matches": 16,
+        "podiums": 3,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "ac409506-3655-5834-b81b-a48ced9c62b9": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 15
+        },
+        "wins": 1,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 0
+            },
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 4,
+                "w": 1
+            }
+        },
+        "events": 3,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            }
+        ],
+        "points": 5.25,
+        "bronzes": 0,
+        "matches": 7,
+        "podiums": 1,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "b181793f-6729-5349-8392-78e65113b857": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 5
+        },
+        "wins": 15,
+        "golds": 4,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 2
+            },
+            "2024": {
+                "m": 6,
+                "w": 3
+            },
+            "2025": {
+                "m": 3,
+                "w": 1
+            },
+            "2026": {
+                "m": 12,
+                "w": 9
+            }
+        },
+        "events": 5,
+        "losses": 10,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 59.75,
+        "bronzes": 1,
+        "matches": 25,
+        "podiums": 8,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "b41fb9fe-c8ec-5405-a0f4-394ee6095b2e": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 5
+        },
+        "wins": 15,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 2
+            },
+            "2024": {
+                "m": 6,
+                "w": 6
+            },
+            "2025": {
+                "m": 17,
+                "w": 7
+            }
+        },
+        "events": 5,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 49.75,
+        "bronzes": 1,
+        "matches": 29,
+        "podiums": 10,
+        "silvers": 6,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "b4b23592-ecfd-5625-92ec-4224c70404c2": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 3
+        },
+        "wins": 20,
+        "golds": 6,
+        "byYear": {
+            "2023": {
+                "m": 7,
+                "w": 3
+            },
+            "2024": {
+                "m": 11,
+                "w": 9
+            },
+            "2025": {
+                "m": 11,
+                "w": 5
+            },
+            "2026": {
+                "m": 9,
+                "w": 3
+            }
+        },
+        "events": 6,
+        "losses": 18,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 73.75,
+        "bronzes": 4,
+        "matches": 38,
+        "podiums": 11,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "b9551194-d28a-50e3-9bfc-36c446fa8f54": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 13
+        },
+        "wins": 8,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 3
+            },
+            "2025": {
+                "m": 2,
+                "w": 1
+            },
+            "2026": {
+                "m": 9,
+                "w": 4
+            }
+        },
+        "events": 6,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 25.25,
+        "bronzes": 0,
+        "matches": 16,
+        "podiums": 4,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "bcf07ca4-7db2-527a-a644-5c49ff701df3": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 5
+        },
+        "wins": 13,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 2
+            },
+            "2024": {
+                "m": 6,
+                "w": 6
+            },
+            "2026": {
+                "m": 8,
+                "w": 5
+            }
+        },
+        "events": 4,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 46.75,
+        "bronzes": 2,
+        "matches": 20,
+        "podiums": 6,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "bd195699-a4ba-5049-babf-d01f743911b5": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 13
+        },
+        "wins": 6,
+        "golds": 2,
+        "byYear": {
+            "2024": {
+                "m": 5,
+                "w": 3
+            },
+            "2025": {
+                "m": 4,
+                "w": 1
+            },
+            "2026": {
+                "m": 4,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 20.00,
+        "bronzes": 1,
+        "matches": 13,
+        "podiums": 3,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "c2114868-da44-5a82-a1d3-f91f5326285f": {
+        "rank": {
+            "of": 31,
+            "div": "Male 3v3",
+            "rank": 14
+        },
+        "wins": 10,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 2,
+                "w": 0
+            },
+            "2025": {
+                "m": 5,
+                "w": 1
+            },
+            "2026": {
+                "m": 20,
+                "w": 9
+            }
+        },
+        "events": 6,
+        "losses": 17,
+        "medals": [
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 25.50,
+        "bronzes": 3,
+        "matches": 27,
+        "podiums": 5,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "c500cb85-208c-54bb-8631-dc4fc0403487": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 5
+        },
+        "wins": 10,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 15,
+                "w": 10
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            }
+        ],
+        "points": 34.25,
+        "bronzes": 1,
+        "matches": 16,
+        "podiums": 5,
+        "silvers": 4,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "c88c4ad7-6508-52b3-a310-c9e2c4c6ba58": {
+        "rank": {
+            "of": 31,
+            "div": "Male 3v3",
+            "rank": 9
+        },
+        "wins": 11,
+        "golds": 4,
+        "byYear": {
+            "2025": {
+                "m": 12,
+                "w": 7
+            },
+            "2026": {
+                "m": 12,
+                "w": 4
+            }
+        },
+        "events": 3,
+        "losses": 13,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 42.50,
+        "bronzes": 1,
+        "matches": 24,
+        "podiums": 5,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2025
+    },
+    "c9450ef4-e03e-545e-9fdc-0bc7747e447f": {
+        "rank": {
+            "of": 23,
+            "div": "Male Polearm",
+            "rank": 7
+        },
+        "wins": 7,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 2
+            },
+            "2024": {
+                "m": 5,
+                "w": 4
+            },
+            "2025": {
+                "m": 5,
+                "w": 1
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Male Polearm",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Polearm",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 2
+            }
+        ],
+        "points": 17.25,
+        "bronzes": 0,
+        "matches": 13,
+        "podiums": 2,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "cb21b06a-886b-5e1a-9453-1c173a5168f9": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 9
+        },
+        "wins": 8,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 1
+            },
+            "2024": {
+                "m": 1,
+                "w": 1
+            },
+            "2025": {
+                "m": 11,
+                "w": 5
+            },
+            "2026": {
+                "m": 2,
+                "w": 1
+            }
+        },
+        "events": 5,
+        "losses": 9,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 42.00,
+        "bronzes": 0,
+        "matches": 17,
+        "podiums": 6,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "ccd25c59-7eec-5757-bff1-3437c26baed8": {
+        "rank": {
+            "of": 33,
+            "div": "Female 5v5",
+            "rank": 1
+        },
+        "wins": 17,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 12,
+                "w": 4
+            },
+            "2024": {
+                "m": 5,
+                "w": 3
+            },
+            "2025": {
+                "m": 15,
+                "w": 4
+            },
+            "2026": {
+                "m": 11,
+                "w": 6
+            }
+        },
+        "events": 13,
+        "losses": 26,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            }
+        ],
+        "points": 66.50,
+        "bronzes": 0,
+        "matches": 43,
+        "podiums": 9,
+        "silvers": 6,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "cd7a96f2-a42f-5846-96b3-51a17a76b921": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 7
+        },
+        "wins": 6,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 3
+            },
+            "2024": {
+                "m": 5,
+                "w": 3
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            }
+        },
+        "events": 4,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 3
+            }
+        ],
+        "points": 16.00,
+        "bronzes": 2,
+        "matches": 10,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "cd820640-764f-55de-a68c-f916ff56fd18": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 11
+        },
+        "wins": 7,
+        "golds": 2,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 4
+            },
+            "2024": {
+                "m": 4,
+                "w": 2
+            },
+            "2025": {
+                "m": 3,
+                "w": 1
+            }
+        },
+        "events": 5,
+        "losses": 5,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            }
+        ],
+        "points": 31.00,
+        "bronzes": 0,
+        "matches": 12,
+        "podiums": 4,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "d1b9ab79-147f-5ab9-9356-0ebb9f9bcc40": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 5
+        },
+        "wins": 10,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 4
+            },
+            "2024": {
+                "m": 3,
+                "w": 1
+            },
+            "2025": {
+                "m": 3,
+                "w": 3
+            },
+            "2026": {
+                "m": 5,
+                "w": 2
+            }
+        },
+        "events": 5,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 3
+            }
+        ],
+        "points": 23.00,
+        "bronzes": 1,
+        "matches": 16,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "d2ea0e0b-da23-5e24-802d-85145d3f616f": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 19
+        },
+        "wins": 6,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 2,
+                "w": 0
+            },
+            "2024": {
+                "m": 3,
+                "w": 2
+            },
+            "2025": {
+                "m": 2,
+                "w": 0
+            },
+            "2026": {
+                "m": 7,
+                "w": 4
+            }
+        },
+        "events": 6,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 3
+            }
+        ],
+        "points": 7.00,
+        "bronzes": 1,
+        "matches": 14,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "d3460606-8729-5cfb-a130-125cbbe8bcc6": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 4
+        },
+        "wins": 9,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 4,
+                "w": 2
+            },
+            "2025": {
+                "m": 3,
+                "w": 2
+            },
+            "2026": {
+                "m": 8,
+                "w": 5
+            }
+        },
+        "events": 3,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 31.50,
+        "bronzes": 0,
+        "matches": 15,
+        "podiums": 3,
+        "silvers": 2,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "d3fcbcf8-0c56-5b9c-aba4-bcd0ff57dffd": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 2
+        },
+        "wins": 24,
+        "golds": 4,
+        "byYear": {
+            "2023": {
+                "m": 7,
+                "w": 3
+            },
+            "2024": {
+                "m": 14,
+                "w": 7
+            },
+            "2025": {
+                "m": 20,
+                "w": 8
+            },
+            "2026": {
+                "m": 15,
+                "w": 6
+            }
+        },
+        "events": 11,
+        "losses": 32,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 1
+            }
+        ],
+        "points": 104.25,
+        "bronzes": 2,
+        "matches": 56,
+        "podiums": 18,
+        "silvers": 12,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "d5185702-fa37-5db8-8a4d-2cb114461bcf": {
+        "rank": {
+            "of": 15,
+            "div": "Female Polearm",
+            "rank": 7
+        },
+        "wins": 3,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 2
+            },
+            "2025": {
+                "m": 2,
+                "w": 1
+            }
+        },
+        "events": 2,
+        "losses": 2,
+        "medals": [
+            {
+                "comp": "Female Polearm",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            }
+        ],
+        "points": 13.00,
+        "bronzes": 1,
+        "matches": 5,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "d71d42ed-a20b-5ded-a3f0-4e1a74309e52": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 14
+        },
+        "wins": 3,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 1
+            },
+            "2025": {
+                "m": 7,
+                "w": 2
+            }
+        },
+        "events": 4,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Manitoba Medieval Melee-test",
+                "place": 3
+            }
+        ],
+        "points": 6.00,
+        "bronzes": 1,
+        "matches": 10,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "d997ef6a-817a-5dbe-8940-a6fa9956f341": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 18
+        },
+        "wins": 0,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            }
+        },
+        "events": 3,
+        "losses": 3,
+        "medals": [
+        ],
+        "points": 0.00,
+        "bronzes": 0,
+        "matches": 3,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "dc6ad18c-6ea3-5243-b794-7098006f2790": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 16
+        },
+        "wins": 6,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 12,
+                "w": 5
+            },
+            "2025": {
+                "m": 5,
+                "w": 1
+            },
+            "2026": {
+                "m": 3,
+                "w": 0
+            }
+        },
+        "events": 5,
+        "losses": 14,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 3
+            }
+        ],
+        "points": 28.50,
+        "bronzes": 3,
+        "matches": 20,
+        "podiums": 7,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "dc986b96-be3f-5c26-914b-c1162aa0eb4b": {
+        "rank": {
+            "of": 31,
+            "div": "Male 3v3",
+            "rank": 1
+        },
+        "wins": 42,
+        "golds": 11,
+        "byYear": {
+            "2023": {
+                "m": 13,
+                "w": 9
+            },
+            "2024": {
+                "m": 15,
+                "w": 11
+            },
+            "2025": {
+                "m": 10,
+                "w": 6
+            },
+            "2026": {
+                "m": 27,
+                "w": 16
+            }
+        },
+        "events": 10,
+        "losses": 23,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Blackfalds Battle Bash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 149.00,
+        "bronzes": 3,
+        "matches": 65,
+        "podiums": 19,
+        "silvers": 5,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "dd3afd51-2fca-58cd-8d14-006dec7363a4": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 1
+        },
+        "wins": 14,
+        "golds": 6,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 4
+            },
+            "2025": {
+                "m": 10,
+                "w": 10
+            }
+        },
+        "events": 4,
+        "losses": 0,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 61.25,
+        "bronzes": 0,
+        "matches": 14,
+        "podiums": 6,
+        "silvers": 0,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "df7d277f-b7dc-5d74-85f9-0a5e44bffad5": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 5
+        },
+        "wins": 11,
+        "golds": 2,
+        "byYear": {
+            "2024": {
+                "m": 5,
+                "w": 2
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 9,
+                "w": 9
+            }
+        },
+        "events": 6,
+        "losses": 4,
+        "medals": [
+            {
+                "comp": "Male Longsword",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 1
+            }
+        ],
+        "points": 27.50,
+        "bronzes": 0,
+        "matches": 15,
+        "podiums": 3,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "e0e182fe-bce4-5347-ac8c-ac85f8f10fd5": {
+        "rank": {
+            "of": 41,
+            "div": "Male 5v5",
+            "rank": 18
+        },
+        "wins": 6,
+        "golds": 3,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 3
+            },
+            "2024": {
+                "m": 3,
+                "w": 1
+            },
+            "2025": {
+                "m": 2,
+                "w": 1
+            },
+            "2026": {
+                "m": 5,
+                "w": 1
+            }
+        },
+        "events": 6,
+        "losses": 9,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            }
+        ],
+        "points": 22.00,
+        "bronzes": 1,
+        "matches": 15,
+        "podiums": 5,
+        "silvers": 1,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "e3b4a9f7-0116-5514-b4ba-e76cfc0ee774": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 7
+        },
+        "wins": 12,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 4,
+                "w": 2
+            },
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 5,
+                "w": 3
+            },
+            "2026": {
+                "m": 8,
+                "w": 7
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 39.00,
+        "bronzes": 2,
+        "matches": 18,
+        "podiums": 6,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "ea9e2198-9cd9-580c-9216-51b57662e14a": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 16
+        },
+        "wins": 5,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 4,
+                "w": 3
+            },
+            "2025": {
+                "m": 8,
+                "w": 2
+            }
+        },
+        "events": 3,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            }
+        ],
+        "points": 16.00,
+        "bronzes": 0,
+        "matches": 12,
+        "podiums": 2,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2024
+    },
+    "f263eeb9-8098-5d5a-8b30-36c01db0900d": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 17
+        },
+        "wins": 3,
+        "golds": 1,
+        "byYear": {
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 11,
+                "w": 3
+            }
+        },
+        "events": 4,
+        "losses": 9,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            }
+        ],
+        "points": 10.75,
+        "bronzes": 0,
+        "matches": 12,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "f59071d8-f158-5947-ba7a-7ff8533d06e5": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 8
+        },
+        "wins": 5,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 6,
+                "w": 2
+            },
+            "2026": {
+                "m": 7,
+                "w": 3
+            }
+        },
+        "events": 4,
+        "losses": 8,
+        "medals": [
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 9.25,
+        "bronzes": 1,
+        "matches": 13,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "f5bf9cb2-e86b-5c61-bcc5-2d3febce1a61": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 1
+        },
+        "wins": 22,
+        "golds": 4,
+        "byYear": {
+            "2023": {
+                "m": 8,
+                "w": 6
+            },
+            "2024": {
+                "m": 7,
+                "w": 6
+            },
+            "2025": {
+                "m": 7,
+                "w": 5
+            },
+            "2026": {
+                "m": 7,
+                "w": 5
+            }
+        },
+        "events": 9,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2024,
+                "event": "Battle of the Badlands-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Grande Prairie Northern Clash-test",
+                "place": 2
+            }
+        ],
+        "points": 65.50,
+        "bronzes": 2,
+        "matches": 29,
+        "podiums": 9,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "f5cc5373-d952-5604-adde-f304f3f6c86e": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 20
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2024": {
+                "m": 6,
+                "w": 2
+            },
+            "2026": {
+                "m": 2,
+                "w": 0
+            }
+        },
+        "events": 5,
+        "losses": 7,
+        "medals": [
+        ],
+        "points": 1.00,
+        "bronzes": 0,
+        "matches": 9,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "f7373850-cf16-5419-8c34-acfe15164af2": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 6
+        },
+        "wins": 5,
+        "golds": 2,
+        "byYear": {
+            "2025": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 6,
+                "w": 5
+            }
+        },
+        "events": 2,
+        "losses": 2,
+        "medals": [
+            {
+                "comp": "Female 5v5",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            },
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 21.00,
+        "bronzes": 0,
+        "matches": 7,
+        "podiums": 2,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2025
+    },
+    "f8297a85-7282-5c93-a25a-7ebfd34d0160": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 25
+        },
+        "wins": 2,
+        "golds": 0,
+        "byYear": {
+            "2024": {
+                "m": 2,
+                "w": 0
+            },
+            "2025": {
+                "m": 6,
+                "w": 2
+            },
+            "2026": {
+                "m": 6,
+                "w": 0
+            }
+        },
+        "events": 7,
+        "losses": 12,
+        "medals": [
+        ],
+        "points": 2.00,
+        "bronzes": 0,
+        "matches": 14,
+        "podiums": 0,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2024
+    },
+    "faaae965-8f7f-5c9d-8300-0d6cf7cf6b75": {
+        "rank": {
+            "of": 16,
+            "div": "Female Sword & Shield",
+            "rank": 9
+        },
+        "wins": 5,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 5,
+                "w": 3
+            },
+            "2024": {
+                "m": 1,
+                "w": 0
+            },
+            "2025": {
+                "m": 5,
+                "w": 2
+            }
+        },
+        "events": 4,
+        "losses": 6,
+        "medals": [
+            {
+                "comp": "Female Sword & Shield",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 2
+            },
+            {
+                "comp": "Female 5v5",
+                "year": 2025,
+                "event": "Medicine Hat Mayhem-test",
+                "place": 2
+            }
+        ],
+        "points": 14.00,
+        "bronzes": 0,
+        "matches": 11,
+        "podiums": 2,
+        "silvers": 2,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "fb79f2e7-85b4-5565-b024-4a24ed929a62": {
+        "rank": {
+            "of": 19,
+            "div": "Female Longsword",
+            "rank": 14
+        },
+        "wins": 3,
+        "golds": 0,
+        "byYear": {
+            "2023": {
+                "m": 1,
+                "w": 0
+            },
+            "2024": {
+                "m": 2,
+                "w": 1
+            },
+            "2025": {
+                "m": 1,
+                "w": 0
+            },
+            "2026": {
+                "m": 6,
+                "w": 2
+            }
+        },
+        "events": 5,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Female Longsword",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 3
+            }
+        ],
+        "points": 6.00,
+        "bronzes": 1,
+        "matches": 10,
+        "podiums": 1,
+        "silvers": 0,
+        "lastYear": 2026,
+        "firstYear": 2023
+    },
+    "fe652e6c-3e68-5ec8-bc6f-66786f9e35e4": {
+        "rank": {
+            "of": 25,
+            "div": "Male Longsword",
+            "rank": 14
+        },
+        "wins": 4,
+        "golds": 1,
+        "byYear": {
+            "2023": {
+                "m": 3,
+                "w": 0
+            },
+            "2025": {
+                "m": 8,
+                "w": 4
+            }
+        },
+        "events": 3,
+        "losses": 7,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Queen City Combat Classic-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Male Longsword",
+                "year": 2025,
+                "event": "Prairie Crown Championship-test",
+                "place": 3
+            }
+        ],
+        "points": 26.25,
+        "bronzes": 3,
+        "matches": 11,
+        "podiums": 5,
+        "silvers": 1,
+        "lastYear": 2025,
+        "firstYear": 2023
+    },
+    "ff6d3454-18ef-5175-9d2b-56f676185804": {
+        "rank": {
+            "of": 22,
+            "div": "Male Sword & Shield",
+            "rank": 7
+        },
+        "wins": 18,
+        "golds": 4,
+        "byYear": {
+            "2023": {
+                "m": 15,
+                "w": 11
+            },
+            "2024": {
+                "m": 5,
+                "w": 1
+            },
+            "2025": {
+                "m": 3,
+                "w": 1
+            },
+            "2026": {
+                "m": 12,
+                "w": 5
+            }
+        },
+        "events": 7,
+        "losses": 17,
+        "medals": [
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Central Alberta Steel Open-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Saskatchewan Steel Cup-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 3
+            },
+            {
+                "comp": "Male Sword & Shield",
+                "year": 2023,
+                "event": "Calgary Iron Clash-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2024,
+                "event": "Okanagan Armored Open-test",
+                "place": 2
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2025,
+                "event": "Prairie Siege-test",
+                "place": 1
+            },
+            {
+                "comp": "Male 5v5",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 3
+            },
+            {
+                "comp": "Male 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            }
+        ],
+        "points": 60.75,
+        "bronzes": 3,
+        "matches": 35,
+        "podiums": 10,
+        "silvers": 3,
+        "lastYear": 2026,
+        "firstYear": 2023
+    }
+}

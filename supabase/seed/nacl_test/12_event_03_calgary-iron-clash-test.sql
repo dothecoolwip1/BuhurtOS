@@ -106,9 +106,9 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
 on conflict (id) do nothing;
 select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = '6e4b94b5-c76d-5fd9-ab76-0c36741c7c00' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '8c86ff53-e71e-5ac6-95f9-7050b90a1ae3' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '37ea7199-9a67-5724-ae25-82e66e26ea49' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 1, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":1,"b":2},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = '37ea7199-9a67-5724-ae25-82e66e26ea49' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '0e6e65a2-7189-5dfd-bb55-6b4d36cbcb3a' and m.queue_state <> 'final';
-select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = 'a8fc9d78-ec59-5b9a-95bf-858a7bfd2e19' and m.queue_state <> 'final';
+select public.finalize_match(m.id, 'b', 1, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":1,"b":2},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = 'a8fc9d78-ec59-5b9a-95bf-858a7bfd2e19' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = 'c51d7452-27b0-5a28-b2ca-c0845c8268a3' and m.queue_state <> 'final';
 select public.finish_competition('0454786c-811b-54ce-8e15-0c5f37c21a38', 'tournament_structure') where exists (select 1 from public.competitions where id = '0454786c-811b-54ce-8e15-0c5f37c21a38' and status <> 'finished');
 -- Male Longsword: elimination, 10 entries

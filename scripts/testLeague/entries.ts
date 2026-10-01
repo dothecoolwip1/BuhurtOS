@@ -75,8 +75,9 @@ export function formEntries(ev: EventDef, attendees: ReadonlySet<number>, teams:
     const failed = new Set<number>(order.filter(t => byTeam.get(t)!.length < minOwn));
     for (let sweep = 0; sweep < 2; sweep++) {
       for (const t of small) {
-        if (rosters.has(t)) continue;
+        if (rosters.has(t) || failed.has(t)) continue;
         const own = byTeam.get(t)!;
+        if (own.some(i => taken.has(i))) { failed.add(t); continue; }
         const need = S - own.length;
         if (need > maxBorrow) continue;
         const reserved = new Set(small.filter(x => x !== t && !failed.has(x)).map(x => x));

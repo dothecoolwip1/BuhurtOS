@@ -87,7 +87,7 @@ function recordClause(s: FStats): string[] {
       else if (d <= -15) out.push('Results have dipped in recent seasons.');
     }
   }
-  if (s.rank) out.push(`Ranked ${s.rank.rank} of ${s.rank.of} in ${s.rank.div} on career points.`);
+  if (s.rank && s.rank.rank <= 5) out.push(`Ranked ${s.rank.rank} of ${s.rank.of} in ${s.rank.div} on career points.`);
   return out;
 }
 
@@ -109,7 +109,7 @@ export function makeBios(teams: readonly TeamDef[], fighters: readonly FighterDe
       const medals = [...s.medals].sort((a, b) => a.place - b.place || b.year - a.year).slice(0, 6);
       for (const m of medals) hl.push(`${['', 'Gold', 'Silver', 'Bronze'][m.place]}, ${m.comp}, ${m.event} (${m.year})`);
       if (s.matches > 0) hl.push(`Career record ${s.wins}-${s.losses} over ${s.matches} matches at ${s.events} events`);
-      if (s.rank) hl.push(`Career rank ${s.rank.rank} of ${s.rank.of} in ${s.rank.div}`);
+      if (s.rank && s.rank.rank <= 5) hl.push(`Career rank ${s.rank.rank} of ${s.rank.of} in ${s.rank.div}`);
     }
     hl.push(`Joined ${team.name} in ${f.joinedYear}`);
     out.set(f.idx, { bio, style: styleOf(f), highlights: hl.map(x => x.slice(0, 200)).slice(0, 10) });
