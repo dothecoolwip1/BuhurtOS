@@ -1,8 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { MemoryStorage, Outbox, type OutboxEntry } from './outbox';
+import { MemoryStorage, Outbox, STUCK_ATTEMPTS, type OutboxEntry } from './outbox';
 
 let n = 0;
 const make = (storage = new MemoryStorage()) => new Outbox(storage, () => 1000, () => `id-${++n}`);
+
+describe('Outbox stuck count', () => {
+  it('counts entries that keep failing', async () => {
+    const box = make();
+    await box.enqueue('a', 'm1', 1);
+    expect(box.stuck).toBe(0);
+    for (let i = 0; i < STUCK_ATTEMPTS; i++) await box.flush(async () => 'retry');
+    expect(box.stuck).toBe(1);
+    expect(box.size).toBe(1);
+  });
+});
 
 describe('Outbox', () => {
   it('saves to storage before anything is sent', async () => {

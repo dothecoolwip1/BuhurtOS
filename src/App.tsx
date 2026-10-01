@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { AdminLayout } from './admin/AdminLayout';
 import { CheckinPage, CompetitionsPage, OverviewPage, PeoplePage, RegistrationPage, RunPage, SetupPage } from './admin/pages';
 import { Layout } from './components/Layout';
+import { FieldPage } from './pages/FieldPage';
 import { EventRoute } from './pages/EventRoute';
 import { EventsPage } from './pages/EventsPage';
 import { FormatsPage } from './pages/FormatsPage';
@@ -12,6 +13,8 @@ import { RulesPage } from './pages/RulesPage';
 import { RegisterPage } from './registration/RegisterPage';
 import { ManagePage } from './pages/ManagePage';
 import { AccountPage } from './auth/AccountPage';
+import { NewEventPage } from './pages/NewEventPage';
+import { NewTeamPage } from './pages/NewTeamPage';
 
 export function App() {
   return (
@@ -28,8 +31,11 @@ export function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />
+        <Route path="events/new" element={<NewEventPage />} />
+        <Route path="teams/new" element={<NewTeamPage />} />
         <Route path="events/:eventId" element={<EventRoute />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
+        <Route path="events/:eventId/field/:field" element={<FieldPage />} />
         <Route path="events/:eventId/manage" element={<ManagePage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="formats" element={<FormatsPage />} />

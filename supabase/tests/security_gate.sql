@@ -239,6 +239,55 @@ select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_error('reopening needs a reason', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f2', '')$q$, '22023');
 select t.expect_ok('an organizer reopens a mistaken result', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f2', 'wrong winner entered')$q$);
 select t.expect_eq('reopening takes the winner back out of the final', (select entry_a is null from public.matches where id = '00000000-0000-0000-0000-0000000000f1'), true);
+
+-- ---------------------------------------------------------------- competition fixes: queue field, version check, detail, third place
+select t.as_admin();
+insert into public.fighters (id, display_name) values ('00000000-0000-0000-0000-00000000f002', 'Third Duellist');
+insert into public.entries (id, competition_id, fighter_id) values ('00000000-0000-0000-0000-00000000e004', current_setting('t.comp_ls')::uuid, '00000000-0000-0000-0000-00000000f002');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('organizer adds a second semifinal and a third-place match', format($q$
+  insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000f3', %L, 'elimination', 'Semifinal', 2, '00000000-0000-0000-0000-00000000e004', %L, '00000000-0000-0000-0000-0000000000f1', 'b');
+  insert into public.matches (id, competition_id, stage, round_label, position) values ('00000000-0000-0000-0000-0000000000f4', %L, 'third_place', 'Third place', 3)$q$,
+  current_setting('t.comp_ls'), current_setting('t.e1'), current_setting('t.comp_ls')));
+select t.as_user('00000000-0000-0000-0000-0000000000a5');
+select t.expect_ok('a scorekeeper sets a field', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'on_deck', 'Field 3')$q$);
+select t.expect_ok('a null field keeps the field', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'in_the_hole', null)$q$);
+select t.expect_eq('the field was kept', (select field from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'Field 3'::text);
+select t.expect_ok('an empty field clears the field', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'on_deck', '')$q$);
+select t.expect_eq('the field was cleared', (select field is null from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), true);
+select t.expect_error('a null expected version is refused', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{}'::jsonb, null)$q$, '22023');
+select t.expect_eq('the refused result left the match open', (select queue_state from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'on_deck'::text);
+
+-- a third-place match that was already played blocks a semifinal result from feeding it
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('organizer sets the third-place sides by hand', $q$update public.matches set entry_a = '00000000-0000-0000-0000-00000000e002', entry_b = '00000000-0000-0000-0000-00000000e004' where id = '00000000-0000-0000-0000-0000000000f4'$q$);
+select t.as_user('00000000-0000-0000-0000-0000000000a5');
+select t.expect_ok('the third-place match is played', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f4', 'a', 3, 1, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f4'))$q$);
+select t.expect_error('a semifinal cannot feed a third-place match that is already final', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f2'))$q$, 'P0001');
+select t.expect_eq('the refused semifinal changed nothing', (select queue_state from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'on_deck'::text);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('organizer reopens the third-place match', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f4', 'resetting the bracket')$q$);
+select t.expect_ok('organizer clears the third-place sides', $q$update public.matches set entry_a = null, entry_b = null where id = '00000000-0000-0000-0000-0000000000f4'$q$);
+
+-- semifinal losers drop into the third-place match, first semifinal to slot a, second to slot b
+select t.as_user('00000000-0000-0000-0000-0000000000a5');
+select t.expect_ok('first semifinal is finalized', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{"rounds":[2,1]}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f2'))$q$);
+select t.expect_eq('the first loser goes to slot a of third place', (select entry_a::text from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), '00000000-0000-0000-0000-00000000e002');
+select t.expect_eq('slot b of third place is still empty', (select entry_b is null from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), true);
+select t.expect_ok('second semifinal is finalized', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f3', 'a', 4, 0, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f3'))$q$);
+select t.expect_eq('the second loser goes to slot b of third place', (select entry_b::text from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), current_setting('t.e1'));
+select t.expect_eq('the winners are in the final', (select entry_a::text || '/' || entry_b::text from public.matches where id = '00000000-0000-0000-0000-0000000000f1'), current_setting('t.e1') || '/00000000-0000-0000-0000-00000000e004');
+select t.expect_ok('the third-place match is played again', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f4', 'b', 0, 2, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f4'))$q$);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('a semifinal cannot be reopened while third place is final', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f2', 'fixing the score')$q$, 'P0001');
+select t.expect_eq('the refused reopen changed nothing', (select queue_state from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'final'::text);
+select t.expect_ok('organizer reopens third place', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f4', 'fixing the bracket')$q$);
+select t.expect_ok('organizer reopens the first semifinal', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f2', 'fixing the score')$q$);
+select t.expect_eq('reopening takes the first loser out of third place', (select entry_a is null from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), true);
+select t.expect_eq('reopening leaves the second loser in place', (select entry_b::text from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), current_setting('t.e1'));
+select t.expect_eq('reopening clears the stored detail', (select detail from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), '{}'::jsonb);
+select t.expect_ok('organizer reopens the second semifinal', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f3', 'fixing the score')$q$);
+select t.expect_eq('reopening takes the second loser out of third place', (select entry_b is null from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), true);
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('a stranger sees no audit entries', (select count(*) from public.audit_log), 0::bigint);
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
@@ -249,7 +298,7 @@ select t.expect_error('nobody can write the audit log directly', $q$insert into 
 select t.as_anon();
 select t.expect_error('anon cannot read the audit log', 'select * from public.audit_log', '42501');
 select t.expect_error('anon cannot read score events', 'select * from public.score_events', '42501');
-select t.expect_eq('standings view is readable by anon', (select count(*) from public.competition_standings), 2::bigint);
+select t.expect_eq('standings view is readable by anon', (select count(*) from public.competition_standings), 3::bigint);  -- two registered fighters plus the extra duellist entry added for the third-place checks
 
 -- ---------------------------------------------------------------- medical notes are purged 30 days after the event
 select t.as_admin();

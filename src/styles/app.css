@@ -298,6 +298,16 @@ td.num,th.num{text-align:right;font-family:var(--f-data);font-variant-numeric:ta
 .mactions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mactions .btn{min-height:56px;border-radius:12px}
 .btn-win{background:var(--win);color:var(--surface)}
+/* field scoring: large one-hand targets */
+.fq-row{display:grid;gap:8px;text-align:left;width:100%;min-height:88px;padding:16px;cursor:pointer}
+.fq-row:disabled{opacity:.6;cursor:not-allowed}
+.fq-names{font:800 24px/1.1 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere}
+.btn.fq-big{min-height:64px;border-radius:14px;font-size:17px}
+.field-run .ft{height:64px}
+.field-run .pbtn{min-height:64px;font-size:16px}
+.field-run .stepper{grid-template-columns:64px minmax(0,1fr) 64px}
+.field-run .stepper button{height:64px}
+.field-run .seg button{min-height:52px}
 .clock{font:600 30px var(--f-data);letter-spacing:.02em}
 
 
@@ -557,3 +567,22 @@ main :where(div, section, article, label) { min-width: 0; }
 .rolebox .seg button{white-space:nowrap}
 @media (max-width:560px){.top .btn{padding:0 12px;min-height:40px;font-size:14px}.top .btn-ink{display:none}}
 .linklike{background:none;border:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;padding:0 0 0 8px}
+
+/* ---------- live results on the event page ---------- */
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.live-fields{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.live-field ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.live-field .slot{grid-template-columns:84px minmax(0,1fr)}
+.live-field .slot .t{overflow-wrap:anywhere}
+.live-results{display:grid;gap:14px}
+.live-comp{display:grid;gap:12px;min-width:0}
+.live-comp h3{font-size:22px}
+.champion-line{margin:0;padding:10px 14px;border-radius:var(--r-sm);border:1px solid var(--brass);background:var(--brass-soft);color:var(--brass)}
+.champion-line b{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.04em}
+.live-bracket{display:grid;gap:8px;min-width:0}
+.live-bracket .bracket-wrap{-webkit-overflow-scrolling:touch}
+.live-cols{grid-template-columns:repeat(var(--n,3),minmax(220px,1fr));min-width:calc(var(--n,3) * 256px)}
+.live-bracket .round:not(:last-child) .match::after{display:none}
+.live-pools{display:grid;gap:12px}
+.table-scroll{overflow-x:auto}
+@media (max-width:760px){.live-cols{grid-template-columns:repeat(var(--n,3),78vw);min-width:0;gap:0 14px}}

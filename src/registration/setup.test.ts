@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { publishChecklist, toPatch, validateSetup, type SetupForm } from './setup';
+import { localToIso } from '../lib/dates';
 
 const form = (o: Partial<SetupForm> = {}): SetupForm => ({
   name: 'Red Deer Rumble 2026', description: '', venue: 'Horse In Hand Ranch', address: '', city: 'Blackfalds', region: 'AB', startsOn: '2026-11-14', endsOn: '2026-11-15',
@@ -26,7 +27,7 @@ describe('patch', () => {
     const p = toPatch(form());
     expect(p.fee_cents).toBe(4000);
     expect(p.fee_province).toBe('AB');
-    expect(p.registration_closes_at).toBe('2026-11-09T06:59:00.000Z');
+    expect(p.registration_closes_at).toBe(localToIso('2026-11-08T23:59'));
     expect(p.registration_opens_at).toBeNull();
   });
   it('"Everyone" means no province restriction; a zero fee clears it', () => {
