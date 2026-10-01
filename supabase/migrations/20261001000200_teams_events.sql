@@ -8,10 +8,11 @@ create table public.teams (
   colors text[] not null default array['#2C4A8C', '#E9ECEF'] check (cardinality(colors) = 2),
   crest_division text not null default 'pale' check (crest_division in ('pale', 'fess', 'bend', 'chevron', 'quarterly', 'saltire')),
   initial text not null default '' check (char_length(initial) <= 2),
+  -- A team stays private until an organizer approves it.
+  status text not null default 'pending' check (status in ('pending', 'approved')),
   created_at timestamptz not null default now()
 );
 alter table public.teams enable row level security;
-create policy teams_public_read on public.teams for select to anon, authenticated using (true);
 grant select on public.teams to anon, authenticated;
 
 create table public.team_roles (
@@ -57,8 +58,12 @@ create table public.events (
   description text not null default '' check (char_length(description) <= 4000),
   event_type text not null default 'tournament' check (event_type in ('tournament', 'practice', 'clinic', 'demonstration', 'gathering')),
   status text not null default 'draft' check (status in ('draft', 'published', 'cancelled')),
-  venue text, city text, region text, country text,
+  venue text, address text, city text, region text, country text,
   timezone text not null default 'America/Edmonton',
+  -- Entry fee, tracked by hand. fee_cents applies to registrants from fee_province who are not volunteers. Null province = everyone.
+  fee_cents int not null default 0 check (fee_cents >= 0),
+  fee_province text,
+  fee_note text,
   starts_on date not null,
   ends_on date not null,
   host_team_id uuid references public.teams (id) on delete set null,
@@ -75,7 +80,7 @@ create trigger events_touch before update on public.events for each row execute 
 create table public.event_staff (
   event_id uuid not null references public.events (id) on delete cascade,
   user_id uuid not null references auth.users (id) on delete cascade,
-  role text not null check (role in ('organizer', 'marshal', 'scorekeeper')),
+  role text not null check (role in ('organizer', 'marshal', 'scorekeeper', 'medic')),
   primary key (event_id, user_id, role)
 );
 alter table public.event_staff enable row level security;
@@ -89,17 +94,19 @@ create or replace function private.is_organizer(p_event uuid) returns boolean
 language sql stable security definer set search_path = '' as $$ select private.has_event_role(p_event, array['organizer']) $$;
 create or replace function private.can_score(p_event uuid) returns boolean
 language sql stable security definer set search_path = '' as $$ select private.has_event_role(p_event, array['organizer', 'marshal', 'scorekeeper']) $$;
+create or replace function private.can_read_health(p_event uuid) returns boolean
+language sql stable security definer set search_path = '' as $$ select private.has_event_role(p_event, array['organizer', 'medic']) $$;
 create or replace function private.is_event_public(p_event uuid) returns boolean
 language sql stable security definer set search_path = '' as $$ select exists (select 1 from public.events where id = p_event and status = 'published') $$;
-revoke execute on function private.has_event_role(uuid, text[]), private.is_organizer(uuid), private.can_score(uuid), private.is_event_public(uuid) from public;
-grant execute on function private.has_event_role(uuid, text[]), private.is_organizer(uuid), private.can_score(uuid), private.is_event_public(uuid) to anon, authenticated;
+revoke execute on function private.has_event_role(uuid, text[]), private.is_organizer(uuid), private.can_score(uuid), private.can_read_health(uuid), private.is_event_public(uuid) from public;
+grant execute on function private.has_event_role(uuid, text[]), private.is_organizer(uuid), private.can_score(uuid), private.can_read_health(uuid), private.is_event_public(uuid) to anon, authenticated;
 
 create policy events_read on public.events for select to anon, authenticated
   using (status = 'published' or private.can_score(id));
 grant select on public.events to anon, authenticated;
 create policy events_organizer_update on public.events for update to authenticated
   using (private.is_organizer(id)) with check (private.is_organizer(id));
-grant update (name, description, event_type, status, venue, city, region, country, timezone, starts_on, ends_on, host_team_id, registration_opens_at, registration_closes_at) on public.events to authenticated;
+grant update (name, description, event_type, status, venue, address, city, region, country, timezone, starts_on, ends_on, host_team_id, registration_opens_at, registration_closes_at, fee_cents, fee_province, fee_note) on public.events to authenticated;
 
 create policy event_staff_read on public.event_staff for select to authenticated
   using (user_id = auth.uid() or private.is_organizer(event_id));
@@ -113,6 +120,9 @@ create table public.competitions (
   gender text not null default 'open' check (gender in ('open', 'men', 'women')),
   division text not null default 'open' check (division in ('open', '1', '2')),
   tier text not null default 'Classic' references public.ref_tiers (name),
+  -- The ruleset this competition follows, named with its version, for example 'Buhurt International: Duels rules V.26.4'.
+  -- Federations differ (BI, HACSA, IMCF), so rules are never assumed from the category alone.
+  ruleset text check (ruleset is null or char_length(ruleset) <= 120),
   structure text not null default 'round_robin' check (structure in ('round_robin', 'pools_elimination', 'elimination')),
   status text not null default 'setup' check (status in ('setup', 'registration', 'running', 'finished')),
   -- Group fights: how many rounds make a fight. Set by the tournament regulations.
@@ -169,3 +179,14 @@ create policy entries_organizer_write on public.entries for all to authenticated
   with check (private.is_organizer(private.event_of_competition(competition_id)));
 grant select on public.entries to anon, authenticated;
 grant insert, update, delete on public.entries to authenticated;
+
+-- Any organizer (platform or event) can approve teams.
+create or replace function private.is_any_organizer() returns boolean
+language sql stable security definer set search_path = '' as $$
+  select private.is_platform_organizer() or exists (select 1 from public.event_staff where user_id = auth.uid() and role = 'organizer')
+$$;
+revoke execute on function private.is_any_organizer() from public;
+grant execute on function private.is_any_organizer() to anon, authenticated;
+
+create policy teams_read on public.teams for select to anon, authenticated
+  using (status = 'approved' or private.is_team_captain(id) or private.is_any_organizer());

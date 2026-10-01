@@ -41,7 +41,7 @@ create trigger on_auth_user_created after insert on auth.users for each row exec
 -- Platform owner. Written only by the database owner (SQL editor / migrations), never by the API.
 create table public.platform_roles (
   user_id uuid primary key references auth.users (id) on delete cascade,
-  role text not null check (role in ('owner')),
+  role text not null check (role in ('owner', 'organizer')),
   granted_at timestamptz not null default now()
 );
 alter table public.platform_roles enable row level security;
@@ -52,8 +52,13 @@ create or replace function private.is_owner() returns boolean
 language sql stable security definer set search_path = '' as $$
   select exists (select 1 from public.platform_roles where user_id = auth.uid() and role = 'owner')
 $$;
-revoke execute on function private.is_owner() from public;
-grant execute on function private.is_owner() to anon, authenticated;
+-- The owner approves people as organizers once; organizers then create their own events.
+create or replace function private.is_platform_organizer() returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.platform_roles where user_id = auth.uid() and role in ('owner', 'organizer'))
+$$;
+revoke execute on function private.is_owner(), private.is_platform_organizer() from public;
+grant execute on function private.is_owner(), private.is_platform_organizer() to anon, authenticated;
 
 -- Audit trail. Written only by security-definer functions.
 create table public.audit_log (
@@ -96,7 +101,7 @@ insert into public.ref_tiers values
 
 create table public.ref_categories (
   code text primary key,
-  league text not null check (league in ('buhurt', 'duels', 'outrance')),
+  league text not null check (league in ('buhurt', 'duels', 'outrance', 'hacsa')),
   name text not null,
   sort int not null,
   source text not null
@@ -113,4 +118,9 @@ insert into public.ref_categories values
   ('buckler', 'duels', 'Sword & Buckler', 21, 'Duels rules V.26.4 §2.1.2'),
   ('longsword', 'duels', 'Longsword', 22, 'Duels rules V.26.4 §2.1.4'),
   ('polearm', 'duels', 'Polearm', 23, 'Duels rules V.26.4 §2.1.3'),
-  ('profight', 'outrance', 'Profight', 30, 'Outrance Rules V.26.4');
+  ('profight', 'outrance', 'Profight', 30, 'Outrance Rules V.26.4'),
+  -- HACSA rulesets. Rules text is not loaded; only the category names come from the Red Deer Rumble registration form.
+  ('sabre', 'hacsa', 'Sabre', 40, 'Red Deer Rumble registration form; HACSA ruleset'),
+  ('greatsword', 'hacsa', 'Greatsword', 41, 'Red Deer Rumble registration form; HACSA ruleset'),
+  ('triathlon', 'hacsa', 'Triathlon', 42, 'Red Deer Rumble registration form'),
+  ('marathon', 'hacsa', 'Marathon (relay)', 43, 'Red Deer Rumble registration form: 2 pts per round win, 1 per tie, 0 per loss');
