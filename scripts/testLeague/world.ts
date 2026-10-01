@@ -106,6 +106,5 @@ export function buildWorld(): World {
   if (!rumble) throw new Error('no seed satisfied the Red Deer Rumble-test constraints');
   rumble.sims = rumble.comps.map(c => simulateCompetition(c, teams, fighters, { play: false }));
   scheduleEvent(RUMBLE, rumble.sims, 4);
-  void resolved;
   return { teams, fighters, events, rumble, rumbleSeed };
 }

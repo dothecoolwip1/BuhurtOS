@@ -122,7 +122,6 @@ export function formEntries(ev: EventDef, attendees: ReadonlySet<number>, teams:
       if (c) { c.entries.push({ id: uid(`entry|${ev.slug}|${divCode(c.div)}|fighter|${fighters[i].name}`), teamIdx: null, fighterIdx: i, roster: [] }); placed.add(i); break; }
     }
   }
-  void shuffle;
   comps.sort((a, b) => divOrder(a.div) - divOrder(b.div));
   return { comps, attendees: placed };
 }

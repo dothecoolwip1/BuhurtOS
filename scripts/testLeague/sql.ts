@@ -117,7 +117,7 @@ function compMatches(ev: EventDef, s: CompSim, played: boolean): string[] {
     o.push(matchRows(ev, s.comp.id, phase));
     const l = linkRows(phase);
     if (l) o.push(l);
-    if (played) for (const m of phase) { void resolved(m); o.push(finalizeSql(m)); }
+    if (played) for (const m of phase) o.push(finalizeSql(m));
   }
   if (played) o.push(`select public.finish_competition(${q(s.comp.id)}, 'tournament_structure') where exists (select 1 from public.competitions where id = ${q(s.comp.id)} and status <> 'finished');`);
   return o;

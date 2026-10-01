@@ -120,6 +120,5 @@ export function modelAttendance(teams: readonly TeamDef[], fighters: readonly Fi
       }
     }
   }
-  void clamp;
   return { attendees, weight: P, k };
 }
