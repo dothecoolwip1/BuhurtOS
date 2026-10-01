@@ -5,6 +5,10 @@ import { eventTypeLabel } from '../data/eventTypes';
 import { fetchEvent, fetchMyEventContext, type LeagueKey, type LiveCompetition, type LiveEvent, type MyEventContext } from '../data/api';
 import { dateRange, registrationWindow } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
+import { LiveBracket } from '../components/LiveBracket';
+import { LiveNow } from '../components/LiveNow';
+import { LivePools } from '../components/LivePools';
+import { useLiveMatches } from '../lib/useLiveMatches';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { PROVINCES, formatMoney } from '../registration/model';
@@ -81,6 +85,9 @@ export function EventWorkspace() {
   const eventId = loaded.data?.event.id;
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   useDocumentTitle(loaded.data?.event.name ?? 'Event');
+  const showLive = loaded.data?.event.status === 'published';
+  const liveIds = showLive ? loaded.data!.competitions.map(c => c.id) : [];
+  const live = useLiveMatches(liveIds);
 
   if (loaded.loading) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error, 'Could not load this event.')}</p>;
@@ -90,6 +97,8 @@ export function EventWorkspace() {
   const groups = (['buhurt', 'duels', 'outrance', 'hacsa'] as LeagueKey[]).map(l => [l, competitions.filter(c => c.league === l)] as const).filter(([, list]) => list.length > 0);
   const where = [event.venue, event.address, [event.city, event.region].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
   const fee = feeText(event);
+  const names = new Map(competitions.map(c => [c.id, c.name]));
+  const allMatches = Object.values(live.data).flatMap(d => d.matches);
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
@@ -99,6 +108,7 @@ export function EventWorkspace() {
         {event.timeNote && <p style={{ overflowWrap: 'anywhere' }}><b>{event.timeNote}</b></p>}
         {where && <p style={{ color: 'var(--muted)', overflowWrap: 'anywhere' }}>{where}</p>}
       </div>
+      {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} />
       {(event.eventType === 'tournament' || groups.length > 0) && <section aria-labelledby="comp-h" style={{ display: 'grid', gap: 14 }}>
@@ -119,6 +129,27 @@ export function EventWorkspace() {
         ))}
         <p className="src">Rulesets are named as the organizer announced them. BuhurtOS shows what is recorded and does not guess; where a ruleset says it is not loaded, its text is not in BuhurtOS yet.</p>
       </section>}
+      {showLive && competitions.length > 0 && (
+        <section className="live-results" aria-labelledby="live-h">
+          <h2 id="live-h">Results</h2>
+          {live.loading && live.updatedAt === null && <p className="muted">Loading results…</p>}
+          {live.error != null && live.updatedAt === null && <p role="alert">{friendlyError(live.error, 'Could not load the results.')}</p>}
+          {live.updatedAt !== null && competitions.map(c => {
+            const d = live.data[c.id];
+            if (!d) return null;
+            const hasDraw = d.matches.length > 0;
+            return (
+              <div key={c.id} className="panel info live-comp">
+                <h3>{c.name}</h3>
+                {!hasDraw && <p className="muted">The draw has not been made yet.</p>}
+                {hasDraw && <LivePools standings={d.standings} entries={d.entries} matches={d.matches} />}
+                {hasDraw && <LiveBracket matches={d.matches} />}
+              </div>
+            );
+          })}
+          {live.error != null && live.updatedAt !== null && <p className="src">Could not refresh just now. Showing the last results we have; trying again shortly.</p>}
+        </section>
+      )}
       {(fee || event.feeNote || (event.registrationMode === 'buhuros' && event.registrationClosesAt)) && (
         <section className="panel info" aria-labelledby="info-h">
           <h3 id="info-h">Good to know</h3>
