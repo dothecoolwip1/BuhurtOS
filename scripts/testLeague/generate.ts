@@ -21,6 +21,7 @@ export function generate(stats: Stats | null): { name: string; sql: string }[] {
   for (let i = 0; i * per < w.fighters.length; i++) files.push({ name: `01_fighters_${String.fromCharCode(97 + i)}.sql`, sql: fighterFile(w, w.fighters.slice(i * per, (i + 1) * per), bios) });
   const hostOf = (n: string | null): string | null => (n ? w.teams.find(t => t.name === n)!.id : null);
   w.events.forEach((ew, i) => files.push({ name: `${String(10 + i).padStart(2, '0')}_event_${String(i + 1).padStart(2, '0')}_${ew.event.slug}.sql`, sql: eventFile(w, ew, hostOf(ew.event.host)) }));
+  if (w.addon.length) files.push({ name: '25_addon_female_3v3_historical.sql', sql: w.addon.map(a => eventFile(w, a, null, true)).join('\n') });
   files.push({ name: `30_event_current_${w.rumble.event.slug}.sql`, sql: eventFile(w, w.rumble, hostOf(w.rumble.event.host)) });
   for (const f of files) if (Buffer.byteLength(f.sql) > MAX_BYTES) throw new Error(`${f.name} is ${Buffer.byteLength(f.sql)} bytes, over the chunk limit`);
   return files;

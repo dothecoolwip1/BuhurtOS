@@ -107,8 +107,8 @@
             "div": "Female 5v5",
             "rank": 4
         },
-        "wins": 9,
-        "golds": 3,
+        "wins": 10,
+        "golds": 4,
         "byYear": {
             "2023": {
                 "m": 3,
@@ -119,12 +119,12 @@
                 "w": 3
             },
             "2026": {
-                "m": 8,
-                "w": 5
+                "m": 10,
+                "w": 6
             }
         },
         "events": 5,
-        "losses": 7,
+        "losses": 8,
         "medals": [
             {
                 "comp": "Female 5v5",
@@ -139,6 +139,12 @@
                 "place": 1
             },
             {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
                 "comp": "Female 5v5",
                 "year": 2026,
                 "event": "Rocky Mountain Rumble-test",
@@ -149,13 +155,19 @@
                 "year": 2026,
                 "event": "Rocky Mountain Rumble-test",
                 "place": 2
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
             }
         ],
-        "points": 35.50,
+        "points": 48.25,
         "bronzes": 0,
-        "matches": 16,
-        "podiums": 4,
-        "silvers": 1,
+        "matches": 18,
+        "podiums": 6,
+        "silvers": 2,
         "lastYear": 2026,
         "firstYear": 2023
     },
@@ -539,19 +551,19 @@
     },
     "14aed5cd-7ebd-5bd5-a88c-b122058d9b5b": {
         "rank": {
-            "of": 16,
-            "div": "Female Sword & Shield",
-            "rank": 8
+            "of": 8,
+            "div": "Female 3v3",
+            "rank": 1
         },
-        "wins": 9,
-        "golds": 1,
+        "wins": 11,
+        "golds": 3,
         "byYear": {
             "2023": {
                 "m": 2,
                 "w": 0
             },
             "2024": {
-                "m": 8,
+                "m": 9,
                 "w": 3
             },
             "2025": {
@@ -559,12 +571,12 @@
                 "w": 2
             },
             "2026": {
-                "m": 7,
-                "w": 4
+                "m": 9,
+                "w": 6
             }
         },
         "events": 7,
-        "losses": 14,
+        "losses": 15,
         "medals": [
             {
                 "comp": "Female 5v5",
@@ -579,10 +591,22 @@
                 "place": 1
             },
             {
+                "comp": "Female 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
+            {
                 "comp": "Female 5v5",
                 "year": 2025,
                 "event": "Queen City Combat Classic-test",
                 "place": 2
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
             },
             {
                 "comp": "Female Sword & Shield",
@@ -591,17 +615,23 @@
                 "place": 3
             },
             {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
+            },
+            {
                 "comp": "Female 5v5",
                 "year": 2026,
                 "event": "Rocky Mountain Rumble-test",
                 "place": 2
             }
         ],
-        "points": 33.75,
+        "points": 53.50,
         "bronzes": 1,
-        "matches": 23,
-        "podiums": 5,
-        "silvers": 3,
+        "matches": 26,
+        "podiums": 8,
+        "silvers": 4,
         "lastYear": 2026,
         "firstYear": 2023
     },
@@ -965,25 +995,31 @@
             "div": "Female 5v5",
             "rank": 4
         },
-        "wins": 10,
-        "golds": 2,
+        "wins": 11,
+        "golds": 3,
         "byYear": {
             "2024": {
-                "m": 1,
-                "w": 0
+                "m": 2,
+                "w": 1
             },
             "2025": {
                 "m": 9,
                 "w": 6
             },
             "2026": {
-                "m": 7,
+                "m": 8,
                 "w": 4
             }
         },
         "events": 6,
-        "losses": 7,
+        "losses": 8,
         "medals": [
+            {
+                "comp": "Female 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
             {
                 "comp": "Female 5v5",
                 "year": 2024,
@@ -1019,13 +1055,19 @@
                 "year": 2026,
                 "event": "Rocky Mountain Rumble-test",
                 "place": 3
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
             }
         ],
-        "points": 42.50,
+        "points": 53.50,
         "bronzes": 2,
-        "matches": 17,
-        "podiums": 6,
-        "silvers": 2,
+        "matches": 19,
+        "podiums": 8,
+        "silvers": 3,
         "lastYear": 2026,
         "firstYear": 2024
     },
@@ -1035,11 +1077,11 @@
             "div": "Female Sword & Shield",
             "rank": 1
         },
-        "wins": 16,
-        "golds": 4,
+        "wins": 17,
+        "golds": 5,
         "byYear": {
             "2024": {
-                "m": 9,
+                "m": 10,
                 "w": 9
             },
             "2025": {
@@ -1047,13 +1089,19 @@
                 "w": 5
             },
             "2026": {
-                "m": 7,
-                "w": 2
+                "m": 9,
+                "w": 3
             }
         },
         "events": 7,
-        "losses": 7,
+        "losses": 9,
         "medals": [
+            {
+                "comp": "Female 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
+            },
             {
                 "comp": "Female Sword & Shield",
                 "year": 2024,
@@ -1091,17 +1139,29 @@
                 "place": 2
             },
             {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
                 "comp": "Female Sword & Shield",
                 "year": 2026,
                 "event": "Rocky Mountain Rumble-test",
                 "place": 2
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
             }
         ],
-        "points": 60.00,
+        "points": 76.00,
         "bronzes": 1,
-        "matches": 23,
-        "podiums": 7,
-        "silvers": 2,
+        "matches": 26,
+        "podiums": 10,
+        "silvers": 4,
         "lastYear": 2026,
         "firstYear": 2024
     },
@@ -2919,12 +2979,12 @@
     },
     "7b2a7b7d-ddd2-595d-9269-7efa0dbacd1a": {
         "rank": {
-            "of": 19,
-            "div": "Female Longsword",
-            "rank": 11
+            "of": 8,
+            "div": "Female 3v3",
+            "rank": 5
         },
-        "wins": 8,
-        "golds": 0,
+        "wins": 9,
+        "golds": 1,
         "byYear": {
             "2024": {
                 "m": 3,
@@ -2935,12 +2995,12 @@
                 "w": 2
             },
             "2026": {
-                "m": 8,
-                "w": 5
+                "m": 10,
+                "w": 6
             }
         },
         "events": 5,
-        "losses": 9,
+        "losses": 10,
         "medals": [
             {
                 "comp": "Female 5v5",
@@ -2955,17 +3015,29 @@
                 "place": 3
             },
             {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
+            },
+            {
                 "comp": "Female 5v5",
                 "year": 2026,
                 "event": "Rocky Mountain Rumble-test",
                 "place": 2
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 1
             }
         ],
-        "points": 20.25,
+        "points": 32.25,
         "bronzes": 1,
-        "matches": 17,
-        "podiums": 3,
-        "silvers": 2,
+        "matches": 19,
+        "podiums": 5,
+        "silvers": 3,
         "lastYear": 2026,
         "firstYear": 2024
     },
@@ -4157,16 +4229,16 @@
     },
     "9b130d30-471b-5ccf-9192-7e0c04af836e": {
         "rank": {
-            "of": 19,
-            "div": "Female Longsword",
-            "rank": 10
+            "of": 8,
+            "div": "Female 3v3",
+            "rank": 8
         },
-        "wins": 6,
-        "golds": 1,
+        "wins": 7,
+        "golds": 2,
         "byYear": {
             "2024": {
-                "m": 5,
-                "w": 1
+                "m": 6,
+                "w": 2
             },
             "2026": {
                 "m": 5,
@@ -4183,16 +4255,22 @@
                 "place": 2
             },
             {
+                "comp": "Female 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
+            {
                 "comp": "Female Longsword",
                 "year": 2026,
                 "event": "Pacific Steel Championship-test",
                 "place": 1
             }
         ],
-        "points": 19.75,
+        "points": 26.75,
         "bronzes": 0,
-        "matches": 10,
-        "podiums": 2,
+        "matches": 11,
+        "podiums": 3,
         "silvers": 1,
         "lastYear": 2026,
         "firstYear": 2024
@@ -6153,33 +6231,39 @@
     },
     "d5185702-fa37-5db8-8a4d-2cb114461bcf": {
         "rank": {
-            "of": 15,
-            "div": "Female Polearm",
-            "rank": 2
+            "of": 8,
+            "div": "Female 3v3",
+            "rank": 1
         },
-        "wins": 7,
-        "golds": 2,
+        "wins": 9,
+        "golds": 4,
         "byYear": {
             "2023": {
                 "m": 1,
                 "w": 0
             },
             "2024": {
-                "m": 1,
-                "w": 1
+                "m": 2,
+                "w": 2
             },
             "2025": {
                 "m": 4,
                 "w": 1
             },
             "2026": {
-                "m": 6,
-                "w": 5
+                "m": 8,
+                "w": 6
             }
         },
         "events": 7,
-        "losses": 5,
+        "losses": 6,
         "medals": [
+            {
+                "comp": "Female 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 1
+            },
             {
                 "comp": "Female 5v5",
                 "year": 2024,
@@ -6211,17 +6295,29 @@
                 "place": 2
             },
             {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 1
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Rocky Mountain Rumble-test",
+                "place": 2
+            },
+            {
                 "comp": "Female Polearm",
                 "year": 2026,
                 "event": "Rocky Mountain Rumble-test",
                 "place": 1
             }
         ],
-        "points": 40.00,
+        "points": 59.75,
         "bronzes": 1,
-        "matches": 12,
-        "podiums": 6,
-        "silvers": 3,
+        "matches": 15,
+        "podiums": 9,
+        "silvers": 4,
         "lastYear": 2026,
         "firstYear": 2023
     },
@@ -6929,7 +7025,7 @@
                 "w": 10
             },
             "2024": {
-                "m": 8,
+                "m": 9,
                 "w": 6
             },
             "2025": {
@@ -6937,12 +7033,12 @@
                 "w": 6
             },
             "2026": {
-                "m": 5,
+                "m": 6,
                 "w": 4
             }
         },
         "events": 8,
-        "losses": 6,
+        "losses": 8,
         "medals": [
             {
                 "comp": "Female Longsword",
@@ -6955,6 +7051,12 @@
                 "year": 2023,
                 "event": "Calgary Iron Clash-test",
                 "place": 1
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2024,
+                "event": "Edmonton Winter Melee-test",
+                "place": 2
             },
             {
                 "comp": "Female Longsword",
@@ -6997,13 +7099,19 @@
                 "year": 2026,
                 "event": "Pacific Steel Championship-test",
                 "place": 2
+            },
+            {
+                "comp": "Female 3v3",
+                "year": 2026,
+                "event": "Pacific Steel Championship-test",
+                "place": 2
             }
         ],
-        "points": 68.50,
+        "points": 77.50,
         "bronzes": 1,
-        "matches": 32,
-        "podiums": 9,
-        "silvers": 3,
+        "matches": 34,
+        "podiums": 11,
+        "silvers": 5,
         "lastYear": 2026,
         "firstYear": 2023
     },

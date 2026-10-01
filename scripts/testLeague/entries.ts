@@ -19,7 +19,9 @@ export const compName = (d: Division): string => `${d.gender === 'men' ? 'Male' 
 export const sexOf = (g: Division['gender']): 'male' | 'female' => (g === 'men' ? 'male' : 'female');
 const MIN_DUEL = 4, MIN_TEAM = 2;
 
-export interface FormOptions { noMeleeTeams?: ReadonlySet<number>; /** Everybody enters every discipline they list (a big weekend, closed registration). */ fullIntent?: boolean }
+export interface FormOptions { noMeleeTeams?: ReadonlySet<number>; /** Everybody enters every discipline they list (a big weekend, closed registration). */ fullIntent?: boolean;
+  /** Division codes (e.g. 'W3') where a team with only 1 own fighter may be completed with up to 2 mercenaries. */
+  relaxed?: ReadonlySet<string> }
 
 export function formEntries(ev: EventDef, attendees: ReadonlySet<number>, teams: readonly TeamDef[], fighters: readonly FighterDef[], opt: FormOptions = {}): { comps: CompPlan[]; attendees: Set<number> } {
   const att = [...attendees].sort((a, b) => a - b);
@@ -57,7 +59,8 @@ export function formEntries(ev: EventDef, attendees: ReadonlySet<number>, teams:
   // 2. Team divisions.
   for (const d of ev.divisions.filter(x => isMelee(x.cat))) {
     const cat = d.cat as '5v5' | '3v3';
-    const S = SIDE_SIZE[cat], minOwn = S === 5 ? 3 : 2, maxBorrow = S === 5 ? 2 : 1;
+    const relax = opt.relaxed?.has(divCode(d)) ?? false;
+    const S = SIDE_SIZE[cat], minOwn = relax ? 1 : S === 5 ? 3 : 2, maxBorrow = relax ? 2 : S === 5 ? 2 : 1;
     const sex = sexOf(d.gender);
     const wants = [...(intent.get(divCode(d)) ?? [])];
     const byTeam = new Map<number, number[]>();

@@ -117,9 +117,9 @@ select pg_temp.c('own-team roster members really belong to the team; mercenaries
 select pg_temp.c('mercenary scenarios exist at several historical events and at the Rumble',
   (select count(distinct k.event_id) from public.entry_fighters ef join public.competitions k on k.id = ef.competition_id where ef.role = 'mercenary' and k.event_id in (select id from v_hist)) >= 5
   and exists (select 1 from public.entry_fighters ef join public.competitions k on k.id = ef.competition_id join v_ev e on e.id = k.event_id where ef.role = 'mercenary' and e.slug = 'red-deer-rumble-test'));
-select pg_temp.c('a team that lends a mercenary keeps its own roster size (mercenaries never exceed 2 on a 5v5 or 1 on a 3v3 roster)',
+select pg_temp.c('a team that lends a mercenary keeps its own roster size (mercenaries never exceed 2 on a roster)',
   (select count(*) from public.entries e join public.competitions k on k.id = e.competition_id where k.event_id in (select id from v_ev) and e.team_id is not null
-     and (select count(*) from public.entry_fighters ef where ef.entry_id = e.id and ef.role = 'mercenary') > (case k.category when '5v5' then 2 else 1 end)) = 0);
+     and (select count(*) from public.entry_fighters ef where ef.entry_id = e.id and ef.role = 'mercenary') > 2) = 0);
 
 -- ============================================================ matches and results
 select pg_temp.c('every match has both entries (completed events), final matches have a result and winner',
@@ -215,6 +215,14 @@ select pg_temp.c('Rumble: category registrations (duel entries + roster rows) ab
   and (select count(distinct k.category) from public.competitions k where k.event_id = (select id from v_r)) = 5,
   (select count(*) || ' registrations, ' || (select count(*) from public.entries e join public.competitions k on k.id = e.competition_id where k.event_id = (select id from v_r)) || ' entries, ' || (select count(*) from public.entry_fighters ef join public.competitions k on k.id = ef.competition_id where k.event_id = (select id from v_r)) || ' roster rows'
    from public.fighter_participation fp where fp.event_id = (select id from v_r)));
+select pg_temp.c('Female 3v3 works: the Rumble has a Female 3v3 competition with at least 3 team entries (11 women have a 3v3 discipline, so 3 teams of 3 is the most that exist), a drawn schedule, and every roster of 3 is completed with at most 2 mercenaries who are women with 3v3',
+  (select count(*) from public.entries e join public.competitions k on k.id = e.competition_id where k.event_id = (select id from v_r) and k.name = 'Female 3v3' and k.gender = 'women' and k.category = '3v3') >= 3
+  and (select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = (select id from v_r) and k.name = 'Female 3v3') >= 3
+  and (select count(*) from public.entry_fighters ef join public.competitions k on k.id = ef.competition_id join public.fighters f on f.id = ef.fighter_id where k.event_id = (select id from v_r) and k.name = 'Female 3v3'
+        and (f.gender <> 'female' or not ('3v3' = any (f.disciplines)))) = 0
+  and (select count(*) from public.entries e join public.competitions k on k.id = e.competition_id where k.event_id = (select id from v_r) and k.name = 'Female 3v3' and (select count(*) from public.entry_fighters ef where ef.entry_id = e.id and ef.role = 'mercenary') > 2) = 0);
+select pg_temp.c('Female 3v3 also ran at 2 or more historical events, with finished results',
+  (select count(distinct k.event_id) from public.competitions k where k.name = 'Female 3v3' and k.status = 'finished' and k.event_id in (select id from v_hist)) >= 2);
 select pg_temp.c('Rumble: many fighters in several categories', (select count(*) from (select fighter_id from public.fighter_participation where event_id = (select id from v_r) group by 1 having count(*) >= 2) x) >= 15);
 select pg_temp.c('Rumble: attendance differs from the latest completed event (under 45 percent overlap), with returnees and newcomers',
   (select count(*) from rpart r join v_part p on p.fighter_id = r.fighter_id and p.event_id = (select id from v_hist order by starts_on desc limit 1))::numeric
