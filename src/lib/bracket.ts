@@ -123,16 +123,46 @@ export function buildPoolsThenBracket(entryIds: readonly string[], opts: { poolS
   return { pools, matches: pools.flatMap(p => p.matches) };
 }
 
+/** Round-1 meetings between two qualifiers of the same pool, for a seeding (best first) fed to buildSingleElimination. They have already played each other. */
+function samePoolFirstRound(seeding: readonly string[], poolOf: ReadonlyMap<string, number>): number {
+  const n = seeding.length;
+  let size = 2;
+  while (size < n) size *= 2;
+  const order = seedOrder(size);
+  let clashes = 0;
+  for (let i = 0; i < size / 2; i++) {
+    const a = order[2 * i], b = order[2 * i + 1];
+    if (a <= n && b <= n && poolOf.get(seeding[a - 1]) === poolOf.get(seeding[b - 1])) clashes++;
+  }
+  return clashes;
+}
+
 /**
- * Order pool qualifiers for buildSingleElimination(..., {manualOrder: true}): all pool winners are the top seeds,
- * then the runners-up in reverse pool order (so a runner-up is less likely to meet their own pool winner early).
- * `ranked[i]` is pool i's entry ids best-first.
+ * Order pool qualifiers for buildSingleElimination(..., {manualOrder: true}): all pool winners are the top seeds, then each
+ * further rank (runners-up, ...) follows. Each later rank is placed as the rotation (or reversed rotation) of its pool order that
+ * causes the fewest first-round meetings between two qualifiers of the same pool, since they have already played each other.
+ * (Reversing every second rank, as an earlier version did, paired seed 1 with its own pool's runner-up.) The first arrangement
+ * found wins ties, so the result is deterministic. `ranked[i]` is pool i's entry ids best-first.
  */
 export function seedPoolQualifiers(ranked: readonly (readonly string[])[], advancePerPool: number): string[] {
-  const out: string[] = [];
-  for (let rank = 0; rank < advancePerPool; rank++) {
-    const row = ranked.map(p => p[rank]).filter((x): x is string => !!x);
-    out.push(...(rank % 2 === 1 ? row.reverse() : row));
+  const poolOf = new Map<string, number>();
+  ranked.forEach((p, i) => p.forEach(id => poolOf.set(id, i)));
+  const row = (rank: number) => ranked.map(p => p[rank]).filter((x): x is string => !!x);
+  const out: string[] = row(0);
+  if (advancePerPool <= 1) return out;
+  for (let rank = 1; rank < advancePerPool; rank++) {
+    const mine = row(rank);
+    const rest: string[] = [];
+    for (let later = rank + 1; later < advancePerPool; later++) rest.push(...row(later));
+    let best = mine, bestClashes = Infinity;
+    for (const base of [mine, [...mine].reverse()]) {
+      for (let shift = 0; shift < base.length; shift++) {
+        const cand = [...base.slice(shift), ...base.slice(0, shift)];
+        const clashes = samePoolFirstRound([...out, ...cand, ...rest], poolOf);
+        if (clashes < bestClashes) { best = cand; bestClashes = clashes; }
+      }
+    }
+    out.push(...best);
   }
   return out;
 }

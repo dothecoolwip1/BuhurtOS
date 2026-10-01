@@ -92,7 +92,28 @@ describe('buildPoolsThenBracket', () => {
     expect(new Set(r.matches.map(x => x.key)).size).toBe(20);
     expect(buildPoolsThenBracket(ids(10), { poolSizes: [5, 5], seed: 3 })).toEqual(r);
   });
-  it('orders qualifiers winners first', () => {
-    expect(seedPoolQualifiers([['a1', 'a2'], ['b1', 'b2']], 2)).toEqual(['a1', 'b1', 'b2', 'a2']);
+  it('orders qualifiers winners first, then runners-up so winners meet another pool first', () => {
+    expect(seedPoolQualifiers([['a1', 'a2'], ['b1', 'b2']], 2)).toEqual(['a1', 'b1', 'a2', 'b2']);
+  });
+  // Found by supabase/tests/simulate_tournament.sql: reversing the runners-up paired every pool winner with its own pool's
+  // runner-up in round 1 (4 pools of 4, two advance: all four quarterfinals were pool rematches).
+  for (const pools of [2, 3, 4, 5, 6, 8]) {
+    for (const adv of [1, 2, 3]) {
+      it(`${pools} pools, ${adv} advance: no first-round match between two qualifiers of the same pool`, () => {
+        const ranked = Array.from({ length: pools }, (_, p) => Array.from({ length: adv }, (_, r) => `p${p}r${r}`));
+        const poolOf = (id: string) => /^p(\d+)/.exec(id)![1];
+        const q = seedPoolQualifiers(ranked, adv);
+        expect(new Set(q).size).toBe(pools * adv);
+        expect(q.slice(0, pools)).toEqual(ranked.map(p => p[0])); // winners are the top seeds, in pool order
+        const round1 = buildSingleElimination(q, { manualOrder: true }).filter(m => m.key.startsWith('e1-'));
+        for (const m of round1) expect(poolOf(m.a!)).not.toBe(poolOf(m.b!));
+      });
+    }
+  }
+  it('is deterministic and keeps every qualifier exactly once for uneven pools', () => {
+    const ranked = [['a1', 'a2', 'a3'], ['b1', 'b2'], ['c1', 'c2', 'c3']];
+    const q = seedPoolQualifiers(ranked, 2);
+    expect(q).toEqual(seedPoolQualifiers(ranked, 2));
+    expect([...q].sort()).toEqual(['a1', 'a2', 'b1', 'b2', 'c1', 'c2']);
   });
 });

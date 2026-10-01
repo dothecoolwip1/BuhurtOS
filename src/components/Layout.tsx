@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { setSampleMode, useSampleMode } from '../data/mode';
 import { useAuth } from '../auth/AuthContext';
+import { usePlatformRole } from '../auth/usePlatformRole';
 import { NotificationBell } from './NotificationBell';
 
 const NAV = [
   { to: '/', label: 'Home', end: true, icon: <path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z" /> },
   { to: '/events', label: 'Events', end: false, icon: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></> },
   { to: '/teams', label: 'Teams', end: false, icon: <><path d="M12 3 4 6v6c0 4.5 3.2 7.6 8 9 4.8-1.4 8-4.5 8-9V6Z" /></> },
+  { to: '/fighters', label: 'Fighters', end: false, icon: <><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></> },
+  { to: '/rankings', label: 'Rankings', end: false, icon: <path d="M6 20V11M12 20V4M18 20v-6" /> },
   { to: '/formats', label: 'Formats', end: false, icon: <path d="M5 19 19 5M19 5l-1 4M19 5l-4 1M19 19 5 5M5 5l1 4M5 5l4 1" /> },
   { to: '/rules', label: 'Rules', end: false, icon: <><path d="M5 4h11l3 3v13H5Z" /><path d="M9 11h6M9 15h6" /></> }
 ];
@@ -32,6 +35,7 @@ export function Layout() {
   const toggleTheme = useTheme();
   const { pathname } = useLocation();
   const { session } = useAuth();
+  const { isOwner } = usePlatformRole();
   const sample = useSampleMode();
   useEffect(() => { window.scrollTo({ top: 0 }); }, [pathname]);
   return (
@@ -45,6 +49,7 @@ export function Layout() {
           </NavLink>
           <nav className="nav" aria-label="Main">
             {NAV.map(n => <NavLink key={n.to} to={n.to} end={n.end}>{n.label}</NavLink>)}
+            {isOwner && <NavLink to="/platform">Platform</NavLink>}
           </nav>
           <div className="spacer" />
           {session && <NotificationBell />}
