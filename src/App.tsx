@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { AdminLayout } from './admin/AdminLayout';
 import { CheckinPage, CompetitionsPage, OverviewPage, PeoplePage, RegistrationPage, RunPage, SetupPage } from './admin/pages';
 import { Layout } from './components/Layout';
-import { EventPage } from './pages/EventPage';
+import { EventRoute } from './pages/EventRoute';
 import { EventsPage } from './pages/EventsPage';
 import { FormatsPage } from './pages/FormatsPage';
 import { HomePage } from './pages/HomePage';
@@ -27,7 +27,7 @@ export function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />
-        <Route path="events/:eventId" element={<EventPage />} />
+        <Route path="events/:eventId" element={<EventRoute />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="formats" element={<FormatsPage />} />
