@@ -64,3 +64,33 @@ Clean database. Only reference data is seeded (tiers, categories, with sources).
 * The Buhurt Regulations round structure for group fights (owner: "not decided yet").
 * The waiver text.
 * Whether a "medic" role needs a separate sign-in flow or is just an event role (assumed: an event role).
+
+
+## Corrections from the live registration form (owner pasted it 2026-10-01)
+These override earlier assumptions above wherever they conflict.
+* **Schedule:** Sat Nov 14 and Sun Nov 15, 10:00 to 18:00. Weapons check 08:00. Safety meeting 09:30 both days. Camping on site.
+  Address: Horse In Hand Ranch, 39506 Highway 2 Service Rd, Blackfalds AB. Open to anyone.
+* **It is announced as an official BI tournament.** This contradicts the earlier "not sanctioned, Exhibition" answer. Tier is
+  **unresolved** (see open questions). BI rulesets apply to BI categories; **Sabre and Greatsword (in Marathon) follow HACSA rulesets**,
+  which Claude has not been given.
+* **Fighters need a BI fighter profile** or are moved to a separate bracket and likely do not compete for medals.
+* **Competitions listed on the form:** Longsword, Sword and Shield, Sword and Buckler, Polearm, Sabre (each men and women);
+  Triathlon; Marathon (a new 2-fighter relay: six one-round categories in order Longsword, Sword and Shield, Sabre, Polearm,
+  Sword and Buckler, Short Axe or Greatsword; 10 s breaks; 2 pts per round win, 1 tie, 0 loss; most points wins; may run solo);
+  Profight (men, women, by weight class; small classes handled on the day); Melees 3v3 (men), 5v5 (men), melees (women).
+* **Teams** must exist before registration closes and are final; a fighter with no team does not fight. A fighter may ask to be
+  placed as a **mercenary**.
+* **Fee:** $40 for Alberta fighters. Fighters from outside the province, and people who mostly volunteer (fighting one category),
+  do not pay. Paid by e-transfer to the Reavers before Nov 13, or cash on the day. Tracked by hand in the app.
+* **Insurance:** HACSA members in good standing and MCC members are covered. Others show proof of insurance (by Nov 11) or sign up
+  as temporary HACSA members. No cover means no fights.
+* **Waiver:** HACSA's liability waiver text appears in the form (age of majority in Alberta, assumption of risk, indemnity).
+  The owner supplied it; use it verbatim and versioned, do not edit it.
+* **Form fields:** email, name, gender (male, female, other), emergency contact (name, relationship, phone), organization
+  (HACSA, MCC, other), team, sharing equipment with another fighter (affects scheduling), days able to attend (Sat, Sun, other
+  hours), categories, Marathon teammate and team, Profight weight, melee team and captain, "mercenary", volunteer roles
+  (squire, points counter, marshal, runners, secretary, scheduling, ticket booth, other), fee acknowledgment, insurance status,
+  waiver agreement, free-text notes. There is **no medical-conditions field**; the owner still wants an optional private note.
+* **Volunteers** who assist fighters fill a separate safety/liability/tracking form.
+* **Scheduling constraints:** fighters state which days they can attend and whether they share equipment. Missing Sunday risks
+  forfeiting a final.
