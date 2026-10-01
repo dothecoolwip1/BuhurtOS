@@ -68,7 +68,7 @@ function Hub() {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><Chip tone="live">Live now</Chip><Chip>Classic tier</Chip><Chip>5 competitions</Chip><Chip>Hosted by Iron Wardens</Chip></div>
         <h1>{FEATURED_EVENT.name}</h1>
         <div className="facts"><span><small>When</small>{FEATURED_EVENT.dates}</span><span><small>Where</small>{FEATURED_EVENT.venue}</span><span><small>Formats</small>Group fight · Duels · Profight</span></div>
-        <div className="acts"><Link className="btn btn-ghost" to="/rules">Look up a rule</Link></div>
+        <div className="acts"><Link className="btn btn-ghost" to="/rules">Look up a rule</Link><Link className="btn btn-ghost" to="/marshal">Marshal scoring</Link></div>
       </section>
       <div style={{ marginTop: 20 }}><Tabs value={tab} options={TABS} onChange={t => go(t)} /></div>
       <div className="fade-in" style={{ marginTop: 22 }} key={tab}>
