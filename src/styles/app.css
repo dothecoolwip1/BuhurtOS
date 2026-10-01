@@ -298,6 +298,16 @@ td.num,th.num{text-align:right;font-family:var(--f-data);font-variant-numeric:ta
 .mactions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mactions .btn{min-height:56px;border-radius:12px}
 .btn-win{background:var(--win);color:var(--surface)}
+/* field scoring: large one-hand targets */
+.fq-row{display:grid;gap:8px;text-align:left;width:100%;min-height:88px;padding:16px;cursor:pointer}
+.fq-row:disabled{opacity:.6;cursor:not-allowed}
+.fq-names{font:800 24px/1.1 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere}
+.btn.fq-big{min-height:64px;border-radius:14px;font-size:17px}
+.field-run .ft{height:64px}
+.field-run .pbtn{min-height:64px;font-size:16px}
+.field-run .stepper{grid-template-columns:64px minmax(0,1fr) 64px}
+.field-run .stepper button{height:64px}
+.field-run .seg button{min-height:52px}
 .clock{font:600 30px var(--f-data);letter-spacing:.02em}
 
 
