@@ -1,5 +1,6 @@
 import type { LiveEvent } from '../data/api';
 import type { EventSummary, LeagueId } from '../data/types';
+import { DRAFT_NOTICE } from '../lib/draftView';
 import { dateBox, registrationWindow } from '../lib/dates';
 
 /** Shapes a real event for the shared EventRow. Only facts the database holds are shown; the tier stays blank until one is set. */
@@ -7,7 +8,7 @@ export function toSummary(e: LiveEvent, now = new Date()): EventSummary {
   const box = dateBox(e.startsOn);
   const where = [e.venue, e.city && e.region ? `${e.city}, ${e.region}` : e.city ?? e.region].filter(Boolean) as string[];
   const badges: EventSummary['badges'] = [];
-  if (e.status === 'draft') badges.push({ tone: '', label: 'Draft: organizers only' });
+  if (e.status === 'draft') badges.push({ tone: '', label: DRAFT_NOTICE });
   else if (e.status === 'cancelled') badges.push({ tone: '', label: 'Cancelled' });
   else if (e.registrationMode === 'external') badges.push({ tone: 'brass', label: 'Tickets online' });
   else if (e.registrationMode === 'buhuros') {
