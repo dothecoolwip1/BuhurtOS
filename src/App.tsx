@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { FieldPage } from './pages/FieldPage';
 import { EventRoute } from './pages/EventRoute';
@@ -12,7 +12,7 @@ import { RegisterPage } from './registration/RegisterPage';
 import { ManagePage } from './pages/ManagePage';
 import { AccountPage } from './auth/AccountPage';
 import { NewEventPage } from './pages/NewEventPage';
-import { NewTeamPage } from './pages/NewTeamPage';
+import { TeamManagerPage } from './pages/TeamManagerPage';
 
 export function App() {
   return (
@@ -21,7 +21,8 @@ export function App() {
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="events/new" element={<NewEventPage />} />
-        <Route path="teams/new" element={<NewTeamPage />} />
+        <Route path="team-manager" element={<TeamManagerPage />} />
+        <Route path="teams/new" element={<Navigate to="/team-manager" replace />} />
         <Route path="events/:eventId" element={<EventRoute />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
         <Route path="events/:eventId/field/:field" element={<FieldPage />} />
