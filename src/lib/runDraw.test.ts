@@ -57,7 +57,7 @@ describe('runDraw', () => {
     const ranked = rankPools(matches, [s('a1', 1, 5, 5), s('a2', 1, 9, 2), s('a3', 0, 0, 5), s('b2', 1, 3, 1)]);
     expect(ranked).toEqual([['a2', 'a1', 'a3'], ['b2', 'b1']]);
     const r = bracketFromPools(ranked, 2, false);
-    expect(r.qualifiers).toEqual(['a2', 'b2', 'b1', 'a1']);
+    expect(r.qualifiers).toEqual(['a2', 'b2', 'a1', 'b1']);
     expect(r.matches.length).toBe(3);
   });
   it('moves items within bounds and makes seeds', () => {

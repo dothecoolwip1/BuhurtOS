@@ -4,7 +4,11 @@ import { Chip, PageHead } from '../components/ui';
 import { eventTypeLabel } from '../data/eventTypes';
 import { fetchEvent, fetchMyEventContext, type LeagueKey, type LiveCompetition, type LiveEvent, type MyEventContext } from '../data/api';
 import { dateRange, registrationWindow } from '../lib/dates';
+import { DRAFT_NOTICE, notPublicMessage } from '../lib/draftView';
 import { friendlyError } from '../lib/friendlyError';
+import { EventHistory, EventOrganization } from '../components/EventHistory';
+import { fetchEventMetaById } from '../data/careers';
+import { eventPhase, todayIso } from '../lib/careerView';
 import { LiveBracket } from '../components/LiveBracket';
 import { LiveNow } from '../components/LiveNow';
 import { LivePools } from '../components/LivePools';
@@ -72,7 +76,7 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
       <h3 id="org-h">Needs your attention</h3>
       <p>
         <b>{mine.pendingRegistrations ?? 0}</b> registration{mine.pendingRegistrations === 1 ? '' : 's'} waiting for review.
-        {event.status === 'draft' && <> The event is a <b>draft</b>: only organizers can see it.</>}
+        {event.status === 'draft' && <> The event is a <b>draft</b>: only you and your event staff can see it.</>}
       </p>
       <p><Link className="btn btn-ink" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link></p>
       <p><Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Event setup and publishing</Link> <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>People and roles</Link></p>
@@ -88,6 +92,7 @@ export function EventWorkspace() {
   const loaded = useAsync(() => fetchEvent(slug), [slug]);
   const eventId = loaded.data?.event.id;
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
+  const meta = useAsync(() => (eventId ? fetchEventMetaById(eventId) : Promise.resolve(null)), [eventId]);
   useDocumentTitle(loaded.data?.event.name ?? 'Event');
   const showLive = loaded.data?.event.status === 'published';
   const liveIds = showLive ? loaded.data!.competitions.map(c => c.id) : [];
@@ -95,7 +100,16 @@ export function EventWorkspace() {
 
   if (loaded.loading) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error, 'Could not load this event.')}</p>;
-  if (!loaded.data) return <NotFoundPage />;
+  if (!loaded.data) {
+    if (!session) return <NotFoundPage />;
+    return (
+      <section className="panel info" role="status" style={{ display: 'grid', gap: 12, justifyItems: 'start' }}>
+        <h2>Event not available</h2>
+        <p>{notPublicMessage(session.user.email)}</p>
+        <p><Link className="btn btn-line" to="/account">Account</Link> <Link className="btn btn-line" to="/events">See events</Link></p>
+      </section>
+    );
+  }
 
   const { event, competitions } = loaded.data;
   const groups = (['buhurt', 'duels', 'outrance', 'hacsa'] as LeagueKey[]).map(l => [l, competitions.filter(c => c.league === l)] as const).filter(([, list]) => list.length > 0);
@@ -103,15 +117,23 @@ export function EventWorkspace() {
   const fee = feeText(event);
   const names = new Map(competitions.map(c => [c.id, c.name]));
   const allMatches = Object.values(live.data).flatMap(d => d.matches);
+  const completed = event.status === 'published' && eventPhase(event.startsOn, event.endsOn, todayIso()) === 'past';
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
-      <PageHead eyebrow={event.status === 'draft' ? 'Draft: only organizers can see this' : eventTypeLabel(event.eventType)} title={event.name} lede={event.description || undefined} />
+      <PageHead eyebrow={eventTypeLabel(event.eventType)} title={event.name} lede={event.description || undefined} />
+      {event.status === 'draft' && (
+        <section className="panel info" role="status" aria-label="Draft event" style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>
+          <p><Chip tone="brass">Draft</Chip> <b>{DRAFT_NOTICE}.</b></p>
+          {mine.data?.isOrganizer && <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/manage?tab=setup`}>Publish this event (Setup tab)</Link>}
+        </section>
+      )}
       <div style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>
         <Chip>{dateRange(event.startsOn, event.endsOn)}</Chip>
         {event.timeNote && <p style={{ overflowWrap: 'anywhere' }}><b>{event.timeNote}</b></p>}
         {where && <p style={{ color: 'var(--muted)', overflowWrap: 'anywhere' }}>{where}</p>}
       </div>
+      <EventOrganization meta={meta.data} />
       <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />
       <ShareEventButton title={event.name} />
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
@@ -137,7 +159,8 @@ export function EventWorkspace() {
         ))}
         <p className="src">Rulesets are named as the organizer announced them. BuhurtOS shows what is recorded and does not guess; where a ruleset says it is not loaded, its text is not in BuhurtOS yet.</p>
       </section>}
-      {showLive && competitions.length > 0 && (
+      {completed && competitions.length > 0 && <EventHistory eventId={event.id} competitions={competitions} live={live} />}
+      {showLive && !completed && competitions.length > 0 && (
         <section className="live-results" aria-labelledby="live-h">
           <h2 id="live-h">Results</h2>
           {live.loading && live.updatedAt === null && <p className="muted">Loading results…</p>}

@@ -7,5 +7,5 @@ export default defineConfig(({ command }) => ({
   base: command === 'build' ? (process.env.VITE_BASE ?? '/BuhurtOS/') : '/',
   plugins: [react(), swPrecachePlugin()],
   build: { target: 'es2022', sourcemap: false },
-  test: { environment: 'node', include: ['src/**/*.test.ts'] }
+  test: { environment: 'node', include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'] }
 }));

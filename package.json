@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
-    "test": "vitest run"
+    "test": "vitest run",
+    "nacl:gen": "rolldown scripts/testLeague/generate.ts --format esm --platform node -d node_modules/.cache/nacl && node node_modules/.cache/nacl/generate.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
