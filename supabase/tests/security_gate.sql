@@ -390,6 +390,66 @@ select t.expect_eq('the stranger changed nothing', (select registration_mode fro
 select t.as_admin();
 select t.expect_ok('back to registering on BuhurtOS', format($q$update public.events set registration_mode = 'buhuros' where id = %L$q$, current_setting('t.event')));
 
+-- ---------------------------------------------------------------- merging duplicate teams, and the captain's clearance list
+select t.as_admin();
+create temp table mt (k text primary key, v text);
+grant all on mt to anon, authenticated;
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-0000000000a9', 'captain2@example.test');
+select t.as_user('00000000-0000-0000-0000-0000000000a9');
+insert into mt select 'dup', public.create_team('prairie-cinders-2', 'Prairie Cinders (dup)', 'Saskatoon', 'SK', 'CA');
+select t.as_user('00000000-0000-0000-0000-0000000000a9');
+insert into mt select 'other', public.create_team('lone-wolves', 'Lone Wolves', 'Regina', 'SK', 'CA');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('an organizer approves the other teams', format($q$select public.approve_team(%L); select public.approve_team(%L)$q$, (select v from mt where k = 'dup'), (select v from mt where k = 'other')));
+select t.as_admin();
+-- the duplicate and the kept team are both registered for 5v5 by their own captain's registration; the "other" team is in 5v5 too
+insert into public.entries (id, competition_id, team_id) select '00000000-0000-0000-0000-00000000e0a1', id, (select v from reg where k = 'team')::uuid from public.competitions where name = 'Men''s 5v5';
+insert into public.entries (id, competition_id, team_id) select '00000000-0000-0000-0000-00000000e0a2', id, (select v from mt where k = 'other')::uuid from public.competitions where name = 'Men''s 5v5';
+update public.registrations set team_id = (select v from mt where k = 'dup')::uuid where id = current_setting('t.r1')::uuid;
+update public.registrations set team_id = (select v from reg where k = 'team')::uuid where id = (select v from reg where k = 'r2')::uuid;
+insert into public.team_affiliations (team_id, organization_id, relation) values ((select v from mt where k = 'dup')::uuid, '00000000-0000-0000-0000-0000000000b1', 'member');  -- same as the kept team's: must be dropped, not collide
+insert into public.team_memberships (fighter_id, team_id) values ('00000000-0000-0000-0000-00000000f001', (select v from mt where k = 'dup')::uuid);
+insert into public.team_roles (team_id, user_id, role) values ((select v from reg where k = 'team')::uuid, '00000000-0000-0000-0000-0000000000a9', 'captain');  -- already captain of the duplicate: must not collide
+insert into public.organizations (id, slug, name, kind) values ('00000000-0000-0000-0000-0000000000b9', 'second-org', 'Second Org', 'club');
+insert into public.team_affiliations (team_id, organization_id, relation) values ((select v from mt where k = 'dup')::uuid, '00000000-0000-0000-0000-0000000000b9', 'member');
+update public.fighters set team_id = (select v from mt where k = 'dup')::uuid where id = '00000000-0000-0000-0000-00000000f001';
+
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger cannot merge teams', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a8');
+select t.expect_error('a captain cannot merge teams', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')), '42501');
+select t.as_anon();
+select t.expect_error('anon cannot merge teams', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')));
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('a team cannot be merged into itself', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from reg where k = 'team')), '22023');
+select t.expect_error('an unknown team is refused', format($q$select public.merge_teams(%L, gen_random_uuid())$q$, (select v from reg where k = 'team')), 'P0002');
+select t.expect_error('teams with entries in the same competition are not merged', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'other')), '22023');
+select t.expect_eq('the refused merge changed nothing', (select count(*) from public.teams where id = (select v from mt where k = 'other')::uuid), 1::bigint);
+select t.expect_ok('an organizer merges the duplicate into the kept team', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')));
+select t.as_admin();
+select t.expect_eq('the duplicate team is gone', (select count(*) from public.teams where id = (select v from mt where k = 'dup')::uuid), 0::bigint);
+select t.expect_eq('registrations moved to the kept team', (select count(*) from public.registrations where team_id = (select v from reg where k = 'team')::uuid), 2::bigint);
+select t.expect_eq('affiliation moved to the kept team', (select count(*) from public.team_affiliations where team_id = (select v from reg where k = 'team')::uuid), 2::bigint);
+select t.expect_eq('memberships moved to the kept team', (select count(*) from public.team_memberships where team_id = (select v from reg where k = 'team')::uuid), 2::bigint);
+select t.expect_eq('fighters moved to the kept team', (select count(*) from public.fighters where team_id = (select v from reg where k = 'team')::uuid), 1::bigint);
+select t.expect_eq('both captains now captain the kept team, once each', (select count(*) from public.team_roles where team_id = (select v from reg where k = 'team')::uuid), 2::bigint);
+select t.expect_eq('the merge is in the audit log', (select count(*) from public.audit_log where action = 'team.merged'), 1::bigint);
+
+select t.as_user('00000000-0000-0000-0000-0000000000a8');
+select t.expect_eq('the captain sees their team''s registered people and no one else', (select count(*) from public.team_clearance(current_setting('t.event')::uuid, (select v from reg where k = 'team')::uuid)), 2::bigint);
+select t.expect_eq('the clearance list shows who is checked in', (select count(*) from public.team_clearance(current_setting('t.event')::uuid, (select v from reg where k = 'team')::uuid) where checked_in), 1::bigint);
+select t.expect_eq('the clearance list exposes no private columns', (select count(*) from information_schema.routines r join information_schema.parameters p on p.specific_name = r.specific_name
+  where r.routine_name = 'team_clearance' and p.parameter_mode = 'OUT' and p.parameter_name ~ 'emergency|medical|note|phone|email|fit'), 0::bigint);
+select t.expect_error('a captain cannot read another team''s clearance list', format($q$select * from public.team_clearance(%L, %L)$q$, current_setting('t.event'), (select v from mt where k = 'other')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger cannot read a clearance list', format($q$select * from public.team_clearance(%L, %L)$q$, current_setting('t.event'), (select v from reg where k = 'team')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a3');
+select t.expect_error('a fighter who is not a captain cannot read the list', format($q$select * from public.team_clearance(%L, %L)$q$, current_setting('t.event'), (select v from reg where k = 'team')), '42501');
+select t.as_anon();
+select t.expect_error('anon cannot read a clearance list', format($q$select * from public.team_clearance(%L, %L)$q$, current_setting('t.event'), (select v from reg where k = 'team')));
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('an organizer can read any team''s list', (select count(*) from public.team_clearance(current_setting('t.event')::uuid, (select v from reg where k = 'team')::uuid)), 2::bigint);
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);

@@ -13,6 +13,7 @@ import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { PROVINCES, formatMoney } from '../registration/model';
 import { EventDaySchedule } from './EventDaySchedule';
+import { MyTeamPanel } from './MyTeamPanel';
 import { NotFoundPage } from './NotFoundPage';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
@@ -112,6 +113,7 @@ export function EventWorkspace() {
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
+      <MyTeamPanel eventId={event.id} userId={userId} />
       <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} />
       {(event.eventType === 'tournament' || groups.length > 0) && <section aria-labelledby="comp-h" style={{ display: 'grid', gap: 14 }}>
         <h2 id="comp-h">Competitions</h2>
