@@ -94,3 +94,22 @@ These override earlier assumptions above wherever they conflict.
 * **Volunteers** who assist fighters fill a separate safety/liability/tracking form.
 * **Scheduling constraints:** fighters state which days they can attend and whether they share equipment. Missing Sunday risks
   forfeiting a final.
+
+## North star: how it is applied (owner's statement is in `docs/VISION.md`; added 2026-10-01)
+The test for every decision: *does this make BuhurtOS closer to the connected operating system for buhurt?*
+**Sequencing (owner decision):** foundation first, then the Rumble on top of it. Event workspaces first; team and fighter workspaces follow the same pattern after the Rumble.
+Dates unchanged: registration and public pages by Nov 1; scoring and live brackets by Nov 14. Decision point Oct 14: if the foundation is behind, cut claim flow, media links, season/ranking views and the organizations UI, never the registration path.
+
+**Principles**
+1. One identity per thing: one fighter record, teams with history, events as permanent records. A result entered once feeds fighter, team, event, season and ranking.
+2. Open the thing and it becomes the workspace (event now; team and fighter later). Controls appear in place by role. No giant global menu.
+3. Different audiences, different experiences, one design language: public energetic and understandable to a newcomer; fighter personal and mobile; marshal one-handed; organizer calm, "what needs attention"; platform owner restrained and separate.
+4. Mobile is primary, not secondary.
+5. Real data with provenance: every entered or imported fact has a source and a status (official / imported / unverified); disagreements are shown. A roster entry is not an account, a directory listing is not adoption, and nothing implies federation endorsement. No invented history; sample data never appears on public pages without a clear label.
+6. Governance is not geography: team location says nothing about governing organization; relationships are explicit, sourced records.
+7. Remove repeated work: registration -> entries -> matches -> results -> rankings flow without re-typing.
+8. Plain language; permissions stay in the database.
+
+**Connected model to add (additive migrations, nothing deleted):** `organizations`, `team_affiliations`, `team_memberships`, `rulesets` + `ruleset_versions`, `seasons`, `sources` + `record_sources`, `results`/placings with read-only history and ranking views, `media_links`, profile claim flow.
+**Navigation:** small global nav (Home, Events, Teams, Fighters, Rankings, Learn, account); event workspace at `/events/:slug` with role-aware panels; field scoring at `/events/:slug/field/:field`; owner-only `/platform`.
+**Out of scope until after the Rumble:** rankings pages, team and fighter workspaces, federation tools, video links, notifications, Stripe, domain.
