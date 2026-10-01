@@ -32,3 +32,25 @@ export async function removeStaff(eventId: string, userId: string, role: StaffMe
   const { error } = await supabase.rpc('remove_event_role', { p_event: eventId, p_user: userId, p_role: role });
   if (error) throw error;
 }
+
+/** Same rule the database applies in create_event: an owner or approved organizer row in platform_roles (each person can read only their own row). */
+export async function fetchCanCreateEvents(userId: string): Promise<boolean> {
+  const { data, error } = await supabase.from('platform_roles').select('role').eq('user_id', userId);
+  if (error) throw error;
+  return (data ?? []).some(r => r.role === 'owner' || r.role === 'organizer');
+}
+
+export interface NewEventInput { slug: string; name: string; startsOn: string; endsOn: string; venue: string | null; address: string | null }
+export async function createEvent(i: NewEventInput): Promise<void> {
+  const { error } = await supabase.rpc('create_event', { p_slug: i.slug, p_name: i.name.trim(), p_starts_on: i.startsOn, p_ends_on: i.endsOn, p_venue: i.venue, p_address: i.address });
+  if (error) throw error;
+}
+
+export interface NewTeamInput { slug: string; name: string; city: string | null; region: string | null; country: string | null }
+export async function createTeam(i: NewTeamInput): Promise<void> {
+  const { error } = await supabase.rpc('create_team', { p_slug: i.slug, p_name: i.name.trim(), p_city: i.city, p_region: i.region, p_country: i.country });
+  if (error) throw error;
+}
+
+/** A taken slug is a unique-violation (23505), which friendlyError would hide behind the generic message. */
+export const isSlugTaken = (e: unknown) => (e as { code?: string } | null)?.code === '23505';

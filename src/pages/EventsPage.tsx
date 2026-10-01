@@ -2,7 +2,9 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { EventRow } from '../components/EventRow';
 import { toSummary } from '../components/EventSummaryMap';
 import { PageHead, Seg } from '../components/ui';
+import { useAuth } from '../auth/AuthContext';
 import { fetchEvents } from '../data/api';
+import { fetchCanCreateEvents } from '../data/setup';
 import { EVENTS } from '../data/fixtures';
 import { useSampleMode } from '../data/mode';
 import type { LeagueId } from '../data/types';
@@ -20,6 +22,8 @@ export function EventsPage() {
   const raw = params.get('format');
   const filter: Filter = FILTERS.some(([k]) => k === raw) ? (raw as Filter) : 'all';
   const live = useAsync(fetchEvents, []);
+  const userId = useAuth().session?.user.id;
+  const canCreate = useAsync(() => (userId ? fetchCanCreateEvents(userId) : Promise.resolve(false)), [userId]);
   const real = (live.data ?? []).map(e => toSummary(e));
   const matches = (leagues: LeagueId[]) => filter === 'all' || leagues.includes(filter);
   const list = real.filter(e => matches(e.leagues));
@@ -30,6 +34,7 @@ export function EventsPage() {
       <div className="evfilter">
         <Seg label="Format" value={filter} options={FILTERS} onChange={v => setParams(v === 'all' ? {} : { format: v }, { replace: true })} />
         <Link className="more" to="/formats?tab=tournaments">What are the tiers? →</Link>
+        {canCreate.data === true && <Link className="btn btn-ink btn-sm" to="/events/new">Create an event</Link>}
       </div>
       {live.loading && <p className="muted">Loading events…</p>}
       {live.error != null && <p role="alert">{friendlyError(live.error, 'Could not load events.')}</p>}
