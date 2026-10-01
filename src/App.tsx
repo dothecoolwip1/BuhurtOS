@@ -10,6 +10,7 @@ import { MarshalPage } from './pages/MarshalPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RulesPage } from './pages/RulesPage';
 import { RegisterPage } from './registration/RegisterPage';
+import { ManagePage } from './pages/ManagePage';
 import { AccountPage } from './auth/AccountPage';
 
 export function App() {
@@ -29,6 +30,7 @@ export function App() {
         <Route path="events" element={<EventsPage />} />
         <Route path="events/:eventId" element={<EventRoute />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
+        <Route path="events/:eventId/manage" element={<ManagePage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />

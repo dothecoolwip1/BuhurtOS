@@ -302,6 +302,18 @@ select t.expect_eq('anon sees the result', (select count(*) from public.results)
 select t.expect_eq('a fighter history reads from the result', (select count(*) from public.fighter_history where fighter_id = '00000000-0000-0000-0000-00000000f001'), 1::bigint);
 select t.expect_error('a result cannot be written twice for one entry', format($q$insert into public.results (competition_id, entry_id) values (%L, '00000000-0000-0000-0000-00000000e002')$q$, current_setting('t.comp_ls')));
 
+-- ---------------------------------------------------------------- insurance is recorded by organizers only
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger cannot record insurance', format($q$select public.set_registration_insurance(%L, 'proof_received')$q$, current_setting('t.r1')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a3');
+select t.expect_error('a registrant cannot mark their own proof as received', format($q$select public.set_registration_insurance(%L, 'proof_received')$q$, current_setting('t.r1')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('an unknown insurance state is refused', format($q$select public.set_registration_insurance(%L, 'whatever')$q$, current_setting('t.r1')), '22023');
+select t.expect_ok('the organizer sets proof pending', format($q$select public.set_registration_insurance(%L, 'proof_pending')$q$, current_setting('t.r1')));
+select t.expect_eq('pending proof means not cleared', (select cleared from public.registration_clearance where registration_id = current_setting('t.r1')::uuid), false);
+select t.expect_ok('the organizer records proof received', format($q$select public.set_registration_insurance(%L, 'proof_received')$q$, current_setting('t.r1')));
+select t.expect_eq('proof received clears them again', (select cleared from public.registration_clearance where registration_id = current_setting('t.r1')::uuid), true);
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
