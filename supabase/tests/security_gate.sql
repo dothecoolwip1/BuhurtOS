@@ -259,6 +259,49 @@ select t.expect_eq('no medical note remains', (select count(*) from public.regis
 select t.as_anon();
 select t.expect_error('anon cannot call the purge', 'select private.purge_medical_notes()', '42501');
 
+-- ---------------------------------------------------------------- the connected model: organizations, careers, rulesets, sources, results
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('an event organizer is not the platform owner: cannot add an organization', $q$insert into public.organizations (slug, name, kind) values ('nope', 'Nope', 'federation')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger cannot add a source', $q$insert into public.sources (kind, title) values ('official', 'Forged')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner adds an organization', $q$insert into public.organizations (id, slug, name, kind, country) values ('00000000-0000-0000-0000-0000000000b1', 'example-fed', 'Example Federation', 'federation', 'CA')$q$);
+select t.expect_ok('the owner adds a source', $q$insert into public.sources (id, kind, title, url) values ('00000000-0000-0000-0000-0000000000c1', 'imported', 'Example rulebook', 'https://example.test/rules')$q$);
+select t.expect_ok('the owner adds a ruleset and a version', $q$with r as (insert into public.rulesets (id, organization_id, slug, name) values ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-0000000000b1', 'example-duels', 'Example Duels') returning id) insert into public.ruleset_versions (id, ruleset_id, version, source_id) select '00000000-0000-0000-0000-0000000000d2', id, 'V.1', '00000000-0000-0000-0000-0000000000c1' from r$q$);
+select t.expect_ok('the owner links a source to a record with a status', $q$insert into public.record_sources (source_id, entity_type, entity_id, status) values ('00000000-0000-0000-0000-0000000000c1', 'organization', '00000000-0000-0000-0000-0000000000b1', 'unverified')$q$);
+select t.expect_ok('the owner records an affiliation explicitly', format($q$insert into public.team_affiliations (team_id, organization_id, relation) values (%L, '00000000-0000-0000-0000-0000000000b1', 'member')$q$, (select v from reg where k = 'team')));
+select t.expect_ok('the owner adds a season', $q$insert into public.seasons (slug, name, starts_on, ends_on) values ('s-2026', '2026 season', '2026-01-01', '2026-12-31')$q$);
+
+select t.as_anon();
+select t.expect_eq('anon can read organizations', (select count(*) from public.organizations), 1::bigint);
+select t.expect_eq('anon can read sources', (select count(*) from public.sources), 1::bigint);
+select t.expect_eq('anon can read ruleset versions', (select count(*) from public.ruleset_versions), 1::bigint);
+select t.expect_eq('anon can read the source status of a record', (select status from public.record_sources limit 1), 'unverified'::text);
+select t.expect_eq('anon sees the affiliation of an approved team', (select count(*) from public.team_affiliations), 1::bigint);
+select t.expect_eq('anon can read seasons', (select count(*) from public.seasons), 1::bigint);
+select t.expect_error('anon cannot add a source', $q$insert into public.sources (kind, title) values ('official', 'Forged')$q$, '42501');
+select t.expect_error('anon cannot add an organization', $q$insert into public.organizations (slug, name, kind) values ('x1', 'X', 'club')$q$, '42501');
+select t.expect_error('anon cannot add a membership', format($q$insert into public.team_memberships (fighter_id, team_id) values ('00000000-0000-0000-0000-00000000f001', %L)$q$, (select v from reg where k = 'team')), '42501');
+
+-- careers: only the team's captain (or the owner) writes a roster
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger cannot add a fighter to a team roster', format($q$insert into public.team_memberships (fighter_id, team_id) values ('00000000-0000-0000-0000-00000000f001', %L)$q$, (select v from reg where k = 'team')));
+select t.as_user('00000000-0000-0000-0000-0000000000a8');
+select t.expect_ok('the captain adds a fighter to their roster', format($q$insert into public.team_memberships (fighter_id, team_id, role, from_date) values ('00000000-0000-0000-0000-00000000f001', %L, 'fighter', '2026-01-01')$q$, (select v from reg where k = 'team')));
+select t.as_anon();
+select t.expect_eq('anon sees the roster of an approved team', (select count(*) from public.team_memberships), 1::bigint);
+select t.expect_eq('anon sees no account ids: memberships carry none', (select count(*) from information_schema.columns where table_schema = 'public' and table_name in ('team_memberships', 'team_affiliations', 'organizations', 'rulesets', 'ruleset_versions', 'seasons', 'sources', 'record_sources', 'results') and column_name in ('user_id', 'created_by', 'owner_id')), 0::bigint);
+
+-- results: organizers write, everyone reads on a published event
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger cannot record a result', format($q$insert into public.results (competition_id, entry_id, final_place) values (%L, '00000000-0000-0000-0000-00000000e002', 1)$q$, current_setting('t.comp_ls')));
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('the organizer records a result', format($q$insert into public.results (competition_id, entry_id, final_place, points) values (%L, '00000000-0000-0000-0000-00000000e002', 1, 10)$q$, current_setting('t.comp_ls')));
+select t.as_anon();
+select t.expect_eq('anon sees the result', (select count(*) from public.results), 1::bigint);
+select t.expect_eq('a fighter history reads from the result', (select count(*) from public.fighter_history where fighter_id = '00000000-0000-0000-0000-00000000f001'), 1::bigint);
+select t.expect_error('a result cannot be written twice for one entry', format($q$insert into public.results (competition_id, entry_id) values (%L, '00000000-0000-0000-0000-00000000e002')$q$, current_setting('t.comp_ls')));
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
