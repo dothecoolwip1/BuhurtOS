@@ -13,6 +13,7 @@ import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
+import { ConflictsAlert } from '../components/RunConflicts';
 import { AttentionStrip, CheckinPanel } from './CheckinPanel';
 import { NotFoundPage } from './NotFoundPage';
 import { ExportRegistrations } from './ExportRegistrations';
@@ -147,6 +148,7 @@ export function ManagePage() {
         else if (k === 'blocked') setParams({ tab: 'checkin' }, { replace: true });
         else { setFilter('accepted'); setParams({}, { replace: true }); }
       }} />
+      <ConflictsAlert eventId={event.id} onOpen={() => setParams({ tab: 'run' }, { replace: true })} />
       <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People'], ['teams', 'Teams']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
