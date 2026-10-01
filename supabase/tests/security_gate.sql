@@ -147,6 +147,24 @@ select t.as_user('00000000-0000-0000-0000-0000000000a8');
 insert into reg select 'r3', public.submit_registration(current_setting('t.event')::uuid, t.reg_payload('AB', true));
 select t.expect_eq('an Alberta volunteer owes nothing', (select fee_due_cents from public.registrations), 0);
 
+-- volunteers: the Other role, and the waiver record
+select t.expect_ok('a volunteer can pick Other with a description', $q$select public.submit_registration(current_setting('t.event')::uuid, t.reg_payload('AB', true) || jsonb_build_object('volunteer_roles', jsonb_build_array('Squire', 'Other: carry water')))$q$);
+select t.expect_eq('the Other description is stored in volunteer_roles', (select volunteer_roles from public.registrations where user_id = '00000000-0000-0000-0000-0000000000a8'), array['Squire', 'Other: carry water']);
+select t.expect_eq('a volunteer who chose Other still owes nothing', (select fee_due_cents from public.registrations where user_id = '00000000-0000-0000-0000-0000000000a8'), 0);
+select t.expect_error('Other without a description is refused', $q$select public.submit_registration(current_setting('t.event')::uuid, t.reg_payload('AB', true) || jsonb_build_object('volunteer_roles', jsonb_build_array('Other')))$q$, '22023');
+select t.expect_error('Other with an empty description is refused', $q$select public.submit_registration(current_setting('t.event')::uuid, t.reg_payload('AB', true) || jsonb_build_object('volunteer_roles', jsonb_build_array('Other:   ')))$q$, '22023');
+select t.expect_error('an over-long Other description is refused', format($q$select public.submit_registration(current_setting('t.event')::uuid, t.reg_payload('AB', true) || jsonb_build_object('volunteer_roles', jsonb_build_array(%L)))$q$, 'Other: ' || repeat('x', 201)), '22023');
+select t.expect_error('an unknown volunteer role is refused', $q$select public.submit_registration(current_setting('t.event')::uuid, t.reg_payload('AB', true) || jsonb_build_object('volunteer_roles', jsonb_build_array('Emperor')))$q$, '22023');
+select t.expect_error('a blank signed name is refused', $q$select public.submit_registration(current_setting('t.event')::uuid, t.reg_payload('AB', true) || jsonb_build_object('waiver_signed_name', '   '))$q$);
+select t.as_admin();
+select t.expect_eq('the waiver is stored exactly as loaded', (select body from public.waiver_versions where id = current_setting('t.waiver')::uuid), 'Waiver text supplied by the owner.');
+select t.expect_eq('an acceptance records the version id, typed name and a time', (select count(*) from public.registrations where id = current_setting('t.r1')::uuid
+  and waiver_version_id = current_setting('t.waiver')::uuid and waiver_signed_name = 'Test Fighter' and waiver_signed_at is not null), 1::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('even an organizer cannot edit a loaded waiver (add a new version instead)', $q$update public.waiver_versions set body = 'changed' where id = current_setting('t.waiver')::uuid$q$, '42501');
+select t.expect_error('even an organizer cannot delete a loaded waiver', $q$delete from public.waiver_versions where id = current_setting('t.waiver')::uuid$q$, '42501');
+select t.expect_ok('an organizer can save the volunteer note', $q$update public.events set volunteer_info = 'Ask the organizers for the volunteer form.' where id = current_setting('t.event')::uuid$q$);
+
 -- privacy: other people, scorekeepers and anonymous visitors
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('a stranger sees no registrations', (select count(*) from public.registrations), 0::bigint);

@@ -16,7 +16,7 @@ Verified in the code (cited so you can check):
 
 * Real pages: Home, Events, event page at `/events/:slug`, registration at `/events/:slug/register`, organizer area at `/events/:slug/manage`, Account (`/account`), Formats, Rules, Marshal (`src/App.tsx`).
 * The organizer area has four tabs: Review, Check-in, Setup, People (`src/pages/ManagePage.tsx`).
-* `/admin/*` is a **clickable mock with invented data**. It does not talk to the database (`src/admin/AdminContext.tsx` keeps everything in memory). It only shows in the top bar in sample mode. Do not test the real event here.
+* The old `/admin/*` clickable mock was removed (see docs/ADMIN_MOCK_RETIRED.md). Test the real admin at `/events/:slug/manage`.
 * `/marshal` in this tree is the scoring screen design running on invented fighters, with a pretend "no signal" switch. Its send step is simulated, not a real database call (`src/lib/useOutbox.ts` says so in its comments).
 * **There is no screen to create an event or a team.** The database functions `create_event` and `create_team` exist (`supabase/migrations/20261001000300_registration.sql`) but nothing in `src/` calls them. See Part B for how the throwaway event is made.
 * Sample mode (`?sample=1` on any page) mixes clearly labelled invented events into the lists. Leave it off for this test (`src/data/mode.ts`). If you ever see "Sample events (invented)", add `?sample=0` to the address.
@@ -204,6 +204,5 @@ Stated plainly. None of these have been fixed by this document.
 * **Insurance.** The form offers five choices; the organizer screen has a "proof received" value the form does not (`src/data/manage.ts`). The rule "no cover means no fights" is shown as outstanding work on the card but is not shown as enforced anywhere I read.
 * **Fees** are tracked by hand only; no payment.
 * **Competition path** is new, assembled by several people at once, not run against the real database, and I could not read the Run tab, field scoring page or live bracket. The `/marshal` page in this tree uses invented fighters and a simulated sender, so "offline then online" proves the queue mechanics only until the real wiring lands. Bracket maths is covered by unit tests, but the two-step insert, the version check in finalize, and reopen with a next-match link have not been exercised end to end.
-* **Pre-existing mock.** `/admin/*` can mislead: it looks like the real admin but is invented data and in-memory.
 * **Not tested at all here:** Safari private-mode storage limits for the outbox, very slow mobile signal, two scorekeepers on the same fight, tiebreaks, big-screen mode, QR codes, notifications. Cut-first items per the spec are big-screen mode and QR extras.
 * **Decision point.** The spec sets Oct 14 as the point to cut scope if the foundation is behind; registration is never cut (`docs/PROJECT_SPEC.md`).

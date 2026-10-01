@@ -62,7 +62,8 @@ Clean database. Only reference data is seeded (tiers, categories, with sources).
 
 ## Not decided / open
 * The Buhurt Regulations round structure for group fights (owner: "not decided yet").
-* The waiver text.
+* The waiver text. (The HACSA waiver was later pasted from the live form and is loaded verbatim; see the corrections below.)
+* The text or link for the separate volunteer safety, liability and tracking form (volunteers who assist fighters fill it in). Not supplied: the app shows an organizer-written note (Setup, "Volunteer information") or a visible placeholder, and invents no wording.
 * Whether a "medic" role needs a separate sign-in flow or is just an event role (assumed: an event role).
 
 

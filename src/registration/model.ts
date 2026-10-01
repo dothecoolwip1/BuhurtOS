@@ -15,7 +15,7 @@ export interface RegForm {
   province: string; teamId: string; biProfile: string;
   sharesEquipment: '' | 'yes' | 'no'; days: ('sat' | 'sun')[]; availabilityNotes: string;
   competitionIds: string[]; details: Record<string, CompDetails>;
-  mercenary: boolean; isVolunteer: boolean; volunteerRoles: string[];
+  mercenary: boolean; isVolunteer: boolean; volunteerRoles: string[]; volunteerOther: string;
   insurance: Insurance | '';
   emergencyName: string; emergencyRelationship: string; emergencyPhone: string;
   medicallyFit: boolean; medicalNote: string;
@@ -26,13 +26,22 @@ export interface RegForm {
 export const emptyForm = (email = ''): RegForm => ({
   fullName: '', email, gender: '', organization: '', province: '', teamId: '', biProfile: '',
   sharesEquipment: '', days: [], availabilityNotes: '', competitionIds: [], details: {},
-  mercenary: false, isVolunteer: false, volunteerRoles: [], insurance: '',
+  mercenary: false, isVolunteer: false, volunteerRoles: [], volunteerOther: '', insurance: '',
   emergencyName: '', emergencyRelationship: '', emergencyPhone: '', medicallyFit: false, medicalNote: '',
   feeUnderstood: false, waiverAgree: false, waiverName: '', notes: ''
 });
 
 export const PROVINCES: [string, string][] = [['AB', 'Alberta'], ['BC', 'British Columbia'], ['SK', 'Saskatchewan'], ['MB', 'Manitoba'], ['ON', 'Ontario'], ['QC', 'Quebec'], ['NB', 'New Brunswick'], ['NS', 'Nova Scotia'], ['PE', 'Prince Edward Island'], ['NL', 'Newfoundland and Labrador'], ['YT', 'Yukon'], ['NT', 'Northwest Territories'], ['NU', 'Nunavut'], ['OUT', 'Outside Canada']];
 export const VOLUNTEER_ROLES = ['Squire', 'Points counter', 'Marshal', 'Runner', 'Secretary', 'Scheduling', 'Ticket booth'];
+/** The eighth role on the form. Its free-text description is stored in volunteer_roles as `Other: <text>` (no new column). */
+export const OTHER_ROLE = 'Other';
+export const OTHER_ROLE_MAX = 200;
+export const ALL_VOLUNTEER_ROLES = [...VOLUNTEER_ROLES, OTHER_ROLE];
+/** The roles to store: the fixed ones as-is, and `Other: <description>` when Other is ticked. */
+export function volunteerRolesFor(f: Pick<RegForm, 'isVolunteer' | 'volunteerRoles' | 'volunteerOther'>): string[] {
+  if (!f.isVolunteer) return [];
+  return f.volunteerRoles.map(r => (r === OTHER_ROLE ? `${OTHER_ROLE}: ${f.volunteerOther.trim()}` : r));
+}
 export const INSURANCE_OPTIONS: [Insurance, string][] = [
   ['hacsa_member', 'Yes, I am a HACSA member in good standing, my dues are paid and my membership forms are signed'],
   ['mcc_member', 'Yes, I am an MCC member, covered under the partnership with HACSA'],
@@ -70,6 +79,11 @@ export function validate(f: RegForm, comps: CompetitionOption[], fee: EventFee):
     if (needsTeam(c) && !(f.details[id]?.teamId || f.teamId)) e[`team:${id}`] = `Choose your team for ${c.name}. Fighters without a team do not fight.`;
     if (needsWeight(c) && !f.details[id]?.weight?.trim()) e[`weight:${id}`] = `Enter your weight for ${c.name}.`;
   }
+  if (f.isVolunteer && f.volunteerRoles.includes(OTHER_ROLE)) {
+    const o = f.volunteerOther.trim();
+    if (o.length < 2) e.volunteerOther = 'Describe how you would like to help.';
+    else if (o.length > OTHER_ROLE_MAX) e.volunteerOther = `Keep this under ${OTHER_ROLE_MAX} characters.`;
+  }
   if (!f.insurance) e.insurance = 'Choose one.';
   if (f.insurance === 'declined') e.insurance = 'You need insurance cover to take part. Choose another option, or volunteer instead of fighting.';
   if (f.emergencyName.trim().length < 2) e.emergencyName = 'Enter an emergency contact name.';
@@ -87,7 +101,7 @@ export function buildPayload(f: RegForm, waiverVersionId: string) {
     full_name: f.fullName.trim(), gender: f.gender, organization: f.organization, province: f.province,
     team_id: f.teamId || null, shares_equipment: f.sharesEquipment === 'yes', days: f.days,
     availability_notes: f.availabilityNotes.trim() || null, bi_profile: f.biProfile.trim() || null,
-    insurance: f.insurance, is_volunteer: f.isVolunteer, volunteer_roles: f.isVolunteer ? f.volunteerRoles : [],
+    insurance: f.insurance, is_volunteer: f.isVolunteer, volunteer_roles: volunteerRolesFor(f),
     mercenary: f.mercenary, notes: f.notes.trim() || null,
     waiver_agree: f.waiverAgree, waiver_version_id: waiverVersionId, waiver_signed_name: f.waiverName.trim(),
     competitions: f.competitionIds.map(id => ({ competition_id: id, team_id: f.details[id]?.teamId || f.teamId || null, details: stripEmpty(f.details[id] ?? {}) })),

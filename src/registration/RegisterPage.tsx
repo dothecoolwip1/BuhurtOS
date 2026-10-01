@@ -6,19 +6,19 @@ import { supabase } from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
 import { PageHead, Seg } from '../components/ui';
 import {
-  INSURANCE_OPTIONS, PROVINCES, VOLUNTEER_ROLES, buildPayload, emptyForm, feeFor, formatMoney, validate,
+  INSURANCE_OPTIONS, PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, emptyForm, feeFor, formatMoney, validate,
   type CompetitionOption, type EventFee, type LeagueKey, type RegForm
 } from './model';
 
 interface Loaded {
-  eventId: string; name: string; fee: EventFee; closesAt: string | null; mode: 'buhuros' | 'external' | 'none'; externalUrl: string | null;
+  eventId: string; name: string; fee: EventFee; closesAt: string | null; volunteerInfo: string | null; mode: 'buhuros' | 'external' | 'none'; externalUrl: string | null;
   comps: CompetitionOption[]; teams: { id: string; name: string }[];
   waiver: { id: string; version: number; title: string; body: string };
 }
 
 /** Shown only with ?preview=1, so the form can be reviewed before the event is published. Not real data. */
 const PREVIEW: Loaded = {
-  eventId: 'preview', name: 'Red Deer Rumble 2026 (preview of the form)', fee: { feeCents: 4000, feeProvince: 'AB' }, closesAt: '2026-11-09T06:59:00Z', mode: 'buhuros', externalUrl: null,
+  eventId: 'preview', name: 'Red Deer Rumble 2026 (preview of the form)', fee: { feeCents: 4000, feeProvince: 'AB' }, closesAt: '2026-11-09T06:59:00Z', volunteerInfo: null, mode: 'buhuros', externalUrl: null,
   comps: [
     ['Melee 3v3 (men)', '3v3', 'buhurt', 'men'], ['Melee 5v5 (men)', '5v5', 'buhurt', 'men'], ['Melee (women)', '5v5', 'buhurt', 'women'],
     ['Longsword (men)', 'longsword', 'duels', 'men'], ['Longsword (women)', 'longsword', 'duels', 'women'],
@@ -33,12 +33,12 @@ const PREVIEW: Loaded = {
 };
 
 async function load(slug: string): Promise<Loaded> {
-  const { data: ev, error } = await supabase.from('events').select('id,name,fee_cents,fee_province,registration_closes_at,status,registration_mode,external_url').eq('slug', slug).maybeSingle();
+  const { data: ev, error } = await supabase.from('events').select('id,name,fee_cents,fee_province,registration_closes_at,status,registration_mode,external_url,volunteer_info').eq('slug', slug).maybeSingle();
   if (error) throw error;
   if (!ev) throw new Error('This event is not open yet.');
   if (ev.registration_mode && ev.registration_mode !== 'buhuros') {
     // Sign-up happens elsewhere (or not at all): no form, so no competitions, teams or waiver are needed.
-    return { eventId: ev.id, name: ev.name, fee: { feeCents: 0, feeProvince: null }, closesAt: null, mode: ev.registration_mode, externalUrl: ev.external_url, comps: [], teams: [], waiver: { id: '', version: 0, title: '', body: '' } };
+    return { eventId: ev.id, name: ev.name, fee: { feeCents: 0, feeProvince: null }, closesAt: null, volunteerInfo: null, mode: ev.registration_mode, externalUrl: ev.external_url, comps: [], teams: [], waiver: { id: '', version: 0, title: '', body: '' } };
   }
   const [c, t, w] = await Promise.all([
     supabase.from('competitions').select('id,name,category,gender,sort,ref_categories(league)').eq('event_id', ev.id).order('sort'),
@@ -49,10 +49,38 @@ async function load(slug: string): Promise<Loaded> {
   if (!w.data?.[0]) throw new Error('The waiver for this event is not loaded yet.');
   type Row = { id: string; name: string; category: string; gender: CompetitionOption['gender']; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
   return {
-    eventId: ev.id, name: ev.name, fee: { feeCents: ev.fee_cents, feeProvince: ev.fee_province }, closesAt: ev.registration_closes_at, mode: ev.registration_mode ?? 'buhuros', externalUrl: ev.external_url,
+    eventId: ev.id, name: ev.name, fee: { feeCents: ev.fee_cents, feeProvince: ev.fee_province }, closesAt: ev.registration_closes_at, volunteerInfo: ev.volunteer_info ?? null, mode: ev.registration_mode ?? 'buhuros', externalUrl: ev.external_url,
     comps: (c.data as unknown as Row[]).map(r => ({ id: r.id, name: r.name, category: r.category, gender: r.gender, league: (Array.isArray(r.ref_categories) ? r.ref_categories[0] : r.ref_categories)?.league ?? 'duels' })),
     teams: t.data ?? [], waiver: w.data[0]
   };
+}
+
+/** The organizer's volunteer note, or a visible placeholder when none is set. No safety or legal wording is written here. */
+function VolunteerInfo({ info }: { info: string | null }) {
+  return (
+    <div role="note" className="card" style={{ borderLeft: '4px solid var(--brass, #C9893A)', padding: 12 }}>
+      <b>Volunteer information</b>
+      {info ? <p style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{info}</p>
+        : <p>The organizers have not posted the volunteer safety, liability and tracking information yet. Volunteers who assist fighters fill in a separate form; ask the organizers for it.</p>}
+    </div>
+  );
+}
+
+function VolunteerBlock({ f, set, info, toggle, error }: {
+  f: RegForm; set: <K extends keyof RegForm>(k: K, v: RegForm[K]) => void; info: string | null; toggle: <T>(l: T[], v: T) => T[]; error?: string;
+}) {
+  return (
+    <div style={{ display: 'grid', gap: 8 }}>
+      <VolunteerInfo info={info} />
+      {ALL_VOLUNTEER_ROLES.map(r => <label key={r} style={{ display: 'block' }}><input type="checkbox" checked={f.volunteerRoles.includes(r)} onChange={() => set('volunteerRoles', toggle(f.volunteerRoles, r))} /> {r}</label>)}
+      {f.volunteerRoles.includes(OTHER_ROLE) && (
+        <label className="field-in">Other: describe how you would like to help
+          <input value={f.volunteerOther} maxLength={OTHER_ROLE_MAX} onChange={e => set('volunteerOther', e.target.value)} aria-invalid={!!error} />
+          <Err m={error} />
+        </label>
+      )}
+    </div>
+  );
 }
 
 const Err = ({ m }: { m?: string }) => (m ? <span role="alert" style={{ color: 'var(--live)' }}>{m}</span> : null);
@@ -97,6 +125,7 @@ export function RegisterPage() {
     return (
       <>
         <PageHead eyebrow="Registration" title="Thank you, you are registered" lede="The organizers will review your registration. You can come back to this page at any time to see its status." />
+        {f.isVolunteer && <VolunteerInfo info={data.volunteerInfo} />}
         <p>{fee > 0 ? <>Fee: <b>{formatMoney(fee)}</b>. Pay by e-transfer or cash as described on the event page; the organizer marks it paid.</> : 'No fee is due for you.'}</p>
         <Link className="btn btn-ink" to="/events">Back to events</Link>
       </>
@@ -144,7 +173,7 @@ export function RegisterPage() {
 
         <section className="card field"><h3>What are you doing?</h3>
           <label><input type="checkbox" checked={f.isVolunteer} onChange={e => set('isVolunteer', e.target.checked)} /> I am volunteering (no fee)</label>
-          {f.isVolunteer && <div>{VOLUNTEER_ROLES.map(r => <label key={r} style={{ display: 'block' }}><input type="checkbox" checked={f.volunteerRoles.includes(r)} onChange={() => set('volunteerRoles', toggle(f.volunteerRoles, r))} /> {r}</label>)}</div>}
+          {f.isVolunteer && <VolunteerBlock f={f} set={set} info={data.volunteerInfo} toggle={toggle} error={shown('volunteerOther')} />}
           <p>Categories</p>
           {data.comps.map(c => (
             <label key={c.id} style={{ display: 'block' }}><input type="checkbox" checked={f.competitionIds.includes(c.id)} onChange={() => set('competitionIds', toggle(f.competitionIds, c.id))} /> {c.name}</label>
