@@ -36,7 +36,7 @@ export function chooseFormat(n: number, team: boolean, key: string): { format: D
   if (n <= 9) return { format: 'single_elimination', poolCount: 0, structure: 'elimination' };
   if (n <= 16 && !team && h % 2 === 0) return { format: 'single_elimination', poolCount: 0, structure: 'elimination' };
   const adv = structureAdvice(n);
-  const opt = n <= 16 ? adv.options[0] : adv.options[Math.min(1, adv.options.length - 1)];
+  const opt = n >= 13 && n <= 16 ? adv.options[0] : adv.options[Math.min(1, adv.options.length - 1)];
   return { format: 'pools', poolCount: opt.pools.length, structure: 'pools_elimination' };
 }
 

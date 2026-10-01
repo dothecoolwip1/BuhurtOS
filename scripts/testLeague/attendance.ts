@@ -53,11 +53,17 @@ export function modelAttendance(teams: readonly TeamDef[], fighters: readonly Fi
     const team = teams[f.teamIdx];
     return events.map(ev => {
       if (!eligible(f, ev)) return 0;
+      const sex = f.sex === 'male' ? 'men' : 'women';
+      const canCompete = ev.divisions.some(d => d.gender === sex && f.disciplines.includes(d.cat));
+      if (!canCompete) return 0;
       let x = teamAffinity(team, ev) * (tr.provMult[ev.prov] ?? 1) * (tr.cityMult[ev.city] ?? 1);
       if (tr.homeOnly && ev.prov !== 'AB') x *= 0.1;
       if (tr.majorOnly) x *= ev.size === 'large' ? 3 : ev.size === 'medium' ? 0.5 : 0.1;
       x *= tr.attFade ** Math.max(0, yearOf(ev.start) - 2024);
       x *= Math.exp(0.45 * gauss(rngFor(`att|${f.name}|${ev.slug}`)));
+      // Clubs travel as squads: a club's men and women each tend to come together or not at all.
+      x *= Math.exp(0.8 * gauss(rngFor(`squad|${team.name}|${f.sex}|${ev.slug}`)));
+      if (f.disciplines.some(c => c === '5v5' || c === '3v3')) x *= Math.exp(1.1 * gauss(rngFor(`melee-squad|${team.name}|${f.sex}|${ev.slug}`)));
       return Math.max(0, x);
     });
   });

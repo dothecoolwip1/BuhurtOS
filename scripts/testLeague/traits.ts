@@ -40,7 +40,7 @@ export interface Traits {
 }
 
 const base: Traits = {
-  k: 'norm', growth: 0, growthYears: 3, fade: 0, attFade: 1, melee: 0, duel: 0, vol: 1, duelEntry: 0.9, meleeEntry: 0.9,
+  k: 'norm', growth: 0, growthYears: 3, fade: 0, attFade: 1, melee: 0, duel: 0, vol: 1, duelEntry: 0.9, meleeEntry: 0.97,
   enterAll: false, majorOnly: false, homeOnly: false, provMult: {}, cityMult: {}, skill: 0
 };
 

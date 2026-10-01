@@ -17,9 +17,9 @@ export interface CompPlan { key: string; id: string; event: EventDef; div: Divis
 
 export const compName = (d: Division): string => `${d.gender === 'men' ? 'Male' : 'Female'} ${CAT_LABEL[d.cat]}`;
 export const sexOf = (g: Division['gender']): 'male' | 'female' => (g === 'men' ? 'male' : 'female');
-const MIN_DUEL = 4, MIN_TEAM = 3;
+const MIN_DUEL = 4, MIN_TEAM = 2;
 
-export interface FormOptions { noMeleeTeams?: ReadonlySet<number>; forceMercenaryDivision?: string }
+export interface FormOptions { noMeleeTeams?: ReadonlySet<number>; /** Everybody enters every discipline they list (a big weekend, closed registration). */ fullIntent?: boolean }
 
 export function formEntries(ev: EventDef, attendees: ReadonlySet<number>, teams: readonly TeamDef[], fighters: readonly FighterDef[], opt: FormOptions = {}): { comps: CompPlan[]; attendees: Set<number> } {
   const att = [...attendees].sort((a, b) => a - b);
@@ -37,7 +37,7 @@ export function formEntries(ev: EventDef, attendees: ReadonlySet<number>, teams:
       const d = divOf(i, cat);
       if (!d) continue;
       if (isMelee(cat) && opt.noMeleeTeams?.has(f.teamIdx)) continue;
-      const p = tr.enterAll ? 1 : isMelee(cat) ? (f.occasional.includes(cat) ? 0.3 : tr.meleeEntry) : tr.duelEntry;
+      const p = tr.enterAll || opt.fullIntent ? (f.occasional.includes(cat) ? 0.6 : 1) : isMelee(cat) ? (f.occasional.includes(cat) ? 0.3 : tr.meleeEntry) : tr.duelEntry;
       options.push({ code: divCode(d), p });
     }
     let any = false;
