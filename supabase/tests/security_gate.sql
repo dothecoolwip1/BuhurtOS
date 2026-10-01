@@ -450,6 +450,53 @@ select t.expect_error('anon cannot read a clearance list', format($q$select * fr
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_eq('an organizer can read any team''s list', (select count(*) from public.team_clearance(current_setting('t.event')::uuid, (select v from reg where k = 'team')::uuid)), 2::bigint);
 
+-- ---------------------------------------------------------------- my_event_entries: "My next fight"
+select t.as_admin();
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000000b9', 'duelist@example.test'),
+  ('00000000-0000-0000-0000-0000000000ba', 'member@example.test'),
+  ('00000000-0000-0000-0000-0000000000bb', 'pending@example.test'),
+  ('00000000-0000-0000-0000-0000000000bc', 'volunteer@example.test'),
+  ('00000000-0000-0000-0000-0000000000bd', 'viaregcomp@example.test');
+insert into public.teams (id, slug, name, status) values
+  ('00000000-0000-0000-0000-0000000000e1', 'my-entries-a', 'My Entries A', 'approved'),
+  ('00000000-0000-0000-0000-0000000000e2', 'my-entries-b', 'My Entries B', 'approved');
+insert into public.fighters (id, display_name) values ('00000000-0000-0000-0000-0000000000f9', 'Mine Duelist');
+insert into public.fighter_accounts (fighter_id, user_id) values ('00000000-0000-0000-0000-0000000000f9', '00000000-0000-0000-0000-0000000000b9');
+insert into public.entries (id, competition_id, fighter_id) values ('00000000-0000-0000-0000-0000000000c9', current_setting('t.comp_ls')::uuid, '00000000-0000-0000-0000-0000000000f9');
+insert into public.entries (id, competition_id, team_id) values
+  ('00000000-0000-0000-0000-0000000000ca', current_setting('t.comp_5')::uuid, '00000000-0000-0000-0000-0000000000e1'),
+  ('00000000-0000-0000-0000-0000000000cb', current_setting('t.comp_5')::uuid, '00000000-0000-0000-0000-0000000000e2');
+insert into public.registrations (id, event_id, user_id, status, full_name, gender, organization, insurance, waiver_version_id, waiver_signed_name, team_id, is_volunteer) values
+  ('00000000-0000-0000-0000-0000000000d1', current_setting('t.event')::uuid, '00000000-0000-0000-0000-0000000000ba', 'accepted', 'Team Member', 'male', 'HACSA', 'hacsa_member', current_setting('t.waiver')::uuid, 'Team Member', '00000000-0000-0000-0000-0000000000e1', false),
+  ('00000000-0000-0000-0000-0000000000d2', current_setting('t.event')::uuid, '00000000-0000-0000-0000-0000000000bb', 'pending', 'Pending Member', 'male', 'HACSA', 'hacsa_member', current_setting('t.waiver')::uuid, 'Pending Member', '00000000-0000-0000-0000-0000000000e1', false),
+  ('00000000-0000-0000-0000-0000000000d3', current_setting('t.event')::uuid, '00000000-0000-0000-0000-0000000000bc', 'accepted', 'Team Volunteer', 'male', 'HACSA', 'hacsa_member', current_setting('t.waiver')::uuid, 'Team Volunteer', '00000000-0000-0000-0000-0000000000e1', true),
+  ('00000000-0000-0000-0000-0000000000d4', current_setting('t.event')::uuid, '00000000-0000-0000-0000-0000000000bd', 'accepted', 'Regcomp Member', 'male', 'HACSA', 'hacsa_member', current_setting('t.waiver')::uuid, 'Regcomp Member', null, false);
+insert into public.registration_competitions (registration_id, competition_id, team_id) values
+  ('00000000-0000-0000-0000-0000000000d4', current_setting('t.comp_5')::uuid, '00000000-0000-0000-0000-0000000000e2');
+
+select t.as_user('00000000-0000-0000-0000-0000000000b9');
+select t.expect_eq('a duelist gets exactly their own entry', (select array_agg(entry_id) from public.my_event_entries(current_setting('t.event')::uuid)), array['00000000-0000-0000-0000-0000000000c9'::uuid]);
+select t.expect_eq('the function returns only an entry id column', (select count(*) from information_schema.parameters p join information_schema.routines r on r.specific_name = p.specific_name
+  where r.routine_name = 'my_event_entries' and p.parameter_mode = 'OUT'), 1::bigint);
+select t.expect_eq('another event returns nothing', (select count(*) from public.my_event_entries(gen_random_uuid())), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000ba');
+select t.expect_eq('an accepted team member gets their team entry only', (select array_agg(entry_id) from public.my_event_entries(current_setting('t.event')::uuid)), array['00000000-0000-0000-0000-0000000000ca'::uuid]);
+select t.as_user('00000000-0000-0000-0000-0000000000bd');
+select t.expect_eq('a team chosen per competition counts', (select array_agg(entry_id) from public.my_event_entries(current_setting('t.event')::uuid)), array['00000000-0000-0000-0000-0000000000cb'::uuid]);
+select t.as_user('00000000-0000-0000-0000-0000000000bb');
+select t.expect_eq('a pending registration gets nothing', (select count(*) from public.my_event_entries(current_setting('t.event')::uuid)), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000bc');
+select t.expect_eq('a volunteer on a team gets nothing', (select count(*) from public.my_event_entries(current_setting('t.event')::uuid)), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_eq('a stranger gets nothing', (select count(*) from public.my_event_entries(current_setting('t.event')::uuid)), 0::bigint);
+select t.as_admin();
+update public.entries set status = 'withdrawn' where id = '00000000-0000-0000-0000-0000000000ca';
+select t.as_user('00000000-0000-0000-0000-0000000000ba');
+select t.expect_eq('a withdrawn entry is not returned', (select count(*) from public.my_event_entries(current_setting('t.event')::uuid)), 0::bigint);
+select t.as_anon();
+select t.expect_error('anon cannot call my_event_entries', format($q$select * from public.my_event_entries(%L)$q$, current_setting('t.event')), '42501');
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
