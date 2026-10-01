@@ -75,19 +75,19 @@ const finalizeSql = (m: PlayedMatch): string => {
   return `select public.finalize_match(m.id, '${o.result}', ${o.scoreA}, ${o.scoreB}, ${qJson(o.detail)}, m.version) from public.matches m where m.id = ${q(m.id)} and m.queue_state <> 'final';`;
 };
 
-export function eventFile(w: World, ew: EventWorld, hostId: string | null): string {
+export function eventFile(w: World, ew: EventWorld, hostId: string | null, addon = false): string {
   const ev = ew.event;
   const played = !ev.current;
-  const o: string[] = [HEADER(`${ev.name}${played ? ' (completed)' : ' (current: drawn and scheduled, nothing final)'}`), 'begin;'];
-  o.push(`insert into public.events (id, slug, name, description, event_type, status, venue, city, region, country, timezone, fee_cents, starts_on, ends_on, host_team_id, registration_mode, time_note) values
+  const o: string[] = [HEADER(addon ? `${ev.name}: adds Female 3v3 (additive; the event itself is loaded by its own file)` : `${ev.name}${played ? ' (completed)' : ' (current: drawn and scheduled, nothing final)'}`), 'begin;'];
+  if (!addon) o.push(`insert into public.events (id, slug, name, description, event_type, status, venue, city, region, country, timezone, fee_cents, starts_on, ends_on, host_team_id, registration_mode, time_note) values
   (${q(ev.id)}, ${q(ev.slug)}, ${q(ev.name)}, ${q(ev.description)}, 'tournament', 'published', ${q(ev.venue)}, ${q(ev.city)}, ${q(ev.prov)}, 'CA', ${q(ev.tz)}, 0, date '${ev.start}', date '${ev.end}', ${q(hostId)}, 'none', ${q('Fictional test event. Entries were recorded by the organizer; there is no registration form.')})
 on conflict (id) do nothing;`);
-  o.push(`${RS_COLS}\n  ${rs('event', q(ev.id))}\non conflict do nothing;`);
+  if (!addon) o.push(`${RS_COLS}\n  ${rs('event', q(ev.id))}\non conflict do nothing;`);
   o.push(OWNER);
-  o.push(`select public.set_event_season(${q(ev.id)}, ${q(seasonId(Number(ev.start.slice(0, 4))))});\nselect public.set_event_organization(${q(ev.id)}, ${q(ORG_ID)});`);
+  if (!addon) o.push(`select public.set_event_season(${q(ev.id)}, ${q(seasonId(Number(ev.start.slice(0, 4))))});\nselect public.set_event_organization(${q(ev.id)}, ${q(ORG_ID)});`);
   o.push(`insert into public.competitions (id, event_id, name, category, gender, tier, ruleset, structure, status, rounds_to_win, sort) values\n${ew.sims.map((s, i) => {
     const c = s.comp, duel = c.div.cat !== '5v5' && c.div.cat !== '3v3';
-    return `  (${q(c.id)}, ${q(ev.id)}, ${q(c.name)}, '${c.div.cat}', '${c.div.gender}', '${ev.tier}', ${q(duel ? 'Buhurt International: Duels rules V.26.4' : 'Buhurt International: Buhurt Rules V.26.4.1')}, '${s.structure}', '${played ? 'running' : 'registration'}', ${s.roundsToWin ?? 'null'}, ${(i + 1) * 10})`;
+    return `  (${q(c.id)}, ${q(ev.id)}, ${q(c.name)}, '${c.div.cat}', '${c.div.gender}', '${ev.tier}', ${q(duel ? 'Buhurt International: Duels rules V.26.4' : 'Buhurt International: Buhurt Rules V.26.4.1')}, '${s.structure}', '${played ? 'running' : 'registration'}', ${s.roundsToWin ?? 'null'}, ${(addon ? 100 + i : i + 1) * 10})`;
   }).join(',\n')}\non conflict (id) do nothing;`);
   const status = played ? 'checked_in' : 'registered';
   const ent: string[] = [];
