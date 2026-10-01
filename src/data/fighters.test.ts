@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('../lib/supabase', () => ({ supabase: {} }));
 import {
   ageFromBirthYear, applyRankingFilter, emptyProfileForm, parseRecentForm, placeLabel, profilePayload, profileToForm, rosterPayload, toEntryRosterRow, toFighterCareerStats,
-  toFighterMatchStats, toFighterProfile, toFighterRanking, toResultRow, toTeamRanking, toTeamStats, validateProfile
+  toFighterMatchStats, toFighterProfile, toFighterRanking, toResultRow, toTeamRanking, toTeamStats, validateProfile,
+  cleanSocialLinks, emptySportsForm, sportsPayload, sportsToForm, validateSports
 } from './fighters';
 
 const profileDb = {
@@ -90,5 +91,30 @@ describe('rosters', () => {
   });
   it('sends the role only when one was chosen', () => {
     expect(rosterPayload([{ fighterId: 'a' }, { fighterId: 'b', role: 'guest' }])).toEqual([{ fighter_id: 'a' }, { fighter_id: 'b', role: 'guest' }]);
+  });
+});
+
+describe('sports card', () => {
+  const v2 = { ...profileDb, nickname: 'The Wall', pronouns: 'she/her', handedness: 'left' as const, jersey_number: 17, height_cm: 172, weight_kg: '68.5', social_links: { instagram: 'https://instagram.com/a', junk: 'x' },
+    show_age: true, show_physical: true, profile_public: true, photo_path: 'u/a.jpg', is_self: true, can_edit: true };
+  it('maps the v2 fields and defaults them for the old function', () => {
+    expect(toFighterProfile(v2)).toMatchObject({ nickname: 'The Wall', handedness: 'left', jerseyNumber: 17, heightCm: 172, weightKg: 68.5, socialLinks: { instagram: 'https://instagram.com/a' }, showAge: true, photoPath: 'u/a.jpg', canEdit: true });
+    expect(toFighterProfile(profileDb)).toMatchObject({ nickname: null, jerseyNumber: null, heightCm: null, weightKg: null, socialLinks: {}, showAge: false, showPhysical: false, profilePublic: true, isSelf: false });
+  });
+  it('keeps only known social networks', () => { expect(cleanSocialLinks({ x: 'https://x.com/a', myspace: 'https://m', discord: 3 })).toEqual({ x: 'https://x.com/a' }); });
+  it('round trips the sports form and clears empty fields', () => {
+    const f = sportsToForm(toFighterProfile(v2));
+    expect(sportsPayload(f)).toEqual({ nickname: 'The Wall', pronouns: 'she/her', handedness: 'left', jersey_number: 17, height_cm: 172, weight_kg: 68.5, social_links: { instagram: 'https://instagram.com/a' },
+      show_age: true, show_physical: true, profile_public: true });
+    expect(sportsPayload(emptySportsForm())).toEqual({ nickname: null, pronouns: null, handedness: null, jersey_number: null, height_cm: null, weight_kg: null, social_links: {}, show_age: false, show_physical: false, profile_public: true });
+  });
+  it('defaults privacy: age and measurements hidden, profile public', () => {
+    expect(emptySportsForm()).toMatchObject({ showAge: false, showPhysical: false, profilePublic: true });
+  });
+  it('validates like the database', () => {
+    expect(validateSports(emptySportsForm())).toEqual({});
+    const bad = { ...emptySportsForm(), nickname: 'n'.repeat(41), pronouns: 'p'.repeat(31), handedness: 'both' as never, jerseyNumber: '1000', heightCm: '99', weightKg: '300', socialLinks: { instagram: 'http://x' } };
+    expect(Object.keys(validateSports(bad)).sort()).toEqual(['handedness', 'heightCm', 'jerseyNumber', 'nickname', 'pronouns', 'socialLinks', 'weightKg']);
+    expect(validateSports({ ...emptySportsForm(), jerseyNumber: '0', heightCm: '180', weightKg: '82.5', socialLinks: { x: 'https://x.com/a' } })).toEqual({});
   });
 });

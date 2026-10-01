@@ -26,27 +26,61 @@ export interface FighterProfile {
   disciplines: string[]; fightingStyle: string | null; bio: string | null; highlights: string[];
   team: { id: string; name: string; slug: string } | null;
   organization: { id: string; slug: string; name: string; enabled: boolean } | null;
+  /** Sports card fields (fighter_profile_v2). Absent / null when not set or hidden by the person. */
+  nickname: string | null; pronouns: string | null; handedness: Handedness | null; jerseyNumber: number | null;
+  /** Only filled when the person opted in (showPhysical) or for the person themselves / the platform owner. */
+  heightCm: number | null; weightKg: number | null;
+  socialLinks: Partial<Record<SocialNetwork, string>>;
+  showAge: boolean; showPhysical: boolean; profilePublic: boolean;
+  /** Primary photo path inside the profile-photos bucket (use photoUrl() from account.ts). */
+  photoPath: string | null;
+  /** The caller controls this record / may edit it (self or platform owner). */
+  isSelf: boolean; canEdit: boolean;
 }
+export type Handedness = 'left' | 'right' | 'ambi';
+export const HANDEDNESS: Handedness[] = ['left', 'right', 'ambi'];
+export type SocialNetwork = 'facebook' | 'instagram' | 'youtube' | 'tiktok' | 'x' | 'discord' | 'twitch' | 'other';
+export const SOCIAL_NETWORKS: SocialNetwork[] = ['facebook', 'instagram', 'youtube', 'tiktok', 'x', 'discord', 'twitch', 'other'];
+export const NICKNAME_MAX = 40;
+export const PRONOUNS_MAX = 30;
 type ProfileDb = {
   fighter_id: string; display_name: string; gender: Gender | null; birth_year: number | null; age: number | null; city: string | null; region: string | null; country: string | null;
   joined_year: number | null; disciplines: string[] | null; fighting_style: string | null; bio: string | null; highlights: string[] | null;
   team_id: string | null; team_name: string | null; team_slug: string | null;
   team_organization_id: string | null; team_organization_slug: string | null; team_organization_name: string | null; team_organization_enabled: boolean | null;
+  // fighter_profile_v2 only; the old fighter_profile() does not return them.
+  nickname?: string | null; pronouns?: string | null; handedness?: Handedness | null; jersey_number?: number | null; height_cm?: number | null; weight_kg?: number | string | null;
+  social_links?: Record<string, string> | null; show_age?: boolean | null; show_physical?: boolean | null; profile_public?: boolean | null; photo_path?: string | null;
+  is_self?: boolean | null; can_edit?: boolean | null;
 };
 export const toFighterProfile = (r: ProfileDb): FighterProfile => ({
   fighterId: r.fighter_id, displayName: r.display_name, gender: r.gender, birthYear: r.birth_year, age: r.age, city: r.city, region: r.region, country: r.country,
   joinedYear: r.joined_year, disciplines: r.disciplines ?? [], fightingStyle: r.fighting_style, bio: r.bio, highlights: r.highlights ?? [],
   team: r.team_id && r.team_name && r.team_slug ? { id: r.team_id, name: r.team_name, slug: r.team_slug } : null,
   organization: r.team_organization_id && r.team_organization_slug && r.team_organization_name
-    ? { id: r.team_organization_id, slug: r.team_organization_slug, name: r.team_organization_name, enabled: r.team_organization_enabled ?? true } : null
+    ? { id: r.team_organization_id, slug: r.team_organization_slug, name: r.team_organization_name, enabled: r.team_organization_enabled ?? true } : null,
+  nickname: r.nickname ?? null, pronouns: r.pronouns ?? null, handedness: r.handedness ?? null, jerseyNumber: numOrNull(r.jersey_number),
+  heightCm: numOrNull(r.height_cm), weightKg: numOrNull(r.weight_kg), socialLinks: cleanSocialLinks(r.social_links),
+  showAge: r.show_age ?? false, showPhysical: r.show_physical ?? false, profilePublic: r.profile_public ?? true, photoPath: r.photo_path ?? null,
+  isSelf: r.is_self ?? false, canEdit: r.can_edit ?? false
 });
+
+/** Keeps only known networks with a string value (what the database stores). */
+export function cleanSocialLinks(raw: Record<string, unknown> | null | undefined): Partial<Record<SocialNetwork, string>> {
+  const out: Partial<Record<SocialNetwork, string>> = {};
+  for (const n of SOCIAL_NETWORKS) { const v = raw?.[n]; if (typeof v === 'string' && v !== '') out[n] = v; }
+  return out;
+}
 
 /** Age in whole calendar years of birth (current year minus birth year), or null when the fighter gave no birth year. */
 export const ageFromBirthYear = (birthYear: number | null, now: Date = new Date()): number | null => (birthYear === null ? null : now.getFullYear() - birthYear);
 
-/** Public. Null when the fighter does not exist. */
+/**
+ * Public. Null when the fighter does not exist. Uses fighter_profile_v2, which applies the person's privacy switches: when profile_public is false only the
+ * name and team come back (except for the person themselves and the platform owner); age only when show_age; height / weight only when show_physical.
+ */
 export async function fetchFighterProfile(fighterId: string): Promise<FighterProfile | null> {
-  const { data, error } = await supabase.rpc('fighter_profile', { p_fighter: fighterId });
+  const { data, error } = await supabase.rpc('fighter_profile_v2', { p_fighter: fighterId });
   if (error) throw error;
   const rows = data as ProfileDb[];
   return rows.length ? toFighterProfile(rows[0]) : null;
@@ -90,10 +124,53 @@ export function profilePayload(f: ProfileForm): Record<string, unknown> {
     disciplines: f.disciplines, fighting_style: t(f.fightingStyle), bio: t(f.bio), highlights: f.highlights.map(h => h.trim()).filter(Boolean)
   };
 }
-/** Only the caller's own fighter record can change; the database refuses anything else. */
-export async function updateMyFighterProfile(f: ProfileForm): Promise<void> {
-  const { error } = await supabase.rpc('update_my_fighter_profile', { p: profilePayload(f) });
+/** Only the caller's own fighter record can change; the database refuses anything else. Pass the sports card form to save both in one call. */
+export async function updateMyFighterProfile(f: ProfileForm, sports?: SportsForm): Promise<void> {
+  const { error } = await supabase.rpc('update_my_fighter_profile', { p: sports ? { ...profilePayload(f), ...sportsPayload(sports) } : profilePayload(f) });
   if (error) throw error;
+}
+
+// ---------------------------------------------------------------- sports card (nickname, hand, number, measurements, links, privacy switches)
+export interface SportsForm {
+  nickname: string; pronouns: string; handedness: Handedness | ''; jerseyNumber: string; heightCm: string; weightKg: string;
+  socialLinks: Partial<Record<SocialNetwork, string>>; showAge: boolean; showPhysical: boolean; profilePublic: boolean;
+}
+export const emptySportsForm = (): SportsForm => ({ nickname: '', pronouns: '', handedness: '', jerseyNumber: '', heightCm: '', weightKg: '', socialLinks: {}, showAge: false, showPhysical: false, profilePublic: true });
+export const sportsToForm = (p: FighterProfile): SportsForm => ({
+  nickname: p.nickname ?? '', pronouns: p.pronouns ?? '', handedness: p.handedness ?? '', jerseyNumber: p.jerseyNumber?.toString() ?? '', heightCm: p.heightCm?.toString() ?? '',
+  weightKg: p.weightKg?.toString() ?? '', socialLinks: { ...p.socialLinks }, showAge: p.showAge, showPhysical: p.showPhysical, profilePublic: p.profilePublic
+});
+const HTTPS_URL = /^https:\/\/[^\s/]+\.[^\s/]+([/?#]\S*)?$/;
+/** Same limits as the database (which has the final say). */
+export function validateSports(f: SportsForm): Record<string, string> {
+  const e: Record<string, string> = {};
+  if (f.nickname.trim().length > NICKNAME_MAX) e.nickname = `At most ${NICKNAME_MAX} characters.`;
+  if (f.pronouns.trim().length > PRONOUNS_MAX) e.pronouns = `At most ${PRONOUNS_MAX} characters.`;
+  if (f.handedness !== '' && !HANDEDNESS.includes(f.handedness)) e.handedness = 'Choose left, right or ambidextrous.';
+  const jn = f.jerseyNumber.trim();
+  if (jn !== '' && !(/^\d{1,3}$/.test(jn))) e.jerseyNumber = 'Use a whole number from 0 to 999.';
+  const h = f.heightCm.trim();
+  if (h !== '' && !(/^\d{3}$/.test(h) && Number(h) >= 100 && Number(h) <= 250)) e.heightCm = 'Use whole centimetres from 100 to 250.';
+  const w = f.weightKg.trim();
+  if (w !== '' && !(/^\d{2,3}(\.\d)?$/.test(w) && Number(w) >= 30 && Number(w) <= 250)) e.weightKg = 'Use kilograms from 30 to 250 (one decimal at most).';
+  const links = Object.entries(f.socialLinks).filter(([, v]) => (v ?? '').trim() !== '');
+  if (links.length > 8) e.socialLinks = 'At most 8 links.';
+  for (const [k, v] of links) {
+    if (!SOCIAL_NETWORKS.includes(k as SocialNetwork)) e.socialLinks = `Unknown network: ${k}.`;
+    else if (!HTTPS_URL.test((v ?? '').trim()) || (v ?? '').trim().length > 300) e.socialLinks = `The ${k} link must be a full https:// address.`;
+  }
+  return e;
+}
+/** The keys the database knows. Empty fields become null (cleared); the three switches are always sent. */
+export function sportsPayload(f: SportsForm): Record<string, unknown> {
+  const t = (s: string) => (s.trim() === '' ? null : s.trim());
+  const n = (s: string) => (s.trim() === '' ? null : Number(s.trim()));
+  const links: Record<string, string> = {};
+  for (const [k, v] of Object.entries(f.socialLinks)) if ((v ?? '').trim() !== '') links[k] = (v ?? '').trim();
+  return {
+    nickname: t(f.nickname), pronouns: t(f.pronouns), handedness: f.handedness === '' ? null : f.handedness, jersey_number: n(f.jerseyNumber), height_cm: n(f.heightCm), weight_kg: n(f.weightKg),
+    social_links: links, show_age: f.showAge, show_physical: f.showPhysical, profile_public: f.profilePublic
+  };
 }
 
 // ================================================================ statistics (views)

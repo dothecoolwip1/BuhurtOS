@@ -1423,16 +1423,19 @@ select t.expect_error('a user with no fighter record cannot update a profile', $
 select t.as_user('00000000-0000-0000-0000-00000000e003');
 select t.expect_ok('a fighter fills in their own profile', $q$select public.update_my_fighter_profile(jsonb_build_object('gender', 'male', 'birth_year', 1990, 'city', 'Edmonton', 'region', 'AB', 'country', 'CA',
   'joined_year', 2019, 'disciplines', jsonb_build_array('longsword', '5v5'), 'fighting_style', 'Aggressive pressure', 'bio', 'Fights for the fun of it.', 'highlights', jsonb_build_array('NACL champion 2025')))$q$);
+select t.expect_ok('the fighter opts in to showing their age (20261001002600: age is private by default)', $q$select public.update_my_fighter_profile('{"show_age": true}'::jsonb)$q$);
 select t.as_anon();
 select t.expect_eq('the public sees it, and the age is computed', (select gender || '/' || (age = extract(year from current_date)::int - 1990)::text || '/' || city || '/' || region || '/' || country || '/' || joined_year || '/' || array_to_string(disciplines, '+') || '/' || fighting_style || '/' || bio || '/' || highlights[1]
   from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'male/true/Edmonton/AB/CA/2019/longsword+5v5/Aggressive pressure/Fights for the fun of it./NACL champion 2025');
-select t.expect_eq('the profile can be read straight from fighters too', (select count(*) from public.fighters where id = '00000000-0000-0000-0000-00000000b301' and bio is not null), 1::bigint);
+select t.expect_eq('the directory columns can be read straight from fighters too (bio/birth_year no longer: 20261001002600)', (select count(*) from public.fighters where id = '00000000-0000-0000-0000-00000000b301' and city is not null and disciplines <> '{}'), 1::bigint);
+select t.expect_error('bio is NOT readable straight from fighters (only through fighter_profile)', $q$select bio from public.fighters$q$, '42501');
+select t.expect_error('birth_year is NOT readable straight from fighters', $q$select birth_year from public.fighters$q$, '42501');
 select t.expect_eq('fighter_profile exposes no account id', (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'fighter_profile'
   and exists (select 1 from unnest(p.proargnames) a where a ~ '(user|account|actor)')), 0::bigint);
 select t.expect_eq('fighters has no account column', (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'fighters' and column_name ~ '(user|account|actor|email)'), 0::bigint);
 select t.as_user('00000000-0000-0000-0000-00000000e003');
 select t.expect_ok('null clears a field', $q$select public.update_my_fighter_profile('{"city": null, "highlights": null}'::jsonb)$q$);
-select t.expect_eq('... it is cleared', (select (city is null)::text || '/' || cardinality(highlights) from public.fighters where id = '00000000-0000-0000-0000-00000000b301'), 'true/0');
+select t.expect_eq('... it is cleared', (select (city is null)::text || '/' || cardinality(highlights) from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'true/0');
 select t.expect_error('an unknown gender is refused', $q$select public.update_my_fighter_profile('{"gender":"robot"}'::jsonb)$q$, '22023');
 select t.expect_error('an unknown key is refused (no team_id, no display_name)', $q$select public.update_my_fighter_profile('{"team_id":"00000000-0000-0000-0000-00000000b202"}'::jsonb)$q$, '22023');
 select t.expect_error('display_name is not editable here', $q$select public.update_my_fighter_profile('{"display_name":"Somebody Else"}'::jsonb)$q$, '22023');
@@ -1510,6 +1513,405 @@ insert into public.matches (id, competition_id, stage, round_label, position) va
 update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c965', next_slot = 'a' where id = '00000000-0000-0000-0000-00000000c966';
 select t.expect_ok('deleting the whole competition cascades without error', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$);
 select t.expect_eq('... and nothing is left behind', (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'), 0::bigint);
+
+-- ================================================================ G. account area: private data, sports profile, photos, my teams, owner edit-all (20261001002500 - 2900)
+select t.as_admin();
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-0000000d0001', 'alice@example.test'), ('00000000-0000-0000-0000-0000000d0002', 'bob@example.test'),
+  ('00000000-0000-0000-0000-0000000d0003', 'cap@example.test'), ('00000000-0000-0000-0000-0000000d0004', 'evorg@example.test'),
+  ('00000000-0000-0000-0000-0000000d0005', 'medic2@example.test'), ('00000000-0000-0000-0000-0000000d0006', 'orgadmin@example.test'),
+  ('00000000-0000-0000-0000-0000000d0007', 'marshal@example.test'), ('00000000-0000-0000-0000-0000000d0008', 'carol@example.test');
+insert into public.profiles (id, display_name) values ('00000000-0000-0000-0000-0000000d0002', 'Bob Stranger') on conflict (id) do update set display_name = excluded.display_name;
+insert into public.teams (id, slug, name, status) values
+  ('00000000-0000-0000-0000-0000000d1001', 'acct-t1', 'Acct Team One', 'approved'), ('00000000-0000-0000-0000-0000000d1002', 'acct-t2', 'Acct Team Two', 'pending');
+insert into public.fighters (id, display_name, team_id) values
+  ('00000000-0000-0000-0000-0000000d2001', 'Alice Fighter', '00000000-0000-0000-0000-0000000d1001'), ('00000000-0000-0000-0000-0000000d2002', 'Carol Fighter', '00000000-0000-0000-0000-0000000d1002'),
+  ('00000000-0000-0000-0000-0000000d2003', 'Unclaimed Uli', null), ('00000000-0000-0000-0000-0000000d2004', 'Dup Uli', null);
+insert into public.fighter_accounts (fighter_id, user_id) values
+  ('00000000-0000-0000-0000-0000000d2001', '00000000-0000-0000-0000-0000000d0001'), ('00000000-0000-0000-0000-0000000d2002', '00000000-0000-0000-0000-0000000d0008');
+insert into public.team_roles (team_id, user_id, role) values ('00000000-0000-0000-0000-0000000d1001', '00000000-0000-0000-0000-0000000d0003', 'captain');
+insert into public.organizations (id, slug, name, kind) values ('00000000-0000-0000-0000-0000000d3001', 'acct-org', 'Acct Org', 'club');
+insert into public.team_affiliations (team_id, organization_id, relation) values ('00000000-0000-0000-0000-0000000d1001', '00000000-0000-0000-0000-0000000d3001', 'member');
+insert into public.organization_staff (organization_id, user_id, role) values ('00000000-0000-0000-0000-0000000d3001', '00000000-0000-0000-0000-0000000d0006', 'admin');
+insert into public.events (id, slug, name, status, starts_on, ends_on) values ('00000000-0000-0000-0000-0000000d4001', 'acct-event', 'Acct Event', 'published', current_date + 10, current_date + 11);
+insert into public.event_staff (event_id, user_id, role) values
+  ('00000000-0000-0000-0000-0000000d4001', '00000000-0000-0000-0000-0000000d0004', 'organizer'), ('00000000-0000-0000-0000-0000000d4001', '00000000-0000-0000-0000-0000000d0005', 'medic'),
+  ('00000000-0000-0000-0000-0000000d4001', '00000000-0000-0000-0000-0000000d0007', 'marshal');
+insert into public.waiver_versions (id, event_id, version, title, body) values ('00000000-0000-0000-0000-0000000d4002', '00000000-0000-0000-0000-0000000d4001', 1, 'Waiver', 'Waiver text.');
+insert into public.competitions (id, event_id, name, category, gender) values ('00000000-0000-0000-0000-0000000d4003', '00000000-0000-0000-0000-0000000d4001', 'Acct Team Event', '5v5', 'open');
+insert into public.competitions (id, event_id, name, category, gender) values ('00000000-0000-0000-0000-0000000d4004', '00000000-0000-0000-0000-0000000d4001', 'Acct Longsword', 'longsword', 'open');
+insert into public.entries (competition_id, team_id) values ('00000000-0000-0000-0000-0000000d4003', '00000000-0000-0000-0000-0000000d1001');
+
+create function t.reg2(priv jsonb) returns jsonb language sql stable as $$
+  select jsonb_build_object('full_name', 'Account Person', 'gender', 'male', 'organization', 'HACSA', 'province', 'AB', 'insurance', 'hacsa_member', 'is_volunteer', true,
+    'waiver_agree', true, 'waiver_version_id', '00000000-0000-0000-0000-0000000d4002', 'waiver_signed_name', 'Account Person', 'days', jsonb_build_array('sat'), 'private', priv)
+$$;
+-- Every persona that is not the user: sees no private rows, cannot touch person_private directly.
+create function t.iso(label text, u uuid) returns void language plpgsql as $$
+begin
+  perform t.as_user(u);
+  perform t.expect_eq(label || ': get_my_private_profile shows none of Alice''s data', (select count(*) from public.get_my_private_profile()), 0::bigint);
+  perform t.expect_error(label || ': cannot select person_private', 'select * from public.person_private', '42501');
+  perform t.expect_error(label || ': cannot update person_private', $q$update public.person_private set phone = '0000000000'$q$, '42501');
+  perform t.expect_error(label || ': cannot delete person_private', 'delete from public.person_private', '42501');
+  perform t.expect_error(label || ': cannot insert person_private', format($q$insert into public.person_private (user_id) values (%L)$q$, u), '42501');
+  perform t.expect_eq(label || ': registration_prefill carries nothing of Alice''s', (select coalesce(phone, '-') || coalesce(medical_note, '-') from public.registration_prefill()), '--');
+end $$;
+create function t.deny_admin(label text, u uuid) returns void language plpgsql as $$
+begin
+  if u is null then perform t.as_anon(); else perform t.as_user(u); end if;
+  perform t.expect_error(label || ': admin_list_teams', 'select * from public.admin_list_teams()', '42501');
+  perform t.expect_error(label || ': admin_list_fighters', 'select * from public.admin_list_fighters()', '42501');
+  perform t.expect_error(label || ': admin_update_team', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1001', '{"city":"X"}'::jsonb)$q$, '42501');
+  perform t.expect_error(label || ': admin_update_fighter', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2001', '{"city":"X"}'::jsonb)$q$, '42501');
+  perform t.expect_error(label || ': admin_set_fighter_team', $q$select public.admin_set_fighter_team('00000000-0000-0000-0000-0000000d2001', null)$q$, '42501');
+  perform t.expect_error(label || ': admin_merge_fighters', $q$select public.admin_merge_fighters('00000000-0000-0000-0000-0000000d2003', '00000000-0000-0000-0000-0000000d2004')$q$, '42501');
+  perform t.expect_error(label || ': admin_remove_photo', $q$select public.admin_remove_photo(gen_random_uuid())$q$, '42501');
+  perform t.expect_error(label || ': direct UPDATE on teams', $q$update public.teams set name = 'Hacked'$q$, '42501');
+  perform t.expect_error(label || ': direct UPDATE on fighters', $q$update public.fighters set display_name = 'Hacked'$q$, '42501');
+  perform t.expect_error(label || ': direct INSERT on fighters', $q$insert into public.fighters (display_name) values ('Hacked')$q$, '42501');
+  perform t.expect_error(label || ': direct DELETE on teams', $q$delete from public.teams$q$, '42501');
+end $$;
+grant execute on all functions in schema t to anon, authenticated;
+
+-- ---------------------------------------------------------------- A. private personal data
+select t.as_anon();
+select t.expect_error('anon cannot read person_private', 'select * from public.person_private', '42501');
+select t.expect_error('anon cannot get_my_private_profile', 'select * from public.get_my_private_profile()', '42501');
+select t.expect_error('anon cannot save_my_private_profile', $q$select * from public.save_my_private_profile('{"phone":"4035550100"}'::jsonb)$q$, '42501');
+select t.expect_error('anon cannot delete_my_private_data', 'select public.delete_my_private_data()', '42501');
+select t.expect_error('anon cannot registration_prefill', 'select * from public.registration_prefill()', '42501');
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_eq('before saving, there is nothing', (select count(*) from public.get_my_private_profile()), 0::bigint);
+select t.expect_eq('... and the prefill says has_saved = false', (select has_saved from public.registration_prefill()), false);
+select t.expect_error('an unknown field is refused', $q$select * from public.save_my_private_profile('{"ssn":"1"}'::jsonb)$q$, '22023');
+select t.expect_error('a phone with letters is refused', $q$select * from public.save_my_private_profile('{"phone":"call me"}'::jsonb)$q$, '22023');
+select t.expect_error('a phone with fewer than 7 digits is refused', $q$select * from public.save_my_private_profile('{"emergency_phone":"12-34"}'::jsonb)$q$, '22023');
+select t.expect_error('a medical note over 1000 characters is refused', format($q$select * from public.save_my_private_profile(jsonb_build_object('medical_note', %L))$q$, repeat('m', 1001)), '22023');
+select t.expect_error('allergies over 500 characters are refused', format($q$select * from public.save_my_private_profile(jsonb_build_object('allergies', %L))$q$, repeat('a', 501)), '22023');
+select t.expect_error('an unknown blood type is refused', $q$select * from public.save_my_private_profile('{"blood_type":"Z+"}'::jsonb)$q$, '22023');
+select t.expect_error('medically_fit_declared must be a boolean', $q$select * from public.save_my_private_profile('{"medically_fit_declared":"yes"}'::jsonb)$q$, '22023');
+select t.expect_error('a non-object payload is refused', $q$select * from public.save_my_private_profile('[]'::jsonb)$q$, '22023');
+select t.expect_eq('a refused save leaves no row behind', (select count(*) from public.get_my_private_profile()), 0::bigint);
+select t.expect_ok('Alice saves her details once', $q$select * from public.save_my_private_profile(jsonb_build_object('full_name', 'Alice Legal Name', 'phone', '+1 (403) 555-0111', 'emergency_name', 'Pat Parent',
+  'emergency_relationship', 'parent', 'emergency_phone', '4035550100', 'medically_fit_declared', true, 'medical_note', 'Asthma, inhaler in bag', 'allergies', 'peanuts', 'blood_type', 'O+'))$q$);
+select t.expect_eq('she reads them back', (select emergency_name || '/' || emergency_phone || '/' || medical_note || '/' || allergies || '/' || blood_type || '/' || medically_fit_declared::text from public.get_my_private_profile()), 'Pat Parent/4035550100/Asthma, inhaler in bag/peanuts/O+/true');
+select t.expect_ok('a partial save leaves other fields untouched and null clears', $q$select * from public.save_my_private_profile('{"phone": null, "emergency_relationship": "mother"}'::jsonb)$q$);
+select t.expect_eq('... phone cleared, relationship changed, name kept', (select coalesce(phone, 'none') || '/' || emergency_relationship || '/' || emergency_name from public.get_my_private_profile()), 'none/mother/Pat Parent');
+select t.expect_error('even the user cannot read the table directly (RPC only)', 'select * from public.person_private', '42501');
+select t.expect_eq('the prefill returns her values and the public fighter team', (select has_saved::text || '/' || full_name || '/' || emergency_phone || '/' || medically_fit::text || '/' || team_name from public.registration_prefill()), 'true/Alice Legal Name/4035550100/true/Acct Team One');
+select t.as_user('00000000-0000-0000-0000-0000000d0008');
+select t.expect_ok('Carol saves hers', $q$select * from public.save_my_private_profile('{"emergency_name":"Carol Contact","emergency_phone":"4035550200","medically_fit_declared":true}'::jsonb)$q$);
+select t.expect_eq('Carol sees only her own', (select emergency_name from public.get_my_private_profile()), 'Carol Contact');
+select t.iso('stranger', '00000000-0000-0000-0000-0000000d0002');
+select t.iso('team captain', '00000000-0000-0000-0000-0000000d0003');
+select t.iso('event organizer', '00000000-0000-0000-0000-0000000d0004');
+select t.iso('medic', '00000000-0000-0000-0000-0000000d0005');
+select t.iso('org admin', '00000000-0000-0000-0000-0000000d0006');
+select t.iso('marshal', '00000000-0000-0000-0000-0000000d0007');
+select t.iso('platform organizer', '00000000-0000-0000-0000-0000000000a2');
+select t.iso('PLATFORM OWNER', '00000000-0000-0000-0000-0000000000a1');
+
+-- submit_registration copies the saved details into the per-event snapshot
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_ok('Alice registers sending only her email: the emergency + medical fields come from her saved details', $q$select public.submit_registration('00000000-0000-0000-0000-0000000d4001', t.reg2('{"email":"alice@example.test"}'::jsonb))$q$);
+select t.as_admin();
+select t.expect_eq('the snapshot holds the copied values', (select p.emergency_name || '/' || p.emergency_phone || '/' || p.emergency_relationship || '/' || p.medically_fit::text || '/' || p.medical_note
+  from public.registration_private p join public.registrations r on r.id = p.registration_id where r.user_id = '00000000-0000-0000-0000-0000000d0001'),
+  E'Pat Parent/4035550100/mother/true/Asthma, inhaler in bag\nAllergies: peanuts\nBlood type: O+');
+select t.as_user('00000000-0000-0000-0000-0000000d0008');
+select t.expect_ok('Carol types her own emergency name: what she typed wins, the missing phone is filled', $q$select public.submit_registration('00000000-0000-0000-0000-0000000d4001', t.reg2('{"emergency_name":"Typed Name"}'::jsonb))$q$);
+select t.as_admin();
+select t.expect_eq('... typed name kept, phone from her saved details, no note', (select p.emergency_name || '/' || p.emergency_phone || '/' || coalesce(p.medical_note, 'none')
+  from public.registration_private p join public.registrations r on r.id = p.registration_id where r.user_id = '00000000-0000-0000-0000-0000000d0008'), 'Typed Name/4035550200/none');
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_error('an explicit medically_fit = false is respected (and refused as before)', $q$select public.submit_registration('00000000-0000-0000-0000-0000000d4001', t.reg2('{"medically_fit":false}'::jsonb))$q$, '22023');
+select t.as_user('00000000-0000-0000-0000-0000000d0002');
+select t.expect_error('Bob has nothing saved and typed nothing: still refused as before', $q$select public.submit_registration('00000000-0000-0000-0000-0000000d4001', t.reg2('{"email":"bob@example.test"}'::jsonb))$q$, '22023');
+select t.expect_eq('a registration still works with everything typed (unchanged behaviour)', (select count(*) from (select public.submit_registration('00000000-0000-0000-0000-0000000d4001',
+  t.reg2('{"emergency_name":"Typed Person","emergency_phone":"4035550123","medically_fit":true}'::jsonb))) x), 1::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000d0005');
+select t.expect_eq('the event medic sees the snapshot of the event (existing rule) ...', (select count(*) from public.registration_private where medical_note is not null), 1::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000d0003');
+select t.expect_eq('... a team captain sees no snapshot', (select count(*) from public.registration_private), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_eq('... the platform owner is an organizer of every event, so (unchanged, existing rule) sees per-event snapshots, but NEVER person_private', (select count(*) from public.registration_private) > 0, true);
+-- deleting
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_eq('Alice hard-deletes her saved details', public.delete_my_private_data(), true);
+select t.expect_eq('... nothing is left', (select count(*) from public.get_my_private_profile()), 0::bigint);
+select t.expect_eq('... a second delete reports nothing to delete', public.delete_my_private_data(), false);
+select t.as_admin();
+select t.expect_eq('... the already submitted snapshot is untouched', (select count(*) from public.registration_private p join public.registrations r on r.id = p.registration_id where r.user_id = '00000000-0000-0000-0000-0000000d0001' and p.medical_note is not null), 1::bigint);
+select t.expect_eq('the audit log never holds the contents (note, allergies, phone)', (select count(*) from public.audit_log where details::text ~* '(peanuts|asthma|4035550100|Pat Parent)'), 0::bigint);
+select t.expect_ok('the audit log does record that it happened', $q$select 1 from public.audit_log where action in ('person.private_saved', 'person.private_deleted') limit 1$q$);
+select t.expect_eq('saving and deleting were audited (at least 4 entries)', (select count(*) from public.audit_log where action in ('person.private_saved', 'person.private_deleted'))::int >= 4, true);
+select t.as_anon();
+select t.expect_eq('no anon-readable column is a medical / allergy / blood column', (select count(*) from information_schema.column_privileges cp where cp.grantee = 'anon' and cp.privilege_type = 'SELECT' and cp.table_schema = 'public'
+  and cp.column_name ~ '(medical|allerg|blood|emergency)'), 0::bigint);
+reset role;
+select t.expect_eq('no function anon may run returns a medical / allergy / blood / emergency column', (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+  where n.nspname = 'public' and has_function_privilege('anon', p.oid, 'execute') and p.proargnames is not null and exists (select 1 from unnest(p.proargnames) a where a ~ '(medical|allerg|blood|emergency)')), 0::bigint);
+select t.expect_eq('no view exposes medical_note', (select count(*) from information_schema.columns where table_schema = 'public' and column_name in ('medical_note', 'allergies', 'blood_type')
+  and table_name in (select table_name from information_schema.views where table_schema = 'public')), 0::bigint);
+select t.expect_eq('only the registrant / organizer / medic table and the owner-only person_private hold the medical columns', (select string_agg(table_name, ',' order by table_name) from information_schema.columns
+  where table_schema = 'public' and column_name in ('medical_note', 'allergies', 'blood_type')), 'person_private,person_private,person_private,registration_private');
+
+-- ---------------------------------------------------------------- C. sports profile
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_ok('Alice fills the card', $q$select public.update_my_fighter_profile(jsonb_build_object('nickname', 'The Wall', 'pronouns', 'she/her', 'handedness', 'left', 'jersey_number', 17, 'height_cm', 172, 'weight_kg', 68.5,
+  'birth_year', 1994, 'bio', 'Plays front line.', 'social_links', jsonb_build_object('instagram', 'https://instagram.com/alice', 'youtube', 'https://youtube.com/@alice')))$q$);
+select t.expect_error('handedness must be left, right or ambi', $q$select public.update_my_fighter_profile('{"handedness":"both"}'::jsonb)$q$, '22023');
+select t.expect_error('a jersey over 999 is refused', $q$select public.update_my_fighter_profile('{"jersey_number":1000}'::jsonb)$q$, '22023');
+select t.expect_error('a jersey that is text is refused', $q$select public.update_my_fighter_profile('{"jersey_number":"seven"}'::jsonb)$q$, '22023');
+select t.expect_error('a height under 100 is refused', $q$select public.update_my_fighter_profile('{"height_cm":99}'::jsonb)$q$, '22023');
+select t.expect_error('a fractional height is refused', $q$select public.update_my_fighter_profile('{"height_cm":172.5}'::jsonb)$q$, '22023');
+select t.expect_error('a weight over 250 is refused', $q$select public.update_my_fighter_profile('{"weight_kg":300}'::jsonb)$q$, '22023');
+select t.expect_error('a nickname over 40 characters is refused', format($q$select public.update_my_fighter_profile(jsonb_build_object('nickname', %L))$q$, repeat('n', 41)), '22023');
+select t.expect_error('pronouns over 30 characters are refused', format($q$select public.update_my_fighter_profile(jsonb_build_object('pronouns', %L))$q$, repeat('p', 31)), '22023');
+select t.expect_error('a social link that is not https is refused', $q$select public.update_my_fighter_profile('{"social_links":{"instagram":"http://insecure.example"}}'::jsonb)$q$, '22023');
+select t.expect_error('a javascript link is refused', $q$select public.update_my_fighter_profile('{"social_links":{"other":"javascript:alert(1)"}}'::jsonb)$q$, '22023');
+select t.expect_error('an unknown social network is refused', $q$select public.update_my_fighter_profile('{"social_links":{"myspace":"https://myspace.example/a"}}'::jsonb)$q$, '22023');
+select t.expect_error('show_age must be a boolean', $q$select public.update_my_fighter_profile('{"show_age":"yes"}'::jsonb)$q$, '22023');
+select t.expect_error('team_id is still not editable by the fighter', $q$select public.update_my_fighter_profile('{"team_id":"00000000-0000-0000-0000-0000000d1002"}'::jsonb)$q$, '22023');
+select t.as_anon();
+select t.expect_eq('anon: nickname, hand and number are public', (select nickname || '/' || handedness || '/' || jersey_number || '/' || (social_links ->> 'instagram') from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'The Wall/left/17/https://instagram.com/alice');
+select t.expect_eq('anon: height, weight, birth year and age are NOT shown by default', (select (height_cm is null)::text || (weight_kg is null)::text || (birth_year is null)::text || (age is null)::text from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'truetruetruetrue');
+select t.expect_eq('... the old fighter_profile does not leak the birth year or age either', (select (birth_year is null)::text || (age is null)::text from public.fighter_profile('00000000-0000-0000-0000-0000000d2001')), 'truetrue');
+select t.expect_error('anon cannot read birth_year straight from the table', 'select birth_year from public.fighters', '42501');
+select t.expect_error('anon cannot read height_cm straight from the table', 'select height_cm from public.fighters', '42501');
+select t.expect_error('anon cannot read nickname straight from the table', 'select nickname from public.fighters', '42501');
+select t.expect_error('anon cannot read social_links straight from the table', 'select social_links from public.fighters', '42501');
+select t.expect_ok('anon can still read the directory columns', 'select id, display_name, team_id, gender, city, region, country, disciplines, joined_year from public.fighters');
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_eq('Alice herself sees her height and birth year (can_edit)', (select height_cm || '/' || birth_year || '/' || is_self::text from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), '172/1994/true');
+select t.expect_ok('Alice opts in to showing her age and her measurements', $q$select public.update_my_fighter_profile('{"show_age":true,"show_physical":true}'::jsonb)$q$);
+select t.as_anon();
+select t.expect_eq('anon now sees the age (computed) and the measurements', (select (age = extract(year from current_date)::int - 1994)::text || '/' || height_cm || '/' || weight_kg from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'true/172/68.5');
+select t.expect_eq('the old fighter_profile shows the age too', (select (age is not null)::text from public.fighter_profile('00000000-0000-0000-0000-0000000d2001')), 'true');
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_ok('Alice makes her profile private', $q$select public.update_my_fighter_profile('{"profile_public":false}'::jsonb)$q$);
+select t.as_anon();
+select t.expect_eq('anon sees only name and team of a private profile', (select display_name || '/' || team_name || '/' || coalesce(bio, 'nobio') || '/' || coalesce(nickname, 'nonick') || '/' || coalesce(height_cm::text, 'noheight') || '/' || coalesce(city, 'nocity')
+  from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'Alice Fighter/Acct Team One/nobio/nonick/noheight/nocity');
+select t.expect_eq('the old fighter_profile hides it as well', (select display_name || '/' || coalesce(bio, 'nobio') || '/' || coalesce(age::text, 'noage') from public.fighter_profile('00000000-0000-0000-0000-0000000d2001')), 'Alice Fighter/nobio/noage');
+select t.as_user('00000000-0000-0000-0000-0000000d0002');
+select t.expect_eq('a stranger sees only name and team too', (select coalesce(bio, 'nobio') || '/' || (can_edit)::text from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'nobio/false');
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_eq('Alice still sees her whole profile', (select bio || '/' || nickname from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'Plays front line./The Wall');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_eq('the platform owner sees the whole profile (to edit it)', (select bio || '/' || can_edit::text from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'Plays front line./true');
+select t.as_user('00000000-0000-0000-0000-0000000d0003');
+select t.expect_eq('a team captain sees only name and team of a private profile of her own team member', (select coalesce(bio, 'nobio') from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2001')), 'nobio');
+select t.as_admin();
+insert into public.fighters (id, display_name, birth_year) values ('00000000-0000-0000-0000-0000000d2005', 'Zed Fiction-test', 1990), ('00000000-0000-0000-0000-0000000d2006', 'Real Person', 1990);
+select t.as_anon();
+select t.expect_eq('a fictional "-test" fighter shows an age without opting in', (select (age = extract(year from current_date)::int - 1990)::text from public.fighter_profile('00000000-0000-0000-0000-0000000d2005')), 'true');
+select t.expect_eq('a real fighter with a birth year shows none', (select coalesce(age::text, 'none') from public.fighter_profile('00000000-0000-0000-0000-0000000d2006')), 'none');
+select t.expect_eq('fighter_directory hides the photo/nickname of a private profile', (select coalesce(nickname, 'hidden') from public.fighter_directory where fighter_id = '00000000-0000-0000-0000-0000000d2001'), 'hidden');
+select t.expect_eq('fighter_directory exposes no account id', (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'fighter_directory' and column_name ~ '(user|account|actor|email)'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_ok('Alice makes her profile public again', $q$select public.update_my_fighter_profile('{"profile_public":true}'::jsonb)$q$);
+select t.expect_eq('after that the directory shows the nickname', (select nickname from public.fighter_directory where fighter_id = '00000000-0000-0000-0000-0000000d2001'), 'The Wall');
+
+-- ---------------------------------------------------------------- B. photos and storage
+select t.as_admin();
+select t.expect_eq('the profile-photos bucket exists, is public, 5 MB, images only', (select public::text || '/' || file_size_limit || '/' || array_to_string(allowed_mime_types, ',') from storage.buckets where id = 'profile-photos'), 'true/5242880/image/jpeg,image/png,image/webp');
+insert into storage.buckets (id, name, public) values ('other-bucket', 'other-bucket', true);
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_ok('Alice uploads into her own folder', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', '00000000-0000-0000-0000-0000000d0001/a1.jpg', auth.uid())$q$);
+select t.expect_ok('... and a second and a png', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', '00000000-0000-0000-0000-0000000d0001/a2.png', auth.uid()), ('profile-photos', '00000000-0000-0000-0000-0000000d0001/a3.webp', auth.uid())$q$);
+select t.expect_error('Alice cannot upload into someone else''s folder', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', '00000000-0000-0000-0000-0000000d0002/x.jpg', auth.uid())$q$, '42501');
+select t.expect_error('Alice cannot upload at the root of the bucket', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', 'root.jpg', auth.uid())$q$, '42501');
+select t.expect_error('Alice cannot upload into a team folder', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', 'teams/00000000-0000-0000-0000-0000000d1001/logo.png', auth.uid())$q$, '42501');
+select t.expect_error('Alice cannot upload into another bucket', $q$insert into storage.objects (bucket_id, name, owner) values ('other-bucket', '00000000-0000-0000-0000-0000000d0001/x.jpg', auth.uid())$q$, '42501');
+select t.expect_error('a path trick with .. is refused', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', '00000000-0000-0000-0000-0000000d0001/../00000000-0000-0000-0000-0000000d0002/x.jpg', auth.uid())$q$, '42501');
+select t.expect_error('a malformed team folder is refused (no cast error leaks)', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', 'teams/not-a-uuid/x.jpg', auth.uid())$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000d0003');
+select t.expect_ok('the captain uploads the team logo under teams/<team>/', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', 'teams/00000000-0000-0000-0000-0000000d1001/logo.png', auth.uid()), ('profile-photos', 'teams/00000000-0000-0000-0000-0000000d1001/banner.jpg', auth.uid())$q$);
+select t.expect_error('the captain cannot upload for another team', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', 'teams/00000000-0000-0000-0000-0000000d1002/logo.png', auth.uid())$q$, '42501');
+select t.expect_error('the captain cannot upload into a stranger''s personal folder', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', '00000000-0000-0000-0000-0000000d0001/evil.jpg', auth.uid())$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000d0002');
+select t.expect_error('a stranger cannot upload into a team folder', $q$insert into storage.objects (bucket_id, name, owner) values ('profile-photos', 'teams/00000000-0000-0000-0000-0000000d1001/x.png', auth.uid())$q$, '42501');
+select t.expect_ok('... and may read (public bucket)', $q$select count(*) from storage.objects where bucket_id = 'profile-photos'$q$);
+select t.as_anon();
+select t.expect_error('anon cannot upload', $q$insert into storage.objects (bucket_id, name) values ('profile-photos', 'anon.jpg')$q$, '42501');
+select t.expect_eq('anon reads the public bucket', (select count(*) from storage.objects where bucket_id = 'profile-photos'), 5::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000d0002');
+delete from storage.objects where name = '00000000-0000-0000-0000-0000000d0001/a3.webp';
+update storage.objects set name = '00000000-0000-0000-0000-0000000d0002/stolen.webp' where name = '00000000-0000-0000-0000-0000000d0001/a2.png';
+select t.as_admin();
+select t.expect_eq('a stranger could neither delete nor rename Alice''s objects', (select count(*) from storage.objects where name in ('00000000-0000-0000-0000-0000000d0001/a3.webp', '00000000-0000-0000-0000-0000000d0001/a2.png')), 2::bigint);
+
+-- photo RPCs
+select t.as_anon();
+select t.expect_error('anon cannot add a photo', $q$select public.add_my_photo('x/y.jpg')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000d0002');
+select t.expect_error('a user without a fighter record cannot add a photo', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0002/y.jpg')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_error('a path outside her folder is refused', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0002/stolen.webp')$q$, '22023');
+select t.expect_error('a path that is not an image is refused', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/notes.txt')$q$, '22023');
+select t.expect_error('a path with .. is refused', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/../x.jpg')$q$, '22023');
+select t.expect_error('a path whose file was never uploaded is refused', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/ghost.jpg')$q$, '22023');
+select t.expect_error('a caption over 140 characters is refused', format($q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/a1.jpg', %L)$q$, repeat('c', 141)), '22023');
+select t.expect_ok('Alice adds her first photo', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/a1.jpg', 'Match day')$q$);
+select t.expect_eq('the first photo is primary and mirrored to fighters.photo_path', (select is_primary::text || '/' || (select photo_path from public.fighter_directory where fighter_id = '00000000-0000-0000-0000-0000000d2001') from public.fighter_photos where caption = 'Match day'), 'true/00000000-0000-0000-0000-0000000d0001/a1.jpg');
+select t.expect_error('the same photo twice is refused', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/a1.jpg')$q$, '22023');
+select t.expect_ok('a second photo', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/a2.png', 'Training')$q$);
+select t.expect_eq('... is not primary', (select is_primary::text from public.fighter_photos where caption = 'Training'), 'false');
+select t.expect_ok('Alice makes it the primary one', format($q$select public.set_my_primary_photo(%L)$q$, (select id from public.fighter_photos where caption = 'Training')));
+select t.expect_eq('... exactly one primary, mirrored', (select count(*) from public.fighter_photos where fighter_id = '00000000-0000-0000-0000-0000000d2001' and is_primary)::text || '/' || (select photo_path from public.fighter_directory where fighter_id = '00000000-0000-0000-0000-0000000d2001'), '1/00000000-0000-0000-0000-0000000d0001/a2.png');
+select t.expect_eq('removing returns the storage path for the client to delete', public.remove_my_photo((select id from public.fighter_photos where caption = 'Training')), '00000000-0000-0000-0000-0000000d0001/a2.png');
+select t.expect_eq('... the remaining photo became primary', (select is_primary::text from public.fighter_photos where caption = 'Match day'), 'true');
+select t.expect_error('she cannot remove a photo twice', $q$select public.remove_my_photo(gen_random_uuid())$q$, 'P0002');
+select t.as_admin();
+insert into storage.objects (bucket_id, name) select 'profile-photos', '00000000-0000-0000-0000-0000000d0001/bulk' || n || '.jpg' from generate_series(1, 9) n;
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_ok('she adds photos up to 8', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/bulk' || n || '.jpg') from generate_series(1, 7) n$q$);
+select t.expect_error('the 9th photo is refused', $q$select public.add_my_photo('00000000-0000-0000-0000-0000000d0001/bulk8.jpg')$q$, '22023');
+select t.as_user('00000000-0000-0000-0000-0000000d0008');
+select t.expect_error('Carol cannot set Alice''s photo primary', format($q$select public.set_my_primary_photo(%L)$q$, (select id from public.fighter_photos where caption = 'Match day')), 'P0002');
+select t.expect_error('Carol cannot remove Alice''s photo', format($q$select public.remove_my_photo(%L)$q$, (select id from public.fighter_photos where caption = 'Match day')), 'P0002');
+select t.expect_error('nobody can write fighter_photos directly', $q$insert into public.fighter_photos (fighter_id, storage_path) values ('00000000-0000-0000-0000-0000000d2002', 'x/y.jpg')$q$, '42501');
+select t.expect_error('... nor update it', $q$update public.fighter_photos set caption = 'x'$q$, '42501');
+select t.as_anon();
+select t.expect_eq('anon reads the photo list of a public profile', (select count(*) from public.fighter_photos where fighter_id = '00000000-0000-0000-0000-0000000d2001'), 8::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_ok('Alice goes private', $q$select public.update_my_fighter_profile('{"profile_public":false}'::jsonb)$q$);
+select t.as_anon();
+select t.expect_eq('... anon no longer sees her photo list', (select count(*) from public.fighter_photos where fighter_id = '00000000-0000-0000-0000-0000000d2001'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_eq('... she still does', (select count(*) from public.fighter_photos where fighter_id = '00000000-0000-0000-0000-0000000d2001'), 8::bigint);
+select t.expect_ok('back to public', $q$select public.update_my_fighter_profile('{"profile_public":true}'::jsonb)$q$);
+-- moderation
+select t.as_user('00000000-0000-0000-0000-0000000d0003');
+select t.expect_error('a captain cannot moderate photos', format($q$select public.admin_remove_photo(%L)$q$, (select id from public.fighter_photos where caption = 'Match day')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_eq('the platform owner removes a photo and gets the path', public.admin_remove_photo((select id from public.fighter_photos where caption = 'Match day')), '00000000-0000-0000-0000-0000000d0001/a1.jpg');
+select t.expect_eq('... another photo was promoted to primary', (select count(*) from public.fighter_photos where fighter_id = '00000000-0000-0000-0000-0000000d2001' and is_primary), 1::bigint);
+select t.expect_ok('the owner may delete any object in the bucket', $q$delete from storage.objects where name = '00000000-0000-0000-0000-0000000d0001/a1.jpg'$q$);
+select t.expect_ok('... and replace (insert) one anywhere in the bucket', $q$insert into storage.objects (bucket_id, name) values ('profile-photos', '00000000-0000-0000-0000-0000000d0002/by-owner.jpg')$q$);
+select t.expect_error('... but not in another bucket', $q$insert into storage.objects (bucket_id, name) values ('other-bucket', 'x.jpg')$q$, '42501');
+-- team logo
+select t.as_user('00000000-0000-0000-0000-0000000d0003');
+select t.expect_ok('the captain sets the team logo', $q$select public.set_team_logo('00000000-0000-0000-0000-0000000d1001', 'teams/00000000-0000-0000-0000-0000000d1001/logo.png')$q$);
+select t.expect_ok('... and the banner', $q$select public.set_team_banner('00000000-0000-0000-0000-0000000d1001', 'teams/00000000-0000-0000-0000-0000000d1001/banner.jpg')$q$);
+select t.expect_error('a logo outside the team folder is refused', $q$select public.set_team_logo('00000000-0000-0000-0000-0000000d1001', '00000000-0000-0000-0000-0000000d0003/logo.png')$q$, '22023');
+select t.expect_error('a logo for a team she does not captain is refused', $q$select public.set_team_logo('00000000-0000-0000-0000-0000000d1002', 'teams/00000000-0000-0000-0000-0000000d1002/logo.png')$q$, '42501');
+select t.expect_error('a logo that was never uploaded is refused', $q$select public.set_team_logo('00000000-0000-0000-0000-0000000d1001', 'teams/00000000-0000-0000-0000-0000000d1001/ghost.png')$q$, '22023');
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_error('a plain member cannot set the logo', $q$select public.set_team_logo('00000000-0000-0000-0000-0000000d1001', 'teams/00000000-0000-0000-0000-0000000d1001/logo.png')$q$, '42501');
+select t.as_anon();
+select t.expect_eq('anyone reads the public logo path', (select logo_path from public.teams where id = '00000000-0000-0000-0000-0000000d1001'), 'teams/00000000-0000-0000-0000-0000000d1001/logo.png');
+select t.expect_error('anon cannot set a logo', $q$select public.set_team_logo('00000000-0000-0000-0000-0000000d1001', null)$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner can clear a logo', $q$select public.set_team_logo('00000000-0000-0000-0000-0000000d1001', null)$q$);
+
+-- ---------------------------------------------------------------- D. my teams
+select t.as_anon();
+select t.expect_error('anon cannot call my_teams', 'select * from public.my_teams()', '42501');
+select t.as_user('00000000-0000-0000-0000-0000000d0002');
+select t.expect_eq('a stranger is on no team', (select count(*) from public.my_teams()), 0::bigint);
+select t.expect_ok('Bob asks to join Team One', $q$select public.request_team_join('00000000-0000-0000-0000-0000000d1001', 'please')$q$);
+select t.as_user('00000000-0000-0000-0000-0000000d0001');
+select t.expect_eq('Alice: her team, role fighter, roster of 1, no request count, organization and the upcoming event', (select role || '/' || roster_count || '/' || coalesce(pending_requests::text, 'null') || '/' || team_slug || '/' || organization_slug || '/' || (upcoming_events -> 0 ->> 'slug')
+  from public.my_teams()), 'fighter/1/null/acct-t1/acct-org/acct-event');
+select t.as_user('00000000-0000-0000-0000-0000000d0003');
+select t.expect_eq('the captain: role captain, pending requests counted', (select role || '/' || pending_requests || '/' || is_captain::text from public.my_teams()), 'captain/1/true');
+select t.as_user('00000000-0000-0000-0000-0000000d0008');
+select t.expect_eq('Carol sees her pending team (status says so)', (select team_slug || '/' || team_status || '/' || role from public.my_teams()), 'acct-t2/pending/fighter');
+select t.as_admin();
+insert into public.team_memberships (fighter_id, team_id, role, from_date) values ('00000000-0000-0000-0000-0000000d2003', '00000000-0000-0000-0000-0000000d1001', 'fighter', current_date - 400);
+
+-- ---------------------------------------------------------------- E. owner edit-all
+select t.deny_admin('anon', null);
+select t.deny_admin('fighter', '00000000-0000-0000-0000-0000000d0001');
+select t.deny_admin('team captain', '00000000-0000-0000-0000-0000000d0003');
+select t.deny_admin('marshal', '00000000-0000-0000-0000-0000000d0007');
+select t.deny_admin('event organizer', '00000000-0000-0000-0000-0000000d0004');
+select t.deny_admin('medic', '00000000-0000-0000-0000-0000000d0005');
+select t.deny_admin('org admin', '00000000-0000-0000-0000-0000000d0006');
+select t.deny_admin('platform organizer', '00000000-0000-0000-0000-0000000000a2');
+
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_error('even the owner cannot UPDATE teams directly (only through the audited functions)', $q$update public.teams set name = 'Direct'$q$, '42501');
+select t.expect_error('... nor UPDATE fighters directly', $q$update public.fighters set display_name = 'Direct'$q$, '42501');
+-- the owner sees everything, regardless of status or a disabled organization
+select t.expect_ok('the owner disables the organization of Team One', $q$select public.set_organization_enabled('00000000-0000-0000-0000-0000000d3001', false, 'test')$q$);
+select t.as_anon();
+select t.expect_eq('anon no longer sees Team One in teams_active (disabled organization)', (select count(*) from public.teams_active where slug = 'acct-t1'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_eq('the owner still lists Team One (disabled org) and the pending Team Two', (select string_agg(slug, ',' order by slug) from public.admin_list_teams('acct') ), 'acct-t1,acct-t2');
+select t.expect_eq('... with the organization flagged disabled', (select organization_enabled::text from public.admin_list_teams('acct-t1')), 'false');
+select t.expect_eq('... and the roster / captain counts', (select roster_count || '/' || captain_count from public.admin_list_teams('acct-t1')), '2/1');
+select t.expect_eq('total_count reports all matches, limit pages them', (select count(*) || '/' || max(total_count) from public.admin_list_teams('acct', 1, 0)), '1/2');
+select t.expect_eq('offset moves on', (select slug from public.admin_list_teams('acct', 1, 1)), 'acct-t2');
+select t.expect_eq('the owner lists unclaimed fighters too', (select string_agg(display_name || ':' || claimed::text, ',' order by display_name) from public.admin_list_fighters('uli')), 'Dup Uli:false,Unclaimed Uli:false');
+select t.expect_eq('... claimed ones are flagged without an account id', (select claimed::text from public.admin_list_fighters('Alice')), 'true');
+select t.expect_eq('filter by team (current roster)', (select string_agg(display_name, ',' order by display_name) from public.admin_list_fighters(null, '00000000-0000-0000-0000-0000000d1001')), 'Alice Fighter,Unclaimed Uli');
+select t.expect_eq('the list functions return no account column', (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname in ('admin_list_teams', 'admin_list_fighters', 'my_teams')
+  and exists (select 1 from unnest(p.proargnames) a where a ~ '(user|account|actor|email)')), 0::bigint);
+-- team edit
+select t.expect_ok('the owner edits a team', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', jsonb_build_object('name', 'Acct Team Two Renamed', 'slug', 'acct-t2-new', 'city', 'Calgary', 'country', 'CA',
+  'description', 'About us', 'website', 'https://example.org', 'social_links', jsonb_build_object('x', 'https://x.com/t2'), 'colors', jsonb_build_array('#112233', '#FFFFFF'), 'founded_year', 2015,
+  'claimed_organizations', jsonb_build_array('Some Federation'), 'status', 'approved', 'crest_division', 'bend', 'initial', 'tt'))$q$);
+select t.expect_eq('... all fields landed', (select name || '/' || slug || '/' || city || '/' || status || '/' || founded_year || '/' || colors[1] || '/' || initial || '/' || crest_division from public.teams where id = '00000000-0000-0000-0000-0000000d1002'),
+  'Acct Team Two Renamed/acct-t2-new/Calgary/approved/2015/#112233/TT/bend');
+select t.expect_error('a duplicate slug is refused', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"slug":"acct-t1"}'::jsonb)$q$, '22023');
+select t.expect_ok('keeping one''s own slug is fine', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"slug":"acct-t2-new"}'::jsonb)$q$);
+select t.expect_error('an invalid slug is refused', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"slug":"Bad Slug"}'::jsonb)$q$, '22023');
+select t.expect_error('an unknown status is refused', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"status":"banned"}'::jsonb)$q$, '22023');
+select t.expect_error('an http website is refused', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"website":"http://example.org"}'::jsonb)$q$, '22023');
+select t.expect_error('bad colours are refused', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"colors":["red","blue"]}'::jsonb)$q$, '22023');
+select t.expect_error('an unknown field is refused', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"id":"00000000-0000-0000-0000-0000000d9999"}'::jsonb)$q$, '22023');
+select t.expect_error('a name cannot be emptied', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"name":null}'::jsonb)$q$, '22023');
+select t.expect_error('a missing team is reported', $q$select public.admin_update_team(gen_random_uuid(), '{"city":"x"}'::jsonb)$q$, 'P0002');
+select t.expect_error('a logo that does not exist in storage is refused', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"logo_path":"teams/00000000-0000-0000-0000-0000000d1002/none.png"}'::jsonb)$q$, '22023');
+select t.as_admin();
+insert into storage.objects (bucket_id, name) values ('profile-photos', 'teams/00000000-0000-0000-0000-0000000d1002/crest.png');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner sets a logo that exists', $q$select public.admin_update_team('00000000-0000-0000-0000-0000000d1002', '{"logo_path":"teams/00000000-0000-0000-0000-0000000d1002/crest.png"}'::jsonb)$q$);
+-- fighter edit
+select t.expect_ok('the owner edits a fighter incl. profile fields', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', jsonb_build_object('display_name', 'Ulrich Unclaimed', 'city', 'Banff', 'nickname', 'Uli',
+  'handedness', 'right', 'jersey_number', 9, 'show_physical', true, 'height_cm', 180))$q$);
+select t.expect_eq('... they landed', (select display_name || '/' || city || '/' || nickname || '/' || height_cm from public.fighter_profile_v2('00000000-0000-0000-0000-0000000d2003')), 'Ulrich Unclaimed/Banff/Uli/180');
+select t.expect_error('an unknown fighter field is refused', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', '{"user_id":"x"}'::jsonb)$q$, '22023');
+select t.expect_error('an invalid profile value is still refused', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', '{"handedness":"both"}'::jsonb)$q$, '22023');
+select t.expect_error('a one letter name is refused', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', '{"display_name":"X"}'::jsonb)$q$, '22023');
+select t.expect_error('a missing fighter is reported', $q$select public.admin_update_fighter(gen_random_uuid(), '{"city":"x"}'::jsonb)$q$, 'P0002');
+select t.expect_error('a photo that is not the fighter''s own is refused', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', '{"photo_path":"nope/x.jpg"}'::jsonb)$q$, '22023');
+select t.expect_error('a garbage team id is refused', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', '{"team_id":"nonsense"}'::jsonb)$q$, '22023');
+select t.expect_error('a missing team is refused', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', jsonb_build_object('team_id', gen_random_uuid()))$q$, 'P0002');
+-- moving: the old membership is closed, a new one opened, nothing is deleted
+select t.expect_eq('before the move Uli has one open membership at Team One', (select count(*) from public.team_memberships where fighter_id = '00000000-0000-0000-0000-0000000d2003' and to_date is null), 1::bigint);
+select t.expect_ok('the owner moves a fighter to Team Two (admin_update_fighter)', $q$select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2003', '{"team_id":"00000000-0000-0000-0000-0000000d1002"}'::jsonb)$q$);
+select t.expect_eq('the old membership is closed (history kept), a new one is open, fighters.team_id follows', (select string_agg(tm.team_id::text || ':' || coalesce(tm.to_date::text, 'open'), ',' order by tm.from_date) from public.team_memberships tm where tm.fighter_id = '00000000-0000-0000-0000-0000000d2003'),
+  '00000000-0000-0000-0000-0000000d1001:' || current_date || ',00000000-0000-0000-0000-0000000d1002:open');
+select t.expect_eq('... team_id follows', (select team_id::text from public.fighters where id = '00000000-0000-0000-0000-0000000d2003'), '00000000-0000-0000-0000-0000000d1002');
+select t.expect_ok('moving to the same team again changes nothing', $q$select public.admin_set_fighter_team('00000000-0000-0000-0000-0000000d2003', '00000000-0000-0000-0000-0000000d1002')$q$);
+select t.expect_eq('... still two membership rows', (select count(*) from public.team_memberships where fighter_id = '00000000-0000-0000-0000-0000000d2003'), 2::bigint);
+select t.expect_ok('admin_set_fighter_team moves back', $q$select public.admin_set_fighter_team('00000000-0000-0000-0000-0000000d2003', '00000000-0000-0000-0000-0000000d1001')$q$);
+select t.expect_eq('... three rows now, only one open, none deleted', (select count(*) || '/' || count(*) filter (where to_date is null) from public.team_memberships where fighter_id = '00000000-0000-0000-0000-0000000d2003'), '3/1');
+select t.expect_ok('leaving every team (null)', $q$select public.admin_set_fighter_team('00000000-0000-0000-0000-0000000d2003', null)$q$);
+select t.expect_eq('... no open membership, no team', (select count(*)::text || '/' || (select coalesce(team_id::text, 'none') from public.fighters where id = '00000000-0000-0000-0000-0000000d2003') from public.team_memberships where fighter_id = '00000000-0000-0000-0000-0000000d2003' and to_date is null), '0/none');
+select t.expect_eq('the owner edits a CLAIMED fighter too (Alice) and her photo path can be cleared', (select count(*) from (select public.admin_update_fighter('00000000-0000-0000-0000-0000000d2001', '{"bio":"Edited by owner","photo_path":null}'::jsonb)) x), 1::bigint);
+select t.expect_eq('... Alice''s bio changed', (select bio from public.fighter_profile('00000000-0000-0000-0000-0000000d2001')), 'Edited by owner');
+-- merge
+select t.expect_error('merging a fighter into itself is refused', $q$select public.admin_merge_fighters('00000000-0000-0000-0000-0000000d2003', '00000000-0000-0000-0000-0000000d2003')$q$, '22023');
+select t.expect_error('merging two fighters that both have an account is refused', $q$select public.admin_merge_fighters('00000000-0000-0000-0000-0000000d2001', '00000000-0000-0000-0000-0000000d2002')$q$, '22023');
+select t.as_admin();
+insert into public.entries (competition_id, fighter_id) values ('00000000-0000-0000-0000-0000000d4004', '00000000-0000-0000-0000-0000000d2003'), ('00000000-0000-0000-0000-0000000d4004', '00000000-0000-0000-0000-0000000d2004');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_error('merging two fighters entered in the same competition is refused', $q$select public.admin_merge_fighters('00000000-0000-0000-0000-0000000d2003', '00000000-0000-0000-0000-0000000d2004')$q$, '22023');
+select t.as_admin();
+delete from public.entries where fighter_id = '00000000-0000-0000-0000-0000000d2004';
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner merges the duplicate Dup Uli into Uli', $q$select public.admin_merge_fighters('00000000-0000-0000-0000-0000000d2003', '00000000-0000-0000-0000-0000000d2004')$q$);
+select t.expect_eq('... the duplicate is gone, the kept one and its entry remain', (select (select count(*) from public.fighters where id = '00000000-0000-0000-0000-0000000d2004')::text || '/' || (select count(*) from public.entries where fighter_id = '00000000-0000-0000-0000-0000000d2003')::text), '0/1');
+select t.as_admin();
+select t.expect_eq('admin actions are audited with field names only', (select count(*) from public.audit_log where action in ('admin.team_updated', 'admin.fighter_updated', 'admin.fighter_team_set', 'admin.fighters_merged', 'admin.photo_removed'))::int >= 6, true);
+select t.expect_eq('... and never with the private values', (select count(*) from public.audit_log where details::text ~* '(Edited by owner|Banff)'), 0::bigint);
+select t.expect_eq('person_private is untouched by every admin function (still empty for Alice)', (select count(*) from public.person_private where user_id = '00000000-0000-0000-0000-0000000d0001'), 0::bigint);
 
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
