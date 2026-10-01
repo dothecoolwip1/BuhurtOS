@@ -587,3 +587,19 @@ main :where(div, section, article, label) { min-width: 0; }
 .live-pools{display:grid;gap:12px}
 .table-scroll{overflow-x:auto}
 @media (max-width:760px){.live-cols{grid-template-columns:repeat(var(--n,3),78vw);min-width:0;gap:0 14px}}
+
+/* Team directory and team workspace */
+.teamdir{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
+.teamlisting{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;padding:16px;transition:border-color .15s}
+.teamlisting:hover{border-color:var(--faint)}
+.teamlisting .n{font:800 21px/1.05 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere}
+.teamlisting .l{font-size:13px;color:var(--muted);margin-top:4px}
+.teamlisting .s{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.teamlisting .s .chip{white-space:normal;height:auto;min-height:24px;padding:5px 9px;line-height:1.3}
+.teamhead{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:560px){.teamhead{grid-template-columns:minmax(0,1fr)}}
+.teamlinks{display:flex;gap:8px;flex-wrap:wrap}
+ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+ul.plain li{min-width:0;overflow-wrap:anywhere}
+ul.roster li{display:flex;justify-content:space-between;gap:8px 14px;flex-wrap:wrap;align-items:center}
+ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
