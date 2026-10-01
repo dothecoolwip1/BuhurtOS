@@ -16,7 +16,7 @@ export function swPrecachePlugin(): Plugin {
       const assets = path.join(dir, 'assets');
       if (!fs.existsSync(swPath) || !fs.existsSync(assets)) return;
       const list = fs.readdirSync(assets).filter(f => /\.(js|css)$/.test(f)).sort().map(f => `assets/${f}`);
-      list.push('favicon.svg');
+      list.push('favicon.svg', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'icon-any.svg');
       const id = createHash('sha256').update(list.join('|')).digest('hex').slice(0, 10);
       const src = fs.readFileSync(swPath, 'utf8')
         .replace('const PRECACHE = [];', `const PRECACHE = ${JSON.stringify(list)};`)
