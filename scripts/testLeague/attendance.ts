@@ -29,13 +29,16 @@ export function teamAffinity(team: TeamDef, ev: EventDef): number {
   return a;
 }
 
-export function kBase(f: FighterDef): number {
+export function kBase(f: FighterDef, teamName = ''): number {
   const fixed = kFixedOf(f.name);
   if (fixed !== undefined) return fixed;
   const h = hash32(`k|${f.name}`);
+  return Math.max(2, Math.round(kRaw(f, h) * (teamName ? teamTraitsOf(teamName).kScale ?? 1 : 1)));
+}
+function kRaw(f: FighterDef, h: number): number {
   switch (traitsOf(f.name).k) {
     case 'very': return 10 + (h % 3);
-    case 'high': return 6 + (h % 3);
+    case 'high': return 6 + (h % 2);
     case 'norm': return 4 + (h % 3);
     case 'low': return 3;
     case 'rare': return 2;
@@ -69,7 +72,7 @@ export function modelAttendance(teams: readonly TeamDef[], fighters: readonly Fi
   });
   // Fighter targets: fixed for the very active and the rare, scaled for the rest so the rows add up to the event sizes.
   const elig = w.map(row => row.filter(x => x > 0).length);
-  const kb = fighters.map(kBase);
+  const kb = fighters.map(f => kBase(f, teams[f.teamIdx].name));
   const fixed = fighters.map(f => traitsOf(f.name).k === 'very' || traitsOf(f.name).k === 'rare' || kFixedOf(f.name) !== undefined);
   const totalWanted = targets.reduce((a, b) => a + b, 0);
   const sum = (s: number): number => kb.reduce((acc, k, i) => acc + (fixed[i] ? Math.min(k, elig[i]) : Math.min(Math.round(k * s), elig[i], 9)), 0);

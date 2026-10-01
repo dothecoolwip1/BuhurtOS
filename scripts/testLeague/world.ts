@@ -58,15 +58,17 @@ function pickRumble(teams: TeamDef[], fighters: FighterDef[], hist: EventWorld[]
 export function buildWorld(): World {
   const { teams, fighters } = parseRoster();
   const model = modelAttendance(teams, fighters, HISTORICAL);
+  const initial = fighters.map((_, i) => model.attendees.filter(a => a.has(i)).length);
   const events: EventWorld[] = HISTORICAL.map(ev => {
     // Some attendees end up without an entry (their team division cannot run); others of the weight matrix take their places.
     const target = eventTarget(ev);
     let att = new Set(model.attendees[ev.idx]);
     let formed = formEntries(ev, att, teams, fighters);
-    for (let round = 0; round < 25 && formed.attendees.size < target; round++) {
+    const tried = new Set<number>(att);
+    for (let round = 0; round < 40 && formed.attendees.size < target; round++) {
       const next = new Set(formed.attendees);
-      const spare = fighters.map((_, i) => i).filter(i => !next.has(i) && model.weight[i][ev.idx] > 0).sort((a, b) => model.weight[b][ev.idx] - model.weight[a][ev.idx] || a - b);
-      for (const i of spare.slice(0, target - formed.attendees.size)) next.add(i);
+      const spare = fighters.map((_, i) => i).filter(i => !next.has(i) && !tried.has(i) && model.weight[i][ev.idx] > 0 && initial[i] < 10).sort((a, b) => model.weight[b][ev.idx] - model.weight[a][ev.idx] || a - b);
+      for (const i of spare.slice(0, target - formed.attendees.size)) { next.add(i); tried.add(i); }
       att = next;
       formed = formEntries(ev, att, teams, fighters);
     }
@@ -79,7 +81,8 @@ export function buildWorld(): World {
   const latest = events[events.length - 1].attendees;
   const aldric = fighters.find(f => f.name === 'Aldric Stone-test')!.idx;
   let rumble: EventWorld | null = null, rumbleSeed = -1;
-  for (let seed = 1; seed < 400 && !rumble; seed++) {
+  let bestGap = 1e9;
+  for (let seed = 1; seed < 120; seed++) {
     const picked = pickRumble(teams, fighters, events, seed);
     const formed = formEntries(RUMBLE, picked, teams, fighters, { noMeleeTeams: new Set([teams.find(t => t.name === DUELS_ONLY)!.idx]), fullIntent: true });
     const men = [...formed.attendees].filter(i => fighters[i].sex === 'male').length;
@@ -98,13 +101,11 @@ export function buildWorld(): World {
     if (process.env.NACL_DEBUG && seed < 8) console.log(seed, "uniq", formed.attendees.size, "m/w", men, women, "ov", overlap.toFixed(2), "merc", merc, "full", fullOwn, "near", nearFull, "regs", regs, "new", newcomers, aldricCats.join(","));
     const ok = formed.attendees.size >= 38 && formed.attendees.size <= 44 && men >= 25 && men <= 30 && women >= 10 && women <= 15 && overlap < 0.45 && merc && fullOwn && nearFull
       && regs >= 72 && regs <= 105 && newcomers >= 3 && aldricCats.includes('menlongsword') && aldricCats.includes('men5v5') && aldricCats.includes('men3v3');
-    if (ok) {
-      ew.sims = formed.comps.map(c => simulateCompetition(c, teams, fighters, { play: false }));
-      scheduleEvent(RUMBLE, ew.sims, 4);
-      rumble = ew; rumbleSeed = seed;
-    }
+    if (ok && Math.abs(regs - 90) < bestGap) { bestGap = Math.abs(regs - 90); rumble = ew; rumbleSeed = seed; }
   }
   if (!rumble) throw new Error('no seed satisfied the Red Deer Rumble-test constraints');
+  rumble.sims = rumble.comps.map(c => simulateCompetition(c, teams, fighters, { play: false }));
+  scheduleEvent(RUMBLE, rumble.sims, 4);
   void resolved;
   return { teams, fighters, events, rumble, rumbleSeed };
 }

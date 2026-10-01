@@ -166,6 +166,8 @@ export interface TeamTraits {
   form: Record<number, [number, number]>;
   /** How much newcomers of the club improve on top of their own growth. */
   development: number;
+  /** Multiplier on the number of events the club's fighters attend (a distant club goes to fewer events). */
+  kScale?: number;
 }
 
 export const TEAM_TRAITS: Record<string, TeamTraits> = {
@@ -175,9 +177,9 @@ export const TEAM_TRAITS: Record<string, TeamTraits> = {
   'Crimson Stags': { radiusKm: 500, provMult: {}, awayShare: 0.7, synergy: 0, duelCulture: 0, development: 1.5, form: { 2023: [-30, -20], 2024: [-10, 0], 2025: [15, 25], 2026: [35, 40] } },
   'Steel Serpents': { radiusKm: 550, provMult: { BC: 0.6, MB: 0.5 }, awayShare: 0.7, synergy: 28, duelCulture: 0, development: 1, form: { 2023: [20, 0], 2024: [25, 5], 2025: [20, 0], 2026: [25, 5] } },
   'Mountain Bears': { radiusKm: 950, provMult: { BC: 1.6 }, awayShare: 0.9, synergy: 12, duelCulture: 0, development: 1, form: { 2023: [-20, -10], 2024: [0, 0], 2025: [25, 15], 2026: [45, 30] } },
-  Stormbreakers: { radiusKm: 750, provMult: { SK: 2.6, MB: 1.1, BC: 0.15 }, southAB: 0.35, awayShare: 0.55, synergy: 22, duelCulture: 0, development: 1, form: { 2023: [30, 20], 2024: [25, 15], 2025: [0, -5], 2026: [-25, -20] } },
-  'Golden Lions': { radiusKm: 380, provMult: { SK: 2.4, MB: 0.9, BC: 0.15 }, awayShare: 0.45, synergy: 0, duelCulture: 30, development: 1, form: { 2023: [-20, 25], 2024: [-15, 35], 2025: [-10, 45], 2026: [0, 55] } },
-  'Ashen Guard': { radiusKm: 520, provMult: { MB: 3.2, SK: 1.2, AB: 0.4, BC: 0.1 }, awayShare: 0.5, synergy: 24, duelCulture: 0, development: 1, form: { 2023: [0, -10], 2024: [10, 0], 2025: [20, 5], 2026: [15, 10] } },
-  'Frostborn Raiders': { radiusKm: 520, provMult: { BC: 3.2, AB: 1, SK: 0.2, MB: 0.1 }, awayShare: 0.6, synergy: 15, duelCulture: 0, development: 1, form: { 2023: [-35, -25], 2024: [-15, -10], 2025: [10, 5], 2026: [30, 25] } }
+  Stormbreakers: { kScale: 0.62, radiusKm: 750, provMult: { SK: 4, MB: 1.1, BC: 0.15 }, southAB: 0.35, awayShare: 0.55, synergy: 22, duelCulture: 0, development: 1, form: { 2023: [30, 20], 2024: [25, 15], 2025: [0, -5], 2026: [-25, -20] } },
+  'Golden Lions': { kScale: 0.62, radiusKm: 380, provMult: { SK: 2.4, MB: 0.9, BC: 0.15 }, awayShare: 0.45, synergy: 0, duelCulture: 30, development: 1, form: { 2023: [-20, 25], 2024: [-15, 35], 2025: [-10, 45], 2026: [0, 55] } },
+  'Ashen Guard': { kScale: 0.62, radiusKm: 520, provMult: { MB: 3.2, SK: 1.2, AB: 0.4, BC: 0.1 }, awayShare: 0.5, synergy: 24, duelCulture: 0, development: 1, form: { 2023: [0, -10], 2024: [10, 0], 2025: [20, 5], 2026: [15, 10] } },
+  'Frostborn Raiders': { kScale: 0.62, radiusKm: 520, provMult: { BC: 3.2, AB: 1, SK: 0.2, MB: 0.1 }, awayShare: 0.6, synergy: 15, duelCulture: 0, development: 1, form: { 2023: [-35, -25], 2024: [-15, -10], 2025: [10, 5], 2026: [30, 25] } }
 };
 export const teamTraitsOf = (name: string): TeamTraits => TEAM_TRAITS[name.replace(/-test$/, '')];
