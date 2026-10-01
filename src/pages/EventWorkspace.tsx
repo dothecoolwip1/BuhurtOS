@@ -12,6 +12,7 @@ import { useLiveMatches } from '../lib/useLiveMatches';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { PROVINCES, formatMoney } from '../registration/model';
+import { EventDaySchedule } from './EventDaySchedule';
 import { NotFoundPage } from './NotFoundPage';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
@@ -108,6 +109,7 @@ export function EventWorkspace() {
         {event.timeNote && <p style={{ overflowWrap: 'anywhere' }}><b>{event.timeNote}</b></p>}
         {where && <p style={{ color: 'var(--muted)', overflowWrap: 'anywhere' }}>{where}</p>}
       </div>
+      <EventDaySchedule timeNote={event.timeNote} description={event.description} />
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} />
