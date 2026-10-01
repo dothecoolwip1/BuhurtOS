@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { setSampleMode, useSampleMode } from '../data/mode';
 import { useAuth } from '../auth/AuthContext';
+import { usePlatformRole } from '../auth/usePlatformRole';
 import { NotificationBell } from './NotificationBell';
 
 const NAV = [
@@ -32,6 +33,7 @@ export function Layout() {
   const toggleTheme = useTheme();
   const { pathname } = useLocation();
   const { session } = useAuth();
+  const { isOwner } = usePlatformRole();
   const sample = useSampleMode();
   useEffect(() => { window.scrollTo({ top: 0 }); }, [pathname]);
   return (
@@ -45,6 +47,7 @@ export function Layout() {
           </NavLink>
           <nav className="nav" aria-label="Main">
             {NAV.map(n => <NavLink key={n.to} to={n.to} end={n.end}>{n.label}</NavLink>)}
+            {isOwner && <NavLink to="/platform">Platform</NavLink>}
           </nav>
           <div className="spacer" />
           {session && <NotificationBell />}

@@ -4,10 +4,12 @@ import { fetchMyEvents } from '../data/api';
 import { DRAFT_NOTICE } from '../lib/draftView';
 import { useAsync } from '../lib/useAsync';
 import { useAuth } from './AuthContext';
+import { usePlatformRole } from './usePlatformRole';
 import { SignIn } from './SignIn';
 
 export function AccountPage() {
   const { session, loading, signOut } = useAuth();
+  const { isOwner } = usePlatformRole();
   const userId = session?.user.id;
   const mine = useAsync(() => (userId ? fetchMyEvents(userId) : Promise.resolve([])), [userId]);
   if (loading) return <p className="muted">Loading…</p>;
@@ -18,6 +20,7 @@ export function AccountPage() {
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <Link className="btn btn-ink" to="/team-manager">Team manager</Link>
         <Link className="btn btn-line" to="/events/new">Create an event</Link>
+        {isOwner && <Link className="btn btn-line" to="/platform/organizations">Organizations</Link>}
         <button className="btn btn-line" type="button" onClick={() => void signOut()}>Sign out</button>
       </div>
       {(mine.data ?? []).length > 0 && (

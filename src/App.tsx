@@ -15,6 +15,8 @@ import { NewEventPage } from './pages/NewEventPage';
 import { TeamManagerPage } from './pages/TeamManagerPage';
 import { TeamPage } from './pages/TeamPage';
 import { TeamsPage } from './pages/TeamsPage';
+import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
+import { PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 
 export function App() {
   return (
@@ -31,6 +33,10 @@ export function App() {
         <Route path="events/:eventId/register" element={<RegisterPage />} />
         <Route path="events/:eventId/field/:field" element={<FieldPage />} />
         <Route path="events/:eventId/manage" element={<ManagePage />} />
+        <Route path="organizations" element={<OrganizationsPage />} />
+        <Route path="organizations/:slug" element={<OrganizationPage />} />
+        <Route path="platform" element={<PlatformHomePage />} />
+        <Route path="platform/organizations" element={<PlatformOrganizationsPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />
