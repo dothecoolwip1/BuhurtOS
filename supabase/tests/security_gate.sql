@@ -306,6 +306,22 @@ select t.expect_eq('reopening leaves the second loser in place', (select entry_b
 select t.expect_eq('reopening clears the stored detail', (select detail from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), '{}'::jsonb);
 select t.expect_ok('organizer reopens the second semifinal', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f3', 'fixing the score')$q$);
 select t.expect_eq('reopening takes the second loser out of third place', (select entry_b is null from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), true);
+
+-- Deleting a match that another match leads into clears the link instead of failing the next_slot check (migration 20261001001700).
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('organizer builds a final and two semifinals that lead into it', format($q$
+  insert into public.matches (id, competition_id, stage, round_label, position) values ('00000000-0000-0000-0000-0000000000d1', %L, 'final', 'Final', 11);
+  insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000d2', %L, 'elimination', 'Semifinal', 11, %L, '00000000-0000-0000-0000-00000000e002', '00000000-0000-0000-0000-0000000000d1', 'a');
+  insert into public.matches (id, competition_id, stage, round_label, position, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000d3', %L, 'elimination', 'Semifinal', 12, '00000000-0000-0000-0000-0000000000d1', 'b')$q$,
+  current_setting('t.comp_ls'), current_setting('t.comp_ls'), current_setting('t.e1'), current_setting('t.comp_ls')));
+select t.expect_ok('the first semifinal is finalized', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000d2', 'a', 3, 1, '{}'::jsonb, 0)$q$);
+select t.expect_ok('the organizer deletes the unfinished final that two semifinals lead into', $q$delete from public.matches where id = '00000000-0000-0000-0000-0000000000d1'$q$);
+select t.expect_eq('the final is gone', (select count(*) from public.matches where id = '00000000-0000-0000-0000-0000000000d1'), 0::bigint);
+select t.expect_eq('the unfinished semifinal lost both link columns together', (select next_match_id is null and next_slot is null from public.matches where id = '00000000-0000-0000-0000-0000000000d3'), true);
+select t.expect_eq('the finished semifinal lost both link columns and kept its result', (select next_match_id is null and next_slot is null and result = 'a' and queue_state = 'final' from public.matches where id = '00000000-0000-0000-0000-0000000000d2'), true);
+select t.expect_ok('the unfinished semifinal can be deleted', $q$delete from public.matches where id = '00000000-0000-0000-0000-0000000000d3'$q$);
+select t.as_admin();
+delete from public.matches where id in ('00000000-0000-0000-0000-0000000000d2', '00000000-0000-0000-0000-0000000000d3');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('a stranger sees no audit entries', (select count(*) from public.audit_log), 0::bigint);
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
