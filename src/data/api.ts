@@ -7,6 +7,7 @@ export interface LiveEvent {
   venue: string | null; address: string | null; city: string | null; region: string | null;
   startsOn: string; endsOn: string; feeCents: number; feeProvince: string | null; feeNote: string | null;
   registrationOpensAt: string | null; registrationClosesAt: string | null; leagues: LeagueKey[];
+  registrationMode: 'buhuros' | 'external' | 'none'; externalUrl: string | null; timeNote: string | null;
 }
 export interface MyEventContext {
   /** Roles on this event from event_staff, plus 'owner' for the platform owner. */
@@ -15,11 +16,12 @@ export interface MyEventContext {
   pendingRegistrations: number | null;
 }
 
-const EVENT_COLUMNS = 'id,slug,name,description,event_type,status,venue,address,city,region,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at';
+const EVENT_COLUMNS = 'id,slug,name,description,event_type,status,venue,address,city,region,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note';
 type EventRow = {
   id: string; slug: string; name: string; description: string; event_type: string; status: LiveEvent['status'];
   venue: string | null; address: string | null; city: string | null; region: string | null; starts_on: string; ends_on: string;
   fee_cents: number; fee_province: string | null; fee_note: string | null; registration_opens_at: string | null; registration_closes_at: string | null;
+  registration_mode: LiveEvent['registrationMode']; external_url: string | null; time_note: string | null;
 };
 type Ref = { league: LeagueKey } | { league: LeagueKey }[] | null;
 const leagueOf = (r: Ref): LeagueKey => (Array.isArray(r) ? r[0]?.league : r?.league) ?? 'duels';
@@ -28,7 +30,8 @@ const toEvent = (r: EventRow, leagues: LeagueKey[] = []): LiveEvent => ({
   id: r.id, slug: r.slug, name: r.name, description: r.description, eventType: r.event_type, status: r.status,
   venue: r.venue, address: r.address, city: r.city, region: r.region, startsOn: r.starts_on, endsOn: r.ends_on,
   feeCents: r.fee_cents, feeProvince: r.fee_province, feeNote: r.fee_note,
-  registrationOpensAt: r.registration_opens_at, registrationClosesAt: r.registration_closes_at, leagues
+  registrationOpensAt: r.registration_opens_at, registrationClosesAt: r.registration_closes_at, leagues,
+  registrationMode: r.registration_mode ?? 'buhuros', externalUrl: r.external_url, timeNote: r.time_note
 });
 
 /** Events the caller may see. The database decides: published events for everyone, drafts only for their organizers. */

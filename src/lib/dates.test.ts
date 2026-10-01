@@ -14,3 +14,11 @@ describe('dates', () => {
     expect(registrationWindow(null, null, now)).toBe('open');
   });
 });
+
+import { isoToLocal, localToIso } from './dates';
+describe('Mountain time conversion', () => {
+  it('Nov 8 23:59 is 06:59 UTC the next day (standard time)', () => expect(localToIso('2026-11-08T23:59')).toBe('2026-11-09T06:59:00.000Z'));
+  it('summer uses daylight time (UTC-6)', () => expect(localToIso('2026-07-01T12:00')).toBe('2026-07-01T18:00:00.000Z'));
+  it('round-trips', () => expect(isoToLocal(localToIso('2026-11-08T23:59'))).toBe('2026-11-08T23:59'));
+  it('empty and invalid input', () => { expect(isoToLocal(null)).toBe(''); expect(localToIso('nonsense')).toBeNull(); });
+});

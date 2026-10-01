@@ -9,7 +9,8 @@ export function toSummary(e: LiveEvent, now = new Date()): EventSummary {
   const badges: EventSummary['badges'] = [];
   if (e.status === 'draft') badges.push({ tone: '', label: 'Draft: organizers only' });
   else if (e.status === 'cancelled') badges.push({ tone: '', label: 'Cancelled' });
-  else {
+  else if (e.registrationMode === 'external') badges.push({ tone: 'brass', label: 'Tickets online' });
+  else if (e.registrationMode === 'buhuros') {
     const w = registrationWindow(e.registrationOpensAt, e.registrationClosesAt, now);
     if (w === 'open') badges.push({ tone: 'brass', label: 'Registration open' });
     if (w === 'closed') badges.push({ tone: '', label: 'Registration closed' });

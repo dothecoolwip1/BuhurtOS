@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { Chip, PageHead } from '../components/ui';
+import { eventTypeLabel } from '../data/eventTypes';
 import { fetchEvent, fetchMyEventContext, type LeagueKey, type LiveCompetition, type LiveEvent, type MyEventContext } from '../data/api';
 import { dateRange, registrationWindow } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
@@ -16,12 +17,24 @@ const provinceName = (code: string) => PROVINCES.find(([k]) => k === code)?.[1] 
 function feeText(e: LiveEvent): string | null {
   if (e.feeCents <= 0) return null;
   const amount = formatMoney(e.feeCents);
+  if (e.registrationMode !== 'buhuros') return `Tickets from ${amount}.`;
   return e.feeProvince ? `${amount} for fighters from ${provinceName(e.feeProvince)}. Fighters from elsewhere and volunteers pay nothing.` : `${amount} per fighter. Volunteers pay nothing.`;
 }
 
 function RegistrationCard({ event, mine, signedIn }: { event: LiveEvent; mine: MyEventContext | undefined; signedIn: boolean }) {
   const win = registrationWindow(event.registrationOpensAt, event.registrationClosesAt);
   const reg = mine?.registration;
+  if (event.registrationMode === 'none') return null;
+  if (event.registrationMode === 'external') {
+    if (event.status !== 'published' && !mine?.isOrganizer) return null;
+    return (
+      <section className="panel info">
+        <h3>Tickets and sign-up</h3>
+        <p style={{ color: 'var(--muted)' }}>Sign-up for this event happens on another website. BuhurtOS does not handle it.</p>
+        {event.externalUrl && <a className="btn btn-ink" href={event.externalUrl} target="_blank" rel="noopener noreferrer">Open the sign-up page</a>}
+      </section>
+    );
+  }
   const to = `/events/${event.slug}/register`;
   if (reg) {
     const word = reg.status === 'accepted' ? 'Accepted' : reg.status === 'declined' ? 'Declined' : reg.status === 'withdrawn' ? 'Withdrawn' : 'Waiting for review';
@@ -54,7 +67,8 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
         {event.status === 'draft' && <> The event is a <b>draft</b>: only organizers can see it.</>}
       </p>
       <p><Link className="btn btn-ink" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link></p>
-      <p className="src">Setup, people and the draw are the next screens to arrive in this workspace.</p>
+      <p><Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Event setup and publishing</Link> <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>People and roles</Link></p>
+      <p className="src">The draw and event-day scoring arrive in this workspace next.</p>
     </section>
   );
 }
@@ -79,14 +93,15 @@ export function EventWorkspace() {
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
-      <PageHead eyebrow={event.status === 'draft' ? 'Draft: only organizers can see this' : event.eventType} title={event.name} lede={event.description || undefined} />
+      <PageHead eyebrow={event.status === 'draft' ? 'Draft: only organizers can see this' : eventTypeLabel(event.eventType)} title={event.name} lede={event.description || undefined} />
       <div style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>
         <Chip>{dateRange(event.startsOn, event.endsOn)}</Chip>
+        {event.timeNote && <p style={{ overflowWrap: 'anywhere' }}><b>{event.timeNote}</b></p>}
         {where && <p style={{ color: 'var(--muted)', overflowWrap: 'anywhere' }}>{where}</p>}
       </div>
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} />
-      <section aria-labelledby="comp-h" style={{ display: 'grid', gap: 14 }}>
+      {(event.eventType === 'tournament' || groups.length > 0) && <section aria-labelledby="comp-h" style={{ display: 'grid', gap: 14 }}>
         <h2 id="comp-h">Competitions</h2>
         {groups.length === 0 && <p className="muted">No competitions have been added yet.</p>}
         {groups.map(([league, list]) => (
@@ -103,13 +118,13 @@ export function EventWorkspace() {
           </div>
         ))}
         <p className="src">Rulesets are named as the organizer announced them. BuhurtOS shows what is recorded and does not guess; where a ruleset says it is not loaded, its text is not in BuhurtOS yet.</p>
-      </section>
-      {(fee || event.feeNote || event.registrationClosesAt) && (
+      </section>}
+      {(fee || event.feeNote || (event.registrationMode === 'buhuros' && event.registrationClosesAt)) && (
         <section className="panel info" aria-labelledby="info-h">
           <h3 id="info-h">Good to know</h3>
           {fee && <p>{fee}</p>}
           {event.feeNote && <p style={{ color: 'var(--muted)' }}>{event.feeNote}</p>}
-          {event.registrationClosesAt && <p style={{ color: 'var(--muted)' }}>Registration closes {new Date(event.registrationClosesAt).toLocaleString('en-CA', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Edmonton' })} Mountain time.</p>}
+          {event.registrationMode === 'buhuros' && event.registrationClosesAt && <p style={{ color: 'var(--muted)' }}>Registration closes {new Date(event.registrationClosesAt).toLocaleString('en-CA', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Edmonton' })} Mountain time.</p>}
         </section>
       )}
     </section>
