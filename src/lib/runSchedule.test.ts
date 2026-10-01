@@ -75,13 +75,13 @@ describe('who stands in a match', () => {
 
 describe('wording', () => {
   it('formats a time in the event zone', () => {
-    expect(timeLabel('2026-11-14T17:15:00.000Z', 'America/Edmonton')).toBe('Sat 10:15');
+    expect(timeLabel('2026-11-14T17:15:00.000Z', 'America/Denver')).toBe('Sat 10:15');
     expect(timeLabel('bad')).toBe('an unknown time');
   });
   it('names the booking in plain language', () => {
-    expect(bookingLine('Aldric Stone-test', { competitionName: 'Male Longsword', scheduledAt: '2026-11-14T17:15:00.000Z', overlapMinutes: 5 }, 'America/Edmonton'))
+    expect(bookingLine('Aldric Stone-test', { competitionName: 'Male Longsword', scheduledAt: '2026-11-14T17:15:00.000Z', overlapMinutes: 5 }, 'America/Denver'))
       .toBe('Aldric Stone-test is already fighting Male Longsword at Sat 10:15 (overlaps by 5 minutes).');
-    expect(bookingLine('A', { competitionName: 'X', scheduledAt: '2026-11-14T17:15:00.000Z', overlapMinutes: 1 }, 'America/Edmonton')).toContain('1 minute)');
+    expect(bookingLine('A', { competitionName: 'X', scheduledAt: '2026-11-14T17:15:00.000Z', overlapMinutes: 1 }, 'America/Denver')).toContain('1 minute)');
   });
   it('words the headline and counts distinct fighters', () => {
     expect(conflictsHeadline(0)).toBeNull();
