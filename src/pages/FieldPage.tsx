@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
-import { DuelBoard, GroupBoard, ProBoard } from '../components/ScoreBoards';
+import { DuelBoard, GroupBoard, MarathonBoard, ProBoard, SeriesBoard } from '../components/ScoreBoards';
 import { Chip, PageHead } from '../components/ui';
 import { fetchEvent, fetchMyEventContext, type LiveEvent } from '../data/api';
 import { fetchEventMatches, fetchFieldCompetitions, type FieldCompetition } from '../data/field';
@@ -55,10 +55,10 @@ interface Opened { match: CompetitionMatch; comp: FieldCompetition; version: num
 
 function Scoring({ opened, onExit, onFinished, onStale }: { opened: Opened; onExit: () => void; onFinished: () => void; onStale: (message: string) => void }) {
   const { match, comp, version } = opened;
-  const mode = boardModeFor(comp.league);
+  const mode = boardModeFor(comp.league, comp.category);
   const { waiting, record, drain, rejected, dismissRejected } = useOutbox();
   const names = sideName(match);
-  const [board, setBoard] = useState<BoardState | null>(() => (mode ? loadBoard(match.id, mode) ?? newBoard(mode, { perSide: perSideFor(comp.category), roundsToWin: comp.roundsToWin }) : null));
+  const [board, setBoard] = useState<BoardState | null>(() => (mode ? loadBoard(match.id, mode) ?? newBoard(mode, { perSide: perSideFor(comp.category), roundsToWin: comp.roundsToWin, seriesKind: comp.category === 'sabre' || comp.category === 'greatsword' ? comp.category : 'triathlon' }) : null));
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -141,6 +141,8 @@ function Scoring({ opened, onExit, onFinished, onStale }: { opened: Opened; onEx
       {board.mode === 'group' && <GroupBoard state={board.s} onChange={s => change({ mode: 'group', s })} record={rec} names={names} />}
       {board.mode === 'duel' && <DuelBoard state={board.s} onChange={s => change({ mode: 'duel', s })} record={rec} names={names} />}
       {board.mode === 'pro' && <ProBoard state={board.s} onChange={s => change({ mode: 'pro', s })} record={rec} names={names} />}
+      {board.mode === 'marathon' && <MarathonBoard state={board.s} onChange={s => change({ mode: 'marathon', s })} record={rec} names={names} stage={match.stage} />}
+      {board.mode === 'series' && <SeriesBoard state={board.s} onChange={s => change({ mode: 'series', s })} record={rec} names={names} stage={match.stage} />}
       <div className="mactions">
         <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
         <button type="button" className="btn btn-ink fq-big" disabled={!canOfferFinish(board, match.stage)} onClick={() => { setConfirming(true); setError(null); }}>Finish match</button>

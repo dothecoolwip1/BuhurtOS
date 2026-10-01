@@ -5,7 +5,7 @@ import { localToIso } from '../lib/dates';
 const form = (o: Partial<SetupForm> = {}): SetupForm => ({
   name: 'Red Deer Rumble 2026', description: '', venue: 'Horse In Hand Ranch', address: '', city: 'Blackfalds', region: 'AB', startsOn: '2026-11-14', endsOn: '2026-11-15',
   opensLocal: '', closesLocal: '2026-11-08T23:59', feeDollars: '40', feeProvince: 'AB', feeNote: '',
-  eventType: 'tournament', registrationMode: 'buhuros', externalUrl: '', timeNote: '', ...o
+  eventType: 'tournament', registrationMode: 'buhuros', externalUrl: '', timeNote: '', volunteerInfo: '', ...o
 });
 
 describe('setup validation', () => {

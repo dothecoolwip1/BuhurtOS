@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildPayload, emptyForm, feeFor, formatMoney, validate, type CompetitionOption, type RegForm } from './model';
+import { ALL_VOLUNTEER_ROLES, buildPayload, emptyForm, feeFor, formatMoney, validate, volunteerRolesFor, type CompetitionOption, type RegForm } from './model';
 
 const fee = { feeCents: 4000, feeProvince: 'AB' };
 const comps: CompetitionOption[] = [
@@ -58,5 +58,37 @@ describe('buildPayload', () => {
     const p = buildPayload(f, 'w1');
     expect(p.volunteer_roles).toEqual([]);
     expect(p.competitions[0].details).toEqual({ weight: '92 kg' });
+  });
+});
+
+describe('volunteer Other role', () => {
+  const vol = (o: Partial<RegForm> = {}) => ({ ...emptyForm('a@b.ca'), ...o });
+  it('offers all eight roles with Other last', () => {
+    expect(ALL_VOLUNTEER_ROLES).toEqual(['Squire', 'Points counter', 'Marshal', 'Runner', 'Secretary', 'Scheduling', 'Ticket booth', 'Other']);
+  });
+  it('needs a description when Other is ticked, within the length limit', () => {
+    const f = vol({ isVolunteer: true, volunteerRoles: ['Other'], volunteerOther: ' ' });
+    const free = { feeCents: 0, feeProvince: null };
+    expect(validate(f, [], free).volunteerOther).toBeTruthy();
+    expect(validate({ ...f, volunteerOther: 'x'.repeat(201) }, [], free).volunteerOther).toBeTruthy();
+    expect(validate({ ...f, volunteerOther: 'carry water' }, [], free).volunteerOther).toBeUndefined();
+  });
+  it('stores Other as "Other: <text>" and ignores the text when Other is not ticked', () => {
+    expect(volunteerRolesFor(vol({ isVolunteer: true, volunteerRoles: ['Squire', 'Other'], volunteerOther: ' carry water ' }))).toEqual(['Squire', 'Other: carry water']);
+    expect(volunteerRolesFor(vol({ isVolunteer: true, volunteerRoles: ['Squire'], volunteerOther: 'stale' }))).toEqual(['Squire']);
+    expect(volunteerRolesFor(vol({ isVolunteer: false, volunteerRoles: ['Squire'] }))).toEqual([]);
+  });
+  it('never charges a volunteer', () => expect(feeFor({ feeCents: 4000, feeProvince: null }, 'AB', true)).toBe(0));
+});
+
+describe('waiver acceptance payload', () => {
+  it('sends the waiver version id and the trimmed typed name, and refuses without agreement or name', () => {
+    const f = { ...emptyForm('a@b.ca'), waiverAgree: true, waiverName: '  Pat Fighter ' };
+    const p = buildPayload(f, 'w-123');
+    expect(p.waiver_version_id).toBe('w-123');
+    expect(p.waiver_signed_name).toBe('Pat Fighter');
+    expect(p.waiver_agree).toBe(true);
+    const e = validate({ ...f, waiverAgree: false, waiverName: ' ' }, [], { feeCents: 0, feeProvince: null });
+    expect(e.waiverAgree).toBeTruthy(); expect(e.waiverName).toBeTruthy();
   });
 });

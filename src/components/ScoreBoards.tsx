@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Seg } from './ui';
 import { confirmRound, duelEndRound, duelScore, duelTotal, duelUndo, proAddRound, proPatch, standing, toggleFighter, type DuelState, type GroupState, type ProState } from '../lib/scoring';
+import { BREAK_SECONDS, SERIES_TITLE, breakRemaining, configureSeries, currentRound, roundPoints, seriesOutcome, seriesSolo, seriesTotals, seriesUndo, setSeriesRound, type SeriesResult, type SeriesState } from '../lib/marathon';
 import { proRoundScore, type Side } from '../lib/tournament';
 
 /**
@@ -108,3 +109,97 @@ export function ProBoard({ state: s, onChange, record, names, subs }: BoardProps
     </>
   );
 }
+
+/** Ticks while a break runs, so the countdown shows without re-rendering the page the rest of the time. */
+function useBreakSeconds(breakAt: number | null, seconds: number): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (breakAt === null) return;
+    setNow(Date.now());
+    const id = window.setInterval(() => setNow(Date.now()), 250);
+    return () => window.clearInterval(id);
+  }, [breakAt]);
+  return breakRemaining(breakAt, now, seconds);
+}
+
+const resultText = (r: SeriesResult | null, names: Record<Side, string>) => (r === 'a' ? `${names.a} won` : r === 'b' ? `${names.b} won` : r === 'tie' ? 'Tie' : '');
+
+/** Organizer setup for a series whose rules are not loaded: rounds, points per win and per tie, optional break. */
+function SeriesSetup({ state: s, onChange, record }: Pick<BoardProps<SeriesState>, 'state' | 'onChange' | 'record'>) {
+  const [list, setList] = useState(s.config.disciplines.join('\n'));
+  const [win, setWin] = useState(String(s.config.winPoints));
+  const [tie, setTie] = useState(String(s.config.tiePoints));
+  const [brk, setBrk] = useState(String(s.config.breakSeconds));
+  const disciplines = list.split('\n').map(x => x.trim()).filter(Boolean);
+  const next = configureSeries(s, { disciplines, winPoints: Number(win), tiePoints: Number(tie), breakSeconds: Number(brk) });
+  const valid = next !== s;
+  return (
+    <div className="panel info" style={{ gap: 10 }}>
+      <span className="chip brass">Rules not loaded, set by organizer</span>
+      <p style={{ margin: 0 }}>The {SERIES_TITLE[s.kind]} rules are not loaded in BuhurtOS. An organizer sets the rounds and points below, from the rules the event follows. These are not official values.</p>
+      <label className="field-in"><span>Rounds, one per line, in order</span><textarea rows={4} value={list} onChange={e => setList(e.target.value)} placeholder={'Round 1\nRound 2'} /></label>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+        <label className="field-in"><span>Points per win</span><input inputMode="numeric" value={win} onChange={e => setWin(e.target.value)} /></label>
+        <label className="field-in"><span>Points per tie</span><input inputMode="numeric" value={tie} onChange={e => setTie(e.target.value)} /></label>
+        <label className="field-in"><span>Break (s)</span><input inputMode="numeric" value={brk} onChange={e => setBrk(e.target.value)} /></label>
+      </div>
+      <button type="button" className="btn btn-ink fq-big" disabled={!valid} onClick={() => { onChange(next); record('series.configured', { disciplines, winPoints: Number(win), tiePoints: Number(tie), breakSeconds: Number(brk) }); }}>Use these rounds and points</button>
+      {!valid && <span className="src">Add at least one round, and use whole numbers from 0 to 100.</span>}
+    </div>
+  );
+}
+
+/**
+ * Marathon relay and the generic multi-round series: tap who won the current round (or a tie), see the running score and
+ * the break timer. Big one-hand targets, undo for a mistaken tap. Marathon rules come from the registration form; for the
+ * other series the rules are not loaded and the organizer sets them.
+ */
+export function SeriesBoard({ state: s, onChange, record, names, subs, stage = 'pool' }: BoardProps<SeriesState> & { stage?: string }) {
+  const brk = useBreakSeconds(s.breakAt, s.config.breakSeconds || BREAK_SECONDS);
+  if (!s.configured) return <SeriesSetup state={s} onChange={onChange} record={record} />;
+  const i = currentRound(s);
+  const total = s.results.length;
+  const t = seriesTotals(s);
+  const outcome = seriesOutcome(s, stage);
+  const done = i >= total;
+  const pick = (r: SeriesResult) => { const next = setSeriesRound(s, r, Date.now()); onChange(next); record('marathon.round', { kind: s.kind, round: i + 1, label: s.config.disciplines[i], winner: r, totals: seriesTotals(next) }); };
+  const undo = () => { onChange(seriesUndo(s)); record('marathon.undo', { kind: s.kind, round: i }); };
+  const msg = done
+    ? outcome.state === 'decided' ? `${names[outcome.winner]} win on points`
+      : outcome.state === 'draw' ? 'Level on points: a draw in this pool match'
+        : outcome.state === 'needs_decider' ? 'Level on points: needs a decider' : ''
+    : `Round ${i + 1} of ${total} · ${s.config.disciplines[i]}`;
+  const sides: Side[] = ['a', 'b'];
+  return (
+    <>
+      {!s.config.rulesLoaded && <span className="chip brass">Rules not loaded, set by organizer · {s.config.winPoints} per win, {s.config.tiePoints} per tie</span>}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <span className={`chip ${done ? 'win' : 'live'}`}>{msg}</span>
+        {s.config.breakSeconds > 0 && !done && i > 0 && <span className={`chip ${brk > 0 ? 'brass' : ''}`} role="timer" aria-live="off">{brk > 0 ? `Break ${brk} s` : `${s.config.breakSeconds} s break over`}</span>}
+      </div>
+      <div className="mteams">
+        {sides.map(side => (
+          <div className="dside" key={side}>
+            <div className="n">{names[side]}</div>{subs?.[side] && <span className="src">{subs[side]}</span>}
+            <div className="dscore mono" aria-label={`${names[side]} points`}>{t[side]}</div><span className="eyebrow">points</span>
+            {s.kind === 'marathon' && <label className="chk"><input type="checkbox" checked={s.solo[side]} onChange={e => { onChange(seriesSolo(s, side, e.target.checked)); record('marathon.solo', { side, solo: e.target.checked }); }} /> Runs solo</label>}
+            <button type="button" className="pbtn s2" disabled={done} aria-label={`${names[side]} win round ${i + 1}`} onClick={() => pick(side)}>{names[side]} win</button>
+          </div>
+        ))}
+      </div>
+      <button type="button" className="pbtn s1" disabled={done} onClick={() => pick('tie')}>Tie ({s.config.tiePoints} each)</button>
+      <div className="rchips" aria-label="Rounds">
+        {s.results.map((r, k) => {
+          const p = roundPoints(s, r);
+          return <span key={k} className={`rchip ${k === i ? 'cur' : ''}`}>{s.config.disciplines[k]}{r ? ` · ${resultText(r, names)} (${p.a}–${p.b})` : ''}</span>;
+        })}
+      </div>
+      {outcome.state === 'needs_decider' && <p role="alert" className="panel info">{outcome.message}</p>}
+      <div className="mactions">
+        <button type="button" className="btn btn-line fq-big" disabled={i === 0} onClick={undo}>Undo last round</button>
+      </div>
+    </>
+  );
+}
+
+export const MarathonBoard = SeriesBoard;

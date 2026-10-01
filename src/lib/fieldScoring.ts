@@ -1,18 +1,27 @@
 import type { CompetitionMatch, MatchResult, QueueState } from '../data/matches';
 import { duelTotal, newDuel, newGroupFight, newPro, type DuelState, type GroupState, type ProState } from './scoring';
+import { newMarathon, newSeries, seriesDetail, seriesOutcome, type SeriesKind, type SeriesState } from './marathon';
 import { proRoundScore } from './tournament';
 
 export type LeagueKey = 'buhurt' | 'duels' | 'outrance' | 'hacsa';
-export type BoardMode = 'group' | 'duel' | 'pro';
+export type BoardMode = 'group' | 'duel' | 'pro' | 'marathon' | 'series';
 
-/** Which scoring board a competition's league uses. HACSA rules are not loaded, so it has no board yet. */
-export const boardModeFor = (league: LeagueKey): BoardMode | null =>
-  league === 'buhurt' ? 'group' : league === 'duels' ? 'duel' : league === 'outrance' ? 'pro' : null;
+/**
+ * Which scoring board a competition uses. Marathon has its own (rules from the registration form). Triathlon, Sabre and
+ * Greatsword get the generic series board because their HACSA rules are not loaded: the organizer sets rounds and points.
+ * Any other HACSA category has no board yet.
+ */
+export const boardModeFor = (league: LeagueKey, category?: string): BoardMode | null =>
+  category === 'marathon' ? 'marathon'
+    : category === 'triathlon' || category === 'sabre' || category === 'greatsword' ? 'series'
+      : league === 'buhurt' ? 'group' : league === 'duels' ? 'duel' : league === 'outrance' ? 'pro' : null;
 
 export type BoardState =
   | { mode: 'group'; s: GroupState }
   | { mode: 'duel'; s: DuelState }
-  | { mode: 'pro'; s: ProState };
+  | { mode: 'pro'; s: ProState }
+  | { mode: 'marathon'; s: SeriesState }
+  | { mode: 'series'; s: SeriesState };
 
 /** Fighters per side from a category code such as "5v5" or "12v12". Falls back to 5. */
 export function perSideFor(category: string): number {
@@ -20,7 +29,9 @@ export function perSideFor(category: string): number {
   return Number.isInteger(n) && n >= 1 && n <= 60 ? n : 5;
 }
 
-export function newBoard(mode: BoardMode, opts: { perSide?: number; roundsToWin?: number | null } = {}): BoardState {
+export function newBoard(mode: BoardMode, opts: { perSide?: number; roundsToWin?: number | null; seriesKind?: Exclude<SeriesKind, 'marathon'> } = {}): BoardState {
+  if (mode === 'marathon') return { mode, s: newMarathon() };
+  if (mode === 'series') return { mode, s: newSeries(opts.seriesKind ?? 'triathlon') };
   if (mode === 'group') return { mode, s: newGroupFight(opts.perSide ?? 5, opts.roundsToWin ?? 2) };
   if (mode === 'duel') return { mode, s: newDuel() };
   return { mode, s: newPro() };
@@ -68,6 +79,15 @@ export function resultFromBoard(board: BoardState, stage: CompetitionMatch['stag
     const scoreA = duelTotal(s, 'a'), scoreB = duelTotal(s, 'b');
     if ((s.winner === 'a' && scoreA < scoreB) || (s.winner === 'b' && scoreB < scoreA)) return { ok: false, reason: 'The totals do not match the winner. Check the round points.' };
     return { ok: true, value: { result: winnerResult(s.winner), scoreA, scoreB, detail: { kind: 'duel', rounds: { a: [...s.a], b: [...s.b] }, totals: { a: scoreA, b: scoreB } } } };
+  }
+  if (board.mode === 'marathon' || board.mode === 'series') {
+    const s = board.s;
+    if (!s.configured) return { ok: false, reason: 'The organizer has not set the rounds and points for this competition yet.' };
+    const o = seriesOutcome(s, stage);
+    if (o.state === 'incomplete') return { ok: false, reason: `Round ${o.played + 1} of ${o.of} is still to score. Every round must be in before the result can be saved.` };
+    if (o.state === 'needs_decider') return { ok: false, reason: o.message };
+    const result: MatchResult = o.state === 'draw' ? 'draw' : o.winner;
+    return { ok: true, value: { result, scoreA: o.a, scoreB: o.b, detail: { ...seriesDetail(s), kind: board.mode === 'marathon' ? 'marathon' : 'series', seriesKind: s.kind } } };
   }
   const s = board.s;
   const scored = s.rounds.map(r => ({ ...r, score: proRoundScore(r) }));

@@ -3,15 +3,16 @@ import { useSearchParams } from 'react-router-dom';
 import { Crest } from '../components/Crest';
 import { Seg } from '../components/ui';
 import { TEAMS } from '../data/fixtures';
-import { DuelBoard, GroupBoard, ProBoard } from '../components/ScoreBoards';
+import { DuelBoard, GroupBoard, MarathonBoard, ProBoard, SeriesBoard } from '../components/ScoreBoards';
+import { configureSeries, newMarathon, newSeries, type SeriesState } from '../lib/marathon';
 import { newDuel, newGroupFight, newPro, toggleFighter, type DuelState, type GroupState, type ProState } from '../lib/scoring';
 import type { Side } from '../lib/tournament';
 import { link, useOutbox } from '../lib/useOutbox';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
-type Mode = 'group' | 'duel' | 'pro';
-const MODES: readonly (readonly [Mode, string])[] = [['group', 'Group fight'], ['duel', 'Duel'], ['pro', 'Profight']];
-const HEADINGS: Record<Mode, [string, string]> = { group: ['Group fight · Field 1', 'Semifinal 1'], duel: ['Duels · Field 2', 'Longsword · Pool B'], pro: ['Profight · line marshal', 'Heavyweight · Bout 3'] };
+type Mode = 'group' | 'duel' | 'pro' | 'marathon' | 'triathlon';
+const MODES: readonly (readonly [Mode, string])[] = [['group', 'Group fight'], ['duel', 'Duel'], ['pro', 'Profight'], ['marathon', 'Marathon'], ['triathlon', 'Triathlon']];
+const HEADINGS: Record<Mode, [string, string]> = { group: ['Group fight · Field 1', 'Semifinal 1'], duel: ['Duels · Field 2', 'Longsword · Pool B'], pro: ['Profight · line marshal', 'Heavyweight · Bout 3'], marathon: ['Marathon relay · Field 3', 'Pool match'], triathlon: ['Triathlon · rules not loaded', 'Sample organizer-set rounds'] };
 
 function SyncBar({ waiting }: { waiting: number }) {
   const [off, setOff] = useState(link.simulatedOffline);
@@ -62,6 +63,17 @@ function PreviewPro({ record }: { record: Record_ }) {
   return <ProBoard state={s} onChange={setS} record={(k, p) => void record(k, 'hw-3', p)} names={{ a: 'Coll MacRae', b: 'Dane Holloway' }} subs={{ a: 'Saltmarsh Lions', b: 'Northgate Co.' }} />;
 }
 
+function PreviewMarathon({ record }: { record: Record_ }) {
+  const [s, setS] = useState<SeriesState>(newMarathon);
+  return <MarathonBoard state={s} onChange={setS} record={(k, p) => void record(k, 'mar-1', p)} names={{ a: 'Iron Wardens pair', b: 'Northgate pair' }} stage="pool" />;
+}
+
+function PreviewTriathlon({ record }: { record: Record_ }) {
+  // Invented sample setup, only to show the organizer-set flow. These are not Triathlon rules.
+  const [s, setS] = useState<SeriesState>(() => configureSeries(newSeries('triathlon'), { disciplines: ['Sample round 1', 'Sample round 2', 'Sample round 3'], winPoints: 2, tiePoints: 1 }));
+  return <SeriesBoard state={s} onChange={setS} record={(k, p) => void record(k, 'tri-1', p)} names={{ a: 'Mara Kessling', b: 'Ines Duarte' }} stage="pool" />;
+}
+
 export function MarshalPage() {
   useDocumentTitle('Marshal scoring');
   const [params, setParams] = useSearchParams();
@@ -76,6 +88,8 @@ export function MarshalPage() {
         {mode === 'group' && <PreviewGroup record={record} />}
         {mode === 'duel' && <PreviewDuel record={record} />}
         {mode === 'pro' && <PreviewPro record={record} />}
+        {mode === 'marathon' && <PreviewMarathon record={record} />}
+        {mode === 'triathlon' && <PreviewTriathlon record={record} />}
       </div>
       <p className="src" style={{ textAlign: 'center' }}>Every tap is saved on this device first and sent when there is signal. Nothing is lost if the page closes.</p>
     </section>

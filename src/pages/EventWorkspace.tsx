@@ -12,6 +12,10 @@ import { useLiveMatches } from '../lib/useLiveMatches';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { PROVINCES, formatMoney } from '../registration/model';
+import { EventDaySchedule } from './EventDaySchedule';
+import { MyNextFight } from './MyNextFight';
+import { MyTeamPanel } from './MyTeamPanel';
+import { ShareEventButton } from '../components/ShareEventButton';
 import { NotFoundPage } from './NotFoundPage';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
@@ -108,8 +112,12 @@ export function EventWorkspace() {
         {event.timeNote && <p style={{ overflowWrap: 'anywhere' }}><b>{event.timeNote}</b></p>}
         {where && <p style={{ color: 'var(--muted)', overflowWrap: 'anywhere' }}>{where}</p>}
       </div>
+      <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />
+      <ShareEventButton title={event.name} />
+      <EventDaySchedule timeNote={event.timeNote} description={event.description} />
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
+      <MyTeamPanel eventId={event.id} userId={userId} />
       <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} />
       {(event.eventType === 'tournament' || groups.length > 0) && <section aria-labelledby="comp-h" style={{ display: 'grid', gap: 14 }}>
         <h2 id="comp-h">Competitions</h2>

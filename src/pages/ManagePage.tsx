@@ -5,21 +5,24 @@ import { SignIn } from '../auth/SignIn';
 import { Chip, PageHead, Seg } from '../components/ui';
 import { fetchEvent, fetchMyEventContext } from '../data/api';
 import {
-  decideRegistration, fetchRegistrations, setRegistrationCheck, setRegistrationInsurance, setRegistrationPaid,
-  type CheckName, type Insurance, type ManagedRegistration
+  decideRegistration, fetchRegistrations, setRegistrationInsurance, setRegistrationPaid,
+  type Insurance, type ManagedRegistration
 } from '../data/manage';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
+import { AttentionStrip, CheckinPanel } from './CheckinPanel';
 import { NotFoundPage } from './NotFoundPage';
+import { ExportRegistrations } from './ExportRegistrations';
 import { PeopleTab } from './PeopleTab';
 import { RunTab } from './RunTab';
 import { SetupTab } from './SetupTab';
+import { TeamsTab } from './TeamsTab';
 
-type Tab = 'review' | 'checkin' | 'run' | 'setup' | 'people';
-const TABS: Tab[] = ['review', 'checkin', 'run', 'setup', 'people'];
+type Tab = 'review' | 'checkin' | 'run' | 'setup' | 'people' | 'teams';
+const TABS: Tab[] = ['review', 'checkin', 'run', 'setup', 'people', 'teams'];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -96,27 +99,6 @@ function ReviewCard({ r, act }: { r: ManagedRegistration; act: ReturnType<typeof
   );
 }
 
-function CheckinCard({ r, act }: { r: ManagedRegistration; act: ReturnType<typeof useAction> }) {
-  const disabled = act.busy === r.id;
-  const toggle = (name: CheckName, now: boolean) => act.run(r.id, () => setRegistrationCheck(r.id, name, !now));
-  const todo = blockers(r);
-  return (
-    <article className="panel info" style={{ display: 'grid', gap: 10 }} aria-label={r.fullName}>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-        <h3>{r.fullName}</h3>{r.isVolunteer && <Chip>Volunteer</Chip>}
-        {todo.length === 0 && <Chip tone="win">Ready</Chip>}
-      </div>
-      <p style={{ color: 'var(--muted)' }}>{r.teamName ?? 'No team'} · {r.categories.map(c => c.name).join(', ') || 'no categories'}</p>
-      {todo.length > 0 && <p className="src">Outstanding: {todo.join(' · ')}</p>}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <button type="button" className={`btn ${r.checkedIn ? 'btn-ink' : 'btn-line'}`} disabled={disabled} aria-pressed={r.checkedIn} onClick={() => toggle('checked_in', r.checkedIn)}>{r.checkedIn ? 'Checked in ✓' : 'Check in'}</button>
-        {!r.isVolunteer && <button type="button" className={`btn ${r.kitPassed ? 'btn-ink' : 'btn-line'}`} disabled={disabled} aria-pressed={r.kitPassed} onClick={() => toggle('kit', r.kitPassed)}>{r.kitPassed ? 'Kit passed ✓' : 'Kit check'}</button>}
-      </div>
-      <Contact r={r} />
-    </article>
-  );
-}
-
 export function ManagePage() {
   const { eventId: slug = '' } = useParams();
   const [params, setParams] = useSearchParams();
@@ -154,18 +136,26 @@ export function ManagePage() {
 
   const all = regs.data ?? [];
   const counts = countByStatus(all);
-  const list = filterRegistrations(all, tab === 'checkin' ? 'accepted' : filter, query);
+  const list = filterRegistrations(all, filter, query);
   const ready = all.filter(r => r.status === 'accepted' && blockers(r).length === 0).length;
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 18 }}>
       <PageHead eyebrow="Organizers" title={`Manage ${event.name}`} />
       <Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link>
-      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People']] as const}
+      <AttentionStrip regs={all} onPick={k => {
+        if (k === 'pending') { setFilter('pending'); setParams({}, { replace: true }); }
+        else if (k === 'blocked') setParams({ tab: 'checkin' }, { replace: true });
+        else { setFilter('accepted'); setParams({}, { replace: true }); }
+      }} />
+      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People'], ['teams', 'Teams']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
+      {tab === 'teams' && <TeamsTab />}
       {tab === 'people' && <PeopleTab eventId={event.id} myUserId={userId} />}
-      {(tab === 'review' || tab === 'checkin') && (<>
+      {tab === 'checkin' && <CheckinPanel regs={all} loading={regs.loading} onChanged={() => setReloadKey(k => k + 1)} />}
+      {tab === 'review' && (<>
+      <ExportRegistrations slug={event.slug} registrations={all} />
       {tab === 'review' && (
         <Seg label="Show" value={filter} options={[['pending', `Pending ${counts.pending}`], ['accepted', `Accepted ${counts.accepted}`], ['declined', `Declined ${counts.declined}`], ['all', 'All']] as const} onChange={setFilter} />
       )}
@@ -177,7 +167,7 @@ export function ManagePage() {
       {regs.loading && <p className="muted">Loading registrations…</p>}
       {!regs.loading && list.length === 0 && <div className="panel info"><h3>{all.length === 0 ? 'No registrations yet' : 'Nothing here'}</h3></div>}
       <div style={{ display: 'grid', gap: 12 }}>
-        {list.map(r => (tab === 'checkin' ? <CheckinCard key={r.id} r={r} act={act} /> : <ReviewCard key={r.id} r={r} act={act} />))}
+        {list.map(r => <ReviewCard key={r.id} r={r} act={act} />)}
       </div>
       </>)}
     </section>

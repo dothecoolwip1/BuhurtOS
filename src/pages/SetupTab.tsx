@@ -13,7 +13,7 @@ const fromEvent = (e: LiveEvent): SetupForm => ({
   name: e.name, description: e.description, venue: e.venue ?? '', address: e.address ?? '', city: e.city ?? '', region: e.region ?? '',
   startsOn: e.startsOn, endsOn: e.endsOn, opensLocal: isoToLocal(e.registrationOpensAt), closesLocal: isoToLocal(e.registrationClosesAt),
   feeDollars: e.feeCents ? String(e.feeCents / 100) : '', feeProvince: e.feeCents ? (e.feeProvince ?? 'ALL') : '', feeNote: e.feeNote ?? '',
-  eventType: e.eventType as EventType, registrationMode: e.registrationMode, externalUrl: e.externalUrl ?? '', timeNote: e.timeNote ?? ''
+  eventType: e.eventType as EventType, registrationMode: e.registrationMode, externalUrl: e.externalUrl ?? '', timeNote: e.timeNote ?? '', volunteerInfo: e.volunteerInfo ?? ''
 });
 
 export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: () => void }) {
@@ -106,6 +106,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
             </select>{err('feeProvince')}
           </label>
         )}
+        {f.registrationMode === 'buhuros' && <label className="field-in">Volunteer information (shown to volunteers; for example where to find the separate volunteer safety, liability and tracking form)<textarea rows={4} maxLength={2000} value={f.volunteerInfo} onChange={e => set('volunteerInfo', e.target.value)} />{err('volunteerInfo')}</label>}
         {text('feeNote', 'Note about payment (for example how to pay)')}
         <button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>
         {msg && <p role={msg.ok ? 'status' : 'alert'} style={{ color: msg.ok ? 'var(--win)' : 'var(--live)' }}>{msg.text}</p>}
