@@ -33,4 +33,7 @@ Set `VITE_BASE=/` for a custom domain.
 ## Known gaps
 * Two BI documents disagree on the Regional and Conference points multiplier. Both are shown; the owner decides.
 * Group-fight round structure, weapon charts and armour requirements are not included (source files were images).
-* Not built yet: teams and rankings pages, registration, check-in, marshal scoring with offline queue, admin, sign-in, backend.
+* Built but never run against the real Supabase project or on a real phone: draw and bracket builder (organizer Run tab), field scoring with the offline outbox (`/events/:slug/field/:field`), live public bracket and results, create-event and create-team forms. See `docs/TEST_PLAN.md`.
+* Migration `20261001001100_competition_fixes.sql` (third-place routing, clear field, version check) is written and passes the local security gate but is **not applied** to Supabase yet.
+* Third place needs tie rules beyond wins and score difference; head-to-head is not applied. Group-fight rounds-to-win is still a setting.
+* Not built yet: fighter and team workspaces, rankings pages, volunteer safety form, big-screen mode, QR codes, follow and notifications, Stripe.
