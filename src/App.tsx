@@ -9,6 +9,8 @@ import { HomePage } from './pages/HomePage';
 import { MarshalPage } from './pages/MarshalPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RulesPage } from './pages/RulesPage';
+import { RegisterPage } from './registration/RegisterPage';
+import { AccountPage } from './auth/AccountPage';
 
 export function App() {
   return (
@@ -26,6 +28,8 @@ export function App() {
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="events/:eventId" element={<EventPage />} />
+        <Route path="events/:eventId/register" element={<RegisterPage />} />
+        <Route path="account" element={<AccountPage />} />
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />
         <Route path="rules" element={<RulesPage />} />
