@@ -515,6 +515,258 @@ select t.expect_eq('a withdrawn entry is not returned', (select count(*) from pu
 select t.as_anon();
 select t.expect_error('anon cannot call my_event_entries', format($q$select * from public.my_event_entries(%L)$q$, current_setting('t.event')), '42501');
 
+-- ---------------------------------------------------------------- team manager: join requests, new-team requests, rosters, notifications
+select t.as_admin();
+create temp table tm (k text primary key, v text);
+grant all on tm to anon, authenticated;
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-00000000f101', 'tm-captain@example.test'), ('00000000-0000-0000-0000-00000000f102', 'tm-joiner@example.test'),
+  ('00000000-0000-0000-0000-00000000f103', 'tm-noname@example.test'),  ('00000000-0000-0000-0000-00000000f104', 'tm-member@example.test'),
+  ('00000000-0000-0000-0000-00000000f105', 'tm-second@example.test'),  ('00000000-0000-0000-0000-00000000f106', 'tm-othercaptain@example.test'),
+  ('00000000-0000-0000-0000-00000000f107', 'tm-lookalike@example.test'), ('00000000-0000-0000-0000-00000000f108', 'tm-spammer@example.test'),
+  ('00000000-0000-0000-0000-00000000f109', 'tm-newcaptain@example.test');
+update public.profiles set display_name = v.n from (values
+  ('00000000-0000-0000-0000-00000000f101'::uuid, 'Cap Tain'), ('00000000-0000-0000-0000-00000000f102', 'Jo Joiner'), ('00000000-0000-0000-0000-00000000f104', 'Mem Ber'),
+  ('00000000-0000-0000-0000-00000000f105', 'Second Joiner'), ('00000000-0000-0000-0000-00000000f106', 'Other Cap'), ('00000000-0000-0000-0000-00000000f107', 'Look Alike'),
+  ('00000000-0000-0000-0000-00000000f108', 'Spam Mer'), ('00000000-0000-0000-0000-00000000f109', 'New Cap')) v(id, n) where public.profiles.id = v.id;
+insert into public.teams (id, slug, name, city, country, status, initial) values
+  ('00000000-0000-0000-0000-00000000f201', 'tm-ironwood', 'Ironwood Company', 'Calgary', 'CA', 'approved', 'I'),
+  ('00000000-0000-0000-0000-00000000f202', 'tm-other', 'Other Company', 'Regina', 'CA', 'approved', 'O'),
+  ('00000000-0000-0000-0000-00000000f203', 'tm-hidden', 'Hidden Company', 'Banff', 'CA', 'pending', 'H');
+insert into public.team_roles (team_id, user_id, role) values
+  ('00000000-0000-0000-0000-00000000f201', '00000000-0000-0000-0000-00000000f101', 'captain'),
+  ('00000000-0000-0000-0000-00000000f202', '00000000-0000-0000-0000-00000000f106', 'captain');
+insert into public.fighters (id, display_name, team_id) values
+  ('00000000-0000-0000-0000-00000000f301', 'Cap Tain', '00000000-0000-0000-0000-00000000f201'),
+  ('00000000-0000-0000-0000-00000000f302', 'Mem Ber', '00000000-0000-0000-0000-00000000f201'),
+  ('00000000-0000-0000-0000-00000000f303', 'Look Alike', null),
+  ('00000000-0000-0000-0000-00000000f304', 'Former Fighter', null);
+insert into public.fighter_accounts (fighter_id, user_id) values
+  ('00000000-0000-0000-0000-00000000f301', '00000000-0000-0000-0000-00000000f101'), ('00000000-0000-0000-0000-00000000f302', '00000000-0000-0000-0000-00000000f104');
+insert into public.team_memberships (fighter_id, team_id, role, from_date) values
+  ('00000000-0000-0000-0000-00000000f302', '00000000-0000-0000-0000-00000000f201', 'fighter', '2025-03-01');
+insert into public.team_memberships (fighter_id, team_id, role, from_date, to_date) values
+  ('00000000-0000-0000-0000-00000000f304', '00000000-0000-0000-0000-00000000f201', 'fighter', '2020-01-01', '2021-01-01');
+
+-- roster: public for approved teams, no account ids
+select t.as_anon();
+select t.expect_eq('anon reads the roster of an approved team: current members only', (select array_agg(display_name order by display_name) from public.team_roster('00000000-0000-0000-0000-00000000f201')), array['Cap Tain', 'Mem Ber']);
+select t.expect_eq('the captain is flagged from team_roles without exposing the account', (select array_agg(display_name) from public.team_roster('00000000-0000-0000-0000-00000000f201') where is_captain), array['Cap Tain']);
+select t.expect_eq('the roster is ordered captains first', (select display_name from public.team_roster('00000000-0000-0000-0000-00000000f201') limit 1), 'Cap Tain');
+select t.expect_eq('the roster function returns no account id column', (select count(*) from information_schema.parameters p join information_schema.routines r on r.specific_name = p.specific_name
+  where r.routine_name = 'team_roster' and p.parameter_mode = 'OUT' and p.parameter_name in ('user_id', 'account_id', 'email', 'requester_id')), 0::bigint);
+select t.expect_eq('no account id or email appears anywhere in the roster output', (select count(*) from public.team_roster('00000000-0000-0000-0000-00000000f201') r
+  where to_jsonb(r)::text ~* '(f101|f104|@example)'), 0::bigint);
+select t.expect_eq('anon sees nobody on a pending team roster', (select count(*) from public.team_roster('00000000-0000-0000-0000-00000000f203')), 0::bigint);
+select t.expect_eq('anon sees nothing for an unknown team', (select count(*) from public.team_roster(gen_random_uuid())), 0::bigint);
+select t.expect_error('anon cannot read join requests', 'select * from public.team_join_requests', '42501');
+select t.expect_error('anon cannot read notifications', 'select * from public.notifications', '42501');
+select t.expect_error('anon cannot read the private new-team request table', 'select * from public.team_request_private', '42501');
+select t.expect_error('anon cannot request to join', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f201', 'hi')$q$, '42501');
+select t.expect_error('anon cannot decide', $q$select public.decide_team_join(gen_random_uuid(), 'approved')$q$, '42501');
+select t.expect_error('anon cannot cancel', $q$select public.cancel_team_join(gen_random_uuid())$q$, '42501');
+select t.expect_error('anon cannot list requests', 'select * from public.my_team_requests()', '42501');
+select t.expect_error('anon cannot read the inbox', 'select * from public.team_requests_inbox()', '42501');
+select t.expect_error('anon cannot read notifications through the function', 'select * from public.my_notifications()', '42501');
+select t.expect_error('anon cannot mark notifications read', 'select public.mark_notifications_read()', '42501');
+select t.expect_error('anon cannot request a new team', $q$select public.request_new_team('{}'::jsonb)$q$, '42501');
+select t.expect_error('anon cannot read new-team details', 'select * from public.new_team_request_details(gen_random_uuid())', '42501');
+
+select t.as_user('00000000-0000-0000-0000-00000000f104');
+select t.expect_eq('a member of another team sees nobody on a pending team roster', (select count(*) from public.team_roster('00000000-0000-0000-0000-00000000f203')), 0::bigint);
+select t.expect_error('a signed-in user cannot write join requests directly', $q$insert into public.team_join_requests (team_id, requester_id) values ('00000000-0000-0000-0000-00000000f201', '00000000-0000-0000-0000-00000000f104')$q$, '42501');
+select t.expect_error('a signed-in user cannot write notifications directly', $q$insert into public.notifications (user_id, kind) values ('00000000-0000-0000-0000-00000000f101', 'team_join_decided')$q$, '42501');
+select t.expect_error('a signed-in user cannot read the private new-team request table', 'select * from public.team_request_private', '42501');
+
+-- requesting to join
+select t.as_user('00000000-0000-0000-0000-00000000f102');
+insert into tm select 'req_jo', public.request_team_join('00000000-0000-0000-0000-00000000f201', 'I fought with Ironwood at a practice last year.');
+select t.expect_eq('the request is pending', (select status from public.my_team_requests() where id = (select v from tm where k = 'req_jo')::uuid), 'pending');
+select t.expect_error('a second pending request for the same team is refused', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f201', null)$q$, '22023');
+select t.expect_error('a pending team looks like a missing one', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f203', null)$q$, 'P0002');
+select t.expect_error('an unknown team is refused', $q$select public.request_team_join(gen_random_uuid(), null)$q$, 'P0002');
+select t.expect_error('a message over 500 characters is refused', format($q$select public.request_team_join('00000000-0000-0000-0000-00000000f202', %L)$q$, repeat('x', 501)), '22023');
+select t.expect_error('the requester cannot decide their own request', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_jo')), '42501');
+select t.expect_eq('the requester has no inbox entries for the team they asked', (select count(*) from public.team_requests_inbox()), 0::bigint);
+select t.expect_eq('the requester has no notification yet', (select count(*) from public.my_notifications()), 0::bigint);
+
+select t.as_user('00000000-0000-0000-0000-00000000f103');
+select t.expect_error('a person with no name must add one first', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f201', null)$q$, '22023');
+select t.as_user('00000000-0000-0000-0000-00000000f104');
+select t.expect_error('a current member cannot request their own team again', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f201', null)$q$, '22023');
+select t.as_user('00000000-0000-0000-0000-00000000f101');
+select t.expect_error('a captain cannot request their own team', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f201', null)$q$, '22023');
+
+-- the captain's side
+select t.expect_eq('the captain has one pending request in the inbox', (select count(*) from public.team_requests_inbox()), 1::bigint);
+select t.expect_eq('the inbox shows the requester name, not an account', (select requester_name from public.team_requests_inbox()), 'Jo Joiner');
+select t.expect_eq('the inbox has no account id or email column', (select count(*) from information_schema.parameters p join information_schema.routines r on r.specific_name = p.specific_name
+  where r.routine_name in ('team_requests_inbox', 'my_team_requests', 'my_notifications') and p.parameter_mode = 'OUT' and p.parameter_name in ('user_id', 'requester_id', 'email', 'decided_by')), 0::bigint);
+select t.expect_eq('the captain was notified', (select count(*) from public.my_notifications() where kind = 'team_join_requested' and read_at is null), 1::bigint);
+select t.expect_eq('the notification names the requester and carries no id or email', (select count(*) from public.my_notifications() n
+  where n.payload ->> 'requester_name' = 'Jo Joiner' and n::text !~* '(f102|@example)'), 1::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000f106');
+select t.expect_eq('another team''s captain sees nothing in their inbox', (select count(*) from public.team_requests_inbox()), 0::bigint);
+select t.expect_eq('another team''s captain gets no notification', (select count(*) from public.my_notifications()), 0::bigint);
+select t.expect_error('another team''s captain cannot approve', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_jo')), '42501');
+select t.as_user('00000000-0000-0000-0000-00000000f105');
+select t.expect_error('a stranger cannot approve', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_jo')), '42501');
+select t.expect_error('a stranger cannot cancel someone else''s request', format($q$select public.cancel_team_join(%L)$q$, (select v from tm where k = 'req_jo')), 'P0002');
+select t.expect_eq('a stranger sees none of their own', (select count(*) from public.my_team_requests()), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000f101');
+select t.expect_error('a bad decision value is refused', format($q$select public.decide_team_join(%L, 'maybe')$q$, (select v from tm where k = 'req_jo')), '22023');
+select t.expect_ok('the captain approves', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_jo')));
+select t.expect_error('an answered request cannot be decided again', format($q$select public.decide_team_join(%L, 'declined')$q$, (select v from tm where k = 'req_jo')), '22023');
+select t.expect_eq('the captain''s request notification is marked read', (select count(*) from public.my_notifications() where kind = 'team_join_requested' and read_at is null), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000f102');
+select t.expect_eq('the requester is told', (select count(*) from public.my_notifications() where kind = 'team_join_decided' and payload ->> 'decision' = 'approved'), 1::bigint);
+select t.expect_error('a member cannot request again after being approved', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f201', null)$q$, '22023');
+select t.expect_error('an answered request cannot be cancelled', format($q$select public.cancel_team_join(%L)$q$, (select v from tm where k = 'req_jo')), '22023');
+select t.as_anon();
+select t.expect_eq('the new member is on the public roster', (select count(*) from public.team_roster('00000000-0000-0000-0000-00000000f201') where display_name = 'Jo Joiner' and role = 'fighter' and not is_captain and since = current_date), 1::bigint);
+select t.as_admin();
+select t.expect_eq('approval created exactly one fighter, linked to the account', (select count(*) from public.fighters f join public.fighter_accounts a on a.fighter_id = f.id where a.user_id = '00000000-0000-0000-0000-00000000f102' and f.display_name = 'Jo Joiner'), 1::bigint);
+select t.expect_eq('approval created one membership', (select count(*) from public.team_memberships m join public.fighter_accounts a on a.fighter_id = m.fighter_id where a.user_id = '00000000-0000-0000-0000-00000000f102' and m.team_id = '00000000-0000-0000-0000-00000000f201'), 1::bigint);
+
+-- never silently linked to a look-alike public fighter
+select t.as_user('00000000-0000-0000-0000-00000000f107');
+insert into tm select 'req_look', public.request_team_join('00000000-0000-0000-0000-00000000f201', null);
+select t.as_user('00000000-0000-0000-0000-00000000f101');
+select t.expect_ok('the captain approves the look-alike', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_look')));
+select t.as_admin();
+select t.expect_eq('the existing public fighter with the same name was not linked to the account', (select count(*) from public.fighter_accounts where fighter_id = '00000000-0000-0000-0000-00000000f303'), 0::bigint);
+select t.expect_eq('a new fighter record was created instead', (select count(*) from public.fighters where display_name = 'Look Alike'), 2::bigint);
+
+-- declining, cancelling, an organizer deciding, the pending cap
+select t.as_user('00000000-0000-0000-0000-00000000f105');
+insert into tm select 'req_second', public.request_team_join('00000000-0000-0000-0000-00000000f201', null);
+select t.as_user('00000000-0000-0000-0000-00000000f101');
+select t.expect_ok('the captain declines', format($q$select public.decide_team_join(%L, 'declined')$q$, (select v from tm where k = 'req_second')));
+select t.as_admin();
+select t.expect_eq('declining adds nobody', (select count(*) from public.fighter_accounts where user_id = '00000000-0000-0000-0000-00000000f105'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000f105');
+select t.expect_eq('the requester is told of the decline', (select count(*) from public.my_notifications() where payload ->> 'decision' = 'declined'), 1::bigint);
+select t.expect_eq('a declined request shows as declined', (select status from public.my_team_requests() where id = (select v from tm where k = 'req_second')::uuid), 'declined');
+insert into tm select 'req_second2', public.request_team_join('00000000-0000-0000-0000-00000000f201', 'Trying again after the decline');
+select t.expect_ok('a requester can cancel their own pending request', format($q$select public.cancel_team_join(%L)$q$, (select v from tm where k = 'req_second2')));
+select t.expect_eq('the cancelled request shows as cancelled', (select status from public.my_team_requests() where id = (select v from tm where k = 'req_second2')::uuid), 'cancelled');
+select t.as_user('00000000-0000-0000-0000-00000000f101');
+select t.expect_error('a cancelled request cannot be approved', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_second2')), '22023');
+select t.as_user('00000000-0000-0000-0000-00000000f105');
+insert into tm select 'req_second3', public.request_team_join('00000000-0000-0000-0000-00000000f201', null);
+select t.as_user('00000000-0000-0000-0000-00000000f101');
+select t.expect_eq('a captain with no member rows needs no special case: inbox shows the new request', (select count(*) from public.team_requests_inbox()), 1::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000f105');
+select t.expect_ok('cancel the third request so the person can ask elsewhere', format($q$select public.cancel_team_join(%L)$q$, (select v from tm where k = 'req_second3')));
+select t.as_user('00000000-0000-0000-0000-00000000f102');
+insert into tm select 'req_org', public.request_team_join('00000000-0000-0000-0000-00000000f202', null);
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger who is not an organizer cannot decide', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_org')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('a platform organizer does not see requests of teams that have a captain', (select count(*) from public.team_requests_inbox()), 0::bigint);
+select t.expect_ok('a platform organizer may decide a request', format($q$select public.decide_team_join(%L, 'declined')$q$, (select v from tm where k = 'req_org')));
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_error('the owner cannot decide a request that was already answered', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_org')), '22023');
+
+select t.as_admin();
+insert into public.teams (id, slug, name, status, initial)
+  select ('00000000-0000-0000-0000-00000000f30' || n)::uuid, 'tm-cap-' || n, 'Cap Team ' || n, 'approved', 'C' from generate_series(1, 6) n;
+select t.as_user('00000000-0000-0000-0000-00000000f108');
+select t.expect_ok('five pending requests are allowed', $q$select public.request_team_join(('00000000-0000-0000-0000-00000000f30' || n)::uuid, null) from generate_series(1, 5) n$q$);
+select t.expect_error('a sixth pending request is refused', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f306', null)$q$, '22023');
+select t.as_admin();
+select t.expect_eq('a team with no captain tells platform owner and organizers', (select count(*) from public.notifications where kind = 'team_join_requested' and user_id in ('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000a2') and payload ->> 'team_slug' = 'tm-cap-1'), 2::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('an organizer inbox lists the requests of captainless teams', (select count(*) from public.team_requests_inbox() where requester_name = 'Spam Mer'), 5::bigint);
+
+-- notifications are private to their owner
+select t.as_user('00000000-0000-0000-0000-00000000f102');
+select t.expect_ok('a user marks all their own notifications read', 'select public.mark_notifications_read()');
+select t.expect_eq('their notifications are all read', (select count(*) from public.my_notifications() where read_at is null), 0::bigint);
+select t.as_admin();
+select t.expect_eq('marking read left other people''s notifications unread', (select count(*) > 0 from public.notifications where user_id <> '00000000-0000-0000-0000-00000000f102' and read_at is null), true);
+insert into tm select 'cap_notes', array_agg(id)::text from public.notifications where user_id = '00000000-0000-0000-0000-00000000f101';
+select t.as_user('00000000-0000-0000-0000-00000000f105');
+select t.expect_eq('marking another person''s notification by id changes nothing', public.mark_notifications_read((select v from tm where k = 'cap_notes')::uuid[]), 0);
+select t.expect_eq('a user only ever sees their own notifications', (select count(*) from public.my_notifications() where kind = 'team_join_requested'), 0::bigint);
+select t.expect_error('a user cannot update notifications directly', 'update public.notifications set read_at = null', '42501');
+
+-- requesting a new team
+select t.as_user('00000000-0000-0000-0000-00000000f109');
+select t.expect_ok('a full new-team form is accepted', $q$select public.request_new_team(jsonb_build_object(
+  'name', 'Frostgate Free Company', 'city', 'Edmonton', 'region', 'AB', 'country', 'CA', 'description', 'A new team training in Edmonton since last year.',
+  'website', 'https://frostgate.example/about', 'social_links', jsonb_build_object('instagram', 'https://instagram.com/frostgate'), 'founded_year', 2024,
+  'claimed_organizations', jsonb_build_array('HACSA', 'Some Regional Club'), 'colors', jsonb_build_array('#112233', '#EEDDCC'), 'crest_division', 'fess', 'initial', 'ff',
+  'contact_email', 'frostgate-private@example.test', 'contact_phone', '403-555-0199', 'captain_reason', 'I run the weekly practice and hold the hall booking.', 'notes', 'Private note for reviewers'))$q$);
+insert into tm select 'new_team', id::text from public.teams where slug = 'frostgate-free-company';
+select t.expect_eq('the new team is pending', (select status from public.teams where slug = 'frostgate-free-company'), 'pending');
+select t.expect_eq('the requester is its captain', (select count(*) from public.team_roles where team_id = (select v from tm where k = 'new_team')::uuid and user_id = '00000000-0000-0000-0000-00000000f109' and role = 'captain'), 1::bigint);
+select t.expect_eq('the crest initial is normalised', (select initial from public.teams where slug = 'frostgate-free-company'), 'FF');
+select t.expect_error('the requester cannot read the private part', 'select * from public.team_request_private', '42501');
+select t.expect_error('the requester is not a reviewer', format($q$select * from public.new_team_request_details(%L)$q$, (select v from tm where k = 'new_team')), '42501');
+select t.expect_eq('the new captain can read the roster of their pending team (empty)', (select count(*) from public.team_roster((select v from tm where k = 'new_team')::uuid)), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000f105');
+select t.expect_error('a stranger is not a reviewer', format($q$select * from public.new_team_request_details(%L)$q$, (select v from tm where k = 'new_team')), '42501');
+select t.as_anon();
+select t.expect_eq('anon cannot see the pending team', (select count(*) from public.teams where slug = 'frostgate-free-company'), 0::bigint);
+select t.expect_error('anon cannot read the private part', 'select * from public.team_request_private', '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('an organizer reads the private part', (select contact_email from public.new_team_request_details((select v from tm where k = 'new_team')::uuid)), 'frostgate-private@example.test');
+select t.expect_eq('an organizer sees the requester name and the reason', (select requested_by_name || '|' || left(captain_reason, 9) from public.new_team_request_details((select v from tm where k = 'new_team')::uuid)), 'New Cap|I run the');
+select t.expect_eq('an organizer was notified of the proposal', (select count(*) from public.my_notifications() where kind = 'team_proposed' and payload ->> 'team_slug' = 'frostgate-free-company'), 1::bigint);
+select t.expect_error('an organizer cannot read the private table directly either', 'select * from public.team_request_private', '42501');
+select t.expect_ok('an organizer approves the new team', format($q$select public.approve_team(%L)$q$, (select v from tm where k = 'new_team')));
+select t.as_anon();
+select t.expect_eq('anon sees the approved team with its public fields only', (select count(*) from public.teams where slug = 'frostgate-free-company' and claimed_organizations = array['HACSA', 'Some Regional Club'] and website = 'https://frostgate.example/about' and founded_year = 2024 and description is not null and social_links ? 'instagram'), 1::bigint);
+select t.expect_eq('no private field is a column of a table anon can read', (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'teams'
+  and column_name in ('contact_email', 'contact_phone', 'captain_reason', 'notes', 'requested_by')), 0::bigint);
+
+-- refusals on the form
+select t.as_admin();
+create function t.form(over jsonb default '{}'::jsonb, drop_keys text[] default '{}') returns jsonb language sql stable as $f$
+  select (jsonb_build_object('name', 'Valid Team ' || md5(random()::text), 'city', 'Calgary', 'country', 'CA', 'description', 'A perfectly fine description.',
+    'contact_email', 'who@example.test', 'captain_reason', 'I am the one who runs it.') || over) - drop_keys
+$f$;
+grant execute on function t.form(jsonb, text[]) to anon, authenticated;
+select t.as_user('00000000-0000-0000-0000-00000000f109');
+select t.expect_error('the name is required', $q$select public.request_new_team(t.form('{}', array['name']))$q$, '22023');
+select t.expect_error('a one character name is refused', $q$select public.request_new_team(t.form('{"name":"X"}'))$q$, '22023');
+select t.expect_error('city is required', $q$select public.request_new_team(t.form('{}', array['city']))$q$, '22023');
+select t.expect_error('country is required', $q$select public.request_new_team(t.form('{}', array['country']))$q$, '22023');
+select t.expect_error('a short description is refused', $q$select public.request_new_team(t.form('{"description":"short"}'))$q$, '22023');
+select t.expect_error('a description over 500 characters is refused', format($q$select public.request_new_team(t.form(jsonb_build_object('description', %L)))$q$, repeat('d', 501)), '22023');
+select t.expect_error('a taken slug is refused', $q$select public.request_new_team(t.form('{"slug":"tm-ironwood"}'))$q$, '22023');
+select t.expect_error('a badly formed slug is refused', $q$select public.request_new_team(t.form('{"slug":"Not A Slug"}'))$q$, '22023');
+select t.expect_error('an http website is refused', $q$select public.request_new_team(t.form('{"website":"http://insecure.example"}'))$q$, '22023');
+select t.expect_error('a javascript website is refused', $q$select public.request_new_team(t.form('{"website":"javascript:alert(1)"}'))$q$, '22023');
+select t.expect_error('a website with spaces is refused', $q$select public.request_new_team(t.form('{"website":"https://a b.example"}'))$q$, '22023');
+select t.expect_error('an unknown social network is refused', $q$select public.request_new_team(t.form('{"social_links":{"myspace":"https://x.example/a"}}'))$q$, '22023');
+select t.expect_error('an http social link is refused', $q$select public.request_new_team(t.form('{"social_links":{"facebook":"http://x.example/a"}}'))$q$, '22023');
+select t.expect_error('a non-object social_links is refused', $q$select public.request_new_team(t.form('{"social_links":["https://x.example"]}'))$q$, '22023');
+select t.expect_error('a future founding year is refused', $q$select public.request_new_team(t.form('{"founded_year":2999}'))$q$, '22023');
+select t.expect_error('a year before 1900 is refused', $q$select public.request_new_team(t.form('{"founded_year":1850}'))$q$, '22023');
+select t.expect_error('a text founding year is refused', $q$select public.request_new_team(t.form('{"founded_year":"soon"}'))$q$, '22023');
+select t.expect_error('more than 5 claimed organizations are refused', $q$select public.request_new_team(t.form('{"claimed_organizations":["a1","a2","a3","a4","a5","a6"]}'))$q$, '22023');
+select t.expect_error('a bad colour is refused', $q$select public.request_new_team(t.form('{"colors":["red","#000000"]}'))$q$, '22023');
+select t.expect_error('an unknown crest pattern is refused', $q$select public.request_new_team(t.form('{"crest_division":"stripes"}'))$q$, '22023');
+select t.expect_error('a contact email is required', $q$select public.request_new_team(t.form('{}', array['contact_email']))$q$, '22023');
+select t.expect_error('a malformed contact email is refused', $q$select public.request_new_team(t.form('{"contact_email":"not-an-email"}'))$q$, '22023');
+select t.expect_error('the reason for being captain is required', $q$select public.request_new_team(t.form('{}', array['captain_reason']))$q$, '22023');
+select t.expect_error('an unknown form field is refused', $q$select public.request_new_team(t.form('{"status":"approved"}'))$q$, '22023');
+select t.expect_error('a non-object payload is refused', $q$select public.request_new_team('[]'::jsonb)$q$, '22023');
+select t.expect_error('a null payload is refused', $q$select public.request_new_team(null)$q$, '22023');
+select t.expect_eq('refused forms created no team', (select count(*) from public.teams where name like 'Valid Team%'), 0::bigint);
+select t.expect_ok('a minimal valid form works (slug derived from the name)', $q$select public.request_new_team(t.form('{"name":"Minimal Crew"}'))$q$);
+select t.expect_eq('the slug was derived', (select count(*) from public.teams where slug = 'minimal-crew'), 1::bigint);
+select t.expect_ok('a second pending team is allowed', $q$select public.request_new_team(t.form('{"name":"Second Crew"}'))$q$);
+select t.expect_ok('a third pending team is allowed (an approved one no longer counts)', $q$select public.request_new_team(t.form('{"name":"Third Crew"}'))$q$);
+select t.expect_error('a fourth pending team is refused', $q$select public.request_new_team(t.form('{"name":"Fourth Crew"}'))$q$, '22023');
+select t.expect_ok('create_team still works for compatibility', $q$select public.create_team('tm-legacy', 'Legacy Team')$q$);
+
+-- the old table stays unreadable
+select t.as_admin();
+select t.expect_eq('every private new-team field is stored apart from teams', (select count(*) from public.team_request_private), 4::bigint);
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
