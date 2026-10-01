@@ -1,9 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { BulkSchedule } from '../components/BulkSchedule';
+import { MatchSchedule } from '../components/MatchSchedule';
+import { RosterEditor } from '../components/RosterEditor';
+import { ConflictsPanel } from '../components/RunConflicts';
 import { Chip } from '../components/ui';
+import { fetchCompetitionRoster, fetchEventTimeZone, fetchMatchDurations, DEFAULT_TIME_ZONE } from '../data/runSchedule';
 import type { LiveCompetition, LiveEvent } from '../data/api';
 import {
   fetchCompetitionMatches, fetchEntries, fetchStandings, generateMatches, groupIntoRounds, reopenMatch, setQueue,
-  type CompetitionEntry, type CompetitionMatch, type QueueState
+  type CompetitionEntry, type CompetitionMatch
 } from '../data/matches';
 import type { PlannedMatch } from '../lib/bracket';
 import { sideLabel } from '../lib/entryLabel';
@@ -12,6 +17,7 @@ import {
   DRAW_FORMATS, activeEntries, bracketFromPools, canBuildBracketFromPools, describePlan, drawProblem, maxPoolCount, moveItem, planDraw, randomSeed, rankPools,
   type DrawChoice, type DrawFormat, type PlanGroup
 } from '../lib/runDraw';
+import { matchFighters, sideFighters, timeLabel, DEFAULT_DURATION, type RosterMember, type SideEntry } from '../lib/runSchedule';
 import { structureAdvice } from '../lib/tournament';
 import { useAsync } from '../lib/useAsync';
 
@@ -153,10 +159,11 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
   );
 }
 
-function MatchCard({ m, onChanged }: { m: CompetitionMatch; onChanged: () => void }) {
+interface ScheduleCtx { eventId: string; timeZone: string; entries: SideEntry[]; roster: RosterMember[]; durations: Map<string, number>; jumpId: string | null; onScheduled: () => void }
+
+function MatchCard({ m, onChanged, sched }: { m: CompetitionMatch; onChanged: () => void; sched: ScheduleCtx }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [field, setField] = useState(m.field ?? '');
   const [reopening, setReopening] = useState(false);
   const [reason, setReason] = useState('');
   const isFinal = m.queueState === 'final';
@@ -171,12 +178,13 @@ function MatchCard({ m, onChanged }: { m: CompetitionMatch; onChanged: () => voi
   const title = `${sideLabel(m.entryA, m.nameA, 'To be decided')} vs ${sideLabel(m.entryB, m.nameB, 'To be decided')}`;
 
   return (
-    <article className="panel info" style={{ display: 'grid', gap: 10 }} aria-label={title}>
+    <article id={`match-${m.id}`} tabIndex={-1} className="panel info" style={{ display: 'grid', gap: 10 }} aria-label={title}>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         <b style={{ overflowWrap: 'anywhere' }}>{title}</b>
         {isFinal ? <Chip tone="win">Final</Chip> : m.queueState === 'active' ? <Chip tone="live">Active</Chip> : <Chip>{QUEUE_OPTIONS.find(([k]) => k === m.queueState)?.[1] ?? m.queueState}</Chip>}
         {m.field && <Chip tone="steel">{m.field}</Chip>}
       </div>
+      {isFinal && m.scheduledAt && <p className="src">Was scheduled for {timeLabel(m.scheduledAt, sched.timeZone)}</p>}
       {isFinal && <p>{winner}{m.scoreA !== null && m.scoreB !== null ? ` (${m.scoreA} to ${m.scoreB})` : ''}</p>}
 
       {!isFinal && !ready && <p className="src">{m.stage === 'third_place' && !m.entryA && !m.entryB ? 'Waiting for the semifinals to finish' : 'Waiting for earlier results before this match can be scheduled.'}</p>}
@@ -186,13 +194,16 @@ function MatchCard({ m, onChanged }: { m: CompetitionMatch; onChanged: () => voi
             <button key={k} type="button" disabled={busy} aria-pressed={k === m.queueState} onClick={() => k !== m.queueState && run(() => setQueue(m.id, k as OpenQueue, null))}>{text}</button>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'end', flexWrap: 'wrap' }}>
-          <label className="field-in" style={{ flex: '1 1 160px' }}>Field
-            <input value={field} maxLength={40} placeholder="For example Field 1" onChange={e => setField(e.target.value)} />
-          </label>
-          <button type="button" className="btn btn-line" disabled={busy || field.trim() === (m.field ?? '')} onClick={() => run(() => setQueue(m.id, m.queueState as Exclude<QueueState, 'final'>, field.trim()))}>Set field</button>
-        </div>
       </>)}
+      {!isFinal && (
+        <MatchSchedule eventId={sched.eventId} matchId={m.id} scheduledAt={m.scheduledAt} field={m.field} duration={sched.durations.get(m.id) ?? DEFAULT_DURATION}
+          people={matchFighters(m.entryA, m.entryB, sched.entries, sched.roster)} timeZone={sched.timeZone} jump={sched.jumpId === m.id}
+          uncheckedSides={[m.entryA, m.entryB].flatMap(id => {
+            const e = id ? sched.entries.find(x => x.id === id) : undefined;
+            return e && e.teamId && sideFighters(e.id, sched.entries, sched.roster).length === 0 ? [e.name] : [];
+          })}
+          onSaved={() => { onChanged(); sched.onScheduled(); }} />
+      )}
 
       {isFinal && !reopening && <button type="button" className="btn btn-line" onClick={() => setReopening(true)}>Reopen result</button>}
       {isFinal && reopening && (
@@ -264,11 +275,13 @@ function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition
   );
 }
 
-function CompetitionRun({ comp }: { comp: LiveCompetition }) {
+function CompetitionRun({ comp, eventId, timeZone, jumpId, onScheduled }: { comp: LiveCompetition; eventId: string; timeZone: string; jumpId: string | null; onScheduled: () => void }) {
   const [reload, setReload] = useState(0);
   const [building, setBuilding] = useState(false);
   const entries = useAsync(() => fetchEntries(comp.id), [comp.id, reload]);
   const matches = useAsync(() => fetchCompetitionMatches(comp.id), [comp.id, reload]);
+  const roster = useAsync(() => fetchCompetitionRoster(comp.id), [comp.id, reload]);
+  const durations = useAsync(() => fetchMatchDurations(comp.id), [comp.id, reload]);
   const done = () => { setBuilding(false); setReload(k => k + 1); };
 
   const all = entries.data ?? [];
@@ -277,6 +290,8 @@ function CompetitionRun({ comp }: { comp: LiveCompetition }) {
   const list = matches.data ?? [];
   const rounds = useMemo(() => groupIntoRounds(list), [list]);
   const finals = list.filter(m => m.queueState === 'final').length;
+  const sched: ScheduleCtx = { eventId, timeZone, entries: all, roster: roster.data ?? [], durations: durations.data ?? new Map(), jumpId, onScheduled };
+  const teamEntries = all.filter(e => e.teamId && e.status !== 'withdrawn' && e.status !== 'disqualified');
 
   return (
     <section className="panel info" style={{ display: 'grid', gap: 12 }} aria-label={comp.name}>
@@ -314,12 +329,29 @@ function CompetitionRun({ comp }: { comp: LiveCompetition }) {
 
       {canBuildBracketFromPools(list) && <PoolBracket comp={comp} matches={list} entries={all} onDone={done} />}
 
+      {teamEntries.length > 0 && (
+        <details>
+          <summary><b>Team rosters</b> ({teamEntries.length})</summary>
+          <div style={{ display: 'grid', gap: 14, marginTop: 8 }}>
+            {teamEntries.map(e => (
+              <RosterEditor key={e.id} entryId={e.id} entryName={e.name} teamId={e.teamId} category={comp.category} locked={comp.status === 'finished'}
+                onChanged={() => { setReload(k => k + 1); onScheduled(); }} />
+            ))}
+          </div>
+        </details>
+      )}
+
+      {list.some(m => m.queueState !== 'final') && (
+        <BulkSchedule matches={list.map(m => ({ matchId: m.id, queueState: m.queueState, scheduledAt: m.scheduledAt }))} timeZone={timeZone}
+          onDone={() => { setReload(k => k + 1); onScheduled(); }} />
+      )}
+
       {rounds.length > 0 && (
         <div style={{ display: 'grid', gap: 14 }}>
           {rounds.map(r => (
             <div key={r.key} style={{ display: 'grid', gap: 8 }}>
               <h4>{r.pool ? `Pool ${r.pool}, ${r.label}` : r.label}</h4>
-              {r.matches.map(m => <MatchCard key={`${m.id}-${m.version}-${m.queueState}-${m.field ?? ''}`} m={m} onChanged={() => setReload(k => k + 1)} />)}
+              {r.matches.map(m => <MatchCard key={`${m.id}-${m.version}-${m.queueState}-${m.field ?? ''}-${m.scheduledAt ?? ''}-${sched.durations.get(m.id) ?? ''}`} m={m} sched={sched} onChanged={() => setReload(k => k + 1)} />)}
             </div>
           ))}
         </div>
@@ -329,12 +361,30 @@ function CompetitionRun({ comp }: { comp: LiveCompetition }) {
 }
 
 export function RunTab({ event, competitions }: { event: LiveEvent; competitions: LiveCompetition[] }) {
+  const [conflictsKey, setConflictsKey] = useState(0);
+  const [jumpId, setJumpId] = useState<string | null>(null);
+  const tz = useAsync(() => fetchEventTimeZone(event.id), [event.id]);
+  const timeZone = tz.data ?? DEFAULT_TIME_ZONE;
+  const names = useMemo(() => new Map(competitions.map(c => [c.id, c.name])), [competitions]);
+
+  useEffect(() => {
+    if (!jumpId) return;
+    const t = setTimeout(() => {
+      const el = document.getElementById(`match-${jumpId}`);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el?.focus({ preventScroll: true });
+    }, 60);
+    const clear = setTimeout(() => setJumpId(null), 1500);
+    return () => { clearTimeout(t); clearTimeout(clear); };
+  }, [jumpId]);
+
   if (competitions.length === 0) {
     return <div className="panel info"><h3>No competitions yet</h3><p>Add competitions to {event.name} first. Then you can build draws and run the matches here.</p></div>;
   }
   return (
     <div style={{ display: 'grid', gap: 18 }}>
-      {competitions.map(c => <CompetitionRun key={c.id} comp={c} />)}
+      <ConflictsPanel eventId={event.id} competitionNames={names} timeZone={timeZone} reloadKey={conflictsKey} onJump={setJumpId} />
+      {competitions.map(c => <CompetitionRun key={c.id} comp={c} eventId={event.id} timeZone={timeZone} jumpId={jumpId} onScheduled={() => setConflictsKey(k => k + 1)} />)}
     </div>
   );
 }
