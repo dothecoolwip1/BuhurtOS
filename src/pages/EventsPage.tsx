@@ -2,6 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { EventRow } from '../components/EventRow';
 import { toSummary } from '../components/EventSummaryMap';
 import { PageHead, Seg } from '../components/ui';
+import { splitDrafts } from '../lib/draftView';
 import { useAuth } from '../auth/AuthContext';
 import { fetchEvents } from '../data/api';
 import { fetchCanCreateEvents } from '../data/setup';
@@ -24,8 +25,10 @@ export function EventsPage() {
   const live = useAsync(fetchEvents, []);
   const userId = useAuth().session?.user.id;
   const canCreate = useAsync(() => (userId ? fetchCanCreateEvents(userId) : Promise.resolve(false)), [userId]);
-  const real = (live.data ?? []).map(e => toSummary(e));
   const matches = (leagues: LeagueId[]) => filter === 'all' || leagues.includes(filter);
+  const { drafts, published } = splitDrafts(live.data ?? [], Boolean(userId));
+  const draftList = drafts.map(e => toSummary(e)).filter(e => matches(e.leagues));
+  const real = published.map(e => toSummary(e));
   const list = real.filter(e => matches(e.leagues));
   const samples = sample ? EVENTS.filter(e => matches(e.leagues)) : [];
   return (
@@ -38,9 +41,15 @@ export function EventsPage() {
       </div>
       {live.loading && <p className="muted">Loading events…</p>}
       {live.error != null && <p role="alert">{friendlyError(live.error, 'Could not load events.')}</p>}
+      {draftList.length > 0 && (
+        <>
+          <p className="eyebrow">Your drafts</p>
+          <div className="eventlist">{draftList.map(e => <EventRow key={e.id} e={e} />)}</div>
+        </>
+      )}
       <div className="eventlist">
         {list.map(e => <EventRow key={e.id} e={e} />)}
-        {!live.loading && !live.error && list.length === 0 && samples.length === 0 && (
+        {!live.loading && !live.error && list.length === 0 && draftList.length === 0 && samples.length === 0 && (
           <div className="panel info"><h3>No events published yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them.</p></div>
         )}
       </div>

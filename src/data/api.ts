@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { pickMine } from '../lib/draftView';
 
 export type LeagueKey = 'buhurt' | 'duels' | 'outrance' | 'hacsa';
 export interface LiveCompetition { id: string; name: string; category: string; league: LeagueKey; gender: 'open' | 'men' | 'women'; ruleset: string | null; status: string }
@@ -74,4 +75,17 @@ export async function fetchMyEventContext(eventId: string, userId: string): Prom
   }
   const r = reg.data as { id: string; status: string; fee_due_cents: number; fee_paid: boolean } | null;
   return { roles, isOrganizer, registration: r ? { id: r.id, status: r.status, feeDueCents: r.fee_due_cents, feePaid: r.fee_paid } : null, pendingRegistrations: pending };
+}
+
+/** Events the signed-in person staffs (the platform owner: every event they can read), drafts included. Same query as the events list. */
+export async function fetchMyEvents(userId: string): Promise<LiveEvent[]> {
+  const [all, staff, platform] = await Promise.all([
+    fetchEvents(),
+    supabase.from('event_staff').select('event_id').eq('user_id', userId),
+    supabase.from('platform_roles').select('role').eq('user_id', userId)
+  ]);
+  if (staff.error) throw staff.error;
+  if (platform.error) throw platform.error;
+  const ids = new Set((staff.data ?? []).map(r => r.event_id as string));
+  return pickMine(all, ids, (platform.data ?? []).some(r => r.role === 'owner'));
 }

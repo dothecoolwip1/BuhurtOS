@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
 import { PageHead } from '../components/ui';
+import { fetchMyEvents } from '../data/api';
+import { DRAFT_NOTICE } from '../lib/draftView';
+import { useAsync } from '../lib/useAsync';
 import { useAuth } from './AuthContext';
 import { SignIn } from './SignIn';
 
 export function AccountPage() {
   const { session, loading, signOut } = useAuth();
+  const userId = session?.user.id;
+  const mine = useAsync(() => (userId ? fetchMyEvents(userId) : Promise.resolve([])), [userId]);
   if (loading) return <p className="muted">Loading…</p>;
   if (!session) return <><PageHead eyebrow="Account" title="Sign in" /><SignIn /></>;
   return (
@@ -15,6 +20,16 @@ export function AccountPage() {
         <Link className="btn btn-line" to="/events/new">Create an event</Link>
         <button className="btn btn-line" type="button" onClick={() => void signOut()}>Sign out</button>
       </div>
+      {(mine.data ?? []).length > 0 && (
+        <section aria-labelledby="myev-h" style={{ display: 'grid', gap: 8, marginTop: 18 }}>
+          <h2 id="myev-h">My events</h2>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 6 }}>
+            {mine.data!.map(e => (
+              <li key={e.id}><Link to={`/events/${e.slug}`}>{e.name}</Link> <span className="src">{e.status === 'draft' ? DRAFT_NOTICE : e.status === 'cancelled' ? 'Cancelled' : 'Published'}</span></li>
+            ))}
+          </ul>
+        </section>
+      )}
     </>
   );
 }
