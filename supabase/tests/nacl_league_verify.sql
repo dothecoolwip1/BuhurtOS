@@ -181,6 +181,9 @@ select pg_temp.c('stats populated: nearly every fighter and every team has match
   and (select count(*) from public.team_stats ts join public.team_affiliations a on a.team_id = ts.team_id and a.organization_id = (select id from v_org) where ts.matches > 0 and ts.events > 0) = 10
   and (select count(distinct season_id) from public.fighter_season_stats where season_id is not null) = 4
   and (select count(*) from public.fighter_match_stats where fighter_id in (select id from v_f)) > 200);
+select pg_temp.c('events_attended counts only events that have happened (the upcoming Rumble is not attended): equals the participation at completed events, for fighters and teams',
+  (select count(*) from v_f f join public.fighter_career_stats c on c.fighter_id = f.id where c.events_attended <> (select count(*) from v_part p where p.fighter_id = f.id)) = 0
+  and (select count(*) from public.team_stats ts where ts.team_id in (select team_id from v_f) and ts.events <> (select count(distinct k.event_id) from public.entries e join public.competitions k on k.id = e.competition_id where e.team_id = ts.team_id and e.status <> 'withdrawn' and k.event_id in (select id from v_hist))) = 0);
 select pg_temp.c('stats differ across fighters: many distinct match counts, veterans fight more than newcomers',
   (select count(distinct matches) from public.fighter_career_stats where fighter_id in (select id from v_f)) >= 15
   and (select avg(c.matches) from public.fighter_career_stats c join v_f f on f.id = c.fighter_id where f.joined_year <= 2020) > (select avg(c.matches) from public.fighter_career_stats c join v_f f on f.id = c.fighter_id where f.joined_year >= 2024),

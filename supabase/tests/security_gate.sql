@@ -1453,6 +1453,64 @@ select t.expect_eq('updating the profile never touched another fighter or the te
 select t.expect_eq('... nor the fighter''s team', (select team_id from public.fighters where id = '00000000-0000-0000-0000-00000000b301'), '00000000-0000-0000-0000-00000000b201'::uuid);
 select t.expect_error('a loader cannot insert a bad discipline either (trigger)', $q$update public.fighters set disciplines = array['nonsense'] where id = '00000000-0000-0000-0000-00000000b302'$q$, '22023');
 
+-- ---------------------------------------------------------------- statistics count only events that have happened (20261001002300)
+select t.as_admin();
+insert into public.teams (id, slug, name, status) values ('00000000-0000-0000-0000-00000000c901', 'pe-team', 'Played Events Team', 'approved');
+insert into public.fighters (id, display_name, team_id) values ('00000000-0000-0000-0000-00000000c911', 'Played Events One', '00000000-0000-0000-0000-00000000c901'), ('00000000-0000-0000-0000-00000000c912', 'Played Events Two', null);
+insert into public.events (id, slug, name, status, starts_on, ends_on) values
+  ('00000000-0000-0000-0000-00000000c921', 'pe-future', 'Upcoming with entries', 'published', current_date + 30, current_date + 31),
+  ('00000000-0000-0000-0000-00000000c922', 'pe-past', 'Past, entries only', 'published', current_date - 10, current_date - 9),
+  ('00000000-0000-0000-0000-00000000c923', 'pe-live', 'Today, one final match', 'published', current_date, current_date + 1);
+insert into public.competitions (id, event_id, name, category, gender) values
+  ('00000000-0000-0000-0000-00000000c931', '00000000-0000-0000-0000-00000000c921', 'Future duel', 'longsword', 'men'),
+  ('00000000-0000-0000-0000-00000000c932', '00000000-0000-0000-0000-00000000c922', 'Past duel', 'longsword', 'men'),
+  ('00000000-0000-0000-0000-00000000c933', '00000000-0000-0000-0000-00000000c923', 'Live duel', 'longsword', 'men'),
+  ('00000000-0000-0000-0000-00000000c934', '00000000-0000-0000-0000-00000000c921', 'Future melee', '3v3', 'men');
+insert into public.entries (id, competition_id, team_id, fighter_id) values
+  ('00000000-0000-0000-0000-00000000c941', '00000000-0000-0000-0000-00000000c931', null, '00000000-0000-0000-0000-00000000c911'),
+  ('00000000-0000-0000-0000-00000000c942', '00000000-0000-0000-0000-00000000c932', null, '00000000-0000-0000-0000-00000000c911'),
+  ('00000000-0000-0000-0000-00000000c943', '00000000-0000-0000-0000-00000000c933', null, '00000000-0000-0000-0000-00000000c911'),
+  ('00000000-0000-0000-0000-00000000c944', '00000000-0000-0000-0000-00000000c933', null, '00000000-0000-0000-0000-00000000c912'),
+  ('00000000-0000-0000-0000-00000000c945', '00000000-0000-0000-0000-00000000c934', '00000000-0000-0000-0000-00000000c901', null);
+insert into public.matches (id, competition_id, stage, entry_a, entry_b, queue_state, result, winner_entry_id, score_a, score_b, finalized_at)
+  values ('00000000-0000-0000-0000-00000000c951', '00000000-0000-0000-0000-00000000c933', 'round_robin', '00000000-0000-0000-0000-00000000c943', '00000000-0000-0000-0000-00000000c944', 'final', 'a', '00000000-0000-0000-0000-00000000c943', 4, 1, now());
+select t.as_anon();
+select t.expect_eq('an upcoming event with entries is not attended; a past event with entries and today''s event with a final match are', (select events_attended from public.fighter_career_stats where fighter_id = '00000000-0000-0000-0000-00000000c911'), 2::bigint);
+select t.expect_eq('the opponent attended only the event with the final match', (select events_attended from public.fighter_career_stats where fighter_id = '00000000-0000-0000-0000-00000000c912'), 1::bigint);
+select t.expect_eq('a team entered only in an upcoming event has attended none', (select events from public.team_stats where team_slug = 'pe-team'), 0::bigint);
+select t.expect_eq('played_events lists exactly the past event and the event with a final match', (select string_agg(e.slug, ',' order by e.slug) from public.played_events p join public.events e on e.id = p.event_id where e.slug like 'pe-%'), 'pe-live,pe-past');
+select t.expect_eq('a final match still counts for the fighter (stats of matches are unchanged)', (select matches from public.fighter_career_stats where fighter_id = '00000000-0000-0000-0000-00000000c911'), 1::bigint);
+select t.as_admin();
+update public.events set starts_on = current_date - 3, ends_on = current_date - 2 where id = '00000000-0000-0000-0000-00000000c921';
+select t.as_anon();
+select t.expect_eq('once the event is in the past it counts', (select events_attended from public.fighter_career_stats where fighter_id = '00000000-0000-0000-0000-00000000c911'), 3::bigint);
+select t.expect_eq('... and the team has attended it too', (select events from public.team_stats where team_slug = 'pe-team'), 1::bigint);
+select t.as_admin();
+
+-- ---------------------------------------------------------------- deleting linked matches in one statement (20261001002400)
+select t.as_admin();
+insert into public.competitions (id, event_id, name, category, gender) values ('00000000-0000-0000-0000-00000000c935', '00000000-0000-0000-0000-00000000c923', 'Linked matches', 'longsword', 'men');
+insert into public.matches (id, competition_id, stage, round_label, position) values
+  ('00000000-0000-0000-0000-00000000c961', '00000000-0000-0000-0000-00000000c935', 'final', 'Final', 0),
+  ('00000000-0000-0000-0000-00000000c962', '00000000-0000-0000-0000-00000000c935', 'elimination', 'Semifinal', 0),
+  ('00000000-0000-0000-0000-00000000c963', '00000000-0000-0000-0000-00000000c935', 'elimination', 'Semifinal', 1);
+update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c961', next_slot = 'a' where id = '00000000-0000-0000-0000-00000000c962';
+update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c961', next_slot = 'b' where id = '00000000-0000-0000-0000-00000000c963';
+select t.expect_error('a link without a slot is still refused', $q$update public.matches set next_slot = null where id = '00000000-0000-0000-0000-00000000c962'$q$, '23514');
+select t.expect_ok('deleting the final clears the link AND the slot of both semifinals', $q$delete from public.matches where id = '00000000-0000-0000-0000-00000000c961'$q$);
+select t.expect_eq('... no semifinal keeps a slot without a link', (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935' and (next_match_id is not null or next_slot is not null)), 0::bigint);
+update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c963', next_slot = 'a' where id = '00000000-0000-0000-0000-00000000c962';
+insert into public.matches (id, competition_id, stage, round_label, position, next_match_id, next_slot) values ('00000000-0000-0000-0000-00000000c964', '00000000-0000-0000-0000-00000000c935', 'final', 'Final', 0, null, null);
+update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c964', next_slot = 'b' where id = '00000000-0000-0000-0000-00000000c963';
+select t.expect_ok('deleting a chain of linked matches in ONE statement works (it used to fail: tuple already modified)', $q$delete from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'$q$);
+select t.expect_eq('... all gone', (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'), 0::bigint);
+insert into public.matches (id, competition_id, stage, round_label, position) values
+  ('00000000-0000-0000-0000-00000000c965', '00000000-0000-0000-0000-00000000c935', 'final', 'Final', 0),
+  ('00000000-0000-0000-0000-00000000c966', '00000000-0000-0000-0000-00000000c935', 'elimination', 'Semifinal', 0);
+update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c965', next_slot = 'a' where id = '00000000-0000-0000-0000-00000000c966';
+select t.expect_ok('deleting the whole competition cascades without error', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$);
+select t.expect_eq('... and nothing is left behind', (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'), 0::bigint);
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
