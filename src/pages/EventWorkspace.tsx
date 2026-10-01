@@ -6,6 +6,9 @@ import { fetchEvent, fetchMyEventContext, type LeagueKey, type LiveCompetition, 
 import { dateRange, registrationWindow } from '../lib/dates';
 import { DRAFT_NOTICE, notPublicMessage } from '../lib/draftView';
 import { friendlyError } from '../lib/friendlyError';
+import { EventHistory, EventOrganization } from '../components/EventHistory';
+import { fetchEventMetaById } from '../data/careers';
+import { eventPhase, todayIso } from '../lib/careerView';
 import { LiveBracket } from '../components/LiveBracket';
 import { LiveNow } from '../components/LiveNow';
 import { LivePools } from '../components/LivePools';
@@ -89,6 +92,7 @@ export function EventWorkspace() {
   const loaded = useAsync(() => fetchEvent(slug), [slug]);
   const eventId = loaded.data?.event.id;
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
+  const meta = useAsync(() => (eventId ? fetchEventMetaById(eventId) : Promise.resolve(null)), [eventId]);
   useDocumentTitle(loaded.data?.event.name ?? 'Event');
   const showLive = loaded.data?.event.status === 'published';
   const liveIds = showLive ? loaded.data!.competitions.map(c => c.id) : [];
@@ -113,6 +117,7 @@ export function EventWorkspace() {
   const fee = feeText(event);
   const names = new Map(competitions.map(c => [c.id, c.name]));
   const allMatches = Object.values(live.data).flatMap(d => d.matches);
+  const completed = event.status === 'published' && eventPhase(event.startsOn, event.endsOn, todayIso()) === 'past';
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
@@ -128,6 +133,7 @@ export function EventWorkspace() {
         {event.timeNote && <p style={{ overflowWrap: 'anywhere' }}><b>{event.timeNote}</b></p>}
         {where && <p style={{ color: 'var(--muted)', overflowWrap: 'anywhere' }}>{where}</p>}
       </div>
+      <EventOrganization meta={meta.data} />
       <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />
       <ShareEventButton title={event.name} />
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
@@ -153,7 +159,8 @@ export function EventWorkspace() {
         ))}
         <p className="src">Rulesets are named as the organizer announced them. BuhurtOS shows what is recorded and does not guess; where a ruleset says it is not loaded, its text is not in BuhurtOS yet.</p>
       </section>}
-      {showLive && competitions.length > 0 && (
+      {completed && competitions.length > 0 && <EventHistory eventId={event.id} competitions={competitions} live={live} />}
+      {showLive && !completed && competitions.length > 0 && (
         <section className="live-results" aria-labelledby="live-h">
           <h2 id="live-h">Results</h2>
           {live.loading && live.updatedAt === null && <p className="muted">Loading results…</p>}
