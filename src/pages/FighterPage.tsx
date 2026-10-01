@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Avatar } from '../auth/account/shared';
 import { Chip } from '../components/ui';
+import { fetchFighterPhotos, photoUrl } from '../data/account';
 import {
   fetchFighterAppearances, fetchFighterMemberships, fetchFighterRankings, fetchOrgLites, fetchRecentFights, fetchSeasons, type Appearance
 } from '../data/careers';
@@ -13,9 +15,11 @@ import {
 } from '../lib/careerView';
 import { dateRange } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
-import { roleLabel } from '../lib/teamDirectory';
+import { roleLabel, safeHttpsUrl } from '../lib/teamDirectory';
 import { useAsync, type AsyncState } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+
+const SOCIAL_NAME: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', tiktok: 'TikTok', x: 'X', discord: 'Discord', twitch: 'Twitch', other: 'Other link' };
 
 /** One section that loads on its own. Errors stay inside the section; an empty section is hidden (the caller decides with `empty`). */
 function Section<T>({ title, state, empty, children, note }: { title: string; state: AsyncState<T>; empty: (d: T) => boolean; children: (d: T) => ReactNode; note?: string }) {
@@ -57,13 +61,19 @@ function Career({ p }: { p: FighterProfile }) {
   const appearances = useAsync(() => fetchFighterAppearances(id), [id]);
   const orgs = useAsync(fetchOrgLites, []);
   const seasons = useAsync(fetchSeasons, []);
+  const photos = useAsync(() => (p.profilePublic || p.canEdit ? fetchFighterPhotos(id) : Promise.resolve([])), [id, p.profilePublic, p.canEdit]);
+  const gallery = (photos.data ?? []).filter(x => x.path !== p.photoPath);
+  const hidden = !p.profilePublic;
   const today = todayIso();
   const orgById = new Map((orgs.data ?? []).map(o => [o.id, o]));
   const seasonById = new Map((seasons.data ?? []).map(s => [s.id, s]));
   const where = [p.city, p.region, p.country].filter(Boolean).join(', ');
   const facts = [
-    p.age !== null && `Age ${p.age}`, genderLabel(p.gender), p.joinedYear !== null && `Fighting since ${p.joinedYear}`
+    p.age !== null && `Age ${p.age}`, genderLabel(p.gender), p.joinedYear !== null && `Fighting since ${p.joinedYear}`,
+    p.handedness && `${{ left: 'Left', right: 'Right', ambi: 'Either' }[p.handedness]}-handed`,
+    p.heightCm !== null && `${p.heightCm} cm`, p.weightKg !== null && `${p.weightKg} kg`
   ].filter(Boolean) as string[];
+  const socials = Object.entries(p.socialLinks).map(([k, v]) => ({ k, url: safeHttpsUrl(v) })).filter((x): x is { k: string; url: string } => x.url !== null);
   const hasStory = Boolean(p.fightingStyle || p.disciplines.length > 0 || p.bio || p.highlights.length > 0);
   const totals = sumMatchStats(matchStats.data ?? []);
   const places = history.data ?? [];
@@ -72,10 +82,13 @@ function Career({ p }: { p: FighterProfile }) {
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <Link className="more" to="/fighters">← All fighters</Link>
       <div className="teamhead">
-        <span className="avatar" aria-hidden="true">{p.displayName.charAt(0).toUpperCase()}</span>
+        {p.photoPath
+          ? <Avatar path={p.photoPath} name={p.displayName} size={120} alt={`Photo of ${p.displayName}`} />
+          : <span className="avatar" aria-hidden="true">{p.displayName.charAt(0).toUpperCase()}</span>}
         <div style={{ minWidth: 0 }}>
-          <p className="eyebrow">Fighter</p>
+          <p className="eyebrow">Fighter{p.jerseyNumber !== null && ` · #${p.jerseyNumber}`}</p>
           <h1 style={{ fontSize: 'clamp(38px,6vw,72px)', marginTop: 8 }}>{p.displayName}</h1>
+          {p.nickname && <p style={{ fontSize: 20, fontWeight: 600 }}>&ldquo;{p.nickname}&rdquo;{p.pronouns && <span className="muted" style={{ fontSize: 15 }}> · {p.pronouns}</span>}</p>}
           <div className="phead"><div className="sub">
             {p.team && <span>Home team: <Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link></span>}
             {where && <span>{where}</span>}
@@ -89,6 +102,21 @@ function Career({ p }: { p: FighterProfile }) {
         </div>
       </div>
       {p.organization && !p.organization.enabled && <p className="panel info" role="status">{INACTIVE_ORG_NOTICE}</p>}
+
+      {p.canEdit && (
+        <div className="acct-row">
+          <Link className="btn btn-ink" to="/account">Edit my profile</Link>
+          {hidden && <span className="muted">Your profile is private. Only you can see this page in full.</span>}
+        </div>
+      )}
+      {hidden && !p.canEdit && <p className="panel info" role="status" style={{ padding: 14 }}>This fighter keeps their profile private. Only their name and team are shown.</p>}
+
+      {(gallery.length > 0 || socials.length > 0) && (
+        <div className="panel info">
+          {gallery.length > 0 && (<><h3>Photos</h3><div className="pimg-row">{gallery.map(g => <img key={g.id} src={photoUrl(g.path) ?? ''} alt={g.caption ?? `Photo of ${p.displayName}`} loading="lazy" />)}</div></>)}
+          {socials.length > 0 && <div className="teamlinks">{socials.map(x => <a key={x.k} className="btn btn-line btn-sm" href={x.url} target="_blank" rel="noopener noreferrer nofollow">{SOCIAL_NAME[x.k] ?? 'Link'}</a>)}</div>}
+        </div>
+      )}
 
       {hasStory && (
         <div className="panel info">

@@ -19,7 +19,10 @@ import { TeamManagerPage } from './pages/TeamManagerPage';
 import { TeamPage } from './pages/TeamPage';
 import { TeamsPage } from './pages/TeamsPage';
 import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
-import { PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
+import { PlatformOrganizationsPage } from './pages/platform/PlatformPages';
+import { PlatformHomePage } from './pages/platform/PlatformOverview';
+import { PlatformTeamsPage } from './pages/platform/PlatformTeams';
+import { PlatformFightersPage } from './pages/platform/PlatformFighters';
 
 export function App() {
   return (
@@ -43,6 +46,8 @@ export function App() {
         <Route path="organizations/:slug" element={<OrganizationPage />} />
         <Route path="platform" element={<PlatformHomePage />} />
         <Route path="platform/organizations" element={<PlatformOrganizationsPage />} />
+        <Route path="platform/teams" element={<PlatformTeamsPage />} />
+        <Route path="platform/fighters" element={<PlatformFightersPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />

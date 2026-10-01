@@ -13,12 +13,13 @@ import {
   DISABLE_NOTICE, disableTitle, pendingText, platformGate, switchChecked, TOGGLE_IDLE, toggleBusy, toggleReducer, toOrgAdminRow, type OrgAdminRow
 } from '../../lib/platformOrgs';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { PlatformNav } from './parts';
 
 /**
  * The platform owner's area. The gate here only decides what to show: every call below is checked by the database, and a refusal is shown
  * as written. Anyone who is not the owner sees one plain page, the same for every path under /platform.
  */
-function PlatformGate({ children }: { children: ReactNode }) {
+export function PlatformGate({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
   const role = usePlatformRole();
   const gate = platformGate(loading, !!session, role.loading, role.isOwner);
@@ -30,20 +31,6 @@ function PlatformGate({ children }: { children: ReactNode }) {
     </section>
   );
   return <>{children}</>;
-}
-
-export function PlatformHomePage() {
-  useDocumentTitle('Platform');
-  return (
-    <PlatformGate>
-      <section className="plat" style={{ display: 'grid', gap: 20 }}>
-        <PageHead eyebrow="Platform" title="Platform" lede="Owner tools. Every action is checked by the database again; this page only decides what is shown." />
-        <ul className="plain">
-          <li><Link className="panel plat-link" to="/platform/organizations"><b>Organizations</b><span className="muted">Switch organizations on or off and manage their admins.</span></Link></li>
-        </ul>
-      </section>
-    </PlatformGate>
-  );
 }
 
 export function PlatformOrganizationsPage() {
@@ -80,7 +67,7 @@ function OrganizationsAdmin() {
   return (
     <section className="plat" style={{ display: 'grid', gap: 18 }}>
       <PageHead eyebrow="Platform" title="Organizations" lede="Every organization, switched on or off. Switching one off keeps all of its history; nothing is deleted." />
-      <p><Link className="more" to="/platform">Platform</Link></p>
+      <PlatformNav />
       {error && <p role="alert" className="plat-err">{error} <button type="button" className="linklike" onClick={() => void reload()}>Try again</button></p>}
       {!rows && !error && <p className="muted">Loading organizations…</p>}
       {rows && rows.length === 0 && <p className="muted">There are no organizations yet.</p>}
