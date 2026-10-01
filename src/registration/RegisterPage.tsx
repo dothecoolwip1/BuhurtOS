@@ -11,14 +11,14 @@ import {
 } from './model';
 
 interface Loaded {
-  eventId: string; name: string; fee: EventFee; closesAt: string | null;
+  eventId: string; name: string; fee: EventFee; closesAt: string | null; mode: 'buhuros' | 'external' | 'none'; externalUrl: string | null;
   comps: CompetitionOption[]; teams: { id: string; name: string }[];
   waiver: { id: string; version: number; title: string; body: string };
 }
 
 /** Shown only with ?preview=1, so the form can be reviewed before the event is published. Not real data. */
 const PREVIEW: Loaded = {
-  eventId: 'preview', name: 'Red Deer Rumble 2026 (preview of the form)', fee: { feeCents: 4000, feeProvince: 'AB' }, closesAt: '2026-11-09T06:59:00Z',
+  eventId: 'preview', name: 'Red Deer Rumble 2026 (preview of the form)', fee: { feeCents: 4000, feeProvince: 'AB' }, closesAt: '2026-11-09T06:59:00Z', mode: 'buhuros', externalUrl: null,
   comps: [
     ['Melee 3v3 (men)', '3v3', 'buhurt', 'men'], ['Melee 5v5 (men)', '5v5', 'buhurt', 'men'], ['Melee (women)', '5v5', 'buhurt', 'women'],
     ['Longsword (men)', 'longsword', 'duels', 'men'], ['Longsword (women)', 'longsword', 'duels', 'women'],
@@ -33,9 +33,13 @@ const PREVIEW: Loaded = {
 };
 
 async function load(slug: string): Promise<Loaded> {
-  const { data: ev, error } = await supabase.from('events').select('id,name,fee_cents,fee_province,registration_closes_at,status').eq('slug', slug).maybeSingle();
+  const { data: ev, error } = await supabase.from('events').select('id,name,fee_cents,fee_province,registration_closes_at,status,registration_mode,external_url').eq('slug', slug).maybeSingle();
   if (error) throw error;
   if (!ev) throw new Error('This event is not open yet.');
+  if (ev.registration_mode && ev.registration_mode !== 'buhuros') {
+    // Sign-up happens elsewhere (or not at all): no form, so no competitions, teams or waiver are needed.
+    return { eventId: ev.id, name: ev.name, fee: { feeCents: 0, feeProvince: null }, closesAt: null, mode: ev.registration_mode, externalUrl: ev.external_url, comps: [], teams: [], waiver: { id: '', version: 0, title: '', body: '' } };
+  }
   const [c, t, w] = await Promise.all([
     supabase.from('competitions').select('id,name,category,gender,sort,ref_categories(league)').eq('event_id', ev.id).order('sort'),
     supabase.from('teams').select('id,name').eq('status', 'approved').order('name'),
@@ -45,7 +49,7 @@ async function load(slug: string): Promise<Loaded> {
   if (!w.data?.[0]) throw new Error('The waiver for this event is not loaded yet.');
   type Row = { id: string; name: string; category: string; gender: CompetitionOption['gender']; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
   return {
-    eventId: ev.id, name: ev.name, fee: { feeCents: ev.fee_cents, feeProvince: ev.fee_province }, closesAt: ev.registration_closes_at,
+    eventId: ev.id, name: ev.name, fee: { feeCents: ev.fee_cents, feeProvince: ev.fee_province }, closesAt: ev.registration_closes_at, mode: ev.registration_mode ?? 'buhuros', externalUrl: ev.external_url,
     comps: (c.data as unknown as Row[]).map(r => ({ id: r.id, name: r.name, category: r.category, gender: r.gender, league: (Array.isArray(r.ref_categories) ? r.ref_categories[0] : r.ref_categories)?.league ?? 'duels' })),
     teams: t.data ?? [], waiver: w.data[0]
   };
@@ -79,6 +83,14 @@ export function RegisterPage() {
 
   if (loadError) return <><PageHead eyebrow="Registration" title="Registration" /><p role="alert">{loadError}</p></>;
   if (!data) return <><PageHead eyebrow="Registration" title="Registration" /><p className="muted">Loading…</p></>;
+  if (data.mode !== 'buhuros') {
+    return (
+      <>
+        <PageHead eyebrow="Sign-up" title={data.name} lede={data.mode === 'external' ? 'Sign-up for this event happens on another website.' : 'This event does not need a sign-up.'} />
+        {data.mode === 'external' && data.externalUrl && <a className="btn btn-ink" href={data.externalUrl} target="_blank" rel="noopener noreferrer">Open the sign-up page</a>}
+      </>
+    );
+  }
   if (!preview && authLoading) return <p className="muted">Loading…</p>;
   if (!preview && !session) return <><PageHead eyebrow="Registration" title={`Register: ${data.name}`} /><SignIn reason="Sign in first so we can keep your registration and tell you when it is reviewed." /></>;
   if (done) {

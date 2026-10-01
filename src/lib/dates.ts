@@ -22,3 +22,27 @@ export function registrationWindow(opensAt: string | null, closesAt: string | nu
   if (closesAt && now >= new Date(closesAt)) return 'closed';
   return 'open';
 }
+
+/** Offset of a time zone from UTC, in minutes, at a given instant (negative for Mountain time). */
+function zoneOffsetMinutes(ts: number, timeZone: string): number {
+  const f = new Intl.DateTimeFormat('en-CA', { timeZone, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const p = Object.fromEntries(f.formatToParts(new Date(ts)).map(x => [x.type, x.value]));
+  return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute) - Math.floor(ts / 60000) * 60000) / 60000;
+}
+
+/** "2026-11-08T23:59" typed in the event's time zone -> the exact instant, as an ISO string in UTC. */
+export function localToIso(local: string, timeZone = 'America/Edmonton'): string | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local);
+  if (!m) return null;
+  const guess = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
+  let ts = guess - zoneOffsetMinutes(guess, timeZone) * 60000;
+  ts = guess - zoneOffsetMinutes(ts, timeZone) * 60000; // second pass settles daylight-saving edges
+  return new Date(ts).toISOString();
+}
+
+/** An instant -> "2026-11-08T23:59" as a person in that time zone would type it. */
+export function isoToLocal(iso: string | null, timeZone = 'America/Edmonton'): string {
+  if (!iso) return '';
+  const ts = new Date(iso).getTime();
+  return new Date(ts + zoneOffsetMinutes(ts, timeZone) * 60000).toISOString().slice(0, 16);
+}

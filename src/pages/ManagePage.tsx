@@ -14,8 +14,11 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
 import { NotFoundPage } from './NotFoundPage';
+import { PeopleTab } from './PeopleTab';
+import { SetupTab } from './SetupTab';
 
-type Tab = 'review' | 'checkin';
+type Tab = 'review' | 'checkin' | 'setup' | 'people';
+const TABS: Tab[] = ['review', 'checkin', 'setup', 'people'];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -121,22 +124,24 @@ export function ManagePage() {
   const [reloadKey, setReloadKey] = useState(0);
   const [filter, setFilter] = useState<ReviewFilter>('pending');
   const [query, setQuery] = useState('');
-  const tab: Tab = params.get('tab') === 'checkin' ? 'checkin' : 'review';
+  const rawTab = params.get('tab');
+  const tab: Tab = TABS.find(t => t === rawTab) ?? 'review';
+  const [eventKey, setEventKey] = useState(0);
   const act = useAction(() => setReloadKey(k => k + 1));
 
-  const loaded = useAsync(() => fetchEvent(slug), [slug]);
+  const loaded = useAsync(() => fetchEvent(slug), [slug, eventKey]);
   const eventId = loaded.data?.event.id;
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   const isOrganizer = mine.data?.isOrganizer === true;
   const regs = useAsync(() => (eventId && isOrganizer ? fetchRegistrations(eventId) : Promise.resolve([] as ManagedRegistration[])), [eventId, isOrganizer, reloadKey]);
   useDocumentTitle(loaded.data ? `Manage ${loaded.data.event.name}` : 'Manage');
 
-  if (authLoading || loaded.loading) return <p className="muted">Loading…</p>;
+  if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error)}</p>;
   if (!loaded.data) return <NotFoundPage />;
   const { event } = loaded.data;
   if (!session) return <><PageHead eyebrow="Organizers" title={`Manage ${event.name}`} /><SignIn reason="Sign in with the account that organizes this event." /></>;
-  if (mine.loading) return <p className="muted">Loading…</p>;
+  if (mine.loading && !mine.data) return <p className="muted">Loading…</p>;
   if (!isOrganizer) {
     return (
       <section style={{ display: 'grid', gap: 14 }}>
@@ -154,8 +159,11 @@ export function ManagePage() {
     <section className="fade-in" style={{ display: 'grid', gap: 18 }}>
       <PageHead eyebrow="Organizers" title={`Manage ${event.name}`} />
       <Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link>
-      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`]] as const}
+      <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['setup', 'Setup'], ['people', 'People']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
+      {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
+      {tab === 'people' && <PeopleTab eventId={event.id} myUserId={userId} />}
+      {(tab === 'review' || tab === 'checkin') && (<>
       {tab === 'review' && (
         <Seg label="Show" value={filter} options={[['pending', `Pending ${counts.pending}`], ['accepted', `Accepted ${counts.accepted}`], ['declined', `Declined ${counts.declined}`], ['all', 'All']] as const} onChange={setFilter} />
       )}
@@ -169,6 +177,7 @@ export function ManagePage() {
       <div style={{ display: 'grid', gap: 12 }}>
         {list.map(r => (tab === 'checkin' ? <CheckinCard key={r.id} r={r} act={act} /> : <ReviewCard key={r.id} r={r} act={act} />))}
       </div>
+      </>)}
     </section>
   );
 }

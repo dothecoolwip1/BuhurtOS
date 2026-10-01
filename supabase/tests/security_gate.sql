@@ -314,6 +314,33 @@ select t.expect_eq('pending proof means not cleared', (select cleared from publi
 select t.expect_ok('the organizer records proof received', format($q$select public.set_registration_insurance(%L, 'proof_received')$q$, current_setting('t.r1')));
 select t.expect_eq('proof received clears them again', (select cleared from public.registration_clearance where registration_id = current_setting('t.r1')::uuid), true);
 
+-- ---------------------------------------------------------------- only an event's organizers can list its staff
+select t.as_anon();
+select t.expect_error('anon cannot list staff', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a stranger cannot list staff', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a5');
+select t.expect_error('a scorekeeper cannot list staff', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('the organizer sees the staff with emails', (select count(*) from public.list_event_staff(current_setting('t.event')::uuid) where email like '%@example.test'), (select count(*) from public.event_staff where event_id = current_setting('t.event')::uuid));
+
+-- ---------------------------------------------------------------- events that are not tournaments: sign-up elsewhere or nowhere
+select t.as_admin();
+select t.expect_error('an external event needs a link', format($q$update public.events set registration_mode = 'external' where id = %L$q$, current_setting('t.event')), '23514');
+select t.expect_error('a link must be http or https', format($q$update public.events set registration_mode = 'external', external_url = 'javascript:alert(1)' where id = %L$q$, current_setting('t.event')), '23514');
+select t.expect_ok('an event can send people to another site', format($q$update public.events set registration_mode = 'external', external_url = 'https://tickets.example.test/feast', time_note = 'Doors 6 pm' where id = %L$q$, current_setting('t.event')));
+select t.as_user('00000000-0000-0000-0000-0000000000a7');
+select t.expect_error('nobody can register on BuhurtOS for an external event', format($q$select public.submit_registration(%L, t.reg_payload('AB'))$q$, current_setting('t.event')), '22023');
+select t.as_admin();
+select t.expect_ok('an event can take no sign-ups at all', format($q$update public.events set registration_mode = 'none', external_url = null where id = %L$q$, current_setting('t.event')));
+select t.as_user('00000000-0000-0000-0000-0000000000a7');
+select t.expect_error('nobody can register for a no-sign-up event', format($q$select public.submit_registration(%L, t.reg_payload('AB'))$q$, current_setting('t.event')), '22023');
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_ok('a stranger''s attempt to change how an event takes sign-ups is silently ignored', format($q$update public.events set registration_mode = 'buhuros' where id = %L$q$, current_setting('t.event')));
+select t.expect_eq('the stranger changed nothing', (select registration_mode from public.events where id = current_setting('t.event')::uuid), 'none'::text);
+select t.as_admin();
+select t.expect_ok('back to registering on BuhurtOS', format($q$update public.events set registration_mode = 'buhuros' where id = %L$q$, current_setting('t.event')));
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
