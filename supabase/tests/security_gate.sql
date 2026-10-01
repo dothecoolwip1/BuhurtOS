@@ -767,6 +767,676 @@ select t.expect_ok('create_team still works for compatibility', $q$select public
 select t.as_admin();
 select t.expect_eq('every private new-team field is stored apart from teams', (select count(*) from public.team_request_private), 4::bigint);
 
+-- ================================================================================================================================
+-- Platform organization control (20261001001900), fighter profile (2000), entry rosters and conflicts (2100), results and stats (2200)
+-- ================================================================================================================================
+select t.as_admin();
+create temp table nx (k text primary key, v text);
+grant all on nx to authenticated, anon;
+create function t.g(k text) returns text language sql stable as $$ select v from nx where k = $1 $$;
+create function t.gu(k text) returns uuid language sql stable as $$ select v::uuid from nx where k = $1 $$;
+-- entry / match builders (run as the database owner, so row level security is out of the way for fixtures)
+create function t.ent(p_key text, p_comp uuid, p_team uuid, p_fighter uuid, p_status text default 'registered') returns uuid language plpgsql as $$
+declare v uuid;
+begin
+  insert into public.entries (competition_id, team_id, fighter_id, status) values (p_comp, p_team, p_fighter, p_status) returning id into v;
+  insert into nx values ('e:' || p_key, v::text);
+  return v;
+end $$;
+create function t.mkm(p_key text, p_comp uuid, p_stage text, p_label text, p_pos int, p_pool text, p_a text, p_b text, p_next text, p_slot text,
+                      p_sched timestamptz default null, p_dur int default 15) returns void language plpgsql as $$
+declare v uuid := gen_random_uuid();
+begin
+  insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, next_match_id, next_slot, scheduled_at, duration_minutes)
+  values (v, p_comp, p_stage, p_label, p_pos, p_pool, t.gu('e:' || p_a), t.gu('e:' || p_b), case when p_next is null then null else t.gu('m:' || p_next) end, p_slot, p_sched, p_dur);
+  insert into nx values ('m:' || p_key, v::text);
+end $$;
+create function t.fin(p_key text, p_res text, p_a int, p_b int) returns void language plpgsql as $$
+begin
+  perform public.finalize_match(t.gu('m:' || p_key), p_res, p_a, p_b, '{}'::jsonb, (select version from public.matches where id = t.gu('m:' || p_key)));
+end $$;
+create function t.place(p_comp uuid, p_key text) returns int language sql stable as $$
+  select final_place from public.results where competition_id = p_comp and entry_id = t.gu('e:' || p_key) $$;
+create function t.pts(p_comp uuid, p_key text) returns numeric language sql stable as $$
+  select points from public.results where competition_id = p_comp and entry_id = t.gu('e:' || p_key) $$;
+create function t.counts() returns text language plpgsql as $$
+declare r text := ''; x text; n bigint;
+begin
+  foreach x in array array['organizations', 'organization_staff', 'teams', 'team_affiliations', 'team_memberships', 'fighters', 'fighter_accounts', 'events', 'event_staff', 'competitions',
+                           'entries', 'entry_fighters', 'matches', 'results', 'registrations', 'registration_competitions', 'team_join_requests', 'seasons'] loop
+    execute format('select count(*) from public.%I', x) into n;
+    r := r || x || '=' || n || ';';
+  end loop;
+  return r;
+end $$;
+grant execute on all functions in schema t to anon, authenticated;
+
+-- ---------------------------------------------------------------- fixtures: people
+insert into auth.users (id, email) values
+  ('00000000-0000-0000-0000-00000000e001', 'orgadmin@example.test'), ('00000000-0000-0000-0000-00000000e002', 'ncaptain@example.test'),
+  ('00000000-0000-0000-0000-00000000e003', 'nfighter@example.test'), ('00000000-0000-0000-0000-00000000e004', 'nmarshal@example.test'),
+  ('00000000-0000-0000-0000-00000000e005', 'norganizer@example.test'), ('00000000-0000-0000-0000-00000000e006', 'nstranger@example.test'),
+  ('00000000-0000-0000-0000-00000000e007', 'nstranger2@example.test'), ('00000000-0000-0000-0000-00000000e008', 'nstranger3@example.test'),
+  ('00000000-0000-0000-0000-00000000e009', 'nfighterless@example.test');
+update public.profiles set display_name = 'Stranger Six' where id = '00000000-0000-0000-0000-00000000e006';
+update public.profiles set display_name = 'Stranger Seven' where id = '00000000-0000-0000-0000-00000000e007';
+update public.profiles set display_name = 'Stranger Eight' where id = '00000000-0000-0000-0000-00000000e008';
+
+-- ---------------------------------------------------------------- fixtures: the league
+insert into public.organizations (id, slug, name, kind, short_name, region, description) values
+  ('00000000-0000-0000-0000-00000000b101', 'nacl-test', 'Northern Armored Combat League-test', 'regional', 'NACL-test', 'North', 'A fictional league.'),
+  ('00000000-0000-0000-0000-00000000b102', 'other-league', 'Other League', 'regional', 'OL', 'South', null),
+  ('00000000-0000-0000-0000-00000000b103', 'rank-league', 'Ranking League', 'regional', 'RL', 'East', null);
+insert into public.organization_staff (organization_id, user_id, role) values ('00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-00000000e001', 'admin');
+insert into public.teams (id, slug, name, status, initial) values
+  ('00000000-0000-0000-0000-00000000b201', 'nt-one', 'NT One', 'approved', 'O'), ('00000000-0000-0000-0000-00000000b202', 'nt-two', 'NT Two', 'approved', 'T'),
+  ('00000000-0000-0000-0000-00000000b203', 'nt-three', 'NT Three', 'approved', 'H'), ('00000000-0000-0000-0000-00000000b204', 'nt-four', 'NT Four', 'approved', 'F'),
+  ('00000000-0000-0000-0000-00000000b205', 'nt-free', 'NT Free Agents', 'approved', 'A');
+insert into public.team_affiliations (team_id, organization_id, relation) values
+  ('00000000-0000-0000-0000-00000000b201', '00000000-0000-0000-0000-00000000b101', 'member'), ('00000000-0000-0000-0000-00000000b202', '00000000-0000-0000-0000-00000000b101', 'member'),
+  ('00000000-0000-0000-0000-00000000b203', '00000000-0000-0000-0000-00000000b101', 'member'), ('00000000-0000-0000-0000-00000000b204', '00000000-0000-0000-0000-00000000b101', 'member'),
+  ('00000000-0000-0000-0000-00000000b204', '00000000-0000-0000-0000-00000000b102', 'member'),
+  ('00000000-0000-0000-0000-00000000b205', '00000000-0000-0000-0000-00000000b101', 'recognized');
+insert into public.team_roles (team_id, user_id, role) values ('00000000-0000-0000-0000-00000000b201', '00000000-0000-0000-0000-00000000e002', 'captain');
+insert into public.fighters (id, display_name, team_id) values
+  ('00000000-0000-0000-0000-00000000b301', 'Fighter Alpha', '00000000-0000-0000-0000-00000000b201'), ('00000000-0000-0000-0000-00000000b302', 'Fighter Bravo', '00000000-0000-0000-0000-00000000b201'),
+  ('00000000-0000-0000-0000-00000000b303', 'Fighter Charlie', '00000000-0000-0000-0000-00000000b202'), ('00000000-0000-0000-0000-00000000b304', 'Fighter Delta', '00000000-0000-0000-0000-00000000b202'),
+  ('00000000-0000-0000-0000-00000000b305', 'Fighter Echo', null);
+insert into public.fighter_accounts (fighter_id, user_id) values ('00000000-0000-0000-0000-00000000b301', '00000000-0000-0000-0000-00000000e003');
+insert into public.team_memberships (fighter_id, team_id, role, from_date) values
+  ('00000000-0000-0000-0000-00000000b301', '00000000-0000-0000-0000-00000000b201', 'fighter', '2024-01-01'), ('00000000-0000-0000-0000-00000000b302', '00000000-0000-0000-0000-00000000b201', 'fighter', '2024-01-01'),
+  ('00000000-0000-0000-0000-00000000b303', '00000000-0000-0000-0000-00000000b202', 'fighter', '2024-01-01'), ('00000000-0000-0000-0000-00000000b304', '00000000-0000-0000-0000-00000000b202', 'fighter', '2024-01-01');
+insert into public.seasons (id, organization_id, slug, name, starts_on, ends_on) values
+  ('00000000-0000-0000-0000-00000000b501', '00000000-0000-0000-0000-00000000b101', 'nt-s1', 'NACL Season 1', current_date - 365, current_date + 365),
+  ('00000000-0000-0000-0000-00000000b502', '00000000-0000-0000-0000-00000000b103', 'rl-s1', 'Ranking Season 1', current_date - 365, current_date + 365);
+
+-- events: a past one, an upcoming one (both NACL), an upcoming one of another organization, an upcoming one with no organization
+insert into public.events (id, slug, name, status, starts_on, ends_on, organization_id, season_id, registration_opens_at, registration_closes_at) values
+  ('00000000-0000-0000-0000-00000000b401', 'nt-past', 'NACL Past Open', 'published', current_date - 40, current_date - 39, '00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-00000000b501', null, null),
+  ('00000000-0000-0000-0000-00000000b402', 'nt-up', 'NACL Upcoming Open', 'published', current_date + 20, current_date + 21, '00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-00000000b501', now() - interval '1 day', now() + interval '10 days'),
+  ('00000000-0000-0000-0000-00000000b403', 'nt-other-up', 'Other Upcoming', 'published', current_date + 20, current_date + 21, '00000000-0000-0000-0000-00000000b102', null, null, null),
+  ('00000000-0000-0000-0000-00000000b404', 'nt-free-up', 'Free Upcoming', 'published', current_date + 20, current_date + 21, null, null, null, null),
+  ('00000000-0000-0000-0000-00000000b405', 'nt-season-only', 'Season Only Event', 'published', current_date + 5, current_date + 6, null, '00000000-0000-0000-0000-00000000b501', null, null);
+insert into public.event_staff (event_id, user_id, role) values
+  ('00000000-0000-0000-0000-00000000b401', '00000000-0000-0000-0000-00000000e005', 'organizer'), ('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000e005', 'organizer'),
+  ('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000e004', 'marshal');
+insert into public.waiver_versions (id, event_id, version, title, body) values ('00000000-0000-0000-0000-00000000b601', '00000000-0000-0000-0000-00000000b402', 1, 'Waiver', 'Text');
+insert into public.competitions (id, event_id, name, category, gender, tier, structure) values
+  ('00000000-0000-0000-0000-00000000b701', '00000000-0000-0000-0000-00000000b401', 'Past Longsword', 'longsword', 'open', 'Classic', 'round_robin'),
+  ('00000000-0000-0000-0000-00000000b702', '00000000-0000-0000-0000-00000000b402', 'Upcoming Longsword', 'longsword', 'open', 'Classic', 'round_robin');
+select t.ent('past_a', '00000000-0000-0000-0000-00000000b701', null, '00000000-0000-0000-0000-00000000b301');
+select t.ent('past_b', '00000000-0000-0000-0000-00000000b701', null, '00000000-0000-0000-0000-00000000b302');
+select t.ent('up_a', '00000000-0000-0000-0000-00000000b702', null, '00000000-0000-0000-0000-00000000b301');
+select t.ent('up_b', '00000000-0000-0000-0000-00000000b702', null, '00000000-0000-0000-0000-00000000b302');
+select t.mkm('past_m', '00000000-0000-0000-0000-00000000b701', 'round_robin', 'RR', 0, null, 'past_a', 'past_b', null, null);
+select t.mkm('up_m', '00000000-0000-0000-0000-00000000b702', 'round_robin', 'RR', 0, null, 'up_a', 'up_b', null, null);
+select t.mkm('up_m2', '00000000-0000-0000-0000-00000000b702', 'round_robin', 'RR', 1, null, 'up_b', 'up_a', null, null);
+insert into public.results (competition_id, entry_id, final_place, points)
+  values ('00000000-0000-0000-0000-00000000b701', t.gu('e:past_a'), 1, 7), ('00000000-0000-0000-0000-00000000b701', t.gu('e:past_b'), 2, 4);
+
+-- ================================================================ A. who may switch an organization, and who may list them all
+-- set_organization_enabled and admin_list_organizations: the platform owner (a1) and nobody else.
+create function t.matrix(label text, uid uuid) returns void language plpgsql as $$
+begin
+  if uid is null then perform t.as_anon(); else perform t.as_user(uid); end if;
+  perform t.expect_error(label || ' cannot disable an organization', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b101', false, 'nope')$q$, '42501');
+  perform t.expect_error(label || ' cannot enable an organization', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b101', true)$q$, '42501');
+  perform t.expect_error(label || ' cannot list all organizations', $q$select * from public.admin_list_organizations()$q$, '42501');
+  perform t.expect_error(label || ' cannot update organizations.enabled directly', $q$update public.organizations set enabled = false where id = '00000000-0000-0000-0000-00000000b101'$q$, '42501');
+  perform t.expect_error(label || ' cannot update organizations.disabled_at directly', $q$update public.organizations set disabled_at = now() where id = '00000000-0000-0000-0000-00000000b101'$q$, '42501');
+  perform t.expect_error(label || ' cannot update organizations.disabled_by directly', $q$update public.organizations set disabled_by = gen_random_uuid() where id = '00000000-0000-0000-0000-00000000b101'$q$, '42501');
+  perform t.expect_error(label || ' cannot read organizations.disabled_by', $q$select disabled_by from public.organizations$q$, '42501');
+end $$;
+grant execute on function t.matrix(text, uuid) to anon, authenticated;
+select t.matrix('anon', null);
+select t.matrix('a plain user', '00000000-0000-0000-0000-00000000e006');
+select t.matrix('a fighter', '00000000-0000-0000-0000-00000000e003');
+select t.matrix('a team captain', '00000000-0000-0000-0000-00000000e002');
+select t.matrix('a marshal', '00000000-0000-0000-0000-00000000e004');
+select t.matrix('an event organizer', '00000000-0000-0000-0000-00000000e005');
+select t.matrix('an organization admin', '00000000-0000-0000-0000-00000000e001');
+select t.matrix('a platform organizer', '00000000-0000-0000-0000-0000000000a2');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_error('even the owner cannot write organizations.enabled with a plain UPDATE', $q$update public.organizations set enabled = false where id = '00000000-0000-0000-0000-00000000b101'$q$, '42501');
+select t.expect_error('the owner cannot create an organization that is born disabled', $q$insert into public.organizations (slug, name, kind, enabled) values ('born-off', 'Born Off', 'club', false)$q$, '42501');
+select t.expect_ok('the owner can still edit the public profile of an organization', $q$update public.organizations set region = 'North Region' where id = '00000000-0000-0000-0000-00000000b101'$q$);
+select t.expect_eq('the owner lists every organization', (select count(*) from public.admin_list_organizations() where slug in ('nacl-test', 'other-league', 'rank-league')), 3::bigint);
+select t.expect_eq('the list counts member-affiliated teams (the recognized one does not count)', (select teams_count from public.admin_list_organizations() where slug = 'nacl-test'), 4::bigint);
+select t.expect_eq('the list counts distinct fighters of those teams', (select fighters_count from public.admin_list_organizations() where slug = 'nacl-test'), 4::bigint);
+select t.expect_eq('the list counts completed, current and upcoming events (a season-only event counts for its season organization)',
+  (select events_completed::text || '/' || events_current || '/' || events_upcoming from public.admin_list_organizations() where slug = 'nacl-test'), '1/0/2');
+select t.expect_eq('the list counts organization admins', (select admins_count from public.admin_list_organizations() where slug = 'nacl-test'), 1::bigint);
+select t.expect_eq('a new organization is enabled', (select enabled from public.admin_list_organizations() where slug = 'nacl-test'), true);
+
+-- who may link events and seasons, and organization admins as organizers
+select t.as_user('00000000-0000-0000-0000-00000000e001');
+select t.expect_eq('an admin of an enabled organization counts as organizer of its events', private.is_organizer('00000000-0000-0000-0000-00000000b402'), true);
+select t.expect_eq('... and can score them', private.can_score('00000000-0000-0000-0000-00000000b402'), true);
+select t.expect_eq('... but not the events of another organization', private.is_organizer('00000000-0000-0000-0000-00000000b403'), false);
+select t.expect_error('an admin who is not an organizer of the event cannot link it', $q$select public.set_event_organization('00000000-0000-0000-0000-00000000b404', '00000000-0000-0000-0000-00000000b101')$q$, '42501');
+select t.expect_ok('an organization admin creates a season', $q$select public.create_season('00000000-0000-0000-0000-00000000b101', 'nt-s2', 'NACL Season 2', current_date, current_date + 100)$q$);
+select t.expect_error('an admin cannot create a season for another organization', $q$select public.create_season('00000000-0000-0000-0000-00000000b102', 'ol-s2', 'x season', current_date, current_date + 100)$q$, '42501');
+select t.expect_error('an organization admin cannot add organization admins', $q$select public.grant_organization_admin('00000000-0000-0000-0000-00000000b101', 'nstranger@example.test')$q$, '42501');
+select t.expect_eq('an organization admin sees the organization staff', (select count(*) from public.list_organization_staff('00000000-0000-0000-0000-00000000b101')), 1::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000e005');
+select t.expect_error('an event organizer who is not an organization admin cannot link their event to the organization', $q$select public.set_event_organization('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000b102')$q$, '42501');
+select t.expect_error('an event organizer cannot set an organization season on their event', $q$select public.set_event_season('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000b502')$q$, '42501');
+select t.expect_error('event organizers can no longer write events.season_id directly', $q$update public.events set season_id = null where id = '00000000-0000-0000-0000-00000000b402'$q$, '42501');
+select t.expect_error('event organizers cannot write events.organization_id directly', $q$update public.events set organization_id = null where id = '00000000-0000-0000-0000-00000000b402'$q$, '42501');
+select t.expect_error('organization_staff cannot be written through the API', $q$insert into public.organization_staff (organization_id, user_id, role) values ('00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-00000000e005', 'admin')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner links an event to an organization', $q$select public.set_event_organization('00000000-0000-0000-0000-00000000b404', '00000000-0000-0000-0000-00000000b102')$q$);
+select t.expect_ok('... and unlinks it again', $q$select public.set_event_organization('00000000-0000-0000-0000-00000000b404', null)$q$);
+select t.expect_error('an event cannot be linked to an organization other than its season''s', $q$select public.set_event_organization('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000b102')$q$, '22023');
+select t.as_user('00000000-0000-0000-0000-00000000e006');
+select t.expect_eq('organization_staff is private: a stranger sees none', (select count(*) from public.organization_staff), 0::bigint);
+select t.as_anon();
+select t.expect_error('anon cannot read organization_staff', 'select * from public.organization_staff', '42501');
+
+-- ================================================================ A. lifecycle: operate, disable, locked out, public view, owner view, re-enable
+select t.as_user('00000000-0000-0000-0000-00000000e004');
+select t.expect_ok('before: a marshal of the event scores', format($q$select public.record_score_event(gen_random_uuid(), %L, 'point')$q$, t.g('m:up_m')));
+select t.as_user('00000000-0000-0000-0000-00000000e005');
+select t.expect_ok('before: the event organizer edits the event', $q$update public.events set name = 'NACL Upcoming Open!' where id = '00000000-0000-0000-0000-00000000b402'$q$);
+select t.expect_eq('before: the edit landed', (select name from public.events where id = '00000000-0000-0000-0000-00000000b402'), 'NACL Upcoming Open!');
+select t.as_user('00000000-0000-0000-0000-00000000e006');
+select t.expect_ok('before: a stranger asks to join the NACL team', $q$select public.request_team_join('00000000-0000-0000-0000-00000000b201', 'hello')$q$);
+insert into nx select 'join_req', id::text from public.my_team_requests() limit 1;
+select t.as_user('00000000-0000-0000-0000-00000000e007');
+select t.expect_ok('before: a second stranger asks to join (left pending)', $q$select public.request_team_join('00000000-0000-0000-0000-00000000b201', 'me too')$q$);
+insert into nx select 'join_req2', id::text from public.my_team_requests() limit 1;
+select t.as_user('00000000-0000-0000-0000-00000000e002');
+select t.expect_eq('before: the captain is a captain', private.is_team_captain('00000000-0000-0000-0000-00000000b201'), true);
+select t.expect_ok('before: the captain approves the first request', format($q$select public.decide_team_join(%L, 'approved')$q$, t.g('join_req')));
+select t.as_user('00000000-0000-0000-0000-00000000e003');
+select t.expect_ok('before: a fighter registers for the upcoming event', format($q$select public.submit_registration(%L, jsonb_build_object('full_name', 'Fighter Alpha', 'gender', 'male', 'organization', 'HACSA',
+  'insurance', 'hacsa_member', 'waiver_agree', true, 'waiver_version_id', %L, 'waiver_signed_name', 'Fighter Alpha',
+  'competitions', jsonb_build_array(jsonb_build_object('competition_id', %L)),
+  'private', jsonb_build_object('email', 'x@example.test', 'emergency_name', 'Pat Parent', 'emergency_phone', '4035550100', 'medically_fit', true)))$q$,
+  '00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000b601', '00000000-0000-0000-0000-00000000b702'));
+select t.as_admin();
+insert into nx values ('counts0', t.counts());
+
+-- ---- the owner switches NACL off
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner disables NACL', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b101', false, 'lifecycle test')$q$);
+select t.expect_eq('disabled_at is set', (select disabled_at is not null from public.organizations where id = '00000000-0000-0000-0000-00000000b101'), true);
+select t.expect_eq('the owner list shows it disabled', (select enabled from public.admin_list_organizations() where slug = 'nacl-test'), false);
+select t.expect_eq('the switch was audited', (select count(*) from public.audit_log where action = 'organization.disabled' and details ->> 'reason' = 'lifecycle test'), 1::bigint);
+select t.expect_ok('disabling twice is a harmless no-op', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b101', false)$q$);
+select t.expect_eq('... and does not write a second audit row', (select count(*) from public.audit_log where action = 'organization.disabled'), 1::bigint);
+
+-- event staff are locked out
+select t.as_user('00000000-0000-0000-0000-00000000e005');
+select t.expect_eq('after: the event organizer is no longer an organizer', private.is_organizer('00000000-0000-0000-0000-00000000b402'), false);
+select t.expect_eq('after: ... cannot score', private.can_score('00000000-0000-0000-0000-00000000b402'), false);
+select t.expect_eq('after: ... cannot read health data', private.can_read_health('00000000-0000-0000-0000-00000000b402'), false);
+select t.expect_ok('after: the event organizer''s edit is accepted but matches no rows', $q$update public.events set name = 'Hijack' where id = '00000000-0000-0000-0000-00000000b402'$q$);
+select t.expect_eq('after: the organizer no longer even sees the upcoming event', (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b402'), 0::bigint);
+select t.expect_error('after: the organizer cannot add staff', $q$select public.grant_event_role_by_email('00000000-0000-0000-0000-00000000b402', 'nstranger@example.test', 'marshal')$q$, '42501');
+select t.expect_error('after: the organizer cannot read the staff list', $q$select * from public.list_event_staff('00000000-0000-0000-0000-00000000b402')$q$, '42501');
+select t.expect_error('after: the organizer cannot add a competition', $q$insert into public.competitions (event_id, name, category) values ('00000000-0000-0000-0000-00000000b402', 'New', 'longsword')$q$);
+select t.expect_eq('after: the organizer cannot see the registrations', (select count(*) from public.registrations), 0::bigint);
+select t.expect_eq('after: ... but can still see the past event', (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b401'), 1::bigint);
+select t.expect_eq('after: ... though not as an organizer of it', private.is_organizer('00000000-0000-0000-0000-00000000b401'), false);
+select t.as_user('00000000-0000-0000-0000-00000000e004');
+select t.expect_error('after: the marshal cannot score', format($q$select public.record_score_event(gen_random_uuid(), %L, 'point')$q$, t.g('m:up_m')), '42501');
+select t.expect_error('after: the marshal cannot finalize', format($q$select public.finalize_match(%L, 'a', 5, 1, '{}'::jsonb, 0)$q$, t.g('m:up_m')), '42501');
+select t.expect_error('after: the marshal cannot change the queue', format($q$select public.set_match_queue(%L, 'on_deck')$q$, t.g('m:up_m')), '42501');
+select t.expect_eq('after: the marshal cannot see the upcoming matches', (select count(*) from public.matches where id = t.gu('m:up_m')), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000e001');
+select t.expect_eq('after: an admin of a disabled organization is no organizer', private.is_organizer('00000000-0000-0000-0000-00000000b402'), false);
+select t.expect_error('after: ... and cannot create a season', $q$select public.create_season('00000000-0000-0000-0000-00000000b101', 'nt-s3', 'NACL Season 3', current_date, current_date + 100)$q$, '42501');
+select t.expect_error('after: ... and cannot read the staff list', $q$select * from public.list_organization_staff('00000000-0000-0000-0000-00000000b101')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('after: a platform organizer who is not the owner cannot score NACL events', private.can_score('00000000-0000-0000-0000-00000000b402'), false);
+select t.expect_error('after: ... nor decide a join request of a NACL team', format($q$select public.decide_team_join(%L, 'approved')$q$, t.g('join_req2')), '42501');
+-- captains, join requests, registrations
+select t.as_user('00000000-0000-0000-0000-00000000e002');
+select t.expect_eq('after: the captain of a NACL team is no longer a captain', private.is_team_captain('00000000-0000-0000-0000-00000000b201'), false);
+select t.expect_error('after: the captain cannot decide a join request', format($q$select public.decide_team_join(%L, 'approved')$q$, t.g('join_req2')), '42501');
+select t.expect_eq('after: the captain''s inbox is empty', (select count(*) from public.team_requests_inbox()), 0::bigint);
+select t.expect_eq('after: the captain cannot add roster members (memberships stay as they were)',
+  (select count(*) from public.team_memberships where team_id = '00000000-0000-0000-0000-00000000b201'), 3::bigint);
+select t.expect_error('after: the captain cannot write memberships directly', $q$insert into public.team_memberships (fighter_id, team_id) values ('00000000-0000-0000-0000-00000000b305', '00000000-0000-0000-0000-00000000b201')$q$);
+select t.expect_error('after: the captain cannot read team clearance', $q$select * from public.team_clearance('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000b201')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-00000000e008');
+select t.expect_error('after: a stranger cannot ask to join a NACL team', $q$select public.request_team_join('00000000-0000-0000-0000-00000000b201', 'please')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-00000000e003');
+select t.expect_error('after: nobody can register for an upcoming NACL event', format($q$select public.submit_registration(%L, jsonb_build_object('full_name', 'Fighter Alpha', 'gender', 'male', 'organization', 'HACSA',
+  'insurance', 'hacsa_member', 'waiver_agree', true, 'waiver_version_id', %L, 'waiver_signed_name', 'Fighter Alpha',
+  'competitions', jsonb_build_array(jsonb_build_object('competition_id', %L)),
+  'private', jsonb_build_object('email', 'x@example.test', 'emergency_name', 'Pat Parent', 'emergency_phone', '4035550100', 'medically_fit', true)))$q$,
+  '00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000b601', '00000000-0000-0000-0000-00000000b702'));
+select t.expect_eq('after: a registrant still reads their own registration', (select count(*) from public.registrations), 1::bigint);
+-- the public
+select t.as_anon();
+select t.expect_eq('after: anon cannot see the upcoming NACL event', (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b402'), 0::bigint);
+select t.expect_eq('after: ... nor its competitions', (select count(*) from public.competitions where event_id = '00000000-0000-0000-0000-00000000b402'), 0::bigint);
+select t.expect_eq('after: ... nor its entries', (select count(*) from public.entries where competition_id = '00000000-0000-0000-0000-00000000b702'), 0::bigint);
+select t.expect_eq('after: ... nor its matches', (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000b702'), 0::bigint);
+select t.expect_eq('after: ... nor its waiver', (select count(*) from public.waiver_versions where event_id = '00000000-0000-0000-0000-00000000b402'), 0::bigint);
+select t.expect_eq('after: anon still sees the PAST NACL event', (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b401'), 1::bigint);
+select t.expect_eq('after: ... its competitions, entries, matches and results', (select (select count(*) from public.competitions where event_id = '00000000-0000-0000-0000-00000000b401')
+  + (select count(*) from public.entries where competition_id = '00000000-0000-0000-0000-00000000b701') + (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000b701')
+  + (select count(*) from public.results where competition_id = '00000000-0000-0000-0000-00000000b701')), 6::bigint);
+select t.expect_eq('after: fighter_history and team_history keep working for past results', (select count(*) from public.fighter_history where event_slug = 'nt-past'), 2::bigint);
+select t.expect_eq('after: ... the new results view too', (select count(*) from public.fighter_results where event_slug = 'nt-past'), 2::bigint);
+select t.expect_eq('after: events of other organizations and of none are untouched', (select count(*) from public.events where id in ('00000000-0000-0000-0000-00000000b403', '00000000-0000-0000-0000-00000000b404')), 2::bigint);
+select t.expect_eq('after: the organization row stays readable and says inactive', (select enabled::text || '/' || (disabled_at is not null)::text from public.organizations where slug = 'nacl-test'), 'false/true');
+select t.expect_eq('after: list_active_organizations leaves it out', (select count(*) from public.list_active_organizations() where slug = 'nacl-test'), 0::bigint);
+select t.expect_eq('after: ... and keeps the others', (select count(*) from public.list_active_organizations() where slug in ('other-league', 'rank-league')), 2::bigint);
+select t.expect_eq('after: teams_active hides NACL-only teams', (select count(*) from public.teams_active where slug in ('nt-one', 'nt-two', 'nt-three')), 0::bigint);
+select t.expect_eq('after: ... keeps a team that also belongs to an enabled organization, and a team with only a recognized affiliation',
+  (select count(*) from public.teams_active where slug in ('nt-four', 'nt-free')), 2::bigint);
+select t.expect_eq('after: the team rows themselves stay readable (history)', (select count(*) from public.teams where slug in ('nt-one', 'nt-two', 'nt-three', 'nt-four')), 4::bigint);
+select t.expect_eq('after: the roster stays readable', (select count(*) from public.team_roster('00000000-0000-0000-0000-00000000b201')), 3::bigint);
+select t.expect_eq('after: fighters stay readable', (select count(*) from public.fighters where display_name like 'Fighter %'), 5::bigint);
+select t.expect_eq('after: fighter_profile still names the team and its organization as inactive',
+  (select team_name || '/' || team_organization_slug || '/' || team_organization_enabled::text from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'NT One/nacl-test/false');
+-- the owner sees everything
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_eq('after: the owner still sees the upcoming NACL event', (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b402'), 1::bigint);
+select t.expect_eq('after: ... its matches, entries and registrations', (select (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000b702')
+  + (select count(*) from public.entries where competition_id = '00000000-0000-0000-0000-00000000b702') + (select count(*) from public.registrations where event_id = '00000000-0000-0000-0000-00000000b402')), 5::bigint);
+select t.expect_eq('after: the owner can still score NACL events', private.can_score('00000000-0000-0000-0000-00000000b402'), true);
+select t.expect_ok('after: ... and does', format($q$select public.record_score_event(gen_random_uuid(), %L, 'point')$q$, t.g('m:up_m')));
+select t.expect_eq('after: the owner sees disabled organizations in the admin list', (select count(*) from public.admin_list_organizations() where not enabled), 1::bigint);
+select t.as_admin();
+select t.expect_eq('NOTHING was deleted or added by disabling (row counts of every affected table)', t.counts(), t.g('counts0'));
+select t.expect_eq('(score events are append-only history: the marshal''s before, the owner''s after)', (select count(*) from public.score_events where match_id = t.gu('m:up_m')), 2::bigint);
+-- things the switch must NOT touch: teams with no member affiliation or with another enabled organization
+select t.as_user('00000000-0000-0000-0000-00000000e008');
+select t.expect_ok('after: a team that also belongs to an enabled organization still takes join requests', $q$select public.request_team_join('00000000-0000-0000-0000-00000000b204', null)$q$);
+select t.expect_ok('after: a team with no member affiliation takes join requests', $q$select public.request_team_join('00000000-0000-0000-0000-00000000b205', null)$q$);
+select t.as_admin();
+insert into nx values ('counts1', t.counts());
+
+-- ---- the owner switches NACL on again
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner re-enables NACL', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b101', true)$q$);
+select t.expect_eq('disabled_at is cleared', (select disabled_at is null and enabled from public.organizations where id = '00000000-0000-0000-0000-00000000b101'), true);
+select t.expect_eq('the re-enable was audited', (select count(*) from public.audit_log where action = 'organization.enabled'), 1::bigint);
+select t.as_admin();
+select t.expect_eq('re-enabling created or removed nothing', t.counts(), t.g('counts1'));
+select t.as_user('00000000-0000-0000-0000-00000000e005');
+select t.expect_eq('restored: the event organizer is an organizer again', private.is_organizer('00000000-0000-0000-0000-00000000b402'), true);
+select t.expect_ok('restored: ... and edits the event', $q$update public.events set name = 'NACL Upcoming Open' where id = '00000000-0000-0000-0000-00000000b402'$q$);
+select t.expect_eq('restored: the edit landed', (select name from public.events where id = '00000000-0000-0000-0000-00000000b402'), 'NACL Upcoming Open');
+select t.as_user('00000000-0000-0000-0000-00000000e004');
+select t.expect_ok('restored: the marshal scores again', format($q$select public.record_score_event(gen_random_uuid(), %L, 'point')$q$, t.g('m:up_m')));
+select t.as_user('00000000-0000-0000-0000-00000000e002');
+select t.expect_eq('restored: the captain is a captain again', private.is_team_captain('00000000-0000-0000-0000-00000000b201'), true);
+select t.expect_ok('restored: ... and decides the waiting request', format($q$select public.decide_team_join(%L, 'declined')$q$, t.g('join_req2')));
+select t.as_user('00000000-0000-0000-0000-00000000e001');
+select t.expect_eq('restored: the organization admin is an organizer again', private.is_organizer('00000000-0000-0000-0000-00000000b402'), true);
+select t.as_anon();
+select t.expect_eq('restored: anon sees the upcoming event, its competitions and matches again', (select (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b402')
+  + (select count(*) from public.competitions where event_id = '00000000-0000-0000-0000-00000000b402') + (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000b702')), 4::bigint);
+select t.expect_eq('restored: list_active_organizations has it again', (select count(*) from public.list_active_organizations() where slug = 'nacl-test'), 1::bigint);
+select t.expect_eq('restored: teams_active has the teams again', (select count(*) from public.teams_active where slug in ('nt-one', 'nt-two', 'nt-three', 'nt-four')), 4::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000e003');
+select t.expect_ok('restored: registration works again (the existing registration is updated)', format($q$select public.submit_registration(%L, jsonb_build_object('full_name', 'Fighter Alpha', 'gender', 'male', 'organization', 'HACSA',
+  'insurance', 'hacsa_member', 'waiver_agree', true, 'waiver_version_id', %L, 'waiver_signed_name', 'Fighter Alpha',
+  'competitions', jsonb_build_array(jsonb_build_object('competition_id', %L)),
+  'private', jsonb_build_object('email', 'x@example.test', 'emergency_name', 'Pat Parent', 'emergency_phone', '4035550100', 'medically_fit', true)))$q$,
+  '00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000b601', '00000000-0000-0000-0000-00000000b702'));
+-- a season-only event follows its season's organization
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner disables NACL again for the season-only event', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b101', false)$q$);
+select t.as_anon();
+select t.expect_eq('an upcoming event that belongs to NACL only through its season is hidden too', (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b405'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner enables NACL for good', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b101', true)$q$);
+select t.as_anon();
+select t.expect_eq('... and it is back', (select count(*) from public.events where id = '00000000-0000-0000-0000-00000000b405'), 1::bigint);
+
+-- ================================================================ fixtures for results, rosters, conflicts and rankings
+select t.as_admin();
+drop function t.fin(text, text, int, int);
+create function t.fin(p_key text, p_res text, p_a int, p_b int, p_detail jsonb default '{}'::jsonb) returns void language plpgsql as $$
+begin
+  perform public.finalize_match(t.gu('m:' || p_key), p_res, p_a, p_b, p_detail, (select version from public.matches where id = t.gu('m:' || p_key)));
+end $$;
+grant execute on function t.fin(text, text, int, int, jsonb) to anon, authenticated;
+insert into public.fighters (id, display_name, team_id) values
+  ('00000000-0000-0000-0000-00000000b311', 'Elim One', '00000000-0000-0000-0000-00000000b203'), ('00000000-0000-0000-0000-00000000b312', 'Elim Two', '00000000-0000-0000-0000-00000000b203'),
+  ('00000000-0000-0000-0000-00000000b313', 'Elim Three', '00000000-0000-0000-0000-00000000b203'), ('00000000-0000-0000-0000-00000000b314', 'Elim Four', '00000000-0000-0000-0000-00000000b203'),
+  ('00000000-0000-0000-0000-00000000b315', 'Elim Five', '00000000-0000-0000-0000-00000000b203'), ('00000000-0000-0000-0000-00000000b316', 'Elim Six', '00000000-0000-0000-0000-00000000b203'),
+  ('00000000-0000-0000-0000-00000000b317', 'Elim Seven', '00000000-0000-0000-0000-00000000b203');
+insert into public.events (id, slug, name, status, starts_on, ends_on, organization_id, season_id) values
+  ('00000000-0000-0000-0000-00000000b411', 'nt-stats', 'Stats Open', 'published', current_date - 10, current_date - 9, '00000000-0000-0000-0000-00000000b103', '00000000-0000-0000-0000-00000000b502'),
+  ('00000000-0000-0000-0000-00000000b412', 'nt-stats2', 'Stats Open Two', 'published', current_date - 8, current_date - 7, null, null),
+  ('00000000-0000-0000-0000-00000000b413', 'nt-conf', 'Conflict Open', 'draft', current_date + 30, current_date + 31, null, null);
+insert into public.event_staff (event_id, user_id, role) select e, '00000000-0000-0000-0000-0000000000a2', 'organizer'
+  from unnest(array['00000000-0000-0000-0000-00000000b411', '00000000-0000-0000-0000-00000000b412', '00000000-0000-0000-0000-00000000b413']::uuid[]) e;
+insert into public.competitions (id, event_id, name, category, gender, tier, structure) values
+  ('00000000-0000-0000-0000-00000000b801', '00000000-0000-0000-0000-00000000b411', 'Longsword Elim', 'longsword', 'open', 'Classic', 'elimination'),
+  ('00000000-0000-0000-0000-00000000b802', '00000000-0000-0000-0000-00000000b411', 'Buckler RR', 'buckler', 'open', 'Source', 'round_robin'),
+  ('00000000-0000-0000-0000-00000000b803', '00000000-0000-0000-0000-00000000b411', 'Men''s 5v5', '5v5', 'men', 'Classic', 'round_robin'),
+  ('00000000-0000-0000-0000-00000000b811', '00000000-0000-0000-0000-00000000b412', 'S&S cycle', 'sword_shield', 'open', 'Classic', 'round_robin'),
+  ('00000000-0000-0000-0000-00000000b812', '00000000-0000-0000-0000-00000000b412', 'Polearm pools', 'polearm', 'open', 'Regional', 'pools_elimination'),
+  ('00000000-0000-0000-0000-00000000b813', '00000000-0000-0000-0000-00000000b412', 'Profight no tier', 'profight', 'open', null, 'round_robin'),
+  ('00000000-0000-0000-0000-00000000b821', '00000000-0000-0000-0000-00000000b413', 'Conflict Longsword', 'longsword', 'open', 'Classic', 'round_robin'),
+  ('00000000-0000-0000-0000-00000000b822', '00000000-0000-0000-0000-00000000b413', 'Conflict 5v5', '5v5', 'open', 'Classic', 'round_robin');
+
+-- ---- elimination with byes and a third-place match: 6 entries in an 8 bracket (seeds 1 and 2 have byes), plus a withdrawn entry
+select t.ent('s' || n, '00000000-0000-0000-0000-00000000b801', null, ('00000000-0000-0000-0000-00000000b31' || n)::uuid) from generate_series(1, 6) n;
+select t.ent('s7', '00000000-0000-0000-0000-00000000b801', null, '00000000-0000-0000-0000-00000000b317', 'withdrawn');
+select t.mkm('ef', '00000000-0000-0000-0000-00000000b801', 'final', 'Final', 0, null, null, null, null, null);
+select t.mkm('e3', '00000000-0000-0000-0000-00000000b801', 'third_place', 'Third place', 0, null, null, null, null, null);
+select t.mkm('es1', '00000000-0000-0000-0000-00000000b801', 'elimination', 'Semifinal', 0, null, 's1', null, 'ef', 'a');
+select t.mkm('es2', '00000000-0000-0000-0000-00000000b801', 'elimination', 'Semifinal', 1, null, 's2', null, 'ef', 'b');
+select t.mkm('eq2', '00000000-0000-0000-0000-00000000b801', 'elimination', 'Quarterfinal', 1, null, 's4', 's5', 'es1', 'b');
+select t.mkm('eq4', '00000000-0000-0000-0000-00000000b801', 'elimination', 'Quarterfinal', 3, null, 's3', 's6', 'es2', 'b');
+-- ---- round robin that needs head-to-head: A and B both 2 wins and +2 difference; B has more points scored, A beat B
+select t.ent('rA', '00000000-0000-0000-0000-00000000b802', null, '00000000-0000-0000-0000-00000000b312');
+select t.ent('rB', '00000000-0000-0000-0000-00000000b802', null, '00000000-0000-0000-0000-00000000b311');
+select t.ent('rC', '00000000-0000-0000-0000-00000000b802', null, '00000000-0000-0000-0000-00000000b313');
+select t.ent('rD', '00000000-0000-0000-0000-00000000b802', null, '00000000-0000-0000-0000-00000000b314');
+select t.mkm('rab', '00000000-0000-0000-0000-00000000b802', 'round_robin', 'RR', 0, null, 'rA', 'rB', null, null);
+select t.mkm('rac', '00000000-0000-0000-0000-00000000b802', 'round_robin', 'RR', 1, null, 'rA', 'rC', null, null);
+select t.mkm('rda', '00000000-0000-0000-0000-00000000b802', 'round_robin', 'RR', 2, null, 'rD', 'rA', null, null);
+select t.mkm('rbc', '00000000-0000-0000-0000-00000000b802', 'round_robin', 'RR', 3, null, 'rB', 'rC', null, null);
+select t.mkm('rbd', '00000000-0000-0000-0000-00000000b802', 'round_robin', 'RR', 4, null, 'rB', 'rD', null, null);
+select t.mkm('rcd', '00000000-0000-0000-0000-00000000b802', 'round_robin', 'RR', 5, null, 'rC', 'rD', null, null);
+-- ---- 5v5 with rosters
+select t.ent('tA', '00000000-0000-0000-0000-00000000b803', '00000000-0000-0000-0000-00000000b201', null);
+select t.ent('tB', '00000000-0000-0000-0000-00000000b803', '00000000-0000-0000-0000-00000000b202', null);
+select t.mkm('t1', '00000000-0000-0000-0000-00000000b803', 'round_robin', 'RR', 0, null, 'tA', 'tB', null, null);
+-- ---- a three-way cycle (every tie-break level)
+select t.ent('cX', '00000000-0000-0000-0000-00000000b811', null, '00000000-0000-0000-0000-00000000b311');
+select t.ent('cY', '00000000-0000-0000-0000-00000000b811', null, '00000000-0000-0000-0000-00000000b312');
+select t.ent('cZ', '00000000-0000-0000-0000-00000000b811', null, '00000000-0000-0000-0000-00000000b313');
+select t.mkm('cxy', '00000000-0000-0000-0000-00000000b811', 'round_robin', 'RR', 0, null, 'cX', 'cY', null, null);
+select t.mkm('cyz', '00000000-0000-0000-0000-00000000b811', 'round_robin', 'RR', 1, null, 'cY', 'cZ', null, null);
+select t.mkm('czx', '00000000-0000-0000-0000-00000000b811', 'round_robin', 'RR', 2, null, 'cZ', 'cX', null, null);
+-- ---- pools (two pools of three) then a knockout without a third-place match
+select t.ent('pA1', '00000000-0000-0000-0000-00000000b812', null, '00000000-0000-0000-0000-00000000b311');
+select t.ent('pA2', '00000000-0000-0000-0000-00000000b812', null, '00000000-0000-0000-0000-00000000b312');
+select t.ent('pA3', '00000000-0000-0000-0000-00000000b812', null, '00000000-0000-0000-0000-00000000b313');
+select t.ent('pB1', '00000000-0000-0000-0000-00000000b812', null, '00000000-0000-0000-0000-00000000b314');
+select t.ent('pB2', '00000000-0000-0000-0000-00000000b812', null, '00000000-0000-0000-0000-00000000b315');
+select t.ent('pB3', '00000000-0000-0000-0000-00000000b812', null, '00000000-0000-0000-0000-00000000b316');
+select t.mkm('pf', '00000000-0000-0000-0000-00000000b812', 'final', 'Final', 0, null, null, null, null, null);
+select t.mkm('ps1', '00000000-0000-0000-0000-00000000b812', 'elimination', 'Semifinal', 0, null, 'pA1', 'pB2', 'pf', 'a');
+select t.mkm('ps2', '00000000-0000-0000-0000-00000000b812', 'elimination', 'Semifinal', 1, null, 'pB1', 'pA2', 'pf', 'b');
+select t.mkm('pa12', '00000000-0000-0000-0000-00000000b812', 'pool', 'Pool A', 0, 'A', 'pA1', 'pA2', null, null);
+select t.mkm('pa13', '00000000-0000-0000-0000-00000000b812', 'pool', 'Pool A', 1, 'A', 'pA1', 'pA3', null, null);
+select t.mkm('pa23', '00000000-0000-0000-0000-00000000b812', 'pool', 'Pool A', 2, 'A', 'pA2', 'pA3', null, null);
+select t.mkm('pb12', '00000000-0000-0000-0000-00000000b812', 'pool', 'Pool B', 0, 'B', 'pB1', 'pB2', null, null);
+select t.mkm('pb13', '00000000-0000-0000-0000-00000000b812', 'pool', 'Pool B', 1, 'B', 'pB1', 'pB3', null, null);
+select t.mkm('pb23', '00000000-0000-0000-0000-00000000b812', 'pool', 'Pool B', 2, 'B', 'pB2', 'pB3', null, null);
+-- ---- no tier
+select t.ent('nA', '00000000-0000-0000-0000-00000000b813', null, '00000000-0000-0000-0000-00000000b314');
+select t.ent('nB', '00000000-0000-0000-0000-00000000b813', null, '00000000-0000-0000-0000-00000000b315');
+select t.mkm('n1', '00000000-0000-0000-0000-00000000b813', 'round_robin', 'RR', 0, null, 'nA', 'nB', null, null);
+
+-- ================================================================ C. rosters and mercenaries
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('the organizer sets a roster; a team member is a fighter, a member of another team a mercenary, a team-less person a guest',
+  public.set_entry_roster(t.gu('e:tA'), jsonb_build_array(
+    jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b301'), jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b302'),
+    jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b303'), jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b305'))), 4);
+select t.expect_eq('roles were derived', (select string_agg(fighter_id::text || ':' || role, ',' order by fighter_id) from public.entry_fighters where entry_id = t.gu('e:tA')),
+  '00000000-0000-0000-0000-00000000b301:fighter,00000000-0000-0000-0000-00000000b302:fighter,00000000-0000-0000-0000-00000000b303:mercenary,00000000-0000-0000-0000-00000000b305:guest');
+select t.expect_eq('the mercenary row snapshots the home team', (select permanent_team_id from public.entry_fighters where entry_id = t.gu('e:tA') and role = 'mercenary'), '00000000-0000-0000-0000-00000000b202'::uuid);
+select t.as_admin();
+select t.expect_eq('a mercenary does NOT change fighters.team_id', (select team_id from public.fighters where id = '00000000-0000-0000-0000-00000000b303'), '00000000-0000-0000-0000-00000000b202'::uuid);
+select t.expect_eq('... nor team_memberships (still one membership, not a mercenary, still on the home team)', (select count(*) from public.team_memberships
+  where fighter_id = '00000000-0000-0000-0000-00000000b303' and team_id = '00000000-0000-0000-0000-00000000b202' and not mercenary and to_date is null), 1::bigint);
+select t.expect_eq('... and added no membership for the lending team', (select count(*) from public.team_memberships where fighter_id = '00000000-0000-0000-0000-00000000b303'), 1::bigint);
+select t.expect_eq('... and the guest got no team', (select team_id is null from public.fighters where id = '00000000-0000-0000-0000-00000000b305'), true);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('a fighter cannot be on two entries of the same competition', format($q$select public.set_entry_roster(%L, jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b303')))$q$, t.g('e:tB')), '23505');
+select t.expect_error('a fighter of another team cannot be listed as a plain fighter', format($q$select public.set_entry_roster(%L, jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b301', 'role', 'fighter')))$q$, t.g('e:tB')), '22023');
+select t.expect_error('a member of the entry''s own team cannot be a mercenary', format($q$select public.set_entry_roster(%L, jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b304', 'role', 'mercenary')))$q$, t.g('e:tB')), '22023');
+select t.expect_error('an unknown role is refused', format($q$select public.set_entry_roster(%L, jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b304', 'role', 'captain')))$q$, t.g('e:tB')), '22023');
+select t.expect_error('the same fighter twice in one roster is refused', format($q$select public.set_entry_roster(%L, jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b304'), jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b304')))$q$, t.g('e:tB')), '22023');
+select t.expect_error('a duel entry has no roster', format($q$select public.set_entry_roster(%L, '[]'::jsonb)$q$, t.g('e:s1')), '22023');
+select t.expect_error('a roster that fails half way changes nothing', format($q$select public.set_entry_roster(%L, jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b301'), jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b302', 'role', 'captain')))$q$, t.g('e:tA')), '22023');
+select t.expect_eq('... still 4 on the first entry', (select count(*) from public.entry_fighters where entry_id = t.gu('e:tA')), 4::bigint);
+select t.expect_eq('the second entry''s own member is accepted', public.set_entry_roster(t.gu('e:tB'), jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b304'))), 1);
+select t.as_user('00000000-0000-0000-0000-00000000e006');
+select t.expect_error('a stranger cannot set a roster', format($q$select public.set_entry_roster(%L, '[]'::jsonb)$q$, t.g('e:tA')), '42501');
+select t.expect_error('nobody can write entry_fighters directly', format($q$insert into public.entry_fighters (entry_id, fighter_id) values (%L, '00000000-0000-0000-0000-00000000b304')$q$, t.g('e:tA')));
+select t.as_user('00000000-0000-0000-0000-00000000e005');
+select t.expect_error('an organizer of another event cannot set it either', format($q$select public.set_entry_roster(%L, '[]'::jsonb)$q$, t.g('e:tA')), '42501');
+select t.as_anon();
+select t.expect_eq('anon reads the roster of a public event', (select count(*) from public.entry_roster where entry_id = t.gu('e:tA')), 4::bigint);
+select t.expect_eq('... with the lending team named for the mercenary', (select permanent_team_name from public.entry_roster where entry_id = t.gu('e:tA') and role = 'mercenary'), 'NT Two');
+
+-- ================================================================ D. finish_competition: elimination with byes and a third-place match
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('a competition cannot be finished while a match is open', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b801'), 'P0001');
+select t.fin('eq2', 'a', 5, 3);
+select t.fin('eq4', 'a', 5, 2);
+select t.fin('es1', 'a', 5, 1);
+select t.fin('es2', 'b', 2, 5);
+select t.expect_eq('semifinal losers were routed into the third-place match', (select count(*) from public.matches where id = t.gu('m:e3') and entry_a = t.gu('e:s4') and entry_b = t.gu('e:s2')), 1::bigint);
+select t.fin('ef', 'a', 5, 4);
+select t.expect_error('one match still open (third place)', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b801'), 'P0001');
+select t.fin('e3', 'b', 3, 5);
+select t.as_user('00000000-0000-0000-0000-00000000e005');
+select t.expect_error('an organizer of another event cannot finish it', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b801'), '42501');
+select t.as_user('00000000-0000-0000-0000-00000000e006');
+select t.expect_error('a stranger cannot finish a competition', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b801'), '42501');
+select t.as_anon();
+select t.expect_error('anon cannot finish a competition', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b801'), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('an unknown multiplier source is refused', format($q$select public.finish_competition(%L, 'bogus')$q$, '00000000-0000-0000-0000-00000000b801'), '22023');
+select t.expect_eq('finishing ranks every entry that is not withdrawn', public.finish_competition('00000000-0000-0000-0000-00000000b801'), 6);
+select t.expect_eq('elimination places: champion, runner-up, third-place winner, third-place loser, quarterfinal losers share 5th',
+  (select string_agg(k || '=' || t.place('00000000-0000-0000-0000-00000000b801', k)::text, ',' order by k) from unnest(array['s1','s2','s3','s4','s5','s6']) k), 's1=1,s2=3,s3=2,s4=4,s5=5,s6=5');
+select t.expect_eq('elimination points (wins 1/2 + placement 6/4/2, Classic x1): bye entry s1 = 2 elimination wins + gold', t.pts('00000000-0000-0000-0000-00000000b801', 's1'), 10::numeric);
+select t.expect_eq('s3 = 2 elimination wins + silver', t.pts('00000000-0000-0000-0000-00000000b801', 's3'), 8::numeric);
+select t.expect_eq('s2 = third-place win + bronze', t.pts('00000000-0000-0000-0000-00000000b801', 's2'), 4::numeric);
+select t.expect_eq('s4 = one quarterfinal win, nothing else', t.pts('00000000-0000-0000-0000-00000000b801', 's4'), 2::numeric);
+select t.expect_eq('s5 and s6 score nothing', t.pts('00000000-0000-0000-0000-00000000b801', 's5') + t.pts('00000000-0000-0000-0000-00000000b801', 's6'), 0::numeric);
+select t.expect_eq('the withdrawn entry has no result', (select count(*) from public.results where entry_id = t.gu('e:s7')), 0::bigint);
+select t.expect_eq('the competition is finished', (select status from public.competitions where id = '00000000-0000-0000-0000-00000000b801'), 'finished');
+select t.expect_eq('finishing again recomputes the same thing (idempotent)', public.finish_competition('00000000-0000-0000-0000-00000000b801'), 6);
+select t.expect_eq('... no duplicate rows', (select count(*) from public.results where competition_id = '00000000-0000-0000-0000-00000000b801'), 6::bigint);
+select t.expect_eq('... same points', (select sum(points) from public.results where competition_id = '00000000-0000-0000-0000-00000000b801'), 24::numeric);
+select t.expect_eq('finishing was audited', (select count(*) from public.audit_log where action = 'competition.finished' and subject = '00000000-0000-0000-0000-00000000b801'), 2::bigint);
+-- reopening a match un-finishes the competition
+select t.expect_ok('an organizer reopens the third-place match', format($q$select public.reopen_match(%L, 'wrong score')$q$, t.g('m:e3')));
+select t.expect_eq('the competition is running again', (select status from public.competitions where id = '00000000-0000-0000-0000-00000000b801'), 'running');
+select t.expect_eq('its results were cleared', (select count(*) from public.results where competition_id = '00000000-0000-0000-0000-00000000b801'), 0::bigint);
+select t.expect_error('it cannot be finished with the match open', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b801'), 'P0001');
+select t.fin('e3', 'b', 3, 5);
+select t.expect_eq('finishing again after the correction works', public.finish_competition('00000000-0000-0000-0000-00000000b801'), 6);
+select t.expect_eq('the unfinish was audited', (select count(*) from public.audit_log where action = 'competition.reopened' and subject = '00000000-0000-0000-0000-00000000b801'), 1::bigint);
+
+-- ---- round robin: head-to-head beats points scored
+select t.fin('rab', 'a', 5, 2);
+select t.fin('rac', 'a', 5, 4);
+select t.fin('rda', 'a', 5, 3);
+select t.fin('rbc', 'a', 10, 7);
+select t.fin('rbd', 'a', 7, 5);
+select t.fin('rcd', 'a', 5, 0);
+select t.expect_eq('round robin result rows', public.finish_competition('00000000-0000-0000-0000-00000000b802'), 4);
+select t.expect_eq('round robin places: A and B level on wins and difference, A beat B, so A first although B scored more', (select string_agg(k || '=' || t.place('00000000-0000-0000-0000-00000000b802', k)::text, ',' order by k) from unnest(array['rA','rB','rC','rD']) k), 'rA=1,rB=2,rC=3,rD=4');
+select t.expect_eq('round robin points (wins + placement) x Source 0.5 (tournament structure): A 8 -> 4, B 6 -> 3, C 3 -> 1.5, D 1 -> 0.5',
+  (select string_agg(t.pts('00000000-0000-0000-0000-00000000b802', k)::text, ',' order by k) from unnest(array['rA','rB','rC','rD']) k), '4.00,3.00,1.50,0.50');
+
+-- ---- a cycle: everything is level, so all three share first place
+select t.fin('cxy', 'a', 5, 3, '{"kind":"duel","rounds":{"a":[2,1,2],"b":[1,2,0]}}'::jsonb);
+select t.fin('cyz', 'a', 5, 3);
+select t.fin('czx', 'a', 5, 3);
+select t.expect_eq('cycle result rows', public.finish_competition('00000000-0000-0000-0000-00000000b811'), 3);
+select t.expect_eq('a full tie shares the place (and the placement points)', (select string_agg(t.place('00000000-0000-0000-0000-00000000b811', k)::text || '/' || t.pts('00000000-0000-0000-0000-00000000b811', k)::text, ',' order by k) from unnest(array['cX','cY','cZ']) k), '1/7.00,1/7.00,1/7.00');
+
+-- ---- pools then knockout without a third-place match
+select t.fin('pa12', 'a', 5, 0);
+select t.fin('pa13', 'a', 5, 0);
+select t.fin('pa23', 'a', 5, 2);
+select t.fin('pb12', 'a', 5, 1);
+select t.fin('pb13', 'a', 5, 4);
+select t.fin('pb23', 'a', 5, 4);
+select t.fin('ps1', 'a', 5, 2);
+select t.fin('ps2', 'a', 5, 3);
+select t.fin('pf', 'a', 5, 1);
+select t.expect_eq('pools result rows', public.finish_competition('00000000-0000-0000-0000-00000000b812'), 6);
+select t.expect_eq('pools + knockout places: final, semifinal losers share 3rd (no third-place match), pool-only entries after them ordered by difference',
+  (select string_agg(k || '=' || t.place('00000000-0000-0000-0000-00000000b812', k)::text, ',' order by k) from unnest(array['pA1','pA2','pA3','pB1','pB2','pB3']) k), 'pA1=1,pA2=3,pA3=6,pB1=2,pB2=3,pB3=5');
+select t.expect_eq('pools points x Regional 1.25 (tournament structure): A1 (4 wins + gold = 12) 15, B1 (3 wins + silver = 8) 10, A2 and B2 (1 pool win + bronze = 3) 3.75, pool-only entries 0',
+  (select string_agg(t.pts('00000000-0000-0000-0000-00000000b812', k)::text, ',' order by k) from unnest(array['pA1','pA2','pA3','pB1','pB2','pB3']) k), '15.00,3.75,0.00,10.00,3.75,0.00');
+select t.expect_eq('the same competition with the league-structure multiplier (x1.5)', public.finish_competition('00000000-0000-0000-0000-00000000b812', 'league_structure'), 6);
+select t.expect_eq('... A1 is now 18', t.pts('00000000-0000-0000-0000-00000000b812', 'pA1'), 18::numeric);
+select t.expect_eq('back to the default source', public.finish_competition('00000000-0000-0000-0000-00000000b812'), 6);
+select t.expect_eq('... A1 is 15 again', t.pts('00000000-0000-0000-0000-00000000b812', 'pA1'), 15::numeric);
+-- no tier: places, but no points
+select t.fin('n1', 'a', 10, 9);
+select t.expect_eq('a competition without a tier is finished', public.finish_competition('00000000-0000-0000-0000-00000000b813'), 2);
+select t.expect_eq('... places are stored, points are 0 (no tier, no league points)', (select string_agg(final_place::text || '/' || points::text, ',' order by final_place) from public.results where competition_id = '00000000-0000-0000-0000-00000000b813'), '1/0,2/0');
+select t.as_admin();
+select t.mkm('n2', '00000000-0000-0000-0000-00000000b813', 'round_robin', 'RR', 1, null, 'nB', 'nA', null, null);
+select t.expect_eq('a new unfinished match in a finished competition reopens it', (select status || '/' || (select count(*) from public.results where competition_id = '00000000-0000-0000-0000-00000000b813')::text from public.competitions where id = '00000000-0000-0000-0000-00000000b813'), 'running/0');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('... and it cannot be finished until the new match is played', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b813'), 'P0001');
+select t.fin('n2', 'a', 10, 9);
+select t.expect_eq('after the extra match each entry has one win and the same score line, so they share first place', public.finish_competition('00000000-0000-0000-0000-00000000b813'), 2);
+select t.expect_eq('... both are first', (select string_agg(final_place::text, ',' order by final_place) from public.results where competition_id = '00000000-0000-0000-0000-00000000b813'), '1,1');
+
+-- ================================================================ D. rosters feed the 5v5 result and the statistics
+select t.fin('t1', 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb);
+select t.expect_eq('the 5v5 competition finishes', public.finish_competition('00000000-0000-0000-0000-00000000b803'), 2);
+select t.expect_error('a finished competition''s roster is locked', format($q$select public.set_entry_roster(%L, '[]'::jsonb)$q$, t.g('e:tA')), 'P0001');
+select t.expect_eq('team points: A = 1 win + gold = 7, B = 4 (silver), x Classic 1', (select string_agg(t.pts('00000000-0000-0000-0000-00000000b803', k)::text, ',' order by k) from unnest(array['tA','tB']) k), '7.00,4.00');
+select t.as_anon();
+select t.expect_eq('anon: team_stats for the winner (events/matches/5v5/3v3/wins/losses/win%/golds/podiums/tournament wins/points/form)', (select events || '/' || matches || '/' || matches_5v5 || '/' || matches_3v3 || '/' || wins || '/' || losses || '/' || win_pct || '/' || golds || '/' || podiums || '/' || tournament_wins || '/' || points || '/' || recent_form
+  from public.team_stats where team_slug = 'nt-one'), '1/1/1/0/1/0/100.0/1/1/1/7.00/W');
+select t.expect_eq('anon: team_stats for the loser', (select matches || '/' || wins || '/' || losses || '/' || silvers || '/' || recent_form from public.team_stats where team_slug = 'nt-two'), '1/0/1/1/L');
+select t.expect_eq('anon: a team with no matches has zeros and a null win rate', (select matches::text || '/' || coalesce(win_pct::text, 'null') || '/' || recent_form from public.team_stats where team_slug = 'nt-three'), '0/null/');
+select t.expect_eq('a mercenary appears in the melee stats of the entry he fought for (rounds from detail)', (select matches || '/' || wins || '/' || rounds_won || '/' || rounds_lost
+  from public.fighter_match_stats where fighter_id = '00000000-0000-0000-0000-00000000b303' and category = '5v5'), '1/1/2/1');
+select t.expect_eq('... and in his career: events, matches, wins, losses, win%, golds, podiums, tournament victories, points', (select events_attended || '/' || matches || '/' || wins || '/' || losses || '/' || win_pct || '/' || golds || '/' || podiums || '/' || tournament_victories || '/' || points
+  from public.fighter_career_stats where fighter_id = '00000000-0000-0000-0000-00000000b303'), '1/1/1/0/100.0/1/1/1/7.00');
+select t.expect_eq('the opposing roster fighter has a loss and a silver', (select matches || '/' || losses || '/' || silvers || '/' || points from public.fighter_career_stats where fighter_id = '00000000-0000-0000-0000-00000000b304'), '1/1/1/4.00');
+select t.expect_eq('every rostered fighter of the winning entry gets the appearance', (select count(*) from public.fighter_match_rows where fighter_id in ('00000000-0000-0000-0000-00000000b301', '00000000-0000-0000-0000-00000000b302', '00000000-0000-0000-0000-00000000b305') and category = '5v5'), 3::bigint);
+select t.expect_eq('duel stats: fighter One in longsword: matches, wins, losses, rounds (fall back to the scores), points for/against',
+  (select matches || '/' || wins || '/' || losses || '/' || rounds_won || '/' || rounds_lost || '/' || points_for || '/' || points_against from public.fighter_match_stats
+   where fighter_id = '00000000-0000-0000-0000-00000000b311' and category = 'longsword'), '2/2/0/10/5/10/5');
+select t.expect_eq('duel stats: rounds come from detail when stored (2 won, 1 lost) and from the scores otherwise (3, 5)',
+  (select rounds_won || '/' || rounds_lost || '/' || points_for || '/' || points_against from public.fighter_match_stats where fighter_id = '00000000-0000-0000-0000-00000000b311' and category = 'sword_shield'), '5/6/8/8');
+select t.expect_eq('stats are split by season and organization (Ranking League season)', (select count(*) from public.fighter_match_stats where fighter_id = '00000000-0000-0000-0000-00000000b311'
+  and season_id = '00000000-0000-0000-0000-00000000b502' and organization_id = '00000000-0000-0000-0000-00000000b103'), 2::bigint);
+select t.expect_eq('fighter career: events, matches, wins, losses, draws, win%, golds, silvers, bronzes, podiums, tournament victories, points',
+  (select events_attended || '/' || matches || '/' || wins || '/' || losses || '/' || draws || '/' || win_pct || '/' || golds || '/' || silvers || '/' || bronzes || '/' || podiums || '/' || tournament_victories || '/' || points
+   from public.fighter_career_stats where fighter_id = '00000000-0000-0000-0000-00000000b311'), '2/11/9/2/0/81.8/3/1/0/4/3/35.00');
+select t.expect_eq('fighter season stats (only events with a season)', (select events_attended || '/' || matches || '/' || wins || '/' || losses || '/' || golds || '/' || silvers || '/' || points
+  from public.fighter_season_stats where fighter_id = '00000000-0000-0000-0000-00000000b311' and season_id = '00000000-0000-0000-0000-00000000b502'), '1/5/4/1/1/1/13.00');
+select t.expect_eq('events without a season have no season row', (select count(*) from public.fighter_season_stats where fighter_id = '00000000-0000-0000-0000-00000000b311'), 1::bigint);
+
+-- ================================================================ D. rankings agree with the results
+select t.expect_eq('ranking_fighters (organization, all categories): points are the sum of results.points',
+  (select string_agg(right(fighter_id::text, 4) || '=' || points::text || '#' || rank, ',' order by rank, fighter_id) from public.ranking_fighters
+   where scope = 'org_all' and organization_id = '00000000-0000-0000-0000-00000000b103' and fighter_id in ('00000000-0000-0000-0000-00000000b311', '00000000-0000-0000-0000-00000000b313', '00000000-0000-0000-0000-00000000b312', '00000000-0000-0000-0000-00000000b304', '00000000-0000-0000-0000-00000000b314', '00000000-0000-0000-0000-00000000b315')),
+  'b311=13.00#1,b313=9.50#2,b312=8.00#3,b304=4.00#8,b314=2.50#9,b315=0.00#10');
+select t.expect_eq('ties share a rank and skip the next ones (four fighters on 7 points are all 4th)', (select count(*) from public.ranking_fighters where scope = 'org_all' and organization_id = '00000000-0000-0000-0000-00000000b103' and points = 7 and rank = 4), 4::bigint);
+select t.expect_eq('no pair of fighters is ranked against their points (any scope)', (select count(*) from public.ranking_fighters a join public.ranking_fighters b
+  on a.scope = b.scope and a.organization_id is not distinct from b.organization_id and a.season_id is not distinct from b.season_id and a.category is not distinct from b.category and a.gender is not distinct from b.gender
+  where a.points > b.points and a.rank >= b.rank), 0::bigint);
+select t.expect_eq('ranking per category (organization career, longsword, open)', (select string_agg(right(fighter_id::text, 4) || '#' || rank, ',' order by rank, fighter_id) from public.ranking_fighters
+  where scope = 'org_career' and organization_id = '00000000-0000-0000-0000-00000000b103' and category = 'longsword' and gender = 'open'), 'b311#1,b313#2,b312#3,b314#4,b315#5,b316#5');
+select t.expect_eq('ranking per season, category and gender', (select count(*) from public.ranking_fighters where scope = 'season' and season_id = '00000000-0000-0000-0000-00000000b502' and category = '5v5' and gender = 'men'), 5::bigint);
+select t.expect_eq('the career scope sums everything (all organizations and categories)', (select points from public.ranking_fighters where scope = 'career' and fighter_id = '00000000-0000-0000-0000-00000000b311'), 35::numeric);
+select t.expect_eq('career ranking agrees with fighter_career_stats for everybody', (select count(*) from public.ranking_fighters r join public.fighter_career_stats c on c.fighter_id = r.fighter_id where r.scope = 'career' and r.points <> c.points), 0::bigint);
+select t.expect_eq('ranking_teams (organization, all categories)', (select string_agg(team_slug || '=' || points::text || '#' || rank, ',' order by rank) from public.ranking_teams where scope = 'org_all' and organization_id = '00000000-0000-0000-0000-00000000b103'), 'nt-one=7.00#1,nt-two=4.00#2');
+select t.expect_eq('events of other organizations never mix into an organization ranking (Alpha has 7 here, 7 more in NACL, 14 in the career)', (select points::text || '/' || (select points::text from public.ranking_fighters where scope = 'career' and fighter_id = '00000000-0000-0000-0000-00000000b301') from public.ranking_fighters where scope = 'org_all' and organization_id = '00000000-0000-0000-0000-00000000b103' and fighter_id = '00000000-0000-0000-0000-00000000b301'), '7.00/14.00');
+select t.expect_eq('statistics and rankings expose no account ids', (select count(*) from information_schema.columns where table_schema = 'public' and table_name in ('ranking_fighters', 'ranking_teams', 'fighter_career_stats', 'team_stats', 'fighter_match_stats', 'fighter_season_stats', 'fighter_results', 'team_results', 'entry_roster')
+  and column_name ~ '(^|_)(user|actor|account|by)(_id)?$'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the owner disables the ranking league', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b103', false)$q$);
+select t.as_anon();
+select t.expect_eq('rankings of a disabled organization whose events are all in the past are unchanged', (select points from public.ranking_fighters where scope = 'org_all' and organization_id = '00000000-0000-0000-0000-00000000b103' and fighter_id = '00000000-0000-0000-0000-00000000b311'), 13::numeric);
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('... and re-enabled', $q$select public.set_organization_enabled('00000000-0000-0000-0000-00000000b103', true)$q$);
+
+-- ================================================================ C. scheduling conflicts (same fighter in a 5v5 roster and a longsword duel)
+select t.as_admin();
+insert into nx values ('t0', (date_trunc('day', now()) + interval '30 days 10 hours')::text);
+select t.ent('cl_a', '00000000-0000-0000-0000-00000000b821', null, '00000000-0000-0000-0000-00000000b301');
+select t.ent('cl_b', '00000000-0000-0000-0000-00000000b821', null, '00000000-0000-0000-0000-00000000b302');
+select t.ent('cl_d', '00000000-0000-0000-0000-00000000b821', null, '00000000-0000-0000-0000-00000000b304');
+select t.ent('c5_a', '00000000-0000-0000-0000-00000000b822', '00000000-0000-0000-0000-00000000b201', null);
+select t.ent('c5_b', '00000000-0000-0000-0000-00000000b822', '00000000-0000-0000-0000-00000000b202', null);
+select t.mkm('l1', '00000000-0000-0000-0000-00000000b821', 'round_robin', 'RR', 0, null, 'cl_a', 'cl_d', null, null, t.g('t0')::timestamptz, 15);
+select t.mkm('l2', '00000000-0000-0000-0000-00000000b821', 'round_robin', 'RR', 1, null, 'cl_b', 'cl_a', null, null, t.g('t0')::timestamptz + interval '15 minutes', 15);
+select t.mkm('l3', '00000000-0000-0000-0000-00000000b821', 'round_robin', 'RR', 2, null, 'cl_a', 'cl_b', null, null, null, 15);
+select t.mkm('l4', '00000000-0000-0000-0000-00000000b821', 'round_robin', 'RR', 3, null, 'cl_a', 'cl_d', null, null, t.g('t0')::timestamptz + interval '12 minutes', 15);
+update public.matches set queue_state = 'final', result = 'a', winner_entry_id = entry_a, score_a = 5, score_b = 0 where id = t.gu('m:l4');
+select t.mkm('m1', '00000000-0000-0000-0000-00000000b822', 'round_robin', 'RR', 0, null, 'c5_a', 'c5_b', null, null, t.g('t0')::timestamptz + interval '10 minutes', 20);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('rosters for the conflict event: home team and lending team', public.set_entry_roster(t.gu('e:c5_a'), jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b301'), jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b302'))), 2);
+select t.expect_eq('... second roster (a mercenary is fine, the same fighter is not on the other entry)', public.set_entry_roster(t.gu('e:c5_b'), jsonb_build_array(jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b303'), jsonb_build_object('fighter_id', '00000000-0000-0000-0000-00000000b304'))), 2);
+select t.expect_eq('conflicts: 4 rows (Alpha and Delta overlap the 5v5 by 5 minutes, Alpha and Bravo by 15); touching matches, unscheduled and final matches are ignored',
+  (select count(*) || '/' || sum(overlap_minutes) || '/' || count(distinct fighter_id) from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413')), '4/40/3');
+select t.expect_eq('each conflict names both matches in time order', (select count(*) from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413') where match_a = t.gu('m:l1') and match_b = t.gu('m:m1') and competition_a = '00000000-0000-0000-0000-00000000b821' and competition_b = '00000000-0000-0000-0000-00000000b822'), 2::bigint);
+select t.expect_eq('... and no pair involves the final or the unscheduled match', (select count(*) from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413') where t.gu('m:l3') in (match_a, match_b) or t.gu('m:l4') in (match_a, match_b)), 0::bigint);
+select t.expect_eq('a longsword match that starts when the previous ends is not a conflict (L1 and L2)', (select count(*) from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413') where match_a = t.gu('m:l1') and match_b = t.gu('m:l2')), 0::bigint);
+select t.expect_eq('the booking helper says Alpha is booked at 10:12 (longsword and 5v5)', public.fighter_is_booked('00000000-0000-0000-0000-00000000b413', '00000000-0000-0000-0000-00000000b301', t.g('t0')::timestamptz + interval '12 minutes', 5), true);
+select t.expect_eq('... Echo is not booked', public.fighter_is_booked('00000000-0000-0000-0000-00000000b413', '00000000-0000-0000-0000-00000000b305', t.g('t0')::timestamptz + interval '12 minutes', 5), false);
+select t.expect_eq('... Alpha is free at 12:00', public.fighter_is_booked('00000000-0000-0000-0000-00000000b413', '00000000-0000-0000-0000-00000000b301', t.g('t0')::timestamptz + interval '2 hours', 15), false);
+select t.expect_eq('a mercenary on a roster is booked through the roster (Charlie, only the 5v5)', public.fighter_is_booked('00000000-0000-0000-0000-00000000b413', '00000000-0000-0000-0000-00000000b303', t.g('t0')::timestamptz + interval '20 minutes', 5), true);
+select t.expect_eq('... unless the form excludes the match being edited', public.fighter_is_booked('00000000-0000-0000-0000-00000000b413', '00000000-0000-0000-0000-00000000b303', t.g('t0')::timestamptz + interval '20 minutes', 5, t.gu('m:m1')), false);
+select t.expect_eq('bookings list the overlapping matches with the overlap', (select string_agg(competition_name || ':' || overlap_minutes, ',' order by scheduled_at) from public.fighter_bookings('00000000-0000-0000-0000-00000000b413', '00000000-0000-0000-0000-00000000b301', t.g('t0')::timestamptz + interval '5 minutes', 15)), 'Conflict Longsword:10,Conflict 5v5:10,Conflict Longsword:5');
+select t.expect_ok('the organizer shortens the 5v5 match to 5 minutes', format($q$update public.matches set duration_minutes = 5 where id = %L$q$, t.g('m:m1')));
+select t.expect_eq('... Alpha/Bravo no longer overlap (it ends when the second longsword match starts), Alpha and Delta still do with the first', (select count(*) from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413')), 2::bigint);
+select t.expect_error('a match length of 0 is refused', format($q$update public.matches set duration_minutes = 0 where id = %L$q$, t.g('m:m1')), '23514');
+select t.expect_ok('back to 20 minutes', format($q$update public.matches set duration_minutes = 20 where id = %L$q$, t.g('m:m1')));
+select t.as_user('00000000-0000-0000-0000-00000000e006');
+select t.expect_error('a stranger cannot see conflicts', $q$select * from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413')$q$, '42501');
+select t.expect_error('a stranger cannot ask about bookings', $q$select public.fighter_is_booked('00000000-0000-0000-0000-00000000b413', '00000000-0000-0000-0000-00000000b301', now(), 5)$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-00000000e005');
+select t.expect_error('an organizer of another event cannot see conflicts', $q$select * from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413')$q$, '42501');
+select t.as_anon();
+select t.expect_error('anon cannot call the conflict function', $q$select * from public.fighter_schedule_conflicts('00000000-0000-0000-0000-00000000b413')$q$, '42501');
+select t.expect_eq('rosters of a draft event are not public', (select count(*) from public.entry_fighters where competition_id = '00000000-0000-0000-0000-00000000b822'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('... but the organizer sees them', (select count(*) from public.entry_fighters where competition_id = '00000000-0000-0000-0000-00000000b822'), 4::bigint);
+
+-- ================================================================ B. fighter profile
+select t.as_anon();
+select t.expect_eq('anon reads a profile (no profile data yet, team and organization present, no age)', (select coalesce(age::text, 'null') || '/' || team_name || '/' || team_organization_name || '/' || cardinality(disciplines)
+  from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'null/NT One/Northern Armored Combat League-test/0');
+select t.expect_error('anon cannot update a profile', $q$select public.update_my_fighter_profile('{"bio":"x"}'::jsonb)$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-00000000e009');
+select t.expect_error('a user with no fighter record cannot update a profile', $q$select public.update_my_fighter_profile('{"bio":"x"}'::jsonb)$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-00000000e003');
+select t.expect_ok('a fighter fills in their own profile', $q$select public.update_my_fighter_profile(jsonb_build_object('gender', 'male', 'birth_year', 1990, 'city', 'Edmonton', 'region', 'AB', 'country', 'CA',
+  'joined_year', 2019, 'disciplines', jsonb_build_array('longsword', '5v5'), 'fighting_style', 'Aggressive pressure', 'bio', 'Fights for the fun of it.', 'highlights', jsonb_build_array('NACL champion 2025')))$q$);
+select t.as_anon();
+select t.expect_eq('the public sees it, and the age is computed', (select gender || '/' || (age = extract(year from current_date)::int - 1990)::text || '/' || city || '/' || region || '/' || country || '/' || joined_year || '/' || array_to_string(disciplines, '+') || '/' || fighting_style || '/' || bio || '/' || highlights[1]
+  from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'male/true/Edmonton/AB/CA/2019/longsword+5v5/Aggressive pressure/Fights for the fun of it./NACL champion 2025');
+select t.expect_eq('the profile can be read straight from fighters too', (select count(*) from public.fighters where id = '00000000-0000-0000-0000-00000000b301' and bio is not null), 1::bigint);
+select t.expect_eq('fighter_profile exposes no account id', (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'fighter_profile'
+  and exists (select 1 from unnest(p.proargnames) a where a ~ '(user|account|actor)')), 0::bigint);
+select t.expect_eq('fighters has no account column', (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'fighters' and column_name ~ '(user|account|actor|email)'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-00000000e003');
+select t.expect_ok('null clears a field', $q$select public.update_my_fighter_profile('{"city": null, "highlights": null}'::jsonb)$q$);
+select t.expect_eq('... it is cleared', (select (city is null)::text || '/' || cardinality(highlights) from public.fighters where id = '00000000-0000-0000-0000-00000000b301'), 'true/0');
+select t.expect_error('an unknown gender is refused', $q$select public.update_my_fighter_profile('{"gender":"robot"}'::jsonb)$q$, '22023');
+select t.expect_error('an unknown key is refused (no team_id, no display_name)', $q$select public.update_my_fighter_profile('{"team_id":"00000000-0000-0000-0000-00000000b202"}'::jsonb)$q$, '22023');
+select t.expect_error('display_name is not editable here', $q$select public.update_my_fighter_profile('{"display_name":"Somebody Else"}'::jsonb)$q$, '22023');
+select t.expect_error('an unknown discipline is refused', $q$select public.update_my_fighter_profile('{"disciplines":["longsword","quidditch"]}'::jsonb)$q$, '22023');
+select t.expect_error('a discipline listed twice is refused', $q$select public.update_my_fighter_profile('{"disciplines":["longsword","longsword"]}'::jsonb)$q$, '22023');
+select t.expect_error('a bio over 1500 characters is refused', format($q$select public.update_my_fighter_profile(jsonb_build_object('bio', %L))$q$, repeat('b', 1501)), '22023');
+select t.expect_ok('a bio of exactly 1500 characters is fine', format($q$select public.update_my_fighter_profile(jsonb_build_object('bio', %L))$q$, repeat('b', 1500)));
+select t.expect_error('a future birth year is refused', $q$select public.update_my_fighter_profile('{"birth_year":2999}'::jsonb)$q$, '22023');
+select t.expect_error('a text birth year is refused', $q$select public.update_my_fighter_profile('{"birth_year":"soon"}'::jsonb)$q$, '22023');
+select t.expect_error('more than 10 highlights are refused', $q$select public.update_my_fighter_profile((select jsonb_build_object('highlights', jsonb_agg('h' || n)) from generate_series(1, 11) n))$q$, '22023');
+select t.expect_error('a highlight over 200 characters is refused', format($q$select public.update_my_fighter_profile(jsonb_build_object('highlights', jsonb_build_array(%L)))$q$, repeat('h', 201)), '22023');
+select t.expect_error('a city over 80 characters is refused', format($q$select public.update_my_fighter_profile(jsonb_build_object('city', %L))$q$, repeat('c', 81)), '22023');
+select t.expect_error('a non-object payload is refused', $q$select public.update_my_fighter_profile('[]'::jsonb)$q$, '22023');
+select t.expect_error('a fighter cannot write fighters directly', $q$update public.fighters set bio = 'direct' where id = '00000000-0000-0000-0000-00000000b301'$q$, '42501');
+select t.expect_error('... nor someone else''s', $q$update public.fighters set bio = 'direct' where id = '00000000-0000-0000-0000-00000000b302'$q$, '42501');
+select t.as_admin();
+select t.expect_eq('updating the profile never touched another fighter or the team', (select count(*) from public.fighters where id <> '00000000-0000-0000-0000-00000000b301' and (bio is not null or gender is not null)), 0::bigint);
+select t.expect_eq('... nor the fighter''s team', (select team_id from public.fighters where id = '00000000-0000-0000-0000-00000000b301'), '00000000-0000-0000-0000-00000000b201'::uuid);
+select t.expect_error('a loader cannot insert a bad discipline either (trigger)', $q$update public.fighters set disciplines = array['nonsense'] where id = '00000000-0000-0000-0000-00000000b302'$q$, '22023');
+
 -- ---------------------------------------------------------------- every public table has row level security
 select t.as_admin();
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
