@@ -76,7 +76,7 @@ export function ProfileEditor({ profile, onSaved, onCancel }: { profile: Fighter
         <span>Up to {HIGHLIGHTS_MAX} lines of at most {HIGHLIGHT_MAX} characters.</span>{err('highlights')}
       </label>
       {problem && <p role="alert" style={bad}>{problem}</p>}
-      <div className="dlg-actions">
+      <div className="dlg-actions sticky">
         <button type="button" className="btn btn-line" disabled={busy} onClick={onCancel}>Cancel</button>
         <button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button>
       </div>
