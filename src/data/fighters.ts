@@ -26,19 +26,23 @@ export interface FighterProfile {
   disciplines: string[]; fightingStyle: string | null; bio: string | null; highlights: string[];
   team: { id: string; name: string; slug: string } | null;
   organization: { id: string; slug: string; name: string; enabled: boolean } | null;
+  /** Storage path inside the public 'avatars' bucket, or null. Turn it into an address with avatarUrl(). */
+  avatarPath: string | null;
 }
 type ProfileDb = {
   fighter_id: string; display_name: string; gender: Gender | null; birth_year: number | null; age: number | null; city: string | null; region: string | null; country: string | null;
   joined_year: number | null; disciplines: string[] | null; fighting_style: string | null; bio: string | null; highlights: string[] | null;
   team_id: string | null; team_name: string | null; team_slug: string | null;
   team_organization_id: string | null; team_organization_slug: string | null; team_organization_name: string | null; team_organization_enabled: boolean | null;
+  avatar_path?: string | null;
 };
 export const toFighterProfile = (r: ProfileDb): FighterProfile => ({
   fighterId: r.fighter_id, displayName: r.display_name, gender: r.gender, birthYear: r.birth_year, age: r.age, city: r.city, region: r.region, country: r.country,
   joinedYear: r.joined_year, disciplines: r.disciplines ?? [], fightingStyle: r.fighting_style, bio: r.bio, highlights: r.highlights ?? [],
   team: r.team_id && r.team_name && r.team_slug ? { id: r.team_id, name: r.team_name, slug: r.team_slug } : null,
   organization: r.team_organization_id && r.team_organization_slug && r.team_organization_name
-    ? { id: r.team_organization_id, slug: r.team_organization_slug, name: r.team_organization_name, enabled: r.team_organization_enabled ?? true } : null
+    ? { id: r.team_organization_id, slug: r.team_organization_slug, name: r.team_organization_name, enabled: r.team_organization_enabled ?? true } : null,
+  avatarPath: r.avatar_path ?? null
 });
 
 /** Age in whole calendar years of birth (current year minus birth year), or null when the fighter gave no birth year. */
@@ -281,4 +285,48 @@ export async function fetchCategoryOptions(): Promise<CategoryOption[]> {
   const { data, error } = await supabase.from('ref_categories').select('code,name').order('sort');
   if (error) throw error;
   return data as CategoryOption[];
+}
+
+// ---------------------------------------------------------------- profile photo
+export const AVATAR_MAX_PX = 512;
+/** Scales (w, h) down so the longer side is at most `max`, keeping the shape. Never scales up. */
+export function fitWithin(w: number, h: number, max = AVATAR_MAX_PX): { width: number; height: number } {
+  const k = Math.min(1, max / Math.max(w, h));
+  return { width: Math.max(1, Math.round(w * k)), height: Math.max(1, Math.round(h * k)) };
+}
+/** Public address of a stored photo, or null when the fighter has none. */
+export const avatarUrl = (path: string | null | undefined): string | null => (path ? supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl : null);
+
+/** Shrinks any picture the phone can show to a JPEG of at most 512px. Throws a plain sentence when the file is not a picture. */
+async function shrinkToJpeg(file: File): Promise<Blob> {
+  if (!file.type.startsWith('image/')) throw new Error('Choose a picture file.');
+  let bitmap: ImageBitmap;
+  try { bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { throw new Error('That picture could not be read. Try a JPEG or PNG.'); }
+  const { width, height } = fitWithin(bitmap.width, bitmap.height);
+  const canvas = document.createElement('canvas');
+  canvas.width = width; canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('This browser cannot resize pictures.');
+  ctx.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', 0.85));
+  if (!blob) throw new Error('That picture could not be converted.');
+  return blob;
+}
+
+/** Uploads the picture to the caller's own folder, points the profile at it and removes the previous photo. Returns the new path. */
+export async function uploadMyAvatar(fighterId: string, file: File, previous: string | null): Promise<string> {
+  const blob = await shrinkToJpeg(file);
+  const path = `${fighterId}/${Date.now()}.jpg`;
+  const up = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+  if (up.error) throw up.error;
+  const { error } = await supabase.rpc('set_my_fighter_avatar', { p_path: path });
+  if (error) { await supabase.storage.from('avatars').remove([path]); throw error; }
+  if (previous) await supabase.storage.from('avatars').remove([previous]);
+  return path;
+}
+export async function removeMyAvatar(previous: string): Promise<void> {
+  const { error } = await supabase.rpc('set_my_fighter_avatar', { p_path: null });
+  if (error) throw error;
+  await supabase.storage.from('avatars').remove([previous]);
 }

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../lib/supabase', () => ({ supabase: {} }));
 import {
-  ageFromBirthYear, applyRankingFilter, emptyProfileForm, parseRecentForm, placeLabel, profilePayload, profileToForm, rosterPayload, toEntryRosterRow, toFighterCareerStats,
+  ageFromBirthYear, applyRankingFilter, emptyProfileForm, fitWithin, parseRecentForm, placeLabel, profilePayload, profileToForm, rosterPayload, toEntryRosterRow, toFighterCareerStats,
   toFighterMatchStats, toFighterProfile, toFighterRanking, toResultRow, toTeamRanking, toTeamStats, validateProfile
 } from './fighters';
 
@@ -91,4 +91,12 @@ describe('rosters', () => {
   it('sends the role only when one was chosen', () => {
     expect(rosterPayload([{ fighterId: 'a' }, { fighterId: 'b', role: 'guest' }])).toEqual([{ fighter_id: 'a' }, { fighter_id: 'b', role: 'guest' }]);
   });
+});
+
+describe('fitWithin', () => {
+  it('scales the longer side down to the limit and keeps the shape', () => {
+    expect(fitWithin(4000, 3000)).toEqual({ width: 512, height: 384 });
+    expect(fitWithin(3000, 4000)).toEqual({ width: 384, height: 512 });
+  });
+  it('never scales a small picture up', () => { expect(fitWithin(200, 100)).toEqual({ width: 200, height: 100 }); });
 });

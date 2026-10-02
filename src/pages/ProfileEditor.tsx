@@ -9,7 +9,8 @@ import { useAsync } from '../lib/useAsync';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
 
-/** The signed-in fighter's own public profile. Everything here is shown publicly; the database only lets them change their own record. */
+/** The signed-in fighter's own public profile. Everything here is shown publicly; the database only lets them change their own record.
+ * Rendered on a normal page (not a popup) so it scrolls like any other page on a phone. */
 export function ProfileEditor({ profile, onSaved, onCancel }: { profile: FighterProfile; onSaved: () => void; onCancel: () => void }) {
   const [f, setF] = useState<ProfileForm>(profileToForm(profile));
   const [highlights, setHighlights] = useState(profile.highlights.join('\n'));
@@ -76,7 +77,7 @@ export function ProfileEditor({ profile, onSaved, onCancel }: { profile: Fighter
         <span>Up to {HIGHLIGHTS_MAX} lines of at most {HIGHLIGHT_MAX} characters.</span>{err('highlights')}
       </label>
       {problem && <p role="alert" style={bad}>{problem}</p>}
-      <div className="dlg-actions sticky">
+      <div className="formactions">
         <button type="button" className="btn btn-line" disabled={busy} onClick={onCancel}>Cancel</button>
         <button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button>
       </div>
