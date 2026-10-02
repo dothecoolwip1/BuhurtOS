@@ -85,6 +85,13 @@ export function AccountPage() {
         </nav>
       </section>
 
+      <section aria-labelledby="acct-me">
+        <h2 id="acct-me" className="acct-h">Account</h2>
+        <nav className="panel acct-list" aria-label="Account details">
+          <Row to="/welcome?edit=1&next=%2Faccount" title="Profile details" sub="Your name, how you take part, where you are" />
+        </nav>
+      </section>
+
       <section aria-labelledby="acct-run">
         <h2 id="acct-run" className="acct-h">Run events</h2>
         <nav className="panel acct-list" aria-label="Organizer tools">

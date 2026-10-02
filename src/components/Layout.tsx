@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { setSampleMode, useSampleMode } from '../data/mode';
 import { useAuth } from '../auth/AuthContext';
 import { usePlatformRole } from '../auth/usePlatformRole';
+import { ProfileGate } from '../auth/ProfileGate';
 import { NotificationBell } from './NotificationBell';
 
 const NAV = [
@@ -59,7 +60,7 @@ export function Layout() {
           </button>
         </div>
       </header>
-      <main className="wrap"><Outlet /></main>
+      <main className="wrap"><ProfileGate /><Outlet /></main>
       <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat.</span>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {NAV.map(n => (
