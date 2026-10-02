@@ -82,7 +82,7 @@ export function ConflictsPanel({ eventId, competitionNames, timeZone, reloadKey,
     return (
       <div style={{ display: 'grid', gap: 10 }}>
         {doneNote}
-        <div className="panel info" aria-label="Schedule conflicts"><p><b>No double-booked fighters</b>{autoFix ? <span className="src"> · Until the event day, clashes are fixed automatically.</span> : null}</p></div>
+        <div className="panel info" aria-label="Schedule conflicts"><p><b>No double-booked fighters</b></p>{autoFix ? <p className="src">Until the event day, clashes are fixed automatically.</p> : null}</div>
       </div>
     );
   }

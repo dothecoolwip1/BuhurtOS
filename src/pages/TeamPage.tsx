@@ -96,9 +96,8 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         <p className="muted" style={{ fontSize: 13 }}>{t.sources.length > 0 ? t.sources.map(s => listedFromLabel(s)).join(' · ') : NO_SOURCE_LABEL}. A listing is not an endorsement, and does not mean the team uses BuhurtOS.</p>
       </div>
 
-      <div className="panel info">
+      {(t.affiliations.length > 0 || t.claimedOrganizations.length > 0) && <div className="panel info">
         <h3>Affiliations</h3>
-        {t.affiliations.length === 0 && t.claimedOrganizations.length === 0 && <p className="muted">No affiliations are recorded for this team.</p>}
         {t.affiliations.length > 0 && (
           <ul className="plain">
             {t.affiliations.map(a => (
@@ -119,7 +118,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
           </>
         )}
         <p className="muted" style={{ fontSize: 13 }}>Affiliations are recorded one by one. They are never worked out from where a team is. A listed organization has not endorsed BuhurtOS.</p>
-      </div>
+      </div>}
 
       <div className="panel info">
         <h3>Roster</h3>
@@ -160,6 +159,10 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         })()}
         <p className="muted" style={{ fontSize: 13 }}>A name on a roster is a sporting record. It does not mean that person has a BuhurtOS account.</p>
       </div>
+
+      {t.affiliations.length === 0 && t.claimedOrganizations.length === 0 && !entries.loading && !entries.error && upcomingEntries.length === 0 && !history.loading && !history.error && (history.data ?? []).length === 0 && (
+        <p className="muted" style={{ fontSize: 14 }}>No affiliations, upcoming events or results are recorded for this team yet. Results appear here once organizers record them on BuhurtOS.</p>
+      )}
 
       {stats.error != null && <div className="panel info"><h3>Team record</h3><p role="alert">{friendlyError(stats.error, 'Could not load team statistics.')}</p></div>}
       {stats.data && (
@@ -211,11 +214,10 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         </div>
       )}
 
-      <div className="panel info">
+      {(entries.loading || entries.error != null || upcomingEntries.length > 0) && <div className="panel info">
         <h3>Upcoming events</h3>
         {entries.loading && <p className="muted">Loading events…</p>}
         {entries.error != null && <p role="alert">{friendlyError(entries.error, 'Could not load events.')}</p>}
-        {!entries.loading && !entries.error && upcomingEntries.length === 0 && <p className="muted">No upcoming events entered.</p>}
         <ul className="plain">
           {upcomingEntries.map(e => (
             <li key={e.entryId}>
@@ -225,13 +227,12 @@ function Workspace({ t }: { t: DirectoryEntry }) {
             </li>
           ))}
         </ul>
-      </div>
+      </div>}
 
-      <div className="panel info">
+      {(history.loading || history.error != null || (history.data ?? []).length > 0) && <div className="panel info">
         <h3>Tournament history</h3>
         {history.loading && <p className="muted">Loading results…</p>}
         {history.error != null && <p role="alert">{friendlyError(history.error, 'Could not load results.')}</p>}
-        {!history.loading && !history.error && (history.data ?? []).length === 0 && <p className="muted">No finished competitions are recorded for this team yet.</p>}
         <ul className="plain">
           {tournamentHistory(history.data ?? []).map(h => (
             <li key={h.eventSlug}>
@@ -242,7 +243,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
           ))}
         </ul>
         <p className="muted" style={{ fontSize: 13 }}>Only results recorded on BuhurtOS by event organizers appear here.</p>
-      </div>
+      </div>}
     </section>
   );
 }
