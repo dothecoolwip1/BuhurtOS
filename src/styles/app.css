@@ -250,6 +250,9 @@ td.num,th.num{text-align:right;font-family:var(--f-data);font-variant-numeric:ta
 .phead .sub{display:flex;gap:8px 16px;flex-wrap:wrap;color:var(--muted);margin-top:10px;font-size:15px}
 .phead .acts{display:flex;gap:10px;flex-wrap:wrap}
 @media (max-width:760px){.phead{grid-template-columns:auto minmax(0,1fr)}.phead .acts{grid-column:1/-1}.phead .crest{width:84px;height:96px}}
+img.avatar{object-fit:cover;background:var(--raised)}
+.formactions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.formactions .btn{flex:1 1 140px}
 .avatar{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;font:900 46px var(--f-display);color:#fff;background:conic-gradient(from 200deg,#2C4A8C,#8E4E6B,#C9893A,#2C4A8C);box-shadow:inset 0 0 0 4px rgba(255,255,255,.18)}
 @media (max-width:760px){.avatar{width:84px;height:84px;font-size:32px}}
 .roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}

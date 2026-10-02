@@ -4,6 +4,7 @@ import { FieldPage } from './pages/FieldPage';
 import { EventRoute } from './pages/EventRoute';
 import { EventsPage } from './pages/EventsPage';
 import { FighterPage } from './pages/FighterPage';
+import { ProfileEditPage } from './pages/ProfileEditPage';
 import { FightersPage } from './pages/FightersPage';
 import { RankingsPage } from './pages/RankingsPage';
 import { FormatsPage } from './pages/FormatsPage';
@@ -33,6 +34,7 @@ export function App() {
         <Route path="teams/:slug" element={<TeamPage />} />
         <Route path="fighters" element={<FightersPage />} />
         <Route path="fighters/:id" element={<FighterPage />} />
+        <Route path="fighters/:id/edit" element={<ProfileEditPage />} />
         <Route path="rankings" element={<RankingsPage />} />
         <Route path="team-manager" element={<TeamManagerPage />} />
         <Route path="events/:eventId" element={<EventRoute />} />

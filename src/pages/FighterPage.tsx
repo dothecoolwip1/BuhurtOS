@@ -1,13 +1,12 @@
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { Dialog } from '../components/Dialog';
 import { Chip } from '../components/ui';
 import {
   fetchFighterAppearances, fetchFighterMemberships, fetchFighterRankings, fetchOrgLites, fetchRecentFights, fetchSeasons, type Appearance
 } from '../data/careers';
 import {
-  fetchFighterCareerStats, fetchFighterHistory, fetchFighterMatchStats, fetchFighterProfile, fetchFighterSeasonStats, fetchMyFighterId, type FighterProfile
+  fetchFighterCareerStats, fetchFighterHistory, fetchFighterMatchStats, fetchFighterProfile, fetchFighterSeasonStats, fetchMyFighterId, avatarUrl, type FighterProfile
 } from '../data/fighters';
 import {
   categoryLabel, categoryLines, currentSeasonStats, divisionLabel, formatRecord, formString, genderLabel, guestLabel, INACTIVE_ORG_NOTICE, membershipSpan,
@@ -18,7 +17,6 @@ import { friendlyError } from '../lib/friendlyError';
 import { roleLabel } from '../lib/teamDirectory';
 import { useAsync, type AsyncState } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
-import { ProfileEditor } from './ProfileEditor';
 
 /** One section that loads on its own. Errors stay inside the section; an empty section is hidden (the caller decides with `empty`). */
 function Section<T>({ title, state, empty, children, note }: { title: string; state: AsyncState<T>; empty: (d: T) => boolean; children: (d: T) => ReactNode; note?: string }) {
@@ -34,10 +32,9 @@ function Tile({ label, value }: { label: string; value: ReactNode }) {
 
 export function FighterPage() {
   const { id = '' } = useParams();
-  const [rev, setRev] = useState(0);
-  const profile = useAsync(() => fetchFighterProfile(id), [id, rev]);
+  const profile = useAsync(() => fetchFighterProfile(id), [id]);
   useDocumentTitle(profile.data?.displayName ?? 'Fighter');
-  if (profile.loading && !profile.data) return <p className="muted">Loading fighter…</p>;
+  if (profile.loading) return <p className="muted">Loading fighter…</p>;
   if (profile.error != null) return <p role="alert">{friendlyError(profile.error, 'Could not load this fighter.')}</p>;
   if (!profile.data) {
     return (
@@ -46,15 +43,14 @@ export function FighterPage() {
         <Link className="btn btn-line btn-sm" to="/fighters">All fighters</Link></section>
     );
   }
-  return <Career p={profile.data} onSaved={() => setRev(r => r + 1)} />;
+  return <Career p={profile.data} />;
 }
 
-function Career({ p, onSaved }: { p: FighterProfile; onSaved: () => void }) {
+function Career({ p }: { p: FighterProfile }) {
   const id = p.fighterId;
   const { session } = useAuth();
   const userId = session?.user.id;
   const mine = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
-  const [editing, setEditing] = useState(false);
   const isMine = mine.data === id;
   const career = useAsync(() => fetchFighterCareerStats(id), [id]);
   const matchStats = useAsync(() => fetchFighterMatchStats(id), [id]);
@@ -81,7 +77,9 @@ function Career({ p, onSaved }: { p: FighterProfile; onSaved: () => void }) {
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <Link className="more" to="/fighters">← All fighters</Link>
       <div className="teamhead">
-        <span className="avatar" aria-hidden="true">{p.displayName.charAt(0).toUpperCase()}</span>
+        {avatarUrl(p.avatarPath)
+          ? <img className="avatar" src={avatarUrl(p.avatarPath)!} alt={`Photo of ${p.displayName}`} width={120} height={120} />
+          : <span className="avatar" aria-hidden="true">{p.displayName.charAt(0).toUpperCase()}</span>}
         <div style={{ minWidth: 0 }}>
           <p className="eyebrow">Fighter</p>
           <h1 style={{ fontSize: 'clamp(38px,6vw,72px)', marginTop: 8 }}>{p.displayName}</h1>
@@ -90,7 +88,7 @@ function Career({ p, onSaved }: { p: FighterProfile; onSaved: () => void }) {
             {where && <span>{where}</span>}
             {facts.map(f => <span key={f}>{f}</span>)}
           </div></div>
-          {isMine && <p style={{ marginTop: 10 }}><button type="button" className="btn btn-ink" onClick={() => setEditing(true)}>Edit my profile</button></p>}
+          {isMine && <p style={{ marginTop: 10 }}><Link className="btn btn-ink" to={`/fighters/${id}/edit`}>Edit my profile</Link></p>}
           {p.organization && (
             <p style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               <Chip tone="steel">{p.organization.name}</Chip>{!p.organization.enabled && <Chip>Inactive organization</Chip>}
@@ -98,11 +96,6 @@ function Career({ p, onSaved }: { p: FighterProfile; onSaved: () => void }) {
           )}
         </div>
       </div>
-      {editing && (
-        <Dialog title="Edit my profile" variant="drawer" onClose={() => setEditing(false)}>
-          <ProfileEditor profile={p} onCancel={() => setEditing(false)} onSaved={() => { setEditing(false); onSaved(); }} />
-        </Dialog>
-      )}
       {p.organization && !p.organization.enabled && <p className="panel info" role="status">{INACTIVE_ORG_NOTICE}</p>}
 
       {hasStory && (

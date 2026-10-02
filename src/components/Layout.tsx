@@ -60,7 +60,7 @@ export function Layout() {
         </div>
       </header>
       <main className="wrap"><Outlet /></main>
-      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat.</span>{sample && <span className="mono">Sample mode</span>}</div></footer>
+      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat.</span>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {NAV.map(n => (
           <NavLink key={n.to} to={n.to} end={n.end}>
