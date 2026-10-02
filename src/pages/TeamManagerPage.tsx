@@ -2,14 +2,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
+import { Dialog } from '../components/Dialog';
 import { PageHead } from '../components/ui';
+import { usePlatformRole } from '../auth/usePlatformRole';
 import { fetchApprovedTeams, fetchMyCaptainedTeams, type TeamChoice } from '../data/myTeams';
-import { cancelTeamJoin, cleanJoinMessage, decideTeamJoin, fetchMyTeamRequests, fetchTeamRequestsInbox, MESSAGE_MAX, requestTeamJoin, type JoinDecision, type MyJoinRequest } from '../data/teamManager';
+import { cancelTeamJoin, cleanJoinMessage, decideTeamJoin, fetchIsOrgAdmin, fetchMyTeamIds, fetchMyTeamRequests, fetchTeamRequestsInbox, MESSAGE_MAX, requestTeamJoin, type JoinDecision, type MyJoinRequest } from '../data/teamManager';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { filterTeams, myTeams, pendingTeamIds, placeOf, statusLabel } from '../registration/teamRequest';
 import { NewTeamRequestForm } from './NewTeamRequestForm';
+import { TeamAdminPanel } from './TeamAdminPanel';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 const list: React.CSSProperties = { listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 };
@@ -26,12 +29,17 @@ export function TeamManagerPage() {
 
 function Manager() {
   const [params] = useSearchParams();
+  const { session } = useAuth();
+  const { isOrganizer } = usePlatformRole();
+  const orgAdmin = useAsync(() => (session ? fetchIsOrgAdmin(session.user.id) : Promise.resolve(false)), [session?.user.id]);
+  const [asking, setAsking] = useState(false);
   const [key, setKey] = useState(0);
   const refresh = () => setKey(k => k + 1);
   const teams = useAsync(fetchApprovedTeams, []);
   const mine = useAsync(fetchMyTeamRequests, [key]);
   const captained = useAsync(fetchMyCaptainedTeams, [key]);
   const inbox = useAsync(fetchTeamRequestsInbox, [key]);
+  const myIds = useAsync(fetchMyTeamIds, [key]);
 
   const requests = mine.data ?? [];
   const on = useMemo(() => myTeams(captained.data ?? [], requests), [captained.data, requests]);
@@ -39,6 +47,8 @@ function Manager() {
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <PageHead eyebrow="Teams" title="Team manager" lede="Find your team and ask to join, or ask for a new team to be added." />
+
+      {(isOrganizer || orgAdmin.data) && <TeamAdminPanel canApprove={isOrganizer} />}
 
       {on.length > 0 && (
         <section className="panel info" style={{ display: 'grid', gap: 8 }} aria-labelledby="on-h">
@@ -57,14 +67,19 @@ function Manager() {
       {(inbox.data ?? []).length > 0 && <Inbox items={inbox.data!} onDone={refresh} />}
       {inbox.error != null && <p role="alert" style={bad}>{friendlyError(inbox.error, 'Could not load requests to join your teams.')}</p>}
 
-      <JoinSection teams={teams.data ?? []} loading={teams.loading} error={teams.error} requests={requests} on={new Set(on.map(t => t.teamId))} prefillSlug={params.get('join')} onChanged={refresh} />
+      <JoinSection teams={teams.data ?? []} loading={teams.loading} error={teams.error} requests={requests} on={new Set([...on.map(t => t.teamId), ...(myIds.data ?? [])])} prefillSlug={params.get('join')} onChanged={refresh} />
       <MyRequests loading={mine.loading && !mine.data} error={mine.error} requests={requests} onChanged={refresh} />
 
-      <section className="panel info" style={{ display: 'grid', gap: 12 }} aria-labelledby="new-h">
-        <h2 id="new-h">Is your team not listed? Request a new team</h2>
-        <p className="muted">Search above first, so we do not end up with two of the same team. If it really is missing, fill this in. An organizer reviews it before it appears.</p>
-        <NewTeamRequestForm onSubmitted={refresh} />
-      </section>
+      <p className="muted">
+        Is your team not listed?{' '}
+        <button type="button" className="btn btn-line" onClick={() => setAsking(true)}>Request a new team</button>
+      </p>
+      {asking && (
+        <Dialog title="Request a new team" variant="drawer" onClose={() => setAsking(false)}>
+          <p className="muted">Search for your team first, so we do not end up with two of the same team. If it really is missing, fill this in. An organizer reviews it before it appears.</p>
+          <NewTeamRequestForm onSubmitted={refresh} />
+        </Dialog>
+      )}
     </section>
   );
 }
@@ -108,7 +123,7 @@ function JoinSection({ teams, loading, error, requests, on, prefillSlug, onChang
           </label>
           {loading && <p className="muted">Loading teams…</p>}
           {error != null && <p role="alert" style={bad}>{friendlyError(error, 'Could not load the team list.')}</p>}
-          {q.trim().length >= 2 && results.length === 0 && !loading && <p className="muted" role="status">No team matches. If yours is missing, use the form below.</p>}
+          {q.trim().length >= 2 && results.length === 0 && !loading && <p className="muted" role="status">No team matches. If yours is missing, use “Request a new team” below.</p>}
           <ul style={list} aria-label="Matching teams">
             {results.map(t => {
               const why = blocked(t);

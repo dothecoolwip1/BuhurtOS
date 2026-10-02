@@ -196,3 +196,36 @@ export async function fetchTeamProfileExtras(slug: string): Promise<TeamProfileE
   if (error) throw error;
   return data ? toTeamProfileExtras(data as ExtrasDb) : null;
 }
+
+// ---------------------------------------------------------------- already on a team? / naming captains
+/** Ids of the teams the signed-in person is already part of (captain, roster, or marked as their team). Empty when signed out. */
+export async function fetchMyTeamIds(): Promise<string[]> {
+  const { data, error } = await supabase.rpc('my_team_ids');
+  if (error) throw error;
+  return (data as string[] | null) ?? [];
+}
+
+/** True when the person administers at least one organization. A person can always read their own staff rows. Only decides what to show. */
+export async function fetchIsOrgAdmin(userId: string): Promise<boolean> {
+  const { data, error } = await supabase.from('organization_staff').select('organization_id').eq('user_id', userId).limit(1);
+  if (error) throw error;
+  return (data ?? []).length > 0;
+}
+
+export interface TeamCaptain { userId: string; name: string | null; email: string }
+type CaptainDb = { user_id: string; name: string | null; email: string };
+/** Owner, platform organizer, or an admin of an organization the team belongs to. Anyone else gets a permission error. */
+export async function fetchTeamCaptains(teamId: string): Promise<TeamCaptain[]> {
+  const { data, error } = await supabase.rpc('list_team_captains', { p_team: teamId });
+  if (error) throw error;
+  return (data as CaptainDb[]).map(r => ({ userId: r.user_id, name: r.name, email: r.email }));
+}
+/** The person must have signed in once. Same authority as fetchTeamCaptains. */
+export async function assignTeamCaptain(teamId: string, email: string): Promise<void> {
+  const { error } = await supabase.rpc('assign_team_captain', { p_team: teamId, p_email: email.trim() });
+  if (error) throw error;
+}
+export async function removeTeamCaptain(teamId: string, userId: string): Promise<void> {
+  const { error } = await supabase.rpc('remove_team_captain', { p_team: teamId, p_user: userId });
+  if (error) throw error;
+}

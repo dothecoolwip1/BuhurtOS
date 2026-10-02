@@ -267,3 +267,18 @@ export async function finishCompetition(competitionId: string, source: Multiplie
   if (error) throw error;
   return data as number;
 }
+
+/** The signed-in person's own fighter record id, or null when they have none yet. */
+export async function fetchMyFighterId(): Promise<string | null> {
+  const { data, error } = await supabase.rpc('my_fighter_id');
+  if (error) throw error;
+  return (data as string | null) ?? null;
+}
+
+export interface CategoryOption { code: string; name: string }
+/** Every discipline code the database accepts in a profile (ref_categories is public). */
+export async function fetchCategoryOptions(): Promise<CategoryOption[]> {
+  const { data, error } = await supabase.from('ref_categories').select('code,name').order('sort');
+  if (error) throw error;
+  return data as CategoryOption[];
+}
