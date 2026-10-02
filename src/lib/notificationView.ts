@@ -1,7 +1,11 @@
 import type { AppNotification } from '../data/teamManager';
 
-/** Where a notification takes you. Everything else is handled on the team manager. */
+/** Where a notification takes you: sign-ups to the event, team matters to the team manager. */
 export const notificationLink = (n: Pick<AppNotification, 'kind' | 'payload'>): string => {
+  const ev = n.payload.event_slug;
+  const evOk = typeof ev === 'string' && /^[a-z0-9-]+$/.test(ev);
+  if (n.kind === 'registration_submitted') return evOk ? `/events/${ev}/manage` : '/account';
+  if (n.kind === 'registration_decided') return evOk ? `/events/${ev}` : '/account';
   const slug = n.payload.team_slug;
   if (n.kind === 'team_join_decided' && n.payload.decision === 'approved' && typeof slug === 'string' && /^[a-z0-9-]+$/.test(slug)) return `/teams/${slug}`;
   return '/team-manager';

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../lib/supabase', () => ({ supabase: {} }));
+import { notificationLink } from '../lib/notificationView';
 import {
   cleanJoinMessage, emptyNewTeamForm, newTeamPayload, notificationText, slugFromName, toInboxRequest, toMyJoinRequest, toNewTeamRequestDetails,
   toNotification, toRosterMember, toTeamProfileExtras, validateNewTeam, type NewTeamForm
@@ -80,5 +81,19 @@ describe('new team form', () => {
       contact_email: 'cap@example.test', captain_reason: 'I run the weekly practice.'
     });
     expect('region' in p).toBe(false);
+  });
+});
+
+describe('sign-up notifications', () => {
+  it('tells organizers who signed up, and the person what was decided', () => {
+    expect(notificationText({ kind: 'registration_submitted', payload: { person_name: 'Sam Doe', event_name: 'Red Deer Rumble' } })).toBe('Sam Doe signed up for Red Deer Rumble.');
+    expect(notificationText({ kind: 'registration_submitted', payload: { person_name: 'Sam Doe', event_name: 'Red Deer Rumble', volunteer: true } })).toBe('Sam Doe signed up to volunteer at Red Deer Rumble.');
+    expect(notificationText({ kind: 'registration_decided', payload: { event_name: 'Red Deer Rumble', decision: 'accepted' } })).toBe('You are accepted for Red Deer Rumble.');
+    expect(notificationText({ kind: 'registration_decided', payload: { event_name: 'Red Deer Rumble', decision: 'declined' } })).toBe('Your registration for Red Deer Rumble was declined.');
+  });
+  it('links organizers to managing the event and the person to the event page', () => {
+    expect(notificationLink({ kind: 'registration_submitted', payload: { event_slug: 'red-deer-rumble' } })).toBe('/events/red-deer-rumble/manage');
+    expect(notificationLink({ kind: 'registration_decided', payload: { event_slug: 'red-deer-rumble' } })).toBe('/events/red-deer-rumble');
+    expect(notificationLink({ kind: 'registration_decided', payload: { event_slug: '../x' } })).toBe('/account');
   });
 });

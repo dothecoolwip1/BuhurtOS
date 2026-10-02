@@ -13,7 +13,8 @@ import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
-import { ConflictsAlert } from '../components/RunConflicts';
+import { fetchScheduleConflicts } from '../data/conflicts';
+import { conflictsStripLabel, distinctFighters } from '../lib/runSchedule';
 import { AttentionStrip, CheckinPanel } from './CheckinPanel';
 import { NotFoundPage } from './NotFoundPage';
 import { ExportRegistrations } from './ExportRegistrations';
@@ -118,6 +119,7 @@ export function ManagePage() {
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   const isOrganizer = mine.data?.isOrganizer === true;
   const regs = useAsync(() => (eventId && isOrganizer ? fetchRegistrations(eventId) : Promise.resolve([] as ManagedRegistration[])), [eventId, isOrganizer, reloadKey]);
+  const clashes = useAsync(() => (eventId && isOrganizer ? fetchScheduleConflicts(eventId) : Promise.resolve([])), [eventId, isOrganizer, reloadKey, tab]);
   useDocumentTitle(loaded.data ? `Manage ${loaded.data.event.name}` : 'Manage');
 
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;
@@ -136,6 +138,7 @@ export function ManagePage() {
   }
 
   const all = regs.data ?? [];
+  const clashLabel = clashes.data ? conflictsStripLabel(distinctFighters(clashes.data)) : null;
   const counts = countByStatus(all);
   const list = filterRegistrations(all, filter, query);
   const ready = all.filter(r => r.status === 'accepted' && blockers(r).length === 0).length;
@@ -147,8 +150,7 @@ export function ManagePage() {
         if (k === 'pending') { setFilter('pending'); setParams({}, { replace: true }); }
         else if (k === 'blocked') setParams({ tab: 'checkin' }, { replace: true });
         else { setFilter('accepted'); setParams({}, { replace: true }); }
-      }} />
-      <ConflictsAlert eventId={event.id} onOpen={() => setParams({ tab: 'run' }, { replace: true })} />
+      }} extra={clashLabel ? [{ key: 'clash', label: clashLabel, onClick: () => setParams({ tab: 'run' }, { replace: true }) }] : []} />
       <Seg label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People'], ['teams', 'Teams']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
