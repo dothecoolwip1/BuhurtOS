@@ -54,3 +54,20 @@ export async function createTeam(i: NewTeamInput): Promise<void> {
 
 /** A taken slug is a unique-violation (23505), which friendlyError would hide behind the generic message. */
 export const isSlugTaken = (e: unknown) => (e as { code?: string } | null)?.code === '23505';
+
+export interface Waiver { id: string; version: number; title: string; body: string; createdAt: string }
+/** The newest waiver of the event, or null. Waivers are public to read (people read them before registering). */
+export async function fetchLatestWaiver(eventId: string): Promise<Waiver | null> {
+  const { data, error } = await supabase.from('waiver_versions').select('id,version,title,body,created_at').eq('event_id', eventId).order('version', { ascending: false }).limit(1);
+  if (error) throw error;
+  const r = (data as { id: string; version: number; title: string; body: string; created_at: string }[])[0];
+  return r ? { id: r.id, version: r.version, title: r.title, body: r.body, createdAt: r.created_at } : null;
+}
+/** Adds a new version (waivers are never edited: people who signed an older one keep that one). Organizers of the event only. */
+export async function addWaiverVersion(eventId: string, title: string, body: string, current: number): Promise<void> {
+  const t = title.trim(), b = body.trim();
+  if (t.length < 3) throw new Error('Give the waiver a title.');
+  if (b.length < 20) throw new Error('Paste the full waiver text.');
+  const { error } = await supabase.from('waiver_versions').insert({ event_id: eventId, version: current + 1, title: t, body: b });
+  if (error) throw error;
+}

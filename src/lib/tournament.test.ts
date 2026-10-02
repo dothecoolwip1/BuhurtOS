@@ -70,3 +70,11 @@ describe('duels', () => {
     expect(leadMatchFinished([2, 2], [1, 1])).toEqual({ done: true, winner: 'a' });
   });
 });
+
+describe('small categories', () => {
+  it('suggests a round robin of three, and a head-to-head for two', () => {
+    expect(structureAdvice(3).options[0].title).toBe('Round robin of three');
+    expect(structureAdvice(2).options[0].title).toBe('Head to head');
+    expect(structureAdvice(1).options).toEqual([]);
+  });
+});

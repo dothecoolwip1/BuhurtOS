@@ -50,7 +50,7 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
   const advice = structureAdvice(active.length);
   const advisedPools = advice.options.map(o => o.pools.length).find(p => p >= 2) ?? 2;
 
-  const [format, setFormat] = useState<DrawFormat>(active.length >= 7 ? 'pools' : active.length >= 4 && active.length <= 6 ? 'round_robin' : 'single_elimination');
+  const [format, setFormat] = useState<DrawFormat>(active.length >= 7 ? 'pools' : 'round_robin');
   const [mode, setMode] = useState<'random' | 'manual'>('random');
   const [seed, setSeed] = useState(() => randomSeed());
   const [thirdPlace, setThirdPlace] = useState(false);
