@@ -103,7 +103,7 @@ main{padding-block:28px 64px}
 .seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--ground);border:1px solid var(--line);overflow-x:auto;max-width:100%;scrollbar-width:none}
 .seg button{padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted);white-space:nowrap;min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:var(--shadow)}
-.src{font:500 11px/1.3 var(--f-data);color:var(--faint);letter-spacing:.02em}
+.src{font:500 12.5px/1.45 var(--f-body);color:var(--muted)}
 .grid-2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
 @media (max-width:900px){.grid-2{grid-template-columns:minmax(0,1fr)}}
 .fade-in{animation:fadeIn .35s ease both}
@@ -697,7 +697,7 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .medal.bronze{background:var(--ground);color:var(--ink)}
 .rostergroup{display:grid;gap:8px}
 .formpips{display:flex;gap:6px;flex-wrap:wrap}
-@media (max-width:980px){.bottom{grid-template-columns:repeat(7,minmax(0,1fr))}.bottom a{font-size:10px}}
+@media (max-width:980px){.bottom{grid-template-columns:repeat(5,minmax(0,1fr))}}
 .acct-head{display:flex;gap:18px;align-items:center;padding-bottom:22px;border-bottom:1px solid var(--line)}
 .acct-head .avatar{flex:none}
 .acct-name{font-size:clamp(30px,5vw,48px);overflow-wrap:anywhere;line-height:1}
@@ -726,10 +726,26 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .teamhead .phead{display:block;padding:0}
 /* Segmented controls with many options wrap on phones instead of cutting off the last one. */
 @media (max-width:600px){.seg{flex-wrap:wrap;border-radius:18px;overflow:visible}}
-.acct-edit{font:500 13px var(--f-body);text-transform:none;letter-spacing:0;vertical-align:middle;margin-left:6px}
+.acct-edit{font:500 13px var(--f-body);padding:0;margin-top:6px;color:var(--muted)}
 /* The phone bottom bar is fixed: keep the footer (and its version line) above it. */
 @media (max-width:980px){footer{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 .choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
 .choice{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--raised);cursor:pointer;min-height:56px}
 .choice input{margin-top:4px;flex:none}
 .choice.on{border-color:var(--steel);box-shadow:inset 0 0 0 1px var(--steel)}
+
+/* Phone bar: four places plus More. The More button looks like the links. */
+@media (max-width:980px){
+  .bottom button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 10px;font-size:11px;font-weight:600;color:var(--faint);background:none;border:0;font-family:inherit;cursor:pointer}
+  .bottom button svg{width:22px;height:22px}
+  .bottom button.active{color:var(--ink)}
+  .bottom button.active svg{color:var(--steel)}
+  .theme-btn{display:none}
+}
+/* Signed in on a narrow phone, the bell and Account need the room: keep the shield, drop the word. */
+@media (max-width:430px){.top.signed .brand>span{display:none}}
+.more-list{display:grid}
+.more-list a,.more-list button{display:flex;align-items:center;gap:14px;min-height:52px;padding:0 4px;border-bottom:1px solid var(--line);font:600 16px var(--f-body);color:var(--ink);background:none;border-left:0;border-right:0;border-top:0;text-align:left;cursor:pointer}
+.more-list a svg,.more-list button svg{width:22px;height:22px;flex:none;color:var(--muted)}
+.more-list a[aria-current="page"]{color:var(--steel)}
+@media (max-width:600px){.seg.scroll{flex-wrap:nowrap;overflow-x:auto;border-radius:999px;scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}.seg.scroll button{scroll-snap-align:start}}

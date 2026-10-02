@@ -16,6 +16,7 @@ import { addClaimed, editClaimed, MAX_CLAIMED, removeClaimed, setSocial } from '
 import { crestTeam } from './TeamsPage';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
+const NETWORK_LABEL: Record<SocialNetwork, string> = { facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', tiktok: 'TikTok', x: 'X (Twitter)', discord: 'Discord', twitch: 'Twitch', other: 'Other link' };
 
 /** A team's captain (or an organizer) edits the public team page, including its emblem. On a normal page so it scrolls well on a phone. */
 export function TeamEditPage() {
@@ -42,6 +43,8 @@ function Editing({ t, canRename }: { t: DirectoryEntry; canRename: boolean }) {
   const back = `/teams/${t.slug}`;
   const [f, setF] = useState<TeamEditForm>(teamToForm(t));
   const [emblem, setEmblem] = useState(t.emblemPath);
+  // Only the networks the team uses are shown; "Add a link" brings in another.
+  const [nets, setNets] = useState<SocialNetwork[]>(() => SOCIAL_NETWORKS.filter(n => Boolean(t.socialLinks[n])));
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -107,13 +110,23 @@ function Editing({ t, canRename }: { t: DirectoryEntry; canRename: boolean }) {
 
         <section className="panel info" style={{ display: 'grid', gap: 12 }}>
           <h2>Social links</h2>
-          <div className="form">
-            {SOCIAL_NETWORKS.map((n: SocialNetwork) => (
-              <label key={n} className="field-in" style={{ textTransform: 'capitalize' }}>{n === 'x' ? 'X (Twitter)' : n}
+          {nets.length === 0 && <p className="muted">No links yet.</p>}
+          {nets.map((n: SocialNetwork) => (
+            <div key={n} style={{ display: 'flex', gap: 8, alignItems: 'end' }}>
+              <label className="field-in" style={{ flex: 1 }}>{NETWORK_LABEL[n]}
                 <input type="url" inputMode="url" placeholder="https://" value={f.socialLinks[n] ?? ''} onChange={e => set('socialLinks', setSocial(f.socialLinks, n, e.target.value))} />
               </label>
-            ))}
-          </div>
+              <button type="button" className="btn btn-line" aria-label={`Remove ${NETWORK_LABEL[n]}`} onClick={() => { set('socialLinks', setSocial(f.socialLinks, n, '')); setNets(list => list.filter(x => x !== n)); }}>Remove</button>
+            </div>
+          ))}
+          {nets.length < SOCIAL_NETWORKS.length && (
+            <label className="field-in" style={{ maxWidth: 280 }}>Add a link
+              <select value="" onChange={e => { const n = e.target.value as SocialNetwork; if (n) setNets(list => [...list, n]); }}>
+                <option value="">Choose a network…</option>
+                {SOCIAL_NETWORKS.filter(n => !nets.includes(n)).map(n => <option key={n} value={n}>{NETWORK_LABEL[n]}</option>)}
+              </select>
+            </label>
+          )}
           {err('socialLinks')}
         </section>
 

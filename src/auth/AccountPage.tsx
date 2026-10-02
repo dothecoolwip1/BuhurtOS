@@ -59,7 +59,7 @@ export function AccountPage() {
         <div style={{ minWidth: 0 }}>
           {editingName && userId
             ? <NameEditor userId={userId} initial={shown.data?.trim() || profile?.displayName || ''} onDone={() => { setEditingName(false); setNameKey(k => k + 1); }} />
-            : <h1 className="acct-name">{name} <button type="button" className="linklike acct-edit" onClick={() => setEditingName(true)}>Change name</button></h1>}
+            : <><h1 className="acct-name">{name}</h1><button type="button" className="linklike acct-edit" onClick={() => setEditingName(true)}>Change name</button></>}
           <p className="muted" style={{ overflowWrap: 'anywhere' }}>{email}</p>
           <p className="acct-roles">
             {isOwner && <Chip tone="brass">Super admin</Chip>}

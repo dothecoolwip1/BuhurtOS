@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import type { ChipTone, LeagueId } from '../data/types';
 import { LEAGUE_NAME } from '../data/types';
 import type { TierName } from '../lib/tournament';
@@ -16,9 +16,16 @@ export function LeagueChips({ leagues }: { leagues: LeagueId[] }) {
   return <>{leagues.map(l => <Chip key={l}>{LEAGUE_NAME[l]}</Chip>)}</>;
 }
 
-export function Seg<T extends string>({ label, value, options, onChange }: { label: string; value: T; options: readonly (readonly [T, string])[]; onChange: (v: T) => void }) {
+/** Segmented choice. `scroll` keeps it on one line that swipes sideways on a phone (for long option lists such as the Manage areas). */
+export function Seg<T extends string>({ label, value, options, onChange, scroll = false }: { label: string; value: T; options: readonly (readonly [T, string])[]; onChange: (v: T) => void; scroll?: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!scroll || !ref.current) return;
+    const on = ref.current.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (on) ref.current.scrollTo({ left: on.offsetLeft - 8 });
+  }, [scroll, value]);
   return (
-    <div className="seg" role="group" aria-label={label}>
+    <div ref={ref} className={scroll ? 'seg scroll' : 'seg'} role="group" aria-label={label}>
       {options.map(([k, text]) => (
         <button key={k} type="button" aria-pressed={k === value} onClick={() => onChange(k)}>{text}</button>
       ))}

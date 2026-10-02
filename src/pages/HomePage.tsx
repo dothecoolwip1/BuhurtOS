@@ -1,3 +1,4 @@
+import { todayIso } from '../lib/careerView';
 import { Link } from 'react-router-dom';
 import { Crest } from '../components/Crest';
 import { EventRow } from '../components/EventRow';
@@ -37,7 +38,9 @@ export function HomePage() {
 /** The real home page: only what the database holds. */
 function LiveHome() {
   const live = useAsync(fetchEvents, []);
-  const upcoming = (live.data ?? []).map(e => toSummary(e));
+  // Only what is still ahead (or on now), soonest first. Drafts and cancelled events are not featured here.
+  const today = todayIso();
+  const upcoming = (live.data ?? []).filter(e => e.status === 'published' && e.endsOn >= today).map(e => toSummary(e));
   const next = upcoming[0];
   return (
     <>
@@ -53,6 +56,13 @@ function LiveHome() {
         </div>
       </section>
       <section className="section">
+        <div className="section-head"><h2>Coming up</h2><Link className="more" to="/events">All events →</Link></div>
+        <div className="eventlist">
+          {upcoming.slice(0, 4).map(e => <EventRow key={e.id} e={e} />)}
+          {!live.loading && upcoming.length === 0 && <div className="panel info"><h3>No upcoming events yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them. Past events and results are on the Events page.</p></div>}
+        </div>
+      </section>
+      <section className="section">
         <div className="section-head"><h2>Pick your fight</h2><Link className="more" to="/formats">All formats and tournament tiers →</Link></div>
         <div className="lg-cards">
           {LEAGUES.map(l => (
@@ -64,13 +74,6 @@ function LiveHome() {
               <span className="go">How it works →</span>
             </Link>
           ))}
-        </div>
-      </section>
-      <section className="section">
-        <div className="section-head"><h2>Coming up</h2><Link className="more" to="/events">All events →</Link></div>
-        <div className="eventlist">
-          {upcoming.slice(0, 4).map(e => <EventRow key={e.id} e={e} />)}
-          {!live.loading && upcoming.length === 0 && <div className="panel info"><h3>No events published yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them.</p></div>}
         </div>
       </section>
     </>

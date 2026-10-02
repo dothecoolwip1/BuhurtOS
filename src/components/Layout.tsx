@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Dialog } from './Dialog';
 import { setSampleMode, useSampleMode } from '../data/mode';
 import { useAuth } from '../auth/AuthContext';
 import { usePlatformRole } from '../auth/usePlatformRole';
@@ -38,11 +39,16 @@ export function Layout() {
   const { session } = useAuth();
   const { isOwner } = usePlatformRole();
   const sample = useSampleMode();
-  useEffect(() => { window.scrollTo({ top: 0 }); }, [pathname]);
+  const [more, setMore] = useState(false);
+  useEffect(() => { window.scrollTo({ top: 0 }); setMore(false); }, [pathname]);
+  // The phone bar keeps the four most used places; the rest sit under More.
+  const PHONE = NAV.slice(0, 4);
+  const EXTRA = NAV.slice(4);
+  const extraActive = EXTRA.some(n => pathname.startsWith(n.to)) || pathname.startsWith('/organizations') || pathname.startsWith('/platform');
   return (
     <>
       {sample && <div className="mockflag">SAMPLE MODE · <b>Teams, fighters, events and scores here are invented.</b> <button type="button" className="linklike" onClick={() => setSampleMode(false)}>Leave sample mode</button></div>}
-      <header className="top">
+      <header className={`top${session ? ' signed' : ''}`}>
         <div className="wrap">
           <NavLink className="brand" to="/" aria-label="BuhurtOS home">
             <svg className="mark" viewBox="0 0 30 34" aria-hidden="true"><defs><linearGradient id="mk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#E3C77A" /><stop offset=".35" stopColor="#C9893A" /><stop offset=".65" stopColor="#8E4E6B" /><stop offset="1" stopColor="#2C6BB0" /></linearGradient></defs><path d="M2 2h26v14c0 8-6 13-13 16C8 29 2 24 2 16Z" fill="url(#mk)" /><path d="M9 9v15M21 9v15M6 14h18" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" opacity=".92" /></svg>
@@ -55,7 +61,7 @@ export function Layout() {
           <div className="spacer" />
           {session && <NotificationBell />}
           <NavLink className="btn btn-line" to="/account">{session ? 'Account' : 'Sign in'}</NavLink>
-          <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Switch light or dark">
+          <button className="icon-btn theme-btn" type="button" onClick={toggleTheme} aria-label="Switch light or dark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></svg>
           </button>
         </div>
@@ -63,13 +69,47 @@ export function Layout() {
       <main className="wrap"><ProfileGate /><Outlet /></main>
       <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat.</span>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
-        {NAV.map(n => (
+        {PHONE.map(n => (
           <NavLink key={n.to} to={n.to} end={n.end}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round">{n.icon}</svg>
             {n.label}
           </NavLink>
         ))}
+        <button type="button" className={extraActive ? 'active' : undefined} aria-haspopup="dialog" aria-expanded={more} onClick={() => setMore(true)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>
+          More
+        </button>
       </nav>
+      {more && (
+        <Dialog title="More" variant="drawer" onClose={() => setMore(false)}>
+          <nav className="more-list" aria-label="More">
+            {EXTRA.map(n => (
+              <NavLink key={n.to} to={n.to} end={n.end}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round">{n.icon}</svg>
+                {n.label}
+              </NavLink>
+            ))}
+            <NavLink to="/organizations">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6" /></svg>
+              Organizations
+            </NavLink>
+            {isOwner && (
+              <NavLink to="/platform">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><path d="M12 3 3 8l9 5 9-5ZM3 13l9 5 9-5" /></svg>
+                Platform
+              </NavLink>
+            )}
+            <NavLink to="/account">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></svg>
+              {session ? 'Account' : 'Sign in'}
+            </NavLink>
+            <button type="button" onClick={toggleTheme}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></svg>
+              Light or dark
+            </button>
+          </nav>
+        </Dialog>
+      )}
     </>
   );
 }
