@@ -15,6 +15,7 @@ import { RulesPage } from './pages/RulesPage';
 import { RegisterPage } from './registration/RegisterPage';
 import { ManagePage } from './pages/ManagePage';
 import { AccountPage } from './auth/AccountPage';
+import { TestLoginPage } from './auth/TestLoginPage';
 import { WelcomePage } from './pages/WelcomePage';
 import { NewEventPage } from './pages/NewEventPage';
 import { TeamManagerPage } from './pages/TeamManagerPage';
@@ -50,6 +51,7 @@ export function App() {
         <Route path="platform/organizations" element={<PlatformOrganizationsPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="welcome" element={<WelcomePage />} />
+        <Route path="test-login" element={<TestLoginPage />} />
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />
         <Route path="rules" element={<RulesPage />} />
