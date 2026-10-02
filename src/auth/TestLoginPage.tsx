@@ -5,7 +5,7 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { useAuth } from './AuthContext';
 
 /** Only emails on this domain can use the password form. Real accounts have no passwords. */
-export const TEST_DOMAIN = '@buhurtos-test.example';
+export const TEST_DOMAIN = '@buhurtos.ca';
 export const isTestEmail = (email: string) => email.trim().toLowerCase().endsWith(TEST_DOMAIN);
 
 /**
