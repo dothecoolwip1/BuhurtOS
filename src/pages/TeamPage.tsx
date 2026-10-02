@@ -6,7 +6,7 @@ import { fetchTeamBySlug, fetchTeamEntries, type DirectoryEntry } from '../data/
 import { fetchFighterBasics, fetchOrgLites, fetchSeasons, fetchTeamMatchOutcomes, fetchTeamRankings } from '../data/careers';
 import { fetchTeamHistory, fetchTeamStats } from '../data/fighters';
 import { categoryLabel, categoryRecords, divisionLabel, formatRecord, orgName, placeText, plural, rosterGroups, todayIso, tournamentHistory, winPctText } from '../lib/careerView';
-import { CLAIMED_LABEL, fetchTeamRoster } from '../data/teamManager';
+import { CLAIMED_LABEL, fetchMyTeamIds, fetchTeamRoster } from '../data/teamManager';
 import { dateRange } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
 import { listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL, relationLabel, roleLabel, safeHttpsUrl, sinceLabel } from '../lib/teamDirectory';
@@ -34,6 +34,9 @@ export function TeamPage() {
 
 function Workspace({ t }: { t: DirectoryEntry }) {
   const { session } = useAuth();
+  const userId = session?.user.id;
+  const mineTeams = useAsync(() => (userId ? fetchMyTeamIds() : Promise.resolve([])), [userId]);
+  const onTeam = (mineTeams.data ?? []).includes(t.id);
   const roster = useAsync(() => fetchTeamRoster(t.id), [t.id]);
   const entries = useAsync(() => fetchTeamEntries(t.id), [t.id]);
   const stats = useAsync(() => fetchTeamStats(t.slug), [t.slug]);
@@ -61,7 +64,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         </div>
       </div>
 
-      {t.status === 'approved' && (
+      {t.status === 'approved' && !(session && (mineTeams.loading || onTeam)) && (
         <div className="evfilter">
           {session
             ? <Link className="btn btn-ink" to={`/team-manager?join=${encodeURIComponent(t.slug)}`}>Request to join</Link>

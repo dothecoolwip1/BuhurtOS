@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PageHead } from '../components/ui';
 import { fetchMyEvents } from '../data/api';
+import { fetchMyFighterId } from '../data/fighters';
 import { DRAFT_NOTICE } from '../lib/draftView';
 import { useAsync } from '../lib/useAsync';
 import { useAuth } from './AuthContext';
@@ -12,6 +13,7 @@ export function AccountPage() {
   const { isOwner } = usePlatformRole();
   const userId = session?.user.id;
   const mine = useAsync(() => (userId ? fetchMyEvents(userId) : Promise.resolve([])), [userId]);
+  const fighterId = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
   if (loading) return <p className="muted">Loading…</p>;
   if (!session) return <><PageHead eyebrow="Account" title="Sign in" /><SignIn /></>;
   return (
@@ -19,6 +21,7 @@ export function AccountPage() {
       <PageHead eyebrow="Account" title="Your account" lede={`Signed in as ${session.user.email ?? 'your account'}.`} />
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <Link className="btn btn-ink" to="/team-manager">Team manager</Link>
+        {fighterId.data && <Link className="btn btn-line" to={`/fighters/${fighterId.data}`}>My profile</Link>}
         <Link className="btn btn-line" to="/events/new">Create an event</Link>
         {isOwner && <Link className="btn btn-line" to="/platform/organizations">Organizations</Link>}
         <button className="btn btn-line" type="button" onClick={() => void signOut()}>Sign out</button>
