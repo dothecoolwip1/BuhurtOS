@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { Crest } from '../components/Crest';
 import { Chip, PageHead } from '../components/ui';
-import { fetchDirectory, type DirectoryEntry } from '../data/teamDirectory';
+import { fetchDirectory, teamEmblemUrl, type DirectoryEntry } from '../data/teamDirectory';
 import type { CrestDivision, Team } from '../data/types';
 import { friendlyError } from '../lib/friendlyError';
 import { affiliationOptions, filterTeams, listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL } from '../lib/teamDirectory';
@@ -9,9 +9,9 @@ import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 /** The generated crest takes the shape the sample data uses; only name, colours, division and initial are drawn. */
-export const crestTeam = (t: Pick<DirectoryEntry, 'id' | 'name' | 'colors' | 'crestDivision' | 'initial'>): Team => ({
+export const crestTeam = (t: Pick<DirectoryEntry, 'id' | 'name' | 'colors' | 'crestDivision' | 'initial'> & { emblemPath?: string | null }): Team => ({
   id: t.id, name: t.name, place: '', colors: t.colors, division: t.crestDivision as CrestDivision,
-  initial: t.initial || t.name.replace(/^the\s+/i, '').charAt(0).toUpperCase(), points: 0, record: [0, 0]
+  initial: t.initial || t.name.replace(/^the\s+/i, '').charAt(0).toUpperCase(), emblemUrl: teamEmblemUrl(t.emblemPath), points: 0, record: [0, 0]
 });
 
 export function TeamsPage() {

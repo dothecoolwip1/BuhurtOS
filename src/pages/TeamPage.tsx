@@ -6,6 +6,7 @@ import { fetchTeamBySlug, fetchTeamEntries, type DirectoryEntry } from '../data/
 import { fetchFighterBasics, fetchOrgLites, fetchSeasons, fetchTeamMatchOutcomes, fetchTeamRankings } from '../data/careers';
 import { fetchTeamHistory, fetchTeamStats } from '../data/fighters';
 import { categoryLabel, categoryRecords, divisionLabel, formatRecord, orgName, placeText, plural, rosterGroups, todayIso, tournamentHistory, winPctText } from '../lib/careerView';
+import { fetchTeamEditRights } from '../data/teamEdit';
 import { CLAIMED_LABEL, fetchMyTeamIds, fetchTeamRoster } from '../data/teamManager';
 import { dateRange } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
@@ -37,6 +38,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
   const userId = session?.user.id;
   const mineTeams = useAsync(() => (userId ? fetchMyTeamIds() : Promise.resolve([])), [userId]);
   const onTeam = (mineTeams.data ?? []).includes(t.id);
+  const rights = useAsync(() => (userId ? fetchTeamEditRights(t.id) : Promise.resolve({ edit: false, rename: false })), [t.id, userId]);
   const roster = useAsync(() => fetchTeamRoster(t.id), [t.id]);
   const entries = useAsync(() => fetchTeamEntries(t.id), [t.id]);
   const stats = useAsync(() => fetchTeamStats(t.slug), [t.slug]);
@@ -63,6 +65,13 @@ function Workspace({ t }: { t: DirectoryEntry }) {
           {t.status === 'pending' && <p style={{ marginTop: 10 }}><Chip tone="brass">{PENDING_LABEL}</Chip></p>}
         </div>
       </div>
+
+      {rights.data?.edit && (
+        <div className="evfilter">
+          <Link className="btn btn-ink" to={`/teams/${t.slug}/edit`}>Edit team</Link>
+          <span className="muted" style={{ fontSize: 14 }}>Change the description, links, shield and emblem.</span>
+        </div>
+      )}
 
       {t.status === 'approved' && !(session && (mineTeams.loading || onTeam)) && (
         <div className="evfilter">

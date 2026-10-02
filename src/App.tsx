@@ -18,6 +18,7 @@ import { AccountPage } from './auth/AccountPage';
 import { NewEventPage } from './pages/NewEventPage';
 import { TeamManagerPage } from './pages/TeamManagerPage';
 import { TeamPage } from './pages/TeamPage';
+import { TeamEditPage } from './pages/TeamEditPage';
 import { TeamsPage } from './pages/TeamsPage';
 import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
@@ -32,6 +33,7 @@ export function App() {
         <Route path="teams" element={<TeamsPage />} />
         <Route path="teams/new" element={<Navigate to="/team-manager" replace />} />
         <Route path="teams/:slug" element={<TeamPage />} />
+        <Route path="teams/:slug/edit" element={<TeamEditPage />} />
         <Route path="fighters" element={<FightersPage />} />
         <Route path="fighters/:id" element={<FighterPage />} />
         <Route path="fighters/:id/edit" element={<ProfileEditPage />} />

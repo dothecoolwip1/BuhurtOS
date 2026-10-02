@@ -95,8 +95,8 @@ describe('rosters', () => {
 
 describe('fitWithin', () => {
   it('scales the longer side down to the limit and keeps the shape', () => {
-    expect(fitWithin(4000, 3000)).toEqual({ width: 512, height: 384 });
-    expect(fitWithin(3000, 4000)).toEqual({ width: 384, height: 512 });
+    expect(fitWithin(4000, 3000, 512)).toEqual({ width: 512, height: 384 });
+    expect(fitWithin(3000, 4000, 512)).toEqual({ width: 384, height: 512 });
   });
-  it('never scales a small picture up', () => { expect(fitWithin(200, 100)).toEqual({ width: 200, height: 100 }); });
+  it('never scales a small picture up', () => { expect(fitWithin(200, 100, 512)).toEqual({ width: 200, height: 100 }); });
 });

@@ -1,3 +1,4 @@
+import { fitWithin, shrinkImage } from '../lib/image';
 import { supabase } from '../lib/supabase';
 
 /**
@@ -289,34 +290,13 @@ export async function fetchCategoryOptions(): Promise<CategoryOption[]> {
 
 // ---------------------------------------------------------------- profile photo
 export const AVATAR_MAX_PX = 512;
-/** Scales (w, h) down so the longer side is at most `max`, keeping the shape. Never scales up. */
-export function fitWithin(w: number, h: number, max = AVATAR_MAX_PX): { width: number; height: number } {
-  const k = Math.min(1, max / Math.max(w, h));
-  return { width: Math.max(1, Math.round(w * k)), height: Math.max(1, Math.round(h * k)) };
-}
+export { fitWithin };
 /** Public address of a stored photo, or null when the fighter has none. */
 export const avatarUrl = (path: string | null | undefined): string | null => (path ? supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl : null);
 
-/** Shrinks any picture the phone can show to a JPEG of at most 512px. Throws a plain sentence when the file is not a picture. */
-async function shrinkToJpeg(file: File): Promise<Blob> {
-  if (!file.type.startsWith('image/')) throw new Error('Choose a picture file.');
-  let bitmap: ImageBitmap;
-  try { bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { throw new Error('That picture could not be read. Try a JPEG or PNG.'); }
-  const { width, height } = fitWithin(bitmap.width, bitmap.height);
-  const canvas = document.createElement('canvas');
-  canvas.width = width; canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('This browser cannot resize pictures.');
-  ctx.drawImage(bitmap, 0, 0, width, height);
-  bitmap.close();
-  const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', 0.85));
-  if (!blob) throw new Error('That picture could not be converted.');
-  return blob;
-}
-
 /** Uploads the picture to the caller's own folder, points the profile at it and removes the previous photo. Returns the new path. */
 export async function uploadMyAvatar(fighterId: string, file: File, previous: string | null): Promise<string> {
-  const blob = await shrinkToJpeg(file);
+  const blob = await shrinkImage(file, AVATAR_MAX_PX, 'image/jpeg');
   const path = `${fighterId}/${Date.now()}.jpg`;
   const up = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
   if (up.error) throw up.error;
