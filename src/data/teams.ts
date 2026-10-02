@@ -1,14 +1,24 @@
 import { supabase } from '../lib/supabase';
 import type { ClearanceRow } from '../lib/teamClearance';
 
-export interface TeamRow { id: string; slug: string; name: string; city: string | null; region: string | null; country: string | null; status: 'pending' | 'approved'; createdAt: string }
+export interface TeamRow { id: string; slug: string; name: string; city: string | null; region: string | null; country: string | null; status: 'pending' | 'approved'; createdAt: string; organization: { slug: string; name: string } | null }
 
 /** Row level security shows organizers every team, including ones still waiting for approval. */
 export async function fetchAllTeams(): Promise<TeamRow[]> {
-  const { data, error } = await supabase.from('teams').select('id,slug,name,city,region,country,status,created_at').order('created_at');
-  if (error) throw error;
-  return (data as { id: string; slug: string; name: string; city: string | null; region: string | null; country: string | null; status: 'pending' | 'approved'; created_at: string }[])
-    .map(t => ({ id: t.id, slug: t.slug, name: t.name, city: t.city, region: t.region, country: t.country, status: t.status, createdAt: t.created_at }));
+  const [teams, affs] = await Promise.all([
+    supabase.from('teams').select('id,slug,name,city,region,country,status,created_at').order('created_at'),
+    supabase.from('team_affiliations').select('team_id,relation,organizations(slug,name)').eq('relation', 'member')
+  ]);
+  if (teams.error) throw teams.error;
+  if (affs.error) throw affs.error;
+  type Org = { slug: string; name: string };
+  const orgOf = new Map<string, Org>();
+  for (const a of affs.data as unknown as { team_id: string; organizations: Org | Org[] | null }[]) {
+    const o = Array.isArray(a.organizations) ? a.organizations[0] : a.organizations;
+    if (o && !orgOf.has(a.team_id)) orgOf.set(a.team_id, o);
+  }
+  return (teams.data as { id: string; slug: string; name: string; city: string | null; region: string | null; country: string | null; status: 'pending' | 'approved'; created_at: string }[])
+    .map(t => ({ id: t.id, slug: t.slug, name: t.name, city: t.city, region: t.region, country: t.country, status: t.status, createdAt: t.created_at, organization: orgOf.get(t.id) ?? null }));
 }
 
 export async function approveTeam(teamId: string): Promise<void> {

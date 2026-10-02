@@ -4,7 +4,7 @@ import { Chip, PageHead } from '../components/ui';
 import { fetchDirectory, teamEmblemUrl, type DirectoryEntry } from '../data/teamDirectory';
 import type { CrestDivision, Team } from '../data/types';
 import { friendlyError } from '../lib/friendlyError';
-import { affiliationOptions, filterTeams, listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL } from '../lib/teamDirectory';
+import { affiliationOptions, filterTeams, groupByOrganization, listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL } from '../lib/teamDirectory';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
@@ -13,6 +13,12 @@ export const crestTeam = (t: Pick<DirectoryEntry, 'id' | 'name' | 'colors' | 'cr
   id: t.id, name: t.name, place: '', colors: t.colors, division: t.crestDivision as CrestDivision,
   initial: t.initial || t.name.replace(/^the\s+/i, '').charAt(0).toUpperCase(), emblemUrl: teamEmblemUrl(t.emblemPath), points: 0, record: [0, 0]
 });
+
+/** The organization a listed team is a member of (else its first affiliation), for grouping. */
+const memberOrg = (t: DirectoryEntry) => {
+  const a = t.affiliations.find(x => x.relation === 'member') ?? t.affiliations[0];
+  return a ? { slug: a.organizationSlug, name: a.organizationName } : null;
+};
 
 export function TeamsPage() {
   useDocumentTitle('Teams');
@@ -52,9 +58,12 @@ export function TeamsPage() {
       {!live.loading && !live.error && (
         <p className="muted" aria-live="polite">{list.length} {list.length === 1 ? 'team' : 'teams'}{q || org ? ' match' : ''}</p>
       )}
-      <div className="teamdir">
-        {list.map(t => <TeamListing key={t.id} t={t} />)}
-      </div>
+      {groupByOrganization(list, memberOrg).map(g => (
+        <section key={g.key || 'none'} style={{ display: 'grid', gap: 12 }} aria-label={g.name}>
+          <h2 className="acct-h">{g.name} · {g.teams.length}</h2>
+          <div className="teamdir">{g.teams.map(t => <TeamListing key={t.id} t={t} />)}</div>
+        </section>
+      ))}
       {!live.loading && !live.error && all.length === 0 && (
         <div className="panel info"><h3>No teams listed yet</h3><p style={{ color: 'var(--muted)' }}>Teams appear here once they are approved.</p></div>
       )}

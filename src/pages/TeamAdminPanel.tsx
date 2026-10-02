@@ -4,11 +4,13 @@ import { Dialog } from '../components/Dialog';
 import { approveTeam, fetchAllTeams, type TeamRow } from '../data/teams';
 import { assignTeamCaptain, fetchTeamCaptains, removeTeamCaptain } from '../data/teamManager';
 import { friendlyError } from '../lib/friendlyError';
+import { groupByOrganization } from '../lib/teamDirectory';
 import { useAsync } from '../lib/useAsync';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
 const place = (t: TeamRow) => [t.city, t.region, t.country].filter(Boolean).join(', ');
 const SHOWN = 12;
+const PAGE = 25;
 
 /**
  * Team manager for the platform owner, organizers and organization admins: approve new teams and name captains.
@@ -20,7 +22,7 @@ export function TeamAdminPanel({ canApprove, allTeams = false }: { canApprove: b
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<TeamRow | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [shown, setShown] = useState(25);
+  const [shown, setShown] = useState(PAGE);
   const [problem, setProblem] = useState<string | null>(null);
 
   const all = [...(teams.data ?? [])].sort((a, b) => a.name.localeCompare(b.name));
@@ -65,19 +67,24 @@ export function TeamAdminPanel({ canApprove, allTeams = false }: { canApprove: b
           <input type="search" value={q} onChange={e => setQ(e.target.value)} autoComplete="off" />
         </label>
         {needle.length >= 2 && found.length === 0 && !teams.loading && <p className="muted" role="status">No team matches.</p>}
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 8 }} aria-label="Matching teams">
-          {found.slice(0, limit).map(t => (
-            <li key={t.id} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 8, borderBottom: '1px solid var(--line)' }}>
-              <span style={{ overflowWrap: 'anywhere' }}><Link to={`/teams/${t.slug}`}><b>{t.name}</b></Link>{place(t) ? <span className="src"> · {place(t)}</span> : null}{t.status === 'pending' ? <span className="src"> · waiting for approval</span> : null}</span>
-              <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <Link className="btn btn-line btn-sm" to={`/teams/${t.slug}/edit`}>Edit</Link>
-                <button type="button" className="btn btn-line btn-sm" onClick={() => setOpen(t)}>Captains</button>
-              </span>
-            </li>
-          ))}
-        </ul>
+        {groupByOrganization(found.slice(0, limit), t => t.organization).map(g => (
+          <div key={g.key || 'none'} style={{ display: 'grid', gap: 8 }}>
+            {allTeams && <h4 className="acct-h" style={{ marginTop: 6 }}>{g.name} · {g.teams.length}</h4>}
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 8 }} aria-label={allTeams ? g.name : 'Matching teams'}>
+              {g.teams.map(t => (
+                <li key={t.id} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 8, borderBottom: '1px solid var(--line)' }}>
+                  <span style={{ overflowWrap: 'anywhere' }}><Link to={`/teams/${t.slug}`}><b>{t.name}</b></Link>{place(t) ? <span className="src"> · {place(t)}</span> : null}{t.status === 'pending' ? <span className="src"> · waiting for approval</span> : null}</span>
+                  <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <Link className="btn btn-line btn-sm" to={`/teams/${t.slug}/edit`}>Edit</Link>
+                    <button type="button" className="btn btn-line btn-sm" onClick={() => setOpen(t)}>Captains</button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
         {found.length > limit && (allTeams
-          ? <button type="button" className="btn btn-line" onClick={() => setShown(n => n + 25)}>Show more ({found.length - limit} left)</button>
+          ? <button type="button" className="btn btn-line" onClick={() => setShown(n => n + PAGE)}>Show more ({found.length - limit} left)</button>
           : <p className="src">Showing {SHOWN} of {found.length}. Type more to narrow it down.</p>)}
       </div>
 

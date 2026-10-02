@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { adoptionLabel, affiliationOptions, filterTeams, listedFromLabel, locationText, matchesQuery, ordinal, safeHttpsUrl, sinceLabel, summarizeResults, type DirectoryTeam } from './teamDirectory';
+import { adoptionLabel, affiliationOptions, filterTeams, groupByOrganization, listedFromLabel, locationText, matchesQuery, ordinal, safeHttpsUrl, sinceLabel, summarizeResults, type DirectoryTeam } from './teamDirectory';
 
 const hacsa = { organizationSlug: 'hacsa', organizationName: 'HACSA' };
 const teams: DirectoryTeam[] = [
@@ -63,4 +63,16 @@ describe('summarizeResults', () => {
   it('counts only placed rows', () => {
     expect(summarizeResults([row(), row({ eventSlug: 'f', finalPlace: 5 }), row({ finalPlace: null })])).toEqual({ competitions: 2, events: 2, podiums: 1, bestPlace: 1 });
   });
+});
+
+describe('groupByOrganization', () => {
+  const org = (slug: string, name: string) => ({ slug, name });
+  const list = [{ n: 'A', o: org('nacl', 'Northern League-test') }, { n: 'B', o: null }, { n: 'C', o: org('hacsa', 'HACSA') }, { n: 'D', o: org('nacl', 'Northern League-test') }];
+  it('groups by organization, sorted by name, with teams without one last', () => {
+    const g = groupByOrganization(list, t => t.o);
+    expect(g.map(x => x.name)).toEqual(['HACSA', 'Northern League-test', 'No organization']);
+    expect(g[1].teams.map(t => t.n)).toEqual(['A', 'D']);
+    expect(g[2].key).toBe('');
+  });
+  it('gives no groups for no teams', () => { expect(groupByOrganization([], () => null)).toEqual([]); });
 });
