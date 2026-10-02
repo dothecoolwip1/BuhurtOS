@@ -100,7 +100,7 @@ export function RegisterPage() {
 
   useEffect(() => {
     if (preview) return;
-    load(slug).then(setData).catch(e => setLoadError(friendlyError(e, 'Could not load this event.')));
+    load(slug).then(setData).catch(e => setLoadError(e instanceof Error && !('code' in e) && e.message ? e.message : friendlyError(e, 'Could not load this event.')));
   }, [slug, preview]);
   useEffect(() => { if (session?.user.email) setF(p => (p.email ? p : { ...p, email: session.user.email ?? '' })); }, [session]);
 

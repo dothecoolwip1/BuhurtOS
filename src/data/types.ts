@@ -12,6 +12,8 @@ export interface Team {
   colors: [string, string];
   division: CrestDivision;
   initial: string;
+  /** Public address of the team's uploaded emblem; drawn in the middle of the shield instead of the initial. */
+  emblemUrl?: string | null;
   points: number;
   record: [number, number];
 }

@@ -15,7 +15,7 @@ function Division({ team }: { team: Team }) {
   }
 }
 
-/** Generated heraldic shield: a placeholder until teams upload their own crests. */
+/** Generated heraldic shield: with the team's own emblem in the middle when it has uploaded one, else its initial. */
 export function Crest({ team, size = 44 }: { team: Team; size?: number }) {
   const uid = useId().replace(/:/g, '');
   const [a, b] = team.colors;
@@ -32,8 +32,17 @@ export function Crest({ team, size = 44 }: { team: Team; size?: number }) {
       <g clipPath={`url(#c${uid})`}>
         <rect width="64" height="72" fill={a} />
         <Division team={team} />
-        <circle cx="32" cy="32" r="13" fill={light ? '#1A1D22' : '#fff'} opacity=".94" />
-        <text x="32" y="38.5" textAnchor="middle" fontFamily="Big Shoulders Display,Impact,sans-serif" fontWeight={900} fontSize="18" fill={letter}>{team.initial}</text>
+        {team.emblemUrl ? (
+          <>
+            <circle cx="32" cy="32" r="16" fill="#fff" opacity=".94" />
+            <image href={team.emblemUrl} x="18" y="18" width="28" height="28" preserveAspectRatio="xMidYMid meet" />
+          </>
+        ) : (
+          <>
+            <circle cx="32" cy="32" r="13" fill={light ? '#1A1D22' : '#fff'} opacity=".94" />
+            <text x="32" y="38.5" textAnchor="middle" fontFamily="Big Shoulders Display,Impact,sans-serif" fontWeight={900} fontSize="18" fill={letter}>{team.initial}</text>
+          </>
+        )}
         <rect width="64" height="72" fill={`url(#g${uid})`} />
       </g>
       <path d={SHIELD} fill="none" stroke="currentColor" strokeOpacity=".22" strokeWidth="1.5" />
