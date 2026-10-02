@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { usePlatformRole } from '../auth/usePlatformRole';
 import { Crest } from '../components/Crest';
 import { Chip } from '../components/ui';
 import { fetchTeamBySlug, fetchTeamEntries, type DirectoryEntry } from '../data/teamDirectory';
@@ -35,6 +36,7 @@ export function TeamPage() {
 
 function Workspace({ t }: { t: DirectoryEntry }) {
   const { session } = useAuth();
+  const { isOwner } = usePlatformRole();
   const userId = session?.user.id;
   const mineTeams = useAsync(() => (userId ? fetchMyTeamIds() : Promise.resolve([])), [userId]);
   const onTeam = (mineTeams.data ?? []).includes(t.id);
@@ -73,7 +75,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         </div>
       )}
 
-      {t.status === 'approved' && !(session && (mineTeams.loading || onTeam)) && (
+      {t.status === 'approved' && !isOwner && !(session && (mineTeams.loading || onTeam)) && (
         <div className="evfilter">
           {session
             ? <Link className="btn btn-ink" to={`/team-manager?join=${encodeURIComponent(t.slug)}`}>Request to join</Link>

@@ -65,19 +65,23 @@ export function AccountPage() {
             {isOwner && <Chip tone="brass">Super admin</Chip>}
             {isOrganizer && !isOwner && <Chip tone="steel">Organizer</Chip>}
             {orgAdmin.data && <Chip tone="steel">Organization admin</Chip>}
-            {teams.length > 0 && <Chip>Captain</Chip>}
+            {!isOwner && teams.length > 0 && <Chip>Captain</Chip>}
           </p>
         </div>
       </header>
 
       <section aria-labelledby="acct-you">
-        <h2 id="acct-you" className="acct-h">You</h2>
+        <h2 id="acct-you" className="acct-h">{isOwner ? 'Teams' : 'You'}</h2>
         <nav className="panel acct-list" aria-label="Your profile and teams">
-          {profile
-            ? <Row to={`/fighters/${profile.fighterId}`} title="My fighter profile" sub="View your public profile, edit it and add a photo" />
-            : <p className="acct-empty">Your fighter profile appears once a registration of yours has been accepted at an event.</p>}
-          <Row to="/team-manager" title="Team manager" sub="Join a team, request a new one, answer join requests" />
-          {teams.map(t => <Row key={t.teamId} to={`/teams/${t.slug}`} title={t.name} sub={t.status === 'pending' ? 'Captain · waiting for approval' : 'Captain · edit the team page'} />)}
+          {isOwner
+            ? <Row to="/team-manager" title="Team manager" sub="Every team: edit, approve new teams, name captains" />
+            : <>
+                {profile
+                  ? <Row to={`/fighters/${profile.fighterId}`} title="My fighter profile" sub="View your public profile, edit it and add a photo" />
+                  : <p className="acct-empty">Your fighter profile appears once a registration of yours has been accepted at an event.</p>}
+                <Row to="/team-manager" title="Team manager" sub="Join a team, request a new one, answer join requests" />
+              </>}
+          {!isOwner && teams.map(t => <Row key={t.teamId} to={`/teams/${t.slug}`} title={t.name} sub={t.status === 'pending' ? 'Captain · waiting for approval' : 'Captain · edit the team page'} />)}
         </nav>
       </section>
 

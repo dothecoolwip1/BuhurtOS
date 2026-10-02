@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Dialog } from '../components/Dialog';
 import { approveTeam, fetchAllTeams, type TeamRow } from '../data/teams';
 import { assignTeamCaptain, fetchTeamCaptains, removeTeamCaptain } from '../data/teamManager';
@@ -13,18 +14,20 @@ const SHOWN = 12;
  * Team manager for the platform owner, organizers and organization admins: approve new teams and name captains.
  * The database decides who may do either; a person without the authority just sees its error.
  */
-export function TeamAdminPanel({ canApprove }: { canApprove: boolean }) {
+export function TeamAdminPanel({ canApprove, allTeams = false }: { canApprove: boolean; allTeams?: boolean }) {
   const [key, setKey] = useState(0);
   const teams = useAsync(fetchAllTeams, [key]);
   const [q, setQ] = useState('');
   const [open, setOpen] = useState<TeamRow | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [shown, setShown] = useState(25);
   const [problem, setProblem] = useState<string | null>(null);
 
-  const all = teams.data ?? [];
+  const all = [...(teams.data ?? [])].sort((a, b) => a.name.localeCompare(b.name));
   const pending = all.filter(t => t.status === 'pending');
   const needle = q.trim().toLowerCase();
-  const found = needle.length < 2 ? [] : all.filter(t => `${t.name} ${place(t)}`.toLowerCase().includes(needle));
+  const found = needle.length < 2 ? (allTeams ? all.filter(t => t.status === 'approved') : []) : all.filter(t => `${t.name} ${place(t)}`.toLowerCase().includes(needle));
+  const limit = allTeams ? shown : SHOWN;
 
   const approve = async (t: TeamRow) => {
     setBusyId(t.id); setProblem(null);
@@ -33,7 +36,7 @@ export function TeamAdminPanel({ canApprove }: { canApprove: boolean }) {
 
   return (
     <section className="panel info" style={{ display: 'grid', gap: 12 }} aria-labelledby="admin-h">
-      <h2 id="admin-h">Admin: teams and captains</h2>
+      <h2 id="admin-h">{allTeams ? `All teams (${all.length})` : 'Admin: teams and captains'}</h2>
       {teams.loading && !teams.data && <p className="muted">Loading teams…</p>}
       {teams.error != null && <p role="alert" style={bad}>{friendlyError(teams.error, 'Could not load teams.')}</p>}
       {problem && <p role="alert" style={bad}>{problem}</p>}
@@ -45,9 +48,10 @@ export function TeamAdminPanel({ canApprove }: { canApprove: boolean }) {
             {pending.map(t => (
               <li key={t.id} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ overflowWrap: 'anywhere' }}><b>{t.name}</b>{place(t) ? <span className="src"> · {place(t)}</span> : null}</span>
-                <span style={{ display: 'flex', gap: 8 }}>
-                  <button type="button" className="btn btn-line" onClick={() => setOpen(t)}>Captains</button>
-                  <button type="button" className="btn btn-ink" disabled={busyId === t.id} onClick={() => void approve(t)}>Approve</button>
+                <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <Link className="btn btn-line btn-sm" to={`/teams/${t.slug}/edit`}>Edit</Link>
+                  <button type="button" className="btn btn-line btn-sm" onClick={() => setOpen(t)}>Captains</button>
+                  <button type="button" className="btn btn-ink btn-sm" disabled={busyId === t.id} onClick={() => void approve(t)}>Approve</button>
                 </span>
               </li>
             ))}
@@ -56,20 +60,25 @@ export function TeamAdminPanel({ canApprove }: { canApprove: boolean }) {
       )}
 
       <div style={{ display: 'grid', gap: 8 }}>
-        <h3>Name a captain</h3>
+        <h3>{allTeams ? 'Teams' : 'Name a captain'}</h3>
         <label className="field-in">Find a team by name or city
           <input type="search" value={q} onChange={e => setQ(e.target.value)} autoComplete="off" />
         </label>
         {needle.length >= 2 && found.length === 0 && !teams.loading && <p className="muted" role="status">No team matches.</p>}
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 8 }} aria-label="Matching teams">
-          {found.slice(0, SHOWN).map(t => (
-            <li key={t.id} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ overflowWrap: 'anywhere' }}><b>{t.name}</b>{place(t) ? <span className="src"> · {place(t)}</span> : null}</span>
-              <button type="button" className="btn btn-line" onClick={() => setOpen(t)}>Captains</button>
+          {found.slice(0, limit).map(t => (
+            <li key={t.id} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 8, borderBottom: '1px solid var(--line)' }}>
+              <span style={{ overflowWrap: 'anywhere' }}><Link to={`/teams/${t.slug}`}><b>{t.name}</b></Link>{place(t) ? <span className="src"> · {place(t)}</span> : null}{t.status === 'pending' ? <span className="src"> · waiting for approval</span> : null}</span>
+              <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <Link className="btn btn-line btn-sm" to={`/teams/${t.slug}/edit`}>Edit</Link>
+                <button type="button" className="btn btn-line btn-sm" onClick={() => setOpen(t)}>Captains</button>
+              </span>
             </li>
           ))}
         </ul>
-        {found.length > SHOWN && <p className="src">Showing {SHOWN} of {found.length}. Type more to narrow it down.</p>}
+        {found.length > limit && (allTeams
+          ? <button type="button" className="btn btn-line" onClick={() => setShown(n => n + 25)}>Show more ({found.length - limit} left)</button>
+          : <p className="src">Showing {SHOWN} of {found.length}. Type more to narrow it down.</p>)}
       </div>
 
       {open && <CaptainsDialog team={open} onClose={() => setOpen(null)} />}
