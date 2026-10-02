@@ -24,7 +24,27 @@ export function TeamManagerPage() {
   const { session, loading } = useAuth();
   if (loading) return <p className="muted">Loading…</p>;
   if (!session) return <><PageHead eyebrow="Teams" title="Team manager" lede="Join your team or ask for a new one. Sign in first." /><SignIn reason="Sign in to join a team or ask for a new one." /></>;
-  return <Manager />;
+  return <ManagerFor />;
+}
+
+/** The super admin is not a fighter and joins no team: he gets the admin console only. Everyone else gets the member view. */
+function ManagerFor() {
+  const { isOwner, loading } = usePlatformRole();
+  if (loading) return <p className="muted">Loading…</p>;
+  return isOwner ? <OwnerManager /> : <Manager />;
+}
+
+function OwnerManager() {
+  const [key, setKey] = useState(0);
+  const inbox = useAsync(fetchTeamRequestsInbox, [key]);
+  return (
+    <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
+      <PageHead eyebrow="Super admin" title="Team manager" lede="Every team on BuhurtOS: edit any team page, approve new teams and name captains." />
+      <TeamAdminPanel canApprove allTeams />
+      {(inbox.data ?? []).length > 0 && <Inbox items={inbox.data!} onDone={() => setKey(k => k + 1)} />}
+      {inbox.error != null && <p role="alert" style={bad}>{friendlyError(inbox.error, 'Could not load join requests.')}</p>}
+    </section>
+  );
 }
 
 function Manager() {
