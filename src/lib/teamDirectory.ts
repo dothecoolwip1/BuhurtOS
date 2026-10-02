@@ -87,3 +87,22 @@ export function ordinal(n: number): string {
 
 /** Safe https link or null (website and social links are validated by the database too). */
 export const safeHttpsUrl = (u: string | null | undefined): string | null => (u && /^https:\/\//.test(u) ? u : null);
+
+export const NO_ORGANIZATION = 'No organization';
+export interface OrgGroup<T> { key: string; name: string; teams: T[] }
+
+/**
+ * Teams under the organization they are a member of (the first affiliation when there are several), organizations sorted by name,
+ * "No organization" last. Only recorded affiliations count, never location. Teams keep the order they came in.
+ */
+export function groupByOrganization<T>(teams: readonly T[], orgOf: (t: T) => { slug: string; name: string } | null): OrgGroup<T>[] {
+  const by = new Map<string, OrgGroup<T>>();
+  for (const t of teams) {
+    const o = orgOf(t);
+    const key = o?.slug ?? '';
+    const g = by.get(key) ?? { key, name: o?.name ?? NO_ORGANIZATION, teams: [] };
+    g.teams.push(t);
+    by.set(key, g);
+  }
+  return [...by.values()].sort((a, b) => (a.key === '' ? 1 : b.key === '' ? -1 : a.name.localeCompare(b.name)));
+}
