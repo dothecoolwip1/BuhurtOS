@@ -89,3 +89,16 @@ export async function fetchMyEvents(userId: string): Promise<LiveEvent[]> {
   const ids = new Set((staff.data ?? []).map(r => r.event_id as string));
   return pickMine(all, ids, (platform.data ?? []).some(r => r.role === 'owner'));
 }
+
+/** The name the signed-in person goes by on BuhurtOS (organizers and captains see it on requests). Empty when never set. */
+export async function fetchMyDisplayName(userId: string): Promise<string> {
+  const { data, error } = await supabase.from('profiles').select('display_name').eq('id', userId).maybeSingle();
+  if (error) throw error;
+  return (data as { display_name: string } | null)?.display_name ?? '';
+}
+export async function saveMyDisplayName(userId: string, name: string): Promise<void> {
+  const clean = name.trim();
+  if (clean.length < 2 || clean.length > 80) throw new Error('Use 2 to 80 characters.');
+  const { error } = await supabase.from('profiles').update({ display_name: clean }).eq('id', userId);
+  if (error) throw error;
+}

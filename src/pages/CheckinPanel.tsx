@@ -97,14 +97,17 @@ export function CheckinPanel({ regs, loading, onChanged }: { regs: ManagedRegist
 }
 
 /** The strip at the top of the organizer page. Each item jumps to where it is dealt with. */
-export function AttentionStrip({ regs, teamsWithoutCaptain, onPick }: { regs: ManagedRegistration[]; teamsWithoutCaptain?: number; onPick: (k: AttentionKind) => void }) {
+export function AttentionStrip({ regs, teamsWithoutCaptain, onPick, extra = [] }: {
+  regs: ManagedRegistration[]; teamsWithoutCaptain?: number; onPick: (k: AttentionKind) => void; extra?: { key: string; label: string; onClick: () => void }[];
+}) {
   const items = attentionItems(regs, teamsWithoutCaptain);
-  if (items.length === 0) return null;
+  if (items.length === 0 && extra.length === 0) return null;
   return (
     <section className="panel info" aria-label="Needs attention now" style={{ display: 'grid', gap: 8 }}>
       <h3>Needs attention now</h3>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {items.map(i => <button key={i.kind} type="button" className="btn btn-line" onClick={() => onPick(i.kind)}>{i.label}</button>)}
+        {extra.map(x => <button key={x.key} type="button" className="btn btn-line" onClick={x.onClick}>{x.label}</button>)}
       </div>
     </section>
   );

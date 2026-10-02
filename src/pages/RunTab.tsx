@@ -3,6 +3,7 @@ import { BulkSchedule } from '../components/BulkSchedule';
 import { MatchSchedule } from '../components/MatchSchedule';
 import { RosterEditor } from '../components/RosterEditor';
 import { ConflictsPanel } from '../components/RunConflicts';
+import { Withdrawals } from '../components/Withdrawals';
 import { Chip } from '../components/ui';
 import { fetchCompetitionRoster, fetchEventTimeZone, fetchMatchDurations, DEFAULT_TIME_ZONE } from '../data/runSchedule';
 import type { LiveCompetition, LiveEvent } from '../data/api';
@@ -18,6 +19,7 @@ import {
   type DrawChoice, type DrawFormat, type PlanGroup
 } from '../lib/runDraw';
 import { matchFighters, sideFighters, timeLabel, DEFAULT_DURATION, type RosterMember, type SideEntry } from '../lib/runSchedule';
+import { isEventDayOrLater } from '../lib/autoResolve';
 import { structureAdvice } from '../lib/tournament';
 import { useAsync } from '../lib/useAsync';
 
@@ -275,14 +277,15 @@ function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition
   );
 }
 
-function CompetitionRun({ comp, eventId, timeZone, jumpId, onScheduled }: { comp: LiveCompetition; eventId: string; timeZone: string; jumpId: string | null; onScheduled: () => void }) {
+function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled }: { comp: LiveCompetition; eventId: string; timeZone: string; jumpId: string | null; eventDay: boolean; onScheduled: () => void }) {
   const [reload, setReload] = useState(0);
   const [building, setBuilding] = useState(false);
+  const [redrawFor, setRedrawFor] = useState<string | null>(null);
   const entries = useAsync(() => fetchEntries(comp.id), [comp.id, reload]);
   const matches = useAsync(() => fetchCompetitionMatches(comp.id), [comp.id, reload]);
   const roster = useAsync(() => fetchCompetitionRoster(comp.id), [comp.id, reload]);
   const durations = useAsync(() => fetchMatchDurations(comp.id), [comp.id, reload]);
-  const done = () => { setBuilding(false); setReload(k => k + 1); };
+  const done = () => { setBuilding(false); setRedrawFor(null); setReload(k => k + 1); onScheduled(); };
 
   const all = entries.data ?? [];
   const n = activeEntries(all).length;
@@ -325,7 +328,13 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, onScheduled }: { comp
         </button>
       )}
       {n < 2 && !entries.loading && <p className="src">You need at least 2 entrants (not withdrawn or disqualified) to build a draw.</p>}
-      {building && <DrawBuilder comp={comp} entries={all} existing={list} onDone={done} onClose={() => setBuilding(false)} />}
+      {building && redrawFor && <p role="status" className="src">{redrawFor} is out. This new draw leaves them out; the old matches are replaced once you confirm.</p>}
+      {building && <DrawBuilder key={`${reload}`} comp={comp} entries={all} existing={list} onDone={done} onClose={() => { setBuilding(false); setRedrawFor(null); }} />}
+
+      {all.length > 0 && (
+        <Withdrawals entries={all} matches={list} eventDay={eventDay} onChanged={() => { setReload(k => k + 1); onScheduled(); }}
+          onRedraw={name => { if (list.some(m => m.queueState === 'final')) return; setRedrawFor(name); setBuilding(true); }} />
+      )}
 
       {canBuildBracketFromPools(list) && <PoolBracket comp={comp} matches={list} entries={all} onDone={done} />}
 
@@ -362,10 +371,12 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, onScheduled }: { comp
 
 export function RunTab({ event, competitions }: { event: LiveEvent; competitions: LiveCompetition[] }) {
   const [conflictsKey, setConflictsKey] = useState(0);
+  const [version, setVersion] = useState(0);
   const [jumpId, setJumpId] = useState<string | null>(null);
   const tz = useAsync(() => fetchEventTimeZone(event.id), [event.id]);
   const timeZone = tz.data ?? DEFAULT_TIME_ZONE;
   const names = useMemo(() => new Map(competitions.map(c => [c.id, c.name])), [competitions]);
+  const eventDay = isEventDayOrLater(event.startsOn, timeZone);
 
   useEffect(() => {
     if (!jumpId) return;
@@ -383,8 +394,9 @@ export function RunTab({ event, competitions }: { event: LiveEvent; competitions
   }
   return (
     <div style={{ display: 'grid', gap: 18 }}>
-      <ConflictsPanel eventId={event.id} competitionNames={names} timeZone={timeZone} reloadKey={conflictsKey} onJump={setJumpId} />
-      {competitions.map(c => <CompetitionRun key={c.id} comp={c} eventId={event.id} timeZone={timeZone} jumpId={jumpId} onScheduled={() => setConflictsKey(k => k + 1)} />)}
+      {tz.data && <ConflictsPanel eventId={event.id} competitionNames={names} timeZone={timeZone} reloadKey={conflictsKey} onJump={setJumpId} autoFix={!eventDay}
+        onFixed={() => { setConflictsKey(k => k + 1); setVersion(v => v + 1); }} />}
+      {competitions.map(c => <CompetitionRun key={`${c.id}-${version}`} comp={c} eventId={event.id} timeZone={timeZone} jumpId={jumpId} eventDay={eventDay} onScheduled={() => setConflictsKey(k => k + 1)} />)}
     </div>
   );
 }

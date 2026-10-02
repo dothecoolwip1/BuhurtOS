@@ -711,3 +711,19 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .acct-row svg{flex:none;color:var(--faint)}
 .acct-sub{display:block;font-size:13px;color:var(--muted);margin-top:2px}
 .acct-empty{padding:15px 18px;font-size:14px;color:var(--muted);border-bottom:1px solid var(--line)}
+/* Notifications: fixed under the header so it never runs off the side of a phone. */
+.notif-panel{position:fixed;right:max(12px,calc((100vw - 1180px)/2 + 20px));width:min(380px,calc(100vw - 24px));max-height:min(70vh,560px);overflow-y:auto;overscroll-behavior:contain;padding:0;z-index:60;display:grid;align-content:start}
+.notif-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 14px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:1}
+.notif-list{list-style:none;margin:0;padding:0}
+.notif-item{display:grid;gap:3px;padding:12px 14px 12px 16px;border-bottom:1px solid var(--line);color:var(--ink);border-left:3px solid transparent}
+.notif-item:hover{background:var(--raised)}
+.notif-item.unread{border-left-color:var(--live);background:color-mix(in srgb,var(--live) 6%,transparent)}
+.notif-item.unread .notif-text{font-weight:600}
+.notif-text{overflow-wrap:anywhere;line-height:1.35}
+.notif-time{font:500 11px/1.3 var(--f-data);color:var(--faint)}
+@media (max-width:600px){.notif-panel{left:12px;right:12px;width:auto}}
+/* Team and fighter heads reuse .phead only for the sub-line; no grid or padding there. */
+.teamhead .phead{display:block;padding:0}
+/* Segmented controls with many options wrap on phones instead of cutting off the last one. */
+@media (max-width:600px){.seg{flex-wrap:wrap;border-radius:18px;overflow:visible}}
+.acct-edit{font:500 13px var(--f-body);text-transform:none;letter-spacing:0;vertical-align:middle;margin-left:6px}

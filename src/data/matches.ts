@@ -152,3 +152,29 @@ export function groupIntoRounds(matches: readonly CompetitionMatch[]): MatchRoun
     || roundOrder(x.stage, x.label) - roundOrder(y.stage, y.label)
     || x.label.localeCompare(y.label));
 }
+
+// ---------------------------------------------------------------- withdrawals (injury, or someone who no longer wants to fight)
+/** Marks an entry withdrawn. Organizers of the event only (row level security). It then no longer counts for a new draw. */
+export async function withdrawEntry(entryId: string): Promise<void> {
+  const { error } = await supabase.from('entries').update({ status: 'withdrawn' }).eq('id', entryId);
+  if (error) throw error;
+}
+/** Puts a withdrawn entry back. */
+export async function reinstateEntry(entryId: string): Promise<void> {
+  const { error } = await supabase.from('entries').update({ status: 'registered' }).eq('id', entryId);
+  if (error) throw error;
+}
+
+/** The unplayed matches a withdrawn entry was in, where the other side is known: these become walkovers for the opponent. */
+export const walkoverTargets = (matches: readonly CompetitionMatch[], entryId: string): CompetitionMatch[] =>
+  matches.filter(m => m.queueState !== 'final' && m.entryA && m.entryB && (m.entryA === entryId || m.entryB === entryId));
+
+/** Records each target as a win for the opponent, 0 to 0, marked as a walkover with the reason. Returns how many were recorded. */
+export async function recordWalkovers(matches: readonly CompetitionMatch[], entryId: string, reason: string): Promise<number> {
+  let n = 0;
+  for (const m of walkoverTargets(matches, entryId)) {
+    await finalizeMatch({ matchId: m.id, result: m.entryA === entryId ? 'b' : 'a', scoreA: 0, scoreB: 0, detail: { walkover: true, reason }, expectedVersion: m.version });
+    n++;
+  }
+  return n;
+}
