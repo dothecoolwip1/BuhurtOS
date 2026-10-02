@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Chip } from '../components/ui';
 import { EVENT_TYPES, REGISTRATION_MODES, type EventType, type RegistrationMode } from '../data/eventTypes';
 import type { LiveEvent } from '../data/api';
-import { fetchPublishFacts, setEventStatus, updateEvent } from '../data/setup';
+import { addWaiverVersion, fetchLatestWaiver, fetchPublishFacts, setEventStatus, updateEvent } from '../data/setup';
 import { isoToLocal } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
@@ -22,7 +22,8 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [confirm, setConfirm] = useState(false);
-  const facts = useAsync(() => fetchPublishFacts(event.id), [event.id]);
+  const [factsKey, setFactsKey] = useState(0);
+  const facts = useAsync(() => fetchPublishFacts(event.id), [event.id, factsKey]);
   const errors = validateSetup(f);
   const set = <K extends keyof SetupForm>(k: K, v: SetupForm[K]) => setF(p => ({ ...p, [k]: v }));
   const err = (k: string) => (show && errors[k] ? <span role="alert" style={{ color: 'var(--live)' }}>{errors[k]}</span> : null);
@@ -54,6 +55,12 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
           {checks.map(c => <li key={c.label}>{c.ok ? '✓' : c.blocking ? '✗' : '!'} {c.label}{!c.ok && !c.blocking ? ' (recommended)' : ''}</li>)}
         </ul>
         {!published && !confirm && <button type="button" className="btn btn-ink" disabled={busy || blocked} onClick={() => setConfirm(true)}>Publish event</button>}
+        {!published && facts.data && blocked && (
+          <p role="status" style={{ color: 'var(--live)' }}>
+            Publish is off until: {checks.filter(c => c.blocking && !c.ok).map(c => c.label.replace(/ \(.*\)$/, '').toLowerCase()).join('; ')}.
+            {checks.some(c => c.blocking && !c.ok && c.label.startsWith('A waiver')) && <> Add the waiver below.</>}
+          </p>
+        )}
         {!published && confirm && (
           <div className="panel info" role="alertdialog" aria-label="Confirm publish" style={{ display: 'grid', gap: 8 }}>
             <p><b>Publishing makes the event, its competitions and registration public.</b> Anyone can then register. You can take it back to draft, but people who registered keep their registration.</p>
@@ -74,6 +81,8 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
           </div>
         )}
       </section>
+
+      {event.registrationMode === 'buhuros' && <WaiverSection eventId={event.id} onAdded={() => setFactsKey(k => k + 1)} />}
 
       <form onSubmit={save} noValidate className="panel info" style={{ display: 'grid', gap: 14 }}>
         <h3>Event details</h3>
@@ -112,5 +121,53 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         {msg && <p role={msg.ok ? 'status' : 'alert'} style={{ color: msg.ok ? 'var(--win)' : 'var(--live)' }}>{msg.text}</p>}
       </form>
     </div>
+  );
+}
+
+/** The waiver people accept when they register. A change is a new version; older signatures stay tied to the version they signed. */
+function WaiverSection({ eventId, onAdded }: { eventId: string; onAdded: () => void }) {
+  const [key, setKey] = useState(0);
+  const latest = useAsync(() => fetchLatestWaiver(eventId), [eventId, key]);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+  const w = latest.data;
+  const start = () => { setTitle(w?.title ?? 'Waiver and release'); setBody(w?.body ?? ''); setProblem(null); setOpen(true); };
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault(); setBusy(true); setProblem(null);
+    try { await addWaiverVersion(eventId, title, body, w?.version ?? 0); setOpen(false); setKey(k => k + 1); onAdded(); }
+    catch (x) { setProblem(x instanceof Error && !('code' in x) ? x.message : friendlyError(x)); } finally { setBusy(false); }
+  };
+  return (
+    <section className="panel info" aria-labelledby="waiver-h" style={{ display: 'grid', gap: 10 }}>
+      <h3 id="waiver-h">Waiver</h3>
+      {latest.loading && !w && <p className="muted">Loading…</p>}
+      {latest.error != null && <p role="alert" style={{ color: 'var(--live)' }}>{friendlyError(latest.error, 'Could not load the waiver.')}</p>}
+      {!latest.loading && !w && !open && <p>No waiver yet. Everyone who registers must accept one, so the event cannot be published without it. Paste the text your event uses.</p>}
+      {w && !open && (
+        <>
+          <p><b>{w.title}</b> <span className="src">· version {w.version}</span></p>
+          <details><summary>Read the text</summary><p style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', marginTop: 8 }}>{w.body}</p></details>
+        </>
+      )}
+      {!open && <div><button type="button" className="btn btn-line" onClick={start}>{w ? 'Change the waiver (new version)' : 'Add the waiver'}</button></div>}
+      {open && (
+        <form onSubmit={e => void save(e)} style={{ display: 'grid', gap: 10 }}>
+          <label className="field-in">Title<input value={title} maxLength={120} onChange={e => setTitle(e.target.value)} /></label>
+          <label className="field-in">Full text people agree to
+            <textarea rows={10} value={body} onChange={e => setBody(e.target.value)} />
+            <span>BuhurtOS does not write or check waiver wording. Use the text your organization or insurer gives you.</span>
+          </label>
+          {w && <p className="src">Saving makes this version {w.version + 1}. People who already registered keep the version they signed; new registrations accept this one.</p>}
+          {problem && <p role="alert" style={{ color: 'var(--live)' }}>{problem}</p>}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Save waiver'}</button>
+            <button type="button" className="btn btn-line" disabled={busy} onClick={() => setOpen(false)}>Cancel</button>
+          </div>
+        </form>
+      )}
+    </section>
   );
 }

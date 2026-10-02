@@ -60,7 +60,12 @@ const FINAL_FOUR = 'Round robin, or bracket + 3rd place match';
 /** Tournament Structure and Formats §1.3 to §1.7. */
 export function structureAdvice(n: number): StructureAdvice {
   if (n < 4) {
-    return { band: 'under-4', options: [], note: 'The structure document starts at 4 entrants. The organizer decides how to run smaller categories.' };
+    const options = n === 3
+      ? [{ title: 'Round robin of three', detail: 'Each fighter meets the other two: 3 matches. Most wins takes first. If all three win once, use the tie rules (for example points scored) or one deciding match.', pools: [3], advancing: 0, after: 'Ranked by wins; tie rules apply' }]
+      : n === 2
+        ? [{ title: 'Head to head', detail: 'One match decides it. For a longer contest, run it as a round robin and play it more than once (best of three).', pools: [2], advancing: 0, after: 'Winner takes first' }]
+        : [];
+    return { band: 'under-4', options, note: 'The structure document starts at 4 entrants, so this is a suggestion; the organizer decides how to run small categories.' };
   }
   if (n <= 6) {
     return { band: '4-6', options: [{ title: 'Round robin', detail: 'Everyone fights everyone the same number of times. Ranked by matches won.', pools: [n], advancing: 0, after: 'Ranked by wins; tie rules apply' }] };
