@@ -10,6 +10,8 @@ interface AuthValue {
   sendCode: (email: string) => Promise<string | null>;
   verifyCode: (email: string, code: string) => Promise<string | null>;
   signInWithGoogle: () => Promise<string | null>;
+  /** Only for the dedicated test accounts (see /test-login). */
+  signInWithPassword: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
 }
 
@@ -34,13 +36,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: code.replace(/\s/g, ''), type: 'email' });
     return error ? friendlyError(error) : null;
   }, []);
+  const signInWithPassword = useCallback(async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    return error ? (error.message.toLowerCase().includes('invalid') ? 'That email and password do not match a test account.' : friendlyError(error)) : null;
+  }, []);
   const signInWithGoogle = useCallback(async () => {
     const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
     return error ? friendlyError(error) : null;
   }, []);
   const signOut = useCallback(async () => { await supabase.auth.signOut(); }, []);
 
-  const value = useMemo(() => ({ session, loading, sendCode, verifyCode, signInWithGoogle, signOut }), [session, loading, sendCode, verifyCode, signInWithGoogle, signOut]);
+  const value = useMemo(() => ({ session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signOut }), [session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signOut]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
