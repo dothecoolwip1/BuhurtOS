@@ -45,7 +45,8 @@ describe('resolveSchedule', () => {
 
 describe('isEventDayOrLater', () => {
   it('is false before the first day and true from it, in the event time zone', () => {
-    expect(isEventDayOrLater('2026-11-14', 'America/Edmonton', new Date('2026-11-14T06:00:00Z'))).toBe(false); // still 13 Nov in Alberta
-    expect(isEventDayOrLater('2026-11-14', 'America/Edmonton', new Date('2026-11-14T08:00:00Z'))).toBe(true);
+    // Saskatchewan has no daylight saving, so its offset (UTC-6) is the same in every tz database.
+    expect(isEventDayOrLater('2026-11-14', 'America/Regina', new Date('2026-11-14T05:00:00Z'))).toBe(false); // still 13 Nov there
+    expect(isEventDayOrLater('2026-11-14', 'America/Regina', new Date('2026-11-14T07:00:00Z'))).toBe(true);
   });
 });
