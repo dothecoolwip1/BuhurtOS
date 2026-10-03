@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { OutboxEntry, SendResult, Sender } from './outbox';
+import type { OutboxEntry, SendOutcome, SendResult, Sender } from './outbox';
 
 interface RpcErrorLike { message?: string; code?: string; status?: number }
 
@@ -9,9 +9,10 @@ const isReject = (code: string) => REJECT_CODES.has(code) || /^22/.test(code) ||
 
 /**
  * Decide what a failed record_score_event call means for the outbox.
- * 'reject': the database refused it on purpose (no permission, match final or missing, bad data). Drop and report it.
- * 'retry': everything else (no signal, server busy, deadlock or serialization failure, lock timeout, signed out, token expired,
- * and any code we do not recognise). Unknown failures are kept, never dropped; the outbox counts attempts so a stuck one is shown.
+ * 'reject': the database refused it on purpose (no permission, match final or missing, bad data). Kept for review, never replayed blindly.
+ * 'offline': nothing reached the server or the whole service is unavailable to us (no signal, connection failure, signed out, token expired).
+ * 'retry': the server answered with trouble for this request (5xx, deadlock, lock timeout, a code we do not recognise). Only that match waits;
+ * other matches carry on. Unknown failures are kept, never dropped; the outbox counts attempts so a stuck one is shown.
  * `status` is the HTTP status of the response (PostgrestError has none; supabase-js returns it beside the error).
  */
 export function classifyRpcError(error: unknown, status?: number): SendResult {
@@ -19,19 +20,31 @@ export function classifyRpcError(error: unknown, status?: number): SendResult {
   const http = typeof status === 'number' ? status : e.status;
   if (typeof http === 'number' && http >= 500) return 'retry';
   const code = e.code ?? '';
-  if (!code) return 'retry'; // fetch failed before the server answered
-  return isReject(code) ? 'reject' : 'retry';
+  if (!code) return 'offline'; // fetch failed before the server answered
+  if (GLOBAL_CODES.test(code) || code === 'PGRST301' || code === '28000') return 'offline';
+  if (isReject(code)) return 'reject';
+  return 'retry';
+}
+const GLOBAL_CODES = /^(08|PGRST00[0-2])/;
+
+/** The outcome plus the server's words, so a refused entry can say why. */
+export function senderOutcome(error: unknown, status?: number): SendOutcome {
+  const result = classifyRpcError(error, status);
+  return result === 'reject' ? { result, error: (error as RpcErrorLike | null)?.message ?? 'refused by the server' } : result;
 }
 
 export interface ScoreEventArgs { p_id: string; p_match: string; p_kind: string; p_payload: unknown; p_client_at: string }
-export const scoreEventArgs = (e: OutboxEntry): ScoreEventArgs => ({
+export const scoreEventArgs = (e: Pick<OutboxEntry, 'id' | 'subject' | 'kind' | 'payload' | 'createdAt'>): ScoreEventArgs => ({
   p_id: e.id, p_match: e.subject, p_kind: e.kind, p_payload: e.payload ?? {}, p_client_at: new Date(e.createdAt).toISOString()
 });
 
-/** The real sender. The entry id is the idempotency key, so sending it twice is harmless (the database ignores the repeat). */
+/**
+ * The real sender. The entry id is the idempotency key, so sending it twice is harmless (the database ignores the repeat).
+ * It only sends while the entry's own account is signed in: another account on the same device never delivers it.
+ */
 export const realSender: Sender = async entry => {
   const { data } = await supabase.auth.getSession();
-  if (!data.session) return 'retry';
+  if (!data.session || data.session.user.id !== entry.userId) return 'offline';
   const { error, status } = await supabase.rpc('record_score_event', scoreEventArgs(entry));
-  return error ? classifyRpcError(error, status) : 'ok';
+  return error ? senderOutcome(error, status) : 'ok';
 };

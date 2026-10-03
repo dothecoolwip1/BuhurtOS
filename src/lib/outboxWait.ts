@@ -7,16 +7,16 @@ export interface DrainResult { clear: boolean; remaining: number; rejected: Outb
  * be saved while some of its score events are still on the device. Outbox.flush returns at once if a flush is already
  * running, so this polls until that one finishes too.
  */
-export async function drainSubject(box: Outbox, send: Sender, subject: string, opts: { timeoutMs?: number; pollMs?: number; sleep?: (ms: number) => Promise<void> } = {}): Promise<DrainResult> {
+export async function drainSubject(box: Outbox, send: Sender, userId: string, subject: string, opts: { timeoutMs?: number; pollMs?: number; sleep?: (ms: number) => Promise<void> } = {}): Promise<DrainResult> {
   const { timeoutMs = 15000, pollMs = 300, sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms)) } = opts;
   const rejected: OutboxEntry[] = [];
   let waited = 0;
   for (;;) {
-    const report: FlushReport = await box.flush(send);
+    const report: FlushReport = await box.flush(send, userId);
     rejected.push(...report.rejected);
-    const remaining = (await box.pending()).filter(e => e.subject === subject).length;
+    const remaining = (await box.pending(userId)).filter(e => e.subject === subject).length;
     if (remaining === 0) return { clear: true, remaining: 0, rejected };
-    if (report.stoppedOffline || waited >= timeoutMs) return { clear: false, remaining, rejected };
+    if (report.stoppedOffline || report.blocked.includes(subject) || waited >= timeoutMs) return { clear: false, remaining, rejected };
     await sleep(pollMs);
     waited += pollMs;
   }

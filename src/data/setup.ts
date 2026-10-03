@@ -18,7 +18,7 @@ export async function fetchPublishFacts(eventId: string): Promise<{ competitions
   return { competitions: c.count ?? 0, waivers: w.count ?? 0 };
 }
 
-export interface StaffMember { userId: string; email: string; role: 'organizer' | 'marshal' | 'scorekeeper' | 'medic' }
+export interface StaffMember { userId: string; email: string; role: 'organizer' | 'head_marshal' | 'marshal' | 'scorekeeper' | 'medic' }
 export async function fetchStaff(eventId: string): Promise<StaffMember[]> {
   const { data, error } = await supabase.rpc('list_event_staff', { p_event: eventId });
   if (error) throw error;

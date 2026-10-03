@@ -166,3 +166,49 @@ export async function recordWalkovers(matches: readonly CompetitionMatch[], entr
   }
   return n;
 }
+
+/* ---------------- finalization command, review and paper recovery (Pack 03) ---------------- */
+/** Version of the finalization command the server understands (public.submit_match_result). */
+export const FINALIZE_SCHEMA = 1;
+export type SubmitStatus = 'accepted' | 'duplicate' | 'conflict' | 'stale';
+export interface SubmitResult { status: SubmitStatus; version: number; repeat: boolean }
+export interface SubmitInput { commandId: string; matchId: string; result: MatchResult; scoreA: number; scoreB: number; detail?: Record<string, unknown>; expectedVersion: number }
+
+/**
+ * Ask the server to make a result official. Needs signal (by owner decision). `commandId` is the idempotency key: sending the same command again
+ * returns the original outcome and never makes a second result. The server answers `accepted` (official now), `duplicate` (another device already
+ * saved the same result), `conflict` (a different official result exists: this one is kept for the head marshal, nothing is overwritten) or
+ * `stale` (the match changed since it was opened). Network trouble throws; callers must then treat the result as still pending, not official.
+ */
+export async function submitMatchResult(i: SubmitInput): Promise<SubmitResult> {
+  const d = (await rpc('submit_match_result', {
+    p_command: i.commandId, p_match: i.matchId, p_result: i.result, p_score_a: i.scoreA, p_score_b: i.scoreB, p_detail: i.detail ?? {}, p_expected_version: i.expectedVersion, p_schema: FINALIZE_SCHEMA
+  })) as { status: SubmitStatus; version: number; repeat?: boolean };
+  return { status: d.status, version: d.version, repeat: d.repeat === true };
+}
+
+export interface ResultConflict {
+  proposalId: string; matchId: string; competitionName: string; roundLabel: string; sideA: string; sideB: string;
+  officialResult: MatchResult; officialScoreA: number; officialScoreB: number; proposedResult: MatchResult; proposedScoreA: number; proposedScoreB: number;
+  proposedByName: string; createdAt: string;
+}
+/** Results two devices disagreed about, for the head marshal or an organizer ("Needs review"). */
+export async function fetchResultConflicts(eventId: string): Promise<ResultConflict[]> {
+  const { data, error } = await supabase.rpc('list_result_conflicts', { p_event: eventId });
+  if (error) throw error;
+  type R = { proposal_id: string; match_id: string; competition_name: string; round_label: string; side_a: string; side_b: string; official_result: MatchResult; official_score_a: number; official_score_b: number;
+    proposed_result: MatchResult; proposed_score_a: number; proposed_score_b: number; proposed_by_name: string; created_at: string };
+  return ((data ?? []) as R[]).map(r => ({
+    proposalId: r.proposal_id, matchId: r.match_id, competitionName: r.competition_name, roundLabel: r.round_label, sideA: r.side_a, sideB: r.side_b,
+    officialResult: r.official_result, officialScoreA: r.official_score_a, officialScoreB: r.official_score_b, proposedResult: r.proposed_result,
+    proposedScoreA: r.proposed_score_a, proposedScoreB: r.proposed_score_b, proposedByName: r.proposed_by_name, createdAt: r.created_at
+  }));
+}
+export const resolveResultConflict = (proposalId: string, decision: 'keep_official' | 'use_proposal', note: string): Promise<void> =>
+  rpc('resolve_result_conflict', { p_proposal: proposalId, p_decision: decision, p_note: note }).then(() => undefined);
+
+/** Paper recovery: transcribe or correct an official result from the score sheet. Same audited path; the note names the sheet. */
+export async function enterOfficialResult(i: { matchId: string; result: MatchResult; scoreA: number; scoreB: number; note: string; detail?: Record<string, unknown> }): Promise<'entered' | 'corrected' | 'unchanged'> {
+  const d = (await rpc('enter_official_result', { p_match: i.matchId, p_result: i.result, p_score_a: i.scoreA, p_score_b: i.scoreB, p_detail: i.detail ?? {}, p_note: i.note })) as { status: 'entered' | 'corrected' | 'unchanged' };
+  return d.status;
+}

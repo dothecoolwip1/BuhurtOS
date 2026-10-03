@@ -110,6 +110,13 @@ export const canOfferFinish = (board: BoardState, stage: CompetitionMatch['stage
 
 /** The database's message when somebody else changed or finished the match after it was opened here. */
 export const isStaleVersionError = (e: unknown): boolean => /changed since you opened it/i.test((e as { message?: string } | null)?.message ?? '');
+/** True when a call failed because nothing reached the server (no signal), as opposed to the server answering with a refusal. */
+export const isNoSignalError = (e: unknown): boolean => {
+  const x = (e ?? {}) as { code?: string; message?: string; status?: number };
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return true;
+  if (typeof x.status === 'number' && x.status >= 500) return true;
+  return !x.code && /failed to fetch|network|load failed|fetch/i.test(x.message ?? '');
+};
 export const isAlreadyFinalError = (e: unknown): boolean => /already final/i.test((e as { message?: string } | null)?.message ?? '');
 
 export const resultSummary = (v: FinalResult, nameA: string, nameB: string): string =>

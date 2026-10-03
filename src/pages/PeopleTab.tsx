@@ -5,6 +5,7 @@ import { useAsync } from '../lib/useAsync';
 
 const ROLES: [StaffMember['role'], string, string][] = [
   ['organizer', 'Organizer', 'Runs the event: review, check-in, setup, people.'],
+  ['head_marshal', 'Head marshal', 'Scores fights and settles it when two devices disagree about a result, or enters one from the paper sheet.'],
   ['marshal', 'Marshal', 'Scores fights.'],
   ['scorekeeper', 'Scorekeeper', 'Enters the agreed result of each fight.'],
   ['medic', 'Medic', 'Can read the check-in list and medical notes.']
