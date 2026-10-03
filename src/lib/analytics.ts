@@ -190,6 +190,9 @@ function loadPostHog(): void {
       capture_performance: false,
       disable_session_recording: true,    // replay is not used; it cannot be switched on from a build variable
       disable_surveys: true,
+      disable_conversations: true,        // a chat widget would collect typed messages; the project must not be able to turn one on for visitors
+      disable_product_tours: true,
+      disable_web_experiments: true,
       advanced_disable_flags: true,       // no feature flags are used, so no flag request is made
       save_campaign_params: false,        // campaign values come from the query string
       mask_personal_data_properties: true,

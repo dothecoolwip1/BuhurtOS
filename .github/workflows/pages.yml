@@ -35,7 +35,8 @@ jobs:
           # Optional: the privacy contact shown on /privacy (repository variable PRIVACY_EMAIL), and "opt-in" to keep analytics off until a person
           # turns them on (repository variable ANALYTICS_CONSENT). Session replay cannot be switched on from a variable any more.
           VITE_PRIVACY_EMAIL: ${{ vars.PRIVACY_EMAIL }}
-          VITE_ANALYTICS_CONSENT: ${{ vars.ANALYTICS_CONSENT }}
+          # Explicit default: analytics run after notice unless a person turns them off ("opt-in" keeps them off until a person agrees).
+          VITE_ANALYTICS_CONSENT: ${{ vars.ANALYTICS_CONSENT || 'notice' }}
       # GitHub Pages has no server routing: serve the app for any unknown path.
       - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3

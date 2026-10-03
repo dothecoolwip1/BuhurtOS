@@ -33,12 +33,23 @@ analytics off until the person turns them on.
 `private.purge_activity()` (migration `20261001003100`) deletes visits and actions older than 90 days. It runs daily from pg_cron (`purge-activity`)
 and also occasionally from `track_activity`. It only exists on a database that has applied migrations up to `20261001003100`.
 
+## Reconciliation facts (checked 2026-10-03)
+* PostHog: one organization, one project (643201, US cloud). Its privacy settings and the three transformations were read back and match this document.
+  The Conversations (live chat) product was switched on for the project at 05:38 by someone other than the code in this repo; the SDK is told
+  `disable_conversations: true` so the site cannot show a chat box. Decide whether the project setting should stay on.
+* The last production build (GitHub Pages, run for `cff6dc5`) had **empty** `POSTHOG_KEY`, `POSTHOG_HOST` and `POSTHOG_REPLAY`: production sends nothing to
+  PostHog today, and replay was never on. Set `POSTHOG_KEY` (this project's client-safe key) and `POSTHOG_HOST` (`https://us.i.posthog.com`) to turn it on.
+* Hosted Supabase (`mvbxlebznlgroptwwdsm`, the project the app points at): the schema of migrations `...002500` to `...003000` is **already present**
+  (functions are identical to the repository's after ignoring whitespace and comments), but the migration history lists only 22 migrations, so the history
+  table cannot be trusted; compare the schema. Genuinely pending: `...002400_match_delete_unlink_fix` and `...003100_analytics_privacy`.
+  Until 3100 is applied the hosted database still stores `utm_source` and `language` (12 existing visits carry them), still keeps search words if an old
+  browser sends them, and has no `purge-activity` cron job (only the 1%-of-requests purge in `track_activity`).
+
 ## Before this goes live (checklist)
-1. Apply migrations `20261001002500` to `20261001003100` to the hosted Supabase project (analytics tables are in `...003000`; the hosted project was
-   last seen at `stats_played_events`). Until then there are no first-party analytics and no 90-day purge on the hosted database.
-2. Repository variables: `PRIVACY_EMAIL` (shown on `/privacy`; none is invented), optional `ANALYTICS_CONSENT=opt-in`, `POSTHOG_KEY`, `POSTHOG_HOST`.
-   `POSTHOG_REPLAY` is no longer read; remove it.
-3. Check: the footer says what `/privacy` says; `/privacy` loads at 390px and desktop; with a Global Privacy Control browser, nothing is sent.
+1. Apply `...002400` then `...003100` to the hosted project (additive; reviewed; 2400 swaps a check on `matches` for a weaker one, no row violates either).
+2. Repository variables: `POSTHOG_KEY`, `POSTHOG_HOST`, `PRIVACY_EMAIL`; delete `POSTHOG_REPLAY` (no longer read). `ANALYTICS_CONSENT` defaults to `notice`.
+3. QA and production would share project 643201 unless a second PostHog key is created: test events would mix with real ones.
+4. Check: the footer says what `/privacy` says; `/privacy` loads at 390px and desktop; with a Global Privacy Control browser, nothing is sent.
 
 ## Still needs a person
 Name the individual responsible for privacy (Alberta PIPA expects one) and put their contact in `PRIVACY_EMAIL`; decide whether 1-year PostHog
