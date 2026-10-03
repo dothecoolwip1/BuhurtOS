@@ -158,9 +158,8 @@ function Analytics() {
             <Funnel title="Registration funnel (visits)" steps={[['Opened an event', a.funnelRegistration.eventPageViews], ['Opened the form', a.funnelRegistration.registerPageViews], ['Sent a registration', a.funnelRegistration.registrationsSubmitted]]} />
             <Bars title="Pages where accounts were created" rows={a.signupEntryPages} label={pageLabel} empty="No new accounts in this time." />
             <Bars title="Actions" rows={a.events.map(e => ({ name: e.name, n: e.n }))} label={eventLabel} />
-            <Bars title="Searches" rows={a.searches} empty="No searches yet." />
+            <Bars title="Search boxes used (what was typed is not recorded)" rows={a.searches} empty="No searches yet." />
             <Bars title="Came from" rows={a.referrers} label={s => (s === 'direct' ? 'Typed or bookmarked' : s)} />
-            {a.utmSources.length > 0 && <Bars title="Campaign links (utm_source)" rows={a.utmSources} />}
             <Bars title="Devices" rows={a.devices} label={s => ({ phone: 'Phone', tablet: 'Tablet', desktop: 'Computer' } as Record<string, string>)[s] ?? 'Unknown'} />
             <Bars title="Browsers" rows={a.browsers} />
             <Bars title="Systems" rows={a.os} />
@@ -174,8 +173,8 @@ function Analytics() {
       {tab === 'people' && <People from={from} to={to} />}
 
       <p className="src">
-        Only page addresses (never what people type, never query strings), device type, browser and system family, time zone and referring site are kept. Never GPS.
-        Visits older than 90 days are deleted.{posthog ? <> Country, region and city (from IP, approximate) are in <a href={posthog} target="_blank" rel="noopener noreferrer">PostHog</a>.</> : ' Country, region and city from IP need PostHog (not set up yet).'}
+        What is recorded and for how long is explained on the <Link to="/privacy">privacy page</Link>: page paths (never query strings), device type, browser and system family, time zone, referring site and a random browser id, linked to the account only when someone is signed in. Never what people type, never GPS.
+        {posthog ? <> Approximate country, region and city come from the visitor's IP address in <a href={posthog} target="_blank" rel="noopener noreferrer">PostHog</a>.</> : ' Approximate country, region and city need PostHog (not set up yet).'}
       </p>
     </section>
   );

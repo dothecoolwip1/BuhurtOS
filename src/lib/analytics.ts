@@ -1,13 +1,18 @@
 import { supabase } from './supabase';
+import { currentlyAllowed, onPreferenceChange } from './analyticsConsent';
 
 /**
  * The one place the app talks to analytics. Pages call trackPageView / trackEvent / identifyUser / resetUser and never a provider.
- *   * First-party sink (always on): the BuhurtOS database, read only by the platform owner through admin_* functions.
- *   * PostHog sink (optional): loaded only when VITE_POSTHOG_KEY is set at build time. It adds approximate location (country, region,
- *     city from the IP, never GPS) and, only when VITE_POSTHOG_REPLAY=on, session replay with every input masked.
- * Visiting never creates an account, profile or fighter. Before sign-in a person is a random browser id; on sign-in that id is linked
- * to their account id (no email or name is sent to PostHog); on sign-out the link is cut and a new random id starts.
- * Nothing sent may contain passwords, tokens, codes, form contents or messages: sanitizeProps keeps short plain values under safe keys only.
+ *   * First-party sink: the BuhurtOS database, read only by the platform owner through admin_* functions. Kept 90 days.
+ *   * PostHog sink (optional): loaded only when VITE_POSTHOG_KEY is set at build time AND the person has not turned analytics off
+ *     (see analyticsConsent.ts). PostHog works out an approximate country, region and city from the IP address on its servers and,
+ *     once the project's "discard client IP" setting is on, does not keep the IP. We never ask the browser for GPS.
+ * What is sent, in full: the page path (never the query string or anchor), device class, browser and OS family, time zone,
+ * the referring site, a random browser id, a random id per visit, named product actions with small plain properties, and,
+ * once someone is signed in, their BuhurtOS account id (no email, name or phone). Never: what people type, page titles,
+ * full user-agent strings, screen sizes, campaign parameters, session recordings, click captures.
+ * Visiting never creates an account, profile or fighter. On sign-out the account link is cut and a new random id starts.
+ * Everything leaving for PostHog passes through scrubCapture, which is tested.
  */
 
 export type Props = Record<string, string | number | boolean | null>;
@@ -44,12 +49,45 @@ export function uaFamily(ua: string): { browser: string; os: string } {
 export function referrerHost(referrer: string, ownHost: string): string | null {
   try { const h = new URL(referrer).host.toLowerCase(); return h && h !== ownHost.toLowerCase() ? h.slice(0, 120) : null; } catch { return null; }
 }
-export function utmSource(search: string): string | null {
-  const v = new URLSearchParams(search).get('utm_source');
-  return v && /^[\w.-]{1,80}$/.test(v) ? v.toLowerCase() : null;
+/** Error text can quote URLs or addresses. Keep it short and remove query strings and anything that looks like an email address. */
+export function scrubMessage(m: string): string {
+  return m.replace(/https?:\/\/\S+/g, u => stripUrl(u)).replace(/[^\s@]+@[^\s@]+/g, '[email]').slice(0, 100);
 }
-/** Pages where a recording would show private things (forms with names, waivers, scoring tools, account details). */
-export const SENSITIVE_PATH = /^\/(welcome|account|test-login|team-manager|platform)(\/|$)|^\/events\/[^/]+\/(register|manage|field)(\/|$)|\/edit$/;
+
+// ---------------------------------------------------------------- what may leave the browser for PostHog
+const DROP_KEYS = new Set(['$raw_user_agent', '$browser_version', '$os_version', '$screen_height', '$screen_width', '$viewport_height', '$viewport_width',
+  '$browser_language', '$browser_language_prefix', '$device_model', 'title', '$el_text', '$elements', '$elements_chain']);
+const DROP_PATTERN = /^\$prev_pageview_(last|max)_/;
+const CAMPAIGN = /^(utm_[a-z]+|gclid|gclsrc|dclid|gbraid|wbraid|fbclid|msclkid|twclid|li_fat_id|igshid|ttclid|rdt_cid|epik|qclid|sccid|oppref|irclid|_kx|gad_source|mc_cid)$/;
+const isCampaignKey = (k: string) => CAMPAIGN.test(k.replace(/^\$/, '').replace(/^(initial_|session_entry_)/, ''));
+/** A URL keeps its path; a referrer keeps only the site it came from. Anything else that merely looks like a path loses "?" and "#". */
+function cleanValue(key: string, v: unknown): unknown {
+  if (typeof v !== 'string') return v;
+  if (/^https?:\/\//.test(v)) {
+    if (/referrer/i.test(key)) { try { return new URL(v).origin; } catch { return '$direct'; } }
+    return stripUrl(v);
+  }
+  return v.startsWith('/') ? stripUrl(v) : v;
+}
+function cleanBag(bag: Record<string, unknown> | undefined): Record<string, unknown> | undefined {
+  if (!bag || typeof bag !== 'object') return bag;
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(bag)) {
+    if (DROP_KEYS.has(k) || DROP_PATTERN.test(k) || isCampaignKey(k)) continue;
+    out[k] = cleanValue(k, v);
+  }
+  return out;
+}
+type Capturable = { properties?: Record<string, unknown>; $set?: Record<string, unknown>; $set_once?: Record<string, unknown> };
+/** The last stop before PostHog: removes query strings and anchors from every URL-like value (event properties and person properties),
+ *  reduces referrers to the referring site, and drops fields that are not part of the disclosed set. */
+export function scrubCapture<T extends Capturable>(e: T): T {
+  const out = { ...e };
+  if (e.properties) out.properties = cleanBag(e.properties);
+  if (e.$set) out.$set = cleanBag(e.$set);
+  if (e.$set_once) out.$set_once = cleanBag(e.$set_once);
+  return out;
+}
 
 // ---------------------------------------------------------------- ids
 const safe = <T>(f: () => T, fallback: T): T => { try { return f(); } catch { return fallback; } };
@@ -75,6 +113,12 @@ function visitorInfo() {
   return visitor;
 }
 
+/** Forget this browser's random ids (used when someone turns analytics off). */
+function clearLocalIds(): void {
+  visitor = null; memVisit = null;
+  safe(() => { localStorage.removeItem('bos-visitor'); sessionStorage.removeItem('bos-visit'); }, undefined);
+}
+
 // ---------------------------------------------------------------- sinks
 interface Sink {
   pageView(path: string): void;
@@ -91,8 +135,8 @@ const firstParty: Sink = {
       p_session: visitId(), p_path: path, p_device: deviceOf(window.innerWidth),
       p_meta: {
         visitor_id: v.id, new_visitor: v.isNew, browser, os,
-        referrer_host: referrerHost(document.referrer, location.host), utm_source: utmSource(location.search),
-        time_zone: safe(() => Intl.DateTimeFormat().resolvedOptions().timeZone, null), language: navigator.language?.slice(0, 20) ?? null
+        referrer_host: referrerHost(document.referrer, location.host),
+        time_zone: safe(() => Intl.DateTimeFormat().resolvedOptions().timeZone, null)
       }
     }).then(() => undefined, () => undefined);
   },
@@ -104,18 +148,15 @@ const firstParty: Sink = {
 type PostHogLike = {
   capture: (name: string, props?: Record<string, unknown>) => void;
   identify: (id: string) => void; reset: () => void;
-  startSessionRecording?: () => void; stopSessionRecording?: () => void;
+  opt_in_capturing: (o?: { captureEventName?: string | null | false }) => void; opt_out_capturing: () => void; has_opted_out_capturing: () => boolean;
 };
 let ph: PostHogLike | null = null;
+let phLoading = false;
 let phQueue: ((p: PostHogLike) => void)[] = [];
-const replayOn = import.meta.env.VITE_POSTHOG_REPLAY === 'on';
 const viaPostHog = (f: (p: PostHogLike) => void) => { if (ph) f(ph); else if (phQueue.length < 100) phQueue.push(f); };
 const postHog: Sink = {
   pageView(path) {
-    viaPostHog(p => {
-      p.capture('$pageview', { $current_url: location.origin + import.meta.env.BASE_URL.replace(/\/$/, '') + path, $pathname: path });
-      if (replayOn) (SENSITIVE_PATH.test(path) ? p.stopSessionRecording : p.startSessionRecording)?.call(p);
-    });
+    viaPostHog(p => p.capture('$pageview', { $current_url: location.origin + import.meta.env.BASE_URL.replace(/\/$/, '') + path, $pathname: path }));
   },
   event(name, props) { viaPostHog(p => p.capture(name, props)); },
   identify(userId) { viaPostHog(p => p.identify(userId)); },
@@ -124,63 +165,89 @@ const postHog: Sink = {
 
 const sinks: Sink[] = [firstParty];
 let started = false;
-/** Called once at start-up. Loads PostHog only when a project key was built in. */
+const phKey = () => import.meta.env.VITE_POSTHOG_KEY as string | undefined;
+const sinksNow = (): Sink[] => (phKey() ? [firstParty, postHog] : [firstParty]);
+
+/** Loads PostHog once, only when analytics are allowed. Every capture option that could read page content is off. */
+function loadPostHog(): void {
+  const key = phKey();
+  if (!key || ph || phLoading) return;
+  phLoading = true;
+  void import('posthog-js').then(({ default: posthog }) => {
+    posthog.init(key, {
+      api_host: (import.meta.env.VITE_POSTHOG_HOST as string | undefined) || 'https://us.i.posthog.com',
+      person_profiles: 'identified_only',
+      persistence: 'localStorage',        // no cookie is set by PostHog
+      cross_subdomain_cookie: false,
+      capture_pageview: false,            // sent by trackPageView with the query string removed
+      capture_pageleave: false,
+      request_batching: false,            // each event is sent at once, so nothing is waiting in a queue when someone turns analytics off
+      autocapture: false,                 // click capture records button text and attributes, which can hold other people's names
+      rageclick: false,
+      capture_dead_clicks: false,
+      capture_heatmaps: false,
+      capture_exceptions: false,
+      capture_performance: false,
+      disable_session_recording: true,    // replay is not used; it cannot be switched on from a build variable
+      disable_surveys: true,
+      advanced_disable_flags: true,       // no feature flags are used, so no flag request is made
+      save_campaign_params: false,        // campaign values come from the query string
+      mask_personal_data_properties: true,
+      before_send: e => (e ? scrubCapture(e as unknown as Capturable) as unknown as typeof e : e)
+    });
+    ph = posthog as unknown as PostHogLike;
+    phLoading = false;
+    // A person who turned analytics off while this was loading must not be recorded.
+    if (!currentlyAllowed()) { ph.reset(); ph.opt_out_capturing(); phQueue = []; return; }
+    // PostHog remembers an earlier opt-out in this browser's storage; the person has since turned analytics back on.
+    if (ph.has_opted_out_capturing()) ph.opt_in_capturing({ captureEventName: false });
+    const q = phQueue; phQueue = []; q.forEach(f => f(ph!));
+  }, () => { phQueue = []; phLoading = false; });
+}
+
+/** Called once at start-up. PostHog is loaded only when a project key was built in and analytics are allowed. */
 export function initAnalytics(): void {
   if (started) return;
   started = true;
-  const key = import.meta.env.VITE_POSTHOG_KEY as string | undefined;
-  if (key) {
-    sinks.push(postHog);
-    void import('posthog-js').then(({ default: posthog }) => {
-      posthog.init(key, {
-        api_host: (import.meta.env.VITE_POSTHOG_HOST as string | undefined) || 'https://us.i.posthog.com',
-        person_profiles: 'identified_only',
-        capture_pageview: false, // sent by trackPageView with the query string removed
-        capture_pageleave: true,
-        autocapture: { dom_event_allowlist: ['click'], element_allowlist: ['a', 'button'] }, // clicks on links and buttons only; never inputs
-        mask_all_element_attributes: false,
-        mask_personal_data_properties: true,
-        disable_session_recording: !replayOn,
-        session_recording: { maskAllInputs: true, maskTextSelector: '[data-private]', blockSelector: '[data-private-block]' },
-        disable_surveys: true,
-        before_send: e => {
-          if (!e) return e;
-          for (const k of ['$current_url', '$referrer', '$initial_referrer', '$initial_current_url', '$prev_pageview_pathname', '$pathname']) {
-            const v = e.properties?.[k];
-            if (typeof v === 'string') e.properties[k] = stripUrl(v);
-          }
-          return e;
-        }
-      });
-      ph = posthog as unknown as PostHogLike;
-      const q = phQueue; phQueue = [];
-      q.forEach(f => f(ph!));
-    }, () => { phQueue = []; });
-  }
-  let errors = 0;
-  const onError = (msg: string) => { if (errors++ < 5) trackEvent('client_error', { what: msg.slice(0, 100), path: location.pathname }); };
+  sinks.length = 0; sinks.push(...sinksNow());
+  if (currentlyAllowed()) loadPostHog();
+  // Turning analytics off (or on) on /privacy takes effect immediately, in this tab.
+  onPreferenceChange(() => {
+    if (currentlyAllowed()) {
+      if (ph) ph.opt_in_capturing({ captureEventName: false }); else loadPostHog();
+      if (currentUser) { identified = null; identifyUser(currentUser); }
+    } else {
+      ph?.reset(); ph?.opt_out_capturing(); phQueue = [];
+      identified = null;
+      clearLocalIds();
+    }
+  });
+let errors = 0;
+  const onError = (msg: string) => { if (errors++ < 5) trackEvent('client_error', { what: scrubMessage(msg), path: location.pathname }); };
   window.addEventListener('error', e => onError(String(e.message || 'error')));
   window.addEventListener('unhandledrejection', e => onError(String((e.reason as { message?: string } | undefined)?.message ?? 'unhandled rejection')));
 }
 
 /** A page opened (path only, query and anchor removed). Also used as the minute heartbeat that measures time on site. */
-export function trackPageView(path: string): void { const p = stripUrl(path) || '/'; sinks.forEach(s => s.pageView(p)); }
+export function trackPageView(path: string): void { if (!currentlyAllowed()) return; const p = stripUrl(path) || '/'; sinks.forEach(s => s.pageView(p)); }
 /** A product action. Unknown or unsafe names and properties are dropped before anything leaves the browser. */
 export function trackEvent(name: string, props?: Record<string, unknown>): void {
-  if (!validEventName(name)) return;
+  if (!validEventName(name) || !currentlyAllowed()) return;
   const clean = sanitizeProps(props);
   sinks.forEach(s => s.event(name, clean));
 }
 let identified: string | null = null;
-/** Links this browser's anonymous history to the account (account id only). Safe to call on every load. */
+let currentUser: string | null = null;
+/** Links this browser's anonymous history to the account (account id only). Safe to call on every load. Does nothing while analytics are off. */
 export function identifyUser(userId: string): void {
-  if (identified === userId) return;
+  currentUser = userId;
+  if (!currentlyAllowed() || identified === userId) return;
   identified = userId;
   sinks.forEach(s => s.identify(userId));
 }
 /** On sign-out: forget the account and start a fresh anonymous visit, so the next person on this device is not linked to it. */
 export function resetUser(): void {
-  identified = null;
+  identified = null; currentUser = null;
   sinks.forEach(s => s.reset());
 }
 

@@ -1,12 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { trackEvent } from './analytics';
 
-/** Records what people search for (the words only, once they stop typing), so the owner can see what visitors look for and miss. */
+/**
+ * Counts that a search box was used (which page, once per visit to that page). What was typed is never recorded: search text can be
+ * a person's name or anything else, and it would have to be treated as personal information.
+ */
 export function useTrackSearch(where: string, query: string): void {
+  const counted = useRef(false);
   useEffect(() => {
-    const q = query.trim().toLowerCase();
-    if (q.length < 2) return;
-    const t = window.setTimeout(() => trackEvent('search', { where, query: q.slice(0, 60) }), 1500);
+    if (counted.current || query.trim().length < 2) return;
+    const t = window.setTimeout(() => { counted.current = true; trackEvent('search', { where }); }, 1500);
     return () => window.clearTimeout(t);
   }, [where, query]);
 }

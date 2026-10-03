@@ -48,7 +48,7 @@ export function parseAnalytics(j: J | null): Analytics {
     paths: arr(j?.paths).map(r => ({ from: String(r.from_path), to: String(r.to_path), n: num(r.n) })),
     referrers: counts(j?.referrers, 'source'), utmSources: counts(j?.utm_sources, 'source'), devices: counts(j?.devices, 'name'), browsers: counts(j?.browsers, 'name'),
     os: counts(j?.os, 'name'), timeZones: counts(j?.time_zones, 'name'),
-    events: arr(j?.events).map(r => ({ name: String(r.name), n: num(r.n), sessions: num(r.sessions) })), searches: counts(j?.searches, 'query'), signupEntryPages: counts(j?.signup_entry_pages, 'path'),
+    events: arr(j?.events).map(r => ({ name: String(r.name), n: num(r.n), sessions: num(r.sessions) })), searches: counts(j?.searches, 'where'), signupEntryPages: counts(j?.signup_entry_pages, 'path'),
     funnelRegistration: { eventPageViews: num(fr.event_page_views), registerPageViews: num(fr.register_page_views), registrationsSubmitted: num(fr.registrations_submitted) },
     funnelSignup: { signInOpened: num(fs.sign_in_opened), codeRequested: num(fs.code_requested), signedUp: num(fs.signed_up), profileCompleted: num(fs.profile_completed) },
     daily: arr(j?.daily).map(r => ({ day: String(r.day), sessions: num(r.sessions), visitors: num(r.visitors) }))

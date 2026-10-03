@@ -108,8 +108,8 @@ select t.expect_eq('... 4 page views, 1 login', (select (j->'totals'->>'page_vie
 select t.expect_eq('... top page is /teams/bears with 2 visits', (select (j->'pages'->0->>'path') || ' ' || (j->'pages'->0->>'visits') from a), '/teams/bears 2');
 select t.expect_eq('... entry page kept without the query string', (select count(*) from a, jsonb_array_elements(j->'entry_pages') e where e->>'path' = '/events'), 1::bigint);
 select t.expect_eq('... path /events -> /teams/bears counted', (select count(*) from a, jsonb_array_elements(j->'paths') e where e->>'from_path' = '/events' and e->>'to_path' = '/teams/bears'), 1::bigint);
-select t.expect_eq('... referrer host lower-cased, source and time zone kept', (select (j->'referrers'->0->>'source') || ',' || (j->'utm_sources'->0->>'source') || ',' || (select string_agg(e->>'name', '/' order by e->>'name') from jsonb_array_elements(j->'time_zones') e) from a), 'google.com,discord,America/Edmonton/unknown');
-select t.expect_eq('... search terms counted, bad event names dropped', (select (j->'searches'->0->>'query') || ',' || (select count(*) from jsonb_array_elements(j->'events') e where e->>'name' not in ('search', 'login', 'big_one')) from a), 'bears,0');
+select t.expect_eq('... referrer host lower-cased and time zone kept; campaign values (utm) are NOT stored', (select (j->'referrers'->0->>'source') || ',' || jsonb_array_length(j->'utm_sources') || ',' || (select string_agg(e->>'name', '/' order by e->>'name') from jsonb_array_elements(j->'time_zones') e) from a), 'google.com,0,America/Edmonton/unknown');
+select t.expect_eq('... search boxes counted by page (not by word), bad event names dropped', (select (j->'searches'->0->>'where') || ',' || (select count(*) from jsonb_array_elements(j->'events') e where e->>'name' not in ('search', 'login', 'big_one')) from a), 'teams,0');
 select t.as_admin();
 select t.expect_eq('... oversized properties were emptied', (select props::text from public.activity_events e where e.name = 'big_one'), '{}');
 select t.as_user('00000000-0000-0000-0000-00000000c001');
@@ -142,6 +142,26 @@ select t.expect_ok('reports 3 to 10 in an hour are fine', $q$select count(public
 select t.expect_error('the 11th in an hour from one visit is refused', $q$select public.report_bug('{"what":"One more report","session_id":"00000000-0000-0000-0000-00000000d001"}')$q$, 'P0001');
 
 select t.as_admin();
+
+-- ---------------------------------------------------------------- analytics privacy (migration 20261001003100)
+select t.as_admin();
+select t.expect_eq('what people type is never stored: a stale browser sending a search "query" has it dropped', (select count(*) from public.activity_events where name = 'search' and props ? 'query'), 0::bigint);
+select t.expect_eq('... the search is still counted with its page', (select props ->> 'where' from public.activity_events where name = 'search'), 'teams');
+select t.expect_eq('campaign values and browser language are not stored even when an old browser sends them', (select count(*) from public.activity_sessions where utm_source is not null or language is not null), 0::bigint);
+select t.expect_eq('the other visit details are still kept (referrer, browser, system, time zone)', (select referrer_host || ',' || browser || ',' || os || ',' || time_zone from public.activity_sessions where id = '00000000-0000-0000-0000-00000000d001'), 'google.com,Safari,iOS,America/Edmonton');
+select t.as_anon();
+select t.expect_error('a visitor cannot run the purge', $q$select private.purge_activity()$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-00000000c002');
+select t.expect_error('a signed-in person cannot run the purge', $q$select private.purge_activity()$q$, '42501');
+select t.as_admin();
+insert into public.activity_sessions (id, last_seen_at, path) values ('00000000-0000-0000-0000-00000000d0aa', now() - interval '91 days', '/'), ('00000000-0000-0000-0000-00000000d0ab', now() - interval '89 days', '/');
+insert into public.activity_views (session_id, path, at) values ('00000000-0000-0000-0000-00000000d0aa', '/', now() - interval '91 days'), ('00000000-0000-0000-0000-00000000d0ab', '/', now() - interval '89 days');
+insert into public.activity_events (session_id, name, at) values (null, 'old_action', now() - interval '91 days'), (null, 'recent_action', now() - interval '89 days');
+select private.purge_activity();
+select t.expect_eq('purge: a visit last seen 91 days ago is gone, with its page views', (select count(*) from public.activity_sessions where id = '00000000-0000-0000-0000-00000000d0aa') + (select count(*) from public.activity_views where session_id = '00000000-0000-0000-0000-00000000d0aa'), 0::bigint);
+select t.expect_eq('purge: a visit seen 89 days ago is kept, with its page views', (select count(*) from public.activity_sessions where id = '00000000-0000-0000-0000-00000000d0ab') + (select count(*) from public.activity_views where session_id = '00000000-0000-0000-0000-00000000d0ab'), 2::bigint);
+select t.expect_eq('purge: actions older than 90 days are gone, newer ones kept', (select string_agg(name, ',' order by name) from public.activity_events where name in ('old_action', 'recent_action')), 'recent_action');
+
 select t.expect_eq('every table in public has row level security on', (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity), 0::bigint);
 select 'PASSED ' || count(*) || ' checks' as result from t.log;
 rollback;

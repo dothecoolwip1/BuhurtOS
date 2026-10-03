@@ -432,6 +432,7 @@ img.avatar{object-fit:cover;background:var(--raised)}
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--line);margin-top:72px;padding-block:28px 40px;color:var(--muted);font-size:14px}
 footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap}
+footer .footlink{display:inline-flex;align-items:center;min-height:44px;padding:0 6px;color:inherit;text-decoration:underline}
 
 /* ---------- app additions ---------- */
 .bottom{grid-template-columns:repeat(4,minmax(0,1fr))}

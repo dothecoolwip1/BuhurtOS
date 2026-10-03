@@ -81,7 +81,7 @@ export function Layout() {
         </div>
       </header>
       <main className="wrap"><ProfileGate /><Outlet /></main>
-      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat. Anonymous usage (pages opened, device type) is recorded to improve the site.</span>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
+      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.</span><NavLink className="footlink" to="/privacy">Privacy</NavLink>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {PHONE.map(n => (
           <NavLink key={n.to} to={n.to} end={n.end}>

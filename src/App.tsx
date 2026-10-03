@@ -10,6 +10,7 @@ import { RankingsPage } from './pages/RankingsPage';
 import { FormatsPage } from './pages/FormatsPage';
 import { HomePage } from './pages/HomePage';
 import { MarshalPage } from './pages/MarshalPage';
+import { PrivacyPage } from './pages/PrivacyPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RulesPage } from './pages/RulesPage';
 import { RegisterPage } from './registration/RegisterPage';
@@ -59,6 +60,7 @@ export function App() {
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />
         <Route path="rules" element={<RulesPage />} />
+        <Route path="privacy" element={<PrivacyPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
