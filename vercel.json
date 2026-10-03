@@ -1,8 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "build": { "env": { "VITE_BASE": "/", "VITE_ANALYTICS_CONSENT": "notice" } },
-  "rewrites": [{ "source": "/((?!assets/|sw\\.js|manifest\\.webmanifest|favicon|icon-).*)", "destination": "/index.html" }]
+  "build": { "env": { "VITE_BASE": "/" } },
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

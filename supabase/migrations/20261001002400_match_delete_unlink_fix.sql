@@ -19,6 +19,7 @@ begin
     execute format('alter table public.matches drop constraint %I', c);
   end loop;
 end $$;
+alter table public.matches drop constraint if exists matches_next_link_has_slot;
 alter table public.matches add constraint matches_next_link_has_slot check (next_match_id is null or next_slot is not null);
 
 drop trigger if exists matches_unlink_before_delete on public.matches;
@@ -32,4 +33,5 @@ begin
   return null;
 end $$;
 revoke execute on function private.clear_orphan_next_slots() from public, anon, authenticated;
+drop trigger if exists matches_clear_orphan_slots on public.matches;
 create trigger matches_clear_orphan_slots after delete on public.matches referencing old table as old_rows for each statement execute function private.clear_orphan_next_slots();

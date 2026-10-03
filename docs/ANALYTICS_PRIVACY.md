@@ -3,6 +3,16 @@
 The public statement is `/privacy` (`src/pages/PrivacyPage.tsx`). This file is for whoever runs BuhurtOS. The page and the behaviour must agree:
 change one, check the other. Not legal advice; see "Still needs a person" at the end.
 
+## Deployment architecture (keep it this way)
+* **Production frontend: GitHub Pages** (`.github/workflows/pages.yml`, base path `/BuhurtOS/`, `404.html` is the deep-link fallback). It deploys only from `main`.
+* **Backend, auth, database: Supabase** (project `mvbxlebznlgroptwwdsm`) for every frontend: Pages, a QA deployment, or local development.
+* **Analytics: PostHog project 643201.** Not tied to any host.
+* **Vercel: temporary QA only.** It exists to give an external browser a deployment of a branch (authenticated tests, real analytics ingestion) without merging to
+  `main`. It is never the canonical URL and nothing in the app depends on it. Its only footprint is `vercel.json` (sets `VITE_BASE=/` for that build and rewrites
+  unknown paths to `index.html`). GitHub Pages ignores that file, and a Pages build without `VITE_BASE` still uses `/BuhurtOS/` (checked: built asset paths).
+* Sign-in with Google redirects back to the page the person was on, so the Supabase Auth redirect allow-list must contain every origin that hosts the app
+  (the Pages URL and, while testing, the QA URL). Password sign-in at `/test-login` and email-code sign-in need no redirect.
+
 ## Which PostHog project (read this before auditing or configuring anything)
 BuhurtOS uses exactly one PostHog project: **project ID 643201**, organization **BuhurtOS**, **US cloud** (`https://us.posthog.com/project/643201`).
 **Project 604020 is NOT BuhurtOS.** An independent PostHog connection was reading project 604020, which has default settings and no events; that is why it
@@ -50,23 +60,20 @@ and also occasionally from `track_activity`. It only exists on a database that h
 * Hosted Supabase (`mvbxlebznlgroptwwdsm`): the schema of migrations `...002500` to `...003000` is **already present** (functions identical to the repository's
   after ignoring whitespace and comments) but the migration history lists only 22 migrations, so compare the schema, not the history. Genuinely pending:
   `...002400_match_delete_unlink_fix` and `...003100_analytics_privacy`. Attempts to apply them through the Supabase tool were **cancelled** by the environment
-  (twice); no Supabase CLI, access token or documented migration path exists in this repository. Until 3100 is applied the hosted database still stores
+  (three times); no Supabase CLI, access token or documented migration path exists in this repository. Until 3100 is applied the hosted database still stores
   `utm_source` and `language`, still keeps search words if an old browser sends them, and has no `purge-activity` cron job.
 
 ## Manual steps that remain (nothing here can be done from the coding environment)
-1. **Hosted database.** In the Supabase dashboard SQL editor for project `mvbxlebznlgroptwwdsm`, run the contents of
-   `supabase/migrations/20261001002400_match_delete_unlink_fix.sql`, then `supabase/migrations/20261001003100_analytics_privacy.sql` (in that order; each is one
-   transaction and safe to re-run). Do not use `supabase db push`: the hosted history uses different version numbers, so it would try to re-run everything.
-   Verify: `select conname from pg_constraint where conname = 'matches_next_link_has_slot'`; `select jobname, schedule, active from cron.job` shows
-   `purge-activity` (`41 9 * * *`, calling `select private.purge_activity()`); then insert two fictional rows in `activity_sessions` (one `last_seen_at` 91 days ago,
-   one 89 days ago), run `select private.purge_activity()`, confirm only the older one is gone, delete the other.
-2. **GitHub Pages (production) variables.** Repository variables: `POSTHOG_KEY` (project 643201's client key), `POSTHOG_HOST` = `https://us.i.posthog.com`,
-   `PRIVACY_EMAIL` when a mailbox exists. Delete `POSTHOG_REPLAY` (nothing reads it). `ANALYTICS_CONSENT` is optional (default `notice`).
-3. **Vercel QA.** Create a Vercel project from this repository on branch `ccr-a435c5f7-pmrfxr` (do not merge to `main`). `vercel.json` already sets the base path
-   and the single-page-app rewrite. Add environment variables `VITE_POSTHOG_KEY` (project 643201's client key) and `VITE_POSTHOG_HOST` = `https://us.i.posthog.com`.
-   Turn off Vercel Deployment Protection for this project (or use a protection-bypass link) so QA browsers can open it without a Vercel account. Use a separate PostHog
-   key or filter QA events afterwards, otherwise QA events mix with production events in project 643201.
-4. Then run the real-ingestion checks listed in the task (anonymous, query string and fragment, typed text, signed-in and sign-out, opt-out, Super Admin).
+1. **Hosted database.** Open `supabase/manual/hosted_rollout_2400_3100.sql`, paste it into the Supabase dashboard SQL editor for project `mvbxlebznlgroptwwdsm`
+   and run it once. It applies migrations 2400 and 3100, runs 14 read-only checks (every row must say `ok = true`, including the `purge-activity` cron job), and
+   proves the 90-day purge with fictional rows inside a transaction that is rolled back. It is safe to re-run. Do not use `supabase db push` (different history versions).
+2. **GitHub Pages (production) variables.** `POSTHOG_KEY` (project 643201's client key), `POSTHOG_HOST` = `https://us.i.posthog.com`, `PRIVACY_EMAIL` when a mailbox
+   exists. Delete `POSTHOG_REPLAY`. `ANALYTICS_CONSENT` is optional (the workflow defaults it to `notice`).
+3. **Temporary Vercel QA.** Import the repository as a Vercel project and deploy branch `ccr-a435c5f7-pmrfxr` (do not merge to `main` for this). Add environment variables
+   `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` (`https://us.i.posthog.com`). Turn off Vercel Deployment Protection so QA browsers need no Vercel account. QA events go to
+   the same PostHog project as production unless a second key is used, so mark or filter them.
+4. Run the real-ingestion checks (anonymous, query string and fragment, typed text, signed-in and sign-out, opt-out, Super Admin), then merge the same commit to `main`
+   to deploy GitHub Pages and repeat the key checks on the real Pages URL.
 
 ## Still needs a person
 Name the individual responsible for privacy (Alberta PIPA expects one) and put their contact in `PRIVACY_EMAIL`; decide whether 1-year PostHog
