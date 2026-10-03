@@ -18,7 +18,7 @@ import { useDocumentTitle } from '../../lib/useDocumentTitle';
  * The platform owner's area. The gate here only decides what to show: every call below is checked by the database, and a refusal is shown
  * as written. Anyone who is not the owner sees one plain page, the same for every path under /platform.
  */
-function PlatformGate({ children }: { children: ReactNode }) {
+export function PlatformGate({ children }: { children: ReactNode }) {
   const { session, loading } = useAuth();
   const role = usePlatformRole();
   const gate = platformGate(loading, !!session, role.loading, role.isOwner);
@@ -39,6 +39,8 @@ export function PlatformHomePage() {
       <section className="plat" style={{ display: 'grid', gap: 20 }}>
         <PageHead eyebrow="Platform" title="Platform" lede="Owner tools. Every action is checked by the database again; this page only decides what is shown." />
         <ul className="plain">
+          <li><Link className="panel plat-link" to="/platform/analytics"><b>Analytics</b><span className="muted">Visitors, who is on right now, how long people stay, what they use, sign-ups and searches.</span></Link></li>
+          <li><Link className="panel plat-link" to="/platform/bugs"><b>Bug reports</b><span className="muted">Problems people reported with the button in the header.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/organizations"><b>Organizations</b><span className="muted">Switch organizations on or off and manage their admins.</span></Link></li>
         </ul>
       </section>

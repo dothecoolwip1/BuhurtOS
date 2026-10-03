@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
+import { identifyUser, isNewAccount, markSignInStarted, resetUser, takeSignInStarted, trackEvent, wantOnboarding } from '../lib/analytics';
 
 interface AuthValue {
   session: Session | null;
@@ -24,23 +25,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let live = true;
     supabase.auth.getSession().then(({ data }) => { if (live) { setSession(data.session); setLoading(false); } });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => { setSession(s); setLoading(false); });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
+      setSession(s); setLoading(false);
+      if (s) identifyUser(s.user.id);
+      if (event === 'SIGNED_IN' && s) {
+        // Only a sign-in the person started in this tab counts; a session restored on load or refreshed is not a login.
+        const method = takeSignInStarted();
+        if (method) {
+          trackEvent(isNewAccount(s.user.created_at) ? 'sign_up' : 'login', { method });
+          wantOnboarding(s.user.id);
+        }
+      }
+      if (event === 'SIGNED_OUT') resetUser();
+    });
     return () => { live = false; sub.subscription.unsubscribe(); };
   }, []);
 
   const sendCode = useCallback(async (email: string) => {
     const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: true } });
+    if (!error) trackEvent('sign_in_code_sent');
     return error ? friendlyError(error) : null;
   }, []);
   const verifyCode = useCallback(async (email: string, code: string) => {
+    markSignInStarted('code');
     const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: code.replace(/\s/g, ''), type: 'email' });
     return error ? friendlyError(error) : null;
   }, []);
   const signInWithPassword = useCallback(async (email: string, password: string) => {
+    markSignInStarted('password');
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     return error ? (error.message.toLowerCase().includes('invalid') ? 'That email and password do not match a test account.' : friendlyError(error)) : null;
   }, []);
   const signInWithGoogle = useCallback(async () => {
+    markSignInStarted('google');
     const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
     return error ? friendlyError(error) : null;
   }, []);

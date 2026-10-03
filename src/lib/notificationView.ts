@@ -4,6 +4,7 @@ import type { AppNotification } from '../data/teamManager';
 export const notificationLink = (n: Pick<AppNotification, 'kind' | 'payload'>): string => {
   const ev = n.payload.event_slug;
   const evOk = typeof ev === 'string' && /^[a-z0-9-]+$/.test(ev);
+  if (n.kind === 'bug_reported') return '/platform/bugs';
   if (n.kind === 'registration_submitted') return evOk ? `/events/${ev}/manage` : '/account';
   if (n.kind === 'registration_decided') return evOk ? `/events/${ev}` : '/account';
   const slug = n.payload.team_slug;

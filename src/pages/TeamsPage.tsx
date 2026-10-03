@@ -6,6 +6,7 @@ import type { CrestDivision, Team } from '../data/types';
 import { friendlyError } from '../lib/friendlyError';
 import { affiliationOptions, filterTeams, groupByOrganization, listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL } from '../lib/teamDirectory';
 import { useAsync } from '../lib/useAsync';
+import { useTrackSearch } from '../lib/useTrackSearch';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 /** The generated crest takes the shape the sample data uses; only name, colours, division and initial are drawn. */
@@ -24,6 +25,7 @@ export function TeamsPage() {
   useDocumentTitle('Teams');
   const [params, setParams] = useSearchParams();
   const q = params.get('q') ?? '';
+  useTrackSearch('teams', q);
   const org = params.get('org') ?? '';
   const live = useAsync(fetchDirectory, []);
   const all = live.data ?? [];

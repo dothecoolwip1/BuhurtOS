@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Dialog } from './Dialog';
+import { BugReportButton } from './BugReport';
+import { trackPageView } from '../lib/analytics';
 import { setSampleMode, useSampleMode } from '../data/mode';
 import { useAuth } from '../auth/AuthContext';
 import { usePlatformRole } from '../auth/usePlatformRole';
@@ -41,6 +43,15 @@ export function Layout() {
   const sample = useSampleMode();
   const [more, setMore] = useState(false);
   useEffect(() => { window.scrollTo({ top: 0 }); setMore(false); }, [pathname]);
+  // Usage for the platform owner only: the page on each change, then a heartbeat every minute while the tab is visible. Never blocks anything.
+  const userId = session?.user.id;
+  useEffect(() => {
+    const ping = () => { if (!document.hidden) trackPageView(pathname); };
+    ping();
+    const t = window.setInterval(ping, 60_000);
+    document.addEventListener('visibilitychange', ping);
+    return () => { window.clearInterval(t); document.removeEventListener('visibilitychange', ping); };
+  }, [pathname, userId]);
   // The phone bar keeps the four most used places; the rest sit under More.
   const PHONE = NAV.slice(0, 4);
   const EXTRA = NAV.slice(4);
@@ -55,10 +66,13 @@ export function Layout() {
             <span>Buhurt<span className="os">OS</span></span>
           </NavLink>
           <nav className="nav" aria-label="Main">
-            {NAV.map(n => <NavLink key={n.to} to={n.to} end={n.end}>{n.label}</NavLink>)}
-            {isOwner && <NavLink to="/platform">Platform</NavLink>}
+            {NAV.map((n, i) => <NavLink key={n.to} to={n.to} end={n.end} className={i >= 4 ? 'nav-extra' : undefined}>{n.label}</NavLink>)}
+            {isOwner && <NavLink to="/platform" className="nav-extra">Platform</NavLink>}
+            {/* On mid-width screens the less used places move under More, so the header never overlaps. */}
+            <button type="button" className={`nav-more${extraActive ? ' active' : ''}`} aria-haspopup="dialog" aria-expanded={more} onClick={() => setMore(true)}>More</button>
           </nav>
           <div className="spacer" />
+          <BugReportButton />
           {session && <NotificationBell />}
           <NavLink className="btn btn-line" to="/account">{session ? 'Account' : 'Sign in'}</NavLink>
           <button className="icon-btn theme-btn" type="button" onClick={toggleTheme} aria-label="Switch light or dark">
@@ -67,7 +81,7 @@ export function Layout() {
         </div>
       </header>
       <main className="wrap"><ProfileGate /><Outlet /></main>
-      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat.</span>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
+      <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat. Anonymous usage (pages opened, device type) is recorded to improve the site.</span>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {PHONE.map(n => (
           <NavLink key={n.to} to={n.to} end={n.end}>

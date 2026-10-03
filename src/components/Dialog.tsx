@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
@@ -41,7 +42,9 @@ export function Dialog({ title, onClose, children, variant = 'dialog', busy = fa
     };
   }, []);
 
-  return (
+  // Rendered at the end of <body>: inside a parent with a filter or transform (like the blurred header) a fixed overlay would be
+  // trapped in that parent's box instead of covering the screen.
+  return createPortal(
     <div className={`dlg-bg ${variant}`} onMouseDown={e => { if (e.target === e.currentTarget && !busy) onClose(); }}>
       <div ref={ref} className="dlg panel" role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
         <div className="dlg-head">
@@ -50,6 +53,7 @@ export function Dialog({ title, onClose, children, variant = 'dialog', busy = fa
         </div>
         <div className="dlg-body">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

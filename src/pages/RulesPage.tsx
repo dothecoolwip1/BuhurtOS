@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { Seg } from '../components/ui';
 import { RULES, type RuleGroup } from '../content/rules';
+import { useTrackSearch } from '../lib/useTrackSearch';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 type G = 'all' | RuleGroup;
@@ -16,6 +17,7 @@ export function RulesPage() {
   useDocumentTitle('Rules');
   const [params, setParams] = useSearchParams();
   const q = params.get('q') ?? '';
+  useTrackSearch('rules', q);
   const rawG = params.get('g');
   const group: G = GROUPS.some(([k]) => k === rawG) ? (rawG as G) : 'all';
   const needle = q.trim().toLowerCase();

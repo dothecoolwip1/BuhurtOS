@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { requestNewTeam, type NewTeamForm, type SocialNetwork } from '../data/teamManager';
 import { friendlyError } from '../lib/friendlyError';
+import { trackEvent } from '../lib/analytics';
 import { CLAIMED_LABEL, DESCRIPTION_MAX, MAX_CLAIMED, SOCIAL_NETWORKS, addClaimed, descriptionCounter, editClaimed, effectiveSlug, emptyNewTeamForm, firstErrorField, removeClaimed, setSocial, slugFromName, validateNewTeam } from '../registration/teamRequest';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
@@ -39,7 +40,7 @@ export function NewTeamRequestForm({ onSubmitted }: { onSubmitted?: () => void }
     const first = firstErrorField(errors);
     if (first) { formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus(); return; }
     setBusy(true);
-    try { await requestNewTeam(f); setDone(f.name.trim()); onSubmitted?.(); } catch (x) { setProblem(friendlyError(x)); } finally { setBusy(false); }
+    try { await requestNewTeam(f); trackEvent('team_requested'); setDone(f.name.trim()); onSubmitted?.(); } catch (x) { setProblem(friendlyError(x)); } finally { setBusy(false); }
   };
 
   const colors = f.colors ?? DEFAULT_COLORS;
