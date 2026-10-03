@@ -20,7 +20,8 @@ begin
   end if;
   return new;
 end $$;
-create trigger matches_bump_version before update on public.matches for each row execute function private.bump_match_version();
+-- or replace: sections 1-3 were applied to the hosted project by hand before the rest of this file, so they must be rerunnable.
+create or replace trigger matches_bump_version before update on public.matches for each row execute function private.bump_match_version();
 
 -- 2. Draw record ---------------------------------------------------------------------------------------------------------------------
 alter table public.competitions
@@ -31,7 +32,7 @@ alter table public.competitions
 comment on column public.competitions.draw_seed is 'Seed of the random draw that built this competition''s schedule (null for a manual order). With draw_algorithm it reproduces the draw.';
 
 -- 3. Pool ties -----------------------------------------------------------------------------------------------------------------------
-create table public.pool_tie_decisions (
+create table if not exists public.pool_tie_decisions (
   competition_id uuid not null references public.competitions (id) on delete cascade,
   entry_id uuid not null references public.entries (id) on delete cascade,
   part text not null default '',
@@ -41,7 +42,18 @@ create table public.pool_tie_decisions (
   decided_at timestamptz not null default now(),
   primary key (competition_id, entry_id)
 );
+-- "if not exists" must not hide a different table: an existing one has to have exactly these columns and constraints.
+do $do$
+begin
+  if (select string_agg(a.attname || ' ' || format_type(a.atttypid, a.atttypmod) || case when a.attnotnull then ' not null' else '' end, ', ' order by a.attnum)
+      from pg_attribute a where a.attrelid = 'public.pool_tie_decisions'::regclass and a.attnum > 0 and not a.attisdropped)
+     is distinct from 'competition_id uuid not null, entry_id uuid not null, part text not null, rank integer not null, note text not null, decided_by uuid not null, decided_at timestamp with time zone not null'
+  or (select count(*) from pg_constraint where conrelid = 'public.pool_tie_decisions'::regclass) <> 5 then
+    raise exception 'public.pool_tie_decisions exists with a different shape; reconcile it by hand';
+  end if;
+end $do$;
 alter table public.pool_tie_decisions enable row level security;
+drop policy if exists pool_tie_decisions_read on public.pool_tie_decisions;
 create policy pool_tie_decisions_read on public.pool_tie_decisions for select to authenticated using (private.is_organizer(private.event_of_competition(competition_id)));
 grant select on public.pool_tie_decisions to authenticated;
 

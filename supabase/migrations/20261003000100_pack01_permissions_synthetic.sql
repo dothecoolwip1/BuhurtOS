@@ -108,7 +108,7 @@ create policy team_affiliations_read on public.team_affiliations for select to a
   using (exists (select 1 from public.teams t where t.id = team_affiliations.team_id and t.status = 'approved')
          or private.can_admin_team(team_id));
 
-drop function private.is_any_organizer();  -- the broad "organizer of any event" test; nothing may use it again
+drop function if exists private.is_any_organizer();  -- the broad "organizer of any event" test; nothing may use it again (if exists: rerunnable)
 
 -- 2. Event roles expire --------------------------------------------------------------------------------------------------------------
 -- An event_staff row only counts until 7 days after the event's last day (events with no dates never expire). Owners and

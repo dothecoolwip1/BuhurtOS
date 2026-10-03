@@ -115,3 +115,19 @@ Migration `supabase/migrations/20261003000500_pack05_fighter_identity.sql` (not 
 
 ## Hosted migration blocker (recorded at end of run)
 `mcp__Supabase__apply_migration` cancels any migration containing DELETE/DROP statements (even `delete from` inside a function body). This is treated as an owner-confirmation gate and not bypassed. Remaining hosted work must be run by the owner, in order, from `supabase/migrations/` (`supabase db push`, or the SQL editor): finish 20261003000100 (drop of `is_any_organizer`), the remainder of 20261003000200 (hosted already has its sections 1, 2 and the ranking functions; re-running the whole file will fail on `create trigger`/`create table`, so edit those to `if not exists`/`drop trigger if exists` first or run from a fresh section marker at `record_tie_decision`), then 0300, 0400, 0500. Until then hosted permission holes from Pack 01 (organizers' team powers via `is_any_organizer`-using functions are patched; results table still organizer-writable) remain partly open. GitHub run 37153958665 on 80fdc03 (check, database, browser, release-policy): success; deploy not run (feature branch).
+
+## Hosted reconciliation (2026-10-03, feature work stopped)
+Full record: `docs/claude-packs/HOSTED_RECONCILIATION_2026-10-03.md`. Correction to the note above: hosted DID have `private.can_score`, in its
+original (pre-Pack 03) form; it was an old version, not missing.
+
+* **Hosted inventory.** Measured read-only and matched exactly by a local replica (929 objects, hash `cf4b0bee...`). Against the branch:
+  61 objects match, 135 are missing, 12 are old versions, 2 are partial.
+* **Rollout script.** `supabase/manual/hosted_rollout_packs_01_05.sql` (generated; guard + sections A-H + 135 rolled-back verification
+  checks). Tested locally: on the replica it applies and reaches the branch fingerprint, and all 135 checks pass. Running it again changes
+  nothing. It refuses 4 wrong states, and existing data is byte-identical afterwards.
+* **Canonical migrations.** 0100/0200 are now rerunnable from the hosted state; the clean-build fingerprint is unchanged and the full
+  database gate passes.
+* **HOSTED STATE: STILL PARTIAL.** The owner has to run the script in the Supabase SQL Editor; the hosted migration tool refuses
+  DROP/DELETE, and that refusal is not bypassed. After the owner's run: re-measure the fingerprints, run the hosted permission tests and the
+  advisors, and record them in the reconciliation file.
+* **Do not use `supabase db push`.** The hosted ledger versions differ from the repository's; see section 7 of the reconciliation file.
