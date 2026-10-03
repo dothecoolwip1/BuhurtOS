@@ -1,0 +1,16 @@
+{
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm ci --no-audit --no-fund",
+  "outputDirectory": "dist",
+  "env": {
+    "VITE_BASE": "/"
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
