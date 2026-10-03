@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { countUnfinishedBoards } from '../lib/boardStore';
-import { activateUpdate, scoringGuard, updateSafety, updateStore } from '../lib/swUpdate';
+import { activateUpdate, scoringGuard, updateNote, updateSafety, updateStore } from '../lib/swUpdate';
 import { trackEvent } from '../lib/analytics';
 import { outbox } from '../lib/useOutbox';
 
@@ -33,6 +33,7 @@ export function UpdateBanner() {
   return (
     <div className="panel info" role="status" aria-live="polite" style={{ display: 'grid', gap: 8, margin: '8px 16px' }}>
       <b>A new version of BuhurtOS is ready.</b>
+      {updateNote() && <span role="alert" className="src">{updateNote()}</span>}
       {safety.safe ? (
         <>
           <span className="src">Nothing is being scored on this device, so it is safe to update. The page will reload.</span>

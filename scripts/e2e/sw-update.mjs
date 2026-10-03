@@ -13,6 +13,7 @@ build(`${OUT}/a`, ''); build(`${OUT}/b`, 'second-build');
 const results = [];
 const check = (name, ok, detail = '') => { results.push({ name, ok }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  <-- ' + detail}`); };
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const until = async (fn, ms = 20000) => { const t = Date.now(); while (Date.now() - t < ms) { if (fn()) return true; await sleep(250); } return false; };
 const server = await startStaticServer(`${OUT}/a`);
 const browser = await chromium.launch({ executablePath: process.env.CHROME ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--proxy-bypass-list=127.0.0.1;localhost'] });
 
@@ -24,7 +25,10 @@ async function session(label) {
   await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [storageKey, sessionFor(IDS.userA, 'scorer-a@example.test')]);
   const page = await ctx.newPage();
   const errors = [];
+  const logs = [];
   page.on('pageerror', e => errors.push(String(e).slice(0, 200)));
+  page.on('console', m => logs.push(m.type() + ': ' + m.text().slice(0, 160)));
+  page.on('framenavigated', f => { if (f === page.mainFrame()) logs.push('navigated: ' + f.url()); });
   const body = async () => (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ').toLowerCase();
   const has = async (t) => (await body()).includes(t.toLowerCase());
   const version = () => page.evaluate(() => new Promise(res => {
@@ -42,7 +46,8 @@ async function session(label) {
   check(`[${label}] the first build installs and controls the page`, typeof idA === 'string' && idA.length > 0);
   await page.getByRole('button', { name: 'Score Iron Wolves against Ash Guard' }).click();
   await page.getByText('Head or torso +2').first().waitFor();
-  return { ctx, page, mock, body, has, version, cacheNames, idb, idA, errors, url };
+  const diagnose = async () => page.evaluate(async () => { const r = await navigator.serviceWorker.getRegistration(); return JSON.stringify({ active: r?.active?.state, waiting: r?.waiting?.state, installing: r?.installing?.state, hasController: !!navigator.serviceWorker.controller, footer: document.querySelector('[data-testid=app-version]')?.textContent, url: location.href }); }).catch(e => 'diagnose failed: ' + e);
+  return { ctx, page, mock, body, has, version, cacheNames, idb, idA, errors, url, logs, diagnose };
 }
 const startUpdate = async (s) => {
   server.switchTo(`${OUT}/b`);
@@ -53,7 +58,9 @@ const startUpdate = async (s) => {
 try {
   // ======== Run 1: safe activation after the work is confirmed
   let s = await session('safe');
-  s.mock.st.offline = true; await s.ctx.setOffline(true);
+  globalThis.__diag = async () => JSON.stringify({ state: await s.diagnose(), logs: s.logs.slice(-6) });
+  globalThis.__poke = async () => { await s.page.evaluate(async () => { const r = await navigator.serviceWorker.getRegistration(); r.waiting?.postMessage({ type: 'SKIP_WAITING' }); }); await new Promise(r => setTimeout(r, 4000)); return s.diagnose(); };
+  s.mock.st.offline = true;   // the API is unreachable (no signal to the server); the page itself stays online
   await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click();
   await sleep(300);
   check('[safe] a score action is waiting on the device (pending work)', (await s.idb('outbox')).length === 1);
@@ -65,7 +72,7 @@ try {
   check('[safe] still the old build after waiting (no timer-based takeover)', (await s.version()) === s.idA);
   check('[safe] the old build\'s cache is still there', (await s.cacheNames()).some(n => n.endsWith(s.idA)));
   // signal returns: the queue is delivered, the match is finished and made official, the screen is left
-  s.mock.st.offline = false; await s.ctx.setOffline(false);
+  s.mock.st.offline = false;
   for (let i = 0; i < 2; i++) { if (i > 0) await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click(); }
   // finish the match: A needs 2 rounds
   await s.page.getByRole('button', { name: 'End round' }).click();
@@ -91,7 +98,8 @@ try {
 
   // ======== Run 2: an older queued command survives an emergency update and is delivered by the new build
   s = await session('emergency');
-  s.mock.st.offline = true; await s.ctx.setOffline(true);
+  globalThis.__diag = async () => JSON.stringify({ state: await s.diagnose(), logs: s.logs.slice(-25) });
+  s.mock.st.offline = true;
   await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click();
   await sleep(300);
   const queued = await s.idb('outbox');
@@ -107,13 +115,38 @@ try {
   const kept = await s.idb('outbox');
   check('[emergency] the queued action survived the update, unchanged', kept.length === 1 && kept[0].id === queued[0].id && kept[0].schema === 1 && kept[0].status === 'pending');
   check('[emergency] and so did the half-scored board', (await s.idb('boards')).length === 1);
-  s.mock.st.offline = false; await s.ctx.setOffline(false);
-  await sleep(2500);
+  s.mock.st.offline = false;
+  await until(() => s.mock.st.delivered.has(queued[0].id));   // the queue retries on its own every few seconds
   check('[emergency] the new build delivers the old build\'s action exactly once', s.mock.st.delivered.get(queued[0].id) === 1, JSON.stringify([...s.mock.st.delivered]));
   check('[emergency] no uncaught page errors', s.errors.length === 0, s.errors.join('|'));
   await s.ctx.close();
+
+  // ======== Run 3: the browser never completes the handover (SKIP_WAITING is swallowed): the app still gets onto the new build, online, without losing work
+  s = await session('fallback');
+  globalThis.__diag = async () => JSON.stringify({ state: await s.diagnose(), logs: s.logs.slice(-6) });
+  s.mock.st.offline = true;
+  await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click();
+  await sleep(300);
+  const q3 = await s.idb('outbox');
+  await startUpdate(s);
+  await s.page.evaluate(async () => { const r = await navigator.serviceWorker.getRegistration(); if (r?.waiting) r.waiting.postMessage = () => {}; });   // simulate a browser that never hands over
+  await s.page.getByRole('button', { name: 'Update anyway (emergency)' }).click();
+  await s.page.getByRole('button', { name: 'Yes, update now' }).click();
+  await sleep(1500);
+  check('[fallback] with the handover swallowed the page is still on the old build for now', (await s.version()) === s.idA);
+  await s.page.waitForFunction(() => document.querySelector('[data-testid=app-version]')?.textContent?.includes('second-build'), null, { timeout: 30000 });
+  check('[fallback] after the wait the app reloaded onto the new build by itself', true);
+  const kept3 = await s.idb('outbox');
+  check('[fallback] the queued action and the board survived', kept3.length === 1 && kept3[0].id === q3[0].id && (await s.idb('boards')).length === 1);
+  await s.page.waitForFunction(() => navigator.serviceWorker.controller, null, { timeout: 20000 });
+  check('[fallback] the new build is now the one controlling the page', (await s.version()) !== s.idA);
+  s.mock.st.offline = false;
+  await until(() => s.mock.st.delivered.has(q3[0].id));
+  check('[fallback] and it delivers the action exactly once', s.mock.st.delivered.get(q3[0].id) === 1);
+  await s.ctx.close();
 } catch (e) {
   check('script ran to the end', false, String(e).slice(0, 400));
+  try { console.log('DIAGNOSTICS', await globalThis.__diag?.()); if (globalThis.__poke) console.log('POKE', await globalThis.__poke()); } catch { /* ignore */ }
 } finally {
   await browser.close(); await server.close();
 }
