@@ -57,23 +57,18 @@ and also occasionally from `track_activity`. It only exists on a database that h
   mock events, and the project's "discard client IP" setting is applied at ingestion, so it can only be proven with a real event.
 * The last production build (GitHub Pages, run for `cff6dc5`) had **empty** `POSTHOG_KEY`, `POSTHOG_HOST` and `POSTHOG_REPLAY`: production sends nothing to
   PostHog today, and replay was never on.
-* Hosted Supabase (`mvbxlebznlgroptwwdsm`): the schema of migrations `...002500` to `...003000` is **already present** (functions identical to the repository's
-  after ignoring whitespace and comments) but the migration history lists only 22 migrations, so compare the schema, not the history. Genuinely pending:
-  `...002400_match_delete_unlink_fix` and `...003100_analytics_privacy`. Attempts to apply them through the Supabase tool were **cancelled** by the environment
-  (three times); no Supabase CLI, access token or documented migration path exists in this repository. Until 3100 is applied the hosted database still stores
-  `utm_source` and `language`, still keeps search words if an old browser sends them, and has no `purge-activity` cron job.
+* Hosted Supabase (`mvbxlebznlgroptwwdsm`): migrations 2400 and 3100 were applied by the owner via `supabase/manual/hosted_rollout_2400_3100.sql` and re-checked
+  read-only on 2026-10-03: `matches_next_link_has_slot` and `matches_clear_orphan_slots` present, `matches_unlink_before_delete` gone, no orphan `next_match_id`,
+  `private.purge_activity()` present and not executable by anon/authenticated, cron `purge-activity` (`41 9 * * *`) active, `track_event` drops `query`,
+  `track_activity` stores no utm/language, RLS on all three activity tables, no stored utm/language/query values. A rolled-back purge proof with fictional rows passed.
+  The migration history table is incomplete (22 entries); compare schema, not history. Do not run `supabase db push`.
+* Production deploy: commit `a8d3650` on `main`, workflow run 37108406077, typecheck/test/build and Pages deploy succeeded (2026-10-03).
+* PostHog 643201: `capture_console_log_opt_in` and `capture_performance_opt_in` were found ON and were switched off on 2026-10-03.
 
-## Manual steps that remain (nothing here can be done from the coding environment)
-1. **Hosted database.** Open `supabase/manual/hosted_rollout_2400_3100.sql`, paste it into the Supabase dashboard SQL editor for project `mvbxlebznlgroptwwdsm`
-   and run it once. It applies migrations 2400 and 3100, runs 14 read-only checks (every row must say `ok = true`, including the `purge-activity` cron job), and
-   proves the 90-day purge with fictional rows inside a transaction that is rolled back. It is safe to re-run. Do not use `supabase db push` (different history versions).
-2. **GitHub Pages (production) variables.** `POSTHOG_KEY` (project 643201's client key), `POSTHOG_HOST` = `https://us.i.posthog.com`, `PRIVACY_EMAIL` when a mailbox
-   exists. Delete `POSTHOG_REPLAY`. `ANALYTICS_CONSENT` is optional (the workflow defaults it to `notice`).
-3. **Temporary Vercel QA.** Import the repository as a Vercel project and deploy branch `ccr-a435c5f7-pmrfxr` (do not merge to `main` for this). Add environment variables
-   `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` (`https://us.i.posthog.com`). Turn off Vercel Deployment Protection so QA browsers need no Vercel account. QA events go to
-   the same PostHog project as production unless a second key is used, so mark or filter them.
-4. Run the real-ingestion checks (anonymous, query string and fragment, typed text, signed-in and sign-out, opt-out, Super Admin), then merge the same commit to `main`
-   to deploy GitHub Pages and repeat the key checks on the real Pages URL.
+## Verification still to do from a networked browser
+The coding environment's network policy blocks `dothecoolwip1.github.io` and the PostHog ingestion hosts, so these were **not** verified from it: real production page
+loads at 390px and desktop, authentication, real PostHog events and stored properties, location privacy, opt-out and Super Admin on the live site, and a re-test
+of the PostHog transformation chain (the tool call listing transformations was denied).
 
 ## Still needs a person
 Name the individual responsible for privacy (Alberta PIPA expects one) and put their contact in `PRIVACY_EMAIL`; decide whether 1-year PostHog
