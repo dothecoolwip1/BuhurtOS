@@ -18,6 +18,7 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('6dd6409d-3a5d-55d5-b0da-35d455ba6cbe', '9b5162c0-aa0b-5b90-a130-427a366a44b1', 'round_robin', 'Round 1', 0, null, '9686619b-3296-5b27-8cae-9023155acb77', '151eb79c-9a34-5f62-9dfd-6feb62661e83', 'Ring 1', (timestamp '2024-02-18 15:00' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
 select public.finalize_match(m.id, 'a', 2, 0, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":0},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '6dd6409d-3a5d-55d5-b0da-35d455ba6cbe' and m.queue_state <> 'final';
+do $$ declare g record; begin if exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('9b5162c0-aa0b-5b90-a130-427a366a44b1') where tied group by part, rank loop perform public.record_tie_decision('9b5162c0-aa0b-5b90-a130-427a366a44b1', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('9b5162c0-aa0b-5b90-a130-427a366a44b1', 'tournament_structure') where exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished');
 reset role;
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
@@ -47,6 +48,7 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('d45e9043-288e-5886-a894-550131369a74', 'dc843e27-563b-5df9-a26d-e65b02ec7608', 'round_robin', 'Round 1', 0, null, '6c04c59f-8dad-5f12-be7c-005f87709344', '89ea0d3e-f2c6-5c03-a3d3-53662248a563', 'Ring 1', (timestamp '2026-05-31 15:00' at time zone 'America/Vancouver'), 15)
 on conflict (id) do nothing;
 select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = 'd45e9043-288e-5886-a894-550131369a74' and m.queue_state <> 'final';
+do $$ declare g record; begin if exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('dc843e27-563b-5df9-a26d-e65b02ec7608') where tied group by part, rank loop perform public.record_tie_decision('dc843e27-563b-5df9-a26d-e65b02ec7608', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('dc843e27-563b-5df9-a26d-e65b02ec7608', 'tournament_structure') where exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished');
 reset role;
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
@@ -76,6 +78,7 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('ff72ba27-bc11-5b71-ab7d-87b866a9cbd9', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', 'round_robin', 'Round 1', 0, null, 'fb7e55fa-f8e8-5730-9638-cdccb88f4ea2', 'd6d72879-e56e-583f-b310-a02bb6a0ab91', 'Ring 1', (timestamp '2026-09-13 15:00' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
 select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = 'ff72ba27-bc11-5b71-ab7d-87b866a9cbd9' and m.queue_state <> 'final';
+do $$ declare g record; begin if exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('f827b32b-f7c9-5e57-be22-df03e7e9921d') where tied group by part, rank loop perform public.record_tie_decision('f827b32b-f7c9-5e57-be22-df03e7e9921d', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('f827b32b-f7c9-5e57-be22-df03e7e9921d', 'tournament_structure') where exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished');
 reset role;
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values

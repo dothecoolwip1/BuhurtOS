@@ -1,0 +1,101 @@
+{
+ "note": "Shared by src/lib/tournament.test.ts (leaguePoints) and supabase/tests/vectors_gate.sql (private.base_points + private.tier_points). Change both implementations together.",
+ "cases": [
+  {
+   "poolWins": 3,
+   "eliminationWins": 2,
+   "placement": "second",
+   "tier": "Regional",
+   "source": "leagueStructure",
+   "total": 16.5
+  },
+  {
+   "poolWins": 4,
+   "eliminationWins": 0,
+   "placement": "none",
+   "tier": "Regional",
+   "source": "tournamentStructure",
+   "total": 5.0
+  },
+  {
+   "poolWins": 4,
+   "eliminationWins": 0,
+   "placement": "none",
+   "tier": "Regional",
+   "source": "leagueStructure",
+   "total": 6.0
+  },
+  {
+   "poolWins": 5,
+   "eliminationWins": 3,
+   "placement": "first",
+   "tier": "Exhibition",
+   "source": "tournamentStructure",
+   "total": 0.0
+  },
+  {
+   "poolWins": 0,
+   "eliminationWins": 0,
+   "placement": "none",
+   "tier": "Classic",
+   "source": "tournamentStructure",
+   "total": 0.0
+  },
+  {
+   "poolWins": 1,
+   "eliminationWins": 1,
+   "placement": "third",
+   "tier": "Source",
+   "source": "tournamentStructure",
+   "total": 2.5
+  },
+  {
+   "poolWins": 7,
+   "eliminationWins": 0,
+   "placement": "first",
+   "tier": "Conference",
+   "source": "leagueStructure",
+   "total": 26.0
+  },
+  {
+   "poolWins": 7,
+   "eliminationWins": 0,
+   "placement": "first",
+   "tier": "Conference",
+   "source": "tournamentStructure",
+   "total": 19.5
+  },
+  {
+   "poolWins": 2,
+   "eliminationWins": 2,
+   "placement": "second",
+   "tier": "Source",
+   "source": "leagueStructure",
+   "total": 5.0
+  },
+  {
+   "poolWins": 3,
+   "eliminationWins": 0,
+   "placement": "third",
+   "tier": "Regional",
+   "source": "tournamentStructure",
+   "total": 6.25
+  },
+  {
+   "poolWins": 1,
+   "eliminationWins": 0,
+   "placement": "none",
+   "tier": "Source",
+   "source": "tournamentStructure",
+   "total": 0.5
+  },
+  {
+   "poolWins": 5,
+   "eliminationWins": 1,
+   "placement": "none",
+   "tier": "Regional",
+   "source": "tournamentStructure",
+   "total": 8.75
+  }
+ ]
+}

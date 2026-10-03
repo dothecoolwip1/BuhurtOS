@@ -119,6 +119,13 @@ function compMatches(ev: EventDef, s: CompSim, played: boolean): string[] {
     if (l) o.push(l);
     if (played) for (const m of phase) o.push(finalizeSql(m));
   }
+  if (played) {
+    // Since Pack 02 a tie for a medal place must be decided by an organizer. The fictional league settles any tie by entry id,
+    // through the real record_tie_decision RPC, and says so in the note.
+    o.push(`do $$ declare g record; begin if exists (select 1 from public.competitions where id = ${q(s.comp.id)} and status <> 'finished') then `
+      + `for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings(${q(s.comp.id)}) where tied group by part, rank loop `
+      + `perform public.record_tie_decision(${q(s.comp.id)}, g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;`);
+  }
   if (played) o.push(`select public.finish_competition(${q(s.comp.id)}, 'tournament_structure') where exists (select 1 from public.competitions where id = ${q(s.comp.id)} and status <> 'finished');`);
   return o;
 }

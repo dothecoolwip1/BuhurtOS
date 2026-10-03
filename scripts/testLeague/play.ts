@@ -4,7 +4,29 @@
  * match is only a proposal here: the SQL loader sends each one through the real finalize_match RPC, and finish_competition then
  * computes places and points in the database. Nothing about placements or points is decided in this file.
  */
-import { planDraw, bracketFromPools, rankPools, type DrawFormat } from '../../src/lib/runDraw';
+import { planDraw, bracketFromPools, type DrawFormat } from '../../src/lib/runDraw';
+
+interface PoolMatchLike { stage: string; pool: string | null; queueState: string; entryA: string | null; entryB: string | null }
+interface PoolStat { entryId: string; wins: number; losses: number; scoreFor: number; scoreAgainst: number }
+/**
+ * The generator's own pool ranking for the FICTIONAL league (wins, score difference, points scored, fewest losses, then id so the data is
+ * deterministic). The product no longer ranks pools in the browser: it reads the database ranking and makes an organizer decide real ties.
+ */
+function rankPools(matches: readonly PoolMatchLike[], standings: readonly PoolStat[]): string[][] {
+  const byPool = new Map<string, Set<string>>();
+  for (const m of matches) {
+    if (m.stage !== 'pool' || m.pool === null) continue;
+    const set = byPool.get(m.pool) ?? new Set<string>();
+    if (m.entryA) set.add(m.entryA);
+    if (m.entryB) set.add(m.entryB);
+    byPool.set(m.pool, set);
+  }
+  const stat = new Map(standings.map(s => [s.entryId, s]));
+  const diff = (id: string) => (stat.get(id)?.scoreFor ?? 0) - (stat.get(id)?.scoreAgainst ?? 0);
+  return [...byPool.keys()].sort().map(name => [...byPool.get(name)!].sort((x, y) =>
+    (stat.get(y)?.wins ?? 0) - (stat.get(x)?.wins ?? 0) || diff(y) - diff(x) || (stat.get(y)?.scoreFor ?? 0) - (stat.get(x)?.scoreFor ?? 0)
+    || (stat.get(x)?.losses ?? 0) - (stat.get(y)?.losses ?? 0) || x.localeCompare(y)));
+}
 import { structureAdvice } from '../../src/lib/tournament';
 import type { PlannedMatch, PlannedStage } from '../../src/lib/bracket';
 import type { FighterDef, TeamDef, Cat } from './roster';

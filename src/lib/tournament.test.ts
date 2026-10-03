@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { leadMatchFinished, leaguePoints, proRoundScore, splitPools, structureAdvice, zoneValues } from './tournament';
+import { leadMatchFinished, leaguePoints, proRoundScore, splitPools, structureAdvice, zoneValues, type MultiplierSource, type Placement, type TierName } from './tournament';
 
 describe('leaguePoints', () => {
   it('adds pool, elimination and placement points, then the tier multiplier', () => {
@@ -76,5 +76,12 @@ describe('small categories', () => {
     expect(structureAdvice(3).options[0].title).toBe('Round robin of three');
     expect(structureAdvice(2).options[0].title).toBe('Head to head');
     expect(structureAdvice(1).options).toEqual([]);
+  });
+});
+
+import vectors from '../../supabase/tests/vectors/league_points.json';
+describe('league points shared vectors (the same file is checked against SQL by supabase/tests/vectors_gate.sql)', () => {
+  it.each(vectors.cases)('$poolWins pool wins, $eliminationWins elimination wins, $placement, $tier, $source = $total', c => {
+    expect(leaguePoints({ poolWins: c.poolWins, eliminationWins: c.eliminationWins, placement: c.placement as Placement, tier: c.tier as TierName, source: c.source as MultiplierSource }).total).toBe(c.total);
   });
 });

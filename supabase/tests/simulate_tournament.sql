@@ -26,6 +26,12 @@ begin;
 \o /dev/null
 
 create schema sim;
+-- Results can no longer be inserted directly by organizers (Pack 02). The simulation records fixture results as the database owner.
+create function sim.put_result(p_comp uuid, p_entry uuid, p_place integer) returns void language sql security definer as $$
+  insert into public.results (competition_id, entry_id, final_place) values (p_comp, p_entry, p_place)
+$$;
+grant execute on function sim.put_result(uuid, uuid, integer) to authenticated, anon;
+
 create table sim.log (n serial, section text, label text);
 create table sim.metrics (comp text, entries int, pool_matches int, elim_matches int, third_matches int, final_matches int, total int, draws int, byes int, champion text);
 -- planned matches (mirror of PlannedMatch): key links to nextkey, id is generated here like the app does
@@ -354,7 +360,7 @@ begin
   -- ---- first, a few refusals on an unplayable or unready match
   if exists (select 1 from public.matches where competition_id = p_comp and (entry_a is null or entry_b is null)) then
     select * into cur from public.matches where competition_id = p_comp and (entry_a is null or entry_b is null) order by position limit 1;
-    perform sim.expect_error('a match with an empty side cannot be finalized', format('select public.finalize_match(%L, %L, 1, 0, %L, 0)', cur.id, 'a', '{}'), '22023');
+    perform sim.expect_error('a match with an empty side cannot be finalized', format('select public.finalize_match(%L, %L, 1, 0, %L, %s)', cur.id, 'a', '{}', cur.version), '22023');
   end if;
   select * into cur from public.matches where competition_id = p_comp and entry_a is not null and entry_b is not null order by stage, position limit 1;
   perform sim.expect_error('null version is refused', format('select public.finalize_match(%L, %L, 1, 0, %L, null)', cur.id, 'a', '{}'), '22023');
@@ -448,16 +454,15 @@ begin
       perform sim.ok('finalists are the winners of the semifinals', (select array_agg(winner_entry_id order by position, id) from public.matches where competition_id = p_comp and stage = 'elimination' and next_match_id = fm.id) = array[fm.entry_a, fm.entry_b]);
     end if;
     -- record the podium as results through the organizer policy, and read it back through the history views
-    insert into public.results (competition_id, entry_id, final_place) values (p_comp, champ, 1), (p_comp, runner, 2);
-    if thirdw is not null then insert into public.results (competition_id, entry_id, final_place) values (p_comp, thirdw, 3); end if;
+    perform sim.put_result(p_comp, champ, 1); perform sim.put_result(p_comp, runner, 2);
+    if thirdw is not null then perform sim.put_result(p_comp, thirdw, 3); end if;
     perform sim.ok('champion appears in the history view as place 1', exists (
       select 1 from public.results r join public.entries e on e.id = r.entry_id where r.competition_id = p_comp and r.entry_id = champ and r.final_place = 1
         and (select count(*) from (select 1 from public.team_history h where h.competition_id = p_comp and h.team_id = e.team_id and h.final_place = 1 union all select 1 from public.fighter_history h where h.competition_id = p_comp and h.fighter_id = e.fighter_id and h.final_place = 1) z) = 1));
   else
     -- round robin: champion = best standing
     select entry_id into champ from public.competition_standings where competition_id = p_comp order by wins desc, (score_for - score_against) desc, score_for desc, entry_id limit 1;
-    insert into public.results (competition_id, entry_id, final_place)
-      select p_comp, entry_id, row_number() over (order by wins desc, (score_for - score_against) desc, score_for desc, entry_id) from public.competition_standings where competition_id = p_comp;
+    perform sim.put_result(p_comp, x.entry_id, x.rn::int) from (select entry_id, row_number() over (order by wins desc, (score_for - score_against) desc, score_for desc, entry_id) as rn from public.competition_standings where competition_id = p_comp) x;
     perform sim.ok('round robin results: one place per entry, place 1 has the most wins', (select count(*) from public.results where competition_id = p_comp) = n
       and (select wins from public.competition_standings where entry_id = champ) = (select max(wins) from public.competition_standings where competition_id = p_comp));
   end if;
@@ -560,7 +565,8 @@ select sim.ok('a marshal cannot delete matches (policy hides them from delete)',
 select public.set_match_queue((select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'on_deck', 'Field 1');
 select sim.ok('a marshal can queue a match', (select queue_state from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination') = 'on_deck');
 select sim.ok('a marshal can record a score event', public.record_score_event(gen_random_uuid(), (select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'point', '{"side":"a"}', now()));
-select public.finalize_match((select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'a', 2, 0, '{}', 0);
+select public.finalize_match((select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'a', 2, 0, '{}',
+  (select version from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'));  -- linking the bracket bumps the version, so read the current one
 select sim.ok('a marshal can finalize', (select queue_state from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination') = 'final');
 select sim.expect_error('a marshal cannot reopen', format('select public.reopen_match(%L, %L)', (select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'marshal tries'), '42501');
 select sim.expect_error('a marshal cannot edit a result column directly', format('update public.matches set result = null where competition_id = %L', :'roles_c'), '42501');

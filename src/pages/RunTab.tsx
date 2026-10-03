@@ -8,14 +8,14 @@ import { Chip } from '../components/ui';
 import { fetchCompetitionRoster, fetchEventTimeZone, fetchMatchDurations, DEFAULT_TIME_ZONE } from '../data/runSchedule';
 import type { LiveCompetition, LiveEvent } from '../data/api';
 import {
-  fetchCompetitionMatches, fetchEntries, fetchStandings, generateMatches, groupIntoRounds, reopenMatch, setQueue,
+  buildSchedule, fetchCompetitionMatches, fetchEntries, fetchPoolStandings, groupIntoRounds, recordTieDecision, reopenMatch, setQueue,
   type CompetitionEntry, type CompetitionMatch
 } from '../data/matches';
 import type { PlannedMatch } from '../lib/bracket';
 import { sideLabel } from '../lib/entryLabel';
 import { friendlyError } from '../lib/friendlyError';
 import {
-  DRAW_FORMATS, activeEntries, bracketFromPools, canBuildBracketFromPools, describePlan, drawProblem, maxPoolCount, moveItem, planDraw, randomSeed, rankPools,
+  DRAW_FORMATS, activeEntries, bracketFromPools, canBuildBracketFromPools, describePlan, drawProblem, maxPoolCount, moveItem, planDraw, randomSeed, rankedPools, tiesWithin,
   type DrawChoice, type DrawFormat, type PlanGroup
 } from '../lib/runDraw';
 import { matchFighters, sideFighters, timeLabel, DEFAULT_DURATION, type RosterMember, type SideEntry } from '../lib/runSchedule';
@@ -70,7 +70,7 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
   const confirm = async () => {
     if (!plan) return;
     setBusy(true); setError(null);
-    try { await generateMatches(comp.id, plan.matches, { replace: replacing }); onDone(); }
+    try { await buildSchedule(comp.id, plan.matches, replacing ? 'replace' : 'new', { draw: { format, mode, seed } }); onDone(); }
     catch (e) { setError(friendlyError(e, 'Could not build the draw. Your existing matches were left as they were.')); }
     finally { setBusy(false); setConfirming(false); }
   };
@@ -226,7 +226,8 @@ function MatchCard({ m, onChanged, sched }: { m: CompetitionMatch; onChanged: ()
 }
 
 function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition; matches: CompetitionMatch[]; entries: CompetitionEntry[]; onDone: () => void }) {
-  const standings = useAsync(() => fetchStandings(comp.id), [comp.id, matches]);
+  const [version, setVersion] = useState(0);
+  const standings = useAsync(() => fetchPoolStandings(comp.id), [comp.id, matches, version]);
   const names = useMemo(() => new Map(entries.map(e => [e.id, e.name])), [entries]);
   const nameOf = (id: string) => names.get(id) ?? 'Unknown entry';
   const [open, setOpen] = useState(false);
@@ -235,16 +236,18 @@ function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const ranked = useMemo(() => (standings.data ? rankPools(matches, standings.data) : []), [matches, standings.data]);
+  const rows = standings.data ?? [];
+  const ranked = useMemo(() => rankedPools(rows), [rows]);
   const smallest = ranked.length ? Math.min(...ranked.map(p => p.length)) : 1;
   const adv = Math.min(Math.max(1, advance), smallest);
-  const built = useMemo(() => (ranked.length && ranked.length * adv >= 2 ? bracketFromPools(ranked, adv, thirdPlace) : null), [ranked, adv, thirdPlace]);
+  const ties = useMemo(() => tiesWithin(rows, adv), [rows, adv]);
+  const built = useMemo(() => (ranked.length && ranked.length * adv >= 2 && ties.length === 0 ? bracketFromPools(ranked, adv, thirdPlace) : null), [ranked, adv, thirdPlace, ties]);
   const planned: PlannedMatch[] = built?.matches ?? [];
 
   const confirm = async () => {
     if (!built) return;
     setBusy(true); setError(null);
-    try { await generateMatches(comp.id, built.matches, { append: true }); onDone(); }
+    try { await buildSchedule(comp.id, built.matches, 'append', { advance: adv }); onDone(); }
     catch (e) { setError(friendlyError(e, 'Could not build the bracket.')); } finally { setBusy(false); }
   };
 
@@ -255,24 +258,56 @@ function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition
       {open && (<>
         {standings.loading && <p className="muted">Loading pool results…</p>}
         {standings.error != null && <p role="alert" style={errorStyle}>{friendlyError(standings.error, 'Could not load pool results.')}</p>}
-        {built && (<>
+        {ranked.length > 0 && (<>
           <label className="field-in">How many advance from each pool
             <input type="number" inputMode="numeric" min={1} max={smallest} value={adv} onChange={e => setAdvance(Number(e.target.value))} />
           </label>
           <label style={{ display: 'flex', gap: 10, alignItems: 'center', minHeight: 44 }}>
             <input type="checkbox" checked={thirdPlace} onChange={e => setThirdPlace(e.target.checked)} /> Add a third-place match
           </label>
-          <p className="src">Pool order is by wins, then score difference, then points scored. Tie-break rules such as head-to-head are not applied here, so check the order below.</p>
-          <ol style={{ margin: 0, paddingLeft: 20 }}>{built.qualifiers.map(id => <li key={id}>{nameOf(id)}</li>)}</ol>
-          <PlanView groups={describePlan(planned, nameOf)} />
+          <p className="src">Pool order is by wins, then score difference, then wins against the entries it is level with, then points scored. Entries still level after that must be put in order by an organizer.</p>
+          {ties.map(g => <TieDecision key={`${g.part}-${g.rank}`} comp={comp} group={g} nameOf={nameOf} onDecided={() => setVersion(v => v + 1)} />)}
+          {ties.length === 0 && <ol style={{ margin: 0, paddingLeft: 20 }}>{(built?.qualifiers ?? []).map(id => <li key={id}>{nameOf(id)}</li>)}</ol>}
+          {built && <PlanView groups={describePlan(planned, nameOf)} />}
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-ink" disabled={busy} onClick={confirm}>{busy ? 'Building…' : `Create ${planned.length} bracket matches`}</button>
+            <button type="button" className="btn btn-ink" disabled={busy || !built} onClick={confirm}>{busy ? 'Building…' : built ? `Create ${planned.length} bracket matches` : 'Decide the ties first'}</button>
             <button type="button" className="btn btn-line" disabled={busy} onClick={() => setOpen(false)}>Cancel</button>
           </div>
         </>)}
-        {!standings.loading && !built && standings.error == null && <p role="alert" style={errorStyle}>At least 2 entrants need to advance to build a bracket.</p>}
+        {!standings.loading && ranked.length > 0 && ties.length === 0 && !built && standings.error == null && <p role="alert" style={errorStyle}>At least 2 entrants need to advance to build a bracket.</p>}
         {error && <p role="alert" style={errorStyle}>{error}</p>}
       </>)}
+    </div>
+  );
+}
+
+/** Level entries that decide who advances: the organizer puts them in order and says how it was decided. The database keeps who, when and why. */
+function TieDecision({ comp, group, nameOf, onDecided }: { comp: LiveCompetition; group: { part: string; rank: number; entryIds: string[] }; nameOf: (id: string) => string; onDecided: () => void }) {
+  const [order, setOrder] = useState<string[]>(group.entryIds);
+  const [note, setNote] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const save = async () => {
+    setBusy(true); setError(null);
+    try { await recordTieDecision(comp.id, group.part, order, note); onDecided(); }
+    catch (e) { setError(friendlyError(e, 'Could not save the order.')); } finally { setBusy(false); }
+  };
+  return (
+    <div className="panel" role="group" aria-label={`Tie for place ${group.rank}${group.part ? ` in pool ${group.part}` : ''}`} style={{ display: 'grid', gap: 8 }}>
+      <b>{group.part ? `Pool ${group.part}: ` : ''}these {order.length} are level for place {group.rank}. Put them in the order they should finish.</b>
+      <ol style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 6 }}>
+        {order.map((id, i) => (
+          <li key={id}>{nameOf(id)}{' '}
+            <button type="button" className="btn btn-line btn-sm" aria-label={`Move ${nameOf(id)} up`} disabled={i === 0 || busy} onClick={() => setOrder(moveItem(order, i, -1))}>Up</button>{' '}
+            <button type="button" className="btn btn-line btn-sm" aria-label={`Move ${nameOf(id)} down`} disabled={i === order.length - 1 || busy} onClick={() => setOrder(moveItem(order, i, 1))}>Down</button>
+          </li>
+        ))}
+      </ol>
+      <label className="field-in">How was this decided?
+        <input type="text" value={note} maxLength={200} placeholder="e.g. head marshal drew lots" onChange={e => setNote(e.target.value)} />
+      </label>
+      <button type="button" className="btn btn-ink" disabled={busy || note.trim().length < 3} onClick={save}>{busy ? 'Saving…' : 'Save this order'}</button>
+      {error && <p role="alert" style={errorStyle}>{error}</p>}
     </div>
   );
 }

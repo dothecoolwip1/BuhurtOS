@@ -21,8 +21,15 @@ export function sortStandings(standings: readonly Standing[], entries: readonly 
   const byEntry = new Map(entries.map(e => [e.id, e]));
   const rows: StandingRow[] = standings.map(s => {
     const e = byEntry.get(s.entryId);
-    return { entryId: s.entryId, name: e?.name ?? UNNAMED_ENTRY, pool: e?.pool ?? null, wins: s.wins, losses: s.losses, draws: s.draws, scoreFor: s.scoreFor, scoreAgainst: s.scoreAgainst, diff: s.scoreFor - s.scoreAgainst, tied: false };
+    return { entryId: s.entryId, name: e?.name ?? UNNAMED_ENTRY, pool: e?.pool ?? null, wins: s.wins, losses: s.losses, draws: s.draws, scoreFor: s.scoreFor, scoreAgainst: s.scoreAgainst, diff: s.scoreFor - s.scoreAgainst, tied: s.tied ?? false };
   });
+  // When the database ranking is present (always, in the product) it decides the order and which rows are still level, so spectators see the
+  // same order the organizer and the official placings use. The wins/difference fallback is only for data that has no database rank.
+  if (standings.length > 0 && standings.every(s => s.rank !== undefined)) {
+    const rankOf = new Map(standings.map(s => [s.entryId, s.rank as number]));
+    rows.sort((a, b) => (a.pool ?? '').localeCompare(b.pool ?? '') || rankOf.get(a.entryId)! - rankOf.get(b.entryId)! || a.name.localeCompare(b.name));
+    return rows;
+  }
   rows.sort((a, b) => b.wins - a.wins || b.diff - a.diff || a.name.localeCompare(b.name));
   for (let i = 0; i < rows.length; i++) {
     const same = (j: number) => !!rows[j] && rows[j].wins === rows[i].wins && rows[j].diff === rows[i].diff;

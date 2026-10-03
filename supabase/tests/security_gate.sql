@@ -383,10 +383,13 @@ select t.expect_eq('anon sees no account ids: memberships carry none', (select c
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_error('a stranger cannot record a result', format($q$insert into public.results (competition_id, entry_id, final_place) values (%L, '00000000-0000-0000-0000-00000000e002', 1)$q$, current_setting('t.comp_ls')));
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('the organizer records a result', format($q$insert into public.results (competition_id, entry_id, final_place, points) values (%L, '00000000-0000-0000-0000-00000000e002', 1, 10)$q$, current_setting('t.comp_ls')));
+select t.expect_error('an organizer cannot write a result row directly (results come from finish/correct only)', format($q$insert into public.results (competition_id, entry_id, final_place, points) values (%L, '00000000-0000-0000-0000-00000000e002', 1, 10)$q$, current_setting('t.comp_ls')));
+select t.as_admin();
+insert into public.results (competition_id, entry_id, final_place, points) values (current_setting('t.comp_ls')::uuid, '00000000-0000-0000-0000-00000000e002', 1, 10);  -- fixture
 select t.as_anon();
 select t.expect_eq('anon sees the result', (select count(*) from public.results), 1::bigint);
 select t.expect_eq('a fighter history reads from the result', (select count(*) from public.fighter_history where fighter_id = '00000000-0000-0000-0000-00000000f001'), 1::bigint);
+select t.as_admin();
 select t.expect_error('a result cannot be written twice for one entry', format($q$insert into public.results (competition_id, entry_id) values (%L, '00000000-0000-0000-0000-00000000e002')$q$, current_setting('t.comp_ls')));
 
 -- ---------------------------------------------------------------- insurance is recorded by organizers only
@@ -1290,8 +1293,10 @@ select t.expect_eq('round robin points (wins + placement) x Source 0.5 (tourname
 select t.fin('cxy', 'a', 5, 3, '{"kind":"duel","rounds":{"a":[2,1,2],"b":[1,2,0]}}'::jsonb);
 select t.fin('cyz', 'a', 5, 3);
 select t.fin('czx', 'a', 5, 3);
+select t.expect_error('a tie for a medal place blocks finishing until an organizer decides it', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b811'), 'P0001');
+select t.expect_ok('the organizer records the order of the tie', format($q$select public.record_tie_decision(%L, '', array[%L, %L, %L]::uuid[], 'drew lots in front of the marshals')$q$, '00000000-0000-0000-0000-00000000b811', t.gu('e:cX'), t.gu('e:cY'), t.gu('e:cZ')));
 select t.expect_eq('cycle result rows', public.finish_competition('00000000-0000-0000-0000-00000000b811'), 3);
-select t.expect_eq('a full tie shares the place (and the placement points)', (select string_agg(t.place('00000000-0000-0000-0000-00000000b811', k)::text || '/' || t.pts('00000000-0000-0000-0000-00000000b811', k)::text, ',' order by k) from unnest(array['cX','cY','cZ']) k), '1/7.00,1/7.00,1/7.00');
+select t.expect_eq('the recorded decision gives the places and placement points', (select string_agg(t.place('00000000-0000-0000-0000-00000000b811', k)::text || '/' || t.pts('00000000-0000-0000-0000-00000000b811', k)::text, ',' order by k) from unnest(array['cX','cY','cZ']) k), '1/7.00,2/5.00,3/3.00');
 
 -- ---- pools then knockout without a third-place match
 select t.fin('pa12', 'a', 5, 0);
@@ -1322,8 +1327,10 @@ select t.expect_eq('a new unfinished match in a finished competition reopens it'
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_error('... and it cannot be finished until the new match is played', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b813'), 'P0001');
 select t.fin('n2', 'a', 10, 9);
-select t.expect_eq('after the extra match each entry has one win and the same score line, so they share first place', public.finish_competition('00000000-0000-0000-0000-00000000b813'), 2);
-select t.expect_eq('... both are first', (select string_agg(final_place::text, ',' order by final_place) from public.results where competition_id = '00000000-0000-0000-0000-00000000b813'), '1,1');
+select t.expect_error('after the extra match the two entries are level on everything, so finishing needs an organizer decision', format($q$select public.finish_competition(%L)$q$, '00000000-0000-0000-0000-00000000b813'), 'P0001');
+select t.expect_ok('the organizer decides the tie', format($q$select public.record_tie_decision(%L, null, array[%L, %L]::uuid[], 'coin toss by head marshal')$q$, '00000000-0000-0000-0000-00000000b813', t.gu('e:nA'), t.gu('e:nB')));
+select t.expect_eq('with the decision recorded the competition finishes', public.finish_competition('00000000-0000-0000-0000-00000000b813'), 2);
+select t.expect_eq('... first and second', (select string_agg(final_place::text, ',' order by final_place) from public.results where competition_id = '00000000-0000-0000-0000-00000000b813'), '1,2');
 
 -- ================================================================ D. rosters feed the 5v5 result and the statistics
 select t.fin('t1', 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb);

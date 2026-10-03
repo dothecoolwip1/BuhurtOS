@@ -12,7 +12,8 @@ export interface CompetitionMatch {
   scoreA: number | null; scoreB: number | null; detail: Record<string, unknown>; version: number; finalizedAt: string | null;
 }
 export interface CompetitionEntry { id: string; competitionId: string; teamId: string | null; fighterId: string | null; name: string; pool: string | null; seed: number | null; status: string }
-export interface Standing { competitionId: string; entryId: string; wins: number; losses: number; draws: number; scoreFor: number; scoreAgainst: number }
+/** `rank` and `tied` come from the database ranking (pool_standings): spectators and organizers read the same order. */
+export interface Standing { competitionId: string; entryId: string; wins: number; losses: number; draws: number; scoreFor: number; scoreAgainst: number; rank?: number; tied?: boolean }
 export interface MatchRound { key: string; stage: PlannedStage; pool: string | null; label: string; matches: CompetitionMatch[] }
 
 type Named = { teams: { name: string } | { name: string }[] | null; fighters: { display_name: string } | { display_name: string }[] | null };
@@ -55,59 +56,46 @@ export async function fetchStandings(competitionId: string): Promise<Standing[]>
   const { data, error } = await supabase.from('competition_standings').select('competition_id,entry_id,wins,losses,draws,score_for,score_against').eq('competition_id', competitionId);
   if (error) throw error;
   type S = { competition_id: string; entry_id: string; wins: number; losses: number; draws: number; score_for: number; score_against: number };
-  return (data as unknown as S[]).map(s => ({ competitionId: s.competition_id, entryId: s.entry_id, wins: Number(s.wins), losses: Number(s.losses), draws: Number(s.draws), scoreFor: Number(s.score_for), scoreAgainst: Number(s.score_against) }));
+  const base = (data as unknown as S[]).map(s => ({ competitionId: s.competition_id, entryId: s.entry_id, wins: Number(s.wins), losses: Number(s.losses), draws: Number(s.draws), scoreFor: Number(s.score_for), scoreAgainst: Number(s.score_against) }));
+  const ranks = new Map((await fetchPoolStandings(competitionId).catch(() => [] as PoolStanding[])).map(r => [r.entryId, r]));
+  return base.map(s => { const r = ranks.get(s.entryId); return r ? { ...s, rank: r.rank, tied: r.tied } : s; });
 }
 
+/** Which algorithm produced the plan the browser sends. Saved with the seed so a draw can be explained and reproduced. */
+export const DRAW_ALGORITHM = 'ts-draw-v1';
+export interface DrawRecord { format: 'single_elimination' | 'round_robin' | 'pools'; mode: 'random' | 'manual'; seed: number }
+export type ScheduleMode = 'new' | 'replace' | 'append';
+
+const toPlan = (planned: readonly PlannedMatch[]) => planned.map(p => ({
+  key: p.key, stage: p.stage, round_label: p.roundLabel, position: p.position, pool: p.pool ?? null, a: p.a ?? null, b: p.b ?? null, next_key: p.nextKey ?? null, next_slot: p.nextSlot ?? null
+}));
+
 /**
- * Insert planned matches. Two passes: all rows first (ids are generated here), then the next_match_id links, because the
- * database checks that a linked match already exists. Refuses if matches exist, unless `replace` is set. Replacing is ordered
- * so a failure never leaves the competition empty: the new matches go in and are linked first, and only then are the old
- * unfinished ones (ids captured beforehand) deleted. If anything before that fails, only the new ids are removed and the
- * old schedule is untouched. Finished matches are never deleted, so replace refuses when any are final. `append` adds to
- * existing matches instead (used to build the bracket after pool play).
+ * Build a schedule in ONE database transaction (public.build_schedule). The browser plans the matches; the database validates them, takes a lock on
+ * the competition and either saves the whole schedule or nothing. `new` refuses if matches exist, `replace` refuses if any are final, and `append`
+ * builds the bracket after finished pools (the database checks the pool standings, refusing while a tie affects who advances).
  */
-export async function generateMatches(competitionId: string, planned: readonly PlannedMatch[], opts: { replace?: boolean; append?: boolean } = {}): Promise<number> {
-  const { data: existing, error: e0 } = await supabase.from('matches').select('id,queue_state').eq('competition_id', competitionId);
-  if (e0) throw e0;
-  const rows = (existing ?? []) as { id: string; queue_state: QueueState }[];
-  let oldIds: string[] = [];
-  if (rows.length > 0 && !opts.append) {
-    if (!opts.replace) throw new Error('This competition already has matches. Replace them to start over.');
-    if (rows.some(r => r.queue_state === 'final')) throw new Error('Some matches are already final. Reopen them before replacing the schedule.');
-    oldIds = rows.filter(r => r.queue_state !== 'final').map(r => r.id);
-  }
-  const removeOld = async () => {
-    if (oldIds.length === 0) return;
-    const { error } = await supabase.from('matches').delete().in('id', oldIds);
-    if (error) throw error;
-  };
-  if (planned.length === 0) { await removeOld(); return 0; }
-  const ids = new Map(planned.map(p => [p.key, crypto.randomUUID()]));
-  const insert = planned.map(p => ({
-    id: ids.get(p.key)!, competition_id: competitionId, stage: p.stage, round_label: p.roundLabel, position: p.position,
-    pool: p.pool ?? null, entry_a: p.a ?? null, entry_b: p.b ?? null
-  }));
-  const { error: e1 } = await supabase.from('matches').insert(insert);
-  if (e1) throw e1;
-  const links = planned.filter(p => p.nextKey && p.nextSlot);
-  try {
-    for (const p of links) {
-      const nextId = ids.get(p.nextKey!);
-      if (!nextId) throw new Error(`planned match ${p.key} links to unknown match ${p.nextKey}`);
-      const { error } = await supabase.from('matches').update({ next_match_id: nextId, next_slot: p.nextSlot }).eq('id', ids.get(p.key)!);
-      if (error) throw error;
-    }
-  } catch (err) {
-    await supabase.from('matches').delete().in('id', [...ids.values()]); // best effort: remove only the new matches, the old ones stay
-    throw err;
-  }
-  try { await removeOld(); }
-  catch (err) {
-    await supabase.from('matches').delete().in('id', [...ids.values()]); // the old schedule is still whole, so drop the new one rather than leave two
-    throw err;
-  }
-  return planned.length;
+export async function buildSchedule(competitionId: string, planned: readonly PlannedMatch[], mode: ScheduleMode, opts: { draw?: DrawRecord; advance?: number } = {}): Promise<number> {
+  const draw = opts.draw ? { format: opts.draw.format, mode: opts.draw.mode, seed: opts.draw.seed, algorithm: DRAW_ALGORITHM } : null;
+  return (await rpc('build_schedule', { p_competition: competitionId, p_matches: toPlan(planned), p_mode: mode, p_draw: draw, p_advance: opts.advance ?? null })) as number;
 }
+
+export interface PoolStanding { part: string; entryId: string; wins: number; losses: number; scoreFor: number; scoreAgainst: number; diff: number; headToHead: number; rank: number; tied: boolean; decided: boolean }
+/** The one ranking of a round robin or of each pool. `part` is the pool name ('' for a round robin). */
+export async function fetchPoolStandings(competitionId: string): Promise<PoolStanding[]> {
+  const { data, error } = await supabase.rpc('pool_standings', { p_competition: competitionId });
+  if (error) throw error;
+  type R = { part: string; entry_id: string; wins: number; losses: number; score_for: number; score_against: number; diff: number; head_to_head: number; rank: number; tied: boolean; decided: boolean };
+  return ((data ?? []) as R[]).map(r => ({ part: r.part, entryId: r.entry_id, wins: r.wins, losses: r.losses, scoreFor: r.score_for, scoreAgainst: r.score_against, diff: r.diff, headToHead: r.head_to_head, rank: r.rank, tied: r.tied, decided: r.decided }));
+}
+/** Record the order of entries that are level on everything, best first. Needs a note saying how it was decided. */
+export const recordTieDecision = (competitionId: string, part: string, order: readonly string[], note: string): Promise<void> =>
+  rpc('record_tie_decision', { p_competition: competitionId, p_part: part, p_order: [...order], p_note: note }).then(() => undefined);
+/** Correct an official result. The previous value, the new value, who and why are kept in the revision log. */
+export const correctResult = (competitionId: string, entryId: string, place: number, points: number, reason: string): Promise<void> =>
+  rpc('correct_result', { p_competition: competitionId, p_entry: entryId, p_place: place, p_points: points, p_reason: reason }).then(() => undefined);
+export const voidResult = (competitionId: string, entryId: string, reason: string): Promise<void> =>
+  rpc('void_result', { p_competition: competitionId, p_entry: entryId, p_reason: reason }).then(() => undefined);
 
 async function rpc(fn: string, args: Record<string, unknown>) {
   const { data, error } = await supabase.rpc(fn, args);

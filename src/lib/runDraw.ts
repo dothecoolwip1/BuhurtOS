@@ -89,7 +89,8 @@ export function describePlan(planned: readonly PlannedMatch[], nameOf: (entryId:
 }
 
 interface MatchLike { stage: string; pool: string | null; queueState: string; entryA: string | null; entryB: string | null }
-export interface StandingLike { entryId: string; wins: number; losses: number; scoreFor: number; scoreAgainst: number }
+/** One row of the database's pool standings (see fetchPoolStandings). */
+export interface StandingRow { part: string; entryId: string; rank: number; tied: boolean }
 
 /** True when there are pool matches, all are final, and no elimination stage exists yet. */
 export function canBuildBracketFromPools(matches: readonly MatchLike[]): boolean {
@@ -100,26 +101,28 @@ export function canBuildBracketFromPools(matches: readonly MatchLike[]): boolean
 }
 
 /**
- * Each pool's entry ids, best first. Order: most wins, then score difference, then points scored, then fewest losses.
- * Head-to-head and other tie rules are not applied, so the organizer should check the result before confirming.
+ * Each pool's entry ids, best first, exactly as the database ranks them (wins, score difference, head-to-head, points scored, then an
+ * organizer's recorded decision). The browser never ranks pools itself and never breaks a tie by id: entries that are still level keep
+ * the same rank and show up in `tiesWithin`.
  */
-export function rankPools(matches: readonly MatchLike[], standings: readonly StandingLike[]): string[][] {
-  const byPool = new Map<string, Set<string>>();
-  for (const m of matches) {
-    if (m.stage !== 'pool' || m.pool === null) continue;
-    const set = byPool.get(m.pool) ?? new Set<string>();
-    if (m.entryA) set.add(m.entryA);
-    if (m.entryB) set.add(m.entryB);
-    byPool.set(m.pool, set);
+export function rankedPools(rows: readonly StandingRow[]): string[][] {
+  const byPart = new Map<string, StandingRow[]>();
+  for (const r of rows) byPart.set(r.part, [...(byPart.get(r.part) ?? []), r]);
+  return [...byPart.keys()].sort().map(k => byPart.get(k)!.slice().sort((x, y) => x.rank - y.rank).map(r => r.entryId));
+}
+
+export interface TieGroup { part: string; rank: number; entryIds: string[] }
+/** Groups of entries that are level and finish within the top `top` places of their pool: an organizer must decide these before a bracket is built. */
+export function tiesWithin(rows: readonly StandingRow[], top: number): TieGroup[] {
+  const groups = new Map<string, TieGroup>();
+  for (const r of rows) {
+    if (!r.tied || r.rank > top) continue;
+    const key = `${r.part}|${r.rank}`;
+    const g = groups.get(key) ?? { part: r.part, rank: r.rank, entryIds: [] };
+    g.entryIds.push(r.entryId);
+    groups.set(key, g);
   }
-  const stat = new Map(standings.map(s => [s.entryId, s]));
-  const diff = (id: string) => (stat.get(id)?.scoreFor ?? 0) - (stat.get(id)?.scoreAgainst ?? 0);
-  return [...byPool.keys()].sort().map(name => [...byPool.get(name)!].sort((x, y) =>
-    (stat.get(y)?.wins ?? 0) - (stat.get(x)?.wins ?? 0)
-    || diff(y) - diff(x)
-    || (stat.get(y)?.scoreFor ?? 0) - (stat.get(x)?.scoreFor ?? 0)
-    || (stat.get(x)?.losses ?? 0) - (stat.get(y)?.losses ?? 0)
-    || x.localeCompare(y)));
+  return [...groups.values()].sort((x, y) => x.part.localeCompare(y.part) || x.rank - y.rank);
 }
 
 /** The seeded qualifier list and the elimination bracket built from it. */

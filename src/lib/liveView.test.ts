@@ -107,3 +107,16 @@ describe('buildNowAndNext', () => {
     expect(buildNowAndNext([m({ id: '1', queueState: 'active' })], names)[0].field).toBe('Field not set');
   });
 });
+
+describe('sortStandings with the database ranking', () => {
+  it('follows the database rank and tie flags instead of ordering by name', () => {
+    const entries = [{ id: 'a', name: 'Alpha', pool: 'A' }, { id: 'b', name: 'Bravo', pool: 'A' }, { id: 'c', name: 'Charlie', pool: 'A' }] as unknown as Parameters<typeof sortStandings>[1];
+    const st = (entryId: string, rank: number, tied: boolean) => ({ competitionId: 'k', entryId, wins: 1, losses: 1, draws: 0, scoreFor: 10, scoreAgainst: 10, rank, tied });
+    // a three-way cycle that an organizer decided as Charlie, Alpha, Bravo
+    const rows = sortStandings([st('a', 2, false), st('b', 3, false), st('c', 1, false)], entries);
+    expect(rows.map(r => r.name)).toEqual(['Charlie', 'Alpha', 'Bravo']);
+    expect(rows.some(r => r.tied)).toBe(false);
+    const undecided = sortStandings([st('a', 1, true), st('b', 1, true), st('c', 1, true)], entries);
+    expect(undecided.every(r => r.tied)).toBe(true);
+  });
+});
