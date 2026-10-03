@@ -13,6 +13,8 @@ import {
   DISABLE_NOTICE, disableTitle, pendingText, platformGate, switchChecked, TOGGLE_IDLE, toggleBusy, toggleReducer, toOrgAdminRow, type OrgAdminRow
 } from '../../lib/platformOrgs';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { fetchIdentityReviews, resolveIdentityReview, type IdentitySide } from '../../data/identityReviews';
+import { useAsync } from '../../lib/useAsync';
 
 /**
  * The platform owner's area. The gate here only decides what to show: every call below is checked by the database, and a refusal is shown
@@ -41,10 +43,67 @@ export function PlatformHomePage() {
         <ul className="plain">
           <li><Link className="panel plat-link" to="/platform/analytics"><b>Analytics</b><span className="muted">Visitors, who is on right now, how long people stay, what they use, sign-ups and searches.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/bugs"><b>Bug reports</b><span className="muted">Problems people reported with the button in the header.</span></Link></li>
+          <li><Link className="panel plat-link" to="/platform/fighters"><b>Fighter identities</b><span className="muted">Fighter records that may be the same person. Nothing is merged without you.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/organizations"><b>Organizations</b><span className="muted">Switch organizations on or off and manage their admins.</span></Link></li>
         </ul>
       </section>
     </PlatformGate>
+  );
+}
+
+export function PlatformFightersPage() {
+  useDocumentTitle('Fighter identities · Platform');
+  return <PlatformGate><IdentityReviews /></PlatformGate>;
+}
+
+function IdentityCard({ title, s }: { title: string; s: IdentitySide }) {
+  return (
+    <div className="panel" style={{ display: 'grid', gap: 4 }}>
+      <span className="eyebrow">{title}</span>
+      <b>{s.name}</b>
+      <span className="src">{s.team ?? 'No team'} · {s.entries} competition {s.entries === 1 ? 'entry' : 'entries'} · {s.hasAccount ? 'linked to a sign-in account' : 'no account (historical or imported record)'}{s.synthetic ? ' · Test data' : ''}</span>
+      {s.sources.length > 0 && <span className="src">Source: {s.sources.join('; ')}</span>}
+    </div>
+  );
+}
+
+/** Look-alike fighter records, one pair at a time. The administrator decides; nothing is merged or changed here. */
+function IdentityReviews() {
+  const [version, setVersion] = useState(0);
+  const list = useAsync(fetchIdentityReviews, [version]);
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const decide = async (id: string, decision: 'distinct' | 'duplicate') => {
+    setBusy(id); setError(null);
+    try { await resolveIdentityReview(id, decision, notes[id] ?? ''); setVersion(v => v + 1); }
+    catch (e) { setError(friendlyError(e, 'Could not save the decision.')); } finally { setBusy(null); }
+  };
+  const rows = list.data ?? [];
+  return (
+    <section className="plat" style={{ display: 'grid', gap: 16 }}>
+      <PageHead eyebrow="Platform" title="Fighter identities" lede="One account is one fighter. When a new fighter record has the same name as an existing record that has no account, it is listed here instead of being merged or guessed at." />
+      <p><Link className="more" to="/platform">← Platform</Link></p>
+      {list.loading && <p className="muted">Loading…</p>}
+      {list.error != null && <p role="alert">{friendlyError(list.error, 'Could not load the list.')}</p>}
+      {!list.loading && list.error == null && rows.length === 0 && <div className="panel info"><h3>Nothing to review</h3><p className="muted">No fighter records are waiting for a decision.</p></div>}
+      {rows.map(r => (
+        <div key={r.reviewId} className="panel info" style={{ display: 'grid', gap: 10 }}>
+          <b>Same name, found when {r.source === 'registration' ? 'a registration was accepted' : 'a team request was accepted'}</b>
+          <IdentityCard title="New record (created for an account)" s={r.newFighter} />
+          <IdentityCard title="Existing record that might be the same person" s={r.candidate} />
+          <label className="field-in">How did you decide? (kept in the audit history)
+            <input type="text" maxLength={200} value={notes[r.reviewId] ?? ''} onChange={e => setNotes(n => ({ ...n, [r.reviewId]: e.target.value }))} />
+          </label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button type="button" className="btn btn-line fq-big" disabled={busy !== null || (notes[r.reviewId] ?? '').trim().length < 3} onClick={() => void decide(r.reviewId, 'distinct')}>Two different people</button>
+            <button type="button" className="btn btn-ink fq-big" disabled={busy !== null || (notes[r.reviewId] ?? '').trim().length < 3} onClick={() => void decide(r.reviewId, 'duplicate')}>The same person (merge later)</button>
+          </div>
+          <p className="src">Neither button merges anything. "The same person" records your judgement so the merge can be done carefully, with both records' history kept.</p>
+        </div>
+      ))}
+      {error && <p role="alert" style={{ color: 'var(--live)' }}>{error}</p>}
+    </section>
   );
 }
 

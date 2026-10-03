@@ -15,7 +15,7 @@ bad() { printf 'FAIL %s\n' "$1"; FAIL=$((FAIL+1)); }
 step "build $DB from every migration"
 $T/build_scratch.sh "$DB" > /tmp/gate-build.log 2>&1 && ok "migrations apply from zero" || { cat /tmp/gate-build.log; bad "migrations apply from zero"; exit 1; }
 
-for g in security_gate captain_gate team_admin_gate activity_gate pack01_gate pack02_gate pack03_gate; do
+for g in security_gate captain_gate team_admin_gate activity_gate pack01_gate pack02_gate pack03_gate pack05_gate; do
   step "$g"
   out=$(psql -X -q -d "$DB" -v ON_ERROR_STOP=1 -f "$T/$g.sql" 2>&1); echo "$out" | grep -E "PASSED|FAIL|ERROR" | head -3
   echo "$out" | grep -q "PASSED" && ! echo "$out" | grep -qE "FAIL|ERROR" && ok "$g" || bad "$g"

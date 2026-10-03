@@ -243,13 +243,13 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         <ul className="plain">
           {tournamentHistory(history.data ?? []).map(h => (
             <li key={h.eventSlug}>
-              <Link to={`/events/${h.eventSlug}`}><b>{h.eventName}</b></Link>
-              <div className="l">{dateRange(h.startsOn, h.endsOn)}</div>
+              <Link to={`/events/${h.eventSlug}`}><b>{h.eventName}</b></Link><TestBadge synthetic={h.synthetic} />
+              <div className="l">{dateRange(h.startsOn, h.endsOn)}{h.playedAs && <> · played as <b>{h.playedAs}</b></>}</div>
               <div className="placings">{h.placements.map((pl, i) => <span key={i} className="placing"><Chip tone={pl.medal === 'gold' ? 'brass' : pl.medal === 'silver' ? 'steel' : ''}>{placeText(pl.place)}</Chip> {pl.competition}</span>)}</div>
             </li>
           ))}
         </ul>
-        <p className="muted" style={{ fontSize: 13 }}>Only results recorded on BuhurtOS by event organizers appear here.</p>
+        <p className="muted" style={{ fontSize: 13 }}>Only results recorded on BuhurtOS by event organizers appear here. Results at events marked Test data are fictional and are not counted in rankings or statistics.</p>
       </div>}
     </section>
   );

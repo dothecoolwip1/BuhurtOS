@@ -98,13 +98,17 @@ export function currentSeasonStats(stats: readonly FighterSeasonStats[], seasons
 export interface MedalCount { golds: number; silvers: number; bronzes: number }
 export const countMedals = (places: readonly number[]): MedalCount => ({ golds: places.filter(p => p === 1).length, silvers: places.filter(p => p === 2).length, bronzes: places.filter(p => p === 3).length });
 
-export interface TournamentLine { eventSlug: string; eventName: string; startsOn: string; endsOn: string; placements: Array<{ competition: string; category: string; gender: Division; place: number; medal: Medal | null }> }
+export interface TournamentLine { eventSlug: string; eventName: string; startsOn: string; endsOn: string; synthetic: boolean; playedAs: string | null; placements: Array<{ competition: string; category: string; gender: Division; place: number; medal: Medal | null }> }
+/** The name a team used at the event when it is not the team's current name (so an old result is not shown under a name the team did not have then). */
+export const playedAsName = (r: Pick<ResultRow, 'teamNameAtEvent' | 'teamCurrentName'>): string | null =>
+  r.teamNameAtEvent && r.teamCurrentName && r.teamNameAtEvent.trim().toLowerCase() !== r.teamCurrentName.trim().toLowerCase() ? r.teamNameAtEvent : null;
+
 /** Groups finished results by event, newest event first. */
 export function tournamentHistory(results: readonly ResultRow[]): TournamentLine[] {
   const map = new Map<string, TournamentLine>();
   for (const r of results) {
     let t = map.get(r.eventId);
-    if (!t) { t = { eventSlug: r.eventSlug, eventName: r.eventName, startsOn: r.startsOn, endsOn: r.endsOn, placements: [] }; map.set(r.eventId, t); }
+    if (!t) { t = { eventSlug: r.eventSlug, eventName: r.eventName, startsOn: r.startsOn, endsOn: r.endsOn, synthetic: r.synthetic === true, playedAs: playedAsName(r), placements: [] }; map.set(r.eventId, t); }
     t.placements.push({ competition: r.competitionName, category: r.category, gender: r.gender, place: r.finalPlace, medal: medalOf(r.finalPlace) });
   }
   const out = [...map.values()];

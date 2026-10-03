@@ -46,7 +46,7 @@ export function RankingsPage() {
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
-      <PageHead eyebrow="League table" title="Rankings" lede="Who is ahead, by organization, season, category and division." />
+      <PageHead eyebrow="League table" title="Rankings" lede="Who is ahead, by organization, season, category and division. Each organization's ranking is that organization's own official ranking. Fictional test events are never counted." />
       <div className="evfilter">
         <Seg label="Who" value={subject} options={SUBJECTS} onChange={v => set('who', v)} />
         <Seg label="Scope" value={scope} options={RANKING_SCOPES} onChange={v => set('scope', v)} />

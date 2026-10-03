@@ -202,7 +202,7 @@ function Career({ p }: { p: FighterProfile }) {
           <ul className="plain">
             {tournamentHistory(h).map(t => (
               <li key={t.eventSlug}>
-                <Link to={`/events/${t.eventSlug}`}><b>{t.eventName}</b></Link>
+                <Link to={`/events/${t.eventSlug}`}><b>{t.eventName}</b></Link><TestBadge synthetic={t.synthetic} />
                 <div className="l">{dateRange(t.startsOn, t.endsOn)}</div>
                 <div className="placings">
                   {t.placements.map((pl, i) => (

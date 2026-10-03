@@ -159,3 +159,18 @@ describe('teams and events', () => {
       .toEqual([{ category: '5v5', matches: 3, wins: 2, losses: 1, draws: 0 }, { category: '3v3', matches: 1, wins: 0, losses: 0, draws: 1 }]);
   });
 });
+
+import { playedAsName } from './careerView';
+describe('team history keeps the identity used at the event', () => {
+  it('shows the old name only when it differs from the current one', () => {
+    expect(playedAsName({ teamNameAtEvent: 'Old Name', teamCurrentName: 'Successor' })).toBe('Old Name');
+    expect(playedAsName({ teamNameAtEvent: 'Successor', teamCurrentName: 'successor' })).toBeNull();
+    expect(playedAsName({ teamNameAtEvent: null, teamCurrentName: 'Successor' })).toBeNull();
+  });
+  it('carries the fictional flag and the event-time name onto the event line', () => {
+    const r = { competitionId: 'c', competitionName: 'Fiction 5v5', category: '5v5', gender: 'men' as const, tier: null, eventId: 'e', eventSlug: 'fiction-cup', eventName: 'Fiction Cup', eventType: 'tournament',
+      startsOn: '2026-01-01', endsOn: '2026-01-02', seasonId: null, organizationId: null, finalPlace: 1, points: 6, synthetic: true, teamNameAtEvent: 'Old Name', teamCurrentName: 'Successor' };
+    const [line] = tournamentHistory([r]);
+    expect(line).toMatchObject({ synthetic: true, playedAs: 'Old Name', eventSlug: 'fiction-cup' });
+  });
+});

@@ -176,22 +176,27 @@ export interface ResultRow {
   competitionId: string; competitionName: string; category: string; gender: 'open' | 'men' | 'women'; tier: string | null;
   eventId: string; eventSlug: string; eventName: string; eventType: string; startsOn: string; endsOn: string;
   seasonId: string | null; organizationId: string | null; finalPlace: number; points: number;
+  /** The event is a fictional/test event (tagged by a synthetic source). Only the history lists carry it; rankings and statistics leave such events out. */
+  synthetic?: boolean;
+  /** Team results: the name the team used at the event, and its name today (they differ after a rename or merge). */
+  teamNameAtEvent?: string | null; teamCurrentName?: string | null;
 }
-type ResultDb = { competition_id: string; competition_name: string; category: string; gender: 'open' | 'men' | 'women'; tier: string | null; event_id: string; event_slug: string; event_name: string;
+type ResultDb = { synthetic?: boolean; team_name_at_event?: string | null; team_current_name?: string | null; competition_id: string; competition_name: string; category: string; gender: 'open' | 'men' | 'women'; tier: string | null; event_id: string; event_slug: string; event_name: string;
   event_type: string; starts_on: string; event_ends_on: string; season_id: string | null; organization_id: string | null; final_place: number; points: number | string };
 export const toResultRow = (r: ResultDb): ResultRow => ({
   competitionId: r.competition_id, competitionName: r.competition_name, category: r.category, gender: r.gender, tier: r.tier, eventId: r.event_id, eventSlug: r.event_slug, eventName: r.event_name,
-  eventType: r.event_type, startsOn: r.starts_on, endsOn: r.event_ends_on, seasonId: r.season_id, organizationId: r.organization_id, finalPlace: r.final_place, points: num(r.points)
+  eventType: r.event_type, startsOn: r.starts_on, endsOn: r.event_ends_on, seasonId: r.season_id, organizationId: r.organization_id, finalPlace: r.final_place, points: num(r.points),
+  synthetic: r.synthetic === true, teamNameAtEvent: r.team_name_at_event ?? null, teamCurrentName: r.team_current_name ?? null
 });
 const RESULT_COLUMNS = 'competition_id,competition_name,category,gender,tier,event_id,event_slug,event_name,event_type,starts_on,event_ends_on,season_id,organization_id,final_place,points';
 /** Newest first. Includes duel entries and team entries the fighter was on the roster of (mercenaries too). */
 export async function fetchFighterHistory(fighterId: string): Promise<ResultRow[]> {
-  const { data, error } = await supabase.from('fighter_results').select(RESULT_COLUMNS).eq('fighter_id', fighterId).order('event_ends_on', { ascending: false });
+  const { data, error } = await supabase.from('fighter_results_all').select(`${RESULT_COLUMNS},synthetic`).eq('fighter_id', fighterId).order('event_ends_on', { ascending: false });
   if (error) throw error;
   return (data as unknown as ResultDb[]).map(toResultRow);
 }
 export async function fetchTeamHistory(teamId: string): Promise<ResultRow[]> {
-  const { data, error } = await supabase.from('team_results').select(RESULT_COLUMNS).eq('team_id', teamId).order('event_ends_on', { ascending: false });
+  const { data, error } = await supabase.from('team_results_all').select(`${RESULT_COLUMNS},synthetic,team_name_at_event,team_current_name`).eq('team_id', teamId).order('event_ends_on', { ascending: false });
   if (error) throw error;
   return (data as unknown as ResultDb[]).map(toResultRow);
 }

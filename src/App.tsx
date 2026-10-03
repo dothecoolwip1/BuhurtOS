@@ -24,7 +24,7 @@ import { TeamPage } from './pages/TeamPage';
 import { TeamEditPage } from './pages/TeamEditPage';
 import { TeamsPage } from './pages/TeamsPage';
 import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
-import { PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
+import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
 
 export function App() {
@@ -51,6 +51,7 @@ export function App() {
         <Route path="organizations/:slug" element={<OrganizationPage />} />
         <Route path="platform" element={<PlatformHomePage />} />
         <Route path="platform/organizations" element={<PlatformOrganizationsPage />} />
+        <Route path="platform/fighters" element={<PlatformFightersPage />} />
         <Route path="platform/analytics" element={<PlatformActivityPage />} />
         <Route path="platform/activity" element={<Navigate to="/platform/analytics" replace />} />
         <Route path="platform/bugs" element={<PlatformBugsPage />} />

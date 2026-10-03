@@ -111,6 +111,16 @@ column public.events.venue text
 column public.events.volunteer_info text
 column public.fighter_accounts.fighter_id uuid not null
 column public.fighter_accounts.user_id uuid not null
+column public.fighter_identity_reviews.candidate_id uuid not null
+column public.fighter_identity_reviews.created_at timestamp with time zone not null
+column public.fighter_identity_reviews.fighter_id uuid not null
+column public.fighter_identity_reviews.id uuid not null
+column public.fighter_identity_reviews.note text
+column public.fighter_identity_reviews.reason text not null
+column public.fighter_identity_reviews.resolved_at timestamp with time zone
+column public.fighter_identity_reviews.resolved_by uuid
+column public.fighter_identity_reviews.source text not null
+column public.fighter_identity_reviews.status text not null
 column public.fighters.avatar_path text
 column public.fighters.bio text
 column public.fighters.birth_year integer
@@ -469,6 +479,14 @@ constraint fighter_accounts fighter_accounts_fighter_id_fkey FOREIGN KEY (fighte
 constraint fighter_accounts fighter_accounts_pkey PRIMARY KEY (fighter_id)
 constraint fighter_accounts fighter_accounts_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 constraint fighter_accounts fighter_accounts_user_id_key UNIQUE (user_id)
+constraint fighter_identity_reviews fighter_identity_reviews_candidate_id_fkey FOREIGN KEY (candidate_id) REFERENCES fighters(id) ON DELETE CASCADE
+constraint fighter_identity_reviews fighter_identity_reviews_check CHECK ((fighter_id <> candidate_id))
+constraint fighter_identity_reviews fighter_identity_reviews_fighter_id_candidate_id_key UNIQUE (fighter_id, candidate_id)
+constraint fighter_identity_reviews fighter_identity_reviews_fighter_id_fkey FOREIGN KEY (fighter_id) REFERENCES fighters(id) ON DELETE CASCADE
+constraint fighter_identity_reviews fighter_identity_reviews_pkey PRIMARY KEY (id)
+constraint fighter_identity_reviews fighter_identity_reviews_reason_check CHECK ((reason = 'same_name'::text))
+constraint fighter_identity_reviews fighter_identity_reviews_source_check CHECK ((source = ANY (ARRAY['registration'::text, 'team_join'::text])))
+constraint fighter_identity_reviews fighter_identity_reviews_status_check CHECK ((status = ANY (ARRAY['open'::text, 'distinct'::text, 'duplicate'::text])))
 constraint fighters fighters_avatar_path_check CHECK (((avatar_path IS NULL) OR ((char_length(avatar_path) <= 120) AND (avatar_path ~ '^[0-9a-f-]{36}/[0-9]+\.(jpg|png|webp)$'::text))))
 constraint fighters fighters_bio_check CHECK (((bio IS NULL) OR (char_length(bio) <= 1500)))
 constraint fighters fighters_birth_year_check CHECK (((birth_year IS NULL) OR ((birth_year >= 1900) AND (birth_year <= 2100))))
@@ -675,6 +693,7 @@ function private.clear_tie_decisions() secdef=true b7c59c40208031d422d138cea7492
 function private.command_schema_ok(p_schema integer) secdef=false f2865c592704878cd24bbdbfe3b8b711
 function private.compute_fee(p_event uuid, p_province text, p_volunteer boolean) secdef=true edc1346f935647548fd7477305ee9f03
 function private.compute_places(p_comp uuid) secdef=true 41a41786e287f1a282c0246de1f96578
+function private.ensure_fighter_for_account(p_user uuid, p_name text, p_team uuid, p_source text) secdef=true 1fd619818bdde8a6ab21f3fe2f9b1f6c
 function private.entry_fighters_fill() secdef=true 895466129a528be643ba0f961719899b
 function private.event_bookings(p_event uuid) secdef=true 67fee62420db92885d50fc37ebae6a11
 function private.event_of_competition(p_comp uuid) secdef=true e69a638ac3b42b3eee55b44ba3ecd999
@@ -735,8 +754,8 @@ function public.correct_result(p_competition uuid, p_entry uuid, p_place integer
 function public.create_event(p_slug text, p_name text, p_starts_on date, p_ends_on date, p_venue text, p_address text) secdef=true 47881c4d019464790b52a7b237eab48a
 function public.create_season(p_org uuid, p_slug text, p_name text, p_starts_on date, p_ends_on date) secdef=true f5d2ba24f26876c98918aec3efcae63d
 function public.create_team(p_slug text, p_name text, p_city text, p_region text, p_country text) secdef=true e4e4ecf117d4e1c4f9f5742a5d2e7234
-function public.decide_registration(p_reg uuid, p_status text) secdef=true 0a57d41481f59ef601cea0cf4e17bf0a
-function public.decide_team_join(p_request uuid, p_decision text) secdef=true 828960bf53b204a1c851b36291846473
+function public.decide_registration(p_reg uuid, p_status text) secdef=true 26892ac0f789749d4a603f44b9f2f4fd
+function public.decide_team_join(p_request uuid, p_decision text) secdef=true 5add73fdd0bc31c4c9fe640c1600913c
 function public.enter_official_result(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_note text) secdef=true 18774a69764c821d799aebae30c60cc1
 function public.fighter_bookings(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 42f25793e5ca9afeb59d18cb0bfe36f7
 function public.fighter_is_booked(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 2fd44b2aa0e92b5f9f7f99de67bbcc3d
@@ -748,6 +767,7 @@ function public.grant_event_role_by_email(p_event uuid, p_email text, p_role tex
 function public.grant_organization_admin(p_org uuid, p_email text) secdef=true ca41db721214c28b4939bdd336986d89
 function public.list_active_organizations() secdef=true 4eb5989632bc53c657e6d46e490727d0
 function public.list_event_staff(p_event uuid) secdef=true eae1f2c481e4f021e4a09bc7958a8bd2
+function public.list_fighter_identity_reviews() secdef=true 9020f5b5e9d913d8ad229d228edd0ec4
 function public.list_organization_staff(p_org uuid) secdef=true 3148e2f3a5cee3c9187925692ce4c868
 function public.list_result_conflicts(p_event uuid) secdef=true 09f0a3a6a2cb71382b3882c399208c91
 function public.list_team_captains(p_team uuid) secdef=true 29f36411f6e5b56c893fb49db03a2b75
@@ -769,6 +789,7 @@ function public.reopen_match(p_match uuid, p_reason text) secdef=true 2bfb6353b4
 function public.report_bug(p jsonb) secdef=true 7d1ea860d4335a1060158e8f78c967fb
 function public.request_new_team(p_payload jsonb) secdef=true ad52e737cbca78ece235bf3209050c6c
 function public.request_team_join(p_team uuid, p_message text) secdef=true 25d5ab4ac2dac9fdb871282ced04ca1c
+function public.resolve_fighter_identity_review(p_review uuid, p_decision text, p_note text) secdef=true abb98943110427e76ebc961453fce039
 function public.resolve_result_conflict(p_proposal uuid, p_decision text, p_note text) secdef=true e39b4f3b1be04d082bfad22dfdd40bc0
 function public.set_bug_status(p_report uuid, p_status text) secdef=true 354554200e7d45f9966d402de609df50
 function public.set_entry_roster(p_entry uuid, p_fighters jsonb) secdef=true 76456d0588cd40fe128f21f59f2d8ab1
@@ -820,6 +841,9 @@ index public.events CREATE UNIQUE INDEX ON public.events USING btree (id)
 index public.events CREATE UNIQUE INDEX ON public.events USING btree (slug)
 index public.fighter_accounts CREATE UNIQUE INDEX ON public.fighter_accounts USING btree (fighter_id)
 index public.fighter_accounts CREATE UNIQUE INDEX ON public.fighter_accounts USING btree (user_id)
+index public.fighter_identity_reviews CREATE INDEX ON public.fighter_identity_reviews USING btree (created_at) WHERE (status = 'open'::text)
+index public.fighter_identity_reviews CREATE UNIQUE INDEX ON public.fighter_identity_reviews USING btree (fighter_id, candidate_id)
+index public.fighter_identity_reviews CREATE UNIQUE INDEX ON public.fighter_identity_reviews USING btree (id)
 index public.fighters CREATE UNIQUE INDEX ON public.fighters USING btree (id)
 index public.matches CREATE INDEX ON public.matches USING btree (competition_id, stage, "position")
 index public.matches CREATE INDEX ON public.matches USING btree (field, queue_state)
@@ -943,6 +967,7 @@ table public.entry_fighters rls=true
 table public.event_staff rls=true
 table public.events rls=true
 table public.fighter_accounts rls=true
+table public.fighter_identity_reviews rls=true
 table public.fighters rls=true
 table public.matches rls=true
 table public.notifications rls=true
@@ -999,6 +1024,7 @@ view public.fighter_match_rows opts=security_invoker=true 99eb84d266d00afc3cdd1b
 view public.fighter_match_stats opts=security_invoker=true a0a8188fedc270c30c46afb6e014963e
 view public.fighter_participation opts=security_invoker=true 7ca57b3e294b8ed789cd629f623b0c6a
 view public.fighter_results opts=security_invoker=true aa25fd7f60924b9c53cd96bbf40a3dcc
+view public.fighter_results_all opts=security_invoker=true d7a9e63f6e5c5353898c515afa9f7b98
 view public.fighter_season_stats opts=security_invoker=true 7f3778d2140e93cbb508cc8476fcc5b2
 view public.match_sides opts=security_invoker=true 9bebf62bbb75beb6326a355b28fb6661
 view public.played_events opts=security_invoker=true 0af02ff3d9e6f420a71938b683542df6
@@ -1006,8 +1032,10 @@ view public.ranking_fighters opts=security_invoker=true 42b7a45836fe99ca2d483cfc
 view public.ranking_teams opts=security_invoker=true 399757e540973c5ce6ace366d9785db3
 view public.registration_clearance opts=security_invoker=true bf4a15af9b50caa440a79819117011b4
 view public.result_rows opts=security_invoker=true 496dd56fce87342ebcd9f7e202588e33
+view public.result_rows_all opts=security_invoker=true df32471e194a9e053e0f45e8d89ed367
 view public.synthetic_records opts=security_invoker=true 7c70d9a9a984c5d540357da0371a90a7
 view public.team_history opts=security_invoker=true 0cba0ee102557b6d74ee15801a10ace8
 view public.team_results opts=security_invoker=true ce05e553eda835f2eff22b47a1df8144
+view public.team_results_all opts=security_invoker=true ff2d5dd2d449b8845a056b726189f133
 view public.team_stats opts=security_invoker=true 90204c0d1fb72256d32bfaad390eb430
 view public.teams_active opts=security_invoker=true 02249d0d664e0323ecd8e26bc165d75e

@@ -6,6 +6,7 @@
 import type { CompetitionMatch, CompetitionEntry, Standing, QueueState } from '../data/matches';
 import { groupIntoRounds } from '../data/matches';
 import { sideLabel, UNNAMED_ENTRY } from './entryLabel';
+import { explainResult } from './matchExplain';
 
 export const TBD = 'To be decided';
 
@@ -51,7 +52,7 @@ export function buildPoolTables(standings: readonly Standing[], entries: readonl
 }
 
 export interface BracketSlot { entryId: string | null; name: string; tbd: boolean; score: number | null; winner: boolean; loser: boolean }
-export interface BracketMatchView { id: string; label: string; state: QueueState; field: string | null; slots: [BracketSlot, BracketSlot]; done: boolean }
+export interface BracketMatchView { id: string; label: string; state: QueueState; field: string | null; slots: [BracketSlot, BracketSlot]; done: boolean; /** One factual sentence from the recorded result (matchExplain.ts); null until the match is final. */ explanation: string | null }
 export interface BracketColumn { key: string; title: string; matches: BracketMatchView[] }
 
 function slot(m: CompetitionMatch, side: 'a' | 'b'): BracketSlot {
@@ -71,7 +72,7 @@ export function buildBracketColumns(matches: readonly CompetitionMatch[]): Brack
   return rounds.sort((a, b) => order(a.stage) - order(b.stage)).map(r => ({
     key: r.key,
     title: r.label,
-    matches: r.matches.map(m => ({ id: m.id, label: `${r.label} ${m.position + 1}`, state: m.queueState, field: m.field, slots: [slot(m, 'a'), slot(m, 'b')], done: m.queueState === 'final' }))
+    matches: r.matches.map(m => ({ id: m.id, label: `${r.label} ${m.position + 1}`, state: m.queueState, field: m.field, slots: [slot(m, 'a'), slot(m, 'b')], done: m.queueState === 'final', explanation: explainResult(m) }))
   }));
 }
 

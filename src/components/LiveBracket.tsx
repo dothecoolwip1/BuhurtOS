@@ -23,6 +23,7 @@ function MatchBox({ m, liveOk }: { m: BracketMatchView; liveOk: boolean }) {
       </div>
       <Slot s={m.slots[0]} />
       <Slot s={m.slots[1]} />
+      {m.explanation && <div className="src" style={{ padding: '4px 8px' }}>{m.explanation}</div>}
     </div>
   );
 }
