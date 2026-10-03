@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { eventTypeLabel } from '../data/eventTypes';
-import { activeFilterCount, FORMAT_FILTERS, ROLE_FILTERS, STATUS_FILTERS, type EventFilter } from '../lib/eventFilters';
+import { activeFilterCount, DEFAULT_FILTER, FORMAT_FILTERS, ROLE_FILTERS, STATUS_FILTERS, type EventFilter } from '../lib/eventFilters';
 import type { OrgLite } from '../lib/careerView';
 import { orgOptionLabel } from '../lib/careerView';
 import { PROVINCES } from '../registration/model';
@@ -70,7 +70,7 @@ export function EventFilters({ value, onChange, options, defaults = {}, mine = f
           {showTest && (
             <label className="toggle"><input type="checkbox" checked={value.test} onChange={e => set('test', e.target.checked)} data-testid="show-test" /> Show test data (fictional events)</label>
           )}
-          {n > 0 && <div style={{ alignSelf: 'end' }}><button type="button" className="btn btn-line" onClick={() => onChange({ ...value, ...defaults, q: value.q, when: value.when, format: defaults.format ?? 'all', org: '', region: '', type: '', status: defaults.status ?? '', test: defaults.test ?? false, role: '' })}>Clear filters</button></div>}
+          {n > 0 && <div style={{ alignSelf: 'end' }}><button type="button" className="btn btn-line" onClick={() => onChange({ ...DEFAULT_FILTER, ...defaults, q: value.q, when: value.when })}>Clear filters</button></div>}
         </div>
       )}
     </div>

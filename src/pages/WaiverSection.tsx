@@ -12,12 +12,19 @@ const bad: React.CSSProperties = { color: 'var(--live)' };
 export function WaiverDocumentLink({ path, label = 'Open the PDF' }: { path: string; label?: string }) {
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
+  const [ready, setReady] = useState<string | null>(null);
   const open = async () => {
     setBusy(true); setProblem(null);
-    try { const url = await waiverDocumentUrl(path); window.open(url, '_blank', 'noopener'); } catch (e) { setProblem(friendlyError(e, 'Could not open the document.')); } finally { setBusy(false); }
+    // The tab is opened inside the tap (phone browsers block a window opened after an await), then pointed at the short-lived link.
+    const tab = window.open('', '_blank');
+    try {
+      const url = await waiverDocumentUrl(path);
+      if (tab) { tab.opener = null; tab.location.href = url; } else setReady(url);
+    } catch (e) { tab?.close(); setProblem(friendlyError(e, 'Could not open the document.')); } finally { setBusy(false); }
   };
   return <>
     <button type="button" className="btn btn-line btn-sm" disabled={busy} onClick={() => void open()}>{busy ? 'Opening…' : label}</button>
+    {ready && <> <a className="btn btn-line btn-sm" href={ready} target="_blank" rel="noopener noreferrer">Open the document</a></>}
     {problem && <span role="alert" style={bad}> {problem}</span>}
   </>;
 }
