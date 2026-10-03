@@ -131,7 +131,8 @@ jobs:
 
   deploy:
     name: Deploy GitHub Pages
-    if: github.event_name != 'pull_request' && needs.release-policy.outputs.deploy == 'true'
+    # Only ever from main: a manual run of this workflow on a feature branch builds and tests, and never deploys.
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.release-policy.outputs.deploy == 'true'
     needs: [check, database, browser, release-policy]
     runs-on: ubuntu-latest
     permissions:
