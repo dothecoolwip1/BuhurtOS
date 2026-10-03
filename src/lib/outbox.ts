@@ -89,6 +89,8 @@ export class Outbox {
   waiting(userId: string) { return this.entries.filter(e => e.userId === userId && e.status === 'pending').length; }
   stuck(userId: string) { return this.entries.filter(e => e.userId === userId && e.status === 'pending' && e.attempts >= STUCK_ATTEMPTS).length; }
   rejectedCount(userId: string) { return this.entries.filter(e => e.status === 'rejected' && (e.userId === userId || e.userId === LEGACY_USER)).length; }
+  /** All unconfirmed score actions on this device, whatever the account (used to decide whether an app update is safe). */
+  pendingTotal() { return this.entries.filter(e => e.status === 'pending').length; }
   /** Entries on this device that belong to a different account: never sent while you are signed in as someone else. */
   heldForOthers(userId: string) { return this.entries.filter(e => e.userId !== userId && e.status === 'pending').length; }
 

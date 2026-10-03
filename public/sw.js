@@ -11,12 +11,20 @@ const API_TABLES = ['events', 'competitions', 'matches'];
 const API_NETWORK_FIRST = ['matches'];
 const BASE = self.registration.scope;
 
+// Update policy (Pack 04): a new build is downloaded and then WAITS. It does not take over by itself, because activating it deletes the old
+// build's cache and replaces the code under a page that may be in the middle of scoring. The page decides when it is safe (see src/lib/swUpdate.ts)
+// and then sends SKIP_WAITING; the page reloads once the new worker is in control. With no old worker (the very first visit) activation is immediate.
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll([BASE, ...PRECACHE.map(p => new URL(p, BASE).href)]))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll([BASE, ...PRECACHE.map(p => new URL(p, BASE).href)])));
+});
+
+self.addEventListener('message', event => {
+  const data = event.data || {};
+  if (data.type === 'SKIP_WAITING') { self.skipWaiting(); return; }
+  if (data.type === 'GET_VERSION') {
+    const reply = { type: 'VERSION', buildId: BUILD_ID };
+    if (event.ports && event.ports[0]) event.ports[0].postMessage(reply); else if (event.source) event.source.postMessage(reply);
+  }
 });
 
 self.addEventListener('activate', event => {

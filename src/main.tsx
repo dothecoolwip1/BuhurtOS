@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
 import { AuthProvider } from './auth/AuthContext';
 import { initAnalytics } from './lib/analytics';
+import { registerServiceWorker } from './lib/swUpdate';
 import './styles/app.css';
 
 initAnalytics();
@@ -18,7 +19,5 @@ createRoot(document.getElementById('root')!).render(
 
 // Offline app shell. Only in production builds, so local development is never served stale files.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => { /* the app works without it */ });
-  });
+  window.addEventListener('load', () => registerServiceWorker(`${import.meta.env.BASE_URL}sw.js`));
 }

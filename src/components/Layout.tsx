@@ -8,6 +8,7 @@ import { useAuth } from '../auth/AuthContext';
 import { usePlatformRole } from '../auth/usePlatformRole';
 import { ProfileGate } from '../auth/ProfileGate';
 import { NotificationBell } from './NotificationBell';
+import { UpdateBanner } from './UpdateBanner';
 
 const NAV = [
   { to: '/', label: 'Home', end: true, icon: <path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z" /> },
@@ -80,7 +81,7 @@ export function Layout() {
           </button>
         </div>
       </header>
-      <main className="wrap"><ProfileGate /><Outlet /></main>
+      <main className="wrap"><UpdateBanner /><ProfileGate /><Outlet /></main>
       <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.</span><NavLink className="footlink" to="/privacy">Privacy</NavLink>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {PHONE.map(n => (

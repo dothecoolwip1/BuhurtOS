@@ -44,6 +44,13 @@ export async function fetchCompetitionMatches(competitionId: string): Promise<Co
   return groupIntoRounds((data as unknown as MatchRow[]).map(toMatch)).flatMap(r => r.matches);
 }
 
+/** Matches of several competitions in one request (the field screen reads a whole event's queue this way). */
+export async function fetchMatchesForCompetitions(competitionIds: readonly string[]): Promise<CompetitionMatch[]> {
+  const { data, error } = await supabase.from('matches').select(MATCH_SELECT).in('competition_id', [...competitionIds]).order('stage').order('position');
+  if (error) throw error;
+  return (data as unknown as MatchRow[]).map(toMatch);
+}
+
 export async function fetchEntries(competitionId: string): Promise<CompetitionEntry[]> {
   const { data, error } = await supabase.from('entries').select(`id,competition_id,team_id,fighter_id,pool,seed,status,${NAMED}`).eq('competition_id', competitionId).order('created_at');
   if (error) throw error;

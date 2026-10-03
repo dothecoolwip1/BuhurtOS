@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import type { LeagueKey } from '../lib/fieldScoring';
-import { fetchCompetitionMatches, type CompetitionMatch } from './matches';
+import { fetchMatchesForCompetitions, type CompetitionMatch } from './matches';
 
 export interface FieldCompetition { id: string; name: string; category: string; league: LeagueKey; roundsToWin: number | null }
 
@@ -15,8 +15,8 @@ export async function fetchFieldCompetitions(eventId: string): Promise<FieldComp
   }));
 }
 
-/** Every match of the given competitions. The field filter and queue order are applied by fieldQueue. */
+/** Every match of the given competitions, in ONE request. The field filter and queue order are applied by fieldQueue. */
 export async function fetchEventMatches(competitions: readonly { id: string }[]): Promise<CompetitionMatch[]> {
-  const all = await Promise.all(competitions.map(c => fetchCompetitionMatches(c.id)));
-  return all.flat();
+  if (competitions.length === 0) return [];
+  return fetchMatchesForCompetitions(competitions.map(c => c.id));
 }

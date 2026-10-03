@@ -9,7 +9,7 @@ const git = (cmd: string) => { try { return execSync(cmd, { stdio: ['ignore', 'p
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as { version: string };
 const commit = (process.env.GITHUB_SHA ?? git('git rev-parse HEAD')).slice(0, 7);
 const build = process.env.GITHUB_RUN_NUMBER ? `build ${process.env.GITHUB_RUN_NUMBER}` : 'local';
-const APP_VERSION = [`v${pkg.version}`, build, commit, new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC'].filter(Boolean).join(' · ');
+const APP_VERSION = [`v${pkg.version}`, build, commit, new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC', process.env.APP_VERSION_SUFFIX].filter(Boolean).join(' · ');   // the suffix lets tests build two different versions
 
 // GitHub Pages serves this repo at /BuhurtOS/. Set VITE_BASE=/ for a custom domain.
 export default defineConfig(({ command }) => ({

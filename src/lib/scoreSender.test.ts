@@ -40,3 +40,18 @@ describe('scoreEventArgs', () => {
       .toEqual({ p_id: 'e1', p_match: 'm1', p_kind: 'duel.strike', p_payload: { points: 2 }, p_client_at: '1970-01-01T00:00:00.000Z' });
   });
 });
+
+import { vi } from 'vitest';
+describe('realSender', () => {
+  it('refuses, and keeps, an entry saved by a newer command schema than this app understands', async () => {
+    vi.resetModules();
+    vi.doMock('./supabase', () => ({ supabase: { auth: { getSession: async () => ({ data: { session: { user: { id: 'u1' } } } }) }, rpc: async () => ({ error: null }) } }));
+    const { realSender } = await import('./scoreSender');
+    const base = { id: 'e1', kind: 'k', subject: 'm1', eventId: 'ev', userId: 'u1', seq: 1, payload: {}, createdAt: 0, attempts: 0, status: 'pending' as const };
+    expect(await realSender({ ...base, schema: 1 })).toBe('ok');
+    const r = await realSender({ ...base, schema: 99 });
+    expect(r).toMatchObject({ result: 'reject' });
+    expect((r as { error: string }).error).toMatch(/newer version/);
+    expect(await realSender({ ...base, schema: 1, userId: 'someone-else' })).toBe('offline');
+  });
+});

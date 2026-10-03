@@ -1,0 +1,1013 @@
+column public.activity_events.at timestamp with time zone not null
+column public.activity_events.id bigint not null
+column public.activity_events.name text not null
+column public.activity_events.props jsonb not null
+column public.activity_events.session_id uuid
+column public.activity_events.user_id uuid
+column public.activity_sessions.browser text
+column public.activity_sessions.device text
+column public.activity_sessions.entry_path text
+column public.activity_sessions.id uuid not null
+column public.activity_sessions.is_new_visitor boolean not null
+column public.activity_sessions.language text
+column public.activity_sessions.last_seen_at timestamp with time zone not null
+column public.activity_sessions.os text
+column public.activity_sessions.page_count integer not null
+column public.activity_sessions.path text not null
+column public.activity_sessions.referrer_host text
+column public.activity_sessions.started_at timestamp with time zone not null
+column public.activity_sessions.time_zone text
+column public.activity_sessions.user_id uuid
+column public.activity_sessions.utm_source text
+column public.activity_sessions.visitor_id uuid
+column public.activity_views.at timestamp with time zone not null
+column public.activity_views.id bigint not null
+column public.activity_views.path text not null
+column public.activity_views.session_id uuid not null
+column public.audit_log.action text not null
+column public.audit_log.actor uuid
+column public.audit_log.at timestamp with time zone not null
+column public.audit_log.details jsonb not null
+column public.audit_log.event_id uuid
+column public.audit_log.id bigint not null
+column public.audit_log.subject text
+column public.bug_reports.app_version text
+column public.bug_reports.contact text
+column public.bug_reports.created_at timestamp with time zone not null
+column public.bug_reports.expected text
+column public.bug_reports.id uuid not null
+column public.bug_reports.path text
+column public.bug_reports.screen text
+column public.bug_reports.screenshot_path text
+column public.bug_reports.session_id uuid
+column public.bug_reports.status text not null
+column public.bug_reports.user_agent text
+column public.bug_reports.user_id uuid
+column public.bug_reports.what text not null
+column public.competitions.category text not null
+column public.competitions.created_at timestamp with time zone not null
+column public.competitions.division text not null
+column public.competitions.draw_algorithm text
+column public.competitions.draw_mode text
+column public.competitions.draw_seed integer
+column public.competitions.drawn_at timestamp with time zone
+column public.competitions.event_id uuid not null
+column public.competitions.gender text not null
+column public.competitions.id uuid not null
+column public.competitions.name text not null
+column public.competitions.rounds_to_win integer
+column public.competitions.ruleset text
+column public.competitions.ruleset_version_id uuid
+column public.competitions.sort integer not null
+column public.competitions.status text not null
+column public.competitions.structure text not null
+column public.competitions.tier text
+column public.entries.competition_id uuid not null
+column public.entries.created_at timestamp with time zone not null
+column public.entries.fighter_id uuid
+column public.entries.id uuid not null
+column public.entries.pool text
+column public.entries.seed integer
+column public.entries.status text not null
+column public.entries.team_id uuid
+column public.entries.team_name_at_event text
+column public.entry_fighters.competition_id uuid not null
+column public.entry_fighters.created_at timestamp with time zone not null
+column public.entry_fighters.entry_id uuid not null
+column public.entry_fighters.fighter_id uuid not null
+column public.entry_fighters.id uuid not null
+column public.entry_fighters.permanent_team_id uuid
+column public.entry_fighters.role text not null
+column public.event_staff.event_id uuid not null
+column public.event_staff.role text not null
+column public.event_staff.user_id uuid not null
+column public.events.address text
+column public.events.city text
+column public.events.country text
+column public.events.created_at timestamp with time zone not null
+column public.events.description text not null
+column public.events.ends_on date not null
+column public.events.event_type text not null
+column public.events.external_url text
+column public.events.fee_cents integer not null
+column public.events.fee_note text
+column public.events.fee_province text
+column public.events.host_team_id uuid
+column public.events.id uuid not null
+column public.events.name text not null
+column public.events.organization_id uuid
+column public.events.region text
+column public.events.registration_closes_at timestamp with time zone
+column public.events.registration_mode text not null
+column public.events.registration_opens_at timestamp with time zone
+column public.events.season_id uuid
+column public.events.slug text not null
+column public.events.starts_on date not null
+column public.events.status text not null
+column public.events.time_note text
+column public.events.timezone text not null
+column public.events.updated_at timestamp with time zone not null
+column public.events.venue text
+column public.events.volunteer_info text
+column public.fighter_accounts.fighter_id uuid not null
+column public.fighter_accounts.user_id uuid not null
+column public.fighters.avatar_path text
+column public.fighters.bio text
+column public.fighters.birth_year integer
+column public.fighters.city text
+column public.fighters.country text
+column public.fighters.created_at timestamp with time zone not null
+column public.fighters.disciplines text[] not null
+column public.fighters.display_name text not null
+column public.fighters.fighting_style text
+column public.fighters.gender text
+column public.fighters.highlights text[] not null
+column public.fighters.id uuid not null
+column public.fighters.joined_year integer
+column public.fighters.region text
+column public.fighters.team_id uuid
+column public.matches.competition_id uuid not null
+column public.matches.created_at timestamp with time zone not null
+column public.matches.detail jsonb not null
+column public.matches.duration_minutes integer not null
+column public.matches.entry_a uuid
+column public.matches.entry_b uuid
+column public.matches.field text
+column public.matches.finalized_at timestamp with time zone
+column public.matches.id uuid not null
+column public.matches.next_match_id uuid
+column public.matches.next_slot text
+column public.matches.pool text
+column public.matches.position integer not null
+column public.matches.queue_state text not null
+column public.matches.result text
+column public.matches.round_label text not null
+column public.matches.scheduled_at timestamp with time zone
+column public.matches.score_a integer
+column public.matches.score_b integer
+column public.matches.stage text not null
+column public.matches.version integer not null
+column public.matches.winner_entry_id uuid
+column public.notifications.created_at timestamp with time zone not null
+column public.notifications.id uuid not null
+column public.notifications.kind text not null
+column public.notifications.payload jsonb not null
+column public.notifications.read_at timestamp with time zone
+column public.notifications.user_id uuid not null
+column public.organization_staff.created_at timestamp with time zone not null
+column public.organization_staff.organization_id uuid not null
+column public.organization_staff.role text not null
+column public.organization_staff.user_id uuid not null
+column public.organizations.country text
+column public.organizations.created_at timestamp with time zone not null
+column public.organizations.description text
+column public.organizations.disabled_at timestamp with time zone
+column public.organizations.disabled_by uuid
+column public.organizations.enabled boolean not null
+column public.organizations.id uuid not null
+column public.organizations.kind text not null
+column public.organizations.name text not null
+column public.organizations.region text
+column public.organizations.short_name text
+column public.organizations.slug text not null
+column public.organizations.website text
+column public.platform_roles.granted_at timestamp with time zone not null
+column public.platform_roles.role text not null
+column public.platform_roles.user_id uuid not null
+column public.pool_tie_decisions.competition_id uuid not null
+column public.pool_tie_decisions.decided_at timestamp with time zone not null
+column public.pool_tie_decisions.decided_by uuid not null
+column public.pool_tie_decisions.entry_id uuid not null
+column public.pool_tie_decisions.note text not null
+column public.pool_tie_decisions.part text not null
+column public.pool_tie_decisions.rank integer not null
+column public.profiles.city text
+column public.profiles.country text
+column public.profiles.created_at timestamp with time zone not null
+column public.profiles.display_name text not null
+column public.profiles.id uuid not null
+column public.profiles.interests text[] not null
+column public.profiles.onboarded_at timestamp with time zone
+column public.profiles.region text
+column public.record_sources.created_at timestamp with time zone not null
+column public.record_sources.entity_id uuid not null
+column public.record_sources.entity_type text not null
+column public.record_sources.id uuid not null
+column public.record_sources.note text
+column public.record_sources.source_id uuid not null
+column public.record_sources.status text not null
+column public.ref_categories.code text not null
+column public.ref_categories.league text not null
+column public.ref_categories.name text not null
+column public.ref_categories.sort integer not null
+column public.ref_categories.source text not null
+column public.ref_tiers.multiplier_league_structure numeric not null
+column public.ref_tiers.multiplier_tournament_structure numeric not null
+column public.ref_tiers.name text not null
+column public.ref_tiers.sort integer not null
+column public.ref_tiers.source text not null
+column public.ref_tiers.submit_days integer
+column public.registration_checks.at timestamp with time zone not null
+column public.registration_checks.check_name text not null
+column public.registration_checks.passed boolean not null
+column public.registration_checks.registration_id uuid not null
+column public.registration_competitions.competition_id uuid not null
+column public.registration_competitions.details jsonb not null
+column public.registration_competitions.registration_id uuid not null
+column public.registration_competitions.team_id uuid
+column public.registration_private.email text not null
+column public.registration_private.emergency_name text not null
+column public.registration_private.emergency_phone text not null
+column public.registration_private.emergency_relationship text not null
+column public.registration_private.medical_note text
+column public.registration_private.medically_fit boolean not null
+column public.registration_private.registration_id uuid not null
+column public.registrations.availability_notes text
+column public.registrations.bi_profile text
+column public.registrations.created_at timestamp with time zone not null
+column public.registrations.days text[] not null
+column public.registrations.decided_at timestamp with time zone
+column public.registrations.event_id uuid not null
+column public.registrations.fee_due_cents integer not null
+column public.registrations.fee_paid boolean not null
+column public.registrations.fighter_id uuid
+column public.registrations.full_name text not null
+column public.registrations.gender text not null
+column public.registrations.id uuid not null
+column public.registrations.insurance text not null
+column public.registrations.is_volunteer boolean not null
+column public.registrations.mercenary boolean not null
+column public.registrations.notes text
+column public.registrations.organization text not null
+column public.registrations.province text
+column public.registrations.shares_equipment boolean not null
+column public.registrations.status text not null
+column public.registrations.team_id uuid
+column public.registrations.team_name text
+column public.registrations.updated_at timestamp with time zone not null
+column public.registrations.user_id uuid not null
+column public.registrations.volunteer_roles text[] not null
+column public.registrations.waiver_signed_at timestamp with time zone not null
+column public.registrations.waiver_signed_name text not null
+column public.registrations.waiver_version_id uuid not null
+column public.result_proposals.created_at timestamp with time zone not null
+column public.result_proposals.detail jsonb not null
+column public.result_proposals.event_id uuid not null
+column public.result_proposals.expected_version integer
+column public.result_proposals.id uuid not null
+column public.result_proposals.match_id uuid not null
+column public.result_proposals.note text
+column public.result_proposals.official_before jsonb
+column public.result_proposals.proposed_by uuid not null
+column public.result_proposals.resolution_note text
+column public.result_proposals.resolved_at timestamp with time zone
+column public.result_proposals.resolved_by uuid
+column public.result_proposals.result text not null
+column public.result_proposals.schema_version integer not null
+column public.result_proposals.score_a integer not null
+column public.result_proposals.score_b integer not null
+column public.result_proposals.source text not null
+column public.result_proposals.status text not null
+column public.result_revisions.action text not null
+column public.result_revisions.actor uuid
+column public.result_revisions.competition_id uuid not null
+column public.result_revisions.created_at timestamp with time zone not null
+column public.result_revisions.entry_id uuid not null
+column public.result_revisions.id uuid not null
+column public.result_revisions.new_place integer
+column public.result_revisions.new_points numeric
+column public.result_revisions.old_place integer
+column public.result_revisions.old_points numeric
+column public.result_revisions.reason text
+column public.result_revisions.revision integer not null
+column public.results.competition_id uuid not null
+column public.results.created_at timestamp with time zone not null
+column public.results.entry_id uuid not null
+column public.results.final_place integer
+column public.results.id uuid not null
+column public.results.points numeric
+column public.ruleset_versions.created_at timestamp with time zone not null
+column public.ruleset_versions.effective_from date
+column public.ruleset_versions.effective_to date
+column public.ruleset_versions.id uuid not null
+column public.ruleset_versions.note text
+column public.ruleset_versions.ruleset_id uuid not null
+column public.ruleset_versions.source_id uuid
+column public.ruleset_versions.version text not null
+column public.rulesets.created_at timestamp with time zone not null
+column public.rulesets.id uuid not null
+column public.rulesets.name text not null
+column public.rulesets.organization_id uuid
+column public.rulesets.slug text not null
+column public.score_events.client_at timestamp with time zone
+column public.score_events.id uuid not null
+column public.score_events.kind text not null
+column public.score_events.match_id uuid not null
+column public.score_events.payload jsonb not null
+column public.score_events.received_at timestamp with time zone not null
+column public.score_events.recorded_by uuid not null
+column public.seasons.created_at timestamp with time zone not null
+column public.seasons.ends_on date not null
+column public.seasons.id uuid not null
+column public.seasons.name text not null
+column public.seasons.organization_id uuid
+column public.seasons.slug text not null
+column public.seasons.starts_on date not null
+column public.sources.citation text
+column public.sources.created_at timestamp with time zone not null
+column public.sources.id uuid not null
+column public.sources.kind text not null
+column public.sources.retrieved_on date
+column public.sources.synthetic boolean not null
+column public.sources.title text not null
+column public.sources.url text
+column public.team_affiliations.created_at timestamp with time zone not null
+column public.team_affiliations.from_date date
+column public.team_affiliations.id uuid not null
+column public.team_affiliations.organization_id uuid not null
+column public.team_affiliations.relation text not null
+column public.team_affiliations.team_id uuid not null
+column public.team_affiliations.to_date date
+column public.team_join_requests.created_at timestamp with time zone not null
+column public.team_join_requests.decided_at timestamp with time zone
+column public.team_join_requests.decided_by uuid
+column public.team_join_requests.id uuid not null
+column public.team_join_requests.message text
+column public.team_join_requests.requester_id uuid not null
+column public.team_join_requests.status text not null
+column public.team_join_requests.team_id uuid not null
+column public.team_memberships.created_at timestamp with time zone not null
+column public.team_memberships.fighter_id uuid not null
+column public.team_memberships.from_date date
+column public.team_memberships.id uuid not null
+column public.team_memberships.mercenary boolean not null
+column public.team_memberships.role text not null
+column public.team_memberships.team_id uuid not null
+column public.team_memberships.to_date date
+column public.team_merges.kept_team_id uuid not null
+column public.team_merges.merged_at timestamp with time zone not null
+column public.team_merges.removed_name text not null
+column public.team_merges.removed_slug text not null
+column public.team_merges.removed_team_id uuid not null
+column public.team_merges.was_public boolean not null
+column public.team_request_private.captain_reason text not null
+column public.team_request_private.contact_email text not null
+column public.team_request_private.contact_phone text
+column public.team_request_private.created_at timestamp with time zone not null
+column public.team_request_private.notes text
+column public.team_request_private.requested_by uuid not null
+column public.team_request_private.team_id uuid not null
+column public.team_roles.role text not null
+column public.team_roles.team_id uuid not null
+column public.team_roles.user_id uuid not null
+column public.teams.city text
+column public.teams.claimed_organizations text[] not null
+column public.teams.colors text[] not null
+column public.teams.country text
+column public.teams.created_at timestamp with time zone not null
+column public.teams.crest_division text not null
+column public.teams.description text
+column public.teams.emblem_path text
+column public.teams.founded_year integer
+column public.teams.id uuid not null
+column public.teams.initial text not null
+column public.teams.name text not null
+column public.teams.region text
+column public.teams.slug text not null
+column public.teams.social_links jsonb not null
+column public.teams.status text not null
+column public.teams.website text
+column public.waiver_versions.body text not null
+column public.waiver_versions.created_at timestamp with time zone not null
+column public.waiver_versions.event_id uuid not null
+column public.waiver_versions.id uuid not null
+column public.waiver_versions.title text not null
+column public.waiver_versions.version integer not null
+constraint activity_events activity_events_name_check CHECK ((name ~ '^[a-z][a-z0-9_]{1,39}$'::text))
+constraint activity_events activity_events_pkey PRIMARY KEY (id)
+constraint activity_events activity_events_props_check CHECK (((jsonb_typeof(props) = 'object'::text) AND (pg_column_size(props) <= 1024)))
+constraint activity_events activity_events_session_id_fkey FOREIGN KEY (session_id) REFERENCES activity_sessions(id) ON DELETE CASCADE
+constraint activity_events activity_events_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint activity_sessions activity_sessions_browser_check CHECK ((char_length(browser) <= 40))
+constraint activity_sessions activity_sessions_device_check CHECK ((device = ANY (ARRAY['phone'::text, 'tablet'::text, 'desktop'::text])))
+constraint activity_sessions activity_sessions_entry_path_check CHECK ((char_length(entry_path) <= 200))
+constraint activity_sessions activity_sessions_language_check CHECK ((char_length(language) <= 20))
+constraint activity_sessions activity_sessions_os_check CHECK ((char_length(os) <= 40))
+constraint activity_sessions activity_sessions_path_check CHECK ((char_length(path) <= 200))
+constraint activity_sessions activity_sessions_pkey PRIMARY KEY (id)
+constraint activity_sessions activity_sessions_referrer_host_check CHECK ((char_length(referrer_host) <= 120))
+constraint activity_sessions activity_sessions_time_zone_check CHECK ((char_length(time_zone) <= 60))
+constraint activity_sessions activity_sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint activity_sessions activity_sessions_utm_source_check CHECK ((char_length(utm_source) <= 80))
+constraint activity_views activity_views_path_check CHECK ((char_length(path) <= 200))
+constraint activity_views activity_views_pkey PRIMARY KEY (id)
+constraint activity_views activity_views_session_id_fkey FOREIGN KEY (session_id) REFERENCES activity_sessions(id) ON DELETE CASCADE
+constraint audit_log audit_log_pkey PRIMARY KEY (id)
+constraint bug_reports bug_reports_app_version_check CHECK ((char_length(app_version) <= 120))
+constraint bug_reports bug_reports_contact_check CHECK (((contact IS NULL) OR (char_length(contact) <= 200)))
+constraint bug_reports bug_reports_expected_check CHECK (((expected IS NULL) OR (char_length(expected) <= 2000)))
+constraint bug_reports bug_reports_path_check CHECK ((char_length(path) <= 200))
+constraint bug_reports bug_reports_pkey PRIMARY KEY (id)
+constraint bug_reports bug_reports_screen_check CHECK ((char_length(screen) <= 40))
+constraint bug_reports bug_reports_screenshot_path_check CHECK (((screenshot_path IS NULL) OR (screenshot_path ~ '^reports/[0-9a-f-]{36}\.(jpg|png)$'::text)))
+constraint bug_reports bug_reports_status_check CHECK ((status = ANY (ARRAY['new'::text, 'seen'::text, 'fixed'::text, 'wontfix'::text])))
+constraint bug_reports bug_reports_user_agent_check CHECK ((char_length(user_agent) <= 400))
+constraint bug_reports bug_reports_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint bug_reports bug_reports_what_check CHECK (((char_length(what) >= 5) AND (char_length(what) <= 2000)))
+constraint competitions competitions_category_fkey FOREIGN KEY (category) REFERENCES ref_categories(code)
+constraint competitions competitions_division_check CHECK ((division = ANY (ARRAY['open'::text, '1'::text, '2'::text])))
+constraint competitions competitions_draw_mode_check CHECK (((draw_mode IS NULL) OR (draw_mode = ANY (ARRAY['random'::text, 'manual'::text]))))
+constraint competitions competitions_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint competitions competitions_gender_check CHECK ((gender = ANY (ARRAY['open'::text, 'men'::text, 'women'::text])))
+constraint competitions competitions_name_check CHECK (((char_length(name) >= 2) AND (char_length(name) <= 80)))
+constraint competitions competitions_pkey PRIMARY KEY (id)
+constraint competitions competitions_rounds_to_win_check CHECK (((rounds_to_win IS NULL) OR ((rounds_to_win >= 1) AND (rounds_to_win <= 5))))
+constraint competitions competitions_ruleset_check CHECK (((ruleset IS NULL) OR (char_length(ruleset) <= 120)))
+constraint competitions competitions_ruleset_version_id_fkey FOREIGN KEY (ruleset_version_id) REFERENCES ruleset_versions(id) ON DELETE SET NULL
+constraint competitions competitions_status_check CHECK ((status = ANY (ARRAY['setup'::text, 'registration'::text, 'running'::text, 'finished'::text])))
+constraint competitions competitions_structure_check CHECK ((structure = ANY (ARRAY['round_robin'::text, 'pools_elimination'::text, 'elimination'::text])))
+constraint competitions competitions_tier_fkey FOREIGN KEY (tier) REFERENCES ref_tiers(name)
+constraint entries entries_check CHECK (((team_id IS NULL) <> (fighter_id IS NULL)))
+constraint entries entries_competition_id_fighter_id_key UNIQUE (competition_id, fighter_id)
+constraint entries entries_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
+constraint entries entries_competition_id_team_id_key UNIQUE (competition_id, team_id)
+constraint entries entries_fighter_id_fkey FOREIGN KEY (fighter_id) REFERENCES fighters(id) ON DELETE RESTRICT
+constraint entries entries_id_competition_key UNIQUE (id, competition_id)
+constraint entries entries_pkey PRIMARY KEY (id)
+constraint entries entries_status_check CHECK ((status = ANY (ARRAY['registered'::text, 'checked_in'::text, 'withdrawn'::text, 'disqualified'::text])))
+constraint entries entries_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT
+constraint entry_fighters entry_fighters_competition_id_fighter_id_key UNIQUE (competition_id, fighter_id)
+constraint entry_fighters entry_fighters_entry_id_competition_id_fkey FOREIGN KEY (entry_id, competition_id) REFERENCES entries(id, competition_id) ON UPDATE CASCADE ON DELETE CASCADE
+constraint entry_fighters entry_fighters_entry_id_fighter_id_key UNIQUE (entry_id, fighter_id)
+constraint entry_fighters entry_fighters_fighter_id_fkey FOREIGN KEY (fighter_id) REFERENCES fighters(id) ON DELETE RESTRICT
+constraint entry_fighters entry_fighters_permanent_team_id_fkey FOREIGN KEY (permanent_team_id) REFERENCES teams(id) ON DELETE SET NULL
+constraint entry_fighters entry_fighters_pkey PRIMARY KEY (id)
+constraint entry_fighters entry_fighters_role_check CHECK ((role = ANY (ARRAY['fighter'::text, 'mercenary'::text, 'guest'::text])))
+constraint event_staff event_staff_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint event_staff event_staff_pkey PRIMARY KEY (event_id, user_id, role)
+constraint event_staff event_staff_role_check CHECK ((role = ANY (ARRAY['organizer'::text, 'head_marshal'::text, 'marshal'::text, 'scorekeeper'::text, 'medic'::text])))
+constraint event_staff event_staff_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint events events_check CHECK ((ends_on >= starts_on))
+constraint events events_check1 CHECK (((registration_closes_at IS NULL) OR (registration_opens_at IS NULL) OR (registration_closes_at > registration_opens_at)))
+constraint events events_description_check CHECK ((char_length(description) <= 4000))
+constraint events events_event_type_check CHECK ((event_type = ANY (ARRAY['tournament'::text, 'practice'::text, 'clinic'::text, 'demonstration'::text, 'gathering'::text])))
+constraint events events_external_needs_url CHECK (((registration_mode <> 'external'::text) OR (external_url IS NOT NULL)))
+constraint events events_external_url_check CHECK (((external_url IS NULL) OR ((char_length(external_url) <= 500) AND (external_url ~ '^https?://'::text))))
+constraint events events_fee_cents_check CHECK ((fee_cents >= 0))
+constraint events events_host_team_id_fkey FOREIGN KEY (host_team_id) REFERENCES teams(id) ON DELETE SET NULL
+constraint events events_name_check CHECK (((char_length(name) >= 3) AND (char_length(name) <= 120)))
+constraint events events_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL
+constraint events events_pkey PRIMARY KEY (id)
+constraint events events_registration_mode_check CHECK ((registration_mode = ANY (ARRAY['buhuros'::text, 'external'::text, 'none'::text])))
+constraint events events_season_id_fkey FOREIGN KEY (season_id) REFERENCES seasons(id) ON DELETE SET NULL
+constraint events events_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text))
+constraint events events_slug_key UNIQUE (slug)
+constraint events events_status_check CHECK ((status = ANY (ARRAY['draft'::text, 'published'::text, 'cancelled'::text])))
+constraint events events_time_note_check CHECK (((time_note IS NULL) OR (char_length(time_note) <= 200)))
+constraint events events_volunteer_info_check CHECK (((volunteer_info IS NULL) OR (char_length(volunteer_info) <= 2000)))
+constraint fighter_accounts fighter_accounts_fighter_id_fkey FOREIGN KEY (fighter_id) REFERENCES fighters(id) ON DELETE CASCADE
+constraint fighter_accounts fighter_accounts_pkey PRIMARY KEY (fighter_id)
+constraint fighter_accounts fighter_accounts_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint fighter_accounts fighter_accounts_user_id_key UNIQUE (user_id)
+constraint fighters fighters_avatar_path_check CHECK (((avatar_path IS NULL) OR ((char_length(avatar_path) <= 120) AND (avatar_path ~ '^[0-9a-f-]{36}/[0-9]+\.(jpg|png|webp)$'::text))))
+constraint fighters fighters_bio_check CHECK (((bio IS NULL) OR (char_length(bio) <= 1500)))
+constraint fighters fighters_birth_year_check CHECK (((birth_year IS NULL) OR ((birth_year >= 1900) AND (birth_year <= 2100))))
+constraint fighters fighters_city_check CHECK (((city IS NULL) OR (char_length(city) <= 80)))
+constraint fighters fighters_country_check CHECK (((country IS NULL) OR (char_length(country) <= 80)))
+constraint fighters fighters_disciplines_check CHECK ((cardinality(disciplines) <= 12))
+constraint fighters fighters_display_name_check CHECK (((char_length(display_name) >= 2) AND (char_length(display_name) <= 80)))
+constraint fighters fighters_fighting_style_check CHECK (((fighting_style IS NULL) OR (char_length(fighting_style) <= 120)))
+constraint fighters fighters_gender_check CHECK (((gender IS NULL) OR (gender = ANY (ARRAY['male'::text, 'female'::text, 'other'::text]))))
+constraint fighters fighters_highlights_check CHECK ((cardinality(highlights) <= 10))
+constraint fighters fighters_joined_year_check CHECK (((joined_year IS NULL) OR ((joined_year >= 1990) AND (joined_year <= 2100))))
+constraint fighters fighters_pkey PRIMARY KEY (id)
+constraint fighters fighters_region_check CHECK (((region IS NULL) OR (char_length(region) <= 80)))
+constraint fighters fighters_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
+constraint matches matches_check CHECK (((entry_a IS NULL) OR (entry_b IS NULL) OR (entry_a <> entry_b)))
+constraint matches matches_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
+constraint matches matches_duration_minutes_check CHECK (((duration_minutes >= 1) AND (duration_minutes <= 720)))
+constraint matches matches_entry_a_fkey FOREIGN KEY (entry_a) REFERENCES entries(id) ON DELETE SET NULL
+constraint matches matches_entry_b_fkey FOREIGN KEY (entry_b) REFERENCES entries(id) ON DELETE SET NULL
+constraint matches matches_next_link_has_slot CHECK (((next_match_id IS NULL) OR (next_slot IS NOT NULL)))
+constraint matches matches_next_match_id_fkey FOREIGN KEY (next_match_id) REFERENCES matches(id) ON DELETE SET NULL
+constraint matches matches_next_slot_check CHECK ((next_slot = ANY (ARRAY['a'::text, 'b'::text])))
+constraint matches matches_pkey PRIMARY KEY (id)
+constraint matches matches_queue_state_check CHECK ((queue_state = ANY (ARRAY['scheduled'::text, 'on_deck'::text, 'in_the_hole'::text, 'active'::text, 'final'::text])))
+constraint matches matches_result_check CHECK ((result = ANY (ARRAY['a'::text, 'b'::text, 'draw'::text])))
+constraint matches matches_score_a_check CHECK ((score_a >= 0))
+constraint matches matches_score_b_check CHECK ((score_b >= 0))
+constraint matches matches_stage_check CHECK ((stage = ANY (ARRAY['pool'::text, 'round_robin'::text, 'elimination'::text, 'third_place'::text, 'final'::text])))
+constraint matches matches_winner_entry_id_fkey FOREIGN KEY (winner_entry_id) REFERENCES entries(id) ON DELETE SET NULL
+constraint notifications notifications_kind_check CHECK ((kind = ANY (ARRAY['team_join_requested'::text, 'team_join_decided'::text, 'team_proposed'::text, 'registration_submitted'::text, 'registration_decided'::text, 'bug_reported'::text])))
+constraint notifications notifications_pkey PRIMARY KEY (id)
+constraint notifications notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint organization_staff organization_staff_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
+constraint organization_staff organization_staff_pkey PRIMARY KEY (organization_id, user_id)
+constraint organization_staff organization_staff_role_check CHECK ((role = 'admin'::text))
+constraint organization_staff organization_staff_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint organizations organizations_description_check CHECK (((description IS NULL) OR (char_length(description) <= 1000)))
+constraint organizations organizations_disabled_consistent CHECK (((enabled AND (disabled_at IS NULL)) OR ((NOT enabled) AND (disabled_at IS NOT NULL))))
+constraint organizations organizations_kind_check CHECK ((kind = ANY (ARRAY['federation'::text, 'national'::text, 'regional'::text, 'club'::text, 'other'::text])))
+constraint organizations organizations_name_check CHECK (((char_length(name) >= 2) AND (char_length(name) <= 120)))
+constraint organizations organizations_pkey PRIMARY KEY (id)
+constraint organizations organizations_region_check CHECK (((region IS NULL) OR (char_length(region) <= 80)))
+constraint organizations organizations_short_name_check CHECK (((short_name IS NULL) OR ((char_length(short_name) >= 2) AND (char_length(short_name) <= 20))))
+constraint organizations organizations_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text))
+constraint organizations organizations_slug_key UNIQUE (slug)
+constraint organizations organizations_website_check CHECK (((website IS NULL) OR (char_length(website) <= 300)))
+constraint platform_roles platform_roles_pkey PRIMARY KEY (user_id)
+constraint platform_roles platform_roles_role_check CHECK ((role = ANY (ARRAY['owner'::text, 'organizer'::text])))
+constraint platform_roles platform_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint pool_tie_decisions pool_tie_decisions_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
+constraint pool_tie_decisions pool_tie_decisions_entry_id_fkey FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE CASCADE
+constraint pool_tie_decisions pool_tie_decisions_note_check CHECK ((char_length(note) >= 3))
+constraint pool_tie_decisions pool_tie_decisions_pkey PRIMARY KEY (competition_id, entry_id)
+constraint pool_tie_decisions pool_tie_decisions_rank_check CHECK ((rank >= 1))
+constraint profiles profiles_city_check CHECK (((city IS NULL) OR (char_length(city) <= 80)))
+constraint profiles profiles_country_check CHECK (((country IS NULL) OR (char_length(country) <= 80)))
+constraint profiles profiles_display_name_check CHECK ((char_length(display_name) <= 80))
+constraint profiles profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint profiles profiles_interests_check CHECK ((interests <@ ARRAY['fighter'::text, 'captain'::text, 'organizer'::text, 'volunteer'::text, 'fan'::text]))
+constraint profiles profiles_pkey PRIMARY KEY (id)
+constraint profiles profiles_region_check CHECK (((region IS NULL) OR (char_length(region) <= 80)))
+constraint record_sources record_sources_entity_type_check CHECK ((entity_type = ANY (ARRAY['organization'::text, 'team'::text, 'fighter'::text, 'event'::text, 'competition'::text, 'ruleset_version'::text, 'result'::text, 'team_affiliation'::text, 'team_membership'::text, 'season'::text])))
+constraint record_sources record_sources_note_check CHECK (((note IS NULL) OR (char_length(note) <= 500)))
+constraint record_sources record_sources_pkey PRIMARY KEY (id)
+constraint record_sources record_sources_source_id_entity_type_entity_id_key UNIQUE (source_id, entity_type, entity_id)
+constraint record_sources record_sources_source_id_fkey FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE RESTRICT
+constraint record_sources record_sources_status_check CHECK ((status = ANY (ARRAY['official'::text, 'imported'::text, 'unverified'::text])))
+constraint ref_categories ref_categories_league_check CHECK ((league = ANY (ARRAY['buhurt'::text, 'duels'::text, 'outrance'::text, 'hacsa'::text])))
+constraint ref_categories ref_categories_pkey PRIMARY KEY (code)
+constraint ref_tiers ref_tiers_pkey PRIMARY KEY (name)
+constraint registration_checks registration_checks_check_name_check CHECK ((check_name = ANY (ARRAY['checked_in'::text, 'kit'::text])))
+constraint registration_checks registration_checks_pkey PRIMARY KEY (registration_id, check_name)
+constraint registration_checks registration_checks_registration_id_fkey FOREIGN KEY (registration_id) REFERENCES registrations(id) ON DELETE CASCADE
+constraint registration_competitions registration_competitions_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
+constraint registration_competitions registration_competitions_pkey PRIMARY KEY (registration_id, competition_id)
+constraint registration_competitions registration_competitions_registration_id_fkey FOREIGN KEY (registration_id) REFERENCES registrations(id) ON DELETE CASCADE
+constraint registration_competitions registration_competitions_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
+constraint registration_private registration_private_medical_note_check CHECK (((medical_note IS NULL) OR (char_length(medical_note) <= 1000)))
+constraint registration_private registration_private_pkey PRIMARY KEY (registration_id)
+constraint registration_private registration_private_registration_id_fkey FOREIGN KEY (registration_id) REFERENCES registrations(id) ON DELETE CASCADE
+constraint registrations registrations_days_check CHECK ((days <@ ARRAY['sat'::text, 'sun'::text]))
+constraint registrations registrations_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint registrations registrations_event_id_user_id_key UNIQUE (event_id, user_id)
+constraint registrations registrations_fighter_id_fkey FOREIGN KEY (fighter_id) REFERENCES fighters(id) ON DELETE SET NULL
+constraint registrations registrations_full_name_check CHECK (((char_length(full_name) >= 2) AND (char_length(full_name) <= 80)))
+constraint registrations registrations_gender_check CHECK ((gender = ANY (ARRAY['male'::text, 'female'::text, 'other'::text])))
+constraint registrations registrations_insurance_check CHECK ((insurance = ANY (ARRAY['hacsa_member'::text, 'mcc_member'::text, 'proof_received'::text, 'proof_pending'::text, 'needs_cover'::text])))
+constraint registrations registrations_notes_check CHECK (((notes IS NULL) OR (char_length(notes) <= 2000)))
+constraint registrations registrations_organization_check CHECK ((organization = ANY (ARRAY['HACSA'::text, 'MCC'::text, 'other'::text])))
+constraint registrations registrations_pkey PRIMARY KEY (id)
+constraint registrations registrations_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'accepted'::text, 'declined'::text, 'withdrawn'::text])))
+constraint registrations registrations_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
+constraint registrations registrations_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint registrations registrations_waiver_name_real CHECK ((char_length(btrim(waiver_signed_name)) >= 2))
+constraint registrations registrations_waiver_version_id_fkey FOREIGN KEY (waiver_version_id) REFERENCES waiver_versions(id)
+constraint result_proposals result_proposals_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint result_proposals result_proposals_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint result_proposals result_proposals_pkey PRIMARY KEY (id)
+constraint result_proposals result_proposals_result_check CHECK ((result = ANY (ARRAY['a'::text, 'b'::text, 'draw'::text])))
+constraint result_proposals result_proposals_score_a_check CHECK ((score_a >= 0))
+constraint result_proposals result_proposals_score_b_check CHECK ((score_b >= 0))
+constraint result_proposals result_proposals_source_check CHECK ((source = ANY (ARRAY['device'::text, 'paper'::text])))
+constraint result_proposals result_proposals_status_check CHECK ((status = ANY (ARRAY['accepted'::text, 'duplicate'::text, 'conflict'::text, 'stale'::text, 'resolved_kept'::text, 'resolved_replaced'::text])))
+constraint result_revisions result_revisions_action_check CHECK ((action = ANY (ARRAY['computed'::text, 'recomputed'::text, 'corrected'::text, 'superseded'::text, 'voided'::text])))
+constraint result_revisions result_revisions_competition_id_entry_id_revision_key UNIQUE (competition_id, entry_id, revision)
+constraint result_revisions result_revisions_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
+constraint result_revisions result_revisions_pkey PRIMARY KEY (id)
+constraint results results_competition_id_entry_id_key UNIQUE (competition_id, entry_id)
+constraint results results_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
+constraint results results_entry_id_fkey FOREIGN KEY (entry_id) REFERENCES entries(id) ON DELETE RESTRICT
+constraint results results_final_place_check CHECK (((final_place IS NULL) OR (final_place >= 1)))
+constraint results results_pkey PRIMARY KEY (id)
+constraint results results_points_check CHECK (((points IS NULL) OR (points >= (0)::numeric)))
+constraint ruleset_versions ruleset_versions_check CHECK (((effective_to IS NULL) OR (effective_from IS NULL) OR (effective_to >= effective_from)))
+constraint ruleset_versions ruleset_versions_note_check CHECK (((note IS NULL) OR (char_length(note) <= 500)))
+constraint ruleset_versions ruleset_versions_pkey PRIMARY KEY (id)
+constraint ruleset_versions ruleset_versions_ruleset_id_fkey FOREIGN KEY (ruleset_id) REFERENCES rulesets(id) ON DELETE CASCADE
+constraint ruleset_versions ruleset_versions_ruleset_id_version_key UNIQUE (ruleset_id, version)
+constraint ruleset_versions ruleset_versions_source_id_fkey FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE SET NULL
+constraint ruleset_versions ruleset_versions_version_check CHECK (((char_length(version) >= 1) AND (char_length(version) <= 40)))
+constraint rulesets rulesets_name_check CHECK (((char_length(name) >= 2) AND (char_length(name) <= 120)))
+constraint rulesets rulesets_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL
+constraint rulesets rulesets_pkey PRIMARY KEY (id)
+constraint rulesets rulesets_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text))
+constraint rulesets rulesets_slug_key UNIQUE (slug)
+constraint score_events score_events_kind_check CHECK (((char_length(kind) >= 1) AND (char_length(kind) <= 60)))
+constraint score_events score_events_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint score_events score_events_pkey PRIMARY KEY (id)
+constraint seasons seasons_check CHECK ((ends_on >= starts_on))
+constraint seasons seasons_name_check CHECK (((char_length(name) >= 2) AND (char_length(name) <= 120)))
+constraint seasons seasons_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL
+constraint seasons seasons_pkey PRIMARY KEY (id)
+constraint seasons seasons_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text))
+constraint seasons seasons_slug_key UNIQUE (slug)
+constraint sources sources_citation_check CHECK (((citation IS NULL) OR (char_length(citation) <= 500)))
+constraint sources sources_kind_check CHECK ((kind = ANY (ARRAY['official'::text, 'imported'::text, 'submitted'::text, 'observed'::text])))
+constraint sources sources_pkey PRIMARY KEY (id)
+constraint sources sources_title_check CHECK (((char_length(title) >= 2) AND (char_length(title) <= 200)))
+constraint sources sources_url_check CHECK (((url IS NULL) OR (char_length(url) <= 500)))
+constraint team_affiliations team_affiliations_check CHECK (((to_date IS NULL) OR (from_date IS NULL) OR (to_date >= from_date)))
+constraint team_affiliations team_affiliations_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
+constraint team_affiliations team_affiliations_pkey PRIMARY KEY (id)
+constraint team_affiliations team_affiliations_relation_check CHECK ((relation = ANY (ARRAY['member'::text, 'recognized'::text, 'affiliate'::text, 'other'::text])))
+constraint team_affiliations team_affiliations_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+constraint team_affiliations team_affiliations_team_id_organization_id_relation_key UNIQUE (team_id, organization_id, relation)
+constraint team_join_requests team_join_requests_check CHECK ((((status = 'pending'::text) = (decided_at IS NULL)) OR (status = 'cancelled'::text)))
+constraint team_join_requests team_join_requests_decided_by_fkey FOREIGN KEY (decided_by) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint team_join_requests team_join_requests_message_check CHECK (((message IS NULL) OR (char_length(message) <= 500)))
+constraint team_join_requests team_join_requests_pkey PRIMARY KEY (id)
+constraint team_join_requests team_join_requests_requester_id_fkey FOREIGN KEY (requester_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint team_join_requests team_join_requests_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'declined'::text, 'cancelled'::text])))
+constraint team_join_requests team_join_requests_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+constraint team_memberships team_memberships_check CHECK (((to_date IS NULL) OR (from_date IS NULL) OR (to_date >= from_date)))
+constraint team_memberships team_memberships_fighter_id_fkey FOREIGN KEY (fighter_id) REFERENCES fighters(id) ON DELETE CASCADE
+constraint team_memberships team_memberships_pkey PRIMARY KEY (id)
+constraint team_memberships team_memberships_role_check CHECK ((role = ANY (ARRAY['fighter'::text, 'captain'::text, 'coach'::text, 'squire'::text, 'other'::text])))
+constraint team_memberships team_memberships_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+constraint team_merges team_merges_kept_team_id_fkey FOREIGN KEY (kept_team_id) REFERENCES teams(id) ON DELETE CASCADE
+constraint team_merges team_merges_pkey PRIMARY KEY (removed_team_id)
+constraint team_request_private team_request_private_captain_reason_check CHECK (((char_length(captain_reason) >= 10) AND (char_length(captain_reason) <= 1000)))
+constraint team_request_private team_request_private_contact_email_check CHECK (((char_length(contact_email) <= 200) AND (contact_email ~ '^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$'::text)))
+constraint team_request_private team_request_private_contact_phone_check CHECK (((contact_phone IS NULL) OR (char_length(contact_phone) <= 40)))
+constraint team_request_private team_request_private_notes_check CHECK (((notes IS NULL) OR (char_length(notes) <= 2000)))
+constraint team_request_private team_request_private_pkey PRIMARY KEY (team_id)
+constraint team_request_private team_request_private_requested_by_fkey FOREIGN KEY (requested_by) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint team_request_private team_request_private_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+constraint team_roles team_roles_pkey PRIMARY KEY (team_id, user_id)
+constraint team_roles team_roles_role_check CHECK ((role = 'captain'::text))
+constraint team_roles team_roles_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+constraint team_roles team_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint teams teams_claimed_organizations_check CHECK ((cardinality(claimed_organizations) <= 5))
+constraint teams teams_colors_check CHECK ((cardinality(colors) = 2))
+constraint teams teams_crest_division_check CHECK ((crest_division = ANY (ARRAY['pale'::text, 'fess'::text, 'bend'::text, 'chevron'::text, 'quarterly'::text, 'saltire'::text])))
+constraint teams teams_description_check CHECK (((description IS NULL) OR (char_length(description) <= 500)))
+constraint teams teams_emblem_path_check CHECK (((emblem_path IS NULL) OR ((char_length(emblem_path) <= 120) AND (emblem_path ~ '^[0-9a-f-]{36}/[0-9]+\.(png|jpg|webp)$'::text))))
+constraint teams teams_founded_year_check CHECK (((founded_year IS NULL) OR ((founded_year >= 1900) AND (founded_year <= 2100))))
+constraint teams teams_initial_check CHECK ((char_length(initial) <= 2))
+constraint teams teams_name_check CHECK (((char_length(name) >= 2) AND (char_length(name) <= 80)))
+constraint teams teams_pkey PRIMARY KEY (id)
+constraint teams teams_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text))
+constraint teams teams_slug_key UNIQUE (slug)
+constraint teams teams_social_links_check CHECK ((jsonb_typeof(social_links) = 'object'::text))
+constraint teams teams_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text])))
+constraint teams teams_website_check CHECK (((website IS NULL) OR ((char_length(website) <= 300) AND (website ~ '^https://[^[:space:]/]+\.[^[:space:]/]+([/?#][^[:space:]]*)?$'::text))))
+constraint waiver_versions waiver_versions_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint waiver_versions waiver_versions_event_id_version_key UNIQUE (event_id, version)
+constraint waiver_versions waiver_versions_pkey PRIMARY KEY (id)
+function private.audit(p_event uuid, p_action text, p_subject text, p_details jsonb) secdef=true c03b14dd4714c44367774758e036105d
+function private.base_points(p_pool_wins integer, p_elim_wins integer, p_place integer) secdef=false 5be728d1b01fe159d9999434a8e6a825
+function private.bump_match_version() secdef=false fc1c88c9944bd987140f4a5bf7951872
+function private.can_admin_team(p_team uuid) secdef=true 3133dc9dc44e316ce4e7710333eeed9b
+function private.can_assign_captain(p_team uuid) secdef=true 88fc8ffadd78c85eb8f782e4665d4f03
+function private.can_edit_team(p_team uuid) secdef=true ae9a86684f87ac5bda04e308c444ab03
+function private.can_manage_team(p_team uuid) secdef=true 5501d1613a5a10dbc6e6dd20ca655962
+function private.can_read_health(p_event uuid) secdef=true 450285efe65d103715556850b372c0dc
+function private.can_resolve_results(p_event uuid) secdef=true acdd037dcb4c4cb9e95636137d490a69
+function private.can_score(p_event uuid) secdef=true 62d880a4f5dbbbf603fcbdba8566f0ed
+function private.check_entry_kind() secdef=false e34a023371c122f52595ce640ed1da53
+function private.check_fighter_profile() secdef=false d10edd9891a16ec5629d21aed9bd1cfd
+function private.check_match_links() secdef=false a51b8970156451f58d229b1ff5794a7b
+function private.check_volunteer_roles() secdef=false 18b7f5cc3bd235f2ea30e2c446f61182
+function private.clear_orphan_next_slots() secdef=true 46af868b29895c0b4c523740c1976149
+function private.clear_tie_decisions() secdef=true b7c59c40208031d422d138cea7492660
+function private.command_schema_ok(p_schema integer) secdef=false f2865c592704878cd24bbdbfe3b8b711
+function private.compute_fee(p_event uuid, p_province text, p_volunteer boolean) secdef=true edc1346f935647548fd7477305ee9f03
+function private.compute_places(p_comp uuid) secdef=true 41a41786e287f1a282c0246de1f96578
+function private.entry_fighters_fill() secdef=true 895466129a528be643ba0f961719899b
+function private.event_bookings(p_event uuid) secdef=true 67fee62420db92885d50fc37ebae6a11
+function private.event_of_competition(p_comp uuid) secdef=true e69a638ac3b42b3eee55b44ba3ecd999
+function private.event_of_entry(p_entry uuid) secdef=true 2a9ce8e23adc6b9b38dab2d8f7246992
+function private.event_of_match(p_match uuid) secdef=true a7f53d129be3cd01995155a6e139fc34
+function private.event_org(p_event uuid) secdef=true 31c7dbd508636fe0c6a6645e86076bf5
+function private.event_org_enabled(p_event uuid) secdef=true 809cad373640c2b060de3f46657e76b1
+function private.event_organizer_users(p_event uuid) secdef=true ba977e659019ea58e804377d8e9b9fa4
+function private.event_staff_active(p_event uuid) secdef=true 71026b1be397979811ad4b73690bfba0
+function private.fighter_home_team(p_fighter uuid) secdef=true 4886031aee1f8c3c3878937f6eaee00f
+function private.group_ranks(p_comp uuid) secdef=true e1c4883b9cc27e91a98689efcfb03b3d
+function private.handle_new_user() secdef=true 31f69cfd0d8aec6c3b3ec22e4cb5cf27
+function private.has_event_role(p_event uuid, p_roles text[]) secdef=true 3d97dea8565d1b6add193eacbc40c2d0
+function private.is_event_public(p_event uuid) secdef=true ced34450252ce5bb008b7a9347887003
+function private.is_org_admin(p_org uuid) secdef=true 3ba7da7d3c7bbf95a92af8315904a264
+function private.is_org_admin_of_event(p_event uuid) secdef=true a294a50ce20a3b7950546a31f7c4506d
+function private.is_organizer(p_event uuid) secdef=true 31d30092d6b69692ff228137b26567b3
+function private.is_owner() secdef=true f756209dde5e03800b739714ab713457
+function private.is_platform_organizer() secdef=true 5606252b35e858c4d7271c5123be6eb1
+function private.is_synthetic(p_type text, p_id uuid) secdef=true 6441e62409975f930ec59ceb1246112c
+function private.is_team_captain(p_team uuid) secdef=true d2b750c229f83737920703b5a54ea632
+function private.is_team_member(p_team uuid, p_user uuid) secdef=true e6e5f1ae0985af565901fb1b89453915
+function private.join_request_org_guard() secdef=true e1b5ac0af3eeefcb26d3e12b3960b887
+function private.log_result_revision(p_comp uuid, p_entry uuid, p_action text, p_old_place integer, p_old_points numeric, p_new_place integer, p_new_points numeric, p_reason text) secdef=true 33ee1e41e9e2edbe085fd315505bda5e
+function private.org_enabled(p_org uuid) secdef=true fe21f4eb3a5d32ece8a2deb165fe9a61
+function private.person_name(p_user uuid) secdef=true f4920ef8621ee5e92e906470b3d2333f
+function private.purge_activity() secdef=true b739d03f862300ad00f9f86ad0843ef5
+function private.purge_medical_notes() secdef=true b4b4b3487cd19cf3e5ffeef6b1963e5c
+function private.reg_event(p_reg uuid) secdef=true 1e820f9b13a790f8c07b2bcb0791ff44
+function private.reg_owner(p_reg uuid) secdef=true d6dd57ec37aa2e687b5ead1387f479e4
+function private.registration_mode_guard() secdef=true ee022c93cafc5e201612ac0610afcf73
+function private.registration_notify() secdef=true 3fbf576eed26ca936211ca7168b2ee28
+function private.registration_org_guard() secdef=true 210b63f3e585beabff74e68da1553072
+function private.reopen_match_core(p_match uuid, p_reason text) secdef=true 65ef4791df98164b25bb4dc14e949acb
+function private.result_revisions_append_only() secdef=false d795b3ab81682d262094bf69356103cf
+function private.side_rounds(p_detail jsonb, p_side text, p_sf integer, p_sa integer) secdef=false 56a7f063efebbe25d570b1840e46f8d2
+function private.snapshot_entry_team() secdef=true b5381ff8deae6cdc1a1dbf641109f7d5
+function private.team_managers(p_team uuid) secdef=true ef4a48139ba18c9eb793c7988a91acd1
+function private.team_org_enabled(p_team uuid) secdef=true eef613018d1e0ae401917705613886e5
+function private.tier_points(p_base numeric, p_tier text, p_source text) secdef=false 88596a713d97771b9446ed02c6654bb8
+function private.touch_updated_at() secdef=false 587cccdfb0cc0805991745244d57ff0a
+function private.unfinish_competition() secdef=true ac34839a380257d84ada2446509bec1f
+function private.unresolved_ties(p_comp uuid, p_top integer) secdef=true 46e172bcfb6899e73a43863350c45626
+function public.admin_activity(p_hours integer) secdef=true 18e8197042183cb3d0fe8839e1a08603
+function public.admin_analytics(p_from timestamp with time zone, p_to timestamp with time zone, p_audience text, p_device text) secdef=true 3eed5bcd1a4d6064e79434d19c64ff57
+function public.admin_bug_reports(p_status text) secdef=true f4747e9ddfd5e5f2b3a388a9bfb06d7b
+function public.admin_list_organizations() secdef=true c6a759664c031b5a7fbdce19f3876d24
+function public.admin_session_views(p_session uuid) secdef=true c8d5a0b13ebddd37fce3372362c7ad17
+function public.admin_user_activity(p_from timestamp with time zone, p_to timestamp with time zone) secdef=true a56254b386ba0d6068583ca844584554
+function public.approve_team(p_team uuid) secdef=true ecbc61cbdb3357879f59ef39bb496d96
+function public.assign_team_captain(p_team uuid, p_email text) secdef=true aaf46f00fafe292d30450d5a740666ea
+function public.build_schedule(p_competition uuid, p_matches jsonb, p_mode text, p_draw jsonb, p_advance integer) secdef=true f9647e53cded7464a0f5338e83f71927
+function public.can_edit_team(p_team uuid) secdef=true 1df5a2f62ba8298f5a7e1aa38a24b6eb
+function public.can_rename_team(p_team uuid) secdef=true fe0861b39bd82c4808de3ed8abbe1d93
+function public.cancel_team_join(p_request uuid) secdef=true 844b25e37cc7dbcabf5050602d4da76a
+function public.complete_my_profile(p_name text, p_interests text[], p_city text, p_region text, p_country text) secdef=true 2c2692a2c5db2e6131d70458c87292bc
+function public.correct_result(p_competition uuid, p_entry uuid, p_place integer, p_points numeric, p_reason text) secdef=true 1f9d08e42466f7315e20d148cf553bf3
+function public.create_event(p_slug text, p_name text, p_starts_on date, p_ends_on date, p_venue text, p_address text) secdef=true 47881c4d019464790b52a7b237eab48a
+function public.create_season(p_org uuid, p_slug text, p_name text, p_starts_on date, p_ends_on date) secdef=true f5d2ba24f26876c98918aec3efcae63d
+function public.create_team(p_slug text, p_name text, p_city text, p_region text, p_country text) secdef=true e4e4ecf117d4e1c4f9f5742a5d2e7234
+function public.decide_registration(p_reg uuid, p_status text) secdef=true 0a57d41481f59ef601cea0cf4e17bf0a
+function public.decide_team_join(p_request uuid, p_decision text) secdef=true 828960bf53b204a1c851b36291846473
+function public.enter_official_result(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_note text) secdef=true 18774a69764c821d799aebae30c60cc1
+function public.fighter_bookings(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 42f25793e5ca9afeb59d18cb0bfe36f7
+function public.fighter_is_booked(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 2fd44b2aa0e92b5f9f7f99de67bbcc3d
+function public.fighter_profile(p_fighter uuid) secdef=true 3af81ff3100ce8b5e13f92d2da28bd38
+function public.fighter_schedule_conflicts(p_event uuid) secdef=true 3ce6c7882a6c10645eaafae5aae1e8eb
+function public.finalize_match(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer) secdef=true b53b032a3f6a89662f83a32312bbb33e
+function public.finish_competition(p_competition uuid, p_multiplier_source text) secdef=true 059be45431f3b5e3365f004d13e706cb
+function public.grant_event_role_by_email(p_event uuid, p_email text, p_role text) secdef=true aa6ea809d86b2ba8dddc2648b21e632a
+function public.grant_organization_admin(p_org uuid, p_email text) secdef=true ca41db721214c28b4939bdd336986d89
+function public.list_active_organizations() secdef=true 4eb5989632bc53c657e6d46e490727d0
+function public.list_event_staff(p_event uuid) secdef=true eae1f2c481e4f021e4a09bc7958a8bd2
+function public.list_organization_staff(p_org uuid) secdef=true 3148e2f3a5cee3c9187925692ce4c868
+function public.list_result_conflicts(p_event uuid) secdef=true 09f0a3a6a2cb71382b3882c399208c91
+function public.list_team_captains(p_team uuid) secdef=true 29f36411f6e5b56c893fb49db03a2b75
+function public.mark_notifications_read(p_ids uuid[]) secdef=true 84b3bf7f83d766241f919b05b3ea2e48
+function public.merge_teams(p_keep uuid, p_remove uuid) secdef=true 8ffbd6f8bc2b4d68a63b24ae6b566ffd
+function public.my_event_entries(p_event uuid) secdef=true a501405ce2393bb1aad19c726ca632f3
+function public.my_fighter_id() secdef=true 1f8cafe8b9887cb5e36ff44cca99d34b
+function public.my_notifications(p_limit integer) secdef=true ce3109c5315e6228988e5bf9b9ba1302
+function public.my_team_ids() secdef=true 2e515a55e5b67e1265978888534c9a3c
+function public.my_team_requests() secdef=true a6e88a25fc0a79a4fbd27621a8bc20ef
+function public.new_team_request_details(p_team uuid) secdef=true ad83db5bbcbdfdc1e5782c4d51a9fe9d
+function public.pool_standings(p_competition uuid) secdef=true b1f41fde5830d12578118986ca51733d
+function public.record_score_event(p_id uuid, p_match uuid, p_kind text, p_payload jsonb, p_client_at timestamp with time zone) secdef=true 2eea2ddd0830bd770b864710afabc0b6
+function public.record_tie_decision(p_competition uuid, p_part text, p_order uuid[], p_note text) secdef=true 5fc09b70fa28c65b68c74d39473c1b21
+function public.remove_event_role(p_event uuid, p_user uuid, p_role text) secdef=true 3a05310d5655ded09a1ff657a6b01ac0
+function public.remove_organization_admin(p_org uuid, p_user uuid) secdef=true e779cb189f7d474cf16f6c404de5dd54
+function public.remove_team_captain(p_team uuid, p_user uuid) secdef=true 4d33894a7f5638a0e9d4f934ce72ea1f
+function public.reopen_match(p_match uuid, p_reason text) secdef=true 2bfb6353b4a4176e607845aadbe67c72
+function public.report_bug(p jsonb) secdef=true 7d1ea860d4335a1060158e8f78c967fb
+function public.request_new_team(p_payload jsonb) secdef=true ad52e737cbca78ece235bf3209050c6c
+function public.request_team_join(p_team uuid, p_message text) secdef=true 25d5ab4ac2dac9fdb871282ced04ca1c
+function public.resolve_result_conflict(p_proposal uuid, p_decision text, p_note text) secdef=true e39b4f3b1be04d082bfad22dfdd40bc0
+function public.set_bug_status(p_report uuid, p_status text) secdef=true 354554200e7d45f9966d402de609df50
+function public.set_entry_roster(p_entry uuid, p_fighters jsonb) secdef=true 76456d0588cd40fe128f21f59f2d8ab1
+function public.set_event_organization(p_event uuid, p_org uuid) secdef=true 5a4ffe1f50b98f8407ac15e04b629ab1
+function public.set_event_season(p_event uuid, p_season uuid) secdef=true 6a41dbf442e65c78d1fe1ac4757a535b
+function public.set_match_queue(p_match uuid, p_state text, p_field text) secdef=true f05b64b41a3776b47b62a115481506a1
+function public.set_my_fighter_avatar(p_path text) secdef=true eeed532419ebff7e93a0899d34d6407a
+function public.set_organization_enabled(p_org uuid, p_enabled boolean, p_reason text) secdef=true cc86f24d78e6f8ab5d7d8e2b4124c0b6
+function public.set_registration_check(p_reg uuid, p_check text, p_value boolean) secdef=true 4b5048e309b2f012ee3bfed9eb12cc47
+function public.set_registration_insurance(p_reg uuid, p_insurance text) secdef=true ecd26cf859c13ad7a0bd693f07f14196
+function public.set_registration_paid(p_reg uuid, p_paid boolean) secdef=true d19bc388a14c0a695fafb3723ec03e24
+function public.set_team_emblem(p_team uuid, p_path text) secdef=true 1b753f492fba3b9d3ee75534ba5a1bff
+function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 11dba67abfcb68f4628112aab5eb696d
+function public.submit_registration(p_event uuid, p_data jsonb) secdef=true 2622c531414fef0cc0df458e36aeb00d
+function public.team_clearance(p_event uuid, p_team uuid) secdef=true a0219d10be26cc870881fa950d5b36dd
+function public.team_requests_inbox() secdef=true 0e44165a441d977e7a197638ca76db60
+function public.team_roster(p_team uuid) secdef=true 5a474590147764074630088f392312d2
+function public.track_activity(p_session uuid, p_path text, p_device text, p_meta jsonb) secdef=true e80431e458fee3a3f875ead8cffabc97
+function public.track_event(p_session uuid, p_name text, p_props jsonb) secdef=true a3c29b8891b5c54a27492178919f9166
+function public.update_my_fighter_profile(p jsonb) secdef=true 1a72594395e73d4324c19d289e216b6d
+function public.update_team_profile(p_team uuid, p jsonb) secdef=true f9cff7a70e57aecc107e3d2db25b2cbc
+function public.void_result(p_competition uuid, p_entry uuid, p_reason text) secdef=true 3b36c3d988c7b816401da157329e0028
+index public.activity_events CREATE INDEX ON public.activity_events USING btree (at DESC, name)
+index public.activity_events CREATE UNIQUE INDEX ON public.activity_events USING btree (id)
+index public.activity_sessions CREATE INDEX ON public.activity_sessions USING btree (last_seen_at DESC)
+index public.activity_sessions CREATE INDEX ON public.activity_sessions USING btree (user_id, last_seen_at DESC)
+index public.activity_sessions CREATE UNIQUE INDEX ON public.activity_sessions USING btree (id)
+index public.activity_views CREATE INDEX ON public.activity_views USING btree (at DESC)
+index public.activity_views CREATE INDEX ON public.activity_views USING btree (session_id, at)
+index public.activity_views CREATE UNIQUE INDEX ON public.activity_views USING btree (id)
+index public.audit_log CREATE INDEX ON public.audit_log USING btree (event_id, at DESC)
+index public.audit_log CREATE UNIQUE INDEX ON public.audit_log USING btree (id)
+index public.bug_reports CREATE INDEX ON public.bug_reports USING btree (created_at DESC)
+index public.bug_reports CREATE UNIQUE INDEX ON public.bug_reports USING btree (id)
+index public.competitions CREATE INDEX ON public.competitions USING btree (event_id)
+index public.competitions CREATE UNIQUE INDEX ON public.competitions USING btree (id)
+index public.entries CREATE INDEX ON public.entries USING btree (competition_id)
+index public.entries CREATE UNIQUE INDEX ON public.entries USING btree (competition_id, fighter_id)
+index public.entries CREATE UNIQUE INDEX ON public.entries USING btree (competition_id, team_id)
+index public.entries CREATE UNIQUE INDEX ON public.entries USING btree (id)
+index public.entries CREATE UNIQUE INDEX ON public.entries USING btree (id, competition_id)
+index public.entry_fighters CREATE INDEX ON public.entry_fighters USING btree (fighter_id)
+index public.entry_fighters CREATE UNIQUE INDEX ON public.entry_fighters USING btree (competition_id, fighter_id)
+index public.entry_fighters CREATE UNIQUE INDEX ON public.entry_fighters USING btree (entry_id, fighter_id)
+index public.entry_fighters CREATE UNIQUE INDEX ON public.entry_fighters USING btree (id)
+index public.event_staff CREATE UNIQUE INDEX ON public.event_staff USING btree (event_id, user_id, role)
+index public.events CREATE INDEX ON public.events USING btree (organization_id)
+index public.events CREATE UNIQUE INDEX ON public.events USING btree (id)
+index public.events CREATE UNIQUE INDEX ON public.events USING btree (slug)
+index public.fighter_accounts CREATE UNIQUE INDEX ON public.fighter_accounts USING btree (fighter_id)
+index public.fighter_accounts CREATE UNIQUE INDEX ON public.fighter_accounts USING btree (user_id)
+index public.fighters CREATE UNIQUE INDEX ON public.fighters USING btree (id)
+index public.matches CREATE INDEX ON public.matches USING btree (competition_id, stage, "position")
+index public.matches CREATE INDEX ON public.matches USING btree (field, queue_state)
+index public.matches CREATE UNIQUE INDEX ON public.matches USING btree (id)
+index public.notifications CREATE INDEX ON public.notifications USING btree (user_id, created_at DESC)
+index public.notifications CREATE UNIQUE INDEX ON public.notifications USING btree (id)
+index public.organization_staff CREATE UNIQUE INDEX ON public.organization_staff USING btree (organization_id, user_id)
+index public.organizations CREATE UNIQUE INDEX ON public.organizations USING btree (id)
+index public.organizations CREATE UNIQUE INDEX ON public.organizations USING btree (slug)
+index public.platform_roles CREATE UNIQUE INDEX ON public.platform_roles USING btree (user_id)
+index public.pool_tie_decisions CREATE UNIQUE INDEX ON public.pool_tie_decisions USING btree (competition_id, entry_id)
+index public.profiles CREATE UNIQUE INDEX ON public.profiles USING btree (id)
+index public.record_sources CREATE INDEX ON public.record_sources USING btree (entity_type, entity_id)
+index public.record_sources CREATE UNIQUE INDEX ON public.record_sources USING btree (id)
+index public.record_sources CREATE UNIQUE INDEX ON public.record_sources USING btree (source_id, entity_type, entity_id)
+index public.ref_categories CREATE UNIQUE INDEX ON public.ref_categories USING btree (code)
+index public.ref_tiers CREATE UNIQUE INDEX ON public.ref_tiers USING btree (name)
+index public.registration_checks CREATE UNIQUE INDEX ON public.registration_checks USING btree (registration_id, check_name)
+index public.registration_competitions CREATE UNIQUE INDEX ON public.registration_competitions USING btree (registration_id, competition_id)
+index public.registration_private CREATE UNIQUE INDEX ON public.registration_private USING btree (registration_id)
+index public.registrations CREATE INDEX ON public.registrations USING btree (event_id, status)
+index public.registrations CREATE UNIQUE INDEX ON public.registrations USING btree (event_id, user_id)
+index public.registrations CREATE UNIQUE INDEX ON public.registrations USING btree (id)
+index public.result_proposals CREATE INDEX ON public.result_proposals USING btree (event_id) WHERE (status = 'conflict'::text)
+index public.result_proposals CREATE INDEX ON public.result_proposals USING btree (match_id, created_at)
+index public.result_proposals CREATE UNIQUE INDEX ON public.result_proposals USING btree (id)
+index public.result_revisions CREATE INDEX ON public.result_revisions USING btree (competition_id, created_at)
+index public.result_revisions CREATE UNIQUE INDEX ON public.result_revisions USING btree (competition_id, entry_id, revision)
+index public.result_revisions CREATE UNIQUE INDEX ON public.result_revisions USING btree (id)
+index public.results CREATE INDEX ON public.results USING btree (competition_id)
+index public.results CREATE UNIQUE INDEX ON public.results USING btree (competition_id, entry_id)
+index public.results CREATE UNIQUE INDEX ON public.results USING btree (id)
+index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (id)
+index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (ruleset_id, version)
+index public.rulesets CREATE UNIQUE INDEX ON public.rulesets USING btree (id)
+index public.rulesets CREATE UNIQUE INDEX ON public.rulesets USING btree (slug)
+index public.score_events CREATE INDEX ON public.score_events USING btree (match_id, received_at)
+index public.score_events CREATE UNIQUE INDEX ON public.score_events USING btree (id)
+index public.seasons CREATE UNIQUE INDEX ON public.seasons USING btree (id)
+index public.seasons CREATE UNIQUE INDEX ON public.seasons USING btree (slug)
+index public.sources CREATE UNIQUE INDEX ON public.sources USING btree (id)
+index public.team_affiliations CREATE UNIQUE INDEX ON public.team_affiliations USING btree (id)
+index public.team_affiliations CREATE UNIQUE INDEX ON public.team_affiliations USING btree (team_id, organization_id, relation)
+index public.team_join_requests CREATE INDEX ON public.team_join_requests USING btree (requester_id, created_at DESC)
+index public.team_join_requests CREATE INDEX ON public.team_join_requests USING btree (team_id, status)
+index public.team_join_requests CREATE UNIQUE INDEX ON public.team_join_requests USING btree (id)
+index public.team_join_requests CREATE UNIQUE INDEX ON public.team_join_requests USING btree (team_id, requester_id) WHERE (status = 'pending'::text)
+index public.team_memberships CREATE INDEX ON public.team_memberships USING btree (fighter_id)
+index public.team_memberships CREATE INDEX ON public.team_memberships USING btree (team_id)
+index public.team_memberships CREATE UNIQUE INDEX ON public.team_memberships USING btree (id)
+index public.team_merges CREATE UNIQUE INDEX ON public.team_merges USING btree (removed_team_id)
+index public.team_request_private CREATE UNIQUE INDEX ON public.team_request_private USING btree (team_id)
+index public.team_roles CREATE UNIQUE INDEX ON public.team_roles USING btree (team_id, user_id)
+index public.teams CREATE UNIQUE INDEX ON public.teams USING btree (id)
+index public.teams CREATE UNIQUE INDEX ON public.teams USING btree (slug)
+index public.waiver_versions CREATE UNIQUE INDEX ON public.waiver_versions USING btree (event_id, version)
+index public.waiver_versions CREATE UNIQUE INDEX ON public.waiver_versions USING btree (id)
+policy public.audit_log audit_log_read SELECT roles=authenticated using=(private.is_owner() OR ((event_id IS NOT NULL) AND private.is_organizer(event_id))) check=
+policy public.competitions competitions_organizer_write ALL roles=authenticated using=private.is_organizer(event_id) check=private.is_organizer(event_id)
+policy public.competitions competitions_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
+policy public.entries entries_organizer_write ALL roles=authenticated using=private.is_organizer(private.event_of_competition(competition_id)) check=private.is_organizer(private.event_of_competition(competition_id))
+policy public.entries entries_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
+policy public.entry_fighters entry_fighters_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
+policy public.event_staff event_staff_read SELECT roles=authenticated using=((user_id = auth.uid()) OR private.is_organizer(event_id)) check=
+policy public.events events_organizer_update UPDATE roles=authenticated using=private.is_organizer(id) check=private.is_organizer(id)
+policy public.events events_read SELECT roles=anon,authenticated using=(private.is_event_public(id) OR private.can_score(id)) check=
+policy public.fighter_accounts fighter_accounts_own SELECT roles=authenticated using=(user_id = auth.uid()) check=
+policy public.fighters fighters_public_read SELECT roles=anon,authenticated using=true check=
+policy public.matches matches_organizer_delete DELETE roles=authenticated using=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text)) check=
+policy public.matches matches_organizer_insert INSERT roles=authenticated using= check=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state = 'scheduled'::text) AND (result IS NULL))
+policy public.matches matches_organizer_update UPDATE roles=authenticated using=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text)) check=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text))
+policy public.matches matches_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
+policy public.organization_staff organization_staff_read SELECT roles=authenticated using=((user_id = auth.uid()) OR private.is_owner()) check=
+policy public.organizations organizations_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
+policy public.organizations organizations_read SELECT roles=anon,authenticated using=true check=
+policy public.platform_roles platform_roles_select_own SELECT roles=authenticated using=(user_id = auth.uid()) check=
+policy public.pool_tie_decisions pool_tie_decisions_read SELECT roles=authenticated using=private.is_organizer(private.event_of_competition(competition_id)) check=
+policy public.profiles profiles_select_own SELECT roles=authenticated using=(id = auth.uid()) check=
+policy public.profiles profiles_update_own UPDATE roles=authenticated using=(id = auth.uid()) check=(id = auth.uid())
+policy public.record_sources record_sources_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
+policy public.record_sources record_sources_read SELECT roles=anon,authenticated using=true check=
+policy public.ref_categories ref_categories_read SELECT roles=anon,authenticated using=true check=
+policy public.ref_tiers ref_tiers_read SELECT roles=anon,authenticated using=true check=
+policy public.registration_checks reg_checks_read SELECT roles=authenticated using=private.can_read_health(private.reg_event(registration_id)) check=
+policy public.registration_competitions reg_comp_read SELECT roles=authenticated using=((private.reg_owner(registration_id) = auth.uid()) OR private.can_read_health(private.reg_event(registration_id))) check=
+policy public.registration_private reg_private_read SELECT roles=authenticated using=((private.reg_owner(registration_id) = auth.uid()) OR private.can_read_health(private.reg_event(registration_id))) check=
+policy public.registrations registrations_read SELECT roles=authenticated using=((user_id = auth.uid()) OR private.can_read_health(event_id)) check=
+policy public.result_proposals result_proposals_read SELECT roles=authenticated using=((proposed_by = auth.uid()) OR private.can_resolve_results(event_id)) check=
+policy public.result_revisions result_revisions_read SELECT roles=authenticated using=private.is_organizer(private.event_of_competition(competition_id)) check=
+policy public.results results_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
+policy public.ruleset_versions ruleset_versions_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
+policy public.ruleset_versions ruleset_versions_read SELECT roles=anon,authenticated using=true check=
+policy public.rulesets rulesets_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
+policy public.rulesets rulesets_read SELECT roles=anon,authenticated using=true check=
+policy public.score_events score_events_read SELECT roles=authenticated using=private.can_score(private.event_of_match(match_id)) check=
+policy public.seasons seasons_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
+policy public.seasons seasons_read SELECT roles=anon,authenticated using=true check=
+policy public.sources sources_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
+policy public.sources sources_read SELECT roles=anon,authenticated using=true check=
+policy public.team_affiliations team_affiliations_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
+policy public.team_affiliations team_affiliations_read SELECT roles=anon,authenticated using=((EXISTS ( SELECT 1
+   FROM teams t
+  WHERE ((t.id = team_affiliations.team_id) AND (t.status = 'approved'::text)))) OR private.can_admin_team(team_id)) check=
+policy public.team_memberships team_memberships_captain_write ALL roles=authenticated using=(private.is_team_captain(team_id) OR private.is_owner()) check=(private.is_team_captain(team_id) OR private.is_owner())
+policy public.team_memberships team_memberships_read SELECT roles=anon,authenticated using=((EXISTS ( SELECT 1
+   FROM teams t
+  WHERE ((t.id = team_memberships.team_id) AND (t.status = 'approved'::text)))) OR private.is_team_captain(team_id) OR private.can_admin_team(team_id)) check=
+policy public.team_merges team_merges_read SELECT roles=anon,authenticated using=was_public check=
+policy public.team_roles team_roles_own SELECT roles=authenticated using=(user_id = auth.uid()) check=
+policy public.teams teams_read SELECT roles=anon,authenticated using=((status = 'approved'::text) OR private.is_team_captain(id) OR private.can_admin_team(id)) check=
+policy public.waiver_versions waiver_organizer_insert INSERT roles=authenticated using= check=private.is_organizer(event_id)
+policy public.waiver_versions waiver_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.is_organizer(event_id)) check=
+table public.activity_events rls=true
+table public.activity_sessions rls=true
+table public.activity_views rls=true
+table public.audit_log rls=true
+table public.bug_reports rls=true
+table public.competitions rls=true
+table public.entries rls=true
+table public.entry_fighters rls=true
+table public.event_staff rls=true
+table public.events rls=true
+table public.fighter_accounts rls=true
+table public.fighters rls=true
+table public.matches rls=true
+table public.notifications rls=true
+table public.organization_staff rls=true
+table public.organizations rls=true
+table public.platform_roles rls=true
+table public.pool_tie_decisions rls=true
+table public.profiles rls=true
+table public.record_sources rls=true
+table public.ref_categories rls=true
+table public.ref_tiers rls=true
+table public.registration_checks rls=true
+table public.registration_competitions rls=true
+table public.registration_private rls=true
+table public.registrations rls=true
+table public.result_proposals rls=true
+table public.result_revisions rls=true
+table public.results rls=true
+table public.ruleset_versions rls=true
+table public.rulesets rls=true
+table public.score_events rls=true
+table public.seasons rls=true
+table public.sources rls=true
+table public.team_affiliations rls=true
+table public.team_join_requests rls=true
+table public.team_memberships rls=true
+table public.team_merges rls=true
+table public.team_request_private rls=true
+table public.team_roles rls=true
+table public.teams rls=true
+table public.waiver_versions rls=true
+trigger public.entries entries_kind a3e6aa05107d3bd9a42e7cb20c68d43e
+trigger public.entries entries_snapshot_team ae611c7fd73764d081bc3d3e3777ab21
+trigger public.entry_fighters entry_fighters_fill 5c2a816c6ac198728e3868e6b303d0cb
+trigger public.events events_touch ea193b4d94a5077a081709aa310f481a
+trigger public.fighters fighters_profile_check e7e82807a0fa9ec51263909bf9a9392c
+trigger public.matches matches_bump_version 349122f662f9df6a32cd78de47b0e4d4
+trigger public.matches matches_clear_orphan_slots 8b44bfc0ed4fce0385cbf2225971a1f0
+trigger public.matches matches_clear_tie_decisions b680868d5ce98a216ba490b041c0461a
+trigger public.matches matches_links 0e6952187bb28c316b1b233bf44007df
+trigger public.matches matches_unfinish 6480b73749c8d5dd24a95139e75e38d8
+trigger public.registrations registrations_mode_guard e5451eb1c4bc880242a281fecdf7379f
+trigger public.registrations registrations_notify 009cdce1b6cbd41828150fbb68cdf7e4
+trigger public.registrations registrations_org_guard 973a013d5e762d92438c81de43cc2663
+trigger public.registrations registrations_touch d51230d310f85ad30d4cb37976d0ccc0
+trigger public.registrations registrations_volunteer_roles 9617f9c515e507cf6932443820038877
+trigger public.result_revisions result_revisions_no_change 6117dd6abee472b9d28bea37a8cab968
+trigger public.team_join_requests team_join_requests_org_guard d71e980008a95f7149db47f7477c2f22
+view public.competition_standings opts=security_invoker=true 8d4ca99c3fd9db2cf2cb8f7fd8b47047
+view public.entry_roster opts=security_invoker=true 336f4b4453c6c8849ae58ace7b889271
+view public.fighter_career_stats opts=security_invoker=true 5fc6bf366053a0a3619060919c6974bc
+view public.fighter_history opts=security_invoker=true e6ff5bb4386cd9ced5e2099ebe52ff92
+view public.fighter_match_rows opts=security_invoker=true 99eb84d266d00afc3cdd1bef730123c3
+view public.fighter_match_stats opts=security_invoker=true a0a8188fedc270c30c46afb6e014963e
+view public.fighter_participation opts=security_invoker=true 7ca57b3e294b8ed789cd629f623b0c6a
+view public.fighter_results opts=security_invoker=true aa25fd7f60924b9c53cd96bbf40a3dcc
+view public.fighter_season_stats opts=security_invoker=true 7f3778d2140e93cbb508cc8476fcc5b2
+view public.match_sides opts=security_invoker=true 9bebf62bbb75beb6326a355b28fb6661
+view public.played_events opts=security_invoker=true 0af02ff3d9e6f420a71938b683542df6
+view public.ranking_fighters opts=security_invoker=true 42b7a45836fe99ca2d483cfc62c5feef
+view public.ranking_teams opts=security_invoker=true 399757e540973c5ce6ace366d9785db3
+view public.registration_clearance opts=security_invoker=true bf4a15af9b50caa440a79819117011b4
+view public.result_rows opts=security_invoker=true 496dd56fce87342ebcd9f7e202588e33
+view public.synthetic_records opts=security_invoker=true 7c70d9a9a984c5d540357da0371a90a7
+view public.team_history opts=security_invoker=true 0cba0ee102557b6d74ee15801a10ace8
+view public.team_results opts=security_invoker=true ce05e553eda835f2eff22b47a1df8144
+view public.team_stats opts=security_invoker=true 90204c0d1fb72256d32bfaad390eb430
+view public.teams_active opts=security_invoker=true 02249d0d664e0323ecd8e26bc165d75e

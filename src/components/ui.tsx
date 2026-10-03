@@ -72,6 +72,14 @@ export function SectionHead({ title, to, more }: { title: string; to?: ReactNode
 
 export const tierMultiplierLabel = (t: TierName) => t;
 
+/** Whether the public screen is receiving live updates. Says "Live" only when it truly is; otherwise tells the viewer what they are seeing. */
+export function LiveStatus({ connection }: { connection: 'connecting' | 'live' | 'polling' }) {
+  if (connection === 'connecting') return null;
+  return connection === 'live'
+    ? <span className="chip win" role="status" style={{ whiteSpace: 'normal' }}>● Live: updates arrive as they happen</span>
+    : <span className="chip brass" role="status" style={{ whiteSpace: 'normal' }}>Reconnecting: showing the last information we have, refreshing every few seconds</span>;
+}
+
 /** Marks fictional/test records wherever they are shown. Pass the record's id or slug; renders nothing for real records. */
 export function TestBadge({ synthetic }: { synthetic: boolean }) {
   if (!synthetic) return null;

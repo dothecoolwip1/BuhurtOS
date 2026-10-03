@@ -19,6 +19,9 @@ import { supabase } from '../lib/supabase';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { useOutbox } from '../lib/useOutbox';
+import { scoringGuard } from '../lib/swUpdate';
+import { realtimeFilter } from '../lib/liveSync';
+import { trackEvent } from '../lib/analytics';
 import { NotFoundPage } from './NotFoundPage';
 
 /** Mirrors private.can_score: organizer, marshal, scorekeeper, plus the platform owner. The database enforces it again on every call. */
@@ -74,6 +77,9 @@ function Scoring({ opened, eventId, userId, onExit, onFinished, onStale }: { ope
   const [saved, setSaved] = useState<string | null>(null);
   const mine = rejected.filter(e => e.subject === match.id);
 
+  // While a scoring screen is open a waiting app update must not take over (see swUpdate.ts).
+  useEffect(() => { scoringGuard.enter(); return () => scoringGuard.leave(); }, []);
+
   useEffect(() => {
     let live = true;
     if (!mode) { setBoard(null); return; }
@@ -102,25 +108,28 @@ function Scoring({ opened, eventId, userId, onExit, onFinished, onStale }: { ope
     setBusy(true); setError(null);
     try {
       const sent = await drain(match.id);
-      if (!sent.clear) { setError(`${sent.remaining} score ${sent.remaining === 1 ? 'action is' : 'actions are'} still waiting to send, so the result cannot be made official yet. Nothing is lost.`); setPhase('pending'); return; }
+      if (!sent.clear) { trackEvent('result_pending_no_signal', { waiting: sent.remaining }); setError(`${sent.remaining} score ${sent.remaining === 1 ? 'action is' : 'actions are'} still waiting to send, so the result cannot be made official yet. Nothing is lost.`); setPhase('pending'); return; }
       // One command id per board: pressing Save again after a lost signal sends the SAME command, so it can never create a second result.
       if (!commandId.current) { commandId.current = crypto.randomUUID(); await saveBoard(userId, eventId, match.id, board, { finalizeCommandId: commandId.current }); }
       const v = outcome.value;
       let r;
       try { r = await submitMatchResult({ commandId: commandId.current, matchId: match.id, result: v.result, scoreA: v.scoreA, scoreB: v.scoreB, detail: v.detail, expectedVersion: version }); }
       catch (e) {
-        if (isNoSignalError(e)) { setPhase('pending'); return; }   // not official: nothing reached the server
+        if (isNoSignalError(e)) { trackEvent('result_pending_no_signal'); setPhase('pending'); return; }   // not official: nothing reached the server
         throw e;
       }
       if (r.status === 'accepted' || r.status === 'duplicate') {
         await clearBoard(userId, match.id);
         await discardRejected(match.id);
         setSaved(resultSummary(v, names.a, names.b));
+        trackEvent('result_official', { outcome: r.status });
         setPhase('official');
       } else if (r.status === 'conflict') {
         await saveBoard(userId, eventId, match.id, board, { finalizeCommandId: commandId.current, review: 'conflict' });
+        trackEvent('result_conflict');
         setPhase('review');
       } else {
+        trackEvent('result_stale');
         await clearBoard(userId, match.id);   // the server keeps this device's result as evidence; the match itself changed
         onStale('This match changed after you opened it (a side was replaced or the result was reopened). Your result was sent to the head marshal for review and nothing was made official. The queue has been reloaded.');
       }
@@ -250,9 +259,11 @@ export function FieldPage() {
     if (!canScore) return;
     const poll = window.setInterval(() => { if (!document.hidden) reload(); }, POLL_MS);
     const nudge = () => { window.clearTimeout(timer.current); timer.current = window.setTimeout(reload, 500); };
-    const channel = supabase.channel(`field-${slug}-${field}`).on('postgres_changes', { event: '*', schema: 'public', table: 'matches' }, nudge).subscribe();
+    const ids = (comps.data ?? []).map(c => c.id);
+    const filter = realtimeFilter(ids);   // only this event's competitions, filtered on the server
+    const channel = supabase.channel(`field-${slug}-${field}`).on('postgres_changes', { event: '*', schema: 'public', table: 'matches', ...(filter ? { filter } : {}) }, nudge).subscribe();
     return () => { window.clearInterval(poll); window.clearTimeout(timer.current); void supabase.removeChannel(channel); };
-  }, [canScore, slug, field, reload]);
+  }, [canScore, slug, field, reload, comps.data]);
 
   const compById = useMemo(() => new Map((comps.data ?? []).map(c => [c.id, c])), [comps.data]);
   const queue = useMemo(() => fieldQueue(matches.data ?? [], field), [matches.data, field]);

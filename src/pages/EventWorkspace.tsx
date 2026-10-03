@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { Chip, PageHead, TestBadge } from '../components/ui';
+import { Chip, LiveStatus, PageHead, TestBadge } from '../components/ui';
 import { isSynthetic, useSynthetic } from '../data/synthetic';
 import { eventTypeLabel } from '../data/eventTypes';
 import { fetchEvent, fetchMyEventContext, type LeagueKey, type LiveCompetition, type LiveEvent, type MyEventContext } from '../data/api';
@@ -140,6 +140,7 @@ export function EventWorkspace() {
       <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />
       <ShareEventButton title={event.name} />
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
+      {showLive && <LiveStatus connection={live.connection} />}
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <MyTeamPanel eventId={event.id} userId={userId} />
@@ -177,7 +178,7 @@ export function EventWorkspace() {
                 <h3>{c.name}</h3>
                 {!hasDraw && <p className="muted">The draw has not been made yet.</p>}
                 {hasDraw && <LivePools standings={d.standings} entries={d.entries} matches={d.matches} />}
-                {hasDraw && <LiveBracket matches={d.matches} />}
+                {hasDraw && <LiveBracket matches={d.matches} liveOk={live.connection === 'live'} />}
               </div>
             );
           })}

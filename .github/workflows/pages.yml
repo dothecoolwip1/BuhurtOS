@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      emergency:
+        description: 'EMERGENCY deploy while production is frozen (see docs/runbooks/EVENT_RELEASE_POLICY.md). Needs a reason.'
+        type: boolean
+        default: false
+      reason:
+        description: 'Why this cannot wait (recorded in the run summary)'
+        type: string
+        default: ''
 
 concurrency:
   group: pages-${{ github.ref }}
@@ -13,7 +22,7 @@ concurrency:
 
 jobs:
   check:
-    name: Typecheck, test, build
+    name: Typecheck, unit tests, build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -44,10 +53,86 @@ jobs:
         with:
           path: dist
 
+  database:
+    name: Database gate (migrations from zero, permissions, integrity)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      # builds a scratch database from supabase/migrations, then runs every *_gate.sql suite, the tournament simulation, the fictional-league verifier,
+      # the concurrency test, the shared SQL/TypeScript vectors and the schema fingerprint. A failure here fails the build; nothing is skipped.
+      - run: supabase/tests/run_all.sh
+
+  browser:
+    name: Browser tests (scoring, offline, update safety)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright-core install --with-deps chromium
+      - name: Build the app the way the browser tests serve it
+        run: VITE_BASE=/ npx vite build --outDir /tmp/e2e-dist
+      - name: Serve it
+        run: |
+          nohup npx vite preview --outDir /tmp/e2e-dist --port 4180 > /tmp/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:4180/ > /dev/null && break; sleep 1; done
+      - name: Scoring screen against a mocked Supabase (IndexedDB queue, pending vs official, conflict, paper recovery)
+        run: E2E_BASE=http://localhost:4180 CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/field-pack03.mjs
+      - name: Service-worker update safety with pending scoring work
+        run: CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/sw-update.mjs
+
+  release-policy:
+    name: Release policy (is production frozen?)
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.policy.outputs.deploy }}
+    steps:
+      - id: policy
+        env:
+          FROZEN: ${{ vars.PRODUCTION_FROZEN }}
+          EVENT: ${{ github.event_name }}
+          EMERGENCY: ${{ inputs.emergency }}
+          REASON: ${{ inputs.reason }}
+        run: |
+          # See docs/runbooks/EVENT_RELEASE_POLICY.md. Repository variable PRODUCTION_FROZEN=true freezes production deploys.
+          if [ "$FROZEN" != "true" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"; echo "Production is not frozen: deploying." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$EVENT" = "workflow_dispatch" ] && [ "$EMERGENCY" = "true" ] && [ "${#REASON}" -ge 10 ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"; echo "EMERGENCY DEPLOY while frozen. Reason: $REASON" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            echo "Production is FROZEN (PRODUCTION_FROZEN=true). Build and tests ran; nothing was deployed. For an emergency fix run this workflow manually with emergency=true and a reason (10+ characters)." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   deploy:
     name: Deploy GitHub Pages
-    if: github.event_name != 'pull_request'
-    needs: check
+    if: github.event_name != 'pull_request' && needs.release-policy.outputs.deploy == 'true'
+    needs: [check, database, browser, release-policy]
     runs-on: ubuntu-latest
     permissions:
       pages: write

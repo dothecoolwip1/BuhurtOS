@@ -3,6 +3,7 @@ import { useAuth } from '../auth/AuthContext';
 import { IdbOutboxStorage, MemoryStorage, Outbox, importLegacyOutbox, type FlushReport, type OutboxEntry, type Sender } from './outbox';
 import { drainSubject, type DrainResult } from './outboxWait';
 import { realSender } from './scoreSender';
+import { trackEvent } from './analytics';
 
 /**
  * Two queues. The real one is saved on the device (IndexedDB) and sent to the database, only while the account that created each entry
@@ -48,8 +49,10 @@ export function useOutbox(opts: { preview?: boolean; eventId?: string } = {}) {
   );
   const flush = useCallback(async (): Promise<FlushReport> => {
     if (!userId) return { sent: 0, rejected: [], remaining: 0, stoppedOffline: false, blocked: [], heldForOthers: ch.box.heldForOthers('') };
-    return ch.box.flush(ch.send, userId);
-  }, [ch, userId]);
+    const r = await ch.box.flush(ch.send, userId);
+    if (!opts.preview && r.rejected.length > 0) trackEvent('score_action_refused', { count: r.rejected.length });
+    return r;
+  }, [ch, userId, opts.preview]);
   useEffect(() => {
     void flush();
     const t = window.setInterval(() => { void flush(); }, 8000);

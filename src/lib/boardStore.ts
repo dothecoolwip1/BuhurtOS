@@ -51,6 +51,13 @@ export function saveBoard(userId: string, eventId: string, matchId: string, boar
   return put({ key: k, userId, eventId, matchId, board, finalizeCommandId: extra.finalizeCommandId ?? prev?.finalizeCommandId, review: extra.review ?? prev?.review, savedAt: Date.now() });
 }
 
+/** How many matches have a part-scored board or an unconfirmed finalization on this device (any account). Used to decide whether an app update is safe. */
+export async function countUnfinishedBoards(): Promise<number> {
+  const db = await sharedDb();
+  if (db) { try { return ((await tx(db, 'boards', 'readonly', s => s.count())) as number) ?? 0; } catch { /* fall through */ } }
+  return memory.size;
+}
+
 export async function clearBoard(userId: string, matchId: string): Promise<void> {
   const k = key(userId, matchId);
   memory.delete(k);

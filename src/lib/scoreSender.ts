@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { OutboxEntry, SendOutcome, SendResult, Sender } from './outbox';
+import { COMMAND_SCHEMA, type OutboxEntry, type SendOutcome, type SendResult, type Sender } from './outbox';
 
 interface RpcErrorLike { message?: string; code?: string; status?: number }
 
@@ -45,6 +45,8 @@ export const scoreEventArgs = (e: Pick<OutboxEntry, 'id' | 'subject' | 'kind' | 
 export const realSender: Sender = async entry => {
   const { data } = await supabase.auth.getSession();
   if (!data.session || data.session.user.id !== entry.userId) return 'offline';
+  // Saved by a NEWER build than this one (for example after an emergency rollback): keep it, say why, never guess at its meaning.
+  if (entry.schema > COMMAND_SCHEMA) return { result: 'reject', error: 'saved by a newer version of BuhurtOS than this one; reload the page to update, then it can be sent' };
   const { error, status } = await supabase.rpc('record_score_event', scoreEventArgs(entry));
   return error ? senderOutcome(error, status) : 'ok';
 };
