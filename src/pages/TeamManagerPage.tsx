@@ -12,6 +12,7 @@ import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { filterTeams, myTeams, pendingTeamIds, placeOf, statusLabel } from '../registration/teamRequest';
 import { NewTeamRequestForm } from './NewTeamRequestForm';
+import { trackEvent } from '../lib/analytics';
 import { TeamAdminPanel } from './TeamAdminPanel';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
@@ -128,7 +129,7 @@ function JoinSection({ teams, loading, error, requests, on, prefillSlug, onChang
   const send = async () => {
     if (!picked || msg.error) return;
     setBusy(true); setProblem(null);
-    try { await requestTeamJoin(picked.id, msg.message); setSent(picked.name); setPicked(null); setMessage(''); setQ(''); onChanged(); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); }
+    try { await requestTeamJoin(picked.id, msg.message); trackEvent('team_join_requested'); setSent(picked.name); setPicked(null); setMessage(''); setQ(''); onChanged(); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); }
   };
 
   return (

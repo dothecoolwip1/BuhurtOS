@@ -96,6 +96,8 @@ export function AccountPage() {
         <h2 id="acct-run" className="acct-h">Run events</h2>
         <nav className="panel acct-list" aria-label="Organizer tools">
           <Row to="/events/new" title="Create an event" sub="Set up a tournament, practice or clinic" />
+          {isOwner && <Row to="/platform/analytics" title="Analytics" sub="Visitors, who is on now, what people use (only you can see it)" />}
+          {isOwner && <Row to="/platform/bugs" title="Bug reports" sub="Problems people sent with the bug button" />}
           {isOwner && <Row to="/platform/organizations" title="Organizations" sub="Switch organizations on or off and manage their admins" />}
         </nav>
       </section>

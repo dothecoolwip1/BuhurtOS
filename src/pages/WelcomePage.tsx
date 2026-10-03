@@ -5,6 +5,7 @@ import { finishedProfiles } from '../auth/ProfileGate';
 import { SignIn } from '../auth/SignIn';
 import { PageHead } from '../components/ui';
 import { completeMyProfile, fetchMyProfile, INTERESTS, safeNext, validateProfileInput, type Interest, type ProfileInput } from '../data/profile';
+import { trackEvent } from '../lib/analytics';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
@@ -23,13 +24,13 @@ export function WelcomePage() {
   if (!session || !userId) return <><PageHead eyebrow="Welcome" title="Sign in" /><SignIn /></>;
   if (existing.data?.onboarded && !params.has('edit')) return <Navigate to={next} replace />;
   const google = (session.user.user_metadata as { full_name?: string } | undefined)?.full_name ?? '';
-  return <Form userId={userId} next={next} initial={{
+  return <Form userId={userId} next={next} firstTime={!existing.data?.onboarded} initial={{
     displayName: existing.data?.displayName || google, interests: existing.data?.interests ?? [],
     city: existing.data?.city ?? '', region: existing.data?.region ?? '', country: existing.data?.country ?? ''
   }} />;
 }
 
-function Form({ userId, next, initial }: { userId: string; next: string; initial: ProfileInput }) {
+function Form({ userId, next, firstTime, initial }: { userId: string; next: string; firstTime: boolean; initial: ProfileInput }) {
   const nav = useNavigate();
   const [f, setF] = useState<ProfileInput>(initial);
   const [show, setShow] = useState(false);
@@ -44,7 +45,7 @@ function Form({ userId, next, initial }: { userId: string; next: string; initial
     e.preventDefault(); setShow(true); setProblem(null);
     if (Object.keys(errors).length > 0) return;
     setBusy(true);
-    try { await completeMyProfile(f); finishedProfiles.add(userId); nav(next, { replace: true }); }
+    try { await completeMyProfile(f); trackEvent(firstTime ? 'profile_completed' : 'profile_updated'); finishedProfiles.add(userId); nav(next, { replace: true }); }
     catch (x) { setProblem(friendlyError(x)); } finally { setBusy(false); }
   };
 

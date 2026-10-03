@@ -4,6 +4,7 @@ import { fetchFighterDirectory, fetchTeamOptions, type FighterCard } from '../da
 import { categoryLabel, genderLabel, pageInfo, PAGE_SIZE, parsePage } from '../lib/careerView';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
+import { useTrackSearch } from '../lib/useTrackSearch';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const DISCIPLINES = ['5v5', '3v3', '12v12', '30v30', 'longsword', 'sword_shield', 'buckler', 'polearm', 'profight', 'sabre', 'greatsword'];
@@ -29,6 +30,7 @@ export function FightersPage() {
   useDocumentTitle('Fighters');
   const [params, setParams] = useSearchParams();
   const q = params.get('q') ?? '';
+  useTrackSearch('fighters', q);
   const teamId = params.get('team') ?? '';
   const gender = params.get('gender') ?? '';
   const discipline = params.get('discipline') ?? '';

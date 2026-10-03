@@ -5,6 +5,7 @@ import { SignIn } from '../auth/SignIn';
 import { supabase } from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
 import { PageHead, Seg } from '../components/ui';
+import { trackEvent } from '../lib/analytics';
 import {
   INSURANCE_OPTIONS, PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, emptyForm, feeFor, formatMoney, validate,
   type CompetitionOption, type EventFee, type LeagueKey, type RegForm
@@ -141,7 +142,7 @@ export function RegisterPage() {
     setBusy(true); setSubmitError(null);
     const { error } = await supabase.rpc('submit_registration', { p_event: data.eventId, p_data: buildPayload(f, data.waiver.id) });
     setBusy(false);
-    if (error) setSubmitError(friendlyError(error)); else setDone(true);
+    if (error) setSubmitError(friendlyError(error)); else { trackEvent('registration_submitted', { volunteer: f.isVolunteer === true }); setDone(true); }
   };
   const shown = (k: string) => (showErrors ? errors[k] : undefined);
   const text = (k: keyof RegForm, label: string, extra: React.InputHTMLAttributes<HTMLInputElement> = {}) => (

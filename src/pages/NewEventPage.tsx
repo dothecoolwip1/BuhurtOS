@@ -7,6 +7,7 @@ import { createEvent, fetchCanCreateEvents, isSlugTaken } from '../data/setup';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { trackEvent } from '../lib/analytics';
 import { blankToNull, slugify, validateNewEvent, type NewEventForm } from '../registration/create';
 
 export function NewEventPage() {
@@ -48,6 +49,7 @@ export function NewEventPage() {
     setBusy(true);
     try {
       await createEvent({ slug: f.slug, name: f.name, startsOn: f.startsOn, endsOn: f.endsOn, venue: blankToNull(f.venue), address: blankToNull(f.address) });
+      trackEvent('event_created');
       nav(`/events/${f.slug}/manage?tab=setup`);
     } catch (x) {
       setProblem(isSlugTaken(x) ? 'That web address is already used by another event. Pick a different one.' : friendlyError(x));

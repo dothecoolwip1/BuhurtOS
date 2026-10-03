@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { trackEvent } from '../lib/analytics';
 import { useAuth } from './AuthContext';
 
 /** Email code + Google. No passwords. */
@@ -9,6 +10,7 @@ export function SignIn({ reason }: { reason?: string }) {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  useEffect(() => { trackEvent('sign_in_opened'); }, []);
 
   const run = async (fn: () => Promise<string | null>, ok?: () => void) => {
     setBusy(true); setError(null);

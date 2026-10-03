@@ -27,6 +27,12 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+        env:
+          # Optional product analytics (PostHog). Set as repository variables; empty means PostHog stays off and only the
+          # first-party analytics in the BuhurtOS database are used. The project key is a public, write-only key.
+          VITE_POSTHOG_KEY: ${{ vars.POSTHOG_KEY }}
+          VITE_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+          VITE_POSTHOG_REPLAY: ${{ vars.POSTHOG_REPLAY }}
       # GitHub Pages has no server routing: serve the app for any unknown path.
       - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
