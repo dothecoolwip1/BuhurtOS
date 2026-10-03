@@ -35,6 +35,12 @@ const ORDER: (keyof NewTeamForm)[] = ['name', 'slug', 'city', 'country', 'descri
 /** The first field with a problem, in page order, so the form can focus it. */
 export const firstErrorField = (e: FormErrors): keyof NewTeamForm | null => ORDER.find(k => e[k]) ?? null;
 
+/** The optional, collapsible parts of the new-team form. */
+export type OptionalSection = 'links' | 'orgs' | 'crest';
+const SECTION_OF: Partial<Record<keyof NewTeamForm, OptionalSection>> = { website: 'links', socialLinks: 'links', foundedYear: 'links', claimedOrganizations: 'orgs', colors: 'crest', initial: 'crest' };
+/** Which collapsed sections hold a field with a problem, so submitting can open them before it focuses the first one. */
+export const sectionsWithErrors = (e: FormErrors): OptionalSection[] => [...new Set((Object.keys(e) as (keyof NewTeamForm)[]).filter(k => e[k]).map(k => SECTION_OF[k]).filter((x): x is OptionalSection => Boolean(x)))];
+
 const fold = (s: string) => s.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase();
 /** Search approved teams by name or city, ignoring case and accents. Needs two letters so the list stays short. */
 export function filterTeams(teams: TeamChoice[], query: string, limit = 20): TeamChoice[] {

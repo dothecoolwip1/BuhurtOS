@@ -6,7 +6,7 @@ import { Dialog } from '../components/Dialog';
 import { PageHead } from '../components/ui';
 import { usePlatformRole } from '../auth/usePlatformRole';
 import { fetchApprovedTeams, fetchMyCaptainedTeams, type TeamChoice } from '../data/myTeams';
-import { cancelTeamJoin, cleanJoinMessage, decideTeamJoin, fetchIsOrgAdmin, fetchMyTeamIds, fetchMyTeamRequests, fetchTeamRequestsInbox, MESSAGE_MAX, requestTeamJoin, type JoinDecision, type MyJoinRequest } from '../data/teamManager';
+import { cancelTeamJoin, cleanJoinMessage, fetchIsOrgAdmin, fetchMyTeamIds, fetchMyTeamRequests, fetchTeamRequestsInbox, MESSAGE_MAX, requestTeamJoin, type MyJoinRequest } from '../data/teamManager';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
@@ -14,6 +14,8 @@ import { filterTeams, myTeams, pendingTeamIds, placeOf, statusLabel } from '../r
 import { NewTeamRequestForm } from './NewTeamRequestForm';
 import { trackEvent } from '../lib/analytics';
 import { TeamAdminPanel } from './TeamAdminPanel';
+import { CaptainTeams, JoinRequestInbox } from './CaptainPanel';
+import { lookupState } from '../lib/lookupState';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 const list: React.CSSProperties = { listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 };
@@ -42,8 +44,7 @@ function OwnerManager() {
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <PageHead eyebrow="Super admin" title="Team manager" lede="Every team on BuhurtOS: edit any team page, approve new teams and name captains." />
       <TeamAdminPanel canApprove allTeams />
-      {(inbox.data ?? []).length > 0 && <Inbox items={inbox.data!} onDone={() => setKey(k => k + 1)} />}
-      {inbox.error != null && <p role="alert" style={bad}>{friendlyError(inbox.error, 'Could not load join requests.')}</p>}
+      <JoinRequestInbox inbox={inbox} onDone={() => setKey(k => k + 1)} quiet />
     </section>
   );
 }
@@ -64,37 +65,58 @@ function Manager() {
 
   const requests = mine.data ?? [];
   const on = useMemo(() => myTeams(captained.data ?? [], requests), [captained.data, requests]);
+  const capState = lookupState(captained);
+  const isCaptain = capState === 'found';
+  const others = on.filter(t => !t.captain);
+  const joinOpen = Boolean(params.get('join'));
 
-  return (
-    <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
-      <PageHead eyebrow="Teams" title="Team manager" lede="Find your team and ask to join, or ask for a new team to be added." />
-
-      {(isOrganizer || orgAdmin.data) && <TeamAdminPanel canApprove={isOrganizer} />}
-
-      {on.length > 0 && (
-        <section className="panel info" style={{ display: 'grid', gap: 8 }} aria-labelledby="on-h">
-          <h2 id="on-h">Your teams</h2>
-          <ul style={list}>
-            {on.map(t => (
-              <li key={t.teamId} style={{ overflowWrap: 'anywhere' }}>
-                You are on <b>{t.name}</b>{t.captain ? ' as captain' : ''}.{' '}
-                {t.reviewing ? <span className="src">Waiting for an organizer to approve it. It is private until then.</span> : <Link to={`/teams/${t.slug}`}>See the team page</Link>}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {(inbox.data ?? []).length > 0 && <Inbox items={inbox.data!} onDone={refresh} />}
-      {inbox.error != null && <p role="alert" style={bad}>{friendlyError(inbox.error, 'Could not load requests to join your teams.')}</p>}
-
+  const secondary = (
+    <>
       <JoinSection teams={teams.data ?? []} loading={teams.loading} error={teams.error} requests={requests} on={new Set([...on.map(t => t.teamId), ...(myIds.data ?? [])])} prefillSlug={params.get('join')} onChanged={refresh} />
       <MyRequests loading={mine.loading && !mine.data} error={mine.error} requests={requests} onChanged={refresh} />
-
       <p className="muted">
         Is your team not listed?{' '}
         <button type="button" className="btn btn-line" onClick={() => setAsking(true)}>Request a new team</button>
       </p>
+    </>
+  );
+
+  return (
+    <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
+      <PageHead eyebrow="Teams" title="Team manager" lede={isCaptain ? 'Manage the team you captain and answer people who want to join it.' : 'Find your team and ask to join, or ask for a new team to be added.'} />
+
+      {(isOrganizer || orgAdmin.data) && <TeamAdminPanel canApprove={isOrganizer} />}
+
+      {capState === 'loading' && <p className="muted" role="status">Loading your teams…</p>}
+      {capState === 'error' && (
+        <p role="alert" style={bad}>{friendlyError(captained.error, 'Could not load your teams.')}{' '}<button type="button" className="btn btn-line" onClick={captained.reload}>Retry</button></p>
+      )}
+
+      {isCaptain && (
+        <>
+          <CaptainTeams teams={captained.data ?? []} inbox={inbox.data ?? []} />
+          {(captained.data ?? []).some(t => t.status === 'approved') && <JoinRequestInbox inbox={inbox} onDone={refresh} />}
+        </>
+      )}
+
+      {capState !== 'loading' && others.length > 0 && (
+        <section className="panel info" style={{ display: 'grid', gap: 8 }} aria-labelledby="on-h">
+          <h2 id="on-h">{isCaptain ? 'Other teams you are on' : 'Your teams'}</h2>
+          <ul style={list}>
+            {others.map(t => <li key={t.teamId} style={{ overflowWrap: 'anywhere' }}>You are on <b>{t.name}</b>. <Link to={`/teams/${t.slug}`}>See the team page</Link></li>)}
+          </ul>
+        </section>
+      )}
+
+      {capState !== 'loading' && (isCaptain
+        ? (
+          <details className="panel info" open={joinOpen || undefined}>
+            <summary style={{ cursor: 'pointer', fontWeight: 600, minHeight: 44, display: 'flex', alignItems: 'center' }}>Looking for another team?</summary>
+            <div style={{ display: 'grid', gap: 22, marginTop: 12 }}>{secondary}</div>
+          </details>
+        )
+        : secondary)}
+
       {asking && (
         <Dialog title="Request a new team" variant="drawer" onClose={() => setAsking(false)}>
           <p className="muted">Search for your team first, so we do not end up with two of the same team. If it really is missing, fill this in. An organizer reviews it before it appears.</p>
@@ -199,33 +221,6 @@ function MyRequests({ loading, error, requests, onChanged }: { loading: boolean;
               <span className="src"> · {statusLabel(r.status)} · asked {when(r.createdAt)}</span>
             </span>
             {r.status === 'pending' && <button type="button" className="btn btn-line" disabled={busyId === r.id} onClick={() => void cancel(r.id)}>Cancel request</button>}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function Inbox({ items, onDone }: { items: Awaited<ReturnType<typeof fetchTeamRequestsInbox>>; onDone: () => void }) {
-  const [busyId, setBusyId] = useState<string | null>(null);
-  const [problems, setProblems] = useState<Record<string, string>>({});
-  const decide = async (id: string, d: JoinDecision) => {
-    setBusyId(id); setProblems(p => ({ ...p, [id]: '' }));
-    try { await decideTeamJoin(id, d); onDone(); } catch (e) { setProblems(p => ({ ...p, [id]: friendlyError(e) })); } finally { setBusyId(null); }
-  };
-  return (
-    <section className="panel info" style={{ display: 'grid', gap: 10 }} aria-labelledby="inbox-h">
-      <h2 id="inbox-h">Requests to join your teams ({items.length})</h2>
-      <ul style={list}>
-        {items.map(r => (
-          <li key={r.id} style={{ display: 'grid', gap: 6, paddingBottom: 10, borderBottom: '1px solid var(--line)' }}>
-            <span style={{ overflowWrap: 'anywhere' }}><b>{r.requesterName}</b> wants to join <b>{r.teamName}</b> <span className="src">· {when(r.createdAt)}</span></span>
-            {r.message && <blockquote style={{ margin: 0, paddingLeft: 10, borderLeft: '3px solid var(--line)', overflowWrap: 'anywhere' }}>{r.message}</blockquote>}
-            {problems[r.id] && <p role="alert" style={bad}>{problems[r.id]}</p>}
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button type="button" className="btn btn-ink" disabled={busyId === r.id} onClick={() => void decide(r.id, 'approved')}>Accept</button>
-              <button type="button" className="btn btn-line" disabled={busyId === r.id} onClick={() => void decide(r.id, 'declined')}>Decline</button>
-            </div>
           </li>
         ))}
       </ul>

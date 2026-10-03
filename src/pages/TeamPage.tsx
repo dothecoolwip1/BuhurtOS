@@ -1,4 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { usePlatformRole } from '../auth/usePlatformRole';
 import { Crest } from '../components/Crest';
@@ -42,6 +43,9 @@ function Workspace({ t }: { t: DirectoryEntry }) {
   const onTeam = (mineTeams.data ?? []).includes(t.id);
   const rights = useAsync(() => (userId ? fetchTeamEditRights(t.id) : Promise.resolve({ edit: false, rename: false })), [t.id, userId]);
   const roster = useAsync(() => fetchTeamRoster(t.id), [t.id]);
+  // "#roster" links (from Team manager) land on the roster once the page has grown to hold it.
+  const { hash } = useLocation();
+  useEffect(() => { if (hash === '#roster' && !roster.loading) document.getElementById('roster')?.scrollIntoView(); }, [hash, roster.loading]);
   const entries = useAsync(() => fetchTeamEntries(t.id), [t.id]);
   const stats = useAsync(() => fetchTeamStats(t.slug), [t.slug]);
   const history = useAsync(() => fetchTeamHistory(t.id), [t.id]);
@@ -120,7 +124,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         <p className="muted" style={{ fontSize: 13 }}>Affiliations are recorded one by one. They are never worked out from where a team is. A listed organization has not endorsed BuhurtOS.</p>
       </div>}
 
-      <div className="panel info">
+      <div className="panel info" id="roster" style={{ scrollMarginTop: 96 }}>
         <h3>Roster</h3>
         {roster.loading && <p className="muted">Loading roster…</p>}
         {roster.error != null && <p role="alert">{friendlyError(roster.error, 'Could not load the roster.')}</p>}

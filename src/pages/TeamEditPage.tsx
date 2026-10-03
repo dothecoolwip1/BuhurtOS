@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
 import { Crest } from '../components/Crest';
-import { PageHead } from '../components/ui';
+import { Chip, PageHead } from '../components/ui';
 import { fetchTeamBySlug, teamEmblemUrl, type DirectoryEntry } from '../data/teamDirectory';
 import {
   CREST_PATTERNS, fetchTeamEditRights, removeTeamEmblem, teamToForm, TEAM_DESCRIPTION_MAX, updateTeamProfile, uploadTeamEmblem, validateTeamEdit, type TeamEditForm
@@ -48,6 +48,8 @@ function Editing({ t, canRename }: { t: DirectoryEntry; canRename: boolean }) {
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
+  const [initial] = useState(() => JSON.stringify(teamToForm(t)));
+  const dirty = JSON.stringify(f) !== initial;
   const errors = validateTeamEdit(f, canRename);
   const set = <K extends keyof TeamEditForm>(k: K, v: TeamEditForm[K]) => setF(p => ({ ...p, [k]: v }));
   const err = (k: keyof TeamEditForm) => (show && errors[k] ? <span role="alert" style={bad}>{errors[k]}</span> : null);
@@ -68,21 +70,26 @@ function Editing({ t, canRename }: { t: DirectoryEntry; canRename: boolean }) {
 
       <section className="panel info" style={{ display: 'grid', gap: 14 }} aria-labelledby="crest-h">
         <h2 id="crest-h">Shield and emblem</h2>
-        <div style={{ display: 'flex', gap: 18, alignItems: 'center', flexWrap: 'wrap' }}>
-          <Crest team={preview} size={104} />
+        <Crest team={preview} size={104} />
+        <div style={{ display: 'grid', gap: 8 }} role="group" aria-labelledby="emblem-h">
+          <h3 id="emblem-h">Emblem <Chip tone="steel">Saves immediately</Chip></h3>
+          <p className="src">Choosing or removing an emblem changes the public team page right away. It is not part of “Save team” below, and “Discard changes” cannot undo it.</p>
           <EmblemControls teamId={t.id} path={emblem} onChange={setEmblem} />
         </div>
-        <div className="form">
-          <label className="field-in">Pattern
-            <select value={f.crestDivision} onChange={e => set('crestDivision', e.target.value)}>{CREST_PATTERNS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
-          </label>
-          <label className="field-in">First colour<input type="color" value={f.colors[0]} onChange={e => set('colors', [e.target.value, f.colors[1]])} /></label>
-          <label className="field-in">Second colour<input type="color" value={f.colors[1]} onChange={e => set('colors', [f.colors[0], e.target.value])} /></label>
-          <label className="field-in">Letter (1 or 2), used when there is no emblem
-            <input maxLength={2} value={f.initial} onChange={e => set('initial', e.target.value)} />{err('initial')}
-          </label>
+        <div style={{ display: 'grid', gap: 8 }} role="group" aria-labelledby="shield-h">
+          <h3 id="shield-h">Shield <Chip>Saved with Save team</Chip></h3>
+          <div className="form">
+            <label className="field-in">Pattern
+              <select value={f.crestDivision} onChange={e => set('crestDivision', e.target.value)}>{CREST_PATTERNS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
+            </label>
+            <label className="field-in">First colour<input type="color" value={f.colors[0]} onChange={e => set('colors', [e.target.value, f.colors[1]])} /></label>
+            <label className="field-in">Second colour<input type="color" value={f.colors[1]} onChange={e => set('colors', [f.colors[0], e.target.value])} /></label>
+            <label className="field-in">Letter (1 or 2), used when there is no emblem
+              <input maxLength={2} value={f.initial} onChange={e => set('initial', e.target.value)} />{err('initial')}
+            </label>
+          </div>
+          <p className="src">The preview above updates as you change these, but the public page only changes when you press Save team.</p>
         </div>
-        <p className="src">The emblem and shield are public. Pattern, colours and letter are saved with the form below; the emblem is saved as soon as you choose it.</p>
       </section>
 
       <form onSubmit={e => void save(e)} noValidate style={{ display: 'grid', gap: 16 }}>
@@ -147,8 +154,9 @@ function Editing({ t, canRename }: { t: DirectoryEntry; canRename: boolean }) {
 
         {show && Object.keys(errors).length > 0 && <p role="alert" style={bad}>Some answers need fixing. They are marked above.</p>}
         {problem && <p role="alert" style={bad}>{problem}</p>}
+        <p className="src" role="status">{dirty ? 'You have changes that are not saved yet. ' : 'Nothing to save. '}Save team saves the details, links and shield. Your emblem is saved separately and is already live.</p>
         <div className="formactions">
-          <button type="button" className="btn btn-line" disabled={busy} onClick={() => nav(back)}>Cancel</button>
+          <button type="button" className="btn btn-line" disabled={busy} onClick={() => nav(back)}>{dirty ? 'Discard changes' : 'Back to team page'}</button>
           <button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Save team'}</button>
         </div>
       </form>
@@ -156,26 +164,28 @@ function Editing({ t, canRename }: { t: DirectoryEntry; canRename: boolean }) {
   );
 }
 
-/** The emblem saves as soon as it is chosen, apart from the form. */
+/** The emblem saves as soon as it is chosen, apart from the form. Both outcomes are announced. */
 function EmblemControls({ teamId, path, onChange }: { teamId: string; path: string | null; onChange: (p: string | null) => void }) {
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
+  const [done, setDone] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const choose = async (file: File | undefined) => {
     if (!file) return;
-    setBusy(true); setProblem(null);
-    try { onChange(await uploadTeamEmblem(teamId, file, path)); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); if (input.current) input.current.value = ''; }
+    setBusy(true); setProblem(null); setDone(null);
+    try { onChange(await uploadTeamEmblem(teamId, file, path)); setDone('Emblem saved. It is now on the public team page.'); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); if (input.current) input.current.value = ''; }
   };
   const remove = async () => {
     if (!path) return;
-    setBusy(true); setProblem(null);
-    try { await removeTeamEmblem(teamId, path); onChange(null); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); }
+    setBusy(true); setProblem(null); setDone(null);
+    try { await removeTeamEmblem(teamId, path); onChange(null); setDone('Emblem removed. The shield shows your letter again.'); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); }
   };
   return (
     <div style={{ display: 'grid', gap: 8 }}>
       <input ref={input} type="file" accept="image/*" hidden onChange={e => void choose(e.target.files?.[0])} />
       <button type="button" className="btn btn-ink" disabled={busy} onClick={() => input.current?.click()}>{busy ? 'Working…' : teamEmblemUrl(path) ? 'Change emblem' : 'Add an emblem'}</button>
-      {path && <button type="button" className="btn btn-line" disabled={busy} onClick={() => void remove()}>Remove emblem</button>}
+      {path && <button type="button" className="btn btn-line" disabled={busy} onClick={() => void remove()}>Remove emblem now</button>}
+      <p role="status" style={{ color: 'var(--win)', margin: 0 }}>{done}</p>
       {problem && <p role="alert" style={bad}>{problem}</p>}
     </div>
   );

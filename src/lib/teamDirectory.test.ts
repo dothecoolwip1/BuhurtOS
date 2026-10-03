@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { adoptionLabel, affiliationOptions, filterTeams, groupByOrganization, listedFromLabel, locationText, matchesQuery, ordinal, safeHttpsUrl, sinceLabel, summarizeResults, type DirectoryTeam } from './teamDirectory';
+import { adoptionLabel, affiliationOptions, filterTeams, groupByOrganization, historyRoleLabel, listedFromLabel, locationText, matchesQuery, ordinal, safeHttpsUrl, sinceLabel, summarizeResults, type DirectoryTeam } from './teamDirectory';
 
 const hacsa = { organizationSlug: 'hacsa', organizationName: 'HACSA' };
 const teams: DirectoryTeam[] = [
@@ -75,4 +75,14 @@ describe('groupByOrganization', () => {
     expect(g[2].key).toBe('');
   });
   it('gives no groups for no teams', () => { expect(groupByOrganization([], () => null)).toEqual([]); });
+});
+
+describe('historyRoleLabel', () => {
+  it('marks a historical captain as team history, not management authority', () => {
+    expect(historyRoleLabel('captain')).toBe('Captain · team history');
+  });
+  it('leaves other roles as they were', () => {
+    expect(historyRoleLabel('coach')).toBe('Coach');
+    expect(historyRoleLabel('whatever')).toBe('Other');
+  });
 });

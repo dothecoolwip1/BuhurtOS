@@ -57,6 +57,10 @@ export const relationLabel = (r: string) => RELATION_LABEL[r] ?? 'Related';
 const ROLE_LABEL: Record<string, string> = { fighter: 'Fighter', captain: 'Captain', coach: 'Coach', squire: 'Squire', other: 'Other' };
 export const roleLabel = (r: string) => ROLE_LABEL[r] ?? 'Other';
 
+/** A role in a fighter's team HISTORY. Captain here is a sporting role; who may manage the team page is decided elsewhere (team_roles). */
+export const historyRoleLabel = (r: string) => (r === 'captain' ? 'Captain · team history' : roleLabel(r));
+export const HISTORY_ROLE_NOTE = '“Captain · team history” is a role the fighter held on the team. It does not give access to manage the team page.';
+
 /** "Since Mar 2024", or null when the start date is unknown. Plain calendar dates, no time zone. */
 export function sinceLabel(since: string | null): string | null {
   if (!since || !/^\d{4}-\d{2}-\d{2}/.test(since)) return null;

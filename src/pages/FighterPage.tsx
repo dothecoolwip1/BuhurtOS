@@ -14,7 +14,7 @@ import {
 } from '../lib/careerView';
 import { dateRange } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
-import { roleLabel } from '../lib/teamDirectory';
+import { HISTORY_ROLE_NOTE, historyRoleLabel } from '../lib/teamDirectory';
 import { useAsync, type AsyncState } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
@@ -285,7 +285,7 @@ function TeamHistory({ memberships, appearances, homeTeam }: { memberships: Asyn
         {rows.map(m => (
           <li key={m.id}>
             <Link to={`/teams/${m.teamSlug}`}><b>{m.mercenary ? guestLabel(m.teamName) : m.teamName}</b></Link>{' '}
-            {m.teamSlug === homeTeam && !m.mercenary && <Chip tone="brass">Home team</Chip>} {m.role !== 'fighter' && <Chip>{roleLabel(m.role)}</Chip>}
+            {m.teamSlug === homeTeam && !m.mercenary && <Chip tone="brass">Home team</Chip>} {m.role !== 'fighter' && <Chip>{historyRoleLabel(m.role)}</Chip>}
             {membershipSpan(m) && <div className="l">{membershipSpan(m)}</div>}
           </li>
         ))}
@@ -296,6 +296,7 @@ function TeamHistory({ memberships, appearances, homeTeam }: { memberships: Asyn
           </li>
         ))}
       </ul>
+      {rows.some(m => m.role === 'captain') && <p className="muted" style={{ fontSize: 13 }}>{HISTORY_ROLE_NOTE}</p>}
       <p className="muted" style={{ fontSize: 13 }}>Fighting as a guest never changes a fighter's home team.</p>
     </div>
   );

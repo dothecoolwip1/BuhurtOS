@@ -78,7 +78,7 @@ function Form({ userId, next, firstTime, initial }: { userId: string; next: stri
           <label className="field-in">Country<input value={f.country} autoComplete="country-name" onChange={e => set('country', e.target.value)} /></label>
         </div>
         {show && errors.city && <span role="alert" style={bad}>{errors.city}</span>}
-        <p className="src">This stays private to you. Your public fighter page is separate and appears once a registration of yours is accepted at an event.</p>
+        <p className="src">This stays private to you. Your public fighter page is separate and is created when a team captain accepts your request to join a team, or when a registration of yours is accepted at an event.</p>
         {problem && <p role="alert" style={bad}>{problem}</p>}
         <div className="formactions"><button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Continue'}</button></div>
       </form>

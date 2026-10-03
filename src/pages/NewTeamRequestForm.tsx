@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { requestNewTeam, type NewTeamForm, type SocialNetwork } from '../data/teamManager';
 import { friendlyError } from '../lib/friendlyError';
 import { trackEvent } from '../lib/analytics';
-import { CLAIMED_LABEL, DESCRIPTION_MAX, MAX_CLAIMED, SOCIAL_NETWORKS, addClaimed, descriptionCounter, editClaimed, effectiveSlug, emptyNewTeamForm, firstErrorField, removeClaimed, setSocial, slugFromName, validateNewTeam } from '../registration/teamRequest';
+import { CLAIMED_LABEL, DESCRIPTION_MAX, MAX_CLAIMED, SOCIAL_NETWORKS, addClaimed, descriptionCounter, editClaimed, effectiveSlug, emptyNewTeamForm, firstErrorField, removeClaimed, sectionsWithErrors, setSocial, slugFromName, validateNewTeam, type OptionalSection } from '../registration/teamRequest';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
 const PATTERNS: [string, string][] = [['pale', 'Vertical stripe'], ['fess', 'Horizontal band'], ['bend', 'Diagonal'], ['chevron', 'Chevron'], ['quarterly', 'Quarters'], ['saltire', 'Cross']];
@@ -18,6 +19,8 @@ export function NewTeamRequestForm({ onSubmitted }: { onSubmitted?: () => void }
   const [problem, setProblem] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const [opened, setOpened] = useState<Record<OptionalSection, boolean>>({ links: false, orgs: false, crest: false });
+  const sec = (k: OptionalSection) => ({ open: opened[k], onToggle: (e: React.SyntheticEvent<HTMLDetailsElement>) => { const o = e.currentTarget.open; setOpened(p => (p[k] === o ? p : { ...p, [k]: o })); } });
   const errors = validateNewTeam(f);
 
   const set = <K extends keyof NewTeamForm>(k: K, v: NewTeamForm[K]) => setF(p => ({ ...p, [k]: v }));
@@ -38,7 +41,13 @@ export function NewTeamRequestForm({ onSubmitted }: { onSubmitted?: () => void }
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); setShow(true); setProblem(null);
     const first = firstErrorField(errors);
-    if (first) { formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus(); return; }
+    if (first) {
+      // A problem inside a collapsed section: open it first, or there is nothing to focus.
+      const hidden = sectionsWithErrors(errors);
+      flushSync(() => setOpened(p => ({ ...p, ...Object.fromEntries(hidden.map(k => [k, true])) })));
+      formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
+      return;
+    }
     setBusy(true);
     try { await requestNewTeam(f); trackEvent('team_requested'); setDone(f.name.trim()); onSubmitted?.(); } catch (x) { setProblem(friendlyError(x)); } finally { setBusy(false); }
   };
@@ -66,16 +75,19 @@ export function NewTeamRequestForm({ onSubmitted }: { onSubmitted?: () => void }
           <textarea name="description" rows={4} value={f.description} onChange={e => set('description', e.target.value)} {...inv('description')} />
           <span aria-live="polite" style={f.description.trim().length > DESCRIPTION_MAX ? bad : undefined}>{descriptionCounter(f.description)} (10 to {DESCRIPTION_MAX}). Who you are and how you train.</span>{err('description')}
         </label>
-        <label className="field-in">Website (optional)
-          <input name="website" type="url" inputMode="url" placeholder="https://" value={f.website} onChange={e => set('website', e.target.value)} {...inv('website')} />{err('website')}
-        </label>
-        <label className="field-in">Year founded (optional)
-          <input name="foundedYear" inputMode="numeric" value={f.foundedYear} onChange={e => set('foundedYear', e.target.value)} {...inv('foundedYear')} />{err('foundedYear')}
-        </label>
       </fieldset>
 
-      <fieldset name="socialLinks" tabIndex={-1} style={{ display: 'grid', gap: 10, border: 0, padding: 0, margin: 0 }}>
-        <legend><b>Social links</b> <span className="src">(optional, full https:// addresses)</span></legend>
+      <details className="panel info" {...sec('links')}>
+        <summary style={{ cursor: 'pointer', minHeight: 44, display: 'flex', alignItems: 'center', fontWeight: 600 }}>Website, year founded and social links <span className="src">&nbsp;(optional)</span></summary>
+        <div style={{ display: 'grid', gap: 12, marginTop: 12 }}>
+          <label className="field-in">Website
+            <input name="website" type="url" inputMode="url" placeholder="https://" value={f.website} onChange={e => set('website', e.target.value)} {...inv('website')} />{err('website')}
+          </label>
+          <label className="field-in">Year founded
+            <input name="foundedYear" inputMode="numeric" value={f.foundedYear} onChange={e => set('foundedYear', e.target.value)} {...inv('foundedYear')} />{err('foundedYear')}
+          </label>
+          <fieldset name="socialLinks" tabIndex={-1} style={{ display: 'grid', gap: 10, border: 0, padding: 0, margin: 0 }}>
+            <legend><b>Social links</b> <span className="src">(full https:// addresses)</span></legend>
         <div className="form">
           {SOCIAL_NETWORKS.map((n: SocialNetwork) => (
             <label key={n} className="field-in" style={{ textTransform: 'capitalize' }}>{n === 'x' ? 'X (Twitter)' : n}
@@ -83,11 +95,14 @@ export function NewTeamRequestForm({ onSubmitted }: { onSubmitted?: () => void }
             </label>
           ))}
         </div>
-        {err('socialLinks')}
-      </fieldset>
+            {err('socialLinks')}
+          </fieldset>
+        </div>
+      </details>
 
-      <fieldset name="claimedOrganizations" tabIndex={-1} style={{ display: 'grid', gap: 10, border: 0, padding: 0, margin: 0 }}>
-        <legend><b>Organizations you say you belong to</b> <span className="src">(optional, up to {MAX_CLAIMED})</span></legend>
+      <details className="panel info" {...sec('orgs')}>
+        <summary style={{ cursor: 'pointer', minHeight: 44, display: 'flex', alignItems: 'center', fontWeight: 600 }}>Organizations you say you belong to <span className="src">&nbsp;(optional, up to {MAX_CLAIMED})</span></summary>
+        <fieldset name="claimedOrganizations" tabIndex={-1} style={{ display: 'grid', gap: 10, border: 0, padding: 0, margin: '12px 0 0' }}>
         <p className="src">These are shown on the team page as “{CLAIMED_LABEL}”. Nobody checks them for you.</p>
         {f.claimedOrganizations.map((o, i) => (
           <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'end' }}>
@@ -99,10 +114,12 @@ export function NewTeamRequestForm({ onSubmitted }: { onSubmitted?: () => void }
         ))}
         {err('claimedOrganizations')}
         {f.claimedOrganizations.length < MAX_CLAIMED && <div><button type="button" className="btn btn-line" onClick={() => set('claimedOrganizations', addClaimed(f.claimedOrganizations))}>Add an organization</button></div>}
-      </fieldset>
+        </fieldset>
+      </details>
 
-      <fieldset style={{ display: 'grid', gap: 10, border: 0, padding: 0, margin: 0 }}>
-        <legend><b>Crest</b> <span className="src">(optional)</span></legend>
+      <details className="panel info" {...sec('crest')}>
+        <summary style={{ cursor: 'pointer', minHeight: 44, display: 'flex', alignItems: 'center', fontWeight: 600 }}>Crest <span className="src">&nbsp;(optional)</span></summary>
+        <div style={{ display: 'grid', gap: 10, marginTop: 12 }}>
         <div className="form">
           <label className="field-in">Pattern
             <select value={f.crestDivision} onChange={e => set('crestDivision', e.target.value)}>{PATTERNS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select>
@@ -117,8 +134,9 @@ export function NewTeamRequestForm({ onSubmitted }: { onSubmitted?: () => void }
             <input name="initial" maxLength={2} value={f.initial} onChange={e => set('initial', e.target.value)} {...inv('initial')} />{err('initial')}
           </label>
         </div>
-        {err('colors')}
-      </fieldset>
+          {err('colors')}
+        </div>
+      </details>
 
       <fieldset className="panel" style={{ display: 'grid', gap: 12, padding: 14, margin: 0, borderColor: 'var(--brass, var(--line))' }}>
         <legend><b>For the organizers only</b> <span className="src">· only organizers see this</span></legend>

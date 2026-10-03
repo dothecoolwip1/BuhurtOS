@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 vi.mock('../lib/supabase', () => ({ supabase: {} }));
-import { addClaimed, charsLeft, descriptionCounter, editClaimed, effectiveSlug, emptyNewTeamForm, filterTeams, firstErrorField, myTeams, removeClaimed, setSocial, statusLabel, validateNewTeam } from './teamRequest';
+import { addClaimed, charsLeft, descriptionCounter, editClaimed, effectiveSlug, emptyNewTeamForm, filterTeams, firstErrorField, myTeams, removeClaimed, sectionsWithErrors, setSocial, statusLabel, validateNewTeam } from './teamRequest';
 import { badgeText, bellLabel, notificationLink, timeAgo, unreadCount, unreadIds } from '../lib/notificationView';
 
 const t = (name: string, city: string | null) => ({ id: name, slug: name.toLowerCase(), name, city, region: null, country: null });
@@ -60,5 +60,20 @@ describe('notification view', () => {
     expect(timeAgo('2026-10-01T11:59:50Z', now)).toBe('just now');
     expect(timeAgo('2026-10-01T11:55:00Z', now)).toBe('5 minutes ago');
     expect(timeAgo('2026-09-29T12:00:00Z', now)).toBe('2 days ago');
+  });
+});
+
+describe('sectionsWithErrors', () => {
+  const ok = { ...emptyNewTeamForm(), name: 'Mountain Bears-test', slug: 'mountain-bears-test', city: 'Banff', country: 'CA', description: 'A test team for checks.', contactEmail: 'a@b.test', captainReason: 'I run the practices.' };
+  it('is empty when every optional field is fine', () => {
+    expect(validateNewTeam(ok)).toEqual({});
+    expect(sectionsWithErrors(validateNewTeam(ok))).toEqual([]);
+  });
+  it('points at the collapsed section that holds a bad optional field', () => {
+    expect(sectionsWithErrors(validateNewTeam({ ...ok, website: 'http://nope' }))).toEqual(['links']);
+    expect(sectionsWithErrors(validateNewTeam({ ...ok, foundedYear: 'abc', initial: '123' }))).toEqual(['links', 'crest']);
+  });
+  it('does not open anything for a problem in an always-visible field', () => {
+    expect(sectionsWithErrors(validateNewTeam({ ...ok, name: '' }))).toEqual([]);
   });
 });

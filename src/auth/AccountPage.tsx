@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import type { Session } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { Chip, PageHead } from '../components/ui';
 import { fetchMyDisplayName, fetchMyEvents, saveMyDisplayName } from '../data/api';
 import { avatarUrl, fetchFighterProfile, fetchMyFighterId } from '../data/fighters';
 import { fetchMyCaptainedTeams } from '../data/myTeams';
-import { fetchIsOrgAdmin } from '../data/teamManager';
+import { fetchIsOrgAdmin, fetchTeamRequestsInbox } from '../data/teamManager';
 import { DRAFT_NOTICE } from '../lib/draftView';
 import { friendlyError } from '../lib/friendlyError';
+import { lookupState } from '../lib/lookupState';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { useAuth } from './AuthContext';
@@ -14,6 +16,16 @@ import { usePlatformRole } from './usePlatformRole';
 import { SignIn } from './SignIn';
 
 const Chevron = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>;
+
+/** A secondary lookup that failed: say so and let the person try again. Never reads as "you have none". */
+function Failed({ what, error, retry }: { what: string; error: unknown; retry: () => void }) {
+  return (
+    <p className="acct-empty" role="alert">
+      {friendlyError(error, `Could not load ${what}.`)}{' '}
+      <button type="button" className="linklike" onClick={retry}>Retry</button>
+    </p>
+  );
+}
 
 function Row({ to, title, sub }: { to: string; title: string; sub?: string }) {
   return (
@@ -26,22 +38,30 @@ function Row({ to, title, sub }: { to: string; title: string; sub?: string }) {
 
 export function AccountPage() {
   useDocumentTitle('Account');
-  const { session, loading, signOut } = useAuth();
+  const { session, loading } = useAuth();
+  if (loading) return <p className="muted">Loading…</p>;
+  if (!session) return <><PageHead eyebrow="Account" title="Sign in" /><SignIn /></>;
+  // The lookups live below this gate, so they first run with a real user. Run before sign-in is known, a lookup would settle on
+  // "nothing" for nobody, and that stale "nothing" would then pass for the answer about the person who just arrived.
+  return <SignedIn session={session} />;
+}
+
+function SignedIn({ session }: { session: Session }) {
+  const { signOut } = useAuth();
   const { isOwner, isOrganizer } = usePlatformRole();
-  const userId = session?.user.id;
-  const mine = useAsync(() => (userId ? fetchMyEvents(userId) : Promise.resolve([])), [userId]);
+  const userId = session.user.id;
+  const mine = useAsync(() => fetchMyEvents(userId), [userId]);
   const fighter = useAsync(async () => {
-    if (!userId) return null;
     const id = await fetchMyFighterId();
     return id ? fetchFighterProfile(id) : null;
   }, [userId]);
-  const captained = useAsync(() => (userId ? fetchMyCaptainedTeams() : Promise.resolve([])), [userId]);
-  const orgAdmin = useAsync(() => (userId ? fetchIsOrgAdmin(userId) : Promise.resolve(false)), [userId]);
+  const captained = useAsync(() => fetchMyCaptainedTeams(), [userId]);
+  const orgAdmin = useAsync(() => fetchIsOrgAdmin(userId), [userId]);
+  // The inbox is empty for anyone who captains nothing; the database decides who sees what.
+  const inbox = useAsync(() => fetchTeamRequestsInbox(), [userId]);
   const [nameKey, setNameKey] = useState(0);
-  const shown = useAsync(() => (userId ? fetchMyDisplayName(userId) : Promise.resolve('')), [userId, nameKey]);
+  const shown = useAsync(() => fetchMyDisplayName(userId), [userId, nameKey]);
   const [editingName, setEditingName] = useState(false);
-  if (loading) return <p className="muted">Loading…</p>;
-  if (!session) return <><PageHead eyebrow="Account" title="Sign in" /><SignIn /></>;
 
   const email = session.user.email ?? '';
   const profile = fighter.data;
@@ -49,6 +69,12 @@ export function AccountPage() {
   const photo = avatarUrl(profile?.avatarPath);
   const teams = captained.data ?? [];
   const events = mine.data ?? [];
+  const fighterState = lookupState(fighter);
+  const captainState = lookupState(captained);
+  const pending = inbox.data ?? [];
+  const waiting = (teamId: string) => pending.filter(r => r.teamId === teamId).length;
+  const rolesChecking = (captained.loading && !captained.data) || (orgAdmin.loading && orgAdmin.data === undefined);
+  const rolesFailed = captained.error != null || orgAdmin.error != null;
 
   return (
     <section className="fade-in acct" style={{ display: 'grid', gap: 22 }}>
@@ -57,7 +83,7 @@ export function AccountPage() {
           ? <img className="avatar" src={photo} alt="" width={84} height={84} />
           : <span className="avatar" aria-hidden="true">{name.charAt(0).toUpperCase()}</span>}
         <div style={{ minWidth: 0 }}>
-          {editingName && userId
+          {editingName
             ? <NameEditor userId={userId} initial={shown.data?.trim() || profile?.displayName || ''} onDone={() => { setEditingName(false); setNameKey(k => k + 1); }} />
             : <><h1 className="acct-name">{name}</h1><button type="button" className="linklike acct-edit" onClick={() => setEditingName(true)}>Change name</button></>}
           <p className="muted" style={{ overflowWrap: 'anywhere' }}>{email}</p>
@@ -65,7 +91,9 @@ export function AccountPage() {
             {isOwner && <Chip tone="brass">Super admin</Chip>}
             {isOrganizer && !isOwner && <Chip tone="steel">Organizer</Chip>}
             {orgAdmin.data && <Chip tone="steel">Organization admin</Chip>}
-            {!isOwner && teams.length > 0 && <Chip>Captain</Chip>}
+            {!isOwner && captainState === 'found' && <Chip>Captain</Chip>}
+            {rolesChecking && !rolesFailed && <span className="muted" role="status" style={{ fontSize: 13 }}>Checking your roles…</span>}
+            {rolesFailed && <span className="muted" role="alert" style={{ fontSize: 13 }}>Could not check your roles. <button type="button" className="linklike" onClick={() => { if (captained.error != null) captained.reload(); if (orgAdmin.error != null) orgAdmin.reload(); }}>Retry</button></span>}
           </p>
         </div>
       </header>
@@ -76,12 +104,30 @@ export function AccountPage() {
           {isOwner
             ? <Row to="/team-manager" title="Team manager" sub="Every team: edit, approve new teams, name captains" />
             : <>
-                {profile
-                  ? <Row to={`/fighters/${profile.fighterId}`} title="My fighter profile" sub="View your public profile, edit it and add a photo" />
-                  : <p className="acct-empty">Your fighter profile appears once a registration of yours has been accepted at an event.</p>}
-                <Row to="/team-manager" title="Team manager" sub="Join a team, request a new one, answer join requests" />
+                {fighterState === 'loading' && <p className="acct-empty" role="status">Loading your fighter profile…</p>}
+                {fighterState === 'error' && <Failed what="your fighter profile" error={fighter.error} retry={fighter.reload} />}
+                {fighterState === 'found' && profile && <>
+                  <Row to={`/fighters/${profile.fighterId}`} title="My fighter profile" sub="View your public profile, edit it and add a photo" />
+                  {profile.team && <Row to={`/teams/${profile.team.slug}`} title={profile.team.name} sub="Your home team" />}
+                </>}
+                {fighterState === 'none' && (
+                  <p className="acct-empty">
+                    You do not have a public fighter page yet. It is created when a team captain accepts your request to join a team, or when a registration of yours is accepted at an event.{' '}
+                    <Link to="/team-manager">Find your team</Link> · <Link to="/events">See events</Link>
+                  </p>
+                )}
+                <Row to="/team-manager" title="Team manager" sub={captainState === 'found' ? 'Manage your team, find another team or request a new one' : 'Join a team, request a new one, see your requests'} />
               </>}
-          {!isOwner && teams.map(t => <Row key={t.teamId} to={`/teams/${t.slug}`} title={t.name} sub={t.status === 'pending' ? 'Captain · waiting for approval' : 'Captain · edit the team page'} />)}
+          {!isOwner && captainState === 'loading' && <p className="acct-empty" role="status">Loading the teams you captain…</p>}
+          {!isOwner && captainState === 'error' && <Failed what="the teams you captain" error={captained.error} retry={captained.reload} />}
+          {!isOwner && teams.map(t => (
+            <Row key={t.teamId} to={t.status === 'pending' ? `/teams/${t.slug}` : '/team-manager'} title={t.name}
+              sub={t.status === 'pending'
+                ? 'Captain · waiting for organizer approval, not public yet'
+                : waiting(t.teamId) > 0
+                  ? `Captain · ${waiting(t.teamId)} join request${waiting(t.teamId) === 1 ? '' : 's'} waiting`
+                  : 'Captain · manage the team and answer join requests'} />
+          ))}
         </nav>
       </section>
 
