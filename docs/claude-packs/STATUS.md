@@ -8,7 +8,7 @@ Last updated: 2026-10-03
 
 | Pack | Status | Commit | Hosted DB | Deployment | Verification notes |
 | --- | --- | --- | --- | --- | --- |
-| 00 Source of truth | NOT STARTED |  |  |  |  |
+| 00 Source of truth | COMPLETE | (see git log) | none (docs only) | none | Docs only. PROJECT_SPEC reconciled, CLAUDE.md added. Round 2 scratchpad was empty in this container: only the committed Part 1/Part 2 reviews exist; the ChatGPT comparison was not recoverable. |
 | 01 Security and data safety | NOT STARTED |  |  |  |  |
 | 02 Tournament integrity | NOT STARTED |  |  |  |  |
 | 03 Scoring resilience | NOT STARTED |  |  |  |  |

@@ -26,9 +26,9 @@ closes **Nov 8** (assumed to open when the app launches).
   Gmail (app password SMTP). Buy a domain after the Rumble if it works.
 * Public viewing needs no account.
 * The owner approves **organizers** once. Organizers create events and add their own marshals, scorekeepers and a medic by
-  email. Roles are per event. Designed to extend to organizations later.
+  email; an event organizer may add another organizer to the same event. Roles are per event and should expire shortly after the event finishes. Designed to extend to organizations later.
 * One scorekeeper per field enters the result the marshals agree on. (Per-marshal scoring is a later option.)
-* Teams: any signed-in person can create a team; **organizers approve new teams before they are public** and can merge duplicates.
+* Teams: any signed-in person can create a team; **platform administrators approve new teams before they are public** and can merge duplicates. Organization administrators manage teams within their own organization. Event organizers get **no** platform-wide team approve/merge/delete power merely because they organize an event (superseded by `docs/claude-packs/OWNER_DECISIONS_2026-10-03.md`).
 * Public tables never carry account ids. Health and contact data is never public.
 
 ## Registration, waivers, privacy
@@ -43,7 +43,7 @@ closes **Nov 8** (assumed to open when the app launches).
 ## Competition running
 * Draw: organizer chooses a reproducible random draw or manual placement. The app shows the BI structure advice for the entrant count.
 * Group fight rounds-to-win is a per-competition setting (round structure from the Buhurt Regulations is not available to read yet).
-* Offline: scoring works with no signal. Every action is saved on the device first and synced in order (outbox with idempotency ids).
+* Connectivity (superseded 2026-10-03): there is **no** full offline-first requirement before the Rumble. The goal is resilience to brief outages: unsent scoring work is preserved on the device (durable queue bound to user and event), shown as Pending until the server accepts it, and synced in order with idempotency ids. **Match finalization requires signal.** **Paper score sheets are the primary official fallback**; BuhurtOS is the fast digital path and mirrors the official result. A fresh offline reload need not reconstruct the authenticated event workspace.
 * Two BI documents disagree on the Regional and Conference points multiplier; both are kept and shown; the owner decides later.
 
 ## Spectator and fighter extras (all wanted; big-screen and QR are first to cut)
@@ -114,3 +114,15 @@ Dates unchanged: registration and public pages by Nov 1; scoring and live bracke
 **Connected model to add (additive migrations, nothing deleted):** `organizations`, `team_affiliations`, `team_memberships`, `rulesets` + `ruleset_versions`, `seasons`, `sources` + `record_sources`, `results`/placings with read-only history and ranking views, `media_links`, profile claim flow.
 **Navigation:** small global nav (Home, Events, Teams, Fighters, Rankings, Learn, account); event workspace at `/events/:slug` with role-aware panels; field scoring at `/events/:slug/field/:field`; owner-only `/platform`.
 **Out of scope until after the Rumble:** rankings pages, team and fighter workspaces, federation tools, video links, notifications, Stripe, domain.
+
+
+## Owner decisions of 2026-10-03 (override anything above that conflicts)
+Full text: `docs/claude-packs/OWNER_DECISIONS_2026-10-03.md`. Implementation packs: `docs/claude-packs/`.
+* **Backend:** Supabase remains the backend, on the **Free plan for now**. No Supabase exit/portability project. One full independent production export before the Rumble, stored in two locations outside Supabase. Free-plan recovery limits are an accepted, documented operational risk.
+* **Scope before the Rumble:** no full offline-first rebuild, no PowerSync/sync-engine migration, no Broadcast/CDN architecture, no new ranking engine, no further frontend rewrite, no cryptographic audit chaining. Expected scale: about 100 on site and about 30 remote live viewers.
+* **Permissions:** platform administrators hold platform-wide team approval and merge. Organization administrators manage teams in their organization. Event organizers do not. `@buhurtos.ca` test accounts stay until after the Rumble, but their permissions are narrowed to their legitimate roles.
+* **Scoring:** finalization requires signal; paper is the primary official fallback; an authorized "Enter Official Result" path allows transcription/correction from paper; conflicting final results need a human (head marshal) and never resolve by last-write-wins.
+* **Test data:** synthetic data may stay in production if clearly labelled and excluded from official rankings, records and aggregates.
+* **History:** official results are corrected, voided or superseded with an audit trail, never silently deleted. Team mergers preserve the original historical team identity and link it to the successor.
+* **Identity:** one account represents one fighter; duplicates are flagged to administration, not auto-merged.
+* **Priority:** reliability and features proceed in balance, but security, data-loss and sporting-integrity blockers win.
