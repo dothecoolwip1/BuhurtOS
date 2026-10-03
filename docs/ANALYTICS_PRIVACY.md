@@ -3,6 +3,12 @@
 The public statement is `/privacy` (`src/pages/PrivacyPage.tsx`). This file is for whoever runs BuhurtOS. The page and the behaviour must agree:
 change one, check the other. Not legal advice; see "Still needs a person" at the end.
 
+## Which PostHog project (read this before auditing or configuring anything)
+BuhurtOS uses exactly one PostHog project: **project ID 643201**, organization **BuhurtOS**, **US cloud** (`https://us.posthog.com/project/643201`).
+**Project 604020 is NOT BuhurtOS.** An independent PostHog connection was reading project 604020, which has default settings and no events; that is why it
+once disagreed with this document. Do not audit, configure, or send BuhurtOS events to 604020, and do not modify it. Before changing any PostHog setting, read
+the project back (`project-get`) and confirm `id: 643201`; the client key for the app (`POSTHOG_KEY`) must be this project's key.
+
 ## What is collected (all of it)
 Two sinks, both fed only through `src/lib/analytics.ts`:
 * **BuhurtOS database** (`activity_sessions`, `activity_views`, `activity_events`): page path, device class, browser and OS family, time zone, referring
@@ -34,22 +40,33 @@ analytics off until the person turns them on.
 and also occasionally from `track_activity`. It only exists on a database that has applied migrations up to `20261001003100`.
 
 ## Reconciliation facts (checked 2026-10-03)
-* PostHog: one organization, one project (643201, US cloud). Its privacy settings and the three transformations were read back and match this document.
-  The Conversations (live chat) product was switched on for the project at 05:38 by someone other than the code in this repo; the SDK is told
-  `disable_conversations: true` so the site cannot show a chat box. Decide whether the project setting should stay on.
+* PostHog: **project 643201** is BuhurtOS. Its privacy settings, Conversations (now **off**), and the three transformations were read back and match this document.
+  The transformation "drop precise-looking GeoIP fields" was extended (version 2) after a chain test showed GeoIP also writes latitude, longitude, postal code
+  and accuracy radius into `$set.$geoip_*` and `$set_once.$initial_geoip_*`; it now nulls all three places. Chain test (GeoIP, then filter, then URL stripper)
+  passes: country, region, city and time zone remain; coordinates, postal code, radius, query strings and fragments are gone. Limits of that test: it runs on
+  mock events, and the project's "discard client IP" setting is applied at ingestion, so it can only be proven with a real event.
 * The last production build (GitHub Pages, run for `cff6dc5`) had **empty** `POSTHOG_KEY`, `POSTHOG_HOST` and `POSTHOG_REPLAY`: production sends nothing to
-  PostHog today, and replay was never on. Set `POSTHOG_KEY` (this project's client-safe key) and `POSTHOG_HOST` (`https://us.i.posthog.com`) to turn it on.
-* Hosted Supabase (`mvbxlebznlgroptwwdsm`, the project the app points at): the schema of migrations `...002500` to `...003000` is **already present**
-  (functions are identical to the repository's after ignoring whitespace and comments), but the migration history lists only 22 migrations, so the history
-  table cannot be trusted; compare the schema. Genuinely pending: `...002400_match_delete_unlink_fix` and `...003100_analytics_privacy`.
-  Until 3100 is applied the hosted database still stores `utm_source` and `language` (12 existing visits carry them), still keeps search words if an old
-  browser sends them, and has no `purge-activity` cron job (only the 1%-of-requests purge in `track_activity`).
+  PostHog today, and replay was never on.
+* Hosted Supabase (`mvbxlebznlgroptwwdsm`): the schema of migrations `...002500` to `...003000` is **already present** (functions identical to the repository's
+  after ignoring whitespace and comments) but the migration history lists only 22 migrations, so compare the schema, not the history. Genuinely pending:
+  `...002400_match_delete_unlink_fix` and `...003100_analytics_privacy`. Attempts to apply them through the Supabase tool were **cancelled** by the environment
+  (twice); no Supabase CLI, access token or documented migration path exists in this repository. Until 3100 is applied the hosted database still stores
+  `utm_source` and `language`, still keeps search words if an old browser sends them, and has no `purge-activity` cron job.
 
-## Before this goes live (checklist)
-1. Apply `...002400` then `...003100` to the hosted project (additive; reviewed; 2400 swaps a check on `matches` for a weaker one, no row violates either).
-2. Repository variables: `POSTHOG_KEY`, `POSTHOG_HOST`, `PRIVACY_EMAIL`; delete `POSTHOG_REPLAY` (no longer read). `ANALYTICS_CONSENT` defaults to `notice`.
-3. QA and production would share project 643201 unless a second PostHog key is created: test events would mix with real ones.
-4. Check: the footer says what `/privacy` says; `/privacy` loads at 390px and desktop; with a Global Privacy Control browser, nothing is sent.
+## Manual steps that remain (nothing here can be done from the coding environment)
+1. **Hosted database.** In the Supabase dashboard SQL editor for project `mvbxlebznlgroptwwdsm`, run the contents of
+   `supabase/migrations/20261001002400_match_delete_unlink_fix.sql`, then `supabase/migrations/20261001003100_analytics_privacy.sql` (in that order; each is one
+   transaction and safe to re-run). Do not use `supabase db push`: the hosted history uses different version numbers, so it would try to re-run everything.
+   Verify: `select conname from pg_constraint where conname = 'matches_next_link_has_slot'`; `select jobname, schedule, active from cron.job` shows
+   `purge-activity` (`41 9 * * *`, calling `select private.purge_activity()`); then insert two fictional rows in `activity_sessions` (one `last_seen_at` 91 days ago,
+   one 89 days ago), run `select private.purge_activity()`, confirm only the older one is gone, delete the other.
+2. **GitHub Pages (production) variables.** Repository variables: `POSTHOG_KEY` (project 643201's client key), `POSTHOG_HOST` = `https://us.i.posthog.com`,
+   `PRIVACY_EMAIL` when a mailbox exists. Delete `POSTHOG_REPLAY` (nothing reads it). `ANALYTICS_CONSENT` is optional (default `notice`).
+3. **Vercel QA.** Create a Vercel project from this repository on branch `ccr-a435c5f7-pmrfxr` (do not merge to `main`). `vercel.json` already sets the base path
+   and the single-page-app rewrite. Add environment variables `VITE_POSTHOG_KEY` (project 643201's client key) and `VITE_POSTHOG_HOST` = `https://us.i.posthog.com`.
+   Turn off Vercel Deployment Protection for this project (or use a protection-bypass link) so QA browsers can open it without a Vercel account. Use a separate PostHog
+   key or filter QA events afterwards, otherwise QA events mix with production events in project 643201.
+4. Then run the real-ingestion checks listed in the task (anonymous, query string and fragment, typed text, signed-in and sign-out, opt-out, Super Admin).
 
 ## Still needs a person
 Name the individual responsible for privacy (Alberta PIPA expects one) and put their contact in `PRIVACY_EMAIL`; decide whether 1-year PostHog
