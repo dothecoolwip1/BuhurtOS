@@ -11,9 +11,11 @@ const commit = (process.env.GITHUB_SHA ?? git('git rev-parse HEAD')).slice(0, 7)
 const build = process.env.GITHUB_RUN_NUMBER ? `build ${process.env.GITHUB_RUN_NUMBER}` : 'local';
 const APP_VERSION = [`v${pkg.version}`, build, commit, new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC'].filter(Boolean).join(' · ');
 
-// GitHub Pages serves this repo at /BuhurtOS/. Set VITE_BASE=/ for a custom domain.
+// GitHub Pages serves this repo at /BuhurtOS/. Vercel serves the app from the domain root.
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? (process.env.VITE_BASE ?? '/BuhurtOS/') : '/',
+  base: command === 'build'
+    ? (process.env.VERCEL ? '/' : (process.env.VITE_BASE ?? '/BuhurtOS/'))
+    : '/',
   define: { __APP_VERSION__: JSON.stringify(APP_VERSION) },
   plugins: [react(), swPrecachePlugin()],
   build: { target: 'es2022', sourcemap: false },
