@@ -71,3 +71,9 @@ export function SectionHead({ title, to, more }: { title: string; to?: ReactNode
 }
 
 export const tierMultiplierLabel = (t: TierName) => t;
+
+/** Marks fictional/test records wherever they are shown. Pass the record's id or slug; renders nothing for real records. */
+export function TestBadge({ synthetic }: { synthetic: boolean }) {
+  if (!synthetic) return null;
+  return <span className="chip brass" title="Fictional test data. Not an official record; excluded from rankings and statistics." style={{ marginLeft: 8, verticalAlign: 'middle' }}>Test data</span>;
+}

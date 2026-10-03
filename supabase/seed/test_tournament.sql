@@ -48,8 +48,8 @@ begin
 
   select id into v_src from public.sources where title = c_src_title;
   if v_src is null then
-    insert into public.sources (kind, title, citation)
-    values ('submitted', c_src_title, 'Fictional records created by supabase/seed/test_tournament.sql so organizers can rehearse a full tournament. Nothing here happened.')
+    insert into public.sources (kind, title, citation, synthetic)
+    values ('submitted', c_src_title, 'Fictional records created by supabase/seed/test_tournament.sql so organizers can rehearse a full tournament. Nothing here happened.', true)
     returning id into v_src;
   end if;
 

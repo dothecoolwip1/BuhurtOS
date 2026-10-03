@@ -97,8 +97,9 @@ select t.expect_error('org admin cannot name captains for a team outside their o
 select t.expect_ok('org admin removes a captain', $q$select public.remove_team_captain('00000000-0000-0000-0000-00000000ac01', '00000000-0000-0000-0000-00000000aa09')$q$);
 select t.expect_eq('... gone', (select count(*) from public.list_team_captains('00000000-0000-0000-0000-00000000ac01')), 1::bigint);
 select t.as_user('00000000-0000-0000-0000-00000000aa02');
-select t.expect_ok('platform organizer names a captain on any team', $q$select public.assign_team_captain('00000000-0000-0000-0000-00000000ac02', 'newcaptain@example.test')$q$);
+select t.expect_error('a platform-role organizer (event creator) cannot name a captain on any team', $q$select public.assign_team_captain('00000000-0000-0000-0000-00000000ac02', 'newcaptain@example.test')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-00000000aa01');
+select t.expect_ok('owner names a captain on any team', $q$select public.assign_team_captain('00000000-0000-0000-0000-00000000ac02', 'newcaptain@example.test')$q$);
 select t.expect_ok('owner removes it again', $q$select public.remove_team_captain('00000000-0000-0000-0000-00000000ac02', '00000000-0000-0000-0000-00000000aa09')$q$);
 select t.as_admin();
 select t.expect_eq('captain changes are audited', (select count(*) from public.audit_log where action in ('team.captain_assigned', 'team.captain_removed')), 5::bigint);

@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { Crest } from '../components/Crest';
-import { Chip, PageHead } from '../components/ui';
+import { Chip, PageHead, TestBadge } from '../components/ui';
+import { isSynthetic, useSynthetic } from '../data/synthetic';
 import { fetchDirectory, teamEmblemUrl, type DirectoryEntry } from '../data/teamDirectory';
 import type { CrestDivision, Team } from '../data/types';
 import { friendlyError } from '../lib/friendlyError';
@@ -77,12 +78,13 @@ export function TeamsPage() {
 }
 
 function TeamListing({ t }: { t: DirectoryEntry }) {
+  const synthetic = isSynthetic(useSynthetic(), 'team', t.id);
   const where = locationText(t);
   return (
     <Link className="panel teamlisting" to={`/teams/${t.slug}`}>
       <Crest team={crestTeam(t)} size={48} />
       <div style={{ minWidth: 0 }}>
-        <div className="n">{t.name}</div>
+        <div className="n">{t.name}<TestBadge synthetic={synthetic} /></div>
         {where && <div className="l">{where}</div>}
         <div className="s">
           {t.status === 'pending' && <Chip tone="brass">{PENDING_LABEL}</Chip>}

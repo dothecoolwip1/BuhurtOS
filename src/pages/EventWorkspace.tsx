@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { Chip, PageHead } from '../components/ui';
+import { Chip, PageHead, TestBadge } from '../components/ui';
+import { isSynthetic, useSynthetic } from '../data/synthetic';
 import { eventTypeLabel } from '../data/eventTypes';
 import { fetchEvent, fetchMyEventContext, type LeagueKey, type LiveCompetition, type LiveEvent, type MyEventContext } from '../data/api';
 import { dateRange, registrationWindow } from '../lib/dates';
@@ -88,6 +89,7 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
 export function EventWorkspace() {
   const { eventId: slug = '' } = useParams();
   const { session } = useAuth();
+  const synthetic = useSynthetic();
   const userId = session?.user.id;
   const loaded = useAsync(() => fetchEvent(slug), [slug]);
   const eventId = loaded.data?.event.id;
@@ -122,6 +124,7 @@ export function EventWorkspace() {
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <PageHead eyebrow={eventTypeLabel(event.eventType)} title={event.name} lede={event.description || undefined} />
+      {isSynthetic(synthetic, 'event', event.id) && <p className="panel info" role="note"><TestBadge synthetic /> <b>This is a fictional test event.</b> Its teams, fighters and results are made up. They are not official records and are excluded from rankings and statistics.</p>}
       {event.status === 'draft' && (
         <section className="panel info" role="status" aria-label="Draft event" style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>
           <p><Chip tone="brass">Draft</Chip> <b>{DRAFT_NOTICE}.</b></p>

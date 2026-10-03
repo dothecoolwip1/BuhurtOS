@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import { Chip, PageHead } from '../components/ui';
+import { Chip, PageHead, TestBadge } from '../components/ui';
+import { isSynthetic, useSynthetic } from '../data/synthetic';
 import { fetchFighterDirectory, fetchTeamOptions, type FighterCard } from '../data/careers';
 import { categoryLabel, genderLabel, pageInfo, PAGE_SIZE, parsePage } from '../lib/careerView';
 import { friendlyError } from '../lib/friendlyError';
@@ -10,12 +11,13 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 const DISCIPLINES = ['5v5', '3v3', '12v12', '30v30', 'longsword', 'sword_shield', 'buckler', 'polearm', 'profight', 'sabre', 'greatsword'];
 
 export function FighterListing({ f }: { f: FighterCard }) {
+  const synthetic = isSynthetic(useSynthetic(), 'fighter', f.id);
   const where = [f.city, f.region].filter(Boolean).join(', ');
   return (
     <Link className="panel fightercard" to={`/fighters/${f.id}`}>
       <span className="av" aria-hidden="true">{f.name.charAt(0).toUpperCase()}</span>
       <span style={{ minWidth: 0 }}>
-        <span className="n">{f.name}</span>
+        <span className="n">{f.name}<TestBadge synthetic={synthetic} /></span>
         {f.team && <span className="l">{f.team.name}</span>}
         {where && <span className="l">{where}</span>}
         {(f.gender || f.disciplines.length > 0) && (

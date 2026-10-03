@@ -3,7 +3,8 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { usePlatformRole } from '../auth/usePlatformRole';
 import { Crest } from '../components/Crest';
-import { Chip } from '../components/ui';
+import { Chip, TestBadge } from '../components/ui';
+import { isSynthetic, useSynthetic } from '../data/synthetic';
 import { fetchTeamBySlug, fetchTeamEntries, type DirectoryEntry } from '../data/teamDirectory';
 import { fetchFighterBasics, fetchOrgLites, fetchSeasons, fetchTeamMatchOutcomes, fetchTeamRankings } from '../data/careers';
 import { fetchTeamHistory, fetchTeamStats } from '../data/fighters';
@@ -36,6 +37,7 @@ export function TeamPage() {
 }
 
 function Workspace({ t }: { t: DirectoryEntry }) {
+  const synthetic = useSynthetic();
   const { session } = useAuth();
   const { isOwner } = usePlatformRole();
   const userId = session?.user.id;
@@ -67,6 +69,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         <div style={{ minWidth: 0 }}>
           <p className="eyebrow">Team</p>
           <h1 style={{ fontSize: 'clamp(38px,6vw,72px)', marginTop: 8 }}>{t.name}</h1>
+          <TestBadge synthetic={isSynthetic(synthetic, 'team', t.id)} />
           <div className="phead"><div className="sub">{where && <span>{where}</span>}{t.foundedYear && <span>Founded {t.foundedYear} <span className="muted">(as stated by the team)</span></span>}</div></div>
           {t.status === 'pending' && <p style={{ marginTop: 10 }}><Chip tone="brass">{PENDING_LABEL}</Chip></p>}
         </div>

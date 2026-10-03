@@ -211,7 +211,10 @@ select t.expect_eq('anon does not see a pending team', (select count(*) from pub
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_error('a stranger cannot approve a team', format($q$select public.approve_team(%L)$q$, (select v from reg where k = 'team')), '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('an organizer approves the team', format($q$select public.approve_team(%L)$q$, (select v from reg where k = 'team')));
+select t.expect_error('an event organizer cannot approve a team (platform administrators only)', format($q$select public.approve_team(%L)$q$, (select v from reg where k = 'team')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the platform administrator approves the team', format($q$select public.approve_team(%L)$q$, (select v from reg where k = 'team')));
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.as_anon();
 select t.expect_eq('anon sees the approved team', (select count(*) from public.teams), 1::bigint);
 
@@ -339,6 +342,7 @@ select t.as_admin();
 update public.events set starts_on = current_date - 33, ends_on = current_date - 31 where id = current_setting('t.event')::uuid;
 select t.expect_eq('purge removes notes older than 30 days after the event', private.purge_medical_notes(), 3);
 select t.expect_eq('no medical note remains', (select count(*) from public.registration_private where medical_note is not null), 0::bigint);
+update public.events set starts_on = current_date - 8, ends_on = current_date - 6 where id = current_setting('t.event')::uuid;  -- still inside the 7-day staff grace window
 select t.as_anon();
 select t.expect_error('anon cannot call the purge', 'select private.purge_medical_notes()', '42501');
 
@@ -433,8 +437,8 @@ select t.as_user('00000000-0000-0000-0000-0000000000a9');
 insert into mt select 'dup', public.create_team('prairie-cinders-2', 'Prairie Cinders (dup)', 'Saskatoon', 'SK', 'CA');
 select t.as_user('00000000-0000-0000-0000-0000000000a9');
 insert into mt select 'other', public.create_team('lone-wolves', 'Lone Wolves', 'Regina', 'SK', 'CA');
-select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('an organizer approves the other teams', format($q$select public.approve_team(%L); select public.approve_team(%L)$q$, (select v from mt where k = 'dup'), (select v from mt where k = 'other')));
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the platform administrator approves the other teams', format($q$select public.approve_team(%L); select public.approve_team(%L)$q$, (select v from mt where k = 'dup'), (select v from mt where k = 'other')));
 select t.as_admin();
 -- the duplicate and the kept team are both registered for 5v5 by their own captain's registration; the "other" team is in 5v5 too
 insert into public.entries (id, competition_id, team_id) select '00000000-0000-0000-0000-00000000e0a1', id, (select v from reg where k = 'team')::uuid from public.competitions where name = 'Men''s 5v5';
@@ -455,11 +459,13 @@ select t.expect_error('a captain cannot merge teams', format($q$select public.me
 select t.as_anon();
 select t.expect_error('anon cannot merge teams', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')));
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('an event organizer cannot merge teams', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
 select t.expect_error('a team cannot be merged into itself', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from reg where k = 'team')), '22023');
 select t.expect_error('an unknown team is refused', format($q$select public.merge_teams(%L, gen_random_uuid())$q$, (select v from reg where k = 'team')), 'P0002');
 select t.expect_error('teams with entries in the same competition are not merged', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'other')), '22023');
 select t.expect_eq('the refused merge changed nothing', (select count(*) from public.teams where id = (select v from mt where k = 'other')::uuid), 1::bigint);
-select t.expect_ok('an organizer merges the duplicate into the kept team', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')));
+select t.expect_ok('the platform administrator merges the duplicate into the kept team', format($q$select public.merge_teams(%L, %L)$q$, (select v from reg where k = 'team'), (select v from mt where k = 'dup')));
 select t.as_admin();
 select t.expect_eq('the duplicate team is gone', (select count(*) from public.teams where id = (select v from mt where k = 'dup')::uuid), 0::bigint);
 select t.expect_eq('registrations moved to the kept team', (select count(*) from public.registrations where team_id = (select v from reg where k = 'team')::uuid), 2::bigint);
@@ -680,7 +686,9 @@ select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_error('a stranger who is not an organizer cannot decide', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_org')), '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_eq('a platform organizer does not see requests of teams that have a captain', (select count(*) from public.team_requests_inbox()), 0::bigint);
-select t.expect_ok('a platform organizer may decide a request', format($q$select public.decide_team_join(%L, 'declined')$q$, (select v from tm where k = 'req_org')));
+select t.expect_error('a platform-role organizer may NOT decide a team''s request', format($q$select public.decide_team_join(%L, 'declined')$q$, (select v from tm where k = 'req_org')), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_ok('the platform administrator may decide a request', format($q$select public.decide_team_join(%L, 'declined')$q$, (select v from tm where k = 'req_org')));
 select t.as_user('00000000-0000-0000-0000-0000000000a1');
 select t.expect_error('the owner cannot decide a request that was already answered', format($q$select public.decide_team_join(%L, 'approved')$q$, (select v from tm where k = 'req_org')), '22023');
 
@@ -691,9 +699,11 @@ select t.as_user('00000000-0000-0000-0000-00000000f108');
 select t.expect_ok('five pending requests are allowed', $q$select public.request_team_join(('00000000-0000-0000-0000-00000000f30' || n)::uuid, null) from generate_series(1, 5) n$q$);
 select t.expect_error('a sixth pending request is refused', $q$select public.request_team_join('00000000-0000-0000-0000-00000000f306', null)$q$, '22023');
 select t.as_admin();
-select t.expect_eq('a team with no captain tells platform owner and organizers', (select count(*) from public.notifications where kind = 'team_join_requested' and user_id in ('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000a2') and payload ->> 'team_slug' = 'tm-cap-1'), 2::bigint);
+select t.expect_eq('a team with no captain tells the platform owner, not a platform-role organizer', (select count(*) from public.notifications where kind = 'team_join_requested' and user_id in ('00000000-0000-0000-0000-0000000000a1', '00000000-0000-0000-0000-0000000000a2') and payload ->> 'team_slug' = 'tm-cap-1'), 1::bigint);
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_eq('an organizer inbox lists the requests of captainless teams', (select count(*) from public.team_requests_inbox() where requester_name = 'Spam Mer'), 5::bigint);
+select t.expect_eq('a platform-role organizer inbox is empty', (select count(*) from public.team_requests_inbox() where requester_name = 'Spam Mer'), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_eq('the platform administrator inbox lists the requests of captainless teams', (select count(*) from public.team_requests_inbox() where requester_name = 'Spam Mer'), 5::bigint);
 
 -- notifications are private to their owner
 select t.as_user('00000000-0000-0000-0000-00000000f102');
@@ -726,7 +736,7 @@ select t.expect_error('a stranger is not a reviewer', format($q$select * from pu
 select t.as_anon();
 select t.expect_eq('anon cannot see the pending team', (select count(*) from public.teams where slug = 'frostgate-free-company'), 0::bigint);
 select t.expect_error('anon cannot read the private part', 'select * from public.team_request_private', '42501');
-select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
 select t.expect_eq('an organizer reads the private part', (select contact_email from public.new_team_request_details((select v from tm where k = 'new_team')::uuid)), 'frostgate-private@example.test');
 select t.expect_eq('an organizer sees the requester name and the reason', (select requested_by_name || '|' || left(captain_reason, 9) from public.new_team_request_details((select v from tm where k = 'new_team')::uuid)), 'New Cap|I run the');
 select t.expect_eq('an organizer was notified of the proposal', (select count(*) from public.my_notifications() where kind = 'team_proposed' and payload ->> 'team_slug' = 'frostgate-free-company'), 1::bigint);
@@ -1121,8 +1131,8 @@ insert into public.fighters (id, display_name, team_id) values
   ('00000000-0000-0000-0000-00000000b315', 'Elim Five', '00000000-0000-0000-0000-00000000b203'), ('00000000-0000-0000-0000-00000000b316', 'Elim Six', '00000000-0000-0000-0000-00000000b203'),
   ('00000000-0000-0000-0000-00000000b317', 'Elim Seven', '00000000-0000-0000-0000-00000000b203');
 insert into public.events (id, slug, name, status, starts_on, ends_on, organization_id, season_id) values
-  ('00000000-0000-0000-0000-00000000b411', 'nt-stats', 'Stats Open', 'published', current_date - 10, current_date - 9, '00000000-0000-0000-0000-00000000b103', '00000000-0000-0000-0000-00000000b502'),
-  ('00000000-0000-0000-0000-00000000b412', 'nt-stats2', 'Stats Open Two', 'published', current_date - 8, current_date - 7, null, null),
+  ('00000000-0000-0000-0000-00000000b411', 'nt-stats', 'Stats Open', 'published', current_date - 7, current_date - 6, '00000000-0000-0000-0000-00000000b103', '00000000-0000-0000-0000-00000000b502'),
+  ('00000000-0000-0000-0000-00000000b412', 'nt-stats2', 'Stats Open Two', 'published', current_date - 5, current_date - 4, null, null),
   ('00000000-0000-0000-0000-00000000b413', 'nt-conf', 'Conflict Open', 'draft', current_date + 30, current_date + 31, null, null);
 insert into public.event_staff (event_id, user_id, role) select e, '00000000-0000-0000-0000-0000000000a2', 'organizer'
   from unnest(array['00000000-0000-0000-0000-00000000b411', '00000000-0000-0000-0000-00000000b412', '00000000-0000-0000-0000-00000000b413']::uuid[]) e;

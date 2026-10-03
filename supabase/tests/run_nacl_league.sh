@@ -30,4 +30,7 @@ for f in $( [ "$SEED" = 1 ] && ls "$ROOT"/seed/nacl_test/[0-9][0-9]_*.sql | sort
   echo "loading $(basename "$f")"
   sed "s/__OWNER_ID__/$OWNER_ID/g" "$f" | psql -X -q -d "$DB" -v ON_ERROR_STOP=1 > /dev/null
 done
+# The verifier checks the stats/ranking views over the fictional league, but synthetic events are (by design) excluded from those views.
+# So in this THROWAWAY scratch database only, switch the synthetic flag off to let the views see the data. The exclusion itself is tested in tests/pack01_gate.sql.
+if [ "$VERIFY" = 1 ]; then psql -X -q -d "$DB" -v ON_ERROR_STOP=1 -c "update public.sources set synthetic = false"; fi
 if [ "$VERIFY" = 1 ]; then psql -X -d "$DB" -v ON_ERROR_STOP=0 -f "$ROOT/tests/nacl_league_verify.sql"; fi

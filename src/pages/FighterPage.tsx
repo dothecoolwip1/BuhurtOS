@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { Chip } from '../components/ui';
+import { Chip, TestBadge } from '../components/ui';
+import { isSynthetic, useSynthetic } from '../data/synthetic';
 import {
   fetchFighterAppearances, fetchFighterMemberships, fetchFighterRankings, fetchOrgLites, fetchRecentFights, fetchSeasons, type Appearance
 } from '../data/careers';
@@ -72,6 +73,7 @@ function Career({ p }: { p: FighterProfile }) {
   const hasStory = Boolean(p.fightingStyle || p.disciplines.length > 0 || p.bio || p.highlights.length > 0);
   const totals = sumMatchStats(matchStats.data ?? []);
   const places = history.data ?? [];
+  const synthetic = useSynthetic();
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
@@ -83,6 +85,7 @@ function Career({ p }: { p: FighterProfile }) {
         <div style={{ minWidth: 0 }}>
           <p className="eyebrow">Fighter</p>
           <h1 style={{ fontSize: 'clamp(38px,6vw,72px)', marginTop: 8 }}>{p.displayName}</h1>
+          <TestBadge synthetic={isSynthetic(synthetic, 'fighter', id)} />
           <div className="phead"><div className="sub">
             {p.team && <span>Home team: <Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link></span>}
             {where && <span>{where}</span>}

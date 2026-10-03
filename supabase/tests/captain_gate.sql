@@ -161,7 +161,7 @@ select t.expect_error('nobody can ask to join a team that is still awaiting appr
 select t.as_user('00000000-0000-0000-0000-0000000000c1');
 select t.expect_eq('owner: can edit and rename any team', (public.can_edit_team('00000000-0000-0000-0000-0000000000d2') and public.can_rename_team('00000000-0000-0000-0000-0000000000d2')), true);
 select t.as_user('00000000-0000-0000-0000-0000000000c2');
-select t.expect_eq('organizer: can edit any team', public.can_edit_team('00000000-0000-0000-0000-0000000000d2'), true);
+select t.expect_eq('organizer: can NOT edit an unrelated team (no platform-wide team power)', public.can_edit_team('00000000-0000-0000-0000-0000000000d2'), false);
 select t.expect_eq('organizer: the inbox lists only teams that have no captain', (select count(*) from public.team_requests_inbox()), 0::bigint);
 
 select 'PASSED ' || count(*) || ' checks' as result from t.log;
