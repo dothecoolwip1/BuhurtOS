@@ -41,6 +41,7 @@ export function PlatformHomePage() {
       <section className="plat" style={{ display: 'grid', gap: 20 }}>
         <PageHead eyebrow="Platform" title="Platform" lede="Owner tools. Every action is checked by the database again; this page only decides what is shown." />
         <ul className="plain">
+          <li><Link className="panel plat-link" to="/platform/events"><b>Events</b><span className="muted">Every event on the platform, drafts and test data included. Your own events stay under My events.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/analytics"><b>Analytics</b><span className="muted">Visitors, who is on right now, how long people stay, what they use, sign-ups and searches.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/bugs"><b>Bug reports</b><span className="muted">Problems people reported with the button in the header.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/fighters"><b>Fighter identities</b><span className="muted">Fighter records that may be the same person. Nothing is merged without you.</span></Link></li>

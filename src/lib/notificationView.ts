@@ -6,7 +6,8 @@ export const notificationLink = (n: Pick<AppNotification, 'kind' | 'payload'>): 
   const evOk = typeof ev === 'string' && /^[a-z0-9-]+$/.test(ev);
   if (n.kind === 'bug_reported') return '/platform/bugs';
   if (n.kind === 'registration_submitted') return evOk ? `/events/${ev}/manage` : '/account';
-  if (n.kind === 'registration_decided') return evOk ? `/events/${ev}` : '/account';
+  if (n.kind === 'registration_decided' || n.kind === 'event_invited') return evOk ? `/events/${ev}` : '/account';
+  if (n.kind === 'registration_withdrawn') return evOk ? `/events/${ev}/manage?tab=fighters` : '/account';
   const slug = n.payload.team_slug;
   if (n.kind === 'team_join_decided' && n.payload.decision === 'approved' && typeof slug === 'string' && /^[a-z0-9-]+$/.test(slug)) return `/teams/${slug}`;
   return '/team-manager';

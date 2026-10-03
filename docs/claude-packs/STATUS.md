@@ -2,7 +2,7 @@
 
 Branch: `ccr-a435c5f7-pmrfxr`
 
-Last updated: 2026-10-03
+Last updated: 2026-10-03 (Pack 07 added)
 
 ## Pack status
 
@@ -15,6 +15,7 @@ Last updated: 2026-10-03
 | 04 Event runtime safety | REPO COMPLETE, NOT RUN IN GITHUB, MAIN NOT PROTECTED | (see git log) | NOT APPLIED (migration 20261003000400 command window; needs 01 to 03 first) | none; not deployed | Everything passes locally. CI workflow rewritten but never executed on GitHub yet. Branch protection and real-phone rehearsal are owner/human steps. |
 | 05 Identity/public data/stats | REPO COMPLETE, HOSTED MIGRATION NOT APPLIED | (see git log) | NOT APPLIED (migration 20261003000500; needs 01 to 04 first) | none; not deployed | Local DB gates and unit tests pass. Public pages not viewed in a browser against real data. |
 | 06 Post-Rumble roadmap | ROADMAP COMPLETE (not implementation) | (see git log) | n/a | n/a | Documentation only: docs/ROADMAP_POST_RUMBLE.md. Nothing in it was built. |
+| 07 Phone UX workflows (results on test events, competitions, waiver choices, venue search, organizer-added fighters, social links, gallery, calendar, My events) | REPO COMPLETE, HOSTED MIGRATION NOT APPLIED | (see git log) | NOT APPLIED: migration 20261003000600 holds `drop constraint` / `drop policy if exists` / `alter column ... drop not null`, which the hosted migration tool refuses; owner runs it in the SQL Editor (notes below) | none; not deployed | Local: database gate (9 suites, pack07_gate 108 checks), vitest 557, tsc, build, Chromium 390px browser test 81/81 (mocked Supabase). Real phone not tested. |
 
 ## Current known constraints
 
@@ -131,3 +132,69 @@ original (pre-Pack 03) form; it was an old version, not missing.
   DROP/DELETE, and that refusal is not bypassed. After the owner's run: re-measure the fingerprints, run the hosted permission tests and the
   advisors, and record them in the reconciliation file.
 * **Do not use `supabase db push`.** The hosted ledger versions differ from the repository's; see section 7 of the reconciliation file.
+
+
+## Pack 07 notes (phone UX workflows, 2026-10-03)
+Migration `supabase/migrations/20261003000600_pack07_ux_workflows.sql` (rerunnable; applies from zero; NOT applied to hosted). Gate
+`supabase/tests/pack07_gate.sql` (108 checks, in `run_all.sh`). Schema fingerprint updated. Browser test `scripts/e2e/pack07-ux.mjs`
+with `scripts/e2e/mock-rest.mjs` (a PostgREST/Storage stand-in), added to the CI browser job (plus a second build with a fake Google key to
+prove the manual fallback).
+
+What was actually wrong, and what changed:
+1. **Synthetic event results.** The event page's record read `result_rows`, the official-only view from Pack 01, so a finished test event
+   showed "No final placings". Now `fetchEventHistory` reads `result_rows_all` (Pack 05) and the Results and Statistics tabs carry a
+   "Test data / synthetic event" note. Rankings, career/season/team statistics, played-event counts still read the official views only
+   (gate checks 1a-1e; browser checks 1a-2c). No SQL change was needed.
+2. **Waiver.** Versions were text only, numbered by the browser, inserted directly. Now `add_waiver_version()` numbers them, versions can be
+   `text` or `pdf` (private bucket `waiver-documents`, readable only by the event's organizers and by anyone who may read a version that
+   points at the file; never deletable once referenced), the organizer sees three choices (starter template with placeholders that must be
+   replaced, upload PDF, write/paste), old versions stay readable, every registration still records the exact version signed, and the
+   registration form shows the PDF or the text and says which version is being accepted. The starter template text says it is not legal
+   advice (`src/content/waiverTemplate.ts`).
+3. **Venue.** `VenuePicker` (Google Places "New" library: AutocompleteSuggestion + Place, session tokens, CA/US) on New event and Setup;
+   fills venue, address, city, province, country and `events.latitude/longitude` (new nullable columns). No key, or Google unreachable:
+   plain fields, with a sentence saying so. Nothing asks the phone for its location. Setup in `docs/runbooks/GOOGLE_PLACES.md` and
+   `.env.example` (`VITE_GOOGLE_MAPS_BROWSER_KEY`, referrer-restricted browser key).
+4. **Competitions.** There was no way to create one anywhere in the app (the Run tab and the publish checklist both dead-ended). Setup now
+   has a Competitions section (add / edit / remove; the database refuses to delete a competition that has entrants, matches, results or
+   registrations: trigger `competitions_delete_guard`), the checklist shows "+ Add competition" / "Add the waiver" beside each blocking
+   item, the Run tab's empty state links there, and the event page's organizer panel says "Needs competition setup".
+5. **Organizer adds fighters.** New `event_invitations` (+ competitions). Not a registration, not staff: `invite_fighter_to_event`,
+   `cancel_invitation`, `withdraw_my_invitation`, `list_event_invitations` (has_account yes/no only), `withdraw_registration`. The
+   fighter is notified (`event_invited`) only when the record has a linked account; otherwise the organizer is told nobody was notified.
+   States: Invited: no linked account / Pending fighter confirmation (+ Pending form submission, Pending waiver) / Ready / Withdrawn /
+   Cancelled. `submit_registration` lets an added fighter complete the form after the close and accepts it at once (the organizer chose
+   them); `decide_registration` keeps the normal review for everyone else (accept body moved to `private.accept_registration_core`).
+   Manage → Fighters tab; event page card "The organizers added you" with Complete / Withdraw; registrations can be withdrawn by the
+   person or an organizer (entries withdrawn, organizers notified).
+6. **Team social links.** Persistence and the public read were correct (hosted `red-deer-reavers` holds a Facebook link; anon reads it).
+   The problems were the editor and the presentation: a bare `facebook.com/...` or an auto-capitalised `Https://` failed validation with
+   one message at the bottom of the section, and the only way out wiped the links (`mountain-bears-test` audit shows two saves ending in
+   `{}`); on the public page the links were small text pills at the bottom of About. Now `SocialLinksEditor` normalises on blur (adds
+   https://, fixes the scheme, expands @handles), errors sit on the field, and `SocialLinksRow` shows icon buttons under the team's name.
+7. **Fighter social links.** `fighters.social_links` (public, owner-only through `update_my_fighter_profile`, shared validator
+   `private.clean_social_links`), same editor on Edit my profile, same row under the fighter's name.
+8. **Gallery.** `fighter_gallery` (max 10, trigger + function), bucket `fighter-gallery` (own-folder insert/select/delete), WebP (or JPEG)
+   at 1800 px made in the browser (canvas redraw drops EXIF), reorder, remove, "Profile photo" from a gallery image; public page shows a
+   2-column grid only when photos exist, with a full-screen viewer (swipe, keys). Own-folder SELECT policies were also added for
+   `avatars` and `team-emblems`: Storage's `remove()` needs SELECT, so old files were never actually deleted before.
+9-12. **Events / Calendar / My events / Platform events** are four views over one loader (`useEventIndex`) and one pure rule set
+   (`src/lib/eventFilters.ts`: search, format, organization, province, type, status, when, role, test-data toggle, sort order happening now
+   → upcoming → drafts → past, grouping, month grid, .ics / Google Calendar export). `my_event_relations()` returns the signed-in
+   person's real relationships (staff roles, fighter/volunteer registrations, invitations, own entries and rosters, captained team
+   entries, organization admin); being the owner is NOT one, so the owner's My events is empty until they take part, and Platform →
+   Events lists everything (test data included). Fictional events are hidden by default on every view and shown by the "Show test data"
+   toggle (signed-in people); the toggle and every filter live in the URL. The account page links to My events / My calendar.
+
+Not done / honest limits: real Samsung phone not used (Chromium at 390x844 with touch only); Google Places not exercised against the real
+API (no key here; the loader, mapping and fallback are tested, the live round-trip is not); the hosted database still lacks Pack 07; nothing
+deployed. The waiver clearance literals in `registration_clearance` / `team_clearance` are unchanged (out of scope). `scripts/e2e/lib.mjs`
+(probe helper) still imports `playwright` which is not installed; unrelated and untouched.
+
+**Hosted rollout (owner step, Supabase SQL Editor):** hosted now holds Packs 01-05 (checked read-only 2026-10-03: `result_rows_all`,
+`ensure_fighter_for_account`, `submit_match_result` present; no `event_invitations`, no `waiver_versions.kind`; 0 waiver rows shorter than
+20 characters). Run the whole of `supabase/migrations/20261003000600_pack07_ux_workflows.sql` once, as is; it is rerunnable. The hosted
+migration tool refuses it because of `alter column body drop not null`, `drop constraint notifications_kind_check` and the
+`drop ... if exists` guards; none of them touches data. Afterwards: `select count(*) from public.event_invitations` (0), check the two new
+buckets exist, and run the Pack 07 section of a read-only verification (`supabase/tests/pack07_gate.sql` is a local throwaway gate; do not
+run it on hosted).

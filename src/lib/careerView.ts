@@ -178,7 +178,13 @@ export function rosterGroups(people: readonly RosterPerson[]): RosterGroups {
   return g;
 }
 
-export interface EventResultRow { competitionId: string; competitionName: string; category: string; gender: Division; entryId: string; finalPlace: number; points: number; teamId: string | null; fighterId: string | null }
+export interface EventResultRow {
+  competitionId: string; competitionName: string; category: string; gender: Division; entryId: string; finalPlace: number; points: number; teamId: string | null; fighterId: string | null;
+  /** From a fictional/test event (the event page shows it, labelled; nothing official counts it). */
+  synthetic?: boolean;
+  /** The team's name at the event, when the result is a team's (it may have been renamed or merged since). */
+  teamNameAtEvent?: string | null;
+}
 export interface MedalTableRow { key: string; name: string; teamId: string | null; golds: number; silvers: number; bronzes: number; total: number }
 /** Medal table by team (group fights) or by fighter name when an entry has no team. Sorted gold, silver, bronze, then name. */
 export function medalTable(rows: readonly EventResultRow[], nameOf: (r: EventResultRow) => string): MedalTableRow[] {

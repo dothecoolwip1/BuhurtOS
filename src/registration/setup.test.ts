@@ -3,7 +3,7 @@ import { publishChecklist, toPatch, validateSetup, type SetupForm } from './setu
 import { localToIso } from '../lib/dates';
 
 const form = (o: Partial<SetupForm> = {}): SetupForm => ({
-  name: 'Red Deer Rumble 2026', description: '', venue: 'Horse In Hand Ranch', address: '', city: 'Blackfalds', region: 'AB', startsOn: '2026-11-14', endsOn: '2026-11-15',
+  name: 'Red Deer Rumble 2026', description: '', venue: 'Horse In Hand Ranch', address: '', city: 'Blackfalds', region: 'AB', country: 'CA', latitude: null, longitude: null, startsOn: '2026-11-14', endsOn: '2026-11-15',
   opensLocal: '', closesLocal: '2026-11-08T23:59', feeDollars: '40', feeProvince: 'AB', feeNote: '',
   eventType: 'tournament', registrationMode: 'buhuros', externalUrl: '', timeNote: '', volunteerInfo: '', ...o
 });
@@ -14,6 +14,12 @@ describe('setup validation', () => {
     expect(validateSetup(form({ name: 'ab' })).name).toBeTruthy();
     expect(validateSetup(form({ endsOn: '2026-11-13' })).endsOn).toBeTruthy();
     expect(validateSetup(form({ opensLocal: '2026-11-09T00:00', closesLocal: '2026-11-08T23:59' })).closesLocal).toBeTruthy();
+  });
+  it('keeps a map position only when both halves are there and in range', () => {
+    expect(validateSetup(form({ latitude: 52.3, longitude: -113.8 }))).toEqual({});
+    expect(validateSetup(form({ latitude: 52.3, longitude: null })).venue).toBeTruthy();
+    expect(validateSetup(form({ latitude: 99, longitude: 0 })).venue).toBeTruthy();
+    expect(toPatch(form({ latitude: 52.3, longitude: -113.8, country: 'CA' }))).toMatchObject({ latitude: 52.3, longitude: -113.8, country: 'CA' });
   });
   it('needs to know who pays when there is a fee', () => {
     expect(validateSetup(form({ feeProvince: '' })).feeProvince).toBeTruthy();

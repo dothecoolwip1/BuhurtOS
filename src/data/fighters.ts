@@ -1,5 +1,6 @@
 import { fitWithin, shrinkImage } from '../lib/image';
 import { supabase } from '../lib/supabase';
+import { cleanSocialLinks, socialLinkErrors, type SocialLinks } from '../lib/social';
 
 /**
  * Fighter profiles, statistics, history, rankings, entry rosters and finishing a competition.
@@ -29,13 +30,15 @@ export interface FighterProfile {
   organization: { id: string; slug: string; name: string; enabled: boolean } | null;
   /** Storage path inside the public 'avatars' bucket, or null. Turn it into an address with avatarUrl(). */
   avatarPath: string | null;
+  /** Public, optional, the fighter's own: network -> https address. */
+  socialLinks: SocialLinks;
 }
 type ProfileDb = {
   fighter_id: string; display_name: string; gender: Gender | null; birth_year: number | null; age: number | null; city: string | null; region: string | null; country: string | null;
   joined_year: number | null; disciplines: string[] | null; fighting_style: string | null; bio: string | null; highlights: string[] | null;
   team_id: string | null; team_name: string | null; team_slug: string | null;
   team_organization_id: string | null; team_organization_slug: string | null; team_organization_name: string | null; team_organization_enabled: boolean | null;
-  avatar_path?: string | null;
+  avatar_path?: string | null; social_links?: Record<string, string> | null;
 };
 export const toFighterProfile = (r: ProfileDb): FighterProfile => ({
   fighterId: r.fighter_id, displayName: r.display_name, gender: r.gender, birthYear: r.birth_year, age: r.age, city: r.city, region: r.region, country: r.country,
@@ -43,7 +46,7 @@ export const toFighterProfile = (r: ProfileDb): FighterProfile => ({
   team: r.team_id && r.team_name && r.team_slug ? { id: r.team_id, name: r.team_name, slug: r.team_slug } : null,
   organization: r.team_organization_id && r.team_organization_slug && r.team_organization_name
     ? { id: r.team_organization_id, slug: r.team_organization_slug, name: r.team_organization_name, enabled: r.team_organization_enabled ?? true } : null,
-  avatarPath: r.avatar_path ?? null
+  avatarPath: r.avatar_path ?? null, socialLinks: (r.social_links ?? {}) as SocialLinks
 });
 
 /** Age in whole calendar years of birth (current year minus birth year), or null when the fighter gave no birth year. */
@@ -51,20 +54,22 @@ export const ageFromBirthYear = (birthYear: number | null, now: Date = new Date(
 
 /** Public. Null when the fighter does not exist. */
 export async function fetchFighterProfile(fighterId: string): Promise<FighterProfile | null> {
-  const { data, error } = await supabase.rpc('fighter_profile', { p_fighter: fighterId });
+  // The social links live on the public fighters row; read alongside the profile function (whose column list is fixed).
+  const [{ data, error }, links] = await Promise.all([supabase.rpc('fighter_profile', { p_fighter: fighterId }), supabase.from('fighters').select('social_links').eq('id', fighterId).maybeSingle()]);
   if (error) throw error;
   const rows = data as ProfileDb[];
-  return rows.length ? toFighterProfile(rows[0]) : null;
+  if (!rows.length) return null;
+  return toFighterProfile({ ...rows[0], social_links: (links.data as { social_links?: Record<string, string> | null } | null)?.social_links ?? null });
 }
 
 export interface ProfileForm {
   gender: Gender | ''; birthYear: string; city: string; region: string; country: string; joinedYear: string;
-  disciplines: string[]; fightingStyle: string; bio: string; highlights: string[];
+  disciplines: string[]; fightingStyle: string; bio: string; highlights: string[]; socialLinks: SocialLinks;
 }
-export const emptyProfileForm = (): ProfileForm => ({ gender: '', birthYear: '', city: '', region: '', country: '', joinedYear: '', disciplines: [], fightingStyle: '', bio: '', highlights: [] });
+export const emptyProfileForm = (): ProfileForm => ({ gender: '', birthYear: '', city: '', region: '', country: '', joinedYear: '', disciplines: [], fightingStyle: '', bio: '', highlights: [], socialLinks: {} });
 export const profileToForm = (p: FighterProfile): ProfileForm => ({
   gender: p.gender ?? '', birthYear: p.birthYear?.toString() ?? '', city: p.city ?? '', region: p.region ?? '', country: p.country ?? '', joinedYear: p.joinedYear?.toString() ?? '',
-  disciplines: [...p.disciplines], fightingStyle: p.fightingStyle ?? '', bio: p.bio ?? '', highlights: [...p.highlights]
+  disciplines: [...p.disciplines], fightingStyle: p.fightingStyle ?? '', bio: p.bio ?? '', highlights: [...p.highlights], socialLinks: { ...(p.socialLinks ?? {}) }
 });
 
 /** Same limits as the database (which has the final say). Returns messages per field. */
@@ -83,6 +88,7 @@ export function validateProfile(f: ProfileForm, now: Date = new Date()): Record<
   if (f.disciplines.length > DISCIPLINES_MAX || new Set(f.disciplines).size !== f.disciplines.length) e.disciplines = `Pick up to ${DISCIPLINES_MAX} different disciplines.`;
   const hs = f.highlights.map(h => h.trim()).filter(Boolean);
   if (hs.length > HIGHLIGHTS_MAX || hs.some(h => h.length > HIGHLIGHT_MAX)) e.highlights = `Up to ${HIGHLIGHTS_MAX} highlights of at most ${HIGHLIGHT_MAX} characters.`;
+  for (const [k, msg] of Object.entries(socialLinkErrors(f.socialLinks ?? {}))) e[`social:${k}`] = msg as string;
   return e;
 }
 
@@ -92,7 +98,8 @@ export function profilePayload(f: ProfileForm): Record<string, unknown> {
   const y = (s: string) => (s.trim() === '' ? null : Number(s.trim()));
   return {
     gender: f.gender === '' ? null : f.gender, birth_year: y(f.birthYear), city: t(f.city), region: t(f.region), country: t(f.country), joined_year: y(f.joinedYear),
-    disciplines: f.disciplines, fighting_style: t(f.fightingStyle), bio: t(f.bio), highlights: f.highlights.map(h => h.trim()).filter(Boolean)
+    disciplines: f.disciplines, fighting_style: t(f.fightingStyle), bio: t(f.bio), highlights: f.highlights.map(h => h.trim()).filter(Boolean),
+    social_links: cleanSocialLinks(f.socialLinks ?? {})
   };
 }
 /** Only the caller's own fighter record can change; the database refuses anything else. */

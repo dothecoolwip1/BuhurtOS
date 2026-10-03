@@ -29,7 +29,15 @@ describe('profile', () => {
   it('round trips a profile through the form and the payload (empty fields clear)', () => {
     const f = profileToForm(toFighterProfile(profileDb));
     expect(profilePayload(f)).toMatchObject({ gender: 'male', birth_year: 1990, city: 'Edmonton', joined_year: 2019, disciplines: ['longsword'], highlights: ['h'] });
-    expect(profilePayload(emptyProfileForm())).toEqual({ gender: null, birth_year: null, city: null, region: null, country: null, joined_year: null, disciplines: [], fighting_style: null, bio: null, highlights: [] });
+    expect(profilePayload(emptyProfileForm())).toEqual({ gender: null, birth_year: null, city: null, region: null, country: null, joined_year: null, disciplines: [], fighting_style: null, bio: null, highlights: [], social_links: {} });
+  });
+  it('carries the fighter\'s social links through the form, validates them per network and sends them clean', () => {
+    const p = toFighterProfile({ ...profileDb, social_links: { instagram: 'https://instagram.com/alpha' } });
+    expect(p.socialLinks).toEqual({ instagram: 'https://instagram.com/alpha' });
+    const f = profileToForm(p);
+    expect(profilePayload({ ...f, socialLinks: { ...f.socialLinks, x: ' https://x.com/alpha ' } }).social_links).toEqual({ instagram: 'https://instagram.com/alpha', x: 'https://x.com/alpha' });
+    expect(validateProfile({ ...f, socialLinks: { facebook: 'facebook.com/alpha' } }, new Date('2026-06-01'))['social:facebook']).toMatch(/Facebook/);
+    expect(toFighterProfile(profileDb).socialLinks).toEqual({});
   });
   it('validates with the database limits', () => {
     const now = new Date('2026-06-01');

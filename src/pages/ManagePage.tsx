@@ -18,13 +18,15 @@ import { conflictsStripLabel, distinctFighters } from '../lib/runSchedule';
 import { AttentionStrip, CheckinPanel } from './CheckinPanel';
 import { NotFoundPage } from './NotFoundPage';
 import { ExportRegistrations } from './ExportRegistrations';
+import { FightersTab } from './FightersTab';
+import { withdrawRegistration } from '../data/invitations';
 import { PeopleTab } from './PeopleTab';
 import { RunTab } from './RunTab';
 import { SetupTab } from './SetupTab';
 import { TeamsTab } from './TeamsTab';
 
-type Tab = 'review' | 'checkin' | 'run' | 'setup' | 'people' | 'teams';
-const TABS: Tab[] = ['review', 'checkin', 'run', 'setup', 'people', 'teams'];
+type Tab = 'review' | 'fighters' | 'checkin' | 'run' | 'setup' | 'people' | 'teams';
+const TABS: Tab[] = ['review', 'fighters', 'checkin', 'run', 'setup', 'people', 'teams'];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -69,6 +71,7 @@ function ReviewCard({ r, act }: { r: ManagedRegistration; act: ReturnType<typeof
         {r.status !== 'accepted' && <button type="button" className="btn btn-ink" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'accepted'))}>Accept</button>}
         {r.status !== 'declined' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'declined'))}>Decline</button>}
         {r.status === 'accepted' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'pending'))}>Back to pending</button>}
+        {(r.status === 'accepted' || r.status === 'pending') && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => { if (window.confirm(`Withdraw ${r.fullName} from this event? They can register again later.`)) void act.run(r.id, () => withdrawRegistration(r.id)); }}>Withdraw</button>}
       </div>
 
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -151,8 +154,9 @@ export function ManagePage() {
         else if (k === 'blocked') setParams({ tab: 'checkin' }, { replace: true });
         else { setFilter('accepted'); setParams({}, { replace: true }); }
       }} extra={clashLabel ? [{ key: 'clash', label: clashLabel, onClick: () => setParams({ tab: 'run' }, { replace: true }) }] : []} />
-      <Seg scroll label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People'], ['teams', 'Teams']] as const}
+      <Seg scroll label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['fighters', 'Fighters'], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People'], ['teams', 'Teams']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
+      {tab === 'fighters' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} />}
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'teams' && <TeamsTab />}
@@ -161,7 +165,7 @@ export function ManagePage() {
       {tab === 'review' && (<>
       <ExportRegistrations slug={event.slug} registrations={all} />
       {tab === 'review' && (
-        <Seg label="Show" value={filter} options={[['pending', `Pending ${counts.pending}`], ['accepted', `Accepted ${counts.accepted}`], ['declined', `Declined ${counts.declined}`], ['all', 'All']] as const} onChange={setFilter} />
+        <Seg scroll label="Show" value={filter} options={[['pending', `Pending ${counts.pending}`], ['accepted', `Accepted ${counts.accepted}`], ['declined', `Declined ${counts.declined}`], ['withdrawn', `Withdrawn ${counts.withdrawn}`], ['all', 'All']] as const} onChange={setFilter} />
       )}
       <label className="field-in">Search by name, team or category
         <input type="search" value={query} onChange={e => setQuery(e.target.value)} />

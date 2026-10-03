@@ -8,6 +8,7 @@ import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { ProfileEditor } from './ProfileEditor';
+import { GallerySection } from './GallerySection';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
 
@@ -35,19 +36,20 @@ export function ProfileEditPage() {
 function Editing({ p }: { p: FighterProfile }) {
   const nav = useNavigate();
   const back = `/fighters/${p.fighterId}`;
+  const [avatar, setAvatar] = useState(p.avatarPath);
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 18, maxWidth: 640 }}>
       <Link className="more" to={back}>← Back to my profile</Link>
       <PageHead eyebrow="Fighter" title="Edit my profile" />
-      <PhotoSection p={p} />
+      <PhotoSection p={p} path={avatar} setPath={setAvatar} />
+      <GallerySection fighterId={p.fighterId} avatarPath={avatar} onAvatar={setAvatar} />
       <ProfileEditor profile={p} onCancel={() => nav(back)} onSaved={() => nav(back)} />
     </section>
   );
 }
 
 /** The photo saves as soon as it is chosen, apart from the form below. */
-function PhotoSection({ p }: { p: FighterProfile }) {
-  const [path, setPath] = useState(p.avatarPath);
+function PhotoSection({ p, path, setPath }: { p: FighterProfile; path: string | null; setPath: (p: string | null) => void }) {
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);

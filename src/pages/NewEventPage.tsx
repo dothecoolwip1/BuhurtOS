@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
 import { PageHead } from '../components/ui';
-import { createEvent, fetchCanCreateEvents, isSlugTaken } from '../data/setup';
+import { VenuePicker, type VenueFields } from '../components/VenuePicker';
+import { createEvent, fetchCanCreateEvents, isSlugTaken, updateEvent } from '../data/setup';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
@@ -17,6 +18,7 @@ export function NewEventPage() {
   const can = useAsync(() => (userId ? fetchCanCreateEvents(userId) : Promise.resolve(false)), [userId]);
   const nav = useNavigate();
   const [f, setF] = useState<NewEventForm>({ name: '', slug: '', startsOn: '', endsOn: '', venue: '', address: '' });
+  const [where, setWhere] = useState<VenueFields>({ venue: '', address: '', city: '', region: '', country: '', latitude: null, longitude: null });
   const [slugTouched, setSlugTouched] = useState(false);
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -48,7 +50,11 @@ export function NewEventPage() {
     if (Object.keys(errors).length) return;
     setBusy(true);
     try {
-      await createEvent({ slug: f.slug, name: f.name, startsOn: f.startsOn, endsOn: f.endsOn, venue: blankToNull(f.venue), address: blankToNull(f.address) });
+      const id = await createEvent({ slug: f.slug, name: f.name, startsOn: f.startsOn, endsOn: f.endsOn, venue: blankToNull(where.venue), address: blankToNull(where.address) });
+      // The rest of the venue (city, province, country, map position) is saved in a second step; a failure here leaves a draft the organizer can finish in Setup.
+      if (where.city || where.region || where.country || where.latitude !== null) {
+        try { await updateEvent(id, { city: blankToNull(where.city), region: blankToNull(where.region), country: blankToNull(where.country), latitude: where.latitude, longitude: where.longitude }); } catch (e) { console.warn('[BuhurtOS] venue details not saved', e); }
+      }
       trackEvent('event_created');
       nav(`/events/${f.slug}/manage?tab=setup`);
     } catch (x) {
@@ -72,8 +78,10 @@ export function NewEventPage() {
           <label className="field-in">First day<input type="date" value={f.startsOn} onChange={e => { set('startsOn', e.target.value); if (!f.endsOn) set('endsOn', e.target.value); }} aria-invalid={Boolean(show && errors.startsOn)} />{err('startsOn')}</label>
           <label className="field-in">Last day<input type="date" value={f.endsOn} min={f.startsOn || undefined} onChange={e => set('endsOn', e.target.value)} aria-invalid={Boolean(show && errors.endsOn)} />{err('endsOn')}</label>
         </div>
-        <label className="field-in">Venue (optional)<input value={f.venue} onChange={e => set('venue', e.target.value)} /></label>
-        <label className="field-in">Address (optional)<input value={f.address} onChange={e => set('address', e.target.value)} /></label>
+        <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 10 }}>
+          <legend style={{ fontWeight: 600, marginBottom: 6 }}>Where (optional now, needed before publishing)</legend>
+          <VenuePicker value={where} onChange={setWhere} />
+        </fieldset>
         {problem && <p role="alert" style={{ color: 'var(--live)' }}>{problem}</p>}
         <div><button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Creating…' : 'Create event'}</button></div>
       </form>

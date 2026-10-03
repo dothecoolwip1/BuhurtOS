@@ -6,6 +6,8 @@ import {
 import { genderLabel } from '../lib/careerView';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
+import { SocialLinksEditor } from '../components/SocialLinks';
+import type { SocialNetwork } from '../lib/social';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
 
@@ -76,6 +78,11 @@ export function ProfileEditor({ profile, onSaved, onCancel }: { profile: Fighter
         <textarea rows={4} value={highlights} onChange={e => setHighlights(e.target.value)} />
         <span>Up to {HIGHLIGHTS_MAX} lines of at most {HIGHLIGHT_MAX} characters.</span>{err('highlights')}
       </label>
+      <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 8 }} id="social">
+        <legend style={{ fontWeight: 600, marginBottom: 4 }}>Social links <span className="src">(optional, public)</span></legend>
+        <SocialLinksEditor value={f.socialLinks} onChange={v => set('socialLinks', v)} idPrefix="fighter-social"
+          errors={show ? Object.fromEntries(Object.entries(errors).filter(([k]) => k.startsWith('social:')).map(([k, v]) => [k.slice(7), v])) as Partial<Record<SocialNetwork, string>> : {}} />
+      </fieldset>
       {problem && <p role="alert" style={bad}>{problem}</p>}
       <div className="formactions">
         <button type="button" className="btn btn-line" disabled={busy} onClick={onCancel}>Cancel</button>

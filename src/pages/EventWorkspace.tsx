@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { Chip, LiveStatus, PageHead, TestBadge } from '../components/ui';
@@ -22,6 +23,9 @@ import { MyNextFight } from './MyNextFight';
 import { MyTeamPanel } from './MyTeamPanel';
 import { ShareEventButton } from '../components/ShareEventButton';
 import { NotFoundPage } from './NotFoundPage';
+import { AddToCalendar } from '../components/AddToCalendar';
+import { fetchMyFighterId } from '../data/fighters';
+import { fetchMyInvitation, withdrawMyInvitation, withdrawRegistration, type MyInvitation } from '../data/invitations';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
 const GENDER: Record<LiveCompetition['gender'], string> = { open: 'Open', men: 'Men', women: 'Women' };
@@ -34,9 +38,53 @@ function feeText(e: LiveEvent): string | null {
   return e.feeProvince ? `${amount} for fighters from ${provinceName(e.feeProvince)}. Fighters from elsewhere and volunteers pay nothing.` : `${amount} per fighter. Volunteers pay nothing.`;
 }
 
-function RegistrationCard({ event, mine, signedIn }: { event: LiveEvent; mine: MyEventContext | undefined; signedIn: boolean }) {
+/** The signed-in fighter was added by the organizer: say so, show the competitions, lead to the form, and let them withdraw. */
+function InvitationCard({ event, invitation, onChanged }: { event: LiveEvent; invitation: MyInvitation; onChanged: () => void }) {
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+  const [confirm, setConfirm] = useState(false);
+  if (invitation.status !== 'invited') return null;
+  const withdraw = async () => {
+    setBusy(true); setProblem(null);
+    try { await withdrawMyInvitation(invitation.id); onChanged(); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); setConfirm(false); }
+  };
+  return (
+    <section className="panel info" aria-labelledby="inv-h" style={{ display: 'grid', gap: 10 }} data-testid="invitation-card">
+      <h3 id="inv-h">The organizers added you to this event</h3>
+      <p>You are expected in: <b>{invitation.competitions.map(c => c.name).join(', ') || 'a competition the organizer will confirm'}</b>.{invitation.note && <> They wrote: “{invitation.note}”.</>}</p>
+      <p style={{ margin: 0 }}><Chip tone="brass">Pending: form and waiver</Chip></p>
+      <p className="src">Being added is not a registration yet. Fill in the registration form and sign the waiver yourself, and you are in. Or withdraw, and the organizers are told.</p>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {event.status === 'published'
+          ? <Link className="btn btn-ink" to={`/events/${event.slug}/register`} data-testid="complete-registration">Complete my registration</Link>
+          : <span className="src">The form opens once the event is published.</span>}
+        {!confirm && <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirm(true)}>Withdraw</button>}
+      </div>
+      {confirm && (
+        <div className="panel info" role="alertdialog" aria-label="Confirm withdrawal" style={{ display: 'grid', gap: 8 }}>
+          <p><b>Withdraw from {event.name}?</b> The organizers will be told. They can add you again later if plans change.</p>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="button" className="btn btn-ink" disabled={busy} onClick={() => void withdraw()} data-testid="confirm-withdraw">Yes, withdraw</button>
+            <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirm(false)}>Keep my place</button>
+          </div>
+        </div>
+      )}
+      {problem && <p role="alert" style={{ color: 'var(--live)' }}>{problem}</p>}
+    </section>
+  );
+}
+
+function RegistrationCard({ event, mine, signedIn, onChanged }: { event: LiveEvent; mine: MyEventContext | undefined; signedIn: boolean; onChanged: () => void }) {
   const win = registrationWindow(event.registrationOpensAt, event.registrationClosesAt);
   const reg = mine?.registration;
+  const [busy, setBusy] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+  const withdraw = async () => {
+    if (!reg) return;
+    setBusy(true); setProblem(null);
+    try { await withdrawRegistration(reg.id); onChanged(); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); setConfirm(false); }
+  };
   if (event.registrationMode === 'none') return null;
   if (event.registrationMode === 'external') {
     if (event.status !== 'published' && !mine?.isOrganizer) return null;
@@ -56,6 +104,18 @@ function RegistrationCard({ event, mine, signedIn }: { event: LiveEvent; mine: M
         <h3 id="mine-h">Your registration</h3>
         <p><Chip tone={reg.status === 'accepted' ? 'win' : 'brass'}>{word}</Chip></p>
         {reg.feeDueCents > 0 && <p style={{ color: 'var(--muted)' }}>Fee: <b>{formatMoney(reg.feeDueCents)}</b> · {reg.feePaid ? 'paid' : 'not marked paid yet'}</p>}
+        {reg.status === 'withdrawn' && event.status === 'published' && win === 'open' && <p><Link className="btn btn-line" to={to}>Register again</Link></p>}
+        {(reg.status === 'accepted' || reg.status === 'pending') && !confirm && <p><button type="button" className="btn btn-line btn-sm" disabled={busy} onClick={() => setConfirm(true)}>Withdraw from this event</button></p>}
+        {confirm && (
+          <div className="panel info" role="alertdialog" aria-label="Confirm withdrawal" style={{ display: 'grid', gap: 8 }}>
+            <p><b>Withdraw your registration for {event.name}?</b> Your place in the competitions is given up and the organizers are told. You can register again while registration is open.</p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button type="button" className="btn btn-ink" disabled={busy} onClick={() => void withdraw()}>Yes, withdraw</button>
+              <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirm(false)}>Keep my registration</button>
+            </div>
+          </div>
+        )}
+        {problem && <p role="alert" style={{ color: 'var(--live)' }}>{problem}</p>}
       </section>
     );
   }
@@ -79,9 +139,13 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
         <b>{mine.pendingRegistrations ?? 0}</b> registration{mine.pendingRegistrations === 1 ? '' : 's'} waiting for review.
         {event.status === 'draft' && <> The event is a <b>draft</b>: only you and your event staff can see it.</>}
       </p>
+      {event.eventType === 'tournament' && event.competitionCount === 0 && <p><Chip tone="brass">Needs competition setup</Chip> <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/manage?tab=setup&add=competition`}>+ Add competition</Link></p>}
       <p><Link className="btn btn-ink" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link></p>
-      <p><Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Event setup and publishing</Link> <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>People and roles</Link></p>
-      <p className="src">The draw and event-day scoring arrive in this workspace next.</p>
+      <p style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Setup, competitions and waiver</Link>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=fighters`}>Add fighters</Link>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>Staff and roles</Link>
+      </p>
     </section>
   );
 }
@@ -93,8 +157,12 @@ export function EventWorkspace() {
   const userId = session?.user.id;
   const loaded = useAsync(() => fetchEvent(slug), [slug]);
   const eventId = loaded.data?.event.id;
-  const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
+  const [mineKey, setMineKey] = useState(0);
+  const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId, mineKey]);
+  const myFighter = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
+  const invitation = useAsync(() => (eventId && myFighter.data ? fetchMyInvitation(eventId, myFighter.data) : Promise.resolve(null)), [eventId, myFighter.data, mineKey]);
   const meta = useAsync(() => (eventId ? fetchEventMetaById(eventId) : Promise.resolve(null)), [eventId]);
+  const changed = () => setMineKey(k => k + 1);
   useDocumentTitle(loaded.data?.event.name ?? 'Event');
   const showLive = loaded.data?.event.status === 'published';
   const liveIds = showLive ? loaded.data!.competitions.map(c => c.id) : [];
@@ -138,16 +206,17 @@ export function EventWorkspace() {
       </div>
       <EventOrganization meta={meta.data} />
       <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />
-      <ShareEventButton title={event.name} />
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}><ShareEventButton title={event.name} /><AddToCalendar event={event} /></div>
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
       {showLive && <LiveStatus connection={live.connection} />}
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <MyTeamPanel eventId={event.id} userId={userId} />
-      <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} />
+      {invitation.data && <InvitationCard event={event} invitation={invitation.data} onChanged={changed} />}
+      <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} onChanged={changed} />
       {(event.eventType === 'tournament' || groups.length > 0) && <section aria-labelledby="comp-h" style={{ display: 'grid', gap: 14 }}>
         <h2 id="comp-h">Competitions</h2>
-        {groups.length === 0 && <p className="muted">No competitions have been added yet.</p>}
+        {groups.length === 0 && <p className="muted">No competitions have been added yet.{mine.data?.isOrganizer && <> <Link to={`/events/${event.slug}/manage?tab=setup&add=competition`}>Add one in Setup.</Link></>}</p>}
         {groups.map(([league, list]) => (
           <div key={league} className="panel info">
             <h3>{LEAGUE_TITLE[league]}</h3>

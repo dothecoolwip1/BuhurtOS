@@ -22,6 +22,13 @@ describe('team edit form', () => {
     const e = validateTeamEdit({ ...teamToForm(team), description: 'short', website: 'http://x.com', foundedYear: '1850' }, false, new Date('2026-10-02'));
     expect(Object.keys(e).sort()).toEqual(['description', 'foundedYear', 'website']);
   });
+  it('sends social links trimmed, in network order, and never silently drops a bad one', () => {
+    const f = { ...teamToForm(team), socialLinks: { x: ' https://x.com/reavers ', facebook: 'https://www.facebook.com/share/19bgXGygp8/' } };
+    expect(validateTeamEdit(f, false)).toEqual({});
+    expect(teamEditPayload(f, false).social_links).toEqual({ facebook: 'https://www.facebook.com/share/19bgXGygp8/', x: 'https://x.com/reavers' });
+    expect(validateTeamEdit({ ...f, socialLinks: { instagram: 'instagram.com/reavers' } }, false).socialLinks).toMatch(/Instagram/);
+    expect(teamEditPayload({ ...teamToForm(team), socialLinks: {} }, false).social_links).toEqual({});
+  });
   it('requires city and country, and a name only when it can be changed', () => {
     const f = { ...teamToForm(team), name: '', city: '', country: '' };
     expect(Object.keys(validateTeamEdit(f, false)).sort()).toEqual(['city', 'country']);

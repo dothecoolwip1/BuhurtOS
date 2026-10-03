@@ -13,6 +13,7 @@ import { UpdateBanner } from './UpdateBanner';
 const NAV = [
   { to: '/', label: 'Home', end: true, icon: <path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z" /> },
   { to: '/events', label: 'Events', end: false, icon: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></> },
+  { to: '/calendar', label: 'Calendar', end: false, icon: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4M8 14h2M12 14h2M16 14h2M8 17h2M12 17h2" /></> },
   { to: '/teams', label: 'Teams', end: false, icon: <><path d="M12 3 4 6v6c0 4.5 3.2 7.6 8 9 4.8-1.4 8-4.5 8-9V6Z" /></> },
   { to: '/fighters', label: 'Fighters', end: false, icon: <><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></> },
   { to: '/rankings', label: 'Rankings', end: false, icon: <path d="M6 20V11M12 20V4M18 20v-6" /> },
@@ -54,9 +55,9 @@ export function Layout() {
     return () => { window.clearInterval(t); document.removeEventListener('visibilitychange', ping); };
   }, [pathname, userId]);
   // The phone bar keeps the four most used places; the rest sit under More.
-  const PHONE = NAV.slice(0, 4);
-  const EXTRA = NAV.slice(4);
-  const extraActive = EXTRA.some(n => pathname.startsWith(n.to)) || pathname.startsWith('/organizations') || pathname.startsWith('/platform');
+  const PHONE = NAV.filter(n => n.to !== '/calendar').slice(0, 4);
+  const EXTRA = NAV.slice(5);
+  const extraActive = EXTRA.some(n => pathname.startsWith(n.to)) || pathname.startsWith('/organizations') || pathname.startsWith('/platform') || pathname.startsWith('/calendar') || pathname.startsWith('/my-events');
   return (
     <>
       {sample && <div className="mockflag">SAMPLE MODE · <b>Teams, fighters, events and scores here are invented.</b> <button type="button" className="linklike" onClick={() => setSampleMode(false)}>Leave sample mode</button></div>}
@@ -67,7 +68,8 @@ export function Layout() {
             <span>Buhurt<span className="os">OS</span></span>
           </NavLink>
           <nav className="nav" aria-label="Main">
-            {NAV.map((n, i) => <NavLink key={n.to} to={n.to} end={n.end} className={i >= 4 ? 'nav-extra' : undefined}>{n.label}</NavLink>)}
+            {NAV.map((n, i) => <NavLink key={n.to} to={n.to} end={n.end} className={i >= 5 ? 'nav-extra' : undefined}>{n.label}</NavLink>)}
+            {session && <NavLink to="/my-events" className="nav-extra">My events</NavLink>}
             {isOwner && <NavLink to="/platform" className="nav-extra">Platform</NavLink>}
             {/* On mid-width screens the less used places move under More, so the header never overlaps. */}
             <button type="button" className={`nav-more${extraActive ? ' active' : ''}`} aria-haspopup="dialog" aria-expanded={more} onClick={() => setMore(true)}>More</button>
@@ -98,6 +100,16 @@ export function Layout() {
       {more && (
         <Dialog title="More" variant="drawer" onClose={() => setMore(false)}>
           <nav className="more-list" aria-label="More">
+            <NavLink to="/calendar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4M8 14h2M12 14h2M16 14h2" /></svg>
+              Calendar
+            </NavLink>
+            {session && (
+              <NavLink to="/my-events">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4m-7 9 2 2 4-4" /></svg>
+                My events
+              </NavLink>
+            )}
             {EXTRA.map(n => (
               <NavLink key={n.to} to={n.to} end={n.end}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round">{n.icon}</svg>

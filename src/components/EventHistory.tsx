@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Chip, Tabs } from './ui';
+import { Chip, Tabs, TestBadge } from './ui';
 import { LiveBracket } from './LiveBracket';
 import { LivePools } from './LivePools';
 import { fetchEventHistory, fetchOrgLites, fetchSeasons, type EventMeta } from '../data/careers';
@@ -41,7 +41,8 @@ export function EventHistory({ eventId, competitions, live }: { eventId: string;
   const totals = d ? attendanceTotals(d.entries, d.participants) : null;
   const allMatches = Object.values(live.data).flatMap(x => x.matches);
   const finalMatches = allMatches.filter(m => m.queueState === 'final').length;
-  const nameOfTeam = (r: { teamId: string | null; entryId: string }) => (r.teamId ? d?.teamNames.get(r.teamId) : undefined) ?? d?.entries.find(e => e.entryId === r.entryId)?.name ?? 'Unnamed entry';
+  const nameOfTeam = (r: { teamId: string | null; entryId: string; teamNameAtEvent?: string | null }) => r.teamNameAtEvent ?? (r.teamId ? d?.teamNames.get(r.teamId) : undefined) ?? d?.entries.find(e => e.entryId === r.entryId)?.name ?? 'Unnamed entry';
+  const testData = d?.synthetic === true;
   const table = d ? medalTable(d.results, nameOfTeam) : [];
   return (
     <section className="event-history" aria-labelledby="hist-h" style={{ display: 'grid', gap: 14 }}>
@@ -104,6 +105,7 @@ export function EventHistory({ eventId, competitions, live }: { eventId: string;
 
       {d && tab === 'results' && (
         <>
+          {testData && <p className="panel info" role="note" data-testid="results-test-data"><TestBadge synthetic /> <b>Test data / synthetic event.</b> These placings are fictional. They are shown here because this is the event's own page; they are not official records and never count towards rankings, fighter or team statistics or event counts.</p>}
           {d.results.length === 0 && <div className="panel info"><h3>Results</h3><p className="muted">No final placings are recorded for this event yet. They appear when the organizer finishes a competition.</p></div>}
           {competitions.map(c => {
             const rows = d.results.filter(r => r.competitionId === c.id);
@@ -134,6 +136,7 @@ export function EventHistory({ eventId, competitions, live }: { eventId: string;
             <div className="statcell"><b>{finalMatches}</b><span>Matches played</span></div>
             <div className="statcell"><b>{competitions.length}</b><span>Categories</span></div>
           </div>
+          {testData && <p role="note"><TestBadge synthetic /> <span className="muted">Fictional event: these figures are test data and count nowhere else.</span></p>}
           <p className="eyebrow">Medal table</p>
           {table.length === 0 ? <p className="muted">No medals are recorded for this event yet.</p> : (
             <ol className="plain">

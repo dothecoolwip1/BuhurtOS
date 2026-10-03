@@ -83,7 +83,7 @@ jobs:
       - run: supabase/tests/run_all.sh
 
   browser:
-    name: Browser tests (scoring, offline, update safety)
+    name: Browser tests (scoring, offline, update safety, phone workflows)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -97,14 +97,19 @@ jobs:
       - run: npx playwright-core install --with-deps chromium
       - name: Build the app the way the browser tests serve it
         run: VITE_BASE=/ npx vite build --outDir /tmp/e2e-dist
-      - name: Serve it
+      - name: Build a second copy with a (fake) Google Maps browser key, to prove the venue picker falls back to manual entry
+        run: VITE_BASE=/ VITE_GOOGLE_MAPS_BROWSER_KEY=ci-fake-key npx vite build --outDir /tmp/e2e-dist-places
+      - name: Serve both
         run: |
           nohup npx vite preview --outDir /tmp/e2e-dist --port 4180 > /tmp/preview.log 2>&1 &
-          for i in $(seq 1 30); do curl -sf http://localhost:4180/ > /dev/null && break; sleep 1; done
+          nohup npx vite preview --outDir /tmp/e2e-dist-places --port 4181 > /tmp/preview2.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:4180/ > /dev/null && curl -sf http://localhost:4181/ > /dev/null && break; sleep 1; done
       - name: Scoring screen against a mocked Supabase (IndexedDB queue, pending vs official, conflict, paper recovery)
         run: E2E_BASE=http://localhost:4180 CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/field-pack03.mjs
       - name: Service-worker update safety with pending scoring work
         run: CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/sw-update.mjs
+      - name: Phone workflows against a mocked Supabase (synthetic results, Add competition, waiver choices, organizer-added fighters, social links, gallery, Calendar, My events, test-data toggle, venue fallback)
+        run: E2E_BASE=http://localhost:4180 E2E_PLACES_BASE=http://localhost:4181 CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/pack07-ux.mjs
 
   release-policy:
     name: Release policy (is production frozen?)

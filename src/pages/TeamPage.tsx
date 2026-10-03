@@ -13,12 +13,11 @@ import { fetchTeamEditRights } from '../data/teamEdit';
 import { CLAIMED_LABEL, fetchMyTeamIds, fetchTeamRoster } from '../data/teamManager';
 import { dateRange } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
-import { listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL, relationLabel, roleLabel, safeHttpsUrl, sinceLabel } from '../lib/teamDirectory';
+import { listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL, relationLabel, roleLabel, sinceLabel } from '../lib/teamDirectory';
+import { SocialLinksRow } from '../components/SocialLinks';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { crestTeam } from './TeamsPage';
-
-const NETWORK_NAME: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', tiktok: 'TikTok', x: 'X', discord: 'Discord', twitch: 'Twitch', other: 'Other link' };
 
 export function TeamPage() {
   const { slug = '' } = useParams();
@@ -59,8 +58,6 @@ function Workspace({ t }: { t: DirectoryEntry }) {
   const today = todayIso();
   const upcomingEntries = (entries.data ?? []).filter(e => e.endsOn >= today && e.eventStatus !== 'cancelled').sort((a, b) => a.startsOn.localeCompare(b.startsOn));
   const where = locationText(t);
-  const website = safeHttpsUrl(t.website);
-  const socials = Object.entries(t.socialLinks).map(([k, v]) => ({ k, url: safeHttpsUrl(v) })).filter((s): s is { k: string; url: string } => s.url !== null);
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <Link className="more" to="/teams">← All teams</Link>
@@ -72,6 +69,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
           <TestBadge synthetic={isSynthetic(synthetic, 'team', t.id)} />
           <div className="phead"><div className="sub">{where && <span>{where}</span>}{t.foundedYear && <span>Founded {t.foundedYear} <span className="muted">(as stated by the team)</span></span>}</div></div>
           {t.status === 'pending' && <p style={{ marginTop: 10 }}><Chip tone="brass">{PENDING_LABEL}</Chip></p>}
+          <SocialLinksRow links={t.socialLinks} website={t.website} label={`${t.name} on the web`} />
         </div>
       </div>
 
@@ -94,12 +92,6 @@ function Workspace({ t }: { t: DirectoryEntry }) {
       <div className="panel info">
         <h3>About</h3>
         {t.description ? <p>{t.description}<br /><span className="muted" style={{ fontSize: 13 }}>Written by the team, not checked by BuhurtOS.</span></p> : <p className="muted">The team has not added a description yet.</p>}
-        {(website || socials.length > 0) && (
-          <div className="teamlinks">
-            {website && <a className="btn btn-line btn-sm" href={website} target="_blank" rel="noopener noreferrer nofollow">Website</a>}
-            {socials.map(s => <a key={s.k} className="btn btn-line btn-sm" href={s.url} target="_blank" rel="noopener noreferrer nofollow">{NETWORK_NAME[s.k] ?? 'Link'}</a>)}
-          </div>
-        )}
         <p className="muted" style={{ fontSize: 13 }}>{t.sources.length > 0 ? t.sources.map(s => listedFromLabel(s)).join(' · ') : NO_SOURCE_LABEL}. A listing is not an endorsement, and does not mean the team uses BuhurtOS.</p>
       </div>
 

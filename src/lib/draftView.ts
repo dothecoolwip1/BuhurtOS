@@ -20,8 +20,3 @@ export function splitDrafts<T extends { status: string }>(events: T[], signedIn:
   const drafts = signedIn ? events.filter(e => e.status === 'draft') : [];
   return { drafts, published: events.filter(e => e.status !== 'draft') };
 }
-
-/** Events a person staffs (or all, for the platform owner). */
-export function pickMine<T extends { id: string }>(events: T[], staffedIds: ReadonlySet<string>, isOwner: boolean): T[] {
-  return isOwner ? events : events.filter(e => staffedIds.has(e.id));
-}

@@ -1,7 +1,8 @@
 import { shrinkImage } from '../lib/image';
 import { supabase } from '../lib/supabase';
 import type { DirectoryEntry } from './teamDirectory';
-import { SOCIAL_NETWORKS, type SocialNetwork } from './teamManager';
+import type { SocialNetwork } from './teamManager';
+import { cleanSocialLinks, socialLinkErrors } from '../lib/social';
 
 /** Editing an existing team. The database decides who may (captain, owner, organizer, organization admin) and checks every value again. */
 
@@ -34,9 +35,9 @@ export function validateTeamEdit(f: TeamEditForm, canRename: boolean, now = new 
   const d = f.description.trim().length;
   if (d > 0 && (d < 10 || d > TEAM_DESCRIPTION_MAX)) e.description = `Describe the team in 10 to ${TEAM_DESCRIPTION_MAX} characters, or leave it empty.`;
   if (f.website.trim() && (f.website.trim().length > 300 || !HTTPS_URL.test(f.website.trim()))) e.website = 'Use a full https:// address.';
-  for (const [k, v] of Object.entries(f.socialLinks)) {
-    if (v && v.trim() && (!SOCIAL_NETWORKS.includes(k as SocialNetwork) || v.trim().length > 300 || !HTTPS_URL.test(v.trim()))) { e.socialLinks = `The ${k} link must be a full https:// address.`; break; }
-  }
+  const social = socialLinkErrors(f.socialLinks);
+  const firstBad = Object.values(social)[0];
+  if (firstBad) e.socialLinks = firstBad;
   if (f.foundedYear.trim() && (!/^\d{4}$/.test(f.foundedYear.trim()) || Number(f.foundedYear) < 1900 || Number(f.foundedYear) > now.getFullYear())) e.foundedYear = `Use a four digit year from 1900 to ${now.getFullYear()}.`;
   const orgs = f.claimedOrganizations.map(o => o.trim()).filter(Boolean);
   if (orgs.length > 5 || orgs.some(o => o.length < 2 || o.length > 120)) e.claimedOrganizations = 'Name up to 5 organizations, 2 to 120 characters each.';
@@ -47,7 +48,7 @@ export function validateTeamEdit(f: TeamEditForm, canRename: boolean, now = new 
 /** The jsonb for update_team_profile. Every field is sent, empty optional ones as null (cleared). The name is sent only when the person may rename. */
 export function teamEditPayload(f: TeamEditForm, canRename: boolean): Record<string, unknown> {
   const t = (s: string) => (s.trim() === '' ? null : s.trim());
-  const social = Object.fromEntries(Object.entries(f.socialLinks).filter(([, v]) => v && v.trim()).map(([k, v]) => [k, (v as string).trim()]));
+  const social = cleanSocialLinks(f.socialLinks);
   return {
     ...(canRename ? { name: f.name.trim() } : {}),
     city: f.city.trim(), region: t(f.region), country: f.country.trim(), description: t(f.description), website: t(f.website),

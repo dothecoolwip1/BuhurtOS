@@ -41,9 +41,10 @@ export async function fetchCanCreateEvents(userId: string): Promise<boolean> {
 }
 
 export interface NewEventInput { slug: string; name: string; startsOn: string; endsOn: string; venue: string | null; address: string | null }
-export async function createEvent(i: NewEventInput): Promise<void> {
-  const { error } = await supabase.rpc('create_event', { p_slug: i.slug, p_name: i.name.trim(), p_starts_on: i.startsOn, p_ends_on: i.endsOn, p_venue: i.venue, p_address: i.address });
+export async function createEvent(i: NewEventInput): Promise<string> {
+  const { data, error } = await supabase.rpc('create_event', { p_slug: i.slug, p_name: i.name.trim(), p_starts_on: i.startsOn, p_ends_on: i.endsOn, p_venue: i.venue, p_address: i.address });
   if (error) throw error;
+  return data as string;
 }
 
 export interface NewTeamInput { slug: string; name: string; city: string | null; region: string | null; country: string | null }
@@ -55,19 +56,43 @@ export async function createTeam(i: NewTeamInput): Promise<void> {
 /** A taken slug is a unique-violation (23505), which friendlyError would hide behind the generic message. */
 export const isSlugTaken = (e: unknown) => (e as { code?: string } | null)?.code === '23505';
 
-export interface Waiver { id: string; version: number; title: string; body: string; createdAt: string }
+export type WaiverKind = 'text' | 'pdf';
+export interface Waiver { id: string; version: number; title: string; body: string | null; kind: WaiverKind; documentPath: string | null; source: string | null; createdAt: string }
+type WaiverRow = { id: string; version: number; title: string; body: string | null; kind: WaiverKind | null; document_path: string | null; source: string | null; created_at: string };
+export const toWaiver = (r: WaiverRow): Waiver => ({ id: r.id, version: r.version, title: r.title, body: r.body, kind: r.kind ?? 'text', documentPath: r.document_path ?? null, source: r.source ?? null, createdAt: r.created_at });
+export const WAIVER_COLUMNS = 'id,version,title,body,kind,document_path,source,created_at';
+
 /** The newest waiver of the event, or null. Waivers are public to read (people read them before registering). */
 export async function fetchLatestWaiver(eventId: string): Promise<Waiver | null> {
-  const { data, error } = await supabase.from('waiver_versions').select('id,version,title,body,created_at').eq('event_id', eventId).order('version', { ascending: false }).limit(1);
+  const { data, error } = await supabase.from('waiver_versions').select(WAIVER_COLUMNS).eq('event_id', eventId).order('version', { ascending: false }).limit(1);
   if (error) throw error;
-  const r = (data as { id: string; version: number; title: string; body: string; created_at: string }[])[0];
-  return r ? { id: r.id, version: r.version, title: r.title, body: r.body, createdAt: r.created_at } : null;
+  const r = (data as WaiverRow[])[0];
+  return r ? toWaiver(r) : null;
 }
-/** Adds a new version (waivers are never edited: people who signed an older one keep that one). Organizers of the event only. */
-export async function addWaiverVersion(eventId: string, title: string, body: string, current: number): Promise<void> {
-  const t = title.trim(), b = body.trim();
-  if (t.length < 3) throw new Error('Give the waiver a title.');
-  if (b.length < 20) throw new Error('Paste the full waiver text.');
-  const { error } = await supabase.from('waiver_versions').insert({ event_id: eventId, version: current + 1, title: t, body: b });
+/** Every version, newest first: an organizer can see what people signed over time. */
+export async function fetchWaiverVersions(eventId: string): Promise<Waiver[]> {
+  const { data, error } = await supabase.from('waiver_versions').select(WAIVER_COLUMNS).eq('event_id', eventId).order('version', { ascending: false });
   if (error) throw error;
+  return (data as WaiverRow[]).map(toWaiver);
+}
+/** A new TEXT version (the database numbers it; waivers are never edited: people who signed an older one keep that one). Organizers only. */
+export async function addWaiverText(eventId: string, title: string, body: string, source: 'template' | 'pasted'): Promise<string> {
+  const { data, error } = await supabase.rpc('add_waiver_version', { p_event: eventId, p_title: title.trim(), p_body: body.trim(), p_kind: 'text', p_document_path: null, p_source: source });
+  if (error) throw error;
+  return data as string;
+}
+/** Uploads the PDF into the event's folder of the private bucket, then records it as the next version. The file is removed if that fails. */
+export async function addWaiverPdf(eventId: string, title: string, file: File, note: string | null): Promise<string> {
+  const path = `${eventId}/${Date.now()}.pdf`;
+  const up = await supabase.storage.from('waiver-documents').upload(path, file, { contentType: 'application/pdf', upsert: false });
+  if (up.error) throw up.error;
+  const { data, error } = await supabase.rpc('add_waiver_version', { p_event: eventId, p_title: title.trim(), p_body: note, p_kind: 'pdf', p_document_path: path, p_source: 'upload' });
+  if (error) { await supabase.storage.from('waiver-documents').remove([path]); throw error; }
+  return data as string;
+}
+/** A short-lived link to read or download an uploaded waiver (organizers, and anyone who may read the version). */
+export async function waiverDocumentUrl(path: string): Promise<string> {
+  const { data, error } = await supabase.storage.from('waiver-documents').createSignedUrl(path, 600);
+  if (error) throw error;
+  return data.signedUrl;
 }

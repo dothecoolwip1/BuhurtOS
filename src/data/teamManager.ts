@@ -8,7 +8,7 @@ import { supabase } from '../lib/supabase';
 
 export type JoinStatus = 'pending' | 'approved' | 'declined' | 'cancelled';
 export type JoinDecision = 'approved' | 'declined';
-export type NotificationKind = 'team_join_requested' | 'team_join_decided' | 'team_proposed' | 'registration_submitted' | 'registration_decided' | 'bug_reported';
+export type NotificationKind = 'team_join_requested' | 'team_join_decided' | 'team_proposed' | 'registration_submitted' | 'registration_decided' | 'bug_reported' | 'event_invited' | 'registration_withdrawn';
 export type SocialNetwork = 'facebook' | 'instagram' | 'youtube' | 'tiktok' | 'x' | 'discord' | 'twitch' | 'other';
 
 export const MESSAGE_MAX = 500;
@@ -86,6 +86,8 @@ export function notificationText(n: Pick<AppNotification, 'kind' | 'payload'>): 
     case 'registration_decided': return n.payload.decision === 'accepted'
       ? `You are accepted for ${text(n.payload.event_name, 'the event')}.`
       : `Your registration for ${text(n.payload.event_name, 'the event')} was declined.`;
+    case 'event_invited': return `The organizers added you to ${text(n.payload.event_name, 'an event')}${typeof n.payload.competitions === 'string' && n.payload.competitions ? ` (${n.payload.competitions})` : ''}. Complete your registration, or withdraw.`;
+    case 'registration_withdrawn': return `${text(n.payload.person_name, 'Someone')} withdrew from ${text(n.payload.event_name, 'your event')}.`;
     default: return 'You have a new notification.';
   }
 }

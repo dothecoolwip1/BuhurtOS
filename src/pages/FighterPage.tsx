@@ -18,6 +18,8 @@ import { friendlyError } from '../lib/friendlyError';
 import { HISTORY_ROLE_NOTE, historyRoleLabel } from '../lib/teamDirectory';
 import { useAsync, type AsyncState } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { SocialLinksRow } from '../components/SocialLinks';
+import { FighterGallery } from '../components/FighterGallery';
 
 /** One section that loads on its own. Errors stay inside the section; an empty section is hidden (the caller decides with `empty`). */
 function Section<T>({ title, state, empty, children, note }: { title: string; state: AsyncState<T>; empty: (d: T) => boolean; children: (d: T) => ReactNode; note?: string }) {
@@ -91,6 +93,7 @@ function Career({ p }: { p: FighterProfile }) {
             {where && <span>{where}</span>}
             {facts.map(f => <span key={f}>{f}</span>)}
           </div></div>
+          <SocialLinksRow links={p.socialLinks} label={`${p.displayName} on the web`} />
           {isMine && <p style={{ marginTop: 10 }}><Link className="btn btn-ink" to={`/fighters/${id}/edit`}>Edit my profile</Link></p>}
           {p.organization && (
             <p style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -111,6 +114,8 @@ function Career({ p }: { p: FighterProfile }) {
           <p className="muted" style={{ fontSize: 13 }}>Written by the fighter, not checked by BuhurtOS.</p>
         </div>
       )}
+
+      <FighterGallery fighterId={id} name={p.displayName} />
 
       <Section title="Career" state={career} empty={c => c === null}>
         {c => !c ? null : c.eventsAttended === 0 && c.matches === 0 && c.podiums === 0

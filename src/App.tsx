@@ -3,6 +3,9 @@ import { Layout } from './components/Layout';
 import { FieldPage } from './pages/FieldPage';
 import { EventRoute } from './pages/EventRoute';
 import { EventsPage } from './pages/EventsPage';
+import { CalendarPage } from './pages/CalendarPage';
+import { MyEventsPage } from './pages/MyEventsPage';
+import { PlatformEventsPage } from './pages/platform/PlatformEventsPage';
 import { FighterPage } from './pages/FighterPage';
 import { ProfileEditPage } from './pages/ProfileEditPage';
 import { FightersPage } from './pages/FightersPage';
@@ -34,6 +37,8 @@ export function App() {
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="events/new" element={<NewEventPage />} />
+        <Route path="calendar" element={<CalendarPage />} />
+        <Route path="my-events" element={<MyEventsPage />} />
         <Route path="teams" element={<TeamsPage />} />
         <Route path="teams/new" element={<Navigate to="/team-manager" replace />} />
         <Route path="teams/:slug" element={<TeamPage />} />
@@ -50,6 +55,7 @@ export function App() {
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="organizations/:slug" element={<OrganizationPage />} />
         <Route path="platform" element={<PlatformHomePage />} />
+        <Route path="platform/events" element={<PlatformEventsPage />} />
         <Route path="platform/organizations" element={<PlatformOrganizationsPage />} />
         <Route path="platform/fighters" element={<PlatformFightersPage />} />
         <Route path="platform/analytics" element={<PlatformActivityPage />} />

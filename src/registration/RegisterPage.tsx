@@ -10,11 +10,16 @@ import {
   INSURANCE_OPTIONS, PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, emptyForm, feeFor, formatMoney, validate,
   type CompetitionOption, type EventFee, type LeagueKey, type RegForm
 } from './model';
+import { WaiverDocumentLink } from '../pages/WaiverSection';
+import { fetchMyFighterId } from '../data/fighters';
+import { fetchMyInvitation, type MyInvitation } from '../data/invitations';
 
 interface Loaded {
   eventId: string; name: string; fee: EventFee; closesAt: string | null; volunteerInfo: string | null; mode: 'buhuros' | 'external' | 'none'; externalUrl: string | null;
   comps: CompetitionOption[]; teams: { id: string; name: string }[];
-  waiver: { id: string; version: number; title: string; body: string };
+  waiver: { id: string; version: number; title: string; body: string | null; kind: 'text' | 'pdf'; documentPath: string | null };
+  /** The organizer added this person: the competitions are pre-ticked and the form says so. */
+  invitation: MyInvitation | null;
 }
 
 /** Shown only with ?preview=1, so the form can be reviewed before the event is published. Not real data. */
@@ -30,7 +35,8 @@ const PREVIEW: Loaded = {
     ['Marathon relay', 'marathon', 'hacsa', 'open'], ['Profight (men)', 'profight', 'outrance', 'men'], ['Profight (women)', 'profight', 'outrance', 'women']
   ].map(([name, category, league, gender], i) => ({ id: `p${i}`, name, category, league: league as LeagueKey, gender: gender as CompetitionOption['gender'] })),
   teams: [],
-  waiver: { id: 'preview', version: 0, title: 'Waiver', body: '(The real waiver text is loaded from the database.)' }
+  waiver: { id: 'preview', version: 0, title: 'Waiver', body: '(The real waiver text is loaded from the database.)', kind: 'text', documentPath: null },
+  invitation: null
 };
 
 async function load(slug: string): Promise<Loaded> {
@@ -39,20 +45,24 @@ async function load(slug: string): Promise<Loaded> {
   if (!ev) throw new Error('This event is not open yet.');
   if (ev.registration_mode && ev.registration_mode !== 'buhuros') {
     // Sign-up happens elsewhere (or not at all): no form, so no competitions, teams or waiver are needed.
-    return { eventId: ev.id, name: ev.name, fee: { feeCents: 0, feeProvince: null }, closesAt: null, volunteerInfo: null, mode: ev.registration_mode, externalUrl: ev.external_url, comps: [], teams: [], waiver: { id: '', version: 0, title: '', body: '' } };
+    return { eventId: ev.id, name: ev.name, fee: { feeCents: 0, feeProvince: null }, closesAt: null, volunteerInfo: null, mode: ev.registration_mode, externalUrl: ev.external_url, comps: [], teams: [], waiver: { id: '', version: 0, title: '', body: '', kind: 'text', documentPath: null }, invitation: null };
   }
-  const [c, t, w] = await Promise.all([
+  const [c, t, w, myFighter] = await Promise.all([
     supabase.from('competitions').select('id,name,category,gender,sort,ref_categories(league)').eq('event_id', ev.id).order('sort'),
     supabase.from('teams').select('id,name').eq('status', 'approved').order('name'),
-    supabase.from('waiver_versions').select('id,version,title,body').eq('event_id', ev.id).order('version', { ascending: false }).limit(1)
+    supabase.from('waiver_versions').select('id,version,title,body,kind,document_path').eq('event_id', ev.id).order('version', { ascending: false }).limit(1),
+    fetchMyFighterId().catch(() => null)
   ]);
   if (c.error) throw c.error; if (t.error) throw t.error; if (w.error) throw w.error;
   if (!w.data?.[0]) throw new Error('The waiver for this event is not loaded yet.');
+  const wv = w.data[0] as { id: string; version: number; title: string; body: string | null; kind: 'text' | 'pdf' | null; document_path: string | null };
+  const invitation = myFighter ? await fetchMyInvitation(ev.id, myFighter).catch(() => null) : null;
   type Row = { id: string; name: string; category: string; gender: CompetitionOption['gender']; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
   return {
     eventId: ev.id, name: ev.name, fee: { feeCents: ev.fee_cents, feeProvince: ev.fee_province }, closesAt: ev.registration_closes_at, volunteerInfo: ev.volunteer_info ?? null, mode: ev.registration_mode ?? 'buhuros', externalUrl: ev.external_url,
     comps: (c.data as unknown as Row[]).map(r => ({ id: r.id, name: r.name, category: r.category, gender: r.gender, league: (Array.isArray(r.ref_categories) ? r.ref_categories[0] : r.ref_categories)?.league ?? 'duels' })),
-    teams: t.data ?? [], waiver: w.data[0]
+    teams: t.data ?? [], waiver: { id: wv.id, version: wv.version, title: wv.title, body: wv.body, kind: wv.kind ?? 'text', documentPath: wv.document_path },
+    invitation: invitation && invitation.status === 'invited' ? invitation : null
   };
 }
 
@@ -101,7 +111,11 @@ export function RegisterPage() {
 
   useEffect(() => {
     if (preview) return;
-    load(slug).then(setData).catch(e => setLoadError(e instanceof Error && !('code' in e) && e.message ? e.message : friendlyError(e, 'Could not load this event.')));
+    load(slug).then(d => {
+      setData(d);
+      // The organizer's choices are the starting point; the fighter can still change them.
+      if (d.invitation) setF(p => ({ ...p, competitionIds: p.competitionIds.length ? p.competitionIds : d.invitation!.competitions.map(c => c.id).filter(id => d.comps.some(c => c.id === id)) }));
+    }).catch(e => setLoadError(e instanceof Error && !('code' in e) && e.message ? e.message : friendlyError(e, 'Could not load this event.')));
   }, [slug, preview]);
   useEffect(() => { if (session?.user.email) setF(p => (p.email ? p : { ...p, email: session.user.email ?? '' })); }, [session]);
 
@@ -125,10 +139,10 @@ export function RegisterPage() {
   if (done) {
     return (
       <>
-        <PageHead eyebrow="Registration" title="Thank you, you are registered" lede="The organizers will review your registration. You can come back to this page at any time to see its status." />
+        <PageHead eyebrow="Registration" title={data.invitation ? 'Thank you, you are in' : 'Thank you, you are registered'} lede={data.invitation ? 'The organizers had already added you, so your registration is accepted. Insurance, fee and check-in are handled at the event as usual.' : 'The organizers will review your registration. You can come back to this page at any time to see its status.'} />
         {f.isVolunteer && <VolunteerInfo info={data.volunteerInfo} />}
         <p>{fee > 0 ? <>Fee: <b>{formatMoney(fee)}</b>. Pay by e-transfer or cash as described on the event page; the organizer marks it paid.</> : 'No fee is due for you.'}</p>
-        <Link className="btn btn-ink" to="/events">Back to events</Link>
+        <Link className="btn btn-ink" to={`/events/${slug}`}>Back to the event</Link>
       </>
     );
   }
@@ -157,6 +171,11 @@ export function RegisterPage() {
       <PageHead eyebrow={preview ? 'Preview: nothing is saved' : 'Registration'} title={`Register: ${data.name}`}
         lede={data.closesAt ? `Registration closes ${new Date(data.closesAt).toLocaleDateString('en-CA', { dateStyle: 'long', timeZone: 'America/Edmonton' })}. Teams are final when it closes.` : undefined} />
       <form onSubmit={submit} noValidate style={{ display: 'grid', gap: 16, maxWidth: 720 }}>
+        {data.invitation && (
+          <div role="note" className="card" style={{ borderLeft: '4px solid var(--brass, #C9893A)', padding: 12 }} data-testid="invited-note">
+            <b>The organizers added you to this event.</b> They expect you in {data.invitation.competitions.map(c => c.name).join(', ') || 'the competitions below'}; those are ticked already. Finish the form and sign the waiver and your registration is complete.
+          </div>
+        )}
         <section className="card field"><h3>About you</h3>
           {text('fullName', 'Full name', { autoComplete: 'name' })}
           {text('email', 'Email', { type: 'email', autoComplete: 'email' })}
@@ -223,7 +242,13 @@ export function RegisterPage() {
         </section>
 
         <section className="card field"><h3>{data.waiver.title}</h3>
-          <div style={{ maxHeight: 280, overflow: 'auto', whiteSpace: 'pre-wrap', border: '1px solid var(--line)', borderRadius: 8, padding: 12 }} tabIndex={0}>{data.waiver.body}</div>
+          <p className="src">You are agreeing to this exact waiver, version {data.waiver.version}. BuhurtOS records the version you accept with your registration.</p>
+          {data.waiver.kind === 'pdf' && data.waiver.documentPath
+            ? <div style={{ display: 'grid', gap: 8 }}>
+                <p style={{ margin: 0 }}>The waiver is a PDF document{data.waiver.body ? <>: {data.waiver.body}</> : null}. Open it and read it through before you agree.</p>
+                <p style={{ margin: 0 }}><WaiverDocumentLink path={data.waiver.documentPath} label={`Open the waiver (PDF, version ${data.waiver.version})`} /></p>
+              </div>
+            : <div style={{ maxHeight: 280, overflow: 'auto', whiteSpace: 'pre-wrap', border: '1px solid var(--line)', borderRadius: 8, padding: 12 }} tabIndex={0}>{data.waiver.body}</div>}
           <label><input type="checkbox" checked={f.waiverAgree} onChange={e => set('waiverAgree', e.target.checked)} /> I have read and agree to the waiver (version {data.waiver.version})</label>
           <Err m={shown('waiverAgree')} />
           {text('waiverName', 'Type your full name to sign')}

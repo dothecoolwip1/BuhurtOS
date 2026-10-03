@@ -6,8 +6,10 @@ export function fitWithin(w: number, h: number, max: number): { width: number; h
   return { width: Math.max(1, Math.round(w * k)), height: Math.max(1, Math.round(h * k)) };
 }
 
-/** Shrinks any picture the phone can show to at most `max` px. PNG keeps transparency (emblems); JPEG is smaller (photos). Throws a plain sentence on failure. */
-export async function shrinkImage(file: File, max: number, type: 'image/jpeg' | 'image/png'): Promise<Blob> {
+/** Shrinks any picture the phone can show to at most `max` px. PNG keeps transparency (emblems); JPEG is smaller (photos); WebP smaller still where
+ * the browser can encode it (check the returned blob's type: a browser without WebP support answers with PNG). Redrawing through a canvas
+ * drops the photo's metadata (EXIF: location, device, time). Throws a plain sentence on failure. */
+export async function shrinkImage(file: File, max: number, type: 'image/jpeg' | 'image/png' | 'image/webp'): Promise<Blob> {
   if (!file.type.startsWith('image/')) throw new Error('Choose a picture file.');
   let bitmap: ImageBitmap;
   try { bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { throw new Error('That picture could not be read. Try a JPEG or PNG.'); }

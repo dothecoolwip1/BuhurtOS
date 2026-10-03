@@ -228,13 +228,17 @@ export interface EventHistoryData {
   participants: Array<{ fighterId: string; entryId: string }>;
   results: EventResultRow[];
   teamNames: Map<string, string>;
+  /** True when the placings belong to a fictional/test event: shown as test data, never counted anywhere official. */
+  synthetic: boolean;
 }
 export async function fetchEventHistory(eventId: string, competitionIds: string[]): Promise<EventHistoryData> {
-  if (competitionIds.length === 0) return { entries: [], participants: [], results: [], teamNames: new Map() };
+  if (competitionIds.length === 0) return { entries: [], participants: [], results: [], teamNames: new Map(), synthetic: false };
   const [ents, parts, res] = await Promise.all([
     supabase.from('entries').select('id,competition_id,team_id,fighter_id,status,teams(name),fighters(display_name)').in('competition_id', competitionIds),
     supabase.from('fighter_participation').select('fighter_id,entry_id').eq('event_id', eventId),
-    supabase.from('result_rows').select('competition_id,competition_name,category,gender,entry_id,final_place,points,team_id,entry_fighter_id').eq('event_id', eventId).order('final_place')
+    // The event's OWN record reads every recorded placing, fictional events included (flagged `synthetic`). Rankings, career and team
+    // statistics keep reading the official-only views; a test event is simply shown as what it is, on its own page.
+    supabase.from('result_rows_all').select('competition_id,competition_name,category,gender,entry_id,final_place,points,team_id,entry_fighter_id,synthetic,team_name_at_event').eq('event_id', eventId).order('final_place')
   ]);
   if (ents.error) throw ents.error;
   if (parts.error) throw parts.error;
@@ -246,12 +250,13 @@ export async function fetchEventHistory(eventId: string, competitionIds: string[
     if (e.team_id && tn) teamNames.set(e.team_id, tn);
     return { entryId: e.id, competitionId: e.competition_id, teamId: e.team_id, fighterId: e.fighter_id, status: e.status, name: tn ?? one(e.fighters)?.display_name ?? 'Unnamed entry' };
   });
-  type R = { competition_id: string; competition_name: string; category: string; gender: Division; entry_id: string; final_place: number; points: number | string; team_id: string | null; entry_fighter_id: string | null };
+  type R = { competition_id: string; competition_name: string; category: string; gender: Division; entry_id: string; final_place: number; points: number | string; team_id: string | null; entry_fighter_id: string | null; synthetic?: boolean; team_name_at_event?: string | null };
   return {
     entries,
     participants: (parts.data as Array<{ fighter_id: string; entry_id: string }>).map(p => ({ fighterId: p.fighter_id, entryId: p.entry_id })),
-    results: (res.data as unknown as R[]).map(r => ({ competitionId: r.competition_id, competitionName: r.competition_name, category: r.category, gender: r.gender, entryId: r.entry_id, finalPlace: r.final_place, points: num(r.points), teamId: r.team_id, fighterId: r.entry_fighter_id })),
-    teamNames
+    results: (res.data as unknown as R[]).map(r => ({ competitionId: r.competition_id, competitionName: r.competition_name, category: r.category, gender: r.gender, entryId: r.entry_id, finalPlace: r.final_place, points: num(r.points), teamId: r.team_id, fighterId: r.entry_fighter_id, synthetic: r.synthetic === true, teamNameAtEvent: r.team_name_at_event ?? null })),
+    teamNames,
+    synthetic: (res.data as unknown as R[]).some(r => r.synthetic === true)
   };
 }
 

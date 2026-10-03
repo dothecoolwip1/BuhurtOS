@@ -2,11 +2,10 @@ import { useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { Chip, PageHead } from '../components/ui';
-import { fetchMyDisplayName, fetchMyEvents, saveMyDisplayName } from '../data/api';
+import { fetchMyDisplayName, saveMyDisplayName } from '../data/api';
 import { avatarUrl, fetchFighterProfile, fetchMyFighterId } from '../data/fighters';
 import { fetchMyCaptainedTeams } from '../data/myTeams';
 import { fetchIsOrgAdmin, fetchTeamRequestsInbox } from '../data/teamManager';
-import { DRAFT_NOTICE } from '../lib/draftView';
 import { friendlyError } from '../lib/friendlyError';
 import { lookupState } from '../lib/lookupState';
 import { useAsync } from '../lib/useAsync';
@@ -50,7 +49,6 @@ function SignedIn({ session }: { session: Session }) {
   const { signOut } = useAuth();
   const { isOwner, isOrganizer } = usePlatformRole();
   const userId = session.user.id;
-  const mine = useAsync(() => fetchMyEvents(userId), [userId]);
   const fighter = useAsync(async () => {
     const id = await fetchMyFighterId();
     return id ? fetchFighterProfile(id) : null;
@@ -68,7 +66,6 @@ function SignedIn({ session }: { session: Session }) {
   const name = shown.data?.trim() || profile?.displayName || email.split('@')[0] || 'Your account';
   const photo = avatarUrl(profile?.avatarPath);
   const teams = captained.data ?? [];
-  const events = mine.data ?? [];
   const fighterState = lookupState(fighter);
   const captainState = lookupState(captained);
   const pending = inbox.data ?? [];
@@ -138,6 +135,15 @@ function SignedIn({ session }: { session: Session }) {
         </nav>
       </section>
 
+      <section aria-labelledby="acct-ev">
+        <h2 id="acct-ev" className="acct-h">Events</h2>
+        <nav className="panel acct-list" aria-label="Your events">
+          <Row to="/my-events" title="My events" sub="Events you organize, fight at, captain, staff or were added to" />
+          <Row to="/calendar?mine=1" title="My calendar" sub="The same events, month by month" />
+          {isOwner && <Row to="/platform/events" title="All events (platform)" sub="Every event on BuhurtOS, for administration" />}
+        </nav>
+      </section>
+
       <section aria-labelledby="acct-run">
         <h2 id="acct-run" className="acct-h">Run events</h2>
         <nav className="panel acct-list" aria-label="Organizer tools">
@@ -147,15 +153,6 @@ function SignedIn({ session }: { session: Session }) {
           {isOwner && <Row to="/platform/organizations" title="Organizations" sub="Switch organizations on or off and manage their admins" />}
         </nav>
       </section>
-
-      {events.length > 0 && (
-        <section aria-labelledby="myev-h">
-          <h2 id="myev-h" className="acct-h">My events</h2>
-          <nav className="panel acct-list" aria-label="My events">
-            {events.map(e => <Row key={e.id} to={`/events/${e.slug}`} title={e.name} sub={e.status === 'draft' ? DRAFT_NOTICE : e.status === 'cancelled' ? 'Cancelled' : 'Published'} />)}
-          </nav>
-        </section>
-      )}
 
       <div><button className="btn btn-line" type="button" onClick={() => void signOut()}>Sign out</button></div>
     </section>

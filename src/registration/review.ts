@@ -5,7 +5,7 @@ export const INSURANCE_LABEL: Record<Insurance, string> = {
 };
 export const insuranceOk = (i: Insurance) => i === 'hacsa_member' || i === 'mcc_member' || i === 'proof_received';
 
-export type ReviewFilter = 'pending' | 'accepted' | 'declined' | 'all';
+export type ReviewFilter = 'pending' | 'accepted' | 'declined' | 'withdrawn' | 'all';
 
 /** What still stands between a registration and being ready to fight. Plain words, in the order an organizer would chase them. */
 export function blockers(r: ManagedRegistration): string[] {

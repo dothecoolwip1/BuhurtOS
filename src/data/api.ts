@@ -1,14 +1,17 @@
 import { supabase } from '../lib/supabase';
-import { pickMine } from '../lib/draftView';
 
 export type LeagueKey = 'buhurt' | 'duels' | 'outrance' | 'hacsa';
 export interface LiveCompetition { id: string; name: string; category: string; league: LeagueKey; gender: 'open' | 'men' | 'women'; ruleset: string | null; status: string }
 export interface LiveEvent {
   id: string; slug: string; name: string; description: string; eventType: string; status: 'draft' | 'published' | 'cancelled';
-  venue: string | null; address: string | null; city: string | null; region: string | null;
+  venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null;
+  latitude: number | null; longitude: number | null;
   startsOn: string; endsOn: string; feeCents: number; feeProvince: string | null; feeNote: string | null;
   registrationOpensAt: string | null; registrationClosesAt: string | null; leagues: LeagueKey[];
   registrationMode: 'buhuros' | 'external' | 'none'; externalUrl: string | null; timeNote: string | null; volunteerInfo: string | null;
+  /** How many competitions the event has (0 for a tournament draft means "needs competition setup"). */
+  competitionCount: number;
+  organizationId: string | null; seasonId: string | null;
 }
 export interface MyEventContext {
   /** Roles on this event from event_staff, plus 'owner' for the platform owner. */
@@ -17,19 +20,21 @@ export interface MyEventContext {
   pendingRegistrations: number | null;
 }
 
-const EVENT_COLUMNS = 'id,slug,name,description,event_type,status,venue,address,city,region,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info';
+const EVENT_COLUMNS = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id';
 type EventRow = {
   id: string; slug: string; name: string; description: string; event_type: string; status: LiveEvent['status'];
-  venue: string | null; address: string | null; city: string | null; region: string | null; starts_on: string; ends_on: string;
+  venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null; latitude: number | null; longitude: number | null; starts_on: string; ends_on: string;
+  organization_id: string | null; season_id: string | null;
   fee_cents: number; fee_province: string | null; fee_note: string | null; registration_opens_at: string | null; registration_closes_at: string | null;
   registration_mode: LiveEvent['registrationMode']; external_url: string | null; time_note: string | null; volunteer_info: string | null;
 };
 type Ref = { league: LeagueKey } | { league: LeagueKey }[] | null;
 const leagueOf = (r: Ref): LeagueKey => (Array.isArray(r) ? r[0]?.league : r?.league) ?? 'duels';
 
-const toEvent = (r: EventRow, leagues: LeagueKey[] = []): LiveEvent => ({
+const toEvent = (r: EventRow, leagues: LeagueKey[] = [], competitionCount = 0): LiveEvent => ({
   id: r.id, slug: r.slug, name: r.name, description: r.description, eventType: r.event_type, status: r.status,
-  venue: r.venue, address: r.address, city: r.city, region: r.region, startsOn: r.starts_on, endsOn: r.ends_on,
+  venue: r.venue, address: r.address, city: r.city, region: r.region, country: r.country ?? null, latitude: r.latitude ?? null, longitude: r.longitude ?? null, startsOn: r.starts_on, endsOn: r.ends_on,
+  competitionCount, organizationId: r.organization_id ?? null, seasonId: r.season_id ?? null,
   feeCents: r.fee_cents, feeProvince: r.fee_province, feeNote: r.fee_note,
   registrationOpensAt: r.registration_opens_at, registrationClosesAt: r.registration_closes_at, leagues,
   registrationMode: r.registration_mode ?? 'buhuros', externalUrl: r.external_url, timeNote: r.time_note, volunteerInfo: r.volunteer_info ?? null
@@ -40,7 +45,7 @@ export async function fetchEvents(): Promise<LiveEvent[]> {
   const { data, error } = await supabase.from('events').select(`${EVENT_COLUMNS},competitions(ref_categories(league))`).order('starts_on');
   if (error) throw error;
   type Row = EventRow & { competitions: { ref_categories: Ref }[] };
-  return (data as unknown as Row[]).map(r => toEvent(r, [...new Set(r.competitions.map(c => leagueOf(c.ref_categories)))]));
+  return (data as unknown as Row[]).map(r => toEvent(r, [...new Set((r.competitions ?? []).map(c => leagueOf(c.ref_categories)))], (r.competitions ?? []).length));
 }
 
 export async function fetchEvent(slug: string): Promise<{ event: LiveEvent; competitions: LiveCompetition[] } | null> {
@@ -52,7 +57,7 @@ export async function fetchEvent(slug: string): Promise<{ event: LiveEvent; comp
   if (c.error) throw c.error;
   type CRow = { id: string; name: string; category: string; gender: LiveCompetition['gender']; ruleset: string | null; status: string; ref_categories: Ref };
   const competitions = (c.data as unknown as CRow[]).map(k => ({ id: k.id, name: k.name, category: k.category, gender: k.gender, ruleset: k.ruleset, status: k.status, league: leagueOf(k.ref_categories) }));
-  return { event: toEvent(row, [...new Set(competitions.map(k => k.league))]), competitions };
+  return { event: toEvent(row, [...new Set(competitions.map(k => k.league))], competitions.length), competitions };
 }
 
 /** What the signed-in person is to this event. Each query is limited by the database to what they may see. */
@@ -75,19 +80,6 @@ export async function fetchMyEventContext(eventId: string, userId: string): Prom
   }
   const r = reg.data as { id: string; status: string; fee_due_cents: number; fee_paid: boolean } | null;
   return { roles, isOrganizer, registration: r ? { id: r.id, status: r.status, feeDueCents: r.fee_due_cents, feePaid: r.fee_paid } : null, pendingRegistrations: pending };
-}
-
-/** Events the signed-in person staffs (the platform owner: every event they can read), drafts included. Same query as the events list. */
-export async function fetchMyEvents(userId: string): Promise<LiveEvent[]> {
-  const [all, staff, platform] = await Promise.all([
-    fetchEvents(),
-    supabase.from('event_staff').select('event_id').eq('user_id', userId),
-    supabase.from('platform_roles').select('role').eq('user_id', userId)
-  ]);
-  if (staff.error) throw staff.error;
-  if (platform.error) throw platform.error;
-  const ids = new Set((staff.data ?? []).map(r => r.event_id as string));
-  return pickMine(all, ids, (platform.data ?? []).some(r => r.role === 'owner'));
 }
 
 /** The name the signed-in person goes by on BuhurtOS (organizers and captains see it on requests). Empty when never set. */

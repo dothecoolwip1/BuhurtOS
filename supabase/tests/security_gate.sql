@@ -889,7 +889,7 @@ insert into public.events (id, slug, name, status, starts_on, ends_on, organizat
 insert into public.event_staff (event_id, user_id, role) values
   ('00000000-0000-0000-0000-00000000b401', '00000000-0000-0000-0000-00000000e005', 'organizer'), ('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000e005', 'organizer'),
   ('00000000-0000-0000-0000-00000000b402', '00000000-0000-0000-0000-00000000e004', 'marshal');
-insert into public.waiver_versions (id, event_id, version, title, body) values ('00000000-0000-0000-0000-00000000b601', '00000000-0000-0000-0000-00000000b402', 1, 'Waiver', 'Text');
+insert into public.waiver_versions (id, event_id, version, title, body) values ('00000000-0000-0000-0000-00000000b601', '00000000-0000-0000-0000-00000000b402', 1, 'Waiver', 'Waiver text for the test.');
 insert into public.competitions (id, event_id, name, category, gender, tier, structure) values
   ('00000000-0000-0000-0000-00000000b701', '00000000-0000-0000-0000-00000000b401', 'Past Longsword', 'longsword', 'open', 'Classic', 'round_robin'),
   ('00000000-0000-0000-0000-00000000b702', '00000000-0000-0000-0000-00000000b402', 'Upcoming Longsword', 'longsword', 'open', 'Classic', 'round_robin');
@@ -1525,7 +1525,10 @@ insert into public.matches (id, competition_id, stage, round_label, position) va
   ('00000000-0000-0000-0000-00000000c965', '00000000-0000-0000-0000-00000000c935', 'final', 'Final', 0),
   ('00000000-0000-0000-0000-00000000c966', '00000000-0000-0000-0000-00000000c935', 'elimination', 'Semifinal', 0);
 update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c965', next_slot = 'a' where id = '00000000-0000-0000-0000-00000000c966';
-select t.expect_ok('deleting the whole competition cascades without error', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$);
+-- Pack 07: a competition with matches is part of the record and is never dropped whole (history is corrected or voided, not deleted).
+select t.expect_error('deleting a competition that still has matches is refused', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$, '22023');
+select t.expect_ok('deleting its linked matches first still works in one statement', $q$delete from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'$q$);
+select t.expect_ok('and an emptied competition can then be deleted', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$);
 select t.expect_eq('... and nothing is left behind', (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'), 0::bigint);
 
 -- ---------------------------------------------------------------- every public table has row level security
