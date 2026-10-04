@@ -105,4 +105,5 @@ Data: `LiveSync` (realtime + polling fallback + safety refresh) over `matches` a
 - [x] Regression suites (CI browser suites, eventday-live)
 - [x] Advisors after the hosted migration
 - [x] Hosted migration applied + verified
-- [ ] Merge, CI, deploy, smoke
+- [x] Merged to `main` `cbf9bbb`; CI run #81 green (typecheck/unit/build, database gate, browser suites, release policy); GitHub Pages deployed from that commit
+- [ ] Production browser smoke: NOT possible from the release session (dothecoolwip1.github.io is blocked by the environment's network policy). Open `/events/<slug>/arena` on a published event and score one fight from a phone to confirm live.
