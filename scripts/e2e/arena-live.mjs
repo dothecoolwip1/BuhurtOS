@@ -203,7 +203,7 @@ try {
   check('the device\'s later snapshot is refused as final and the server keeps no running score for a final match', live(3) === 'none' && state(3) === 'final', live(3));
   await tap(ph, 'Finish match'); await tap(ph, 'Save result');
   await ph.getByText('Needs review: not changed').waitFor({ timeout: 20000 });
-  check('[phone] the different result is NOT applied: Needs review, in plain words', (await has(ph, 'A different result is already official')) && sql(`select result || score_a || '-' || score_b from public.matches where id = '${mid(3)}'`) === 'b5-3', await body(ph));
+  check('[phone] the different result is NOT applied: Needs review, in plain words', (await has(ph, 'A different result is already official')) && sql(`select result || score_a || '-' || score_b from public.matches where id = '${mid(3)}'`) === 'b3-5', await body(ph));
   await shot(ph, '6-phone-review');
   check('[tv] the display shows the official result, not the scorer\'s board: Winner Fenna Crow 3-5', (await waitText(tv, '.ar-main', 'Winner: Fenna Crow')) && (await scores(tv)).join('-') === '3-5' && (await tv.locator('.ar-side.b.won').count()) === 1, await stageText(tv));
   await shot(tv, '6-tv-official-result');
