@@ -213,6 +213,12 @@ export function EventWorkspace() {
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
       {showLive && <LiveStatus connection={live.connection} />}
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
+      {showLive && competitions.length > 0 && (
+        <p style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Link className="btn btn-line" to={`/events/${event.slug}/arena`}>Live display for a big screen</Link>
+          <span className="src">Who is fighting now, on deck and in the hole, with the running score. For a TV or projector beside the list.</span>
+        </p>
+      )}
       {mine.data && <ScorekeepingPanel slug={event.slug} competitions={competitions} roles={mine.data.roles} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <MyTeamPanel eventId={event.id} userId={userId} />

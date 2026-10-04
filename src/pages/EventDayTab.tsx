@@ -155,6 +155,7 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
           <Link className="btn btn-line" to={`/events/${slug}/manage?tab=checkin`}>Check-in</Link>
           <Link className="btn btn-line" to={`/events/${slug}/manage?tab=competitions`}>Competitions</Link>
           <Link className="btn btn-line" to={`/events/${slug}`}>Public event page</Link>
+          <Link className="btn btn-line" to={`/events/${slug}/arena`}>Live display (big screen)</Link>
         </div>
       </nav>
     </section>
