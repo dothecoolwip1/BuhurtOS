@@ -118,7 +118,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
   const outcome = resultFromBoard(board, match.stage);
   const snap = snapshotOf(board, match.stage);
   const unit = UNIT[board.mode];
-  const context = <p className="sk-ctx"><b>{fieldName}</b> · {comp.name} · {roundText(match)}</p>;
+  const context = <><h1 className="sr-only">{names.a} vs {names.b}</h1><p className="sk-ctx"><b>{fieldName}</b> · {comp.name} · {roundText(match)}</p></>;
 
   const save = async () => {
     if (!outcome.ok) return;

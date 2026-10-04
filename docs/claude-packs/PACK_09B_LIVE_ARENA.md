@@ -76,6 +76,8 @@ Data: `LiveSync` (realtime + polling fallback + safety refresh) over `matches` a
   case-insensitive name), anon/stranger/direct-table writes refused, no account id in a public row, unpublished event hidden, fullscreen fallback,
   no sideways scroll and 44 px controls at every size. The local stack has no realtime socket: the display is kept fresh by its 15 s polling fallback
   there; hosted, realtime makes it immediate.
+* Regression: the CI browser suites unchanged (field-pack03 28, sw-update 28, pack07-ux 89, pack08-entrants 54, sample-mode 34, rankings-teams 22)
+  and the Pack 09A real-stack run `eventday-live` 78 checks (it now finds the pairing in a visually hidden heading on the scoring screen).
 * Screenshots reviewed at 1920×1080, 1366×768, 768×1024, 1024×768 and 390×844 (scorekeeper and display).
 
 ## Checklist
@@ -84,5 +86,6 @@ Data: `LiveSync` (realtime + polling fallback + safety refresh) over `matches` a
 - [x] Scorekeeper screen
 - [x] Arena
 - [x] Real-stack browser runs (scorekeeper journey, arena journey, multi-field) + screenshots at 390 / 768 / 1366 / 1920
-- [ ] Regression suites (CI browser suites, eventday-live), advisors after the hosted migration
+- [x] Regression suites (CI browser suites, eventday-live)
+- [ ] Advisors after the hosted migration
 - [ ] Hosted migration applied + verified, merge, CI, deploy, smoke
