@@ -6,6 +6,7 @@ import { AuthProvider } from './auth/AuthContext';
 import { initAnalytics } from './lib/analytics';
 import { registerServiceWorker } from './lib/swUpdate';
 import './styles/app.css';
+import './styles/arena.css';
 
 initAnalytics();
 

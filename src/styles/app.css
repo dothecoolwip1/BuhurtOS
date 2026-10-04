@@ -926,3 +926,54 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
   .ed-picker{display:none}
   .ed-lower{grid-template-columns:1fr 1fr;align-items:start}
 }
+
+/* ---- Field-side scoring (Pack 09B): the sides and the score dominate; one status banner says where the result stands. */
+.sk{display:grid;gap:12px}
+.sk-ctx{margin:0;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.sk-ctx b{color:var(--ink)}
+.sk-status{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--raised)}
+.sk-status b{font:800 15px/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.06em}
+.sk-status span{font-size:13px;color:var(--muted)}
+.sk-status.is-scoring{border-color:var(--brass);background:var(--brass-soft)}
+.sk-status.is-scoring b{color:var(--brass)}
+.sk-status.is-ready{border-color:var(--win);background:var(--win-soft)}
+.sk-status.is-ready b{color:var(--win)}
+.sk-status.is-saving{border-color:var(--steel);background:var(--steel-soft)}
+.sk-status.is-saving b{color:var(--steel)}
+.sk-status.is-official{border-color:var(--win);background:var(--win)}
+.sk-status.is-official b,.sk-status.is-official span{color:var(--surface)}
+.sk-status.is-pending{border-color:var(--brass);background:var(--brass-soft)}
+.sk-status.is-pending b{color:var(--brass)}
+.sk-status.is-review{border-color:var(--live);background:var(--live-soft)}
+.sk-status.is-review b{color:var(--live)}
+@media (max-width:420px){.sk-status{grid-template-columns:1fr}}
+.sk-score{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:stretch}
+.sk-side{display:grid;grid-template-rows:auto auto 1fr;gap:4px;padding:12px 10px;border-radius:14px;background:var(--ground);border:2px solid transparent;min-width:0;text-align:center}
+.sk-side.a{border-color:color-mix(in oklab,var(--steel) 55%,transparent)}
+.sk-side.b{border-color:color-mix(in oklab,var(--brass) 55%,transparent)}
+.sk-side.lead{background:var(--raised)}
+.sk-side.won{border-color:var(--win);background:var(--win-soft)}
+.sk-tag{justify-self:center;font:700 11px/1 var(--f-data);letter-spacing:.14em;padding:3px 8px;border-radius:999px;color:var(--surface)}
+.sk-side.a .sk-tag{background:var(--steel)}
+.sk-side.b .sk-tag{background:var(--brass)}
+.sk-name{font:800 clamp(17px,4.6vw,24px)/1.1 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.sk-num{font:900 clamp(52px,16vw,84px)/1 var(--f-display);align-self:end;font-variant-numeric:tabular-nums}
+.sk-mid{display:grid;align-content:center;justify-items:center;gap:6px;padding:0 2px;text-align:center}
+.sk-vs{font:700 12px/1 var(--f-data);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.sk-phase{font:600 12px/1.25 var(--f-data);color:var(--ink);max-width:9ch}
+.sk-unit{font:500 10px/1 var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dside.headless{padding-top:10px}
+.side-tag{font:700 11px/1 var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);overflow-wrap:anywhere;max-width:100%}
+.sk-actions{position:sticky;bottom:8px;z-index:2}
+@media (max-width:980px){.sk-actions{bottom:80px}}
+.sk-actions .btn{box-shadow:var(--shadow)}
+.sk-done{padding:16px;display:grid;gap:14px}
+.sk-h{font-size:clamp(22px,5vw,30px)}
+.sk-final{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sk-fside{display:grid;gap:6px;justify-items:center;text-align:center;padding:14px 10px;border-radius:14px;background:var(--ground);border:2px solid transparent;min-width:0}
+.sk-fside.won{border-color:var(--win);background:var(--win-soft)}
+.sk-fside .sk-num{font-size:clamp(44px,14vw,76px)}
+.sk-winner{margin:0;font-size:18px}
+.sk-after{display:grid;gap:10px}
+.sk-after .btn{display:grid;justify-items:center;gap:2px;text-align:center;height:auto;padding:12px 14px}
+.sk-after-k{font:600 11px/1 var(--f-data);letter-spacing:.1em;text-transform:uppercase;opacity:.75}
