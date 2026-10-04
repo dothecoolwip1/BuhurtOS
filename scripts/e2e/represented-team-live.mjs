@@ -82,6 +82,60 @@ try {
     await ctx.close();
   }
 
+  // ================================================================ 1b. ties, divisions and a discipline the frontend has never heard of (Coastal League)
+  const COASTAL = `/rankings?who=teams&org=${id('c001')}&season=${id('c101')}`;
+  for (const kind of ['phone', 'tablet', 'desktop']) {
+    const { ctx, page } = await open(kind, null);
+    await page.goto(BASE + COASTAL);
+    await page.getByRole('heading', { name: 'Team discipline leaders' }).waitFor({ timeout: 20000 });
+    await page.waitForTimeout(600);
+    const cards = await texts(page, '.topteam');
+    check(`[${kind}] one leader card per individual discipline, named from the data (Dagger, Longsword, Sword & Shield)`,
+      cards.length === 3 && /^dagger/i.test(cards[0]) && /^longsword/i.test(cards[1]) && /^sword (&|and) shield/i.test(cards[2]), cards);
+    check(`[${kind}] a discipline no frontend code knows (Dagger) appears: Red Deer Reavers, 2 points`, /dagger #1 red deer reavers 2 points/i.test(cards[0] ?? ''), cards[0]);
+    check(`[${kind}] the leader overall is the best combined total: Northern Ravens 10 (men 6 + women 4)`, /longsword #1 northern ravens 10 points/i.test(cards[1] ?? ''), cards[1]);
+    check(`[${kind}] a genuine tie is shown, not decided: Ankle Biters tied with Red Deer Reavers on 5`, /sword (&|and) shield #1 ankle biters tied with red deer reavers 5 points/i.test(cards[2] ?? ''), cards[2]);
+    await shot(page, `1b-ties-divisions-${kind}`);
+    await page.getByRole('button', { name: /^Longsword:/ }).click();
+    await page.waitForTimeout(500);
+    const division = page.getByRole('group', { name: 'Division' });
+    const choices = await texts(page, '[aria-label="Division"] button');
+    check(`[${kind}] the divisions that exist are offered: All divisions, Men, Women`, choices.join('|') === 'All divisions|Men|Women', choices);
+    let rows = await texts(page, '.rankcards > li');
+    check(`[${kind}] all divisions: Northern Ravens 10 ahead of Ankle Biters 6`, /^1 Northern Ravens.*10/.test(rows[0] ?? '') && /^2 Ankle Biters.*6/.test(rows[1] ?? ''), rows);
+    check(`[${kind}] the combined total explains its divisions without double counting (Men 6 · Women 4 = 10)`, /Men 6 · Women 4/.test(rows[0] ?? ''), rows[0]);
+    await division.getByRole('button', { name: 'Men', exact: true }).click();
+    await page.waitForTimeout(400);
+    rows = await texts(page, '.rankcards > li');
+    check(`[${kind}] men: a tie shares rank 1 (Ankle Biters and Northern Ravens, 6 each)`, rows.length === 2 && rows.every(r => r.startsWith('1 ') && /6\s*points?$/.test(r)), rows);
+    await division.getByRole('button', { name: 'Women', exact: true }).click();
+    await page.waitForTimeout(400);
+    rows = await texts(page, '.rankcards > li');
+    check(`[${kind}] women: only the team with women's points, Northern Ravens 4`, rows.length === 1 && /^1 Northern Ravens.*4/.test(rows[0]), rows);
+    await division.getByRole('button', { name: 'All divisions' }).click();
+    await page.waitForTimeout(400);
+    await page.locator('.rankcards > li', { hasText: 'Northern Ravens' }).getByRole('button', { name: 'Show fighters' }).click();
+    await page.locator('.contriblist').first().waitFor();
+    const lines = await texts(page, '.contriblist li');
+    check(`[${kind}] Show fighters: Dee 6, Eve 4 (adds up to 10)`, lines.join('|') === 'Dee 6|Eve 4', lines);
+    await page.getByRole('button', { name: /^Sword (&|and) Shield:/i }).click();
+    await page.waitForTimeout(500);
+    rows = await texts(page, '.rankcards > li');
+    check(`[${kind}] tapping the tied discipline opens its table with both teams at rank 1`, rows.length === 2 && rows.every(r => r.startsWith('1 ') && /5\s*points?$/.test(r)), rows);
+    check(`[${kind}] a one-division discipline offers no division control`, await page.getByRole('group', { name: 'Division' }).count() === 0);
+    await page.getByRole('button', { name: /^Dagger:/i }).click();
+    await page.waitForTimeout(500);
+    rows = await texts(page, '.rankcards > li');
+    check(`[${kind}] the new discipline opens its own full table (Red Deer Reavers 2 points)`, rows.length === 1 && /^1 Red Deer Reavers.*2\s*points?$/.test(rows[0]), rows);
+    await page.getByRole('group', { name: 'Team table' }).getByRole('button', { name: 'Team fights' }).click();
+    await page.getByRole('heading', { name: 'No team rankings yet' }).waitFor({ timeout: 10000 });
+    check(`[${kind}] Team fights is its own table: this league has no team fights, so it says so and shows no discipline totals`,
+      await page.locator('.topteam').count() === 0 && await page.getByRole('heading', { name: 'Team discipline leaders' }).count() === 0);
+    check(`[${kind}] no sideways scrolling`, await noSideways(page));
+    check(`[${kind}] no page errors`, page.errors.length === 0, page.errors.join(' | '));
+    await ctx.close();
+  }
+
   // ================================================================ 2. the organizer corrects Mike's team in Manage > Run
   const mikeBefore = sql(`select team_id from public.fighters where id = '${id('b406')}'`);
   const membershipsBefore = sql(`select count(*) from public.team_memberships`);
@@ -124,8 +178,46 @@ try {
   check('database: the change is audited with who, from, to and the reason', audit === `${U(2)}|null|${id('b303')}|Checked the Fall Open entry list`, audit);
   check('database: Mike\'s current team is unchanged', sql(`select team_id from public.fighters where id = '${id('b406')}'`) === mikeBefore);
   check('database: no team membership was touched', sql(`select count(*) from public.team_memberships`) === membershipsBefore);
-  const nr = sql(`select points::int from public.ranking_team_disciplines where scope = 'season' and category = 'longsword' and gender is null and team_id = '${id('b303')}'`);
+  const nr = sql(`select points::int from public.ranking_team_disciplines where scope = 'season' and season_id = '${id('b101')}' and category = 'longsword' and gender is null and team_id = '${id('b303')}'`);
   check('the discipline totals follow: Northern Ravens now has Mike\'s 1 point', nr === '1', nr);
+
+  // ================================================================ 2b. "No team": Joe fought independently
+  {
+    const joeTeamBefore = sql(`select team_id from public.fighters where id = '${id('b403')}'`);
+    const { ctx, page } = await open('phone', 'organizer');
+    await page.goto(BASE + RUN);
+    await page.locator('section[aria-label="Longsword (men)"]').waitFor({ timeout: 20000 });
+    const details = reprSection(page);
+    await details.locator('summary').click();
+    const joe = details.locator('.reprteams > li', { hasText: 'Joe' });
+    await joe.waitFor({ timeout: 10000 });
+    await joe.getByRole('button', { name: 'Change the team Joe represented' }).click();
+    const save = joe.getByRole('button', { name: 'Save team' });
+    check('"No team" is offered as a choice', (await joe.getByLabel(/Team Joe fought for/).locator('option').allInnerTexts()).some(o => /^No team/.test(o)));
+    await joe.getByLabel(/Team Joe fought for/).selectOption({ label: 'No team (fought independently)' });
+    check('"No team" still needs a reason', await save.isDisabled());
+    await joe.getByLabel(/Why is it changing/).fill('Fought as an independent that day');
+    await save.click();
+    await page.getByRole('status').filter({ hasText: 'Saved.' }).waitFor({ timeout: 10000 });
+    const msg = (await texts(page, 'section[aria-label="Longsword (men)"] [role="status"]')).join(' ');
+    check('the confirmation says it now counts for no team and the current team is unchanged', /Saved\. Joe's points in Longsword \(men\) now count for no team\. Their current team is unchanged\./.test(msg), msg);
+    await page.waitForTimeout(400);
+    check('the list shows "Set to no team by an organizer"', (await texts(page, 'section[aria-label="Longsword (men)"] .reprteams > li')).some(l => /^Joe No team · Set to no team by an organizer/.test(l)));
+    await ctx.close();
+    check('database: Joe\'s entry now has no represented team (correction)', repOf('b603') === 'none/correction', repOf('b603'));
+    check('database: Joe\'s current team is unchanged', sql(`select team_id from public.fighters where id = '${id('b403')}'`) === joeTeamBefore);
+    const joeAudit = sql(`select actor || '|' || (details->>'from') || '|' || coalesce(details->>'to', 'null') || '|' || (details->>'reason') from public.audit_log where action = 'entry.represented_team_changed' and subject = '${id('b603')}'`);
+    check('database: audited as a change from Ankle Biters to no team, with the reason', joeAudit === `${U(2)}|${id('b301')}|null|Fought as an independent that day`, joeAudit);
+    const ab = sql(`select points::int from public.ranking_team_disciplines where scope = 'season' and season_id = '${id('b101')}' and category = 'longsword' and gender is null and team_id = '${id('b301')}'`);
+    check('the discipline totals follow: Ankle Biters drops from 9 to 6 (Bob 3 + John 3)', ab === '6', ab);
+    const { ctx: c2, page: p2 } = await open('phone', null);
+    await p2.goto(BASE + RANKINGS);
+    await p2.getByRole('heading', { name: 'Team discipline leaders' }).waitFor({ timeout: 20000 });
+    await p2.waitForTimeout(600);
+    const note = (await texts(p2, 'section[aria-labelledby="discipline-board-h"] p.muted')).join(' ');
+    check('Joe\'s 3 points are shown as not credited to any team, not hidden (Nia 4 + Joe 3 = 7)', /Not credited to any team: 7 points from 2 fighters .*\(Nia, Joe\)/.test(note), note);
+    await c2.close();
+  }
 
   // ================================================================ 3. who may not change it
   {
