@@ -107,6 +107,7 @@ export function EventHistory({ eventId, competitions, live }: { eventId: string;
         <>
           {testData && <p className="panel info" role="note" data-testid="results-test-data"><TestBadge synthetic /> <b>Test data / synthetic event.</b> These placings are fictional. They are shown here because this is the event's own page; they are not official records and never count towards rankings, fighter or team statistics or event counts.</p>}
           {d.results.length === 0 && <div className="panel info"><h3>Results</h3><p className="muted">No final placings are recorded for this event yet. They appear when the organizer finishes a competition.</p></div>}
+          {d.synthetic && d.results.length > 0 && <p className="panel info" role="note"><TestBadge synthetic /> <b>Fictional results.</b> These placings belong to a test event. They are shown here as this event's own record and are never counted in rankings, career statistics or team records.</p>}
           {competitions.map(c => {
             const rows = d.results.filter(r => r.competitionId === c.id);
             if (rows.length === 0) return null;

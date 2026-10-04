@@ -8,7 +8,7 @@ const comps: CompetitionOption[] = [
   { id: 'cp', name: 'Profight (men)', category: 'profight', league: 'outrance', gender: 'men' }
 ];
 const good = (over: Partial<RegForm> = {}): RegForm => ({
-  ...emptyForm('a@b.co'), fullName: 'Mara Kessling', gender: 'female', organization: 'HACSA', province: 'AB', sharesEquipment: 'no', days: ['sat'],
+  ...emptyForm('a@b.co'), fullName: 'Mara Kessling', gender: 'female', organization: 'HACSA', province: 'AB', sharesEquipment: 'no', attendDates: ['2026-11-14'],
   competitionIds: ['cl'], insurance: 'hacsa_member', emergencyName: 'Pat Parent', emergencyPhone: '403 555 0100', medicallyFit: true,
   feeUnderstood: true, waiverAgree: true, waiverName: 'Mara Kessling', ...over
 });

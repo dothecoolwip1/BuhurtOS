@@ -11,14 +11,14 @@ import { isSynthetic } from '../data/synthetic';
 
 export type EventWhen = 'upcoming' | 'past' | 'all';
 export type EventStatusFilter = '' | 'draft' | 'published' | 'finished' | 'cancelled';
-export type EventRole = 'organizer' | 'head_marshal' | 'marshal' | 'scorekeeper' | 'medic' | 'fighter' | 'volunteer' | 'captain' | 'invited' | 'org_admin';
+export type EventRole = 'organizer' | 'head_marshal' | 'marshal' | 'scorekeeper' | 'medic' | 'fighter' | 'volunteer' | 'captain' | 'invited';
 export const ROLE_LABEL: Record<EventRole, string> = {
   organizer: 'Organizer', head_marshal: 'Head marshal', marshal: 'Marshal', scorekeeper: 'Scorekeeper', medic: 'Medic', fighter: 'Fighter', volunteer: 'Volunteer',
-  captain: 'Captain', invited: 'Added by organizer', org_admin: 'Organization admin'
+  captain: 'Captain', invited: 'Added by organizer'
 };
 export const ROLE_FILTERS: ReadonlyArray<readonly [EventRole, string]> = [
   ['fighter', 'Fighter'], ['organizer', 'Organizer'], ['captain', 'Captain'], ['marshal', 'Marshal'], ['head_marshal', 'Head marshal'], ['scorekeeper', 'Scorekeeper'], ['medic', 'Medic'],
-  ['volunteer', 'Volunteer'], ['invited', 'Added by organizer'], ['org_admin', 'Organization admin']
+  ['volunteer', 'Volunteer'], ['invited', 'Added by organizer']
 ];
 export const FORMAT_FILTERS: ReadonlyArray<readonly ['all' | LeagueId, string]> = [['all', 'All'], ['buhurt', 'Group fight'], ['duels', 'Duels'], ['outrance', 'Profight']];
 export const STATUS_FILTERS: ReadonlyArray<readonly [EventStatusFilter, string]> = [['', 'Any status'], ['published', 'Published'], ['draft', 'Draft'], ['finished', 'Finished'], ['cancelled', 'Cancelled']];
@@ -74,6 +74,9 @@ export interface IndexedEvent extends LiveEvent {
   orgLabel: string | null; orgEnabled: boolean;
   /** The organization that counts for filters: the event's own, else its season's. */
   orgId: string | null;
+  /** Known only through the viewer's own relationship (for example a registration on an event taken back to draft): shown on My events and
+   *  My calendar, never on the general lists. */
+  onlyMine?: boolean;
 }
 export function indexEvents(events: readonly LiveEvent[], synthetic: SyntheticSet, relations: ReadonlyMap<string, readonly string[]>, orgs: readonly OrgLite[], seasons: readonly SeasonInfo[] = []): IndexedEvent[] {
   const orgById = new Map(orgs.map(o => [o.id, o]));
@@ -100,6 +103,7 @@ export const isFinished = (e: Pick<LiveEvent, 'status' | 'endsOn'>, today: strin
 export function applyEventFilter<T extends IndexedEvent>(events: readonly T[], f: EventFilter, today: string, mine = false): T[] {
   return events.filter(e => {
     if (e.synthetic && !f.test) return false;
+    if (e.onlyMine && !mine) return false;
     if (mine && e.roles.length === 0) return false;
     if (mine && f.role && !e.roles.includes(f.role)) return false;
     if (!matchesEventQuery(e, f.q)) return false;

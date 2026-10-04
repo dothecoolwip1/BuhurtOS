@@ -1,72 +1,106 @@
 import { supabase } from '../lib/supabase';
+import type { LeagueKey } from './api';
 
-/**
- * Competitions inside an event. Row level security lets only the event's organizers write; a competition that already has entrants,
- * matches, results or registrations can never be deleted (database trigger). Errors are thrown as-is for friendlyError.
- */
+/** A category from the reference table (what competitions are made of): its league decides the scoring board and the entry kind. */
+export interface RefCategory { code: string; league: LeagueKey; name: string; sort: number }
+export async function fetchRefCategories(): Promise<RefCategory[]> {
+  const { data, error } = await supabase.from('ref_categories').select('code,league,name,sort').order('sort');
+  if (error) throw error;
+  return data as RefCategory[];
+}
 
-export type CompetitionGender = 'open' | 'men' | 'women';
-export type CompetitionStructure = 'round_robin' | 'pools_elimination' | 'elimination';
-export interface CompetitionInput { name: string; category: string; gender: CompetitionGender; tier: string | null; ruleset: string | null; structure: CompetitionStructure; roundsToWin: number | null; sort: number }
-export interface EventCompetition extends CompetitionInput { id: string; status: string; league: string; entries: number }
-
-export const STRUCTURES: ReadonlyArray<readonly [CompetitionStructure, string]> = [
-  ['round_robin', 'Round robin (everyone fights everyone)'], ['pools_elimination', 'Pools, then a bracket'], ['elimination', 'Single elimination bracket']
+export type Division = 'open' | 'men' | 'women';
+export type Structure = 'round_robin' | 'pools_elimination' | 'elimination';
+export const DIVISIONS: ReadonlyArray<readonly [Division, string]> = [['open', 'Open'], ['men', 'Men'], ['women', 'Women']];
+export const STRUCTURES: ReadonlyArray<readonly [Structure, string, string]> = [
+  ['round_robin', 'Round robin', 'Everyone meets everyone once. Best for up to about 6 entrants.'],
+  ['pools_elimination', 'Pools, then a bracket', 'Pool play first; the top of each pool goes into a knockout bracket. Best for 7 or more.'],
+  ['elimination', 'Single elimination', 'Straight knockout bracket. Lose once and you are out.']
 ];
-export const GENDERS: ReadonlyArray<readonly [CompetitionGender, string]> = [['men', 'Men'], ['women', 'Women'], ['open', 'Open']];
+export const LEAGUE_LABEL: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profight', hacsa: 'HACSA formats' };
 
-export interface CategoryRef { code: string; name: string; league: string }
-export async function fetchCategoryRefs(): Promise<CategoryRef[]> {
-  const { data, error } = await supabase.from('ref_categories').select('code,name,league').order('sort');
-  if (error) throw error;
-  return data as CategoryRef[];
+export interface SetupCompetition {
+  id: string; name: string; category: string; league: LeagueKey; gender: Division; ruleset: string | null; structure: Structure; roundsToWin: number | null;
+  status: string; sort: number; tier: string;
+  /** Dependent rows: once any exist the competition can no longer be removed, and with matches its category and division are fixed. */
+  entries: number; matches: number; registrations: number;
 }
+export interface CompetitionInput {
+  name: string; category: string; gender: Division; ruleset: string; structure: Structure; roundsToWin: number | null;
+  /** Which league-points table the competition uses (ref_tiers). New competitions start at the database default, Classic. */
+  tier: string;
+}
+export const DEFAULT_TIER = 'Classic';
+
+/** The tiers organizers can choose, in the reference order. */
 export async function fetchTierNames(): Promise<string[]> {
-  const { data, error } = await supabase.from('ref_tiers').select('name').order('sort');
+  const { data, error } = await supabase.from('ref_tiers').select('name,sort').order('sort');
   if (error) throw error;
-  return (data as { name: string }[]).map(t => t.name);
+  return (data as Array<{ name: string }>).map(t => t.name);
 }
 
-type Row = { id: string; name: string; category: string; gender: CompetitionGender; tier: string | null; ruleset: string | null; structure: CompetitionStructure; rounds_to_win: number | null; sort: number; status: string; ref_categories: { league: string } | { league: string }[] | null; entries: { count: number }[] | null };
-export async function fetchEventCompetitions(eventId: string): Promise<EventCompetition[]> {
-  const { data, error } = await supabase.from('competitions').select('id,name,category,gender,tier,ruleset,structure,rounds_to_win,sort,status,ref_categories(league),entries(count)').eq('event_id', eventId).order('sort').order('name');
+/** Everything the Competitions tab shows, in three requests: the competitions, then counts of what depends on each. */
+export async function fetchSetupCompetitions(eventId: string): Promise<SetupCompetition[]> {
+  const { data, error } = await supabase.from('competitions').select('id,name,category,gender,ruleset,structure,rounds_to_win,status,sort,tier,ref_categories(league)').eq('event_id', eventId).order('sort');
   if (error) throw error;
-  return (data as unknown as Row[]).map(r => ({
-    id: r.id, name: r.name, category: r.category, gender: r.gender, tier: r.tier, ruleset: r.ruleset, structure: r.structure, roundsToWin: r.rounds_to_win, sort: r.sort, status: r.status,
-    league: (Array.isArray(r.ref_categories) ? r.ref_categories[0]?.league : r.ref_categories?.league) ?? 'duels', entries: r.entries?.[0]?.count ?? 0
+  type Row = { id: string; name: string; category: string; gender: Division; ruleset: string | null; structure: Structure; rounds_to_win: number | null; status: string; sort: number; tier: string | null; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
+  const rows = data as unknown as Row[];
+  if (rows.length === 0) return [];
+  const ids = rows.map(r => r.id);
+  const [ents, mats, regs] = await Promise.all([
+    supabase.from('entries').select('competition_id').in('competition_id', ids),
+    supabase.from('matches').select('competition_id').in('competition_id', ids),
+    supabase.from('registration_competitions').select('competition_id').in('competition_id', ids)
+  ]);
+  if (ents.error) throw ents.error;
+  if (mats.error) throw mats.error;
+  if (regs.error) throw regs.error;
+  const count = (list: Array<{ competition_id: string }> | null, id: string) => (list ?? []).filter(x => x.competition_id === id).length;
+  return rows.map(r => ({
+    id: r.id, name: r.name, category: r.category, gender: r.gender, ruleset: r.ruleset, structure: r.structure, roundsToWin: r.rounds_to_win, status: r.status, sort: r.sort, tier: r.tier ?? DEFAULT_TIER,
+    league: (Array.isArray(r.ref_categories) ? r.ref_categories[0]?.league : r.ref_categories?.league) ?? 'duels',
+    entries: count(ents.data as Array<{ competition_id: string }>, r.id), matches: count(mats.data as Array<{ competition_id: string }>, r.id), registrations: count(regs.data as Array<{ competition_id: string }>, r.id)
   }));
 }
 
-/** Plain messages per field, mirroring the database checks. */
-export function validateCompetition(c: CompetitionInput): Record<string, string> {
+/** The database checks the organizer role, the fields and the audit trail (create_competition). */
+export async function createCompetition(eventId: string, i: CompetitionInput): Promise<string> {
+  const { data, error } = await supabase.rpc('create_competition', { p_event: eventId, p_name: i.name.trim(), p_category: i.category, p_gender: i.gender, p_ruleset: i.ruleset.trim() || null, p_structure: i.structure, p_rounds_to_win: i.roundsToWin });
+  if (error) throw error;
+  if (i.tier !== DEFAULT_TIER) await setCompetitionTier(data as string, i.tier);
+  return data as string;
+}
+export async function updateCompetition(id: string, i: CompetitionInput, previousTier: string): Promise<void> {
+  const { error } = await supabase.rpc('update_competition', { p_comp: id, p_name: i.name.trim(), p_category: i.category, p_gender: i.gender, p_ruleset: i.ruleset.trim() || null, p_structure: i.structure, p_rounds_to_win: i.roundsToWin });
+  if (error) throw error;
+  if (i.tier !== previousTier) await setCompetitionTier(id, i.tier);
+}
+/** Organizer-only and audited (set_competition_tier); a finished competition keeps its tier. */
+export async function setCompetitionTier(id: string, tier: string): Promise<void> {
+  const { error } = await supabase.rpc('set_competition_tier', { p_comp: id, p_tier: tier });
+  if (error) throw error;
+}
+/** Refused by the database once anything depends on the competition (registrations, entries, matches, results). */
+export async function deleteCompetition(id: string): Promise<void> {
+  const { error } = await supabase.rpc('delete_competition', { p_comp: id });
+  if (error) throw error;
+}
+
+/** Plain-language checks before the database sees the form. */
+export function validateCompetition(i: CompetitionInput): Record<string, string> {
   const e: Record<string, string> = {};
-  const n = c.name.trim();
-  if (n.length < 2 || n.length > 80) e.name = 'Give the competition a name of 2 to 80 characters.';
-  if (!c.category) e.category = 'Choose a category.';
-  if (c.ruleset && c.ruleset.trim().length > 120) e.ruleset = 'Keep the ruleset name under 120 characters.';
-  if (c.roundsToWin !== null && (!Number.isInteger(c.roundsToWin) || c.roundsToWin < 1 || c.roundsToWin > 5)) e.roundsToWin = 'Rounds to win is 1 to 5.';
+  if (i.name.trim().length < 2) e.name = 'Give the competition a name of at least 2 letters.';
+  if (i.name.trim().length > 80) e.name = 'Keep the name under 80 characters.';
+  if (!i.category) e.category = 'Choose a category.';
+  if (!i.tier) e.tier = 'Choose a tier.';
+  if (i.ruleset.trim().length > 120) e.ruleset = 'Keep the ruleset name under 120 characters.';
+  if (i.roundsToWin !== null && (!Number.isInteger(i.roundsToWin) || i.roundsToWin < 1 || i.roundsToWin > 5)) e.roundsToWin = 'Rounds to win is a whole number from 1 to 5, or empty.';
   return e;
 }
 
-/** "Longsword (men)" from a category name and a division, the way the seeded competitions are named. */
-export const suggestCompetitionName = (categoryName: string, gender: CompetitionGender): string => (categoryName ? `${categoryName} (${gender})` : '');
-
-const toRow = (c: CompetitionInput) => ({
-  name: c.name.trim(), category: c.category, gender: c.gender, tier: c.tier || null, ruleset: c.ruleset?.trim() || null, structure: c.structure, rounds_to_win: c.roundsToWin, sort: c.sort
-});
-export async function createCompetition(eventId: string, c: CompetitionInput): Promise<string> {
-  const { data, error } = await supabase.from('competitions').insert({ event_id: eventId, ...toRow(c) }).select('id').single();
-  if (error) throw error;
-  return (data as { id: string }).id;
-}
-export async function updateCompetition(id: string, c: CompetitionInput): Promise<void> {
-  const { data, error } = await supabase.from('competitions').update(toRow(c)).eq('id', id).select('id');
-  if (error) throw error;
-  if (!data?.length) throw Object.assign(new Error('not permitted'), { code: '42501' });
-}
-/** Refused by the database once anything hangs off the competition. */
-export async function deleteCompetition(id: string): Promise<void> {
-  const { data, error } = await supabase.from('competitions').delete().eq('id', id).select('id');
-  if (error) throw error;
-  if (!data?.length) throw Object.assign(new Error('not permitted'), { code: '42501' });
+/** "Men 5v5", "Longsword (open)": the name suggested when the organizer picks a category and division. */
+export function suggestName(category: RefCategory | undefined, gender: Division): string {
+  if (!category) return '';
+  const g = gender === 'men' ? 'Men ' : gender === 'women' ? 'Women ' : '';
+  return `${g}${category.name}`.trim() + (gender === 'open' ? ' (open)' : '');
 }

@@ -13,7 +13,8 @@ export interface RegForm {
   fullName: string; email: string; gender: '' | 'male' | 'female' | 'other';
   organization: '' | 'HACSA' | 'MCC' | 'other';
   province: string; teamId: string; biProfile: string;
-  sharesEquipment: '' | 'yes' | 'no'; days: ('sat' | 'sun')[]; availabilityNotes: string;
+  /** ISO days of the event the person can attend (chosen from the event's own dates). */
+  sharesEquipment: '' | 'yes' | 'no'; attendDates: string[]; availabilityNotes: string;
   competitionIds: string[]; details: Record<string, CompDetails>;
   mercenary: boolean; isVolunteer: boolean; volunteerRoles: string[]; volunteerOther: string;
   insurance: Insurance | '';
@@ -25,7 +26,7 @@ export interface RegForm {
 
 export const emptyForm = (email = ''): RegForm => ({
   fullName: '', email, gender: '', organization: '', province: '', teamId: '', biProfile: '',
-  sharesEquipment: '', days: [], availabilityNotes: '', competitionIds: [], details: {},
+  sharesEquipment: '', attendDates: [], availabilityNotes: '', competitionIds: [], details: {},
   mercenary: false, isVolunteer: false, volunteerRoles: [], volunteerOther: '', insurance: '',
   emergencyName: '', emergencyRelationship: '', emergencyPhone: '', medicallyFit: false, medicalNote: '',
   feeUnderstood: false, waiverAgree: false, waiverName: '', notes: ''
@@ -45,7 +46,7 @@ export function volunteerRolesFor(f: Pick<RegForm, 'isVolunteer' | 'volunteerRol
 export const INSURANCE_OPTIONS: [Insurance, string][] = [
   ['hacsa_member', 'Yes, I am a HACSA member in good standing, my dues are paid and my membership forms are signed'],
   ['mcc_member', 'Yes, I am an MCC member, covered under the partnership with HACSA'],
-  ['proof_pending', 'Yes, I will send proof of insurance before November 11, 2026'],
+  ['proof_pending', 'Yes, I will send proof of insurance before check-in'],
   ['needs_cover', 'No, I would like to take part but do not have cover. I will ask about temporary HACSA membership'],
   ['declined', 'No, and I will not be taking part in this event']
 ];
@@ -71,7 +72,7 @@ export function validate(f: RegForm, comps: CompetitionOption[], fee: EventFee):
   if (!f.organization) e.organization = 'Choose one.';
   if (!f.province) e.province = 'Choose where you are from.';
   if (!f.sharesEquipment) e.sharesEquipment = 'Choose yes or no.';
-  if (f.days.length === 0) e.days = 'Pick at least one day.';
+  if (f.attendDates.length === 0) e.attendDates = 'Pick at least one day.';
   if (!f.isVolunteer && f.competitionIds.length === 0) e.competitionIds = 'Choose at least one category, or sign up as a volunteer.';
   for (const id of f.competitionIds) {
     const c = comps.find(x => x.id === id);
@@ -99,7 +100,7 @@ export function validate(f: RegForm, comps: CompetitionOption[], fee: EventFee):
 export function buildPayload(f: RegForm, waiverVersionId: string) {
   return {
     full_name: f.fullName.trim(), gender: f.gender, organization: f.organization, province: f.province,
-    team_id: f.teamId || null, shares_equipment: f.sharesEquipment === 'yes', days: f.days,
+    team_id: f.teamId || null, shares_equipment: f.sharesEquipment === 'yes', attend_dates: f.attendDates,
     availability_notes: f.availabilityNotes.trim() || null, bi_profile: f.biProfile.trim() || null,
     insurance: f.insurance, is_volunteer: f.isVolunteer, volunteer_roles: volunteerRolesFor(f),
     mercenary: f.mercenary, notes: f.notes.trim() || null,

@@ -1526,7 +1526,20 @@ insert into public.matches (id, competition_id, stage, round_label, position) va
   ('00000000-0000-0000-0000-00000000c966', '00000000-0000-0000-0000-00000000c935', 'elimination', 'Semifinal', 0);
 update public.matches set next_match_id = '00000000-0000-0000-0000-00000000c965', next_slot = 'a' where id = '00000000-0000-0000-0000-00000000c966';
 -- Pack 07: a competition with matches is part of the record and is never dropped whole (history is corrected or voided, not deleted).
-select t.expect_error('deleting a competition that still has matches is refused', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$, '22023');
+-- Since the Pack 07 / Pack 1 reconciliation the one guard is private.competitions_guard (P0001). It checks every API request, the
+-- service role included (modelled here: the hosted service role has table grants, the local stub role does not); only a direct database
+-- session (seeds, cleanup scripts, migrations) keeps its cascades, as Pack 1 documents.
+grant select, delete on public.competitions to service_role;
+grant usage on schema t to service_role; grant execute on all functions in schema t to service_role; grant all on t.log to service_role; grant usage on all sequences in schema t to service_role;
+select set_config('request.jwt.claims', '{"role":"service_role"}', true);
+set local role service_role;
+select t.expect_error('deleting a competition that still has matches is refused, even with the service key', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$, 'P0001');
+reset role;
+select set_config('request.jwt.claims', '', true);
+select t.as_user('00000000-0000-0000-0000-0000000000a1');
+select t.expect_error('and for a signed-in user, even the platform owner', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$, 'P0001');
+select t.as_admin();
+select t.expect_eq('the competition is still there', (select count(*) from public.competitions where id = '00000000-0000-0000-0000-00000000c935'), 1::bigint);
 select t.expect_ok('deleting its linked matches first still works in one statement', $q$delete from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'$q$);
 select t.expect_ok('and an emptied competition can then be deleted', $q$delete from public.competitions where id = '00000000-0000-0000-0000-00000000c935'$q$);
 select t.expect_eq('... and nothing is left behind', (select count(*) from public.matches where competition_id = '00000000-0000-0000-0000-00000000c935'), 0::bigint);

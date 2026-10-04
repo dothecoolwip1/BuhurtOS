@@ -3,6 +3,7 @@ import type { Session } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { Chip, PageHead } from '../components/ui';
 import { fetchMyDisplayName, saveMyDisplayName } from '../data/api';
+import { fetchMyEvents } from '../data/myEvents';
 import { avatarUrl, fetchFighterProfile, fetchMyFighterId } from '../data/fighters';
 import { fetchMyCaptainedTeams } from '../data/myTeams';
 import { fetchIsOrgAdmin, fetchTeamRequestsInbox } from '../data/teamManager';
@@ -49,6 +50,7 @@ function SignedIn({ session }: { session: Session }) {
   const { signOut } = useAuth();
   const { isOwner, isOrganizer } = usePlatformRole();
   const userId = session.user.id;
+  const mine = useAsync(fetchMyEvents, [userId]);
   const fighter = useAsync(async () => {
     const id = await fetchMyFighterId();
     return id ? fetchFighterProfile(id) : null;
@@ -66,6 +68,9 @@ function SignedIn({ session }: { session: Session }) {
   const name = shown.data?.trim() || profile?.displayName || email.split('@')[0] || 'Your account';
   const photo = avatarUrl(profile?.avatarPath);
   const teams = captained.data ?? [];
+  const myCount = mine.data ? mine.data.filter(e => !e.synthetic).length : null;
+  const myTest = mine.data ? mine.data.filter(e => e.synthetic).length : 0;
+  const myRoles = new Set((mine.data ?? []).flatMap(e => e.staffRoles));
   const fighterState = lookupState(fighter);
   const captainState = lookupState(captained);
   const pending = inbox.data ?? [];
@@ -86,6 +91,7 @@ function SignedIn({ session }: { session: Session }) {
           <p className="muted" style={{ overflowWrap: 'anywhere' }}>{email}</p>
           <p className="acct-roles">
             {isOwner && <Chip tone="brass">Super admin</Chip>}
+            {['head_marshal', 'marshal', 'scorekeeper', 'medic'].filter(r => myRoles.has(r)).map(r => <Chip key={r} tone="steel">{r === 'head_marshal' ? 'Head marshal' : r.charAt(0).toUpperCase() + r.slice(1)}</Chip>)}
             {isOrganizer && !isOwner && <Chip tone="steel">Organizer</Chip>}
             {orgAdmin.data && <Chip tone="steel">Organization admin</Chip>}
             {!isOwner && captainState === 'found' && <Chip>Captain</Chip>}
@@ -139,7 +145,7 @@ function SignedIn({ session }: { session: Session }) {
       <section aria-labelledby="acct-ev">
         <h2 id="acct-ev" className="acct-h">Events</h2>
         <nav className="panel acct-list" aria-label="Your events">
-          <Row to="/my-events" title="My events" sub="Events you organize, fight at, captain, staff or were added to" />
+          <Row to="/my-events" title="My events" sub={mine.error != null ? 'Could not count them; open to retry' : myCount === null ? 'Loading…' : myCount === 0 && myTest === 0 ? 'Nothing yet: registrations, entries, invitations and staff roles show up here' : `${myCount} ${myCount === 1 ? 'event' : 'events'} you take part in, run, score or were added to${myTest ? ` · ${myTest} test` : ''}`} />
           <Row to="/calendar?mine=1" title="My calendar" sub="The same events, month by month" />
           {isOwner && <Row to="/platform/events" title="All events (platform)" sub="Every event on BuhurtOS, for administration" />}
         </nav>

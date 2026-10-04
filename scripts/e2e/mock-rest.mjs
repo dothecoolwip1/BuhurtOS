@@ -38,7 +38,7 @@ export function createMock() {
       { id: IDS.c9, event_id: IDS.fake, name: 'Fake Longsword (men)', category: 'longsword', gender: 'men', tier: 'Classic', ruleset: null, structure: 'round_robin', rounds_to_win: null, sort: 1, status: 'finished' }
     ],
     ref_categories: [{ code: '5v5', name: '5v5', league: 'buhurt', sort: 11 }, { code: 'longsword', name: 'Longsword', league: 'duels', sort: 22 }, { code: 'sabre', name: 'Sabre', league: 'hacsa', sort: 40 }],
-    ref_tiers: [{ name: 'Exhibition', sort: 0 }, { name: 'Classic', sort: 2 }],
+    ref_tiers: [{ name: 'Exhibition', sort: 0 }, { name: 'Source', sort: 1 }, { name: 'Classic', sort: 2 }, { name: 'Regional', sort: 3 }, { name: 'Conference', sort: 4 }],
     organizations: [{ id: IDS.org, slug: 'hacsa', name: 'HACSA', short_name: null, enabled: true, kind: 'federation', country: 'CA', region: 'AB', website: null, description: null }],
     seasons: [],
     synthetic_records: [{ entity_type: 'event', entity_id: IDS.fake, slug: 'central-alberta-steel-open-test' }, { entity_type: 'fighter', entity_id: IDS.f9, slug: null }],
@@ -78,6 +78,24 @@ export function createMock() {
   const myFighter = (who) => Object.entries(db.fighter_accounts).find(([, u]) => u === who)?.[0] ?? null;
   const fail = (code, message, status = 400) => ({ error: { code, message, details: null, hint: null }, status });
 
+
+  /** Mirrors private.my_event_links (migration 20261004000200): the ONE rule behind my_events and my_event_relations. Direct relationships only;
+   *  platform owner and organization admin add nothing; drafts only for staff and registrants. */
+  function links(who) {
+    if (!who) return [];
+    const out = []; const fid = myFighter(who);
+    for (const s of db.event_staff) if (s.user_id === who) out.push({ event_id: s.event_id, role: s.role });
+    for (const r of db.registrations) if (r.user_id === who) out.push({ event_id: r.event_id, role: r.is_volunteer ? 'volunteer' : 'fighter' });
+    for (const i of db.event_invitations) if (fid && i.fighter_id === fid && i.status === 'invited') out.push({ event_id: i.event_id, role: 'invited' });
+    for (const e of db.entries) if (fid && e.fighter_id === fid && e.status !== 'withdrawn') out.push({ event_id: db.competitions.find(c => c.id === e.competition_id)?.event_id, role: 'fighter' });
+    for (const tr of db.team_roles) if (tr.user_id === who && tr.role === 'captain') for (const e of db.entries) if (e.team_id === tr.team_id && e.status !== 'withdrawn') out.push({ event_id: db.competitions.find(c => c.id === e.competition_id)?.event_id, role: 'captain' });
+    const seen = new Set();
+    return out.filter(l => {
+      const e = db.events.find(x => x.id === l.event_id); if (!e) return false;
+      const visible = e.status === 'published' || db.event_staff.some(s => s.event_id === e.id && s.user_id === who) || db.registrations.some(r => r.event_id === e.id && r.user_id === who);
+      const k = l.event_id + ':' + l.role; if (!visible || seen.has(k)) return false; seen.add(k); return true;
+    });
+  }
   const inComp = (compId, fighterId) => db.entries.some(e => e.competition_id === compId && e.fighter_id === fighterId && e.status !== 'withdrawn') || db.entry_fighters.some(r => r.competition_id === compId && r.fighter_id === fighterId);
   /** Mirrors private.add_entrant_core closely enough to drive the screens: team entries for group fights, fighter entries otherwise. */
   function addCore(k, fighterId, teamId) {
@@ -184,14 +202,32 @@ export function createMock() {
       case 'my_fighter_id': return myFighter(who);
       case 'my_notifications': return db.notifications.filter(n => n.user_id === who).sort((x, y) => y.created_at.localeCompare(x.created_at)).slice(0, a.p_limit ?? 50).map(({ user_id: _u, ...n }) => n);
       case 'mark_notifications_read': { let n = 0; for (const x of db.notifications) if (x.user_id === who && !x.read_at && (!a.p_ids || a.p_ids.includes(x.id))) { x.read_at = new Date().toISOString(); n++; } return n; }
-      case 'my_event_relations': {
-        const out = []; const fid = myFighter(who);
-        for (const s of db.event_staff) if (s.user_id === who) out.push({ event_id: s.event_id, role: s.role });
-        for (const r of db.registrations) if (r.user_id === who && ['pending', 'accepted'].includes(r.status)) out.push({ event_id: r.event_id, role: r.is_volunteer ? 'volunteer' : 'fighter' });
-        for (const i of db.event_invitations) if (fid && i.fighter_id === fid && i.status === 'invited') out.push({ event_id: i.event_id, role: 'invited' });
-        for (const tr of db.team_roles) if (tr.user_id === who) for (const e of db.entries) if (e.team_id === tr.team_id) out.push({ event_id: db.competitions.find(c => c.id === e.competition_id)?.event_id, role: 'captain' });
-        return out;
+      case 'my_event_relations': return links(who);
+      case 'my_events': {
+        const ids = [...new Set(links(who).map(l => l.event_id))];
+        const fid = myFighter(who);
+        return ids.map(id => ev(id)).filter(Boolean).sort((a, b) => a.starts_on.localeCompare(b.starts_on) || a.name.localeCompare(b.name)).map(e => {
+          const roles = [...new Set(db.event_staff.filter(s => s.user_id === who && s.event_id === e.id).map(s => s.role))].sort();
+          const r = db.registrations.find(x => x.user_id === who && x.event_id === e.id);
+          const comps = db.competitions.filter(c => c.event_id === e.id).map(c => c.id);
+          return { id: e.id, slug: e.slug, name: e.name, status: e.status, event_type: e.event_type, starts_on: e.starts_on, ends_on: e.ends_on, city: e.city, region: e.region, venue: e.venue, registration_mode: e.registration_mode,
+            synthetic: db.synthetic_records.some(x => x.entity_type === 'event' && x.entity_id === e.id), staff_roles: roles,
+            registration_id: r?.id ?? null, registration_status: r?.status ?? null, fee_due_cents: r ? (r.fee_due_cents ?? 0) : null, fee_paid: r ? Boolean(r.fee_paid) : null, insurance: r?.insurance ?? null, is_volunteer: r ? Boolean(r.is_volunteer) : null, checked_in: false,
+            fighter_entry: Boolean(fid) && db.entries.some(x => comps.includes(x.competition_id) && x.fighter_id === fid && x.status !== 'withdrawn'),
+            captain_entry: links(who).some(l => l.event_id === e.id && l.role === 'captain'),
+            pending_registrations: roles.includes('organizer') ? db.registrations.filter(x => x.event_id === e.id && x.status === 'pending').length : null,
+            invited: links(who).some(l => l.event_id === e.id && l.role === 'invited') };
+        });
       }
+      case 'create_competition': {
+        if (!isOrganizer(who, a.p_event)) return fail('42501', 'only the organizers of this event can set up its competitions');
+        if (String(a.p_name ?? '').trim().length < 2) return fail('22023', 'give the competition a name of at least 2 letters');
+        const id = uid(); db.competitions.push({ id, event_id: a.p_event, name: a.p_name.trim(), category: a.p_category, gender: a.p_gender, tier: 'Classic', ruleset: a.p_ruleset ?? null, structure: a.p_structure ?? 'round_robin', rounds_to_win: a.p_rounds_to_win ?? null, sort: db.competitions.filter(c => c.event_id === a.p_event).length + 1, status: 'registration' });
+        db.audit_log.push({ action: 'competition.created', event_id: a.p_event, subject: id, actor: who }); return id;
+      }
+      case 'update_competition': { const k = db.competitions.find(c => c.id === a.p_comp); if (!k || !isOrganizer(who, k.event_id)) return fail('42501', 'only the organizers of this event can change its competitions'); Object.assign(k, { name: a.p_name, category: a.p_category, gender: a.p_gender, ruleset: a.p_ruleset, structure: a.p_structure, rounds_to_win: a.p_rounds_to_win }); return null; }
+      case 'delete_competition': { const k = db.competitions.find(c => c.id === a.p_comp); if (!k || !isOrganizer(who, k.event_id)) return fail('42501', 'only the organizers of this event can remove its competitions'); if (db.entries.some(e => e.competition_id === k.id) || db.registration_competitions.some(r => r.competition_id === k.id)) return fail('P0001', 'this competition already has registrations, entries or matches, so it cannot be removed'); db.competitions = db.competitions.filter(c => c !== k); return null; }
+      case 'set_competition_tier': { const k = db.competitions.find(c => c.id === a.p_comp); if (!k || !isOrganizer(who, k.event_id)) return fail('42501', 'only the organizers of this event can change its competitions'); if (!db.ref_tiers.some(t => t.name === a.p_tier)) return fail('22023', 'choose a tier from the list'); k.tier = a.p_tier; db.audit_log.push({ action: 'competition.tier_changed', event_id: k.event_id, subject: k.id, actor: who }); return null; }
       case 'my_team_ids': return db.team_roles.filter(r => r.user_id === who).map(r => r.team_id);
       case 'can_edit_team': return db.team_roles.some(r => r.user_id === who && r.team_id === a.p_team) || who === IDS.owner;
       case 'can_rename_team': return who === IDS.owner;

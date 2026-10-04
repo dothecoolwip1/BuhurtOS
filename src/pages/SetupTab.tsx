@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Chip } from '../components/ui';
 import { VenuePicker, type VenueFields } from '../components/VenuePicker';
 import { EVENT_TYPES, REGISTRATION_MODES, type EventType, type RegistrationMode } from '../data/eventTypes';
@@ -10,7 +10,6 @@ import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { PROVINCES } from '../registration/model';
 import { publishChecklist, toPatch, validateSetup, type SetupForm } from '../registration/setup';
-import { CompetitionsSection } from './CompetitionsSection';
 import { WaiverSection } from './WaiverSection';
 
 const fromEvent = (e: LiveEvent): SetupForm => ({
@@ -20,13 +19,12 @@ const fromEvent = (e: LiveEvent): SetupForm => ({
   eventType: e.eventType as EventType, registrationMode: e.registrationMode, externalUrl: e.externalUrl ?? '', timeNote: e.timeNote ?? '', volunteerInfo: e.volunteerInfo ?? ''
 });
 
-/** Where each blocking requirement is satisfied, so the checklist can point straight at it. */
-const FIX_TARGET: Array<{ test: (label: string) => boolean; id: string; action: string }> = [
-  { test: l => l.startsWith('At least one competition'), id: 'competitions', action: '+ Add competition' },
-  { test: l => l.startsWith('A waiver'), id: 'waiver', action: 'Add the waiver' },
-  { test: l => l.startsWith('The sign-up'), id: 'details', action: 'Set the link' },
-  { test: l => l.startsWith('A venue'), id: 'details', action: 'Add the venue' }
-];
+/** Where each requirement on this page is satisfied, so the checklist can point straight at it. Competitions live in their own tab. */
+const FIX_TARGET: Partial<Record<string, { id: string; action: string }>> = {
+  waiver: { id: 'waiver', action: 'Add the waiver' },
+  link: { id: 'details', action: 'Set the link' },
+  venue: { id: 'details', action: 'Add the venue' }
+};
 
 export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: () => void }) {
   const [params] = useSearchParams();
@@ -36,15 +34,14 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [factsKey, setFactsKey] = useState(0);
-  const [openCompetition, setOpenCompetition] = useState(params.get('add') === 'competition');
   const facts = useAsync(() => fetchPublishFacts(event.id), [event.id, factsKey]);
   const errors = validateSetup(f);
   const set = <K extends keyof SetupForm>(k: K, v: SetupForm[K]) => setF(p => ({ ...p, [k]: v }));
   const err = (k: string) => (show && errors[k] ? <span role="alert" style={{ color: 'var(--live)' }}>{errors[k]}</span> : null);
 
-  // ?focus=competitions (from the Run tab or the event page) lands on that section.
+  // ?focus=waiver or ?focus=details lands on that section.
   useEffect(() => {
-    const id = params.get('focus') ?? (params.get('add') === 'competition' ? 'competitions' : null);
+    const id = params.get('focus');
     if (!id) return;
     const t = window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
     return () => window.clearTimeout(t);
@@ -64,11 +61,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
   const checks = publishChecklist({ eventType: event.eventType as EventType, registrationMode: event.registrationMode, competitions: facts.data?.competitions ?? 0, waivers: facts.data?.waivers ?? 0, hasClose: Boolean(event.registrationClosesAt), hasVenue: Boolean(event.venue || event.address), hasLink: Boolean(event.externalUrl) });
   const blocked = checks.some(c => c.blocking && !c.ok) || !facts.data;
   const published = event.status === 'published';
-  const fixFor = (label: string) => FIX_TARGET.find(t => t.test(label));
-  const jump = (id: string) => {
-    if (id === 'competitions') setOpenCompetition(true);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  const jump = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const text = (k: keyof SetupForm, label: string, extra: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
     <label className="field-in">{label}<input value={f[k] as string} onChange={e => set(k, e.target.value as never)} aria-invalid={Boolean(show && errors[k])} {...extra} />{err(k)}</label>
@@ -82,10 +75,12 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         <p><Chip tone={published ? 'win' : 'brass'}>{published ? 'Published' : 'Draft: only organizers can see it'}</Chip></p>
         <ul className="plain checklist" aria-label="Publish checklist">
           {checks.map(c => {
-            const fix = !c.ok ? fixFor(c.label) : null;
+            const fix = !c.ok ? FIX_TARGET[c.key] : undefined;
             return (
               <li key={c.label} className="checkrow">
-                <span>{c.ok ? '✓' : c.blocking ? '✗' : '!'} {c.label}{!c.ok && !c.blocking ? ' (recommended)' : ''}</span>
+                <span>{c.ok ? '✓' : c.blocking ? '✗' : '!'} {c.ok || c.key !== 'competitions' ? c.label : 'No competitions yet'}{!c.ok && !c.blocking ? ' (recommended)' : ''}</span>
+                {/* Competitions have one editor, Manage › Competitions; everything else is on this page. */}
+                {!c.ok && c.key === 'competitions' && <Link className="btn btn-ink btn-sm" data-testid="fix-competitions" to={`/events/${event.slug}/manage?tab=competitions`}>+ Add competition</Link>}
                 {fix && <button type="button" className={`btn btn-sm ${c.blocking ? 'btn-ink' : 'btn-line'}`} data-testid={`fix-${fix.id}`} onClick={() => jump(fix.id)}>{fix.action}</button>}
               </li>
             );
@@ -94,7 +89,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         {!published && !confirm && <button type="button" className="btn btn-ink" disabled={busy || blocked} onClick={() => setConfirm(true)}>Publish event</button>}
         {!published && facts.data && blocked && (
           <p role="status" style={{ color: 'var(--live)' }}>
-            Publish is off until: {checks.filter(c => c.blocking && !c.ok).map(c => c.label.replace(/ \(.*\)$/, '').toLowerCase()).join('; ')}. Use the buttons beside each item.
+            Publish is off until: {checks.filter(c => c.blocking && !c.ok).map(c => (c.key === 'competitions' ? 'a competition is added' : c.label.replace(/ \(.*\)$/, '').toLowerCase())).join('; ')}. Use the buttons beside each item.
           </p>
         )}
         {!published && confirm && (
@@ -118,8 +113,6 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         )}
         {msg && !confirm && <p role={msg.ok ? 'status' : 'alert'} style={{ color: msg.ok ? 'var(--win)' : 'var(--live)' }}>{msg.text}</p>}
       </section>
-
-      <CompetitionsSection key={`${event.id}-${openCompetition}`} eventId={event.id} eventType={event.eventType} onChanged={refresh} autoOpen={openCompetition} />
 
       {event.registrationMode === 'buhuros' && <WaiverSection eventId={event.id} onAdded={refresh} />}
 

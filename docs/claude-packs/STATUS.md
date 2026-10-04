@@ -2,7 +2,7 @@
 
 Branch: `ccr-a435c5f7-pmrfxr`
 
-Last updated: 2026-10-04 (Pack 08 added)
+Last updated: 2026-10-04 (main's Pack 1 merged; Pack 07 / Pack 1 reconciled; Pack 08 added)
 
 ## Pack status
 
@@ -201,8 +201,8 @@ run it on hosted).
 
 ## Pack 08 notes (organizer-added entrants and claimable fighter profiles, 2026-10-04)
 
-Migration `20261004000100_pack08_entrants_and_claims.sql` (additive, rerunnable; run it AFTER the Pack 07 migration because it re-adds the
-notification kinds). Gate `supabase/tests/pack08_gate.sql` (122 checks, in `run_all.sh`); browser script `scripts/e2e/pack08-entrants.mjs`
+Migration `20261004000300_pack08_entrants_and_claims.sql` (renamed from the colliding `20261004000100` during the main merge; never applied
+anywhere hosted; additive, rerunnable; run it AFTER the Pack 07 migration because it re-adds the notification kinds). Gate `supabase/tests/pack08_gate.sql` (122 checks, in `run_all.sh`); browser script `scripts/e2e/pack08-entrants.mjs`
 (54 checks at 390x844, mocked Supabase, in the CI workflow).
 
 - **Add entrant** (Run area, per competition): search existing fighters (team and place shown, never auto-matched) -> add, or create a new
@@ -228,3 +228,66 @@ Not done / honest limits: the hosted database does not have Packs 06/07/08 and n
 imitation of Supabase, so the database rules are proved only by the SQL gate; no real Samsung phone; entrants are not shown on the public event
 page with the chip (only Run, fighter page, search);
 no email notification, only the in-app bell.
+
+## Pack 1 (post-audit corrective pack, 2026-10-04)
+Source: `docs/reviews/2026-10-03-full-site-mobile-desktop-audit.md`. Branch `ccr-3b8f5e2b-gglnaw`. Six issues, one additive migration
+`supabase/migrations/20261004000100_pack1_competitions_myevents_days.sql`, new gate `supabase/tests/pack1_gate.sql` (49 checks, in run_all.sh),
+browser evidence script `scripts/e2e/pack1-live.mjs` (needs a real local stack; 37 checks at 390 and 1440).
+
+1. Upcoming queries: `entries -> competitions` embeds now name `entries_competition_id_fkey` (`careers.ts`, `teamDirectory.ts`); `pool_tie_decisions` had
+   made the path ambiguous (PGRST201) on every team and fighter page.
+2. Synthetic results: the event's own record reads `result_rows_all` and labels fictional placings; `result_rows`, rankings and statistics are untouched
+   (browser check: `result_rows` still returns 0 rows for the test event, `result_rows_all` 21 flagged rows).
+3. Competitions: `create_competition` / `update_competition` / `delete_competition` (organizer-only, audited) plus trigger `competitions_guard` (no
+   removal with registrations, entries, matches or results; category/division fixed once matches exist; finished competitions immutable; loaders
+   without a signed-in user unaffected). New Manage › Competitions tab; the publish checklist and the Run tab link to it.
+4. Scorekeeping: `ScorekeepingPanel` on the event page for staff who may score (one button per field with what is queued); the field page lists the
+   other fields and links back. No per-ring assignment was added (the data model has none).
+5. My events: `public.my_events()` (staff role, own registration, own fighter's entry, captained team's entry; drafts only for staff and registrants;
+   the platform owner is not special). `/my-events` page (search, test events hidden by default, now / coming up / drafts / past, reason chips,
+   outstanding items, View registration). `/events/<slug>/register` shows the existing registration instead of a blank form. The old staff-only
+   `fetchMyEvents` / `pickMine` are gone.
+6. Registration copy: attendance days come from the event's dates (`registrations.attend_dates`, legacy `days` kept and still accepted); fee and
+   insurance wording no longer carries Rumble dates (fee note comes from the event's `fee_note`).
+
+Verified locally: tsc, vitest 534, vite build, `run_all.sh` DATABASE GATE PASSED (migrations from zero, every gate incl. pack1_gate, fingerprint updated,
+simulation, league 68/68, concurrency), `pack1-live.mjs` 37/37 against the local stack (Chromium, 390 and 1440).
+Hosted (read-only inspection 2026-10-04): every object the migration depends on exists on the hosted project (pool_tie_decisions, result_rows_all,
+registration_checks, team_roles, private.audit / is_synthetic / is_organizer; Packs 01-05 present), and none of the new objects exist yet. The MCP
+`apply_migration` call for `20261004000100_pack1_competitions_myevents_days.sql` answered `cancelled` because the file contains `delete from`
+statements inside function bodies (`delete_competition`, and the unchanged `delete from public.registration_competitions` in `submit_registration`);
+that refusal is the owner-confirmation gate and was not bypassed. **HOSTED MIGRATION NOT APPLIED.** Owner action: run the migration file once in the
+Supabase SQL Editor (it is additive and rerunnable except for `create trigger competitions_guard`, which exists only after the first run), then
+`notify pgrst, 'reload schema'` is not needed on hosted (Supabase reloads on DDL). Deploy only after that, or the My events page and the
+Competitions tab fail with "function not found" until the migration lands.
+
+
+## Pack 07 / Pack 1 reconciliation (main merged into the Pack 07 + 08 branch, 2026-10-04)
+
+Main's Pack 1 and this branch's Pack 07 were built in parallel and overlapped. Owner decisions (2026-10-04) applied:
+
+- **Migration order:** `20261003000600_pack07_ux_workflows` -> `20261004000100_pack1_competitions_myevents_days` -> `20261004000200_pack07_pack1_reconcile`
+  -> `20261004000300_pack08_entrants_and_claims`. No duplicate versions; no committed migration was edited.
+- **Competitions:** Manage > Competitions (Pack 1's tab and create/update/delete functions) is the only editor; Pack 07's Setup editor
+  (`CompetitionsSection`) is gone. Setup's publish checklist and the event/Run pages send "+ Add competition" to that tab. The reconcile migration
+  drops Pack 07's `competitions_delete_guard` trigger and function, so Pack 1's `private.competitions_guard` is the one guard. Two adjustments,
+  both stricter than or equal to Pack 1: (1) its no-user bypass now applies only to a direct database session (no API role, no request JWT: SQL
+  editor, seeds, cleanup scripts, migrations); every API request, the service role included, is guarded, as Pack 07's guard did. Pack 07 had
+  also refused direct owner sessions; that is not kept, because the seed cleanup scripts delete test competitions with entries and Pack 1
+  documents that path. (2) The tier field Pack 07's editor offered is kept through a new organizer-only, audited `set_competition_tier`
+  (refused for finished competitions), shown in the Competitions tab.
+- **My events:** one database rule, `private.my_event_links(uid)`: staff role, own registration (any status, Pack 1), own fighter's entry or
+  roster place, captained team's entry, and a pending organizer invitation (Pack 07). Platform owner and organization admin status give nothing
+  (Pack 07's `org_admin` relation is removed). Drafts only for the event's staff and for registrants. `my_events()` (now with `invited`) and
+  `my_event_relations()` both read it; the gate checks they name the same events for owner, org admin, organizer, invitee, registrant,
+  volunteer, scorekeeper and captain. The page keeps Pack 07's view switch, search/filters, test-data toggle and grouping, with Pack 1's cards
+  (reasons, registration state, fee, check-in, pending reviews, outstanding items, View registration / Manage / Scorekeeping / Complete
+  registration). The event index loads both, so My events and My calendar agree, including events the person can only reach through their own
+  registration (an event taken back to draft), which never appear on the general lists.
+- **submit_registration:** one final definition in the reconcile migration: Pack 07's waiver-version check and invitation path (outside the
+  window, auto-accept, invitation linked) plus Pack 1's `attend_dates` (event days only) and legacy `days`.
+- **Tests adjusted, not weakened:** `pack07_gate` and `security_gate` expect the Pack 1 guard's error code (P0001) and now model the
+  service-role path; `pack1_gate`'s fixture waiver is 20+ characters (Pack 07's waiver rule). New `pack07_pack1_reconcile_gate.sql` (54 checks).
+  `pack07-ux.mjs` follows the Competitions tab and checks invitation/organization-admin behaviour on My events and My calendar.
+- **Not verified here:** `scripts/e2e/pack1-live.mjs` (needs a real local Supabase stack, not available in this container); nothing hosted.
+  Hosted rollout is an owner step in the SQL Editor, in the order above (Pack 07, Pack 1, reconcile, Pack 08); nothing is deployed.

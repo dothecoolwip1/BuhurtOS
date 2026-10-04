@@ -9,7 +9,7 @@ import { useAuth } from './AuthContext';
 export const finishedProfiles = new Set<string>();
 
 /** Pages that act for an account (forms, management, the account itself). Everything else is public and never sends anyone to setup. */
-export const ACCOUNT_PATH = /^\/(account|team-manager|platform)(\/|$)|^\/events\/new$|^\/events\/[^/]+\/(register|manage|field)(\/|$)|^\/(teams|fighters)\/[^/]+\/edit$/;
+export const ACCOUNT_PATH = /^\/(account|my-events|team-manager|platform)(\/|$)|^\/events\/new$|^\/events\/[^/]+\/(register|manage|field)(\/|$)|^\/(teams|fighters)\/[^/]+\/edit$/;
 
 /**
  * Profile setup for an account that has not done it yet. Visiting the site never triggers it, and a visitor without an account is never

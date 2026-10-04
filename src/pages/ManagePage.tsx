@@ -15,6 +15,7 @@ import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
 import { fetchScheduleConflicts } from '../data/conflicts';
 import { conflictsStripLabel, distinctFighters } from '../lib/runSchedule';
+import { attendanceText } from '../lib/eventDays';
 import { AttentionStrip, CheckinPanel } from './CheckinPanel';
 import { NotFoundPage } from './NotFoundPage';
 import { ExportRegistrations } from './ExportRegistrations';
@@ -23,10 +24,11 @@ import { withdrawRegistration } from '../data/invitations';
 import { PeopleTab } from './PeopleTab';
 import { RunTab } from './RunTab';
 import { SetupTab } from './SetupTab';
+import { CompetitionsTab } from './CompetitionsTab';
 import { TeamsTab } from './TeamsTab';
 
-type Tab = 'review' | 'fighters' | 'checkin' | 'run' | 'setup' | 'people' | 'teams';
-const TABS: Tab[] = ['review', 'fighters', 'checkin', 'run', 'setup', 'people', 'teams'];
+type Tab = 'review' | 'fighters' | 'checkin' | 'run' | 'setup' | 'competitions' | 'people' | 'teams';
+const TABS: Tab[] = ['review', 'fighters', 'checkin', 'run', 'setup', 'competitions', 'people', 'teams'];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -92,7 +94,7 @@ function ReviewCard({ r, act }: { r: ManagedRegistration; act: ReturnType<typeof
         <div style={{ display: 'grid', gap: 6, marginTop: 8 }}>
           <p style={{ overflowWrap: 'anywhere' }}>Email: {r.email}</p>
           <Contact r={r} />
-          <p>Can attend: {r.days.length ? r.days.map(d => (d === 'sat' ? 'Saturday' : 'Sunday')).join(' and ') : 'not given'} · shares equipment: {r.sharesEquipment ? 'yes' : 'no'}</p>
+          <p>Can attend: {attendanceText(r.attendDates, r.days)} · shares equipment: {r.sharesEquipment ? 'yes' : 'no'}</p>
           {r.availabilityNotes && <p>Availability note: {r.availabilityNotes}</p>}
           {r.notes && <p>Notes: {r.notes}</p>}
           {r.medicalNote && (showHealth
@@ -154,11 +156,12 @@ export function ManagePage() {
         else if (k === 'blocked') setParams({ tab: 'checkin' }, { replace: true });
         else { setFilter('accepted'); setParams({}, { replace: true }); }
       }} extra={clashLabel ? [{ key: 'clash', label: clashLabel, onClick: () => setParams({ tab: 'run' }, { replace: true }) }] : []} />
-      <Seg scroll label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['fighters', 'Fighters'], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['people', 'People'], ['teams', 'Teams']] as const}
+      <Seg scroll label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['fighters', 'Fighters'], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['competitions', `Competitions (${competitions.length})`], ['people', 'People'], ['teams', 'Teams']] as const}
         onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
       {tab === 'fighters' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} />}
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
+      {tab === 'competitions' && <CompetitionsTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'teams' && <TeamsTab />}
       {tab === 'people' && <PeopleTab eventId={event.id} myUserId={userId} />}
       {tab === 'checkin' && <CheckinPanel regs={all} loading={regs.loading} onChanged={() => setReloadKey(k => k + 1)} />}

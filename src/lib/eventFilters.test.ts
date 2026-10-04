@@ -115,3 +115,17 @@ describe('calendar', () => {
     expect(ics).toContain('SUMMARY:Rumble');
   });
 });
+
+describe('one relationship rule for My events and My calendar (Pack 07 / Pack 1 reconciliation)', () => {
+  const extra = indexEvents([ev({ id: 'regdraft', name: 'Back To Draft Cup', startsOn: '2026-11-01', endsOn: '2026-11-01', status: 'draft' })], new Set(), new Map([['regdraft', ['fighter']]]), orgs)
+    .map(e => ({ ...e, onlyMine: true }));
+  const all = [...indexed, ...extra];
+  it('an event known only through the viewer\'s own registration shows on My events / My calendar, never on the general lists', () => {
+    expect(applyEventFilter(all, { ...DEFAULT_FILTER, when: 'all' }, today, true).map(e => e.id)).toContain('regdraft');
+    expect(applyEventFilter(all, { ...DEFAULT_FILTER, when: 'all' }, today).map(e => e.id)).not.toContain('regdraft');
+  });
+  it('organization admin is not a relationship filter any more; invited is', () => {
+    expect(parseEventFilter(new URLSearchParams('role=org_admin')).role).toBe('');
+    expect(parseEventFilter(new URLSearchParams('role=invited')).role).toBe('invited');
+  });
+});

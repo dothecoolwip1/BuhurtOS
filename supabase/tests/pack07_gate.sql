@@ -121,10 +121,12 @@ select t.expect_eq('it is gone', (select count(*) from public.competitions where
 select t.as_admin();
 insert into public.entries (id, competition_id, team_id) values ('00000000-0000-0000-0000-0000000a7002', '00000000-0000-0000-0000-0000000c7002', '00000000-0000-0000-0000-0000000c7101');
 select t.as_user('00000000-0000-0000-0000-0000000000d2');
-select t.expect_error('a competition with an entrant cannot be deleted', $q$delete from public.competitions where id = '00000000-0000-0000-0000-0000000c7002'$q$, '22023');
+-- Since the Pack 07 / Pack 1 reconciliation the one guard is Pack 1's private.competitions_guard (error P0001).
+select t.expect_error('a competition with an entrant cannot be deleted', $q$delete from public.competitions where id = '00000000-0000-0000-0000-0000000c7002'$q$, 'P0001');
+select t.expect_error('nor through the delete function', $q$select public.delete_competition('00000000-0000-0000-0000-0000000c7002')$q$, 'P0001');
 select t.expect_eq('it is still there', (select count(*) from public.competitions where id = '00000000-0000-0000-0000-0000000c7002'), 1::bigint);
 select t.as_admin();
-select t.expect_error('not even the table owner can delete it', $q$delete from public.competitions where id = '00000000-0000-0000-0000-0000000c7002'$q$, '22023');
+select t.expect_eq('only one competition guard is left (Pack 1''s)', (select string_agg(tgname, ',' order by tgname) from pg_trigger where tgrelid = 'public.competitions'::regclass and not tgisinternal and tgname like 'competitions%guard'), 'competitions_guard');
 
 -- ---------------------------------------------------------------- 4. organizer-added fighters
 select t.as_user('00000000-0000-0000-0000-0000000000d4');

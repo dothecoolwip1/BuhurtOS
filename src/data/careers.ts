@@ -170,7 +170,9 @@ export interface Appearance {
   forTeam: string | null; role: 'fighter' | 'mercenary' | 'guest' | 'duel';
 }
 type AppDb = { id: string; teams: { name: string } | { name: string }[] | null; competitions: { name: string; category: string; events: { name: string; slug: string; starts_on: string; ends_on: string; status: Appearance['eventStatus'] } | { name: string; slug: string; starts_on: string; ends_on: string; status: Appearance['eventStatus'] }[] | null } | { name: string; category: string; events: unknown }[] | null };
-const APP_SELECT = 'id,teams(name),competitions(name,category,events(name,slug,starts_on,ends_on,status))';
+// `competitions!entries_competition_id_fkey`: since pool_tie_decisions references both tables there are two paths between entries and
+// competitions, and PostgREST refuses to guess (PGRST201). The hint names the direct foreign key.
+const APP_SELECT = 'id,teams(name),competitions!entries_competition_id_fkey(name,category,events(name,slug,starts_on,ends_on,status))';
 function toAppearance(e: AppDb, role: Appearance['role']): Appearance | null {
   const c = one(e.competitions) as { name: string; category: string; events: unknown } | null;
   const ev = c ? (one(c.events as never) as { name: string; slug: string; starts_on: string; ends_on: string; status: Appearance['eventStatus'] } | null) : null;
@@ -224,12 +226,12 @@ export async function fetchEventMetaById(eventId: string): Promise<EventMeta | n
 }
 
 export interface EventHistoryData {
+  /** True when the results come from a fictional (test) event: shown on the event's own page, never counted anywhere official. */
+  synthetic: boolean;
   entries: Array<AttendanceEntry & { name: string }>;
   participants: Array<{ fighterId: string; entryId: string }>;
   results: EventResultRow[];
   teamNames: Map<string, string>;
-  /** True when the placings belong to a fictional/test event: shown as test data, never counted anywhere official. */
-  synthetic: boolean;
 }
 export async function fetchEventHistory(eventId: string, competitionIds: string[]): Promise<EventHistoryData> {
   if (competitionIds.length === 0) return { entries: [], participants: [], results: [], teamNames: new Map(), synthetic: false };

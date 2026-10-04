@@ -22,6 +22,7 @@ import { EventDaySchedule } from './EventDaySchedule';
 import { MyNextFight } from './MyNextFight';
 import { MyTeamPanel } from './MyTeamPanel';
 import { ShareEventButton } from '../components/ShareEventButton';
+import { ScorekeepingPanel } from '../components/ScorekeepingPanel';
 import { NotFoundPage } from './NotFoundPage';
 import { AddToCalendar } from '../components/AddToCalendar';
 import { fetchMyFighterId } from '../data/fighters';
@@ -139,12 +140,14 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
         <b>{mine.pendingRegistrations ?? 0}</b> registration{mine.pendingRegistrations === 1 ? '' : 's'} waiting for review.
         {event.status === 'draft' && <> The event is a <b>draft</b>: only you and your event staff can see it.</>}
       </p>
-      {event.eventType === 'tournament' && event.competitionCount === 0 && <p><Chip tone="brass">Needs competition setup</Chip> <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/manage?tab=setup&add=competition`}>+ Add competition</Link></p>}
+      {event.eventType === 'tournament' && event.competitionCount === 0 && <p><Chip tone="brass">Needs competition setup</Chip> <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/manage?tab=competitions`}>+ Add competition</Link></p>}
       <p><Link className="btn btn-ink" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link></p>
       <p style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Setup, competitions and waiver</Link>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Event setup, waiver and publishing</Link>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=competitions`}>Competitions</Link>
         <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=fighters`}>Add fighters</Link>
-        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>Staff and roles</Link>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=run`}>Draws, schedule and matches</Link>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>People and roles</Link>
       </p>
     </section>
   );
@@ -210,13 +213,14 @@ export function EventWorkspace() {
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
       {showLive && <LiveStatus connection={live.connection} />}
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
+      {mine.data && <ScorekeepingPanel slug={event.slug} competitions={competitions} roles={mine.data.roles} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <MyTeamPanel eventId={event.id} userId={userId} />
       {invitation.data && <InvitationCard event={event} invitation={invitation.data} onChanged={changed} />}
       <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} onChanged={changed} />
       {(event.eventType === 'tournament' || groups.length > 0) && <section aria-labelledby="comp-h" style={{ display: 'grid', gap: 14 }}>
         <h2 id="comp-h">Competitions</h2>
-        {groups.length === 0 && <p className="muted">No competitions have been added yet.{mine.data?.isOrganizer && <> <Link to={`/events/${event.slug}/manage?tab=setup&add=competition`}>Add one in Setup.</Link></>}</p>}
+        {groups.length === 0 && <p className="muted">No competitions have been added yet.{mine.data?.isOrganizer && <> <Link to={`/events/${event.slug}/manage?tab=competitions`}>Add one in Competitions.</Link></>}</p>}
         {groups.map(([league, list]) => (
           <div key={league} className="panel info">
             <h3>{LEAGUE_TITLE[league]}</h3>

@@ -1,18 +1,47 @@
-# BuhurtOS: repository rules
+# BuhurtOS
 
-BuhurtOS is the connected operating system for buhurt (vision: `docs/VISION.md`; decisions and scope: `docs/PROJECT_SPEC.md`).
-Stack: React/TypeScript/Vite SPA talking to Supabase (Postgres, Auth, Realtime, Storage). Supabase stays the backend.
+BuhurtOS manages buhurt fighters, teams, organizations, events, competitions, scoring, rankings and permanent sporting history.
 
-Work is organised in packs: start at `docs/claude-packs/START_HERE.md` and `README.md`. Owner decisions in
-`docs/claude-packs/OWNER_DECISIONS_2026-10-03.md` override older assumptions. Progress is recorded in `docs/claude-packs/STATUS.md`.
+Stack: React + TypeScript + Vite + Supabase/PostgreSQL/Auth/Realtime/Storage.
+Supabase remains the backend.
 
-## Permanent invariants
-- The database is authoritative for permanent sporting records. Critical mutations go through controlled RPCs, not arbitrary client row edits.
-- Privacy boundaries hold: public tables never carry account ids; health, emergency and contact data is never public.
-- History is corrected, voided or superseded with an audit trail, never silently deleted or rewritten.
-- Event roles are scoped to their event; event organizers have no platform-wide powers.
-- Synthetic data must be labelled and excluded from official rankings, records and aggregates.
-- Mobile-first: event-day screens must work one-handed on a phone with flaky signal; paper is the official fallback.
-- Use additive migrations; never rewrite migration history. Test permission boundaries and failure paths directly.
-- Evidence-based verification: a green build is not proof of behaviour. Never claim something is deployed, working, secure or verified without proving it, and separate repo changes, local tests, hosted DB state, deployment and live verification.
-- Do not expand into deferred projects (sync engines, Broadcast/CDN, new ranking engine, rewrites, Supabase migration).
+## Commands
+
+- Dev: `npm run dev`
+- Typecheck: `npm run typecheck`
+- Unit tests: `npm test`
+- Production build: `npm run build`
+
+## Core architecture
+
+- The database is authoritative for permanent sporting records.
+- A fighter is a sporting identity, not an account. Fighters may exist without BuhurtOS accounts; account ownership is a separate relationship.
+- Critical sporting and identity mutations use controlled database functions or RPCs rather than arbitrary client writes.
+- Sporting history is corrected, voided or superseded with an audit trail. Never silently delete or rewrite it.
+- Public data never contains auth account IDs, health data, emergency-contact data or private contact data.
+- Event roles are scoped to their event unless an explicit broader permission exists.
+- Synthetic/test records remain identifiable and are excluded from official rankings, records and aggregates.
+- Use additive migrations. Never rewrite migration history.
+- Do not replace Supabase or add a second backend without an explicit owner decision.
+
+## Product
+
+- BuhurtOS is mobile-first. Tournament-day workflows must be fast and usable one-handed on a phone.
+- Prefer clear sporting language over database or admin terminology.
+- Preserve completed work and extend existing systems instead of creating parallel ones.
+
+## Working rules
+
+- Inspect the relevant existing implementation before making architectural assumptions.
+- Make focused changes and avoid unrelated refactors.
+- Read task-specific documentation only when relevant.
+- If product scope or intent is unclear, consult `docs/PROJECT_SPEC.md` and `docs/claude-packs/OWNER_DECISIONS_2026-10-03.md`. Current owner decisions override older assumptions.
+
+## Verification
+
+- A green build is not proof that behaviour works.
+- Match verification to the failure mode.
+- Verify changed UI workflows in the running product.
+- Directly test auth, RLS and permission boundaries when they change.
+- In handoffs distinguish repository changes, test/build results, database state, deployment state and live verification.
+- Never claim something is deployed, secure or verified without evidence.

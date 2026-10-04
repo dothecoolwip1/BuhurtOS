@@ -4,7 +4,7 @@ import { blockers, countByStatus, filterRegistrations } from './review';
 
 const reg = (over: Partial<ManagedRegistration> = {}): ManagedRegistration => ({
   id: 'r', status: 'pending', fullName: 'Ada Lovelace', gender: 'female', organization: 'HACSA', province: 'AB', teamName: 'Iron Wardens', sharesEquipment: false,
-  days: ['sat'], availabilityNotes: null, biProfile: null, insurance: 'hacsa_member', isVolunteer: false, volunteerRoles: [], mercenary: false, notes: null,
+  days: ['sat'], attendDates: [], availabilityNotes: null, biProfile: null, insurance: 'hacsa_member', isVolunteer: false, volunteerRoles: [], mercenary: false, notes: null,
   feeDueCents: 4000, feePaid: false, createdAt: '2026-10-01T00:00:00Z', email: 'a@x.test', emergencyName: 'P', emergencyRelationship: '', emergencyPhone: '4035550100', medicalNote: null,
   categories: [{ competitionId: 'c1', name: 'Longsword (women)', details: {} }], checkedIn: false, kitPassed: false, ...over
 });

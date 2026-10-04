@@ -436,8 +436,8 @@ export function RunTab({ event, competitions }: { event: LiveEvent; competitions
     return (
       <div className="panel info" style={{ display: 'grid', gap: 10, justifyItems: 'start' }}>
         <h3>No competitions yet</h3>
-        <p>Add at least one competition to {event.name} first. Then you can build draws and run the matches here.</p>
-        <Link className="btn btn-ink" to={`/events/${event.slug}/manage?tab=setup&add=competition`}>+ Add competition</Link>
+        <p>Add the competitions {event.name} runs first. Then you can build draws and run the matches here.</p>
+        <Link className="btn btn-ink" to={`/events/${event.slug}/manage?tab=competitions`}>+ Add competition</Link>
       </div>
     );
   }
