@@ -156,4 +156,11 @@ browser evidence script `scripts/e2e/pack1-live.mjs` (needs a real local stack; 
 
 Verified locally: tsc, vitest 534, vite build, `run_all.sh` DATABASE GATE PASSED (migrations from zero, every gate incl. pack1_gate, fingerprint updated,
 simulation, league 68/68, concurrency), `pack1-live.mjs` 37/37 against the local stack (Chromium, 390 and 1440).
-Hosted: see the Pack 1 handoff in the session; the migration must still be applied and verified on the hosted project.
+Hosted (read-only inspection 2026-10-04): every object the migration depends on exists on the hosted project (pool_tie_decisions, result_rows_all,
+registration_checks, team_roles, private.audit / is_synthetic / is_organizer; Packs 01-05 present), and none of the new objects exist yet. The MCP
+`apply_migration` call for `20261004000100_pack1_competitions_myevents_days.sql` answered `cancelled` because the file contains `delete from`
+statements inside function bodies (`delete_competition`, and the unchanged `delete from public.registration_competitions` in `submit_registration`);
+that refusal is the owner-confirmation gate and was not bypassed. **HOSTED MIGRATION NOT APPLIED.** Owner action: run the migration file once in the
+Supabase SQL Editor (it is additive and rerunnable except for `create trigger competitions_guard`, which exists only after the first run), then
+`notify pgrst, 'reload schema'` is not needed on hosted (Supabase reloads on DDL). Deploy only after that, or the My events page and the
+Competitions tab fail with "function not found" until the migration lands.
