@@ -57,11 +57,32 @@ finalization (from `finalized_at`, no client memory); intentional states: before
 Field picker (Field 1 default; blank = Field 1; explicit names). Fullscreen API with graceful fallback; Exit always visible on hover/tap.
 Data: `LiveSync` (realtime + polling fallback + safety refresh) over `matches` and `match_live_scores`.
 
+## Decisions made while building
+* The result card wins over "now fighting" for 25 s after a result (`finalized_at`), because the queue calls the next pair in the same commit as
+  the result; the footer then reads **Up next** / **On deck**. The moment the next fight's scorer reports a score, the fight takes the screen.
+* The scorekeeper's action row sits in flow at the end of the board, not floating: a sticky bar covered End round and Undo, the taps that matter.
+* `.ar-*` / `.sk-*` class names only on the new screens: the app's global `.result` class was painting the arena result card.
+* Phase on its own line on the display ("Round 2 of 2"); on short screens (≤ 820 px tall) the rhythm tightens so the fight and both next slots fit.
+
+## Evidence (local, 2026-10-04)
+* Database: `pack09b_gate.sql` 47 checks; full `supabase/tests/run_all.sh` (every gate, simulation, concurrency, fingerprint 1194 objects) passed.
+* Unit: `arena.test.ts` 12, `liveScoreSnapshot.test.ts` 5; whole suite passes; typecheck and production build clean.
+* Real stack (`scripts/e2e/arena-live.sh`, Postgres from the migrations + fixture, PostgREST, the real built app, Chromium): 103 checks across a
+  scorekeeper phone (390), a 1080p display in a second anonymous context, a late-opened laptop display, tablet 768 portrait and 1024 landscape.
+  Covers: open from Event day, live score reaches the display without a touch, undo, decided-but-unsaved stays a running score, Finish → confirm →
+  Save → OFFICIAL with Next fight / Back to Event day, the result card then the next fight, Event day advances without reload, reload and a fresh
+  screen rebuild from the server, display offline and back, scorer offline (PENDING, Try again → OFFICIAL), a conflicting result (Needs review on the
+  phone, the official result on the display), a stale board (older version refused, nothing written), two fields isolated (blank = Field 1,
+  case-insensitive name), anon/stranger/direct-table writes refused, no account id in a public row, unpublished event hidden, fullscreen fallback,
+  no sideways scroll and 44 px controls at every size. The local stack has no realtime socket: the display is kept fresh by its 15 s polling fallback
+  there; hosted, realtime makes it immediate.
+* Screenshots reviewed at 1920×1080, 1366×768, 768×1024, 1024×768 and 390×844 (scorekeeper and display).
+
 ## Checklist
 - [x] Preflight, docs check, advisor baseline, invariants, design
-- [ ] Migration + gate + fingerprint
-- [ ] Scorekeeper screen
-- [ ] Arena
-- [ ] Real-stack browser runs (scorekeeper journey, arena journey, multi-field) + screenshots at 390 / 768 / 1280 / 1920
-- [ ] Regression suites, full database gate, advisors after
+- [x] Migration + gate + fingerprint
+- [x] Scorekeeper screen
+- [x] Arena
+- [x] Real-stack browser runs (scorekeeper journey, arena journey, multi-field) + screenshots at 390 / 768 / 1366 / 1920
+- [ ] Regression suites (CI browser suites, eventday-live), advisors after the hosted migration
 - [ ] Hosted migration applied + verified, merge, CI, deploy, smoke
