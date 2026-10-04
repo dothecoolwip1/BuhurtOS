@@ -250,6 +250,19 @@ export async function fetchTeamRanking(f: RankingFilter, limit = 100): Promise<R
   return (data as unknown as Array<RankDb & { team_id: string; team_name: string; team_slug: string }>).map(toTeamRanking);
 }
 
+/**
+ * The team(s) at rank 1 of every category in a season or organization-career ranking: the overview of "who leads each category", and the
+ * proof of which categories teams really rank in. Same view and filters as the full table, so the two can never disagree.
+ */
+export async function fetchTeamLeaders(f: { scope: 'season' | 'org_career'; organizationId: string; seasonId?: string | null }): Promise<RankingRow[]> {
+  let q = supabase.from('ranking_teams').select('scope,organization_id,season_id,category,gender,team_id,team_name,team_slug,competitions,golds,silvers,bronzes,points,rank')
+    .eq('scope', f.scope).eq('organization_id', f.organizationId).eq('rank', 1);
+  q = f.scope === 'season' ? q.eq('season_id', f.seasonId ?? '') : q.is('season_id', null);
+  const { data, error } = await q.order('category').order('gender').order('team_name').limit(500);
+  if (error) throw error;
+  return (data as unknown as Array<RankDb & { team_id: string; team_name: string; team_slug: string }>).map(toTeamRanking);
+}
+
 // ================================================================ entry rosters (group fights)
 export type RosterRole = 'fighter' | 'mercenary' | 'guest';
 export interface EntryRosterRow { entryId: string; fighterId: string; displayName: string; role: RosterRole; permanentTeamId: string | null; permanentTeamName: string | null; permanentTeamSlug: string | null }

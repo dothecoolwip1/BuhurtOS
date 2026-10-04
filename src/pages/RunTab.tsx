@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { BulkSchedule } from '../components/BulkSchedule';
 import { MatchSchedule } from '../components/MatchSchedule';
 import { RosterEditor } from '../components/RosterEditor';
@@ -415,7 +415,8 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
 export function RunTab({ event, competitions }: { event: LiveEvent; competitions: LiveCompetition[] }) {
   const [conflictsKey, setConflictsKey] = useState(0);
   const [version, setVersion] = useState(0);
-  const [jumpId, setJumpId] = useState<string | null>(null);
+  const [params] = useSearchParams();
+  const [jumpId, setJumpId] = useState<string | null>(params.get('match'));   // Event day links here with ?match=<id>
   const tz = useAsync(() => fetchEventTimeZone(event.id), [event.id]);
   const timeZone = tz.data ?? DEFAULT_TIME_ZONE;
   const names = useMemo(() => new Map(competitions.map(c => [c.id, c.name])), [competitions]);
@@ -423,13 +424,18 @@ export function RunTab({ event, competitions }: { event: LiveEvent; competitions
 
   useEffect(() => {
     if (!jumpId) return;
-    const t = setTimeout(() => {
+    // The match cards load after the tab opens (especially when arriving from a link), so look again until the card exists.
+    let tries = 0;
+    const find = setInterval(() => {
       const el = document.getElementById(`match-${jumpId}`);
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      el?.focus({ preventScroll: true });
-    }, 60);
-    const clear = setTimeout(() => setJumpId(null), 1500);
-    return () => { clearTimeout(t); clearTimeout(clear); };
+      if (el) {
+        clearInterval(find);
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus({ preventScroll: true });
+      } else if (++tries > 40) clearInterval(find);
+    }, 150);
+    const clear = setTimeout(() => setJumpId(null), 8000);
+    return () => { clearInterval(find); clearTimeout(clear); };
   }, [jumpId]);
 
   if (competitions.length === 0) {

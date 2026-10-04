@@ -1,7 +1,7 @@
 import { supabase } from '../lib/supabase';
 
 export type LeagueKey = 'buhurt' | 'duels' | 'outrance' | 'hacsa';
-export interface LiveCompetition { id: string; name: string; category: string; league: LeagueKey; gender: 'open' | 'men' | 'women'; ruleset: string | null; status: string }
+export interface LiveCompetition { id: string; name: string; category: string; league: LeagueKey; gender: 'open' | 'men' | 'women'; ruleset: string | null; status: string; /** Running order of the event's competitions (the Sort column). */ sort?: number }
 export interface LiveEvent {
   id: string; slug: string; name: string; description: string; eventType: string; status: 'draft' | 'published' | 'cancelled';
   venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null;
@@ -55,8 +55,8 @@ export async function fetchEvent(slug: string): Promise<{ event: LiveEvent; comp
   const row = data as unknown as EventRow;
   const c = await supabase.from('competitions').select('id,name,category,gender,ruleset,status,sort,ref_categories(league)').eq('event_id', row.id).order('sort');
   if (c.error) throw c.error;
-  type CRow = { id: string; name: string; category: string; gender: LiveCompetition['gender']; ruleset: string | null; status: string; ref_categories: Ref };
-  const competitions = (c.data as unknown as CRow[]).map(k => ({ id: k.id, name: k.name, category: k.category, gender: k.gender, ruleset: k.ruleset, status: k.status, league: leagueOf(k.ref_categories) }));
+  type CRow = { id: string; name: string; category: string; gender: LiveCompetition['gender']; ruleset: string | null; status: string; sort?: number; ref_categories: Ref };
+  const competitions = (c.data as unknown as CRow[]).map(k => ({ id: k.id, name: k.name, category: k.category, gender: k.gender, ruleset: k.ruleset, status: k.status, sort: k.sort ?? 0, league: leagueOf(k.ref_categories) }));
   return { event: toEvent(row, [...new Set(competitions.map(k => k.league))], competitions.length), competitions };
 }
 
