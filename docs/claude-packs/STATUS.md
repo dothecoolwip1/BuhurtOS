@@ -303,3 +303,17 @@ Main's Pack 1 and this branch's Pack 07 were built in parallel and overlapped. O
   replica of hosted: the result equals the full repository build and the pack07, pack1, reconcile, pack08 and security gates pass.
 - main is not pushed yet: a push to main deploys, and the reconciled frontend needs these database functions. Production stays on main c4ec9d2
   (Pack 1 frontend + Pack 1 database, consistent) until the owner step is done.
+
+## Synthetic organization rankings and persistent sample mode (2026-10-04)
+
+- Database: migration `20261004000400_synthetic_org_rankings.sql` replaces `ranking_fighters` / `ranking_teams` only (same columns, types, grants,
+  security_invoker). Organization scopes (`season`, `org_career`, `org_all`) count real results plus fictional results inside a fictional
+  organization (`private.is_synthetic('organization', ...)`); a fictional event in a real organization or in no organization never counts; `career`
+  stays real-only. `result_rows`, `fighter_results`, `team_results` and every statistics view are unchanged. Gate:
+  `supabase/tests/synthetic_org_rankings_gate.sql` (37 checks, in `run_all.sh`).
+- Hosted: NOT APPLIED. A read-only SELECT on hosted showed NACL-test (596 stored results, 0 ranking rows today) would get 590 / 224 / 120 fighter rows
+  and 65 / 30 / 10 team rows (season / org_career / org_all); HACSA has no results and stays empty. The migration needs only Pack 01
+  (`private.is_synthetic`) and Pack 05 (`*_results_all` views), both present on hosted, and contains no DROP / ALTER / DELETE.
+- Frontend: sample mode is stored in localStorage (`bos-sample`) and stays on in that browser until `?sample=0`, Leave sample mode or the owner's
+  switch under Platform turns it off; other open tabs follow at once. Browser test: `scripts/e2e/sample-mode.mjs` (34 checks, mocked Supabase).
+- Deployment: none (feature branch only).
