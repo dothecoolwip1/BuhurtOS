@@ -45,14 +45,15 @@ function ScoreStrip({ names, scoreA, scoreB, phase, decided, unit }: { names: Re
   const lead = decided === 'a' || decided === 'b' ? decided : scoreA > scoreB ? 'a' : scoreB > scoreA ? 'b' : null;
   return (
     <section className="sk-score" aria-label="Score">
-      {(['a', 'b'] as const).map(k => (
-        <div key={k} className={`sk-side ${k}${lead === k ? ' lead' : ''}${decided === k ? ' won' : ''}`}>
-          <span className="sk-tag">{k === 'a' ? 'A' : 'B'}</span>
-          <span className="sk-name">{names[k]}</span>
-          <span className="sk-num" aria-label={`${names[k]}: ${k === 'a' ? scoreA : scoreB} ${unit}`}>{k === 'a' ? scoreA : scoreB}</span>
-        </div>
-      ))}
-      <div className="sk-mid"><span className="sk-vs">vs</span><span className="sk-phase">{phase}</span><span className="sk-unit">{unit}</span></div>
+      {(['a', 'mid', 'b'] as const).map(k => k === 'mid'
+        ? <div key="mid" className="sk-mid"><span className="sk-vs">vs</span><span className="sk-phase">{phase}</span><span className="sk-unit">{unit}</span></div>
+        : (
+          <div key={k} className={`sk-side ${k}${lead === k ? ' lead' : ''}${decided === k ? ' won' : ''}`}>
+            <span className="sk-tag">{k === 'a' ? 'A' : 'B'}</span>
+            <span className="sk-name">{names[k]}</span>
+            <span className="sk-num" aria-label={`${names[k]}: ${k === 'a' ? scoreA : scoreB} ${unit}`}>{k === 'a' ? scoreA : scoreB}</span>
+          </div>
+        ))}
     </section>
   );
 }
@@ -169,7 +170,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
             </div>
           ))}
         </div>
-        <p className="sk-winner">{winner ? <>Winner: <b>{winner}</b></> : <b>Draw</b>}<span className="src"> · {saved}</span></p>
+        <p className="sk-winner">{winner ? <>Winner: <b>{winner}</b></> : <b>Draw</b>}{v?.result === 'draw' || !winner ? <span className="src"> · {saved}</span> : null}</p>
         <div className="sk-after">
           {nextFight && nextNames && (
             <button type="button" className="btn btn-ink fq-big" onClick={() => onOpenNext(nextFight)}>

@@ -33,7 +33,7 @@ Out of scope (09C): competition closeout, event closeout, podium / final-ranking
 Spectators want the score *during* the fight; the official result exists only at the end. The device already knows the running score; the
 server did not. The smallest safe addition:
 
-* `public.match_live_scores` (match_id PK, competition_id, score_a, score_b, phase text, detail jsonb, seq, device, reported_by, updated_at).
+* `public.match_live_scores` (match_id PK, competition_id, score_a, score_b, phase text, detail jsonb, seq, device, updated_at). No auth user id: the table is public for published events, so who reported is not stored (the function still checks the caller may score).
   **Ephemeral display state, never a result.** RLS on; SELECT for anon/authenticated through the same public-event rule as `matches`
   (`private.is_event_public(...) or private.can_score(...)`); no INSERT/UPDATE/DELETE grants.
 * `public.report_live_score(...)` SECURITY DEFINER (needed: scorers have no write grant on the table), explicit `auth.uid()` + `private.can_score`,

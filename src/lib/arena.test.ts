@@ -54,9 +54,19 @@ describe('what the display shows', () => {
     expect(nextArenaTick(list, 'Field 1', NOW)).toBe(Date.parse(justNow) + RESULT_HOLD_MS);
     expect(nextArenaTick(list, 'Field 1', NOW + RESULT_HOLD_MS + 1)).toBeNull();
   });
-  it('a live fight beats a recent result; a drawn result says so', () => {
+  it('a fresh result holds the screen while the next fight is only called; a reported score for that fight takes it; a drawn result says so', () => {
     const justNow = new Date(NOW - 5_000).toISOString();
-    const v = arena([m(1, { queueState: 'final', result: 'draw', scoreA: 2, scoreB: 2, finalizedAt: justNow }), m(2, { queueState: 'active' })]);
+    const held = arena([m(1, { queueState: 'final', result: 'a', winnerEntryId: 'e1a', scoreA: 5, scoreB: 3, finalizedAt: justNow }), m(2, { queueState: 'active' }), m(3, { queueState: 'on_deck' })]);
+    expect(held.state).toMatchObject({ kind: 'result', winnerName: 'Fighter 1A', next: { a: { name: 'Fighter 2A' } } });
+    expect(held.onDeck?.a.name).toBe('Fighter 3A');
+    const taken = arena([m(1, { queueState: 'final', result: 'a', winnerEntryId: 'e1a', scoreA: 5, scoreB: 3, finalizedAt: justNow }), m(2, { queueState: 'active' })], [{ matchId: 'm2', competitionId: 'ls', scoreA: 0, scoreB: 0, phase: 'Round 1 of 2', detail: {}, updatedAt: justNow }]);
+    expect(taken.state.kind).toBe('fighting');
+    const over = arena([m(1, { queueState: 'final', result: 'a', winnerEntryId: 'e1a', scoreA: 5, scoreB: 3, finalizedAt: new Date(NOW - 26_000).toISOString() }), m(2, { queueState: 'active' })]);
+    expect(over.state.kind).toBe('fighting');
+  });
+  it('a live fight beats a stale result; a drawn result says so', () => {
+    const justNow = new Date(NOW - 5_000).toISOString();
+    const v = arena([m(1, { queueState: 'final', result: 'draw', scoreA: 2, scoreB: 2, finalizedAt: new Date(NOW - 30_000).toISOString() }), m(2, { queueState: 'active' })]);
     expect(v.state.kind).toBe('fighting');
     const d = arena([m(1, { queueState: 'final', result: 'draw', scoreA: 2, scoreB: 2, finalizedAt: justNow })]);
     expect(d.state).toMatchObject({ kind: 'result', drawn: true, winnerName: null });

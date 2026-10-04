@@ -92,8 +92,9 @@ export function ArenaPage() {
       </main>
 
       <footer className="ar-next">
-        <NextSlot label="On deck" fight={view.onDeck} />
-        <NextSlot label="In the hole" fight={view.inTheHole} />
+        {view.state.kind === 'result' && view.state.next
+          ? <><NextSlot label="Up next" fight={view.state.next} /><NextSlot label="On deck" fight={view.onDeck} /></>
+          : <><NextSlot label="On deck" fight={view.onDeck} /><NextSlot label="In the hole" fight={view.inTheHole} /></>}
       </footer>
     </div>
   );
@@ -135,19 +136,23 @@ function Fight({ label, fight, result = false, muted = false }: { label: string 
     <div className={`ar-fight${result ? ' result' : ''}${muted ? ' muted' : ''} ar-enter`}>
       {label && <p className="ar-label">{label}</p>}
       <div className="ar-sides">
-        {(['a', 'b'] as const).map(k => {
-          const side = fight[k];
-          return (
-            <div key={k} className={`ar-side ${k}${side.winner ? ' won' : ''}`}>
-              <span className="ar-name">{side.name}</span>
-              {showScore && <span className="ar-score" aria-label={`${side.name}: ${side.score ?? 0}`}>{side.score ?? 0}{side.winner && <span className="sr-only"> (winner)</span>}</span>}
-            </div>
-          );
-        })}
+        <Side k="a" fight={fight} showScore={showScore} />
         <div className="ar-vs" aria-hidden="true">vs</div>
+        <Side k="b" fight={fight} showScore={showScore} />
       </div>
-      <p className="ar-ctx">{fight.competition} · {fight.stage}{fight.phase ? ` · ${fight.phase}` : ''}</p>
+      <p className="ar-ctx">{fight.competition} · {fight.stage}</p>
+      {fight.phase && <p className="ar-phase">{fight.phase}</p>}
       {!result && !fight.live && !muted && <p className="ar-note">The score appears here as soon as the scorer's device reports it.</p>}
+    </div>
+  );
+}
+
+function Side({ k, fight, showScore }: { k: 'a' | 'b'; fight: ArenaFight; showScore: boolean }) {
+  const side = fight[k];
+  return (
+    <div className={`ar-side ${k}${side.winner ? ' won' : ''}`}>
+      <span className="ar-name">{side.name}</span>
+      {showScore && <span className="ar-score" aria-label={`${side.name}: ${side.score ?? 0}`}>{side.score ?? 0}{side.winner && <span className="sr-only"> (winner)</span>}</span>}
     </div>
   );
 }

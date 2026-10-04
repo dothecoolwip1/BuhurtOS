@@ -18,8 +18,8 @@ create table if not exists public.match_live_scores (
   detail jsonb not null default '{}'::jsonb check (pg_column_size(detail) <= 4096),
   -- Ordering within one device: an older snapshot never overwrites a newer one. Another device taking over simply replaces it.
   seq bigint not null default 0,
+  -- An opaque per-tab id, never an account: this table is PUBLIC for published events, so it carries no auth user id at all.
   device text not null default '' check (char_length(device) <= 64),
-  reported_by uuid not null,
   updated_at timestamptz not null default now()
 );
 comment on table public.match_live_scores is 'Pack 09B: the latest running score a scorer reported for a fight still in progress. Display state for the venue screen; never an official result. Deleted when the match becomes final.';
@@ -55,11 +55,10 @@ begin
   select * into v_old from public.match_live_scores where match_id = p_match for update;
   if found and v_old.device = coalesce(p_device, '') and v_old.seq >= coalesce(p_seq, 0) then return jsonb_build_object('status', 'older'); end if;
 
-  insert into public.match_live_scores (match_id, competition_id, score_a, score_b, phase, detail, seq, device, reported_by, updated_at)
-  values (p_match, v_m.competition_id, p_score_a, p_score_b, left(coalesce(p_phase, ''), 80), coalesce(p_detail, '{}'::jsonb), coalesce(p_seq, 0), left(coalesce(p_device, ''), 64), auth.uid(), now())
+  insert into public.match_live_scores (match_id, competition_id, score_a, score_b, phase, detail, seq, device, updated_at)
+  values (p_match, v_m.competition_id, p_score_a, p_score_b, left(coalesce(p_phase, ''), 80), coalesce(p_detail, '{}'::jsonb), coalesce(p_seq, 0), left(coalesce(p_device, ''), 64), now())
   on conflict (match_id) do update set
-    score_a = excluded.score_a, score_b = excluded.score_b, phase = excluded.phase, detail = excluded.detail, seq = excluded.seq, device = excluded.device,
-    reported_by = excluded.reported_by, updated_at = now();
+    score_a = excluded.score_a, score_b = excluded.score_b, phase = excluded.phase, detail = excluded.detail, seq = excluded.seq, device = excluded.device, updated_at = now();
   return jsonb_build_object('status', 'ok');
 end $$;
 revoke execute on function public.report_live_score(uuid, text, bigint, integer, integer, text, jsonb, integer) from public, anon;

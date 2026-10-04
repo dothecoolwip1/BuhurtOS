@@ -320,8 +320,8 @@ Main's Pack 1 and this branch's Pack 07 were built in parallel and overlapped. O
 
 ## Pack 09A: Event day command center and field queue (2026-10-04)
 
-- Branch `pack09a-event-day-command-center` (also contains `fix-team-rankings-categories`, which can be released on its own). NOT merged, NOT deployed, NOT applied to hosted Supabase.
+- Released 2026-10-04: hosted migration applied through the Supabase MCP, merged to `main` (`9d65342`), CI run #80 green, GitHub Pages deployed. Production browser smoke test was not possible from the release session (github.io egress blocked).
 - Rankings fix (separate commit): Teams get their own categories from the ranking data, a "Top teams" overview and a division control only where a division exists. Frontend only. 16 unit tests, 22 browser checks.
 - Database: `20261004000500_pack09a_event_day_queue.sql` (`matches.queue_order`, one rule for running order and for "can it run", commit-time automatic advancement, `advance_field_queue`, `move_match_in_queue`, serialized `set_match_queue`). Local only: full database suite passes (pack09a_gate 107, pack09a_concurrency 14, every existing suite, fingerprint).
 - Frontend: Manage > Event day. Local only: typecheck, 663 unit tests, build; earlier browser suites unchanged (field-pack03 28, pack07-ux 86, pack08-entrants 54, sample-mode 34, rankings-teams 22); new `scripts/e2e/eventday-live.sh` run against a real local stack: 78 checks at 1280 / 768 / 390 px.
-- Apply the migration before deploying the frontend (see docs/claude-packs/PACK_09A_EVENT_DAY.md, which also lists the known limits).
+- Known limits: docs/claude-packs/PACK_09A_EVENT_DAY.md.

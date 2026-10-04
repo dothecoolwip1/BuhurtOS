@@ -15,7 +15,8 @@ export interface ArenaSide { name: string; score: number | null; winner: boolean
 export interface ArenaFight { id: string; competition: string; stage: string; a: ArenaSide; b: ArenaSide; phase: string | null; live: boolean; detail: LiveScore['detail'] | null }
 export type ArenaState =
   | { kind: 'fighting'; now: ArenaFight }
-  | { kind: 'result'; result: ArenaFight; winnerName: string | null; drawn: boolean }
+  /** `next` is the fight already called on this field while the result holds the screen (the queue advances the moment a result is saved). */
+  | { kind: 'result'; result: ArenaFight; winnerName: string | null; drawn: boolean; next: ArenaFight | null }
   | { kind: 'waiting'; next: ArenaFight | null }
   | { kind: 'finished' }
   | { kind: 'no_matches' };
@@ -56,14 +57,16 @@ export function buildArena(input: {
   const f = (m: CompetitionMatch) => fight(m, names, scores.get(m.id));
   const base = { field: board?.name ?? (input.field.trim() || 'Field 1'), onDeck: board?.onDeck[0] ? f(board.onDeck[0]) : null, inTheHole: board?.inTheHole[0] ? f(board.inTheHole[0]) : null, upNext: (board?.upcoming ?? []).slice(0, 3).map(f), done: board?.done ?? 0, total: board?.total ?? 0 };
   if (!board || board.total === 0) return { ...base, state: { kind: 'no_matches' } };
-  if (board.now.length > 0) return { ...base, state: { kind: 'fighting', now: f(board.now[0]) } };
-  // a result stays on screen for a short while after it became official
+  // A result stays on screen for a short while after it became official, even though the queue has already called the next fight: the hall
+  // wants to see who won while the next pair walks on. The moment that next fight's scorer reports a score, the fight takes the screen.
+  const now0 = board.now[0];
   const recent = onField.filter(m => m.queueState === 'final' && m.finalizedAt && input.now - new Date(m.finalizedAt).getTime() < RESULT_HOLD_MS)
     .sort((x, y) => (y.finalizedAt ?? '').localeCompare(x.finalizedAt ?? ''))[0];
-  if (recent) {
+  if (recent && !(now0 && scores.has(now0.id))) {
     const r = f(recent);
-    return { ...base, state: { kind: 'result', result: r, winnerName: r.a.winner ? r.a.name : r.b.winner ? r.b.name : null, drawn: recent.result === 'draw' } };
+    return { ...base, state: { kind: 'result', result: r, winnerName: r.a.winner ? r.a.name : r.b.winner ? r.b.name : null, drawn: recent.result === 'draw', next: now0 ? f(now0) : null } };
   }
+  if (now0) return { ...base, state: { kind: 'fighting', now: f(now0) } };
   if (board.state === 'finished') return { ...base, state: { kind: 'finished' } };
   return { ...base, state: { kind: 'waiting', next: base.onDeck ?? base.inTheHole ?? base.upNext[0] ?? null } };
 }

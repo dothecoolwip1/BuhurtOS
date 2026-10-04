@@ -62,13 +62,13 @@ grant execute on all functions in schema t to anon, authenticated;
 -- ================================================================ 1. who may write
 select t.as_anon();
 select t.expect_error('anonymous cannot report a live score', $q$select t.report(1, 'd1', 1, 1, 0)$q$, '42501');
-select t.expect_error('anonymous cannot write the table', $q$insert into public.match_live_scores (match_id, competition_id, reported_by) values (t.m(1), '00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-0000000000a4')$q$, '42501');
+select t.expect_error('anonymous cannot write the table', $q$insert into public.match_live_scores (match_id, competition_id) values (t.m(1), '00000000-0000-0000-0000-00000000b101')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a7');
 select t.expect_error('a stranger cannot report', $q$select t.report(1, 'd1', 1, 1, 0)$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a6');
 select t.expect_error('a scorekeeper of another event cannot report on this one', $q$select t.report(1, 'd1', 1, 1, 0)$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
-select t.expect_error('even a scorekeeper cannot write the table directly', $q$insert into public.match_live_scores (match_id, competition_id, reported_by) values (t.m(1), '00000000-0000-0000-0000-00000000b101', '00000000-0000-0000-0000-0000000000a4')$q$, '42501');
+select t.expect_error('even a scorekeeper cannot write the table directly', $q$insert into public.match_live_scores (match_id, competition_id) values (t.m(1), '00000000-0000-0000-0000-00000000b101')$q$, '42501');
 select t.expect_error('... nor update it', $q$update public.match_live_scores set score_a = 99$q$, '42501');
 select t.expect_error('... nor delete from it', $q$delete from public.match_live_scores$q$, '42501');
 select t.expect_error('a missing match is refused', $q$select t.report(77, 'd1', 1, 1, 0)$q$, 'P0002');
@@ -109,7 +109,7 @@ select t.expect_eq('... a signed-in stranger neither', (select count(*) from pub
 select t.as_user('00000000-0000-0000-0000-0000000000a6');
 select t.expect_eq('... its own staff do', (select count(*) from public.match_live_scores where match_id = t.m(9)), 1::bigint);
 select t.as_anon();
-select t.expect_eq('the public row carries no account id in what the display uses (reported_by is an auth id: not selected by the app, and anon sees only published events)', (select count(*) from information_schema.columns where table_name = 'match_live_scores' and column_name = 'reported_by'), 1::bigint);
+select t.expect_eq('the public table carries no account id: its only uuid columns are the match and the competition', (select string_agg(column_name, ',' order by column_name) from information_schema.columns where table_schema = 'public' and table_name = 'match_live_scores' and data_type = 'uuid'), 'competition_id,match_id');
 
 -- ================================================================ 4. a result and a live score never coexist
 select t.as_user('00000000-0000-0000-0000-0000000000a4');

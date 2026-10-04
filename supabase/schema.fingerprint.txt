@@ -170,7 +170,6 @@ column public.match_live_scores.detail jsonb not null
 column public.match_live_scores.device text not null
 column public.match_live_scores.match_id uuid not null
 column public.match_live_scores.phase text not null
-column public.match_live_scores.reported_by uuid not null
 column public.match_live_scores.score_a integer not null
 column public.match_live_scores.score_b integer not null
 column public.match_live_scores.seq bigint not null
@@ -905,7 +904,7 @@ function public.remove_team_captain(p_team uuid, p_user uuid) secdef=true 4d3389
 function public.reopen_match(p_match uuid, p_reason text) secdef=true 2bfb6353b4a4176e607845aadbe67c72
 function public.reorder_my_gallery(p_ids uuid[]) secdef=true 6e9aff3795e805846d0fe351724c00db
 function public.report_bug(p jsonb) secdef=true 7d1ea860d4335a1060158e8f78c967fb
-function public.report_live_score(p_match uuid, p_device text, p_seq bigint, p_score_a integer, p_score_b integer, p_phase text, p_detail jsonb, p_expected_version integer) secdef=true 63c137c4c10f0578e33bd0cc3859d80e
+function public.report_live_score(p_match uuid, p_device text, p_seq bigint, p_score_a integer, p_score_b integer, p_phase text, p_detail jsonb, p_expected_version integer) secdef=true 7b1df6e1c638d9d09de343c9b425229f
 function public.request_fighter_claim(p_fighter uuid, p_message text) secdef=true 9d87cfb1d0d29b597c2905cd402956b4
 function public.request_new_team(p_payload jsonb) secdef=true ad52e737cbca78ece235bf3209050c6c
 function public.request_team_join(p_team uuid, p_message text) secdef=true 25d5ab4ac2dac9fdb871282ced04ca1c
