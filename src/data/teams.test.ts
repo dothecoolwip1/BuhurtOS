@@ -36,18 +36,20 @@ describe('fetchMyTeamRosters asks PostgREST for an unambiguous relationship', ()
   });
 });
 
+// The data layer's own source files, read as text (Vite), to catch the next un-hinted embed of the same kind.
+const sources = import.meta.glob('./*.ts', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+
 describe('every entries -> competitions embed in the app names its relationship', () => {
-  it('has no un-hinted competitions embed on entries', async () => {
-    const { readdirSync, readFileSync } = await import('node:fs');
-    const dir = new URL('.', import.meta.url).pathname;
+  it('has no un-hinted competitions embed on entries', () => {
     const bad: string[] = [];
-    for (const f of readdirSync(dir).filter(n => n.endsWith('.ts') && !n.endsWith('.test.ts'))) {
-      const text = readFileSync(dir + f, 'utf8');
+    for (const [file, text] of Object.entries(sources)) {
+      if (file.endsWith('.test.ts')) continue;
       // select strings of the form from('entries').select('... competitions(...) / competitions!inner(...) ...') without the foreign key name
       for (const m of text.matchAll(/from\('entries'\)\.select\(([^)]*?)\)/g)) {
-        if (/competitions(!inner)?\(/.test(m[1]) && !/entries_competition_id_fkey/.test(m[1])) bad.push(`${f}: ${m[1].slice(0, 80)}`);
+        if (/competitions(!inner)?\(/.test(m[1]) && !/entries_competition_id_fkey/.test(m[1])) bad.push(`${file}: ${m[1].slice(0, 80)}`);
       }
     }
+    expect(Object.keys(sources).length).toBeGreaterThan(10);   // the scan really read the data layer
     expect(bad).toEqual([]);
   });
 });
