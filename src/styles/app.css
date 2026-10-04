@@ -311,7 +311,7 @@ img.avatar{object-fit:cover;background:var(--raised)}
 .fq-row{display:grid;gap:8px;text-align:left;width:100%;min-height:88px;padding:16px;cursor:pointer}
 .fq-row:disabled{opacity:.6;cursor:not-allowed}
 .fq-names{font:800 24px/1.1 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere}
-.btn.fq-big{min-height:64px;border-radius:14px;font-size:17px}
+.btn.fq-big{min-height:64px;border-radius:14px;font-size:17px;white-space:normal;line-height:1.25;padding-block:12px}
 .field-run .ft{height:64px}
 .field-run .pbtn{min-height:64px;font-size:16px}
 .field-run .stepper{grid-template-columns:64px minmax(0,1fr) 64px}

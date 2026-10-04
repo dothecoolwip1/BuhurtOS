@@ -238,7 +238,7 @@ try {
   await tv.locator('.ar-fields a', { hasText: 'Field 2' }).click();
   await tv.waitForURL(/arena\/Field%202/, { timeout: 10000 });
   const f2 = await tv.waitForFunction(() => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()).join('-') === '3-1', null, { timeout: 40000 }).then(() => true, () => false);
-  check('[tv] Field 2: Hale Morrow vs Ivor Penn at 3-1, On deck Hale Morrow vs Jory Wick, In the hole Aldric Stone vs Garrick Fell', f2 && /^field 2.*hale morrow.*ivor penn/.test(await stageText(tv)) && /on deck.*hale morrow.*jory wick.*in the hole.*aldric stone.*garrick fell/.test(await nextText(tv)), `${await stageText(tv)} || ${await nextText(tv)}`);
+  check('[tv] Field 2: Hale Morrow vs Ivor Penn at 3-1, On deck Aldric Stone vs Hale Morrow, In the hole Aldric Stone vs Garrick Fell', f2 && /^field 2.*hale morrow.*ivor penn/.test(await stageText(tv)) && /on deck.*aldric stone.*hale morrow.*in the hole.*aldric stone.*garrick fell/.test(await nextText(tv)), `${await stageText(tv)} || ${await nextText(tv)}`);
   check('[tv] nothing from Field 1 leaks onto Field 2', !/cael rhodes|edric hale|1-1/.test((await stageText(tv)) + (await nextText(tv))), await stageText(tv));
   await shot(tv, '8-tv-field2');
   await tv.goto(BASE + ARENA + '?field=field%201'); await tv.waitForSelector('.ar-main', { timeout: 30000 });

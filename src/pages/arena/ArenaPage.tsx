@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { fetchEvent } from '../../data/api';
 import { arenaFields, buildArena, nextArenaTick, pickField, type ArenaFight, type ArenaView } from '../../lib/arena';
@@ -105,12 +105,7 @@ function Stage({ view, phase, eventStarts, timeNote, loading }: { view: ArenaVie
   if (loading) return <div className="ar-center" key="loading"><p className="ar-note">Loading…</p></div>;
   if (s.kind === 'fighting') return <Fight key={s.now.id} label="Now fighting" fight={s.now} />;
   if (s.kind === 'result') {
-    return (
-      <div key={`r-${s.result.id}`} className="ar-enter">
-        <Fight label="Result" fight={s.result} result />
-        <p className="ar-winner">{s.drawn ? 'Draw' : s.winnerName ? <>Winner: <b>{s.winnerName}</b></> : 'Result official'}</p>
-      </div>
-    );
+    return <Fight key={`r-${s.result.id}`} label="Result" fight={s.result} result winner={s.drawn ? 'Draw' : s.winnerName ? <>Winner: <b>{s.winnerName}</b></> : 'Result official'} />;
   }
   if (s.kind === 'finished') return <div className="ar-center ar-enter" key="finished"><p className="ar-label">All done</p><h1 className="ar-big">{view.field} is complete</h1></div>;
   if (s.kind === 'no_matches') {
@@ -130,7 +125,7 @@ function Stage({ view, phase, eventStarts, timeNote, loading }: { view: ArenaVie
   );
 }
 
-function Fight({ label, fight, result = false, muted = false }: { label: string | null; fight: ArenaFight; result?: boolean; muted?: boolean }) {
+function Fight({ label, fight, result = false, muted = false, winner = null }: { label: string | null; fight: ArenaFight; result?: boolean; muted?: boolean; winner?: ReactNode }) {
   const showScore = result || fight.live;
   return (
     <div className={`ar-fight${result ? ' result' : ''}${muted ? ' muted' : ''} ar-enter`}>
@@ -142,6 +137,7 @@ function Fight({ label, fight, result = false, muted = false }: { label: string 
       </div>
       <p className="ar-ctx">{fight.competition} · {fight.stage}</p>
       {fight.phase && <p className="ar-phase">{fight.phase}</p>}
+      {winner && <p className="ar-winner">{winner}</p>}
       {!result && !fight.live && !muted && <p className="ar-note">The score appears here as soon as the scorer's device reports it.</p>}
     </div>
   );

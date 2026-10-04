@@ -82,6 +82,8 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
   const [board, setBoard] = useState<BoardState | null | undefined>(undefined);   // undefined: still reading what was saved on this device
   const commandId = useRef<string | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>('scoring');
+  // The board is long on a phone: when the screen changes to a confirm / official / pending / review step, start it at the top.
+  useEffect(() => { if (phase !== 'scoring') window.scrollTo({ top: 0 }); }, [phase]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
