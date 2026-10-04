@@ -46,6 +46,8 @@ export const toMatch = (r: MatchRow): CompetitionMatch => ({
  */
 export async function fetchCompetitionMatchesOrdered(competitionId: string): Promise<CompetitionMatch[]> {
   const { data, error } = await supabase.from('matches').select(`${MATCH_SELECT},queue_order`).eq('competition_id', competitionId).order('stage').order('position');
+  // 42703 = the column does not exist yet (the database has not had the Pack 09A update): show the matches in schedule order rather than nothing.
+  if (error && (error as { code?: string }).code === '42703') return fetchCompetitionMatches(competitionId);
   if (error) throw error;
   return (data as unknown as MatchRow[]).map(toMatch);
 }

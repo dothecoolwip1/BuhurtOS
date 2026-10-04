@@ -57,7 +57,12 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
     if (busyRef.current) return;
     busyRef.current = true; setBusy(true); setNotice(null);
     try { const text = await fn(); await live.refresh(); setTick(k => k + 1); if (text) setNotice({ kind: 'ok', text }); }
-    catch (e) { setNotice({ kind: 'error', text: friendlyError(e) }); await live.refresh().catch(() => undefined); }
+    catch (e) {
+      // PGRST202: the database does not have the function yet (the update for this screen has not been applied).
+      const missing = (e as { code?: string } | null)?.code === 'PGRST202';
+      setNotice({ kind: 'error', text: missing ? 'This needs a database update that has not been applied yet. Ask whoever looks after BuhurtOS.' : friendlyError(e) });
+      await live.refresh().catch(() => undefined);
+    }
     finally { busyRef.current = false; setBusy(false); }
   };
   const byId = useMemo(() => new Map(live.matches.map(m => [m.id, m])), [live.matches]);

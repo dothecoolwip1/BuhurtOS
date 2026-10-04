@@ -41,7 +41,7 @@ async function open(kind, who) {
   lastPage = page;
   page.errors = [];
   page.on('pageerror', e => page.errors.push(String(e).slice(0, 300)));
-  page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|WebSocket|realtime/i.test(m.text())) page.errors.push('console: ' + m.text().slice(0, 300)); });
+  page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|WebSocket|realtime|this match is already final/i.test(m.text())) page.errors.push('console: ' + m.text().slice(0, 300)); });
   return { ctx, page };
 }
 const body = async (page) => (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ').toLowerCase();
@@ -166,6 +166,50 @@ try {
   check('asking the database to advance does not promote it either', adv.status === 200 && state(22) === 'scheduled', JSON.stringify(adv));
   sql(`update public.entries set status = 'registered' where id = '00000000-0000-0000-0000-00000000e244'`);
 
+  // ================================================================ 8b. skeptical checks: double tap, a stale screen, a called fight that can no longer run
+  // A third field with two fights (moved there in the database, as an organizer could in Run tools).
+  sql(`update public.matches set field = 'Arena A', queue_state = 'scheduled', queue_order = null where id in ('${mid(5)}', '${mid(6)}')`);
+  await page.waitForSelector('section.ed-field[aria-label="Arena A"]', { timeout: 40000 });
+  const startCalls = [];
+  page.on('request', r => { if (r.url().includes('/rpc/advance_field_queue')) startCalls.push(r.postData()); });
+  await field(page, 'Arena A').getByRole('button', { name: 'Start next ready match' }).dblclick();
+  await waitText(page, 'section.ed-field[aria-label="Arena A"] .ed-now', 'Brann Oakley');
+  check('a double tap on "Start next ready match" sends one request, not two', startCalls.length === 1, String(startCalls.length));
+  check('... and exactly one fight is active on that field', sql(`select count(*) from public.matches where field = 'Arena A' and queue_state = 'active'`) === '1');
+  // a stale screen: the fight on deck is finished by someone else a moment before the organizer taps "Skip for now" on it
+  const staleDeck = field(page, 'Arena A').locator('li.ed-slot[aria-label^="On deck"]');
+  await staleDeck.waitFor({ timeout: 20000 });
+  sql(`update public.matches set queue_state = 'final', result = 'a', score_a = 5, score_b = 3, winner_entry_id = entry_a where id = '${mid(6)}'`);
+  await staleDeck.locator('summary').click();
+  await staleDeck.getByRole('button', { name: 'Skip for now' }).click().catch(() => undefined);
+  const staleNotice = await page.locator('.ed-notice[role="alert"]').innerText({ timeout: 8000 }).catch(() => '');
+  check('acting on a stale screen is refused in plain words and changes nothing', /already final/i.test(staleNotice) && state(6) === 'final', staleNotice || '(the screen had already refreshed)');
+  // a called fight that can no longer run: its entrant withdraws while it is on deck
+  sql(`update public.entries set status = 'withdrawn' where id = '00000000-0000-0000-0000-00000000e222'`);   // Garrick Fell, on deck in match 11 on Field 2
+  const cannot = await waitText(page, 'section.ed-attention', 'cannot go ahead on Field 2', 45000);
+  check('a called fight whose entrant withdrew is flagged as unable to go ahead', cannot, await page.locator('section.ed-attention').innerText());
+  await field(page, 'Field 2').getByRole('button', { name: 'Tidy the queue' }).click();
+  await page.waitForFunction(() => !/cannot go ahead on field 2/i.test(document.querySelector('section.ed-attention')?.innerText ?? ''), null, { timeout: 30000 }).catch(() => undefined);
+  check('"Tidy the queue" sends it back to the line instead of leaving it called', state(11) === 'scheduled', state(11));
+  sql(`update public.entries set status = 'registered' where id = '00000000-0000-0000-0000-00000000e222'`);
+
+  // ================================================================ 8c. empty and startup states, in words and with a next step
+  const finishedArena = await finishAsDevice('organizer', 5);
+  check('the last fight on a field is saved', finishedArena.body?.status === 'accepted', JSON.stringify(finishedArena));
+  check('when everything on a field is scored, the field says so', await waitText(page, 'section.ed-field[aria-label="Arena A"]', 'All fights on Arena A are done', 45000));
+  sql(`update public.matches set field = 'Hold' where id in ('${mid(23)}', '${mid(24)}')`);   // the final and third place: both still waiting for their entrants
+  check('a field where nothing can start yet explains why instead of showing an empty card', await waitText(page, 'section.eventday', 'Nothing on Hold can start yet', 45000) && (await has(page, 'Waiting for the semifinals to finish') || await has(page, 'Waiting for an earlier fight')));
+  check('... and offers no button that would do nothing', (await field(page, 'Hold').getByRole('button', { name: 'Start next ready match' }).count()) === 0);
+  sql(`insert into public.events (id, slug, name, status, event_type, starts_on, ends_on) values ('00000000-0000-0000-0000-00000000ed02', 'empty-day', 'Empty Day Open', 'published', 'tournament', current_date, current_date + 1), ('00000000-0000-0000-0000-00000000ed03', 'undrawn-day', 'Undrawn Day Open', 'published', 'tournament', current_date, current_date + 1)`);
+  sql(`insert into public.event_staff (event_id, user_id, role) values ('00000000-0000-0000-0000-00000000ed02', '${U(2)}', 'organizer'), ('00000000-0000-0000-0000-00000000ed03', '${U(2)}', 'organizer')`);
+  sql(`insert into public.competitions (id, event_id, name, category, gender, tier, structure, sort) values ('00000000-0000-0000-0000-00000000cd09', '00000000-0000-0000-0000-00000000ed03', 'Longsword (open)', 'longsword', 'open', 'Classic', 'round_robin', 1)`);
+  await page.goto(BASE + '/events/empty-day/manage'); await page.waitForSelector('section.eventday, .ed-empty', { timeout: 20000 });
+  check('an event with no competitions says so and offers to add one', (await has(page, 'No competitions yet')) && (await page.getByRole('link', { name: '+ Add competition' }).count()) === 1 && !(await has(page, 'scary')));
+  await page.goto(BASE + '/events/undrawn-day/manage'); await page.waitForSelector('text=No draw has been built yet', { timeout: 20000 });
+  check('competitions without a draw: "No draw has been built yet" with a way to Run tools, and progress says "No draw yet"', (await page.getByRole('link', { name: 'Open Run tools' }).count()) === 1 && /longsword \(open\).*no draw yet/i.test((await page.locator('section.ed-progress').innerText()).replace(/\s+/g, ' ')));
+  check('and no warning is shown for these normal empty states', (await page.locator('section.ed-attention .ed-att').count()) === 0 && (await has(page, 'Nothing needs your attention right now')));
+  await page.goto(BASE + MANAGE); await page.waitForSelector('section.ed-field[aria-label="Field 1"]', { timeout: 20000 });
+
   // ================================================================ 9. the Run tools still work, and the attention items link into them
   await page.locator('section.ed-attention').getByRole('link', { name: 'Go to match' }).first().click();
   await page.waitForSelector('[id^="match-"]', { timeout: 20000 });
@@ -214,7 +258,7 @@ try {
       return bad.slice(0, 3).map(chain);
     }) : [];
     check(`[${kind}] no sideways scroll`, sw[0] <= sw[1], JSON.stringify({ sw, offenders }));
-    check(`[${kind}] one field at a time, with a picker`, (await p.locator('[aria-label="Field"] button').count()) === 2 && (await p.locator('.ed-field-wrap.picked').count()) === 1);
+    check(`[${kind}] one field at a time, with a picker`, (await p.locator('[aria-label="Field"] button').count()) === (await p.locator('.ed-field-wrap').count()) && (await p.locator('.ed-field-wrap').count()) >= 2 && (await p.locator('.ed-field-wrap.picked').count()) === 1);
     const sizes = await p.evaluate(() => [...document.querySelectorAll('.eventday .btn, .eventday summary')].filter(e => e.offsetParent !== null).map(e => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), e.innerText.trim().slice(0, 24)]; }));
     const small = sizes.filter(([w, h]) => h < 44 && w > 0).filter(([, , t]) => t !== 'Refresh');
     check(`[${kind}] every visible button is at least 44px tall`, small.length === 0, JSON.stringify(small));

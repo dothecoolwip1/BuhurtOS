@@ -12,7 +12,7 @@
 -- convergent, the next settle finishes the job) or refuses with "try again". A scorekeeper finalizing a match holds that match's row lock and meets the
 -- advisory lock only at commit, so the two sides can never wait for each other.
 
-alter table public.matches add column queue_order integer;
+alter table public.matches add column if not exists queue_order integer;
 comment on column public.matches.queue_order is 'Manual running order among a field''s waiting matches (lower runs sooner). Written only by public.move_match_in_queue; null means "in schedule order".';
 -- No column grant on purpose: clients cannot write queue_order directly.
 
@@ -150,10 +150,15 @@ begin
 end $$;
 revoke execute on function private.advance_after_final() from public, anon, authenticated;
 
-create constraint trigger matches_advance_queue after update of queue_state on public.matches
-  deferrable initially deferred for each row
-  when (old.queue_state in ('active', 'on_deck', 'in_the_hole') and new.queue_state = 'final')
-  execute function private.advance_after_final();
+do $do$
+begin
+  if not exists (select 1 from pg_trigger where tgname = 'matches_advance_queue' and tgrelid = 'public.matches'::regclass) then
+    create constraint trigger matches_advance_queue after update of queue_state on public.matches
+      deferrable initially deferred for each row
+      when (old.queue_state in ('active', 'on_deck', 'in_the_hole') and new.queue_state = 'final')
+      execute function private.advance_after_final();
+  end if;
+end $do$;
 
 -- ---------------------------------------------------------------- start the next match / fill the queue
 create or replace function public.advance_field_queue(p_event uuid, p_field text default null, p_start boolean default true) returns jsonb

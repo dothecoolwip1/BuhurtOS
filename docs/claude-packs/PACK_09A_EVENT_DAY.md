@@ -84,11 +84,25 @@ concurrent callers; browser runs against the real stack (Postgres built from the
 ## Progress checklist
 
 - [x] Investigation, invariants, plan (this file)
-- [ ] Migration + database gate + concurrency test + schema fingerprint
-- [ ] Pure domain module + unit tests
-- [ ] Data layer + live hook
-- [ ] Event day UI (tab, field boards, attention, progress)
-- [ ] FieldPage / RunTab / ManagePage hooks
-- [ ] Local real-stack browser run (organizer workflow, skip, Field 2, conflicts, check-in, phone/tablet)
-- [ ] Skeptical QA pass
-- [ ] Full gates, STATUS.md, handoff
+- [x] Migration + database gate (107 checks) + concurrency test (14) + schema fingerprint
+- [x] Pure domain module + unit tests (40, sharing scenarios with the database gate)
+- [x] Data layer + live hook
+- [x] Event day UI (tab, field boards, attention, progress)
+- [x] FieldPage / RunTab / ManagePage hooks
+- [x] Real-stack browser run: 78 checks (`scripts/e2e/eventday-live.sh`; needs a PostgREST binary, not part of CI)
+- [x] Skeptical QA pass (double tap, stale screen, withdrawn called fight, missing-column fallback, re-runnable migration, overlay/CSS class collision found and fixed)
+- [x] Full gates, STATUS.md, handoff
+
+## Known limits, left on purpose
+
+* Realtime push is not exercised by the local stack (it offers no socket); the polling fallback is. The subscription is the same `LiveSync` + channel pattern the public screens use.
+* Check-in warnings cover people who have a registration on the event. Entrants added by an organizer with no registration are not reported.
+* Two organizers pressing "Run later" on the same match at the same moment both apply (each is a valid move).
+* A unique "one active match per field" constraint is not added (existing flows and data allow several); the screen reports it.
+* Event day is organizer-only. Head marshals and scorekeepers keep using the field screens, which now see the queue advance by itself.
+* `FieldPage.open()` (existing) still writes the field name onto a match a scorekeeper opens that was not already active.
+* 09B: scoreboard redesign, arena / TV display. 09C: explicit competition finalization, closeout, final publication.
+
+## Deploy order
+
+Apply `20261004000500_pack09a_event_day_queue.sql` to the database BEFORE deploying the frontend. Without it the Event day tab shows matches in schedule order and says the update has not been applied when an action is tried; every public page is unaffected either way (the public queries do not read the new column). The migration contains `alter table ... add column` and a `create constraint trigger`: if the hosted migration tool cancels it, run the file in the SQL Editor. It is safe to run twice.

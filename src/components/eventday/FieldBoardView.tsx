@@ -100,6 +100,7 @@ export function FieldBoardView({ board, plan, c }: { board: FieldBoard; plan: Ad
           {board.state === 'stalled' && (<>
             <h3>Nothing on {board.name} can start yet</h3>
             <p className="muted">{board.waiting.length === 1 ? 'One fight is' : `${board.waiting.length} fights are`} waiting. {board.waiting[0]?.blocked.text}.</p>
+            {plan.demote.length > 0 && <button type="button" className="btn btn-line fq-big" disabled={actions.busy} onClick={() => actions.startNext(board)}>Tidy the queue</button>}
           </>)}
         </article>
       )}
@@ -113,8 +114,8 @@ export function FieldBoardView({ board, plan, c }: { board: FieldBoard; plan: Ad
       {board.now.length > 0 && board.onDeck.length === 0 && board.inTheHole.length === 0 && board.upcoming.length === 0 && board.state === 'running' && (
         <p className="muted ed-quiet">Nobody is waiting behind this fight{board.waiting.length > 0 ? `; ${board.waiting.length} more ${board.waiting.length === 1 ? 'is' : 'are'} waiting for earlier results` : ''}.</p>
       )}
-      {board.now.length > 0 && canStart && (
-        <button type="button" className="btn btn-line ed-fill" disabled={actions.busy} onClick={() => actions.startNext(board)}>Fill the queue behind it</button>
+      {board.now.length > 0 && (canStart || plan.demote.length > 0) && (
+        <button type="button" className="btn btn-line ed-fill" disabled={actions.busy} onClick={() => actions.startNext(board)}>{plan.demote.length > 0 ? 'Tidy the queue' : 'Fill the queue behind it'}</button>
       )}
 
       {board.upcoming.length > 0 && (
