@@ -10,8 +10,8 @@ const errorStyle = { color: 'var(--live)' } as const;
  * Before the event day the draw is rebuilt without them (the caller opens the draw builder). From the event day on the draw stays as it
  * is and their unplayed matches become walkovers for the opponent, so nobody else's schedule moves.
  */
-export function Withdrawals({ entries, matches, eventDay, onChanged, onRedraw }: {
-  entries: CompetitionEntry[]; matches: CompetitionMatch[]; eventDay: boolean; onChanged: () => void; onRedraw: (name: string) => void;
+export function Withdrawals({ entries, unclaimed, matches, eventDay, onChanged, onRedraw }: {
+  entries: CompetitionEntry[]; unclaimed?: Set<string>; matches: CompetitionMatch[]; eventDay: boolean; onChanged: () => void; onRedraw: (name: string) => void;
 }) {
   const [picked, setPicked] = useState<CompetitionEntry | null>(null);
   const [reason, setReason] = useState('');
@@ -57,7 +57,7 @@ export function Withdrawals({ entries, matches, eventDay, onChanged, onRedraw }:
         <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 6 }}>
           {inList.map(e => (
             <li key={e.id} style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-              <span style={{ overflowWrap: 'anywhere' }}>{e.name}</span>
+              <span style={{ overflowWrap: 'anywhere' }}>{e.name}{e.fighterId && unclaimed?.has(e.fighterId) && <> <Chip>Unclaimed profile</Chip></>}</span>
               <button type="button" className="btn btn-line btn-sm" disabled={busy} onClick={() => { setPicked(e); setError(null); setNote(null); }}>Take out</button>
             </li>
           ))}

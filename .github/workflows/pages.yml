@@ -110,6 +110,8 @@ jobs:
         run: CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/sw-update.mjs
       - name: Phone workflows against a mocked Supabase (synthetic results, Add competition, waiver choices, organizer-added fighters, social links, gallery, Calendar, My events, test-data toggle, venue fallback)
         run: E2E_BASE=http://localhost:4180 E2E_PLACES_BASE=http://localhost:4181 CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/pack07-ux.mjs
+      - name: Add entrant and profile claims against a mocked Supabase (search, create unclaimed fighter, same-name confirmation, group fights, claim request and owner decision)
+        run: E2E_BASE=http://localhost:4180 CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/pack08-entrants.mjs
 
   release-policy:
     name: Release policy (is production frozen?)

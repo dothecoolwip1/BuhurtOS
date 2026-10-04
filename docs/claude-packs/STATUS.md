@@ -2,7 +2,7 @@
 
 Branch: `ccr-a435c5f7-pmrfxr`
 
-Last updated: 2026-10-03 (Pack 07 added)
+Last updated: 2026-10-04 (Pack 08 added)
 
 ## Pack status
 
@@ -198,3 +198,33 @@ migration tool refuses it because of `alter column body drop not null`, `drop co
 `drop ... if exists` guards; none of them touches data. Afterwards: `select count(*) from public.event_invitations` (0), check the two new
 buckets exist, and run the Pack 07 section of a read-only verification (`supabase/tests/pack07_gate.sql` is a local throwaway gate; do not
 run it on hosted).
+
+## Pack 08 notes (organizer-added entrants and claimable fighter profiles, 2026-10-04)
+
+Migration `20261004000100_pack08_entrants_and_claims.sql` (additive, rerunnable; run it AFTER the Pack 07 migration because it re-adds the
+notification kinds). Gate `supabase/tests/pack08_gate.sql` (122 checks, in `run_all.sh`); browser script `scripts/e2e/pack08-entrants.mjs`
+(54 checks at 390x844, mocked Supabase, in the CI workflow).
+
+- **Add entrant** (Run area, per competition): search existing fighters (team and place shown, never auto-matched) -> add, or create a new
+  fighter with no account (`create_unclaimed_fighter`: stable UUID, no auth user, no email, optional team/city/region/gender, entered in the same
+  transaction). A same-name fighter is refused until the organizer confirms "different person"; the pairs are then queued for the platform
+  administrator in `fighter_identity_reviews` (source `organizer_entry`). Individual competitions use a normal fighter entry; group fights
+  (buhurt league) join a team entry's roster through `set_entry_roster`, so roster rules are unchanged. The entrant count reloads after every add.
+  A draw that already exists is not rebuilt; the UI says to build a new draw.
+- **Permissions:** `search_fighters_for_entry`, `add_entrant`, `create_unclaimed_fighter` are for organizers of that event only (strangers and
+  organizers of other events get 42501). Synthetic fighters appear only for a synthetic event.
+- **Claims:** `request_fighter_claim` / `cancel_fighter_claim` / `my_fighter_claims` / `search_unclaimed_fighters` (any signed-in user);
+  `list_fighter_claims` / `resolve_fighter_claim` are **platform-owner only** (kept from the Pack 05 identity-review model; event organizers have no
+  say). `fighter_claims` has no grants; nobody can write `fighter_accounts`. Approval links the account to the EXISTING fighter id; nothing is
+  created, copied or moved, and the other pending requests for that fighter are closed. Outcomes: `approved`, `declined`, `already_claimed`
+  (the fighter got an owner first; nothing linked), `account_has_fighter` (the claimant already owns one; nothing linked, the pair is queued as a
+  `claim_conflict` review). Email is deliberately not collected (the fighters table is public).
+- **Audit:** `fighter.created_by_organizer` and `entrant.added` (visible to that event's organizers), claim decisions (owner-only, event id null).
+- **UI:** "Unclaimed profile" chip on fighter pages and in the entrant list; "Is this you?" panel on a fighter page; `/claim-profile`
+  ("Already have fight history in BuhurtOS? Find and claim your fighter profile"); a row on the account page; claims and look-alikes on
+  Platform > Fighter identities; notifications for requested/decided claims.
+
+Not done / honest limits: the hosted database does not have Packs 06/07/08 and nothing is deployed; the browser script runs against an in-memory
+imitation of Supabase, so the database rules are proved only by the SQL gate; no real Samsung phone; entrants are not shown on the public event
+page with the chip (only Run, fighter page, search); a claim for a fighter who has a different account's pending review is decided by the owner by
+hand; no email notification, only the in-app bell.

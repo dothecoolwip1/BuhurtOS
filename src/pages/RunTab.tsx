@@ -4,10 +4,12 @@ import { BulkSchedule } from '../components/BulkSchedule';
 import { MatchSchedule } from '../components/MatchSchedule';
 import { RosterEditor } from '../components/RosterEditor';
 import { ConflictsPanel } from '../components/RunConflicts';
+import { AddEntrant } from '../components/AddEntrant';
 import { Withdrawals } from '../components/Withdrawals';
 import { Chip } from '../components/ui';
 import { fetchCompetitionRoster, fetchEventTimeZone, fetchMatchDurations, DEFAULT_TIME_ZONE } from '../data/runSchedule';
 import type { LiveCompetition, LiveEvent } from '../data/api';
+import { fetchClaimStates } from '../data/entrants';
 import {
   buildSchedule, fetchCompetitionMatches, fetchEntries, fetchPoolStandings, groupIntoRounds, recordTieDecision, reopenMatch, setQueue,
   type CompetitionEntry, type CompetitionMatch
@@ -321,6 +323,9 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
   const matches = useAsync(() => fetchCompetitionMatches(comp.id), [comp.id, reload]);
   const roster = useAsync(() => fetchCompetitionRoster(comp.id), [comp.id, reload]);
   const durations = useAsync(() => fetchMatchDurations(comp.id), [comp.id, reload]);
+  const fighterIds = (entries.data ?? []).map(e => e.fighterId).filter((x): x is string => !!x);
+  const claims = useAsync(() => fetchClaimStates(fighterIds), [fighterIds.join(','), reload]);
+  const unclaimed = useMemo(() => new Set(fighterIds.filter(id => claims.data?.get(id) === false)), [claims.data]); // eslint-disable-line react-hooks/exhaustive-deps
   const done = () => { setBuilding(false); setRedrawFor(null); setReload(k => k + 1); onScheduled(); };
 
   const all = entries.data ?? [];
@@ -358,6 +363,8 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
         </div>
       </details>
 
+      <AddEntrant comp={comp} eventId={eventId} entries={all} drawExists={list.length > 0} onAdded={() => { setReload(k => k + 1); onScheduled(); }} />
+
       {!building && (
         <button type="button" className="btn btn-ink" disabled={n < 2 || entries.loading} onClick={() => setBuilding(true)}>
           {list.length > 0 ? 'Build a new draw' : 'Build draw'}
@@ -368,7 +375,7 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
       {building && <DrawBuilder key={`${reload}`} comp={comp} entries={all} existing={list} onDone={done} onClose={() => { setBuilding(false); setRedrawFor(null); }} />}
 
       {all.length > 0 && (
-        <Withdrawals entries={all} matches={list} eventDay={eventDay} onChanged={() => { setReload(k => k + 1); onScheduled(); }}
+        <Withdrawals entries={all} unclaimed={unclaimed} matches={list} eventDay={eventDay} onChanged={() => { setReload(k => k + 1); onScheduled(); }}
           onRedraw={name => { if (list.some(m => m.queueState === 'final')) return; setRedrawFor(name); setBuilding(true); }} />
       )}
 

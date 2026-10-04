@@ -20,6 +20,8 @@ import { useAsync, type AsyncState } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { SocialLinksRow } from '../components/SocialLinks';
 import { FighterGallery } from '../components/FighterGallery';
+import { ClaimRequest } from '../components/ClaimRequest';
+import { fetchClaimStates } from '../data/entrants';
 
 /** One section that loads on its own. Errors stay inside the section; an empty section is hidden (the caller decides with `empty`). */
 function Section<T>({ title, state, empty, children, note }: { title: string; state: AsyncState<T>; empty: (d: T) => boolean; children: (d: T) => ReactNode; note?: string }) {
@@ -55,6 +57,7 @@ function Career({ p }: { p: FighterProfile }) {
   const userId = session?.user.id;
   const mine = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
   const isMine = mine.data === id;
+  const claim = useAsync(() => fetchClaimStates([id]), [id]);
   const career = useAsync(() => fetchFighterCareerStats(id), [id]);
   const matchStats = useAsync(() => fetchFighterMatchStats(id), [id]);
   const seasonStats = useAsync(() => fetchFighterSeasonStats(id), [id]);
@@ -76,6 +79,7 @@ function Career({ p }: { p: FighterProfile }) {
   const totals = sumMatchStats(matchStats.data ?? []);
   const places = history.data ?? [];
   const synthetic = useSynthetic();
+  const unclaimed = claim.data?.get(id) === false && !isSynthetic(synthetic, 'fighter', id);
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
@@ -88,6 +92,7 @@ function Career({ p }: { p: FighterProfile }) {
           <p className="eyebrow">Fighter</p>
           <h1 style={{ fontSize: 'clamp(38px,6vw,72px)', marginTop: 8 }}>{p.displayName}</h1>
           <TestBadge synthetic={isSynthetic(synthetic, 'fighter', id)} />
+          {unclaimed && <p style={{ marginTop: 6 }}><Chip>Unclaimed profile</Chip></p>}
           <div className="phead"><div className="sub">
             {p.team && <span>Home team: <Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link></span>}
             {where && <span>{where}</span>}
@@ -103,6 +108,17 @@ function Career({ p }: { p: FighterProfile }) {
         </div>
       </div>
       {p.organization && !p.organization.enabled && <p className="panel info" role="status">{INACTIVE_ORG_NOTICE}</p>}
+
+      {unclaimed && !isMine && (
+        <div className="panel info" style={{ display: 'grid', gap: 10, justifyItems: 'start' }} data-testid="claim-panel">
+          <h3>Is this you?</h3>
+          <p>This profile was created by an organizer and has no account yet. If it is you, claim it to keep this history.</p>
+          {session
+            ? <ClaimRequest fighterId={id} name={p.displayName} hasOwnProfile={!!mine.data} />
+            : <Link className="btn btn-ink" to="/account">Sign in to claim it</Link>}
+          <Link className="more" to={`/claim-profile?q=${encodeURIComponent(p.displayName)}`}>Find a different profile</Link>
+        </div>
+      )}
 
       {hasStory && (
         <div className="panel info">

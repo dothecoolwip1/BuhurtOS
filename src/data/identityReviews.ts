@@ -1,7 +1,7 @@
 import { supabase } from '../lib/supabase';
 
 export interface IdentitySide { id: string; name: string; team: string | null; hasAccount: boolean; entries: number; synthetic: boolean; sources: string[] }
-export interface IdentityReview { reviewId: string; source: 'registration' | 'team_join'; createdAt: string; newFighter: IdentitySide; candidate: IdentitySide }
+export interface IdentityReview { reviewId: string; source: 'registration' | 'team_join' | 'organizer_entry' | 'claim'; createdAt: string; newFighter: IdentitySide; candidate: IdentitySide }
 
 type SideDb = { id: string; name: string; team: string | null; has_account: boolean; entries: number; synthetic: boolean; sources?: string[] };
 const side = (s: SideDb): IdentitySide => ({ id: s.id, name: s.name, team: s.team, hasAccount: s.has_account, entries: Number(s.entries), synthetic: s.synthetic, sources: s.sources ?? [] });

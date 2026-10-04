@@ -16,7 +16,7 @@ const U = (n) => `00000000-0000-0000-0000-0000000000${n}`;
 export const IDS = {
   owner: U('a1'), organizer: U('a2'), fighter: U('a3'), stranger: U('a4'), captain: U('a8'),
   rumble: '00000000-0000-0000-0000-0000000e0001', fake: '00000000-0000-0000-0000-0000000e0009', spring: '00000000-0000-0000-0000-0000000e0002', other: '00000000-0000-0000-0000-0000000e0003',
-  c1: '00000000-0000-0000-0000-0000000c0001', c2: '00000000-0000-0000-0000-0000000c0002', c9: '00000000-0000-0000-0000-0000000c0009', cs: '00000000-0000-0000-0000-0000000c0002',
+  c1: '00000000-0000-0000-0000-0000000c0001', fx: '00000000-0000-0000-0000-0000000f0020', fx2: '00000000-0000-0000-0000-0000000f0021', claimer: U('a5'), claimer2: U('a6'), c2: '00000000-0000-0000-0000-0000000c0002', c9: '00000000-0000-0000-0000-0000000c0009', cs: '00000000-0000-0000-0000-0000000c0002',
   f3: '00000000-0000-0000-0000-0000000f0003', f7: '00000000-0000-0000-0000-0000000f0007', f9: '00000000-0000-0000-0000-0000000f0009', f9b: '00000000-0000-0000-0000-0000000f0010', f9c: '00000000-0000-0000-0000-0000000f0011',
   t1: '00000000-0000-0000-0000-0000000d0001', w1: '00000000-0000-0000-0000-0000000a0001', org: '00000000-0000-0000-0000-0000000b0001'
 };
@@ -47,7 +47,9 @@ export function createMock() {
       { id: IDS.f7, display_name: 'Dana Steel', team_id: null, gender: 'female', city: null, region: 'AB', disciplines: [], social_links: {}, avatar_path: null },
       { id: IDS.f9, display_name: 'Fake Fighter', team_id: null, gender: 'male', city: null, region: null, disciplines: [], social_links: {}, avatar_path: null },
       { id: IDS.f9b, display_name: 'Fake Second', team_id: null, gender: 'male', city: null, region: null, disciplines: [], social_links: {}, avatar_path: null },
-      { id: IDS.f9c, display_name: 'Fake Third', team_id: null, gender: 'male', city: null, region: null, disciplines: [], social_links: {}, avatar_path: null }
+      { id: IDS.f9c, display_name: 'Fake Third', team_id: null, gender: 'male', city: null, region: null, disciplines: [], social_links: {}, avatar_path: null },
+      { id: IDS.fx, display_name: 'Alex Existing', team_id: IDS.t1, gender: 'male', city: 'Red Deer', region: 'AB', disciplines: [], social_links: {}, avatar_path: null },
+      { id: IDS.fx2, display_name: 'Alex Existing', team_id: null, gender: 'male', city: 'Calgary', region: 'AB', disciplines: [], social_links: {}, avatar_path: null }
     ],
     fighter_accounts: { [IDS.f3]: IDS.fighter },
     teams: [{ id: IDS.t1, slug: 'red-deer-reavers', name: 'Red Deer Reavers', city: 'Red Deer', region: 'AB', country: 'CA', status: 'approved', colors: ['#2C4A8C', '#E9ECEF'], crest_division: 'pale', initial: 'R', emblem_path: null, description: 'A club in Red Deer that trains hard.', website: null, social_links: {}, founded_year: 2019, claimed_organizations: [] }],
@@ -67,14 +69,35 @@ export function createMock() {
     platform_roles: { [IDS.owner]: ['owner'], [IDS.organizer]: ['organizer'] },
     registrations: [], registration_competitions: [], registration_private: [], registration_checks: [],
     event_invitations: [], event_invitation_competitions: [],
-    notifications: [], fighter_gallery: [], profiles: [[IDS.fighter, 'Garrett Robson'], [IDS.organizer, 'Orla Organizer'], [IDS.owner, 'The Owner'], [IDS.captain, 'Cap Tain'], [IDS.stranger, 'Someone Else']].map(([id, display_name]) => ({ id, display_name, interests: ['fighter'], city: null, region: null, country: null, onboarded_at: '2026-01-01T00:00:00Z' })),
-    organization_staff: [], audit_log: []
+    notifications: [], fighter_gallery: [], profiles: [[IDS.fighter, 'Garrett Robson'], [IDS.organizer, 'Orla Organizer'], [IDS.owner, 'The Owner'], [IDS.captain, 'Cap Tain'], [IDS.stranger, 'Someone Else'], [IDS.claimer, 'Alexandra Existing'], [IDS.claimer2, 'Claimer Two']].map(([id, display_name]) => ({ id, display_name, interests: ['fighter'], city: null, region: null, country: null, onboarded_at: '2026-01-01T00:00:00Z' })),
+    organization_staff: [], audit_log: [], fighter_claims: [], identity_reviews: []
   };
   const storage = new Map();   // "bucket/path" -> { type, bytes }
   const st = { calls: [], uploads: [], offline: false, db, storage };
   const isOrganizer = (who, eventId) => who === IDS.owner || db.event_staff.some(s => s.event_id === eventId && s.user_id === who && s.role === 'organizer');
   const myFighter = (who) => Object.entries(db.fighter_accounts).find(([, u]) => u === who)?.[0] ?? null;
   const fail = (code, message, status = 400) => ({ error: { code, message, details: null, hint: null }, status });
+
+  const inComp = (compId, fighterId) => db.entries.some(e => e.competition_id === compId && e.fighter_id === fighterId && e.status !== 'withdrawn') || db.entry_fighters.some(r => r.competition_id === compId && r.fighter_id === fighterId);
+  /** Mirrors private.add_entrant_core closely enough to drive the screens: team entries for group fights, fighter entries otherwise. */
+  function addCore(k, fighterId, teamId) {
+    if (k.status === 'finished') return fail('P0001', 'this competition is finished; reopen a match before adding entrants');
+    const league = db.ref_categories.find(c => c.code === k.category)?.league;
+    if (league === 'buhurt') {
+      if (!teamId) return fail('22023', 'choose the team this fighter fights for in this group fight');
+      let en = db.entries.find(e => e.competition_id === k.id && e.team_id === teamId);
+      if (!en) { en = { id: uid(), competition_id: k.id, team_id: teamId, fighter_id: null, status: 'registered' }; db.entries.push(en); }
+      if (db.entry_fighters.some(r => r.entry_id === en.id && r.fighter_id === fighterId)) return { entry_id: en.id, kind: 'team', already: true };
+      if (db.entry_fighters.some(r => r.competition_id === k.id && r.fighter_id === fighterId)) return fail('22023', "this fighter is already on another team's roster in this competition");
+      db.entry_fighters.push({ id: uid(), entry_id: en.id, competition_id: k.id, fighter_id: fighterId, role: 'fighter' });
+      return { entry_id: en.id, kind: 'team', already: false };
+    }
+    if (teamId) return fail('22023', 'this competition takes individual fighters, not a team');
+    const en = db.entries.find(e => e.competition_id === k.id && e.fighter_id === fighterId);
+    if (!en) { const n = { id: uid(), competition_id: k.id, team_id: null, fighter_id: fighterId, status: 'registered' }; db.entries.push(n); return { entry_id: n.id, kind: 'fighter', already: false }; }
+    if (en.status === 'withdrawn') { en.status = 'registered'; return { entry_id: en.id, kind: 'fighter', already: false }; }
+    return { entry_id: en.id, kind: 'fighter', already: true };
+  }
 
   // ---------------------------------------------------------------- embeds (which tables hang off which)
   const REL = {
@@ -210,6 +233,83 @@ export function createMock() {
       case 'remove_my_gallery_photo': { const fid = myFighter(who); const i = db.fighter_gallery.findIndex(g => g.id === a.p_id && g.fighter_id === fid); if (i < 0) return fail('42501', 'that photo is not in your gallery'); const [g] = db.fighter_gallery.splice(i, 1); return g.storage_path; }
       case 'reorder_my_gallery': { const fid = myFighter(who); const mine = db.fighter_gallery.filter(g => g.fighter_id === fid); if (a.p_ids.length !== mine.length || !a.p_ids.every(id => mine.some(g => g.id === id))) return fail('22023', 'the order must list each of your photos once'); a.p_ids.forEach((id, n) => { mine.find(g => g.id === id).sort_order = n; }); return null; }
       case 'set_my_fighter_avatar': { const fid = myFighter(who); db.fighters.find(f => f.id === fid).avatar_path = a.p_path; return null; }
+
+      case 'fighter_claim_states': return (a.p_ids ?? []).map(id => ({ fighter_id: id, claimed: Boolean(db.fighter_accounts[id]) }));
+      case 'search_fighters_for_entry': {
+        const k = db.competitions.find(c => c.id === a.p_competition); if (!k) return fail('P0002', 'competition not found');
+        if (!isOrganizer(who, k.event_id)) return fail('42501', 'only an organizer of this event can add entrants');
+        const words = String(a.p_query ?? '').trim().toLowerCase().split(/\s+/).filter(Boolean); if (words.join(' ').length < 2) return [];
+        const synth = new Set(db.synthetic_records.filter(x => x.entity_type === 'fighter').map(x => x.entity_id));
+        return db.fighters.filter(f => !synth.has(f.id)).map(f => ({ f, t: db.teams.find(t => t.id === f.team_id) }))
+          .filter(({ f, t }) => { const hay = [f.display_name, t?.name, f.city, f.region].filter(Boolean).join(' ').toLowerCase(); return words.every(w => hay.includes(w)); }).slice(0, 15)
+          .map(({ f, t }) => ({ fighter_id: f.id, display_name: f.display_name, team_name: t?.name ?? null, city: f.city, region: f.region, gender: f.gender, claimed: Boolean(db.fighter_accounts[f.id]),
+            in_competition: inComp(k.id, f.id), in_event: db.competitions.filter(c => c.event_id === k.event_id).some(c => inComp(c.id, f.id)) }));
+      }
+      case 'add_entrant': {
+        const k = db.competitions.find(c => c.id === a.p_competition); if (!k) return fail('P0002', 'competition not found');
+        if (!isOrganizer(who, k.event_id)) return fail('42501', 'only an organizer of this event can add entrants');
+        const r = addCore(k, a.p_fighter, a.p_team ?? null); if (r.error) return r;
+        if (!r.already) db.audit_log.push({ action: 'entrant.added', event_id: k.event_id, subject: a.p_fighter, actor: who });
+        return r;
+      }
+      case 'create_unclaimed_fighter': {
+        const ev1 = db.events.find(e => e.id === a.p_event); if (!ev1) return fail('P0002', 'event not found');
+        if (!isOrganizer(who, a.p_event)) return fail('42501', 'only an organizer of this event can add entrants');
+        const name = String(a.p_name ?? '').trim().replace(/\s+/g, ' ');
+        if (name.length < 2 || name.length > 80) return fail('22023', 'the name must be 2 to 80 characters');
+        const dups = db.fighters.filter(f => f.display_name.trim().toLowerCase() === name.toLowerCase());
+        if (dups.length > 0 && !a.p_confirmed_distinct) return fail('22023', `${dups.length} fighter(s) named ${name} already exist; pick one of them, or confirm this is a different person`);
+        const k = a.p_competition ? db.competitions.find(c => c.id === a.p_competition) : null;
+        if (a.p_competition && (!k || k.event_id !== a.p_event)) return fail('22023', 'that competition belongs to another event');
+        const f = { id: uid(), display_name: name, team_id: a.p_home_team ?? null, gender: a.p_gender ?? null, city: a.p_city ?? null, region: a.p_region ?? null, disciplines: [], social_links: {}, avatar_path: null };
+        db.fighters.push(f);
+        for (const d of dups) db.identity_reviews.push({ fighter_id: f.id, candidate_id: d.id, reason: 'same_name', source: 'organizer_entry' });
+        db.audit_log.push({ action: 'fighter.created_by_organizer', event_id: a.p_event, subject: f.id, actor: who });
+        let entry = null;
+        if (k) { entry = addCore(k, f.id, a.p_entry_team ?? null); if (entry.error) { db.fighters.pop(); return entry; } db.audit_log.push({ action: 'entrant.added', event_id: a.p_event, subject: f.id, actor: who }); }
+        return { fighter_id: f.id, flagged: dups.length, entry };
+      }
+      case 'search_unclaimed_fighters': {
+        if (!who) return fail('28000', 'sign in required');
+        const words = String(a.p_query ?? '').trim().toLowerCase().split(/\s+/).filter(Boolean); if (words.join(' ').length < 2) return [];
+        const synth = new Set(db.synthetic_records.filter(x => x.entity_type === 'fighter').map(x => x.entity_id));
+        return db.fighters.filter(f => !db.fighter_accounts[f.id] && !synth.has(f.id)).map(f => ({ f, t: db.teams.find(t => t.id === f.team_id) }))
+          .filter(({ f, t }) => { const hay = [f.display_name, t?.name, f.city, f.region].filter(Boolean).join(' ').toLowerCase(); return words.every(w => hay.includes(w)); })
+          .map(({ f, t }) => ({ fighter_id: f.id, display_name: f.display_name, team_name: t?.name ?? null, city: f.city, region: f.region, entries: db.entries.filter(e => e.fighter_id === f.id).length, last_event: null }));
+      }
+      case 'request_fighter_claim': {
+        if (!who) return fail('28000', 'sign in required');
+        const f = db.fighters.find(x => x.id === a.p_fighter); if (!f) return fail('P0002', 'fighter profile not found');
+        if (db.fighter_accounts[f.id]) return fail('22023', 'this profile already belongs to an account');
+        const mine = myFighter(who);
+        const open = db.fighter_claims.find(c => c.fighter_id === f.id && c.claimant === who && c.status === 'pending');
+        if (open) return { request_id: open.id, needs_review: Boolean(mine) };
+        const c = { id: uid(), fighter_id: f.id, claimant: who, message: a.p_message ?? null, status: 'pending', needs_review: Boolean(mine), note: null, created_at: new Date().toISOString(), decided_at: null };
+        db.fighter_claims.push(c);
+        for (const o of Object.keys(db.platform_roles).filter(u => db.platform_roles[u].includes('owner'))) db.notifications.push({ id: uid(), user_id: o, kind: 'fighter_claim_requested', payload: { request_id: c.id, fighter_name: f.display_name }, created_at: c.created_at, read_at: null });
+        return { request_id: c.id, needs_review: c.needs_review };
+      }
+      case 'cancel_fighter_claim': { const c = db.fighter_claims.find(x => x.id === a.p_request && x.claimant === who && x.status === 'pending'); if (!c) return fail('P0002', 'request not found'); c.status = 'cancelled'; return null; }
+      case 'my_fighter_claims': return db.fighter_claims.filter(c => c.claimant === who).map(c => { const f = db.fighters.find(x => x.id === c.fighter_id); return { request_id: c.id, fighter_id: c.fighter_id, fighter_name: f.display_name, team_name: db.teams.find(t => t.id === f.team_id)?.name ?? null, status: c.status, needs_review: c.needs_review, note: c.note, created_at: c.created_at, decided_at: c.decided_at }; });
+      case 'list_fighter_claims': {
+        if (who !== IDS.owner) return fail('42501', 'only a platform administrator can review fighter claims');
+        return db.fighter_claims.filter(c => c.status === 'pending').map(c => { const f = db.fighters.find(x => x.id === c.fighter_id); const own = myFighter(c.claimant); return {
+          request_id: c.id, created_at: c.created_at, message: c.message, needs_review: c.needs_review,
+          claimant: { name: db.profiles.find(p => p.id === c.claimant)?.display_name ?? null, email: `${c.claimant.slice(-2)}@example.test`, own_fighter: own ? { id: own, name: db.fighters.find(x => x.id === own).display_name } : null },
+          fighter: { id: f.id, name: f.display_name, team: db.teams.find(t => t.id === f.team_id)?.name ?? null, city: f.city, region: f.region, claimed: Boolean(db.fighter_accounts[f.id]), entries: db.entries.filter(e => e.fighter_id === f.id).length, events: [], origin: null } }; });
+      }
+      case 'resolve_fighter_claim': {
+        if (who !== IDS.owner) return fail('42501', 'only a platform administrator can decide fighter claims');
+        const c = db.fighter_claims.find(x => x.id === a.p_request); if (!c) return fail('P0002', 'claim not found');
+        if (c.status !== 'pending') return fail('P0001', 'this claim was already decided');
+        const f = db.fighters.find(x => x.id === c.fighter_id); const decided = (status, decision) => { c.status = status; c.note = a.p_note; c.decided_at = new Date().toISOString(); db.notifications.push({ id: uid(), user_id: c.claimant, kind: 'fighter_claim_decided', payload: { fighter_id: f.id, fighter_name: f.display_name, decision }, created_at: c.decided_at, read_at: null }); };
+        if (a.p_decision === 'decline') { decided('declined', 'declined'); return 'declined'; }
+        if (db.fighter_accounts[f.id]) { decided('declined', 'declined'); return 'already_claimed'; }
+        if (myFighter(c.claimant)) { db.identity_reviews.push({ fighter_id: myFighter(c.claimant), candidate_id: f.id, reason: 'claim_conflict', source: 'claim' }); return 'account_has_fighter'; }
+        db.fighter_accounts[f.id] = c.claimant; decided('approved', 'approved');
+        for (const o of db.fighter_claims.filter(x => x.fighter_id === f.id && x.status === 'pending')) { o.status = 'declined'; o.note = 'Another account was linked to this profile.'; }
+        return 'approved';
+      }
       default: return null;
     }
   }

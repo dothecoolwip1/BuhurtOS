@@ -113,6 +113,7 @@ function SignedIn({ session }: { session: Session }) {
                     <Link to="/team-manager">Find your team</Link> · <Link to="/events">See events</Link>
                   </p>
                 )}
+                {fighterState !== 'loading' && <Row to="/claim-profile" title="Claim a fighter profile" sub="Already have fight history in BuhurtOS? Find and claim your fighter profile" />}
                 <Row to="/team-manager" title="Team manager" sub={captainState === 'found' ? 'Manage your team, find another team or request a new one' : 'Join a team, request a new one, see your requests'} />
               </>}
           {!isOwner && captainState === 'loading' && <p className="acct-empty" role="status">Loading the teams you captain…</p>}

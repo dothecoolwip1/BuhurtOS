@@ -13,6 +13,8 @@ import {
   DISABLE_NOTICE, disableTitle, pendingText, platformGate, switchChecked, TOGGLE_IDLE, toggleBusy, toggleReducer, toOrgAdminRow, type OrgAdminRow
 } from '../../lib/platformOrgs';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { ClaimReviews } from './ClaimReviews';
+import { reviewHeading } from '../../lib/claims';
 import { fetchIdentityReviews, resolveIdentityReview, type IdentitySide } from '../../data/identityReviews';
 import { useAsync } from '../../lib/useAsync';
 
@@ -54,7 +56,16 @@ export function PlatformHomePage() {
 
 export function PlatformFightersPage() {
   useDocumentTitle('Fighter identities · Platform');
-  return <PlatformGate><IdentityReviews /></PlatformGate>;
+  return (
+    <PlatformGate>
+      <section className="plat" style={{ display: 'grid', gap: 24 }}>
+        <PageHead eyebrow="Platform" title="Fighter identities" lede="One account is one fighter. Profile claims and look-alike fighter records are decided here, by you. Nothing is merged or linked automatically." />
+        <p><Link className="more" to="/platform">← Platform</Link></p>
+        <ClaimReviews />
+        <IdentityReviews />
+      </section>
+    </PlatformGate>
+  );
 }
 
 function IdentityCard({ title, s }: { title: string; s: IdentitySide }) {
@@ -82,17 +93,17 @@ function IdentityReviews() {
   };
   const rows = list.data ?? [];
   return (
-    <section className="plat" style={{ display: 'grid', gap: 16 }}>
-      <PageHead eyebrow="Platform" title="Fighter identities" lede="One account is one fighter. When a new fighter record has the same name as an existing record that has no account, it is listed here instead of being merged or guessed at." />
-      <p><Link className="more" to="/platform">← Platform</Link></p>
+    <section aria-labelledby="idrev-h" style={{ display: 'grid', gap: 16 }}>
+      <h2 id="idrev-h" className="acct-h">Look-alike records</h2>
+      <p className="muted">When a fighter record has the same name as another, the pair is listed here instead of being merged or guessed at.</p>
       {list.loading && <p className="muted">Loading…</p>}
       {list.error != null && <p role="alert">{friendlyError(list.error, 'Could not load the list.')}</p>}
       {!list.loading && list.error == null && rows.length === 0 && <div className="panel info"><h3>Nothing to review</h3><p className="muted">No fighter records are waiting for a decision.</p></div>}
       {rows.map(r => (
         <div key={r.reviewId} className="panel info" style={{ display: 'grid', gap: 10 }}>
-          <b>Same name, found when {r.source === 'registration' ? 'a registration was accepted' : 'a team request was accepted'}</b>
-          <IdentityCard title="New record (created for an account)" s={r.newFighter} />
-          <IdentityCard title="Existing record that might be the same person" s={r.candidate} />
+          <b>{reviewHeading(r.source)}</b>
+          <IdentityCard title={r.source === 'claim' ? 'The claimant\'s own record' : r.source === 'organizer_entry' ? 'New record (added by an organizer)' : 'New record (created for an account)'} s={r.newFighter} />
+          <IdentityCard title={r.source === 'claim' ? 'The profile they asked to claim' : 'Existing record that might be the same person'} s={r.candidate} />
           <label className="field-in">How did you decide? (kept in the audit history)
             <input type="text" maxLength={200} value={notes[r.reviewId] ?? ''} onChange={e => setNotes(n => ({ ...n, [r.reviewId]: e.target.value }))} />
           </label>
