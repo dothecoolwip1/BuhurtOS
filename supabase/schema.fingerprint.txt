@@ -483,7 +483,6 @@ constraint entries entries_id_competition_key UNIQUE (id, competition_id)
 constraint entries entries_pkey PRIMARY KEY (id)
 constraint entries entries_represented_team_basis_check CHECK (((represented_team_basis IS NULL) OR (represented_team_basis = ANY (ARRAY['registration'::text, 'team_at_entry'::text, 'recorded'::text, 'correction'::text]))))
 constraint entries entries_represented_team_fighter_only CHECK (((represented_team_id IS NULL) OR (team_id IS NULL)))
-constraint entries entries_represented_team_id_fkey FOREIGN KEY (represented_team_id) REFERENCES teams(id) ON DELETE RESTRICT
 constraint entries entries_status_check CHECK ((status = ANY (ARRAY['registered'::text, 'checked_in'::text, 'withdrawn'::text, 'disqualified'::text])))
 constraint entries entries_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE RESTRICT
 constraint entry_fighters entry_fighters_competition_id_fighter_id_key UNIQUE (competition_id, fighter_id)
@@ -769,7 +768,7 @@ function private.competitions_guard() secdef=true 298315c67b2c2554649ab6a6418278
 function private.compute_fee(p_event uuid, p_province text, p_volunteer boolean) secdef=true edc1346f935647548fd7477305ee9f03
 function private.compute_places(p_comp uuid) secdef=true 41a41786e287f1a282c0246de1f96578
 function private.ensure_fighter_for_account(p_user uuid, p_name text, p_team uuid, p_source text) secdef=true 1fd619818bdde8a6ab21f3fe2f9b1f6c
-function private.entries_represented_team() secdef=true ee9ec18e4a3d2ecf63bb9cfe1d6d5e5b
+function private.entries_represented_team() secdef=true 3dd15fad35aaeeab4dee838897471206
 function private.entry_fighters_fill() secdef=true 895466129a528be643ba0f961719899b
 function private.event_bookings(p_event uuid) secdef=true 67fee62420db92885d50fc37ebae6a11
 function private.event_of_competition(p_comp uuid) secdef=true e69a638ac3b42b3eee55b44ba3ecd999
@@ -821,6 +820,7 @@ function private.snapshot_entry_team() secdef=true b5381ff8deae6cdc1a1dbf641109f
 function private.stage_rank(p_stage text) secdef=false e5e128de0d0442fcb74210ff7996abdb
 function private.team_managers(p_team uuid) secdef=true ef4a48139ba18c9eb793c7988a91acd1
 function private.team_org_enabled(p_team uuid) secdef=true eef613018d1e0ae401917705613886e5
+function private.teams_keep_represented() secdef=true 355b046e6c83b278ee5c7e46f98c35b1
 function private.tier_points(p_base numeric, p_tier text, p_source text) secdef=false 88596a713d97771b9446ed02c6654bb8
 function private.touch_updated_at() secdef=false 587cccdfb0cc0805991745244d57ff0a
 function private.unfinish_competition() secdef=true ac34839a380257d84ada2446509bec1f
@@ -1156,6 +1156,7 @@ trigger public.registrations registrations_touch d51230d310f85ad30d4cb37976d0ccc
 trigger public.registrations registrations_volunteer_roles 9617f9c515e507cf6932443820038877
 trigger public.result_revisions result_revisions_no_change 6117dd6abee472b9d28bea37a8cab968
 trigger public.team_join_requests team_join_requests_org_guard d71e980008a95f7149db47f7477c2f22
+trigger public.teams teams_keep_represented 51304e1a267211ee9e953b6cf814311e
 view public.competition_standings opts=security_invoker=true 8d4ca99c3fd9db2cf2cb8f7fd8b47047
 view public.entry_roster opts=security_invoker=true 336f4b4453c6c8849ae58ace7b889271
 view public.fighter_career_stats opts=security_invoker=true 5fc6bf366053a0a3619060919c6974bc

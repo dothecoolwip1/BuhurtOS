@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { applyDisciplineFilter, toTeamDisciplineRow, type DisciplineContribution, type TeamDisciplineRow } from '../data/fighters';
 import {
   ALL_DIVISIONS, boardTitle, contributionLines, contributionTotal, disciplineBoard, disciplineOverview, disciplineParams, disciplineScope, divisionOptions, divisionSplit,
-  formatPoints, genderOf, resolveDiscipline, resolveDivision, splitText
+  formatPoints, genderOf, pointsText, resolveDiscipline, resolveDivision, splitText
 } from './teamDisciplineRankings';
 import { overviewScope, teamOverview } from './teamRankings';
 
@@ -142,6 +142,8 @@ describe('the fighters behind a total', () => {
     expect(formatPoints(9)).toBe('9');
     expect(formatPoints(12.5)).toBe('12.5');
     expect(formatPoints(7.25)).toBe('7.25');
+    expect(pointsText(1)).toBe('1 point');
+    expect(pointsText(9)).toBe('9 points');
     expect(contributionTotal([{ ...lines[0], points: 0.1 }, { ...lines[1], points: 0.2 }])).toBe(0.3);
   });
   it('maps database rows', () => {

@@ -253,5 +253,20 @@ select t.expect_eq('Nia and Mike now count for Northern Ravens; the event-time n
   (select string_agg(coalesce(represented_team_id = t.id('f303'), false)::text || '/' || represented_team_name_at_event || '/' || represented_team_basis, ',' order by id) from public.entries where id in (t.id('f661'), t.id('f662'))),
   'true/Mountain Bears/correction,true/Mountain Bears/registration');
 
+-- ================================================================ 12. the API can still embed a team's name on entries (20261004000700)
+-- PostgREST refuses `entries -> teams(name)` when two foreign keys link the tables, so represented_team_id has no foreign key; its rules are triggers.
+select t.as_admin();
+select t.expect_eq('exactly one foreign key from entries to teams (team_id), so teams(name) embeds are not ambiguous',
+  (select string_agg(conname, ',') from pg_constraint where conrelid = 'public.entries'::regclass and confrelid = 'public.teams'::regclass and contype = 'f'), 'entries_team_id_fkey');
+select t.expect_error('a represented team that does not exist is refused on insert',
+  $$insert into public.entries (competition_id, fighter_id, represented_team_id) values ('00000000-0000-0000-0000-00000000f505', '00000000-0000-0000-0000-00000000f404', '00000000-0000-0000-0000-00000000ffff')$$, '23503');
+select t.as_user(t.uid(1));
+select t.expect_error('set_represented_team refuses a team that does not exist', $$select public.set_represented_team('00000000-0000-0000-0000-00000000f601', '00000000-0000-0000-0000-00000000ffff', 'reason')$$, 'P0002');
+select t.as_admin();
+select t.expect_error('a team that is still someone''s represented team cannot be deleted',
+  $$delete from public.teams where id = '00000000-0000-0000-0000-00000000f301'$$, '23503');
+select t.expect_ok('a team nobody represented can still be deleted',
+  $$insert into public.teams (id, slug, name, status) values ('00000000-0000-0000-0000-00000000f3ff', 'spare-team', 'Spare', 'approved'); delete from public.teams where id = '00000000-0000-0000-0000-00000000f3ff'$$);
+
 select 'PASSED ' || count(*) || ' checks' as result from t.log;
 rollback;

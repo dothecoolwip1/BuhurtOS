@@ -5,7 +5,7 @@ import { fetchDisciplineContributions, fetchTeamDisciplineBoard, fetchTeamDiscip
 import { plural } from '../lib/careerView';
 import { friendlyError } from '../lib/friendlyError';
 import {
-  boardTitle, contributionLines, contributionTotal, disciplineBoard, disciplineOverview, disciplineParams, disciplineScope, divisionOptions, divisionSplit, formatPoints,
+  boardTitle, contributionLines, contributionTotal, disciplineBoard, disciplineOverview, disciplineParams, disciplineScope, divisionOptions, divisionSplit, formatPoints, pointsText,
   genderOf, resolveDiscipline, resolveDivision, splitText, type DisciplineCard, type DivisionChoice
 } from '../lib/teamDisciplineRankings';
 import { useAsync } from '../lib/useAsync';
@@ -57,11 +57,11 @@ export function TeamDisciplineTotals({ scope, organizationId, seasonId, params, 
             {cards.map(c => (
               <li key={c.category}>
                 <button type="button" className="panel topteam" aria-current={c.category === card?.category ? 'true' : undefined} onClick={() => open(c)}
-                  aria-label={`${c.label}: ${c.leaders.map(l => l.teamName).join(' and ')}, ${formatPoints(c.points)} points. Open the full team table.`}>
+                  aria-label={`${c.label}: ${c.leaders.map(l => l.teamName).join(' and ')}, ${pointsText(c.points)}. Open the full team table.`}>
                   <span className="eyebrow">{c.label}</span>
                   <span className="n">#1 {c.leaders[0].teamName}</span>
                   {c.leaders.length > 1 && <span className="l">Tied with {c.leaders.slice(1).map(l => l.teamName).join(', ')}</span>}
-                  <span className="pts"><b>{formatPoints(c.points)}</b> points</span>
+                  <span className="pts"><b>{formatPoints(c.points)}</b> {c.points === 1 ? 'point' : 'points'}</span>
                 </button>
               </li>
             ))}
@@ -79,7 +79,7 @@ export function TeamDisciplineTotals({ scope, organizationId, seasonId, params, 
           </ol>
           {(unattributed.data?.length ?? 0) > 0 && (
             <p className="muted" style={{ fontSize: 14 }}>
-              Not credited to any team: {formatPoints(contributionTotal(unattributed.data ?? []))} points from {plural(unattributed.data!.length, 'fighter')} whose
+              Not credited to any team: {pointsText(contributionTotal(unattributed.data ?? []))} from {plural(unattributed.data!.length, 'fighter')} whose
               team at the time was not recorded ({contributionLines(unattributed.data ?? []).map(c => c.displayName).join(', ')}). BuhurtOS does not guess past teams.
             </p>
           )}
@@ -103,13 +103,13 @@ function DisciplineTeamCard({ r, split, filter, category, division }: { r: TeamD
         <span className="l">{plural(r.fighters, 'fighter')} · {plural(r.results, 'result')}{split ? ` · ${split}` : ''}</span>
         <button type="button" className="btn btn-line rk-more" aria-expanded={openList} aria-controls={listId} onClick={() => setOpenList(o => !o)}>{openList ? 'Hide fighters' : 'Show fighters'}</button>
       </span>
-      <span className="pts"><b>{formatPoints(r.points)}</b><span>points</span></span>
+      <span className="pts"><b>{formatPoints(r.points)}</b><span>{r.points === 1 ? 'point' : 'points'}</span></span>
       {openList && (
         <div id={listId} style={{ gridColumn: '1 / -1' }}>
           {lines.loading && <p className="muted">Loading…</p>}
           {lines.error != null && <p role="alert">{friendlyError(lines.error, 'Could not load the fighters.')}</p>}
           {lines.data && (
-            <ul className="contriblist" aria-label={`Fighters behind ${r.teamName}'s ${formatPoints(r.points)} points`}>
+            <ul className="contriblist" aria-label={`Fighters behind ${r.teamName}'s ${pointsText(r.points)}`}>
               {contributionLines(lines.data).map(c => (
                 <li key={c.fighterId}><Link to={`/fighters/${c.fighterId}`}>{c.displayName}</Link><b>{formatPoints(c.points)}</b></li>
               ))}

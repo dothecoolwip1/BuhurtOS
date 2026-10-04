@@ -71,6 +71,9 @@ export const splitText = (parts: ReadonlyArray<{ gender: Division; points: numbe
 /** Points as the league awards them: whole numbers stay whole, fractional multipliers keep up to two decimals. */
 export const formatPoints = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0+$/, '').replace(/\.$/, ''));
 
+/** "1 point", "9 points", "12.5 points". */
+export const pointsText = (n: number): string => `${formatPoints(n)} ${n === 1 ? 'point' : 'points'}`;
+
 /** The fighters behind a total, most points first. The sum of the lines is the team's total. */
 export const contributionLines = (rows: readonly DisciplineContribution[]): DisciplineContribution[] =>
   [...rows].sort((a, b) => b.points - a.points || byName(a.displayName, b.displayName));

@@ -73,6 +73,38 @@ export async function fetchEntries(competitionId: string): Promise<CompetitionEn
   }));
 }
 
+/** How BuhurtOS knows which team an individual entrant represented (entries.represented_team_basis). */
+export type RepresentedBasis = 'registration' | 'team_at_entry' | 'recorded' | 'correction';
+/** An individual (fighter) entry and the team the fighter represented in this competition: what their points count toward in team discipline totals. */
+export interface RepresentedTeamRow {
+  entryId: string; fighterId: string; fighterName: string; status: string;
+  teamId: string | null;
+  /** The team's name when it was recorded (a later rename does not change it). */
+  teamName: string | null;
+  basis: RepresentedBasis | null;
+}
+type RepresentedDb = { id: string; fighter_id: string; status: string; represented_team_id: string | null; represented_team_name_at_event: string | null; represented_team_basis: RepresentedBasis | null; fighters: { display_name: string } | { display_name: string }[] | null };
+export const toRepresentedTeamRow = (r: RepresentedDb): RepresentedTeamRow => ({
+  entryId: r.id, fighterId: r.fighter_id, fighterName: one(r.fighters)?.display_name ?? UNNAMED_ENTRY, status: r.status,
+  teamId: r.represented_team_id, teamName: r.represented_team_name_at_event, basis: r.represented_team_basis
+});
+/** The individual entries of one competition with their represented team, by fighter name. Team entries have no represented team. */
+export async function fetchRepresentedTeams(competitionId: string): Promise<RepresentedTeamRow[]> {
+  const { data, error } = await supabase.from('entries')
+    .select('id,fighter_id,status,represented_team_id,represented_team_name_at_event,represented_team_basis,fighters(display_name)')
+    .eq('competition_id', competitionId).not('fighter_id', 'is', null);
+  if (error) throw error;
+  return (data as unknown as RepresentedDb[]).map(toRepresentedTeamRow).sort((a, b) => a.fighterName.localeCompare(b.fighterName));
+}
+/**
+ * Corrects the team a fighter represented in this one competition (null = no team). Only an organizer of the event or the platform owner;
+ * the database records who, when, the old and new team and the reason. It never changes the fighter's current team.
+ */
+export async function setRepresentedTeam(entryId: string, teamId: string | null, reason: string): Promise<void> {
+  const { error } = await supabase.rpc('set_represented_team', { p_entry: entryId, p_team: teamId, p_reason: reason.trim() });
+  if (error) throw error;
+}
+
 export async function fetchStandings(competitionId: string): Promise<Standing[]> {
   const { data, error } = await supabase.from('competition_standings').select('competition_id,entry_id,wins,losses,draws,score_for,score_against').eq('competition_id', competitionId);
   if (error) throw error;

@@ -23,7 +23,9 @@
 -- is the plain sum of the divisions and nothing is counted twice.
 
 -- ---------------------------------------------------------------- 1. the represented team on a fighter entry
-alter table public.entries add column if not exists represented_team_id uuid references public.teams (id) on delete restrict;
+-- The foreign key keeps the default action (NO ACTION, not deferred): a team that is still someone's represented team cannot be removed;
+-- merge_teams moves represented entries to the kept team first.
+alter table public.entries add column if not exists represented_team_id uuid references public.teams (id);
 alter table public.entries add column if not exists represented_team_name_at_event text;
 alter table public.entries add column if not exists represented_team_basis text;
 do $$ begin
@@ -90,8 +92,11 @@ update public.entries e set represented_team_id = x.team_id, represented_team_ba
   from public.entries e2 cross join lateral private.represented_team_evidence(private.event_of_competition(e2.competition_id), e2.fighter_id) x
  where e.id = e2.id and e.fighter_id is not null and e.represented_team_id is null and x.team_id is not null;
 
-drop trigger if exists entries_represented_team on public.entries;
-create trigger entries_represented_team before insert or update on public.entries for each row execute function private.entries_represented_team();
+do $$ begin
+  if not exists (select 1 from pg_trigger where tgname = 'entries_represented_team' and tgrelid = 'public.entries'::regclass) then
+    create trigger entries_represented_team before insert or update on public.entries for each row execute function private.entries_represented_team();
+  end if;
+end $$;
 
 -- 1c. corrections: an organizer of the event (or the platform owner) with a reason. p_team null records "no team" (independent fighter).
 create or replace function public.set_represented_team(p_entry uuid, p_team uuid, p_reason text) returns void
