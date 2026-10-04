@@ -292,14 +292,25 @@ Main's Pack 1 and this branch's Pack 07 were built in parallel and overlapped. O
 - **Not verified here:** `scripts/e2e/pack1-live.mjs` (needs a real local Supabase stack, not available in this container); nothing hosted.
   Hosted rollout is an owner step in the SQL Editor, in the order above (Pack 07, Pack 1, reconcile, Pack 08); nothing is deployed.
 
-## Hosted rollout of Pack 07 / Pack 1 / reconcile / Pack 08 (2026-10-04, in progress)
+## Hosted rollout of Pack 07 / Pack 1 / reconcile / Pack 08 (2026-10-04)
 
-- Read-only inspection of hosted (mvbxlebznlgroptwwdsm): every migration through Pack 1 is present (Pack 1 was run earlier in the SQL Editor; it is
-  not in the migration ledger); none of Pack 07, the reconcile or Pack 08. Schema fingerprint equals a local build of the same migrations: every
-  table, column, constraint, index, policy, view and trigger identical; 27 function bodies differ only by whitespace / stripped comments.
-- The Supabase MCP migration tool answered `cancelled` for Pack 07 (owner-confirmation gate for DROP/ALTER/DELETE). Not bypassed; nothing applied.
-- Owner step: run `docs/runbooks/HOSTED_ROLLOUT_2026-10-04.sql` once in the SQL Editor. It applies the four repository files in order in one
-  transaction (Pack 1 re-run without its `create trigger competitions_guard`, which hosted already has), with pre- and post-checks. Proven on a local
-  replica of hosted: the result equals the full repository build and the pack07, pack1, reconcile, pack08 and security gates pass.
-- main is not pushed yet: a push to main deploys, and the reconciled frontend needs these database functions. Production stays on main c4ec9d2
-  (Pack 1 frontend + Pack 1 database, consistent) until the owner step is done.
+- Before: hosted had every migration through Pack 1 (Pack 1 run earlier in the SQL Editor, not in the ledger), none of Pack 07, the reconcile or
+  Pack 08; fingerprint equal to a local build of the same migrations (27 function bodies differ only by whitespace / stripped comments).
+- The MCP migration tool answered `cancelled` (owner-confirmation gate); nothing was applied that way. The owner ran
+  `docs/runbooks/HOSTED_ROLLOUT_2026-10-04.sql` in the SQL Editor (17:07 UTC): Pack 07, Pack 1 re-run without its existing
+  `create trigger competitions_guard`, the reconcile, Pack 08, in one transaction with pre/post checks.
+- After (verified read-only): hosted schema fingerprint (normalized for whitespace/comments) is IDENTICAL to the repository build, 1155 of 1155
+  objects. Buckets `waiver-documents` (private, PDF, 10 MB) and `fighter-gallery` (public, webp/jpeg, 4 MB) with their policies;
+  `fighter_claim_requests` RLS on, no anon/authenticated grants; anon may execute only `fighter_claim_states` of the new functions.
+- Behaviour on hosted (gates run inside a transaction that always rolls back; no fixture left behind, checked):
+  `pack07_pack1_reconcile_gate` 54/54 and `pack08_gate` 122/122 (the race fixture uses its own throwaway account instead of a cleanup DELETE).
+  The Pack 07 storage checks were not run on hosted (they write storage.objects directly, which is not how the app reaches Storage).
+- Production data after rollout equals the baseline: 18 events (16 synthetic), 123 competitions, 652 entries, 851 matches, 596 results (all
+  synthetic), 121 fighters, 8 auth users; result_rows / ranking_fighters / ranking_teams 0 (no synthetic leakage); red-deer-rumble-2026 intact
+  (draft, not synthetic, 17 competitions, 1 waiver, now kind=text).
+- Deployed: main fast-forwarded c4ec9d2 -> 07c1dc2; CI and Deploy run #77 green (typecheck/tests/build, database gate, browser tests) and
+  "Deploy GitHub Pages" succeeded 17:32:31 UTC.
+- NOT verified live: the deployed app was not driven in a browser. This container's network policy denies dothecoolwip1.github.io and
+  mvbxlebznlgroptwwdsm.supabase.co, and the @buhurtos.ca test-account passwords are owner secrets (not in the repo; no owner test account).
+- Finding for follow-up (not a production blocker): create_unclaimed_fighter on a synthetic (test) event creates a fighter that is not
+  labelled synthetic; a live test on a fictional event would leave an unlabelled fighter in the public directory and the claim search.
