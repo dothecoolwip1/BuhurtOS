@@ -74,7 +74,7 @@ psql -X -q -At -d $DB -c "$(as_user $A4) select public.set_match_queue('$(m 1)',
 T1=$(date +%s.%N)
 wait
 check "4a the hand call was told to try again (55P03)" "$(grep -c 'try again' /tmp/p9-2.out | tr -d ' ')" "1"
-check "4b ... straight away, not after waiting for the result to commit" "$(echo "$T1 - $T0 < 1.5" | bc -l)" "1"
+check "4b ... straight away, not after waiting for the result to commit" "$(awk -v a="$T0" -v b="$T1" 'BEGIN { print (b - a < 1.5) ? 1 : 0 }')" "1"
 check "4c the result is official and the queue advanced" "$(state)" "1:final,2:active,3:on_deck,4:in_the_hole,5:scheduled,6:scheduled,7:scheduled,8:scheduled"
 
 # ---- 5. an organizer reorders while a result is being saved
@@ -85,7 +85,7 @@ T0=$(date +%s.%N)
 psql -X -q -At -d $DB -c "$(as_user $A2) select public.move_match_in_queue('$(m 2)', 'later') ->> 'changed';" > /tmp/p9-2.out 2>&1
 T1=$(date +%s.%N)
 wait
-check "5a the reorder went through without waiting" "$(grep -c true /tmp/p9-2.out | tr -d ' ') $(echo "$T1 - $T0 < 1.5" | bc -l)" "1 1"
+check "5a the reorder went through without waiting" "$(grep -c true /tmp/p9-2.out | tr -d ' ') $(awk -v a="$T0" -v b="$T1" 'BEGIN { print (b - a < 1.5) ? 1 : 0 }')" "1 1"
 check "5b the organizer's choice is respected after the result commits: 3 active, 2 on deck, 4 in the hole" "$(state)" "1:final,2:on_deck,3:active,4:in_the_hole,5:scheduled,6:scheduled,7:scheduled,8:scheduled"
 
 echo; if [ "$FAIL" = 0 ]; then echo "PACK09A CONCURRENCY OK"; else echo "PACK09A CONCURRENCY FAILED ($FAIL)"; exit 1; fi
