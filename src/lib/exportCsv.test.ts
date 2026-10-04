@@ -4,7 +4,7 @@ import { csvCell, exportFileName, registrationsCsv, toCsv } from './exportCsv';
 
 const reg = (over: Partial<ManagedRegistration> = {}): ManagedRegistration => ({
   id: 'r', status: 'accepted', fullName: 'Ada Lovelace', gender: 'female', organization: 'HACSA', province: 'AB', teamName: 'Iron Wardens', sharesEquipment: false,
-  days: ['sat', 'sun'], availabilityNotes: 'AVAIL-NOTE', biProfile: null, insurance: 'hacsa_member', isVolunteer: false, volunteerRoles: [], mercenary: false, notes: 'FREE-NOTE',
+  days: ['sat', 'sun'], attendDates: [], availabilityNotes: 'AVAIL-NOTE', biProfile: null, insurance: 'hacsa_member', isVolunteer: false, volunteerRoles: [], mercenary: false, notes: 'FREE-NOTE',
   feeDueCents: 4000, feePaid: true, createdAt: '2026-10-01T00:00:00Z', email: 'ada@x.test', emergencyName: 'Pat Parent', emergencyRelationship: 'parent', emergencyPhone: '4035550100',
   medicalNote: 'Asthma-SECRET', categories: [{ competitionId: 'c1', name: 'Longsword', details: {} }, { competitionId: 'c2', name: 'Profight', details: { weight: '80' } }], checkedIn: true, kitPassed: false, ...over
 });

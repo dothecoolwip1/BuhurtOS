@@ -21,6 +21,7 @@ import { EventDaySchedule } from './EventDaySchedule';
 import { MyNextFight } from './MyNextFight';
 import { MyTeamPanel } from './MyTeamPanel';
 import { ShareEventButton } from '../components/ShareEventButton';
+import { ScorekeepingPanel } from '../components/ScorekeepingPanel';
 import { NotFoundPage } from './NotFoundPage';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
@@ -80,8 +81,7 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
         {event.status === 'draft' && <> The event is a <b>draft</b>: only you and your event staff can see it.</>}
       </p>
       <p><Link className="btn btn-ink" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link></p>
-      <p><Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Event setup and publishing</Link> <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>People and roles</Link></p>
-      <p className="src">The draw and event-day scoring arrive in this workspace next.</p>
+      <p><Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Event setup and publishing</Link> <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=competitions`}>Competitions</Link> <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=run`}>Draws, schedule and matches</Link> <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=people`}>People and roles</Link></p>
     </section>
   );
 }
@@ -142,6 +142,7 @@ export function EventWorkspace() {
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
       {showLive && <LiveStatus connection={live.connection} />}
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
+      {mine.data && <ScorekeepingPanel slug={event.slug} competitions={competitions} roles={mine.data.roles} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <MyTeamPanel eventId={event.id} userId={userId} />
       <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} />

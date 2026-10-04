@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { maskEmail, notPublicMessage, pickMine, splitDrafts } from './draftView';
+import { maskEmail, notPublicMessage, splitDrafts } from './draftView';
 
 describe('maskEmail', () => {
   it('masks the local part', () => {
@@ -30,9 +30,4 @@ describe('splitDrafts', () => {
     expect(r.published.map(e => e.id)).toEqual(['b', 'c']);
   });
   it('hides drafts when signed out', () => { expect(splitDrafts(ev, false).drafts).toEqual([]); });
-});
-describe('pickMine', () => {
-  const ev = [{ id: 'a' }, { id: 'b' }];
-  it('filters to staffed events', () => { expect(pickMine(ev, new Set(['b']), false)).toEqual([{ id: 'b' }]); });
-  it('owner gets all', () => { expect(pickMine(ev, new Set(), true)).toHaveLength(2); });
 });

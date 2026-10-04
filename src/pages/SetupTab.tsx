@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Chip } from '../components/ui';
 import { EVENT_TYPES, REGISTRATION_MODES, type EventType, type RegistrationMode } from '../data/eventTypes';
 import type { LiveEvent } from '../data/api';
@@ -52,13 +53,19 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         <h3 id="pub-h">{published ? 'This event is public' : 'This event is a draft'}</h3>
         <p><Chip tone={published ? 'win' : 'brass'}>{published ? 'Published' : 'Draft: only organizers can see it'}</Chip></p>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 4 }}>
-          {checks.map(c => <li key={c.label}>{c.ok ? '✓' : c.blocking ? '✗' : '!'} {c.label}{!c.ok && !c.blocking ? ' (recommended)' : ''}</li>)}
+          {checks.map(c => (
+            <li key={c.label} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span>{c.ok ? '✓' : c.blocking ? '✗' : '!'} {c.ok || c.key !== 'competitions' ? c.label : 'No competitions yet'}{!c.ok && !c.blocking ? ' (recommended)' : ''}</span>
+              {!c.ok && c.key === 'competitions' && <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/manage?tab=competitions`}>+ Add competition</Link>}
+            </li>
+          ))}
         </ul>
         {!published && !confirm && <button type="button" className="btn btn-ink" disabled={busy || blocked} onClick={() => setConfirm(true)}>Publish event</button>}
         {!published && facts.data && blocked && (
           <p role="status" style={{ color: 'var(--live)' }}>
-            Publish is off until: {checks.filter(c => c.blocking && !c.ok).map(c => c.label.replace(/ \(.*\)$/, '').toLowerCase()).join('; ')}.
-            {checks.some(c => c.blocking && !c.ok && c.label.startsWith('A waiver')) && <> Add the waiver below.</>}
+            Publish is off until: {checks.filter(c => c.blocking && !c.ok).map(c => (c.key === 'competitions' ? 'a competition is added' : c.label.replace(/ \(.*\)$/, '').toLowerCase())).join('; ')}.
+            {checks.some(c => c.blocking && !c.ok && c.key === 'waiver') && <> Add the waiver below.</>}
+            {checks.some(c => c.blocking && !c.ok && c.key === 'competitions') && <> Use the Competitions tab (button above).</>}
           </p>
         )}
         {!published && confirm && (

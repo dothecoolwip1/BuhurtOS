@@ -23,6 +23,7 @@ import { TeamManagerPage } from './pages/TeamManagerPage';
 import { TeamPage } from './pages/TeamPage';
 import { TeamEditPage } from './pages/TeamEditPage';
 import { TeamsPage } from './pages/TeamsPage';
+import { MyEventsPage } from './pages/MyEventsPage';
 import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
@@ -56,6 +57,7 @@ export function App() {
         <Route path="platform/activity" element={<Navigate to="/platform/analytics" replace />} />
         <Route path="platform/bugs" element={<PlatformBugsPage />} />
         <Route path="account" element={<AccountPage />} />
+        <Route path="my-events" element={<MyEventsPage />} />
         <Route path="welcome" element={<WelcomePage />} />
         <Route path="test-login" element={<TestLoginPage />} />
         <Route path="formats" element={<FormatsPage />} />

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BulkSchedule } from '../components/BulkSchedule';
 import { MatchSchedule } from '../components/MatchSchedule';
 import { RosterEditor } from '../components/RosterEditor';
@@ -425,7 +426,13 @@ export function RunTab({ event, competitions }: { event: LiveEvent; competitions
   }, [jumpId]);
 
   if (competitions.length === 0) {
-    return <div className="panel info"><h3>No competitions yet</h3><p>Add competitions to {event.name} first. Then you can build draws and run the matches here.</p></div>;
+    return (
+      <div className="panel info" style={{ display: 'grid', gap: 10, justifyItems: 'start' }}>
+        <h3>No competitions yet</h3>
+        <p>Add the competitions {event.name} runs first. Then you can build draws and run the matches here.</p>
+        <Link className="btn btn-ink" to={`/events/${event.slug}/manage?tab=competitions`}>+ Add competition</Link>
+      </div>
+    );
   }
   return (
     <div style={{ display: 'grid', gap: 18 }}>

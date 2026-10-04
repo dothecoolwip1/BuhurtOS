@@ -21,6 +21,7 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { useOutbox } from '../lib/useOutbox';
 import { scoringGuard } from '../lib/swUpdate';
 import { realtimeFilter } from '../lib/liveSync';
+import { fieldOverview } from '../lib/fieldOverview';
 import { trackEvent } from '../lib/analytics';
 import { NotFoundPage } from './NotFoundPage';
 
@@ -267,6 +268,7 @@ export function FieldPage() {
 
   const compById = useMemo(() => new Map((comps.data ?? []).map(c => [c.id, c])), [comps.data]);
   const queue = useMemo(() => fieldQueue(matches.data ?? [], field), [matches.data, field]);
+  const otherFields = useMemo(() => fieldOverview(matches.data ?? []).filter(f => f.field !== field), [matches.data, field]);
 
   const open = async (m: CompetitionMatch) => {
     const comp = compById.get(m.competitionId);
@@ -324,7 +326,15 @@ export function FieldPage() {
             {queue.map(m => <QueueRow key={m.id} m={m} comp={compById.get(m.competitionId)} busy={opening} onOpen={() => void open(m)} />)}
           </div>
           {canResolve && <EnterOfficialResult matches={matches.data ?? []} names={new Map((comps.data ?? []).map(c => [c.id, c.name]))} onDone={reload} />}
-          <Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link>
+          {otherFields.length > 0 && (
+            <nav aria-label="Other fields" className="panel info" style={{ display: 'grid', gap: 8 }}>
+              <b>Other fields</b>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {otherFields.map(f => <Link key={f.field} className={`btn btn-sm ${f.queued > 0 ? 'btn-ink' : 'btn-line'}`} to={`/events/${event.slug}/field/${encodeURIComponent(f.field)}`}>{f.field}{f.queued > 0 ? ` (${f.queued})` : ''}</Link>)}
+              </div>
+            </nav>
+          )}
+          <Link className="more" to={`/events/${event.slug}#scorekeeping`}>← Back to the event and field list</Link>
         </>
       )}
     </section>

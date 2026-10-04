@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Chip, Tabs } from './ui';
+import { Chip, Tabs, TestBadge } from './ui';
 import { LiveBracket } from './LiveBracket';
 import { LivePools } from './LivePools';
 import { fetchEventHistory, fetchOrgLites, fetchSeasons, type EventMeta } from '../data/careers';
@@ -105,6 +105,7 @@ export function EventHistory({ eventId, competitions, live }: { eventId: string;
       {d && tab === 'results' && (
         <>
           {d.results.length === 0 && <div className="panel info"><h3>Results</h3><p className="muted">No final placings are recorded for this event yet. They appear when the organizer finishes a competition.</p></div>}
+          {d.synthetic && d.results.length > 0 && <p className="panel info" role="note"><TestBadge synthetic /> <b>Fictional results.</b> These placings belong to a test event. They are shown here as this event's own record and are never counted in rankings, career statistics or team records.</p>}
           {competitions.map(c => {
             const rows = d.results.filter(r => r.competitionId === c.id);
             if (rows.length === 0) return null;

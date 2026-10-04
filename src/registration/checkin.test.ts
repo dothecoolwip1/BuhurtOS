@@ -4,7 +4,7 @@ import { applyOverride, attentionItems, blockedBecause, checkinCounts, filterChe
 import { groupByDay, parseSchedule } from './schedule';
 
 const reg = (o: Partial<ManagedRegistration> = {}): ManagedRegistration => ({
-  id: 'r', status: 'accepted', fullName: 'Ada North', gender: 'f', organization: 'Org', province: 'AB', teamName: 'Wolves', sharesEquipment: false, days: [],
+  id: 'r', status: 'accepted', fullName: 'Ada North', gender: 'f', organization: 'Org', province: 'AB', teamName: 'Wolves', sharesEquipment: false, days: [], attendDates: [],
   availabilityNotes: null, biProfile: null, insurance: 'hacsa_member', isVolunteer: false, volunteerRoles: [], mercenary: false, notes: null,
   feeDueCents: 0, feePaid: false, createdAt: '', email: '', emergencyName: '', emergencyRelationship: '', emergencyPhone: '', medicalNote: null,
   categories: [{ competitionId: 'c', name: 'Duels', details: {} }], checkedIn: false, kitPassed: false, ...o

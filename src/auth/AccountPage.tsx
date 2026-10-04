@@ -2,11 +2,11 @@ import { useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { Chip, PageHead } from '../components/ui';
-import { fetchMyDisplayName, fetchMyEvents, saveMyDisplayName } from '../data/api';
+import { fetchMyDisplayName, saveMyDisplayName } from '../data/api';
+import { fetchMyEvents } from '../data/myEvents';
 import { avatarUrl, fetchFighterProfile, fetchMyFighterId } from '../data/fighters';
 import { fetchMyCaptainedTeams } from '../data/myTeams';
 import { fetchIsOrgAdmin, fetchTeamRequestsInbox } from '../data/teamManager';
-import { DRAFT_NOTICE } from '../lib/draftView';
 import { friendlyError } from '../lib/friendlyError';
 import { lookupState } from '../lib/lookupState';
 import { useAsync } from '../lib/useAsync';
@@ -50,7 +50,7 @@ function SignedIn({ session }: { session: Session }) {
   const { signOut } = useAuth();
   const { isOwner, isOrganizer } = usePlatformRole();
   const userId = session.user.id;
-  const mine = useAsync(() => fetchMyEvents(userId), [userId]);
+  const mine = useAsync(fetchMyEvents, [userId]);
   const fighter = useAsync(async () => {
     const id = await fetchMyFighterId();
     return id ? fetchFighterProfile(id) : null;
@@ -68,7 +68,9 @@ function SignedIn({ session }: { session: Session }) {
   const name = shown.data?.trim() || profile?.displayName || email.split('@')[0] || 'Your account';
   const photo = avatarUrl(profile?.avatarPath);
   const teams = captained.data ?? [];
-  const events = mine.data ?? [];
+  const myCount = mine.data ? mine.data.filter(e => !e.synthetic).length : null;
+  const myTest = mine.data ? mine.data.filter(e => e.synthetic).length : 0;
+  const myRoles = new Set((mine.data ?? []).flatMap(e => e.staffRoles));
   const fighterState = lookupState(fighter);
   const captainState = lookupState(captained);
   const pending = inbox.data ?? [];
@@ -89,6 +91,7 @@ function SignedIn({ session }: { session: Session }) {
           <p className="muted" style={{ overflowWrap: 'anywhere' }}>{email}</p>
           <p className="acct-roles">
             {isOwner && <Chip tone="brass">Super admin</Chip>}
+            {['head_marshal', 'marshal', 'scorekeeper', 'medic'].filter(r => myRoles.has(r)).map(r => <Chip key={r} tone="steel">{r === 'head_marshal' ? 'Head marshal' : r.charAt(0).toUpperCase() + r.slice(1)}</Chip>)}
             {isOrganizer && !isOwner && <Chip tone="steel">Organizer</Chip>}
             {orgAdmin.data && <Chip tone="steel">Organization admin</Chip>}
             {!isOwner && captainState === 'found' && <Chip>Captain</Chip>}
@@ -131,6 +134,13 @@ function SignedIn({ session }: { session: Session }) {
         </nav>
       </section>
 
+      <section aria-labelledby="myev-h">
+        <h2 id="myev-h" className="acct-h">My events</h2>
+        <nav className="panel acct-list" aria-label="My events">
+          <Row to="/my-events" title="My events" sub={mine.error != null ? 'Could not count them; open to retry' : myCount === null ? 'Loading…' : myCount === 0 && myTest === 0 ? 'Nothing yet: registrations, entries and staff roles show up here' : `${myCount} ${myCount === 1 ? 'event' : 'events'} you take part in, run or score${myTest ? ` · ${myTest} test` : ''}`} />
+        </nav>
+      </section>
+
       <section aria-labelledby="acct-me">
         <h2 id="acct-me" className="acct-h">Account</h2>
         <nav className="panel acct-list" aria-label="Account details">
@@ -147,15 +157,6 @@ function SignedIn({ session }: { session: Session }) {
           {isOwner && <Row to="/platform/organizations" title="Organizations" sub="Switch organizations on or off and manage their admins" />}
         </nav>
       </section>
-
-      {events.length > 0 && (
-        <section aria-labelledby="myev-h">
-          <h2 id="myev-h" className="acct-h">My events</h2>
-          <nav className="panel acct-list" aria-label="My events">
-            {events.map(e => <Row key={e.id} to={`/events/${e.slug}`} title={e.name} sub={e.status === 'draft' ? DRAFT_NOTICE : e.status === 'cancelled' ? 'Cancelled' : 'Published'} />)}
-          </nav>
-        </section>
-      )}
 
       <div><button className="btn btn-line" type="button" onClick={() => void signOut()}>Sign out</button></div>
     </section>

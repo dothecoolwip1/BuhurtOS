@@ -78,7 +78,7 @@ type EntryDb = { id: string; status: string; competitions: CompDb | CompDb[] | n
 
 /** Entries are readable for published events; organizers and scorers also see entries in drafts. */
 export async function fetchTeamEntries(teamId: string): Promise<TeamEventEntry[]> {
-  const { data, error } = await supabase.from('entries').select('id,status,competitions(name,events(name,slug,starts_on,ends_on,status))').eq('team_id', teamId);
+  const { data, error } = await supabase.from('entries').select('id,status,competitions!entries_competition_id_fkey(name,events(name,slug,starts_on,ends_on,status))').eq('team_id', teamId);
   if (error) throw error;
   const out: TeamEventEntry[] = [];
   for (const e of data as unknown as EntryDb[]) {

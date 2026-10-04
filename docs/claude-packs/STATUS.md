@@ -131,3 +131,29 @@ original (pre-Pack 03) form; it was an old version, not missing.
   DROP/DELETE, and that refusal is not bypassed. After the owner's run: re-measure the fingerprints, run the hosted permission tests and the
   advisors, and record them in the reconciliation file.
 * **Do not use `supabase db push`.** The hosted ledger versions differ from the repository's; see section 7 of the reconciliation file.
+
+
+## Pack 1 (post-audit corrective pack, 2026-10-04)
+Source: `docs/reviews/2026-10-03-full-site-mobile-desktop-audit.md`. Branch `ccr-3b8f5e2b-gglnaw`. Six issues, one additive migration
+`supabase/migrations/20261004000100_pack1_competitions_myevents_days.sql`, new gate `supabase/tests/pack1_gate.sql` (49 checks, in run_all.sh),
+browser evidence script `scripts/e2e/pack1-live.mjs` (needs a real local stack; 37 checks at 390 and 1440).
+
+1. Upcoming queries: `entries -> competitions` embeds now name `entries_competition_id_fkey` (`careers.ts`, `teamDirectory.ts`); `pool_tie_decisions` had
+   made the path ambiguous (PGRST201) on every team and fighter page.
+2. Synthetic results: the event's own record reads `result_rows_all` and labels fictional placings; `result_rows`, rankings and statistics are untouched
+   (browser check: `result_rows` still returns 0 rows for the test event, `result_rows_all` 21 flagged rows).
+3. Competitions: `create_competition` / `update_competition` / `delete_competition` (organizer-only, audited) plus trigger `competitions_guard` (no
+   removal with registrations, entries, matches or results; category/division fixed once matches exist; finished competitions immutable; loaders
+   without a signed-in user unaffected). New Manage › Competitions tab; the publish checklist and the Run tab link to it.
+4. Scorekeeping: `ScorekeepingPanel` on the event page for staff who may score (one button per field with what is queued); the field page lists the
+   other fields and links back. No per-ring assignment was added (the data model has none).
+5. My events: `public.my_events()` (staff role, own registration, own fighter's entry, captained team's entry; drafts only for staff and registrants;
+   the platform owner is not special). `/my-events` page (search, test events hidden by default, now / coming up / drafts / past, reason chips,
+   outstanding items, View registration). `/events/<slug>/register` shows the existing registration instead of a blank form. The old staff-only
+   `fetchMyEvents` / `pickMine` are gone.
+6. Registration copy: attendance days come from the event's dates (`registrations.attend_dates`, legacy `days` kept and still accepted); fee and
+   insurance wording no longer carries Rumble dates (fee note comes from the event's `fee_note`).
+
+Verified locally: tsc, vitest 534, vite build, `run_all.sh` DATABASE GATE PASSED (migrations from zero, every gate incl. pack1_gate, fingerprint updated,
+simulation, league 68/68, concurrency), `pack1-live.mjs` 37/37 against the local stack (Chromium, 390 and 1440).
+Hosted: see the Pack 1 handoff in the session; the migration must still be applied and verified on the hosted project.

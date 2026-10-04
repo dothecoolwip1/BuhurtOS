@@ -6,7 +6,7 @@ export type CheckName = 'checked_in' | 'kit';
 
 export interface ManagedRegistration {
   id: string; status: RegStatus; fullName: string; gender: string; organization: string; province: string | null;
-  teamName: string | null; sharesEquipment: boolean; days: string[]; availabilityNotes: string | null; biProfile: string | null;
+  teamName: string | null; sharesEquipment: boolean; days: string[]; attendDates: string[]; availabilityNotes: string | null; biProfile: string | null;
   insurance: Insurance; isVolunteer: boolean; volunteerRoles: string[]; mercenary: boolean; notes: string | null;
   feeDueCents: number; feePaid: boolean; createdAt: string;
   email: string; emergencyName: string; emergencyRelationship: string; emergencyPhone: string; medicalNote: string | null;
@@ -16,7 +16,7 @@ export interface ManagedRegistration {
 
 type Row = {
   id: string; status: RegStatus; full_name: string; gender: string; organization: string; province: string | null; team_name: string | null;
-  shares_equipment: boolean; days: string[]; availability_notes: string | null; bi_profile: string | null; insurance: Insurance;
+  shares_equipment: boolean; days: string[]; attend_dates: string[] | null; availability_notes: string | null; bi_profile: string | null; insurance: Insurance;
   is_volunteer: boolean; volunteer_roles: string[]; mercenary: boolean; notes: string | null; fee_due_cents: number; fee_paid: boolean; created_at: string;
   teams: { name: string } | { name: string }[] | null;
   registration_private: PrivateRow | PrivateRow[] | null;
@@ -26,7 +26,7 @@ type Row = {
 type PrivateRow = { email: string; emergency_name: string; emergency_relationship: string; emergency_phone: string; medical_note: string | null };
 const one = <T,>(v: T | T[] | null): T | null => (Array.isArray(v) ? v[0] ?? null : v);
 
-const SELECT = 'id,status,full_name,gender,organization,province,team_name,shares_equipment,days,availability_notes,bi_profile,insurance,is_volunteer,volunteer_roles,mercenary,notes,fee_due_cents,fee_paid,created_at,'
+const SELECT = 'id,status,full_name,gender,organization,province,team_name,shares_equipment,days,attend_dates,availability_notes,bi_profile,insurance,is_volunteer,volunteer_roles,mercenary,notes,fee_due_cents,fee_paid,created_at,'
   + 'teams(name),registration_private(email,emergency_name,emergency_relationship,emergency_phone,medical_note),'
   + 'registration_competitions(competition_id,details,competitions(name)),registration_checks(check_name,passed)';
 
@@ -38,7 +38,7 @@ export async function fetchRegistrations(eventId: string): Promise<ManagedRegist
     const passed = (n: CheckName) => r.registration_checks.some(c => c.check_name === n && c.passed);
     return {
       id: r.id, status: r.status, fullName: r.full_name, gender: r.gender, organization: r.organization, province: r.province,
-      teamName: one(r.teams)?.name ?? r.team_name, sharesEquipment: r.shares_equipment, days: r.days, availabilityNotes: r.availability_notes,
+      teamName: one(r.teams)?.name ?? r.team_name, sharesEquipment: r.shares_equipment, days: r.days, attendDates: r.attend_dates ?? [], availabilityNotes: r.availability_notes,
       biProfile: r.bi_profile, insurance: r.insurance, isVolunteer: r.is_volunteer, volunteerRoles: r.volunteer_roles, mercenary: r.mercenary,
       notes: r.notes, feeDueCents: r.fee_due_cents, feePaid: r.fee_paid, createdAt: r.created_at,
       email: p?.email ?? '', emergencyName: p?.emergency_name ?? '', emergencyRelationship: p?.emergency_relationship ?? '', emergencyPhone: p?.emergency_phone ?? '', medicalNote: p?.medical_note ?? null,

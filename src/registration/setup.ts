@@ -43,18 +43,18 @@ export function toPatch(f: SetupForm) {
   };
 }
 
-export interface PublishCheck { label: string; ok: boolean; blocking: boolean }
+export interface PublishCheck { key: 'competitions' | 'waiver' | 'close' | 'link' | 'venue'; label: string; ok: boolean; blocking: boolean }
 /** What must be true before publishing. Blocking items stop the button; the rest are warnings. */
 export function publishChecklist(x: { eventType: EventType; registrationMode: RegistrationMode; competitions: number; waivers: number; hasClose: boolean; hasVenue: boolean; hasLink: boolean }): PublishCheck[] {
   const out: PublishCheck[] = [];
   // Only tournaments need competitions; a feast, clinic or demonstration does not.
-  if (x.eventType === 'tournament') out.push({ label: 'At least one competition is set up', ok: x.competitions > 0, blocking: true });
+  if (x.eventType === 'tournament') out.push({ key: 'competitions', label: 'At least one competition is set up', ok: x.competitions > 0, blocking: true });
   // A waiver is only needed when people register on BuhurtOS.
   if (x.registrationMode === 'buhuros') {
-    out.push({ label: 'A waiver is loaded (people must accept it to register)', ok: x.waivers > 0, blocking: true });
-    out.push({ label: 'A registration close time is set', ok: x.hasClose, blocking: false });
+    out.push({ key: 'waiver', label: 'A waiver is loaded (people must accept it to register)', ok: x.waivers > 0, blocking: true });
+    out.push({ key: 'close', label: 'A registration close time is set', ok: x.hasClose, blocking: false });
   }
-  if (x.registrationMode === 'external') out.push({ label: 'The sign-up or ticket link is set', ok: x.hasLink, blocking: true });
-  out.push({ label: 'A venue or address is given', ok: x.hasVenue, blocking: false });
+  if (x.registrationMode === 'external') out.push({ key: 'link', label: 'The sign-up or ticket link is set', ok: x.hasLink, blocking: true });
+  out.push({ key: 'venue', label: 'A venue or address is given', ok: x.hasVenue, blocking: false });
   return out;
 }
