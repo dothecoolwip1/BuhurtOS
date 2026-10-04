@@ -215,7 +215,7 @@ notification kinds). Gate `supabase/tests/pack08_gate.sql` (122 checks, in `run_
   organizers of other events get 42501). Synthetic fighters appear only for a synthetic event.
 - **Claims:** `request_fighter_claim` / `cancel_fighter_claim` / `my_fighter_claims` / `search_unclaimed_fighters` (any signed-in user);
   `list_fighter_claims` / `resolve_fighter_claim` are **platform-owner only** (kept from the Pack 05 identity-review model; event organizers have no
-  say). `fighter_claims` has no grants; nobody can write `fighter_accounts`. Approval links the account to the EXISTING fighter id; nothing is
+  say). `fighter_claim_requests` has no grants; nobody can write `fighter_accounts`. Approval links the account to the EXISTING fighter id; nothing is
   created, copied or moved, and the other pending requests for that fighter are closed. Outcomes: `approved`, `declined`, `already_claimed`
   (the fighter got an owner first; nothing linked), `account_has_fighter` (the claimant already owns one; nothing linked, the pair is queued as a
   `claim_conflict` review). Email is deliberately not collected (the fighters table is public).
@@ -226,5 +226,5 @@ notification kinds). Gate `supabase/tests/pack08_gate.sql` (122 checks, in `run_
 
 Not done / honest limits: the hosted database does not have Packs 06/07/08 and nothing is deployed; the browser script runs against an in-memory
 imitation of Supabase, so the database rules are proved only by the SQL gate; no real Samsung phone; entrants are not shown on the public event
-page with the chip (only Run, fighter page, search); a claim for a fighter who has a different account's pending review is decided by the owner by
-hand; no email notification, only the in-app bell.
+page with the chip (only Run, fighter page, search);
+no email notification, only the in-app bell.
