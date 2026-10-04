@@ -80,6 +80,22 @@ Data: `LiveSync` (realtime + polling fallback + safety refresh) over `matches` a
   and the Pack 09A real-stack run `eventday-live` 78 checks (it now finds the pairing in a visually hidden heading on the scoring screen).
 * Screenshots reviewed at 1920×1080, 1366×768, 768×1024, 1024×768 and 390×844 (scorekeeper and display).
 
+## Hosted release (2026-10-04, through the Supabase MCP; Garrett ran no SQL)
+* Migration file renamed to `20261004000800_pack09b_live_scores.sql` before release: another session's branch (`ccr-2b377afe-r59vjf`, not on
+  `main`) carries `20261004000600_team_discipline_rankings.sql` and `20261004000700_represented_team_embed_fix.sql`, and both are already applied to
+  the hosted project (ledger versions 20261004202259 and 20261004203027). The hosted database is therefore ahead of `main` by those two migrations;
+  Pack 09B touches none of their objects.
+* `apply_migration` and multi-statement `execute_sql` batches timed out at the tool layer (60 s) and rolled back cleanly each time (verified: no
+  sessions, no locks, no partial objects). The same statements applied one per call without trouble. Ledger row `pack09b_live_scores`
+  (version 20261004205153) added by hand so the hosted ledger lists the pack.
+* Verified read-only after applying: columns `match_id, competition_id, score_a, score_b, phase, detail, seq, device, updated_at`; RLS on; policy
+  `match_live_scores_read` with the public-event / can-score rule; grants anon+authenticated SELECT only; `report_live_score` SECURITY DEFINER,
+  `search_path=''`, EXECUTE for authenticated only; `clear_live_score` not executable by anon/authenticated; trigger `matches_clear_live_score`
+  on `matches`; publication membership; competition index; 0 rows; the 777 final matches untouched. Function sources hash-identical to the local
+  build (`38b390d0…` / `a692f8d7…`).
+* Advisors after: security unchanged from the baseline except `report_live_score` joining the expected list of authenticated-executable
+  SECURITY DEFINER functions (the deliberate RPC pattern); performance adds only "unused index" for the brand-new competition index.
+
 ## Checklist
 - [x] Preflight, docs check, advisor baseline, invariants, design
 - [x] Migration + gate + fingerprint
@@ -87,5 +103,6 @@ Data: `LiveSync` (realtime + polling fallback + safety refresh) over `matches` a
 - [x] Arena
 - [x] Real-stack browser runs (scorekeeper journey, arena journey, multi-field) + screenshots at 390 / 768 / 1366 / 1920
 - [x] Regression suites (CI browser suites, eventday-live)
-- [ ] Advisors after the hosted migration
-- [ ] Hosted migration applied + verified, merge, CI, deploy, smoke
+- [x] Advisors after the hosted migration
+- [x] Hosted migration applied + verified
+- [ ] Merge, CI, deploy, smoke

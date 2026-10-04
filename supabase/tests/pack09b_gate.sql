@@ -1,4 +1,4 @@
--- Pack 09B gate: the running-score table for the venue display (migration 20261004000600).
+-- Pack 09B gate: the running-score table for the venue display (migration 20261004000800).
 -- LOCAL THROWAWAY DATABASE ONLY; everything is rolled back.
 -- Run:  psql -v ON_ERROR_STOP=1 -d <db> -f supabase/tests/pack09b_gate.sql
 \set ON_ERROR_STOP on
