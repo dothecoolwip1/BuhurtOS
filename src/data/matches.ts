@@ -32,7 +32,7 @@ const MATCH_SELECT = 'id,competition_id,stage,round_label,position,pool,field,sc
   + `a:entries!entry_a(${NAMED}),b:entries!entry_b(${NAMED})`;
 
 export const toMatch = (r: MatchRow): CompetitionMatch => ({
-  id: r.id, competitionId: r.competition_id, stage: r.stage, roundLabel: r.round_label, position: r.position, pool: r.pool, field: r.field,
+  id: r.id, competitionId: r.competition_id, stage: r.stage, roundLabel: r.round_label, position: r.position, pool: r.pool, field: r.field?.trim() || 'Field 1',
   scheduledAt: r.scheduled_at, queueState: r.queue_state, entryA: r.entry_a, entryB: r.entry_b, nameA: nameOf(one(r.a)), nameB: nameOf(one(r.b)),
   nextMatchId: r.next_match_id, nextSlot: r.next_slot, result: r.result, winnerEntryId: r.winner_entry_id, scoreA: r.score_a, scoreB: r.score_b,
   detail: r.detail ?? {}, version: r.version, finalizedAt: r.finalized_at
