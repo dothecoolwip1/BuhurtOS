@@ -128,7 +128,7 @@ function Stage({ view, phase, eventStarts, timeNote, loading }: { view: ArenaVie
 function Fight({ label, fight, result = false, muted = false, winner = null }: { label: string | null; fight: ArenaFight; result?: boolean; muted?: boolean; winner?: ReactNode }) {
   const showScore = result || fight.live;
   return (
-    <div className={`ar-fight${result ? ' result' : ''}${muted ? ' muted' : ''} ar-enter`}>
+    <div className={`ar-fight${result ? ' ar-done' : ''}${muted ? ' ar-muted' : ''} ar-enter`}>
       {label && <p className="ar-label">{label}</p>}
       <div className="ar-sides">
         <Side k="a" fight={fight} showScore={showScore} />

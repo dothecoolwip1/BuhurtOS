@@ -20,8 +20,8 @@
 .ar-field{margin:0;font:900 clamp(22px,4.5vmin,56px)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
 .ar-count{font:600 clamp(11px,1.6vmin,18px)/1 var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--ar-mute)}
 .ar-label{margin:0;font:700 clamp(13px,2.2vmin,26px)/1 var(--f-data);letter-spacing:.18em;text-transform:uppercase;color:var(--ar-live)}
-.ar-fight.result .ar-label{color:var(--ar-win)}
-.ar-fight.muted .ar-label,.ar-center .ar-label{color:var(--ar-mute)}
+.ar-fight.ar-done .ar-label{color:var(--ar-win)}
+.ar-fight.ar-muted .ar-label,.ar-center .ar-label{color:var(--ar-mute)}
 .ar-fight{display:grid;gap:clamp(10px,2.5vh,28px);align-content:center;min-height:0}
 .ar-sides{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(10px,2vw,40px);align-items:center}
 .ar-side{display:grid;gap:clamp(6px,1.5vh,18px);min-width:0;text-align:center;padding:clamp(10px,2vh,28px) clamp(8px,1.5vw,24px);border-radius:clamp(14px,2vw,28px);border:3px solid var(--ar-line);background:#10151D}
@@ -58,3 +58,12 @@
   .ar-tools{margin-left:0;width:100%;justify-content:space-between}
 }
 @media (prefers-reduced-motion:reduce){.ar-live.live::before{animation:none}.ar-enter{animation:none}.ar-bar{transition:none}}
+/* Short screens (a laptop, a tablet on its side): tighter rhythm so the fight, its context and the next two fights all fit without scrolling. */
+@media (max-height:820px) and (min-width:641px){
+  .ar-main{padding-block:10px;gap:6px}
+  .ar-field{font-size:clamp(20px,3.6vmin,36px)}
+  .ar-fight{gap:8px}
+  .ar-side{padding-block:8px;gap:4px}
+  .ar-score{font-size:clamp(56px,24vmin,220px)}
+  .ar-next{padding-block:8px}
+}
