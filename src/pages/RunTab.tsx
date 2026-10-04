@@ -6,6 +6,7 @@ import { RosterEditor } from '../components/RosterEditor';
 import { ConflictsPanel } from '../components/RunConflicts';
 import { AddEntrant } from '../components/AddEntrant';
 import { Withdrawals } from '../components/Withdrawals';
+import { RepresentedTeams } from '../components/RepresentedTeams';
 import { Chip } from '../components/ui';
 import { fetchCompetitionRoster, fetchEventTimeZone, fetchMatchDurations, DEFAULT_TIME_ZONE } from '../data/runSchedule';
 import type { LiveCompetition, LiveEvent } from '../data/api';
@@ -392,6 +393,8 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
           </div>
         </details>
       )}
+
+      {comp.league !== 'buhurt' && all.some(e => e.fighterId) && <RepresentedTeams competitionId={comp.id} competitionName={comp.name} reloadKey={reload} />}
 
       {list.some(m => m.queueState !== 'final') && (
         <BulkSchedule matches={list.map(m => ({ matchId: m.id, queueState: m.queueState, scheduledAt: m.scheduledAt }))} timeZone={timeZone}

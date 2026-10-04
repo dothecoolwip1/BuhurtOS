@@ -324,6 +324,38 @@ Main's Pack 1 and this branch's Pack 07 were built in parallel and overlapped. O
 - Rankings fix (separate commit): Teams get their own categories from the ranking data, a "Top teams" overview and a division control only where a division exists. Frontend only. 16 unit tests, 22 browser checks.
 - Database: `20261004000500_pack09a_event_day_queue.sql` (`matches.queue_order`, one rule for running order and for "can it run", commit-time automatic advancement, `advance_field_queue`, `move_match_in_queue`, serialized `set_match_queue`). Local only: full database suite passes (pack09a_gate 107, pack09a_concurrency 14, every existing suite, fingerprint).
 - Frontend: Manage > Event day. Local only: typecheck, 663 unit tests, build; earlier browser suites unchanged (field-pack03 28, pack07-ux 86, pack08-entrants 54, sample-mode 34, rankings-teams 22); new `scripts/e2e/eventday-live.sh` run against a real local stack: 78 checks at 1280 / 768 / 390 px.
+- Apply the migration before deploying the frontend (see docs/claude-packs/PACK_09A_EVENT_DAY.md, which also lists the known limits).
+
+## Team discipline totals (2026-10-04)
+
+Rankings > Teams has two separate team tables: **Discipline totals** (the default: fighters' individual ranking points summed by the team each fighter represented, per discipline) and **Team fights** (the existing team competition ranking, 3v3 / 5v5 and so on; heading "Team fight leaders").
+
+- Formula unchanged: totals are derived from the same rows as `ranking_fighters`; group fight (team entry) results never count. Disciplines, names and divisions come from the data.
+- Historical attribution: `entries.represented_team_id` (+ name at the event, + basis), set when an entry is created from evidence of that time (registration team, else the home team while the event is not over). An entry for an event that is already over gets no default; nothing is guessed.
+- Correction UI: Manage > Run > (individual competition) > **Teams represented**. Organizer of the event (while their role is active, 7 days after the event) or the platform owner / organization admin: choose the team, give a reason, save through `set_represented_team` (audited: who, when, from, to, reason). It never changes the fighter's current team or memberships.
+- Migrations: `20261004000600_team_discipline_rankings.sql` and `20261004000700_represented_team_embed_fix.sql`. 0700 replaces the foreign key on `represented_team_id` with triggers (team must exist; a represented team cannot be deleted): a second entries->teams foreign key made PostgREST refuse every `entries -> teams(name)` embed (PGRST201), which the app uses for entrants, matches, brackets and history.
+
+### Hosted (mvbxlebznlgroptwwdsm), 2026-10-04
+
+- Before: a read-only schema fingerprint of hosted equalled a local build of every migration through `20261004000500` (1170 objects; function bodies compared without whitespace/comments). None of the feature's objects existed.
+- Applied with the Supabase migration tool (no SQL Editor step): `team_discipline_rankings` at 20:22:59 UTC, `represented_team_embed_fix` at 20:30:27 UTC. Between the two, `entries -> teams(name)` embeds were ambiguous on hosted; the API logs show no REST requests in that window. After: hosted fingerprint equals a local build of every migration (1184 objects).
+- Back-fill by the migration: past NACL-test results got no team (no evidence); the upcoming fictional Rumble-test got 44 home-team + 1 registration attributions; the upcoming real `test-stuff-test` (4 entries, no results) got the fighters' home teams, the same rule a new entry follows.
+- NACL-test back-fill (fictional data only): the 498 finished NACL-test individual entries were attributed through `set_represented_team` as the platform owner, reason "NACL-test fictional dataset: the team this fictional fighter belongs to" (498 audit rows). Evidence: the deterministic seed's fighter -> team map (120 fictional fighters, one team each for the whole dataset), checked against hosted (same team, no other memberships, every fighter and team tagged fictional) and guarded to fictional events only. No real record was changed; there are no real HACSA or Red Deer Rumble results on hosted.
+- Verified read-only on hosted: 382 NACL-test discipline rows; in all 29 partitions team totals (+ unattributed, now 0) equal `ranking_fighters` points and every result is counted once; combined = sum of divisions; organization history 1796.25 = 1796.25; only longsword / polearm / sword_shield in discipline totals, only 3v3 / 5v5 in team fights; `ranking_fighters` (590/224/120) and `ranking_teams` (65/30/10) row counts unchanged; no fictional fighter or team in any all-time ranking; grants: views readable by anon/authenticated, `set_represented_team` executable by authenticated only.
+- Pre-existing, unrelated: one HTTP 300 at 17:49 UTC for `entries?select=team_id,competitions!inner(event_id)` (src/data/teams.ts) — entries has two relationships to competitions; that query needs a hint. Not changed here.
+
+### Reconciliation with Pack 09B and release preparation (2026-10-04)
+
+- main had moved to `7c77bd8` (Pack 09B, 11 commits) while this branch sat at `4ee6b5e`. Overlapping files: `STATUS.md`, `run_all.sh` (conflicts, both sides kept: `pack09b_gate` and `team_discipline_rankings_gate` both run), `app.css` and `schema.fingerprint.txt` (merged cleanly; the fingerprint equals a fresh build of every migration, 1208 objects). No source file of Pack 09B (scorekeeper screen, Arena, live scores) overlaps ours. Migration order: 000600, 000700 (team discipline), 000800 (Pack 09B); all three are on hosted.
+- Hosted re-verified read-only against the merged repository: the full schema fingerprint is byte-identical (1208 objects); one ledger row per migration, no duplicates; represented-team columns, constraints and both triggers, the correction function (authenticated only), both views, 498 audit rows. Nothing was re-applied.
+- `src/data/teams.ts` (`fetchMyTeamRosters`): `entries` reaches `competitions` two ways (its own foreign key, and many-to-many through `pool_tie_decisions`), so the un-hinted embed was answered 300 / PGRST201. Reproduced on a real PostgREST and fixed with the explicit `competitions!entries_competition_id_fkey!inner(event_id)` (the relationship the other entries -> competitions embeds already name). Regression tests fail without the hint; no other un-hinted embed exists.
+- The live browser test now also covers ties, divisions, a discipline known only to the database, tap-through, Show fighters, Team fights apart, and the "No team" correction (108 checks).
+- Evidence on the merged tree: full database gate (pack09b 47, team discipline 53, fingerprint, simulation, league verifier, both concurrency tests); vitest 712; typecheck; build; field-pack03 28, sw-update 28, pack07-ux 89, pack08-entrants 54, rankings-teams 22, sample-mode 34; real-stack represented-team 108, eventday 78, arena 103.
+
+### Local verification
+
+Database gate (`run_all.sh`, includes `team_discipline_rankings_gate.sql`, 53 checks), vitest, typecheck, build; `scripts/e2e/represented-team-live.sh` (real Postgres + PostgREST + Chromium, 51 checks at 390 / 768 / 1280 px); `scripts/e2e/eventday-live.sh`; `scripts/e2e/rankings-teams.mjs` (mocked, 22). Frontend NOT deployed (feature branch only): the hosted database is ahead of the deployed app, which is safe because every change is additive.
+
 - Known limits: docs/claude-packs/PACK_09A_EVENT_DAY.md.
 
 ## Pack 09B: Field-side scoring and the Live Arena display (2026-10-04)

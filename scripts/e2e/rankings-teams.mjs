@@ -1,5 +1,5 @@
 // Drives the REAL built app in a REAL Chromium against a small in-script stand-in for the REST API (organizations, seasons, ranking views) and checks the
-// Rankings page: Fighters keep their categories; Teams offer only categories teams rank in; the "Top teams" overview shows the leader of each; tapping a
+// Rankings page: Fighters keep their categories; Teams offer only categories teams rank in; the "Team fight leaders" overview (Teams > Team fights) shows the leader of each; tapping a
 // leader opens that category's full ranking; a division is offered only where one really exists; an organization with no team results shows a plain empty state.
 //   VITE_BASE=/ npx vite build --outDir /tmp/e2e-dist && npx vite preview --outDir /tmp/e2e-dist --port 4181 &
 //   E2E_BASE=http://localhost:4181 node scripts/e2e/rankings-teams.mjs
@@ -80,7 +80,7 @@ try {
   check('Fighters: choosing Sword and shield shows that ranking', (await text(page)).includes('Bran Oak'), await text(page));
 
   // ---- Teams, season scope
-  await go(page, `/rankings?who=teams&scope=season&org=${OA}&season=${SA}&category=sword_shield&division=men`);
+  await go(page, `/rankings?who=teams&table=fights&scope=season&org=${OA}&season=${SA}&category=sword_shield&division=men`);
   const teamCats = await categoryOptions(page);
   check('Teams: only team categories are offered, in natural order', JSON.stringify(teamCats) === JSON.stringify(['3v3', '5v5', '12v12']), teamCats.join(','));
   check('Teams: Sword and shield / Longsword / Polearm are not offered', !teamCats.some(c => /sword|longsword|polearm|sabre/i.test(c)), teamCats.join(','));
@@ -114,7 +114,7 @@ try {
   check('All time: no per-category overview exists, the single table shows', (await page.locator('.topteam').count()) === 0 && (await page.locator('.rankcard').count()) === 1);
 
   // ---- an organization without team results
-  await go(page, `/rankings?who=teams&scope=season&org=${OB}&season=${SB}`);
+  await go(page, `/rankings?who=teams&table=fights&scope=season&org=${OB}&season=${SB}`);
   t = await text(page);
   check('An organization with no team results says so plainly, with no category choices', /no team rankings yet/i.test(t) && (await page.locator('select').filter({ has: page.locator('option', { hasText: /5v5/ }) }).count()) === 0 && (await page.locator('.topteam').count()) === 0, t.slice(0, 500));
 
@@ -123,7 +123,7 @@ try {
 
   // ---- phone
   const m = await open({ width: 390, height: 844 });
-  await go(m.page, `/rankings?who=teams&scope=season&org=${OA}&season=${SA}`);
+  await go(m.page, `/rankings?who=teams&table=fights&scope=season&org=${OA}&season=${SA}`);
   const sw = await m.page.evaluate(() => [document.scrollingElement.scrollWidth, innerWidth]);
   check('Phone 390px: no sideways scroll', sw[0] <= sw[1], JSON.stringify(sw));
   const box = await m.page.locator('.topteam').first().boundingBox();
