@@ -165,6 +165,15 @@ column public.fighters.joined_year integer
 column public.fighters.region text
 column public.fighters.social_links jsonb not null
 column public.fighters.team_id uuid
+column public.match_live_scores.competition_id uuid not null
+column public.match_live_scores.detail jsonb not null
+column public.match_live_scores.device text not null
+column public.match_live_scores.match_id uuid not null
+column public.match_live_scores.phase text not null
+column public.match_live_scores.score_a integer not null
+column public.match_live_scores.score_b integer not null
+column public.match_live_scores.seq bigint not null
+column public.match_live_scores.updated_at timestamp with time zone not null
 column public.matches.competition_id uuid not null
 column public.matches.created_at timestamp with time zone not null
 column public.matches.detail jsonb not null
@@ -560,6 +569,14 @@ constraint fighters fighters_pkey PRIMARY KEY (id)
 constraint fighters fighters_region_check CHECK (((region IS NULL) OR (char_length(region) <= 80)))
 constraint fighters fighters_social_links_check CHECK ((jsonb_typeof(social_links) = 'object'::text))
 constraint fighters fighters_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
+constraint match_live_scores match_live_scores_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
+constraint match_live_scores match_live_scores_detail_check CHECK ((pg_column_size(detail) <= 4096))
+constraint match_live_scores match_live_scores_device_check CHECK ((char_length(device) <= 64))
+constraint match_live_scores match_live_scores_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint match_live_scores match_live_scores_phase_check CHECK ((char_length(phase) <= 80))
+constraint match_live_scores match_live_scores_pkey PRIMARY KEY (match_id)
+constraint match_live_scores match_live_scores_score_a_check CHECK ((score_a >= 0))
+constraint match_live_scores match_live_scores_score_b_check CHECK ((score_b >= 0))
 constraint matches matches_advance_queue TRIGGER DEFERRABLE INITIALLY DEFERRED
 constraint matches matches_check CHECK (((entry_a IS NULL) OR (entry_b IS NULL) OR (entry_a <> entry_b)))
 constraint matches matches_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
@@ -756,6 +773,7 @@ function private.check_fighter_profile() secdef=false d10edd9891a16ec5629d21aed9
 function private.check_match_links() secdef=false a51b8970156451f58d229b1ff5794a7b
 function private.check_volunteer_roles() secdef=false 18b7f5cc3bd235f2ea30e2c446f61182
 function private.clean_social_links(p jsonb) secdef=false d8c9cef277061de7b1a05966ed579927
+function private.clear_live_score() secdef=true 0039b6e520fb696cde330ed8b9ee9bf4
 function private.clear_orphan_next_slots() secdef=true 46af868b29895c0b4c523740c1976149
 function private.clear_tie_decisions() secdef=true b7c59c40208031d422d138cea7492660
 function private.command_schema_ok(p_schema integer) secdef=false f2865c592704878cd24bbdbfe3b8b711
@@ -886,6 +904,7 @@ function public.remove_team_captain(p_team uuid, p_user uuid) secdef=true 4d3389
 function public.reopen_match(p_match uuid, p_reason text) secdef=true 2bfb6353b4a4176e607845aadbe67c72
 function public.reorder_my_gallery(p_ids uuid[]) secdef=true 6e9aff3795e805846d0fe351724c00db
 function public.report_bug(p jsonb) secdef=true 7d1ea860d4335a1060158e8f78c967fb
+function public.report_live_score(p_match uuid, p_device text, p_seq bigint, p_score_a integer, p_score_b integer, p_phase text, p_detail jsonb, p_expected_version integer) secdef=true 7b1df6e1c638d9d09de343c9b425229f
 function public.request_fighter_claim(p_fighter uuid, p_message text) secdef=true 9d87cfb1d0d29b597c2905cd402956b4
 function public.request_new_team(p_payload jsonb) secdef=true ad52e737cbca78ece235bf3209050c6c
 function public.request_team_join(p_team uuid, p_message text) secdef=true 25d5ab4ac2dac9fdb871282ced04ca1c
@@ -961,6 +980,8 @@ index public.fighter_identity_reviews CREATE INDEX ON public.fighter_identity_re
 index public.fighter_identity_reviews CREATE UNIQUE INDEX ON public.fighter_identity_reviews USING btree (fighter_id, candidate_id)
 index public.fighter_identity_reviews CREATE UNIQUE INDEX ON public.fighter_identity_reviews USING btree (id)
 index public.fighters CREATE UNIQUE INDEX ON public.fighters USING btree (id)
+index public.match_live_scores CREATE INDEX ON public.match_live_scores USING btree (competition_id)
+index public.match_live_scores CREATE UNIQUE INDEX ON public.match_live_scores USING btree (match_id)
 index public.matches CREATE INDEX ON public.matches USING btree (competition_id, stage, "position")
 index public.matches CREATE INDEX ON public.matches USING btree (field, queue_state)
 index public.matches CREATE UNIQUE INDEX ON public.matches USING btree (id)
@@ -1034,6 +1055,7 @@ policy public.events events_read SELECT roles=anon,authenticated using=(private.
 policy public.fighter_accounts fighter_accounts_own SELECT roles=authenticated using=(user_id = auth.uid()) check=
 policy public.fighter_gallery fighter_gallery_public_read SELECT roles=anon,authenticated using=true check=
 policy public.fighters fighters_public_read SELECT roles=anon,authenticated using=true check=
+policy public.match_live_scores match_live_scores_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
 policy public.matches matches_organizer_delete DELETE roles=authenticated using=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text)) check=
 policy public.matches matches_organizer_insert INSERT roles=authenticated using= check=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state = 'scheduled'::text) AND (result IS NULL))
 policy public.matches matches_organizer_update UPDATE roles=authenticated using=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text)) check=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text))
@@ -1095,6 +1117,7 @@ table public.fighter_claim_requests rls=true
 table public.fighter_gallery rls=true
 table public.fighter_identity_reviews rls=true
 table public.fighters rls=true
+table public.match_live_scores rls=true
 table public.matches rls=true
 table public.notifications rls=true
 table public.organization_staff rls=true
@@ -1134,6 +1157,7 @@ trigger public.fighter_gallery fighter_gallery_limit 649ed07e4ca64aa5d7b322678bd
 trigger public.fighters fighters_profile_check e7e82807a0fa9ec51263909bf9a9392c
 trigger public.matches matches_advance_queue a856fe6168a48243b58bdbc449827f61
 trigger public.matches matches_bump_version 349122f662f9df6a32cd78de47b0e4d4
+trigger public.matches matches_clear_live_score 91aa2e2a9dad90a2285e3d79208fbe6b
 trigger public.matches matches_clear_orphan_slots 8b44bfc0ed4fce0385cbf2225971a1f0
 trigger public.matches matches_clear_tie_decisions b680868d5ce98a216ba490b041c0461a
 trigger public.matches matches_links 0e6952187bb28c316b1b233bf44007df

@@ -320,8 +320,15 @@ Main's Pack 1 and this branch's Pack 07 were built in parallel and overlapped. O
 
 ## Pack 09A: Event day command center and field queue (2026-10-04)
 
-- Branch `pack09a-event-day-command-center` (also contains `fix-team-rankings-categories`, which can be released on its own). NOT merged, NOT deployed, NOT applied to hosted Supabase.
+- Released 2026-10-04: hosted migration applied through the Supabase MCP, merged to `main` (`9d65342`), CI run #80 green, GitHub Pages deployed. Production browser smoke test was not possible from the release session (github.io egress blocked).
 - Rankings fix (separate commit): Teams get their own categories from the ranking data, a "Top teams" overview and a division control only where a division exists. Frontend only. 16 unit tests, 22 browser checks.
 - Database: `20261004000500_pack09a_event_day_queue.sql` (`matches.queue_order`, one rule for running order and for "can it run", commit-time automatic advancement, `advance_field_queue`, `move_match_in_queue`, serialized `set_match_queue`). Local only: full database suite passes (pack09a_gate 107, pack09a_concurrency 14, every existing suite, fingerprint).
 - Frontend: Manage > Event day. Local only: typecheck, 663 unit tests, build; earlier browser suites unchanged (field-pack03 28, pack07-ux 86, pack08-entrants 54, sample-mode 34, rankings-teams 22); new `scripts/e2e/eventday-live.sh` run against a real local stack: 78 checks at 1280 / 768 / 390 px.
-- Apply the migration before deploying the frontend (see docs/claude-packs/PACK_09A_EVENT_DAY.md, which also lists the known limits).
+- Known limits: docs/claude-packs/PACK_09A_EVENT_DAY.md.
+
+## Pack 09B: Field-side scoring and the Live Arena display (2026-10-04)
+
+- Branch `pack09b-field-scoring-arena` from `main` `9d65342`. Hosted migration applied and verified 2026-10-04 through the Supabase MCP (statement by statement; ledger `pack09b_live_scores`). Note: the hosted database also carries two migrations from another session's branch (`ccr-2b377afe-r59vjf`: team discipline rankings and its embed fix) that are not on `main`.
+- Database: `20261004000800_pack09b_live_scores.sql`: `public.match_live_scores` (the running score a scorer's device reports for a fight in progress; public for published events, no account id, cleared by trigger when the match becomes final or is sent back), `public.report_live_score` (SECURITY DEFINER, explicit `can_score`, refuses final and stale, latest wins per device), publication membership. Local: `pack09b_gate` 47 checks, full database gate green, fingerprint 1194 objects.
+- Frontend: the scoring screen (`components/scoring/ScoringScreen.tsx`) with a state banner, the two sides and the running score as the dominant element, OFFICIAL → Next fight on this field / Back to Event day; the device reports its running score while scoring. New public `/events/:slug/arena[/:field]` venue display outside the site chrome (one field, NOW with live score, result card, On deck / In the hole, fullscreen with fallback, realtime + polling). Links from the event workspace and Event day.
+- Local evidence: typecheck, unit suite, build; earlier browser suites unchanged (field-pack03 28, sw-update 28, pack07-ux 89, pack08-entrants 54, sample-mode 34, rankings-teams 22, eventday-live 78); `scripts/e2e/arena-live.sh` 103 checks against a real local stack with screenshots at 1920 / 1366 / 1024 / 768 / 390 px. Details and known limits: docs/claude-packs/PACK_09B_LIVE_ARENA.md.
