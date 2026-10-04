@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
 import { DuelBoard, GroupBoard, MarathonBoard, ProBoard, SeriesBoard } from '../components/ScoreBoards';
@@ -233,7 +233,10 @@ function Scoring({ opened, eventId, userId, onExit, onFinished, onStale }: { ope
 
 export function FieldPage() {
   const { eventId: slug = '', field: rawField = '' } = useParams();
+  const [search, setSearch] = useSearchParams();
   const field = rawField.trim();
+  const wantedMatch = search.get('match');                // Event day opens the scoreboard of one match directly
+  const fromEventDay = search.get('from') === 'eventday'; // ... and offers the way back
   const { session, loading: authLoading } = useAuth();
   const userId = session?.user.id;
   const { waiting, stuck, heldForOthers, durable } = useOutbox();
@@ -283,6 +286,18 @@ export function FieldPage() {
       reload();
     } catch (e) { setOpenError(friendlyError(e)); } finally { setOpening(false); }
   };
+
+  // Open the match Event day sent us to, once, as soon as the queue has loaded. Going "back to the queue" afterwards must not reopen it.
+  const autoOpened = useRef<string | null>(null);
+  useEffect(() => {
+    // `matches.data` is an empty list until the competitions have loaded: that is not "loaded", so wait for real rows.
+    if (!wantedMatch || autoOpened.current === wantedMatch || opened || opening || !comps.data?.length || !matches.data?.length) return;
+    const target = matches.data.find(x => x.id === wantedMatch);
+    autoOpened.current = wantedMatch;
+    const next = new URLSearchParams(search); next.delete('match'); setSearch(next, { replace: true });
+    if (target && target.queueState !== 'final') void open(target);
+    else setNotice('That match is not waiting to be scored any more.');
+  }); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error)}</p>;
@@ -334,7 +349,9 @@ export function FieldPage() {
               </div>
             </nav>
           )}
-          <Link className="more" to={`/events/${event.slug}#scorekeeping`}>← Back to the event and field list</Link>
+          {fromEventDay
+            ? <Link className="more" to={`/events/${event.slug}/manage?tab=eventday`}>← Back to Event day</Link>
+            : <Link className="more" to={`/events/${event.slug}#scorekeeping`}>← Back to the event and field list</Link>}
         </>
       )}
     </section>

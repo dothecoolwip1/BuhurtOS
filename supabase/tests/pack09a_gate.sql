@@ -90,6 +90,13 @@ insert into public.matches (id, competition_id, stage, round_label, position, en
   (t.m(41), '00000000-0000-0000-0000-00000000b103', 'elimination', 'Semifinal', 0, t.ent(13), t.ent(14), t.m(43), 'a'),
   (t.m(42), '00000000-0000-0000-0000-00000000b103', 'elimination', 'Semifinal', 1, t.ent(15), t.ent(16), t.m(43), 'b');
 
+-- A field with every stage, round and pool, to prove the order rule. src/lib/eventDay.test.ts holds the same scenario (match numbers there are these minus 100).
+insert into public.matches (id, competition_id, stage, round_label, position, pool, field, entry_a, entry_b)
+select t.m(100 + n), '00000000-0000-0000-0000-00000000b101', x.stage, x.label, x.pos, x.pool, 'Order lab', t.ent(1), t.ent(2)
+from (values (1, 'final', 'Final', 0, null), (2, 'third_place', 'Third place', 0, null), (3, 'elimination', 'Semifinal', 0, null), (4, 'elimination', 'Quarterfinal', 0, null),
+             (5, 'elimination', 'Round of 16', 0, null), (6, 'pool', 'Round 1', 0, 'B'), (7, 'pool', 'Round 2', 0, 'A'), (8, 'pool', 'Round 10', 0, 'A'),
+             (9, 'pool', 'Round 1', 1, 'A'), (10, 'pool', 'Round 1', 0, 'A')) as x(n, stage, label, pos, pool);
+
 create function t.ver(n int) returns int language sql stable security definer as $$ select version from public.matches where id = t.m(n) $$;
 create function t.s(n int) returns text language sql stable security definer as $$ select queue_state from public.matches where id = t.m(n) $$;
 create function t.ord(n int) returns int language sql stable security definer as $$ select queue_order from public.matches where id = t.m(n) $$;
@@ -122,6 +129,8 @@ select t.expect_eq('stages sort pool, elimination, third place, final', (select 
 select t.expect_eq('Field 1 waiting line: the early-timed match first, then Alpha before Bravo, rounds in order; the match with an unknown side is not in the line',
   t.line('00000000-0000-0000-0000-00000000e101', null, array['scheduled']), '22,1,2,3,4,5,6,21');
 select t.expect_eq('... "Field 1", "field 1" and a blank field are one line', t.line('00000000-0000-0000-0000-00000000e101', ' FIELD 1', array['scheduled']), '22,1,2,3,4,5,6,21');
+select t.expect_eq('every stage, round and pool: round 1 of both pools, rounds 2 and 10, then Round of 16, quarterfinal, semifinal, third place, final',
+  t.line('00000000-0000-0000-0000-00000000e101', 'order LAB', array['scheduled']), '110,109,106,107,108,105,104,103,102,101');
 select t.expect_eq('Field 2 is its own line', t.line('00000000-0000-0000-0000-00000000e101', 'Field 2', array['scheduled']), '11,12,13,14');
 select t.expect_eq('a match with an unknown side is not runnable', private.match_runnable((select m from public.matches m where id = t.m(7))), false);
 select t.expect_eq('a match with both sides is runnable', private.match_runnable((select m from public.matches m where id = t.m(1))), true);
