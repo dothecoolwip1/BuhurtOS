@@ -352,9 +352,15 @@ Rankings > Teams has two separate team tables: **Discipline totals** (the defaul
 - The live browser test now also covers ties, divisions, a discipline known only to the database, tap-through, Show fighters, Team fights apart, and the "No team" correction (108 checks).
 - Evidence on the merged tree: full database gate (pack09b 47, team discipline 53, fingerprint, simulation, league verifier, both concurrency tests); vitest 712; typecheck; build; field-pack03 28, sw-update 28, pack07-ux 89, pack08-entrants 54, rankings-teams 22, sample-mode 34; real-stack represented-team 108, eventday 78, arena 103.
 
+### Release (2026-10-04)
+
+- Merged to `main` as `5d29f95` (merge commit; main had not moved, so its tree equals the tested feature tip `fcc596e`). No hosted SQL was applied: migrations 000600 and 000700 were already on hosted and were not re-run; no ledger rows were added.
+- CI run #83 (push to main): typecheck/unit/build, database gate, browser suites, release policy (production not frozen) all green; Deploy GitHub Pages succeeded at 21:43 UTC from `5d29f95`.
+- Production smoke of the deployed pages was NOT possible from the release session: `dothecoolwip1.github.io` and the Supabase API host are denied by the environment's network policy. Substituted: the queries the pages make, run read-only as the public (anon) role against hosted, in a rolled-back transaction (NACL-test leaders per discipline, full board, Show fighters breakdown = team total, Team fights separate, all-time discipline rows 0, 777 final matches untouched). Still to do by a person: open Rankings > Teams, an Event day screen, `/events/<slug>/arena` and sample mode on the live site.
+
 ### Local verification
 
-Database gate (`run_all.sh`, includes `team_discipline_rankings_gate.sql`, 53 checks), vitest, typecheck, build; `scripts/e2e/represented-team-live.sh` (real Postgres + PostgREST + Chromium, 51 checks at 390 / 768 / 1280 px); `scripts/e2e/eventday-live.sh`; `scripts/e2e/rankings-teams.mjs` (mocked, 22). Frontend NOT deployed (feature branch only): the hosted database is ahead of the deployed app, which is safe because every change is additive.
+Database gate (`run_all.sh`, includes `team_discipline_rankings_gate.sql`, 53 checks), vitest, typecheck, build; `scripts/e2e/represented-team-live.sh` (real Postgres + PostgREST + Chromium, 51 checks at 390 / 768 / 1280 px); `scripts/e2e/eventday-live.sh`; `scripts/e2e/rankings-teams.mjs` (mocked, 22).
 
 - Known limits: docs/claude-packs/PACK_09A_EVENT_DAY.md.
 
