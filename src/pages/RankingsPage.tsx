@@ -10,9 +10,13 @@ import {
 import { cardTitle, fighterCategoryOptions, leaderboardParams, overviewScope, resolveTeamSelection, teamCategoryOptions, teamOverview, type TeamLeaderCard } from '../lib/teamRankings';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
+import { TeamDisciplineTotals } from './TeamDisciplineTotals';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const SUBJECTS: ReadonlyArray<readonly [RankingSubject, string]> = [['fighters', 'Fighters'], ['teams', 'Teams']];
+/** Two different team statistics: fighters' individual points added up per discipline, and the team's own group fight results. */
+type TeamTable = 'disciplines' | 'fights';
+const TEAM_TABLES: ReadonlyArray<readonly [TeamTable, string]> = [['disciplines', 'Discipline totals'], ['fights', 'Team fights']];
 const isScope = (s: string | null): s is RankingScope => RANKING_SCOPES.some(([k]) => k === s);
 const isDivision = (s: string | null): s is Division => DIVISIONS.some(([k]) => k === s);
 
@@ -42,8 +46,10 @@ export function RankingsPage() {
   const org = orgList.find(o => o.id === organizationId);
 
   // Teams: which categories exist, which team leads each, and whether a division applies all come from the ranking data for this scope,
-  // organization and season. Fighters keep their own category list.
-  const teamsView = subject === 'teams';
+  // organization and season. Fighters keep their own category list. "Discipline totals" is its own component and its own view.
+  const teamTable: TeamTable = params.get('table') === 'fights' ? 'fights' : 'disciplines';
+  const disciplinesView = subject === 'teams' && teamTable === 'disciplines';
+  const teamsView = subject === 'teams' && teamTable === 'fights';
   const ovScope = overviewScope(scope);
   const leadersWanted = teamsView && ovScope !== null && !!organizationId && (ovScope !== 'season' || !!seasonId);
   const leaders = useAsync(() => (leadersWanted && ovScope ? fetchTeamLeaders({ scope: ovScope, organizationId, seasonId }) : Promise.resolve(undefined)), [leadersWanted, ovScope, organizationId, seasonId]);
@@ -56,7 +62,7 @@ export function RankingsPage() {
   const divisionChoices = teamsByCategory ? DIVISIONS.filter(([k]) => teamOptions.find(o => o.code === category)?.divisions.includes(k)) : DIVISIONS;
   const noTeamRankings = teamsByCategory && leadersWanted && !leaders.loading && leaders.error == null && cards.length === 0;
   const { filter, missing } = buildRankingFilter({ scope, organizationId: uses.organization ? organizationId : '', seasonId, category, gender });
-  const ready = !orgs.loading && !seasons.loading && filter !== null;
+  const ready = !orgs.loading && !seasons.loading && filter !== null && !disciplinesView;
   const list = useAsync(() => (ready && filter ? loadRows(subject, filter) : Promise.resolve(undefined)), [ready, subject, JSON.stringify(filter)]);
   const set = (key: string, value: string) => { const next = new URLSearchParams(params); next.set(key, value); if (key === 'org') next.delete('season'); setParams(next, { replace: true }); };
   const openLeaderboard = (c: TeamLeaderCard) => { setParams(leaderboardParams(c, scope, params), { replace: true }); window.scrollTo?.({ top: 0, behavior: 'smooth' }); };
@@ -70,6 +76,7 @@ export function RankingsPage() {
       <div className="evfilter">
         <Seg label="Who" value={subject} options={SUBJECTS} onChange={v => set('who', v)} />
         <Seg label="Scope" value={scope} options={RANKING_SCOPES} onChange={v => set('scope', v)} />
+        {subject === 'teams' && <Seg label="Team table" value={teamTable} options={TEAM_TABLES} onChange={v => set('table', v)} />}
       </div>
       <div className="evfilter">
         {uses.organization && orgList.length > 0 && (
@@ -80,16 +87,22 @@ export function RankingsPage() {
           <label className="field-in" style={{ flex: '1 1 180px' }}>Season
             <select value={seasonId} onChange={e => set('season', e.target.value)}>{seasonList.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
         )}
-        {uses.category && categories.length > 0 && (
+        {uses.category && !disciplinesView && categories.length > 0 && (
           <label className="field-in" style={{ flex: '1 1 160px' }}>Category
             <select value={category} onChange={e => set('category', e.target.value)}>{categories.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</select></label>
         )}
-        {uses.division && gender !== '' && divisionChoices.length > 1 && <Seg label="Division" value={gender} options={divisionChoices} onChange={v => set('division', v)} />}
+        {uses.division && !disciplinesView && gender !== '' && divisionChoices.length > 1 && <Seg label="Division" value={gender} options={divisionChoices} onChange={v => set('division', v)} />}
       </div>
       <p className="muted" style={{ fontSize: 14 }}>{RANKING_POINTS_SENTENCE} <Link to="/formats?tab=tournaments">How tournaments are tiered</Link></p>
       {org && !org.enabled && uses.organization && <p className="panel info" role="status"><Chip>Inactive</Chip> <b>{org.name}.</b> {INACTIVE_ORG_NOTICE}</p>}
 
-      {(orgs.loading || seasons.loading || list.loading || (leadersWanted && leaders.loading)) && (!missing || (teamsByCategory && leadersWanted)) && <p className="muted">Loading rankings…</p>}
+      {disciplinesView && !orgs.loading && !seasons.loading && (
+        <TeamDisciplineTotals scope={scope} organizationId={organizationId} seasonId={seasonId} params={params} setParams={p => setParams(p, { replace: true })} />
+      )}
+      {disciplinesView && scope === 'season' && !!organizationId && !seasons.loading && seasonList.length === 0 && (
+        <div className="panel info"><h3>No seasons yet</h3><p className="muted">This organization has no seasons yet.</p></div>
+      )}
+      {!disciplinesView && (orgs.loading || seasons.loading || list.loading || (leadersWanted && leaders.loading)) && (!missing || (teamsByCategory && leadersWanted)) && <p className="muted">Loading rankings…</p>}
       {orgs.error != null && <p role="alert">{friendlyError(orgs.error, 'Could not load organizations.')}</p>}
       {seasons.error != null && <p role="alert">{friendlyError(seasons.error, 'Could not load seasons.')}</p>}
       {leaders.error != null && <p role="alert">{friendlyError(leaders.error, 'Could not load the team categories.')}</p>}
@@ -99,16 +112,16 @@ export function RankingsPage() {
         <div className="panel info"><h3>No team rankings yet</h3>
           <p className="muted">No team has a recorded result for this {scope === 'season' ? 'season' : 'organization'} yet. Categories appear here as soon as teams have results in them.</p></div>
       )}
-      {listTitle && list.data && list.data.rows.length > 0 && <h2 style={{ fontSize: 22 }}>{listTitle}: full ranking</h2>}
-      {missing && !orgs.loading && !(teamsByCategory && leadersWanted) && (
+      {!disciplinesView && listTitle && list.data && list.data.rows.length > 0 && <h2 style={{ fontSize: 22 }}>{listTitle}: full ranking</h2>}
+      {missing && !orgs.loading && !disciplinesView && !(teamsByCategory && leadersWanted) && (
         <div className="panel info"><h3>{orgList.length === 0 && scope !== 'career' ? 'No organizations yet' : 'Nothing to show yet'}</h3>
           <p className="muted">{orgList.length === 0 && scope !== 'career' ? 'Rankings by organization appear once an organization exists.' : missing}{scope === 'season' && organizationId && seasonList.length === 0 && ' This organization has no seasons yet.'}</p></div>
       )}
-      {list.data && list.data.rows.length === 0 && !noTeamRankings && (
+      {!disciplinesView && list.data && list.data.rows.length === 0 && !noTeamRankings && (
         <div className="panel info"><h3>No rankings yet</h3><p className="muted">Nobody has a recorded result for this choice. Rankings come from finished competitions and nothing is estimated.</p></div>
       )}
       <ol className="rankcards">
-        {(list.data?.rows ?? []).map(r => <RankCard key={r.subjectId} r={r} team={list.data?.basics.get(r.subjectId)?.team ?? null} teams={subject === 'teams'} showDivision={scope === 'org_all' || scope === 'career'} />)}
+        {!disciplinesView && (list.data?.rows ?? []).map(r => <RankCard key={r.subjectId} r={r} team={list.data?.basics.get(r.subjectId)?.team ?? null} teams={subject === 'teams'} showDivision={scope === 'org_all' || scope === 'career'} />)}
       </ol>
     </section>
   );
@@ -129,11 +142,11 @@ function RankCard({ r, team, teams, showDivision }: { r: RankingRow; team: { nam
   );
 }
 
-/** "Top teams": the team(s) leading each category. Tapping one opens that category's full ranking. */
+/** "Team fight leaders": the team(s) leading each team competition category (team entries' own results, not fighters' individual points). Tapping one opens that category's full ranking. */
 function TeamOverview({ cards, selected, byCategory, onOpen }: { cards: TeamLeaderCard[]; selected: string | null; byCategory: boolean; onOpen: (c: TeamLeaderCard) => void }) {
   return (
     <section aria-labelledby="top-teams-h" style={{ display: 'grid', gap: 10 }}>
-      <h2 id="top-teams-h" style={{ fontSize: 22 }}>Top teams</h2>
+      <h2 id="top-teams-h" style={{ fontSize: 22 }}>Team fight leaders</h2>
       {!byCategory && <p className="muted" style={{ fontSize: 14 }}>Leaders in each category over the organization's whole history. Tap one for that category's full ranking.</p>}
       <ul className="topteams">
         {cards.map(c => (

@@ -91,8 +91,14 @@ on conflict (id) do nothing;`);
   }).join(',\n')}\non conflict (id) do nothing;`);
   const status = played ? 'checked_in' : 'registered';
   const ent: string[] = [];
-  for (const s of ew.sims) for (const e of s.comp.entries) ent.push(`  (${q(e.id)}, ${q(s.comp.id)}, ${q(e.teamIdx === null ? null : w.teams[e.teamIdx].id)}, ${q(e.fighterIdx === null ? null : w.fighters[e.fighterIdx].id)}, '${status}')`);
-  o.push(`insert into public.entries (id, competition_id, team_id, fighter_id, status) values\n${ent.join(',\n')}\non conflict (id) do nothing;`);
+  // A fighter (individual) entry records the team the fighter represented. Every NACL-test fighter belongs to one team for the whole dataset
+  // and only attends events after joining it, so that team is the represented team by construction (not a guess).
+  const repTeam = (e: { fighterIdx: number | null }): string | null => (e.fighterIdx === null ? null : w.teams[w.fighters[e.fighterIdx].teamIdx].id);
+  for (const s of ew.sims) for (const e of s.comp.entries) ent.push(`  (${q(e.id)}, ${q(s.comp.id)}, ${q(e.teamIdx === null ? null : w.teams[e.teamIdx].id)}, ${q(e.fighterIdx === null ? null : w.fighters[e.fighterIdx].id)}, ${q(repTeam(e))}, '${status}')`);
+  o.push(`insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values\n${ent.join(',\n')}\non conflict (id) do nothing;`);
+  // Entries loaded before entries.represented_team_id existed get it through the audited product path. Does nothing on a fresh load.
+  const reps = ew.sims.flatMap(s => s.comp.entries.filter(e => e.fighterIdx !== null).map(e => `  (${q(e.id)}::uuid, ${q(repTeam(e))}::uuid)`));
+  if (reps.length) o.push(`select public.set_represented_team(v.e, v.t, ${q(`${NOTE}: the team this fictional fighter belongs to`)}) from (values\n${reps.join(',\n')}\n) v(e, t) join public.entries x on x.id = v.e where x.represented_team_id is null;`);
   for (const s of ew.sims) for (const e of s.comp.entries) {
     if (e.teamIdx === null) continue;
     const roster = e.roster.map(r => ({ fighter_id: w.fighters[r.fighterIdx].id, role: r.role }));

@@ -7,9 +7,9 @@ select set_config('request.jwt.claims', '{"sub":"__OWNER_ID__","role":"authentic
 insert into public.competitions (id, event_id, name, category, gender, tier, ruleset, structure, status, rounds_to_win, sort) values
   ('9b5162c0-aa0b-5b90-a130-427a366a44b1', '46cf01a4-50b5-57fa-8b49-05e86ec19795', 'Female 3v3', '3v3', 'women', 'Classic', 'Buhurt International: Buhurt Rules V.26.4.1', 'round_robin', 'running', 2, 1000)
 on conflict (id) do nothing;
-insert into public.entries (id, competition_id, team_id, fighter_id, status) values
-  ('151eb79c-9a34-5f62-9dfd-6feb62661e83', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, 'checked_in'),
-  ('9686619b-3296-5b27-8cae-9023155acb77', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '19b99cd7-c067-5ae8-b5ba-88b4dab9678f', null, 'checked_in')
+insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values
+  ('151eb79c-9a34-5f62-9dfd-6feb62661e83', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, null, 'checked_in'),
+  ('9686619b-3296-5b27-8cae-9023155acb77', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '19b99cd7-c067-5ae8-b5ba-88b4dab9678f', null, null, 'checked_in')
 on conflict (id) do nothing;
 select public.set_entry_roster('151eb79c-9a34-5f62-9dfd-6feb62661e83', '[{"fighter_id":"14aed5cd-7ebd-5bd5-a88c-b122058d9b5b","role":"fighter"},{"fighter_id":"f5bf9cb2-e86b-5c61-bcc5-2d3febce1a61","role":"mercenary"},{"fighter_id":"285f8b35-de1b-5ade-82c6-4fe0a0a132d9","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished');
 select public.set_entry_roster('9686619b-3296-5b27-8cae-9023155acb77', '[{"fighter_id":"9b130d30-471b-5ccf-9192-7e0c04af836e","role":"fighter"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"},{"fighter_id":"27a1672b-da85-5cb1-b3d2-29f1d968da7a","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished');
@@ -37,9 +37,9 @@ select set_config('request.jwt.claims', '{"sub":"__OWNER_ID__","role":"authentic
 insert into public.competitions (id, event_id, name, category, gender, tier, ruleset, structure, status, rounds_to_win, sort) values
   ('dc843e27-563b-5df9-a26d-e65b02ec7608', 'af4e469b-d45f-5a9a-88e4-43a7af2ae72e', 'Female 3v3', '3v3', 'women', 'Regional', 'Buhurt International: Buhurt Rules V.26.4.1', 'round_robin', 'running', 2, 1000)
 on conflict (id) do nothing;
-insert into public.entries (id, competition_id, team_id, fighter_id, status) values
-  ('89ea0d3e-f2c6-5c03-a3d3-53662248a563', 'dc843e27-563b-5df9-a26d-e65b02ec7608', '93d193e0-68eb-5bb6-a045-4b963f97ef22', null, 'checked_in'),
-  ('6c04c59f-8dad-5f12-be7c-005f87709344', 'dc843e27-563b-5df9-a26d-e65b02ec7608', 'b902f3cf-959c-5300-b019-d678b76aee3a', null, 'checked_in')
+insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values
+  ('89ea0d3e-f2c6-5c03-a3d3-53662248a563', 'dc843e27-563b-5df9-a26d-e65b02ec7608', '93d193e0-68eb-5bb6-a045-4b963f97ef22', null, null, 'checked_in'),
+  ('6c04c59f-8dad-5f12-be7c-005f87709344', 'dc843e27-563b-5df9-a26d-e65b02ec7608', 'b902f3cf-959c-5300-b019-d678b76aee3a', null, null, 'checked_in')
 on conflict (id) do nothing;
 select public.set_entry_roster('89ea0d3e-f2c6-5c03-a3d3-53662248a563', '[{"fighter_id":"285f8b35-de1b-5ade-82c6-4fe0a0a132d9","role":"fighter"},{"fighter_id":"f5bf9cb2-e86b-5c61-bcc5-2d3febce1a61","role":"mercenary"},{"fighter_id":"7b2a7b7d-ddd2-595d-9269-7efa0dbacd1a","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished');
 select public.set_entry_roster('6c04c59f-8dad-5f12-be7c-005f87709344', '[{"fighter_id":"0b508c1f-b0a2-524e-b471-331960200135","role":"fighter"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"},{"fighter_id":"14aed5cd-7ebd-5bd5-a88c-b122058d9b5b","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished');
@@ -67,9 +67,9 @@ select set_config('request.jwt.claims', '{"sub":"__OWNER_ID__","role":"authentic
 insert into public.competitions (id, event_id, name, category, gender, tier, ruleset, structure, status, rounds_to_win, sort) values
   ('f827b32b-f7c9-5e57-be22-df03e7e9921d', '4ce9cfd7-c876-5a1b-928b-ef86ded32066', 'Female 3v3', '3v3', 'women', 'Classic', 'Buhurt International: Buhurt Rules V.26.4.1', 'round_robin', 'running', 2, 1000)
 on conflict (id) do nothing;
-insert into public.entries (id, competition_id, team_id, fighter_id, status) values
-  ('d6d72879-e56e-583f-b310-a02bb6a0ab91', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, 'checked_in'),
-  ('fb7e55fa-f8e8-5730-9638-cdccb88f4ea2', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '5796049c-2e49-521c-b959-47744fa8c73f', null, 'checked_in')
+insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values
+  ('d6d72879-e56e-583f-b310-a02bb6a0ab91', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, null, 'checked_in'),
+  ('fb7e55fa-f8e8-5730-9638-cdccb88f4ea2', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '5796049c-2e49-521c-b959-47744fa8c73f', null, null, 'checked_in')
 on conflict (id) do nothing;
 select public.set_entry_roster('d6d72879-e56e-583f-b310-a02bb6a0ab91', '[{"fighter_id":"14aed5cd-7ebd-5bd5-a88c-b122058d9b5b","role":"fighter"},{"fighter_id":"285f8b35-de1b-5ade-82c6-4fe0a0a132d9","role":"mercenary"},{"fighter_id":"7b2a7b7d-ddd2-595d-9269-7efa0dbacd1a","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished');
 select public.set_entry_roster('fb7e55fa-f8e8-5730-9638-cdccb88f4ea2', '[{"fighter_id":"27a1672b-da85-5cb1-b3d2-29f1d968da7a","role":"fighter"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"},{"fighter_id":"0b508c1f-b0a2-524e-b471-331960200135","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished');
