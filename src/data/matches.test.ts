@@ -35,6 +35,16 @@ describe('toMatch', () => {
     expect(r.nameB).toBe('Ana K');
     expect(r.detail).toEqual({});
   });
+  it('treats a match with no field as Field 1 and keeps a field the organizer assigned', () => {
+    const base = {
+      id: '1', competition_id: 'c', stage: 'pool' as const, round_label: 'Round 1', position: 0, pool: 'A', scheduled_at: null, queue_state: 'scheduled' as const,
+      entry_a: null, entry_b: null, next_match_id: null, next_slot: null, result: null, winner_entry_id: null, score_a: null, score_b: null, detail: null, version: 0, finalized_at: null, a: null, b: null
+    };
+    expect(toMatch({ ...base, field: null }).field).toBe('Field 1');
+    expect(toMatch({ ...base, field: '  ' }).field).toBe('Field 1');
+    expect(toMatch({ ...base, field: 'Field 2' }).field).toBe('Field 2');
+    expect(toMatch({ ...base, field: 'Main ring' }).field).toBe('Main ring');
+  });
 });
 
 describe('fieldArg', () => {

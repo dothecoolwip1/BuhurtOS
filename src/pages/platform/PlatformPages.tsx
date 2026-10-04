@@ -17,6 +17,7 @@ import { ClaimReviews } from './ClaimReviews';
 import { reviewHeading } from '../../lib/claims';
 import { fetchIdentityReviews, resolveIdentityReview, type IdentitySide } from '../../data/identityReviews';
 import { useAsync } from '../../lib/useAsync';
+import { setSampleMode, useSampleMode } from '../../data/mode';
 
 /**
  * The platform owner's area. The gate here only decides what to show: every call below is checked by the database, and a refusal is shown
@@ -49,8 +50,28 @@ export function PlatformHomePage() {
           <li><Link className="panel plat-link" to="/platform/fighters"><b>Fighter identities</b><span className="muted">Fighter records that may be the same person. Nothing is merged without you.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/organizations"><b>Organizations</b><span className="muted">Switch organizations on or off and manage their admins.</span></Link></li>
         </ul>
+        <SampleModeSwitch />
       </section>
     </PlatformGate>
+  );
+}
+
+/** The owner's switch for sample mode in this browser. It only changes what this browser shows; it stays until switched off. */
+function SampleModeSwitch() {
+  const sample = useSampleMode();
+  return (
+    <section className="panel" aria-labelledby="sample-h" style={{ display: 'grid', gap: 10, padding: 16 }}>
+      <h2 id="sample-h" className="acct-h">Test / sample mode</h2>
+      <p role="status" style={{ margin: 0 }}>
+        {sample ? <><Chip tone="brass">On</Chip> Sample mode is ON. Invented teams, fighters, events and scores may be shown.</> : <><Chip>Off</Chip> Sample mode is OFF.</>}
+      </p>
+      <p className="muted" style={{ margin: 0 }}>Only this browser. It stays as set until you change it here, with Leave sample mode, or with ?sample=0.</p>
+      <div>
+        {sample
+          ? <button type="button" className="btn btn-line" onClick={() => setSampleMode(false)}>Disable sample mode</button>
+          : <button type="button" className="btn btn-ink" onClick={() => setSampleMode(true)}>Enable sample mode</button>}
+      </div>
+    </section>
   );
 }
 
