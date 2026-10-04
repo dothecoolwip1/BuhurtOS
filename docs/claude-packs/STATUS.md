@@ -291,3 +291,15 @@ Main's Pack 1 and this branch's Pack 07 were built in parallel and overlapped. O
   `pack07-ux.mjs` follows the Competitions tab and checks invitation/organization-admin behaviour on My events and My calendar.
 - **Not verified here:** `scripts/e2e/pack1-live.mjs` (needs a real local Supabase stack, not available in this container); nothing hosted.
   Hosted rollout is an owner step in the SQL Editor, in the order above (Pack 07, Pack 1, reconcile, Pack 08); nothing is deployed.
+
+## Hosted rollout of Pack 07 / Pack 1 / reconcile / Pack 08 (2026-10-04, in progress)
+
+- Read-only inspection of hosted (mvbxlebznlgroptwwdsm): every migration through Pack 1 is present (Pack 1 was run earlier in the SQL Editor; it is
+  not in the migration ledger); none of Pack 07, the reconcile or Pack 08. Schema fingerprint equals a local build of the same migrations: every
+  table, column, constraint, index, policy, view and trigger identical; 27 function bodies differ only by whitespace / stripped comments.
+- The Supabase MCP migration tool answered `cancelled` for Pack 07 (owner-confirmation gate for DROP/ALTER/DELETE). Not bypassed; nothing applied.
+- Owner step: run `docs/runbooks/HOSTED_ROLLOUT_2026-10-04.sql` once in the SQL Editor. It applies the four repository files in order in one
+  transaction (Pack 1 re-run without its `create trigger competitions_guard`, which hosted already has), with pre- and post-checks. Proven on a local
+  replica of hosted: the result equals the full repository build and the pack07, pack1, reconcile, pack08 and security gates pass.
+- main is not pushed yet: a push to main deploys, and the reconciled frontend needs these database functions. Production stays on main c4ec9d2
+  (Pack 1 frontend + Pack 1 database, consistent) until the owner step is done.
