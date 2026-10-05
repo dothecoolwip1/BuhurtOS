@@ -1,0 +1,66 @@
+name: Pack 11 Full Rehearsal Proof
+
+on:
+  push:
+    branches: [pack11-proof]
+
+jobs:
+  rehearsal:
+    name: Full Rumble rehearsal
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright-core install --with-deps chromium
+
+      - name: Install Postgres client and PostgREST
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client xz-utils
+          curl -L --fail --retry 3 \
+            https://github.com/PostgREST/postgrest/releases/download/v16.4/postgrest-v16.4-linux-static-x86-64.tar.xz \
+            -o /tmp/postgrest.tar.xz
+          tar -xJf /tmp/postgrest.tar.xz -C /tmp
+          chmod +x /tmp/postgrest
+          /tmp/postgrest --version
+
+      - name: Run Pack 11 full dress rehearsal
+        env:
+          POSTGREST_BIN: /tmp/postgrest
+        run: |
+          export CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")"
+          scripts/e2e/rumble-live.sh /tmp/rumble-shots
+
+      - name: Upload rehearsal screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pack11-rumble-shots
+          path: /tmp/rumble-shots
+          if-no-files-found: ignore
