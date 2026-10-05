@@ -11,6 +11,7 @@ import { NotificationBell } from './NotificationBell';
 import { UpdateBanner } from './UpdateBanner';
 import { OfflineBanner } from './OfflineBanner';
 import { PushWiring } from './PushWiring';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const NAV = [
   { to: '/', label: 'Home', end: true, icon: <path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z" /> },
@@ -41,7 +42,7 @@ function useTheme() {
 
 export function Layout() {
   const toggleTheme = useTheme();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { session } = useAuth();
   const { isOwner } = usePlatformRole();
   const sample = useSampleMode();
@@ -87,7 +88,7 @@ export function Layout() {
           </button>
         </div>
       </header>
-      <main className="wrap"><PushWiring /><OfflineBanner /><UpdateBanner /><ProfileGate /><Outlet /></main>
+      <main className="wrap"><PushWiring /><OfflineBanner /><UpdateBanner /><ProfileGate /><ErrorBoundary resetKey={pathname + search}><Outlet /></ErrorBoundary></main>
       <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.</span><NavLink className="footlink" to="/privacy">Privacy</NavLink>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {PHONE.map(n => (

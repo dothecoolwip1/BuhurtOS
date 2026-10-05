@@ -3,6 +3,7 @@ import { supabase } from './supabase';
 import { fetchCompetitionMatches, type CompetitionMatch } from '../data/matches';
 import { fetchLiveScores, type LiveScore } from '../data/liveScores';
 import { LiveSync, realtimeFilter, type Connection } from './liveSync';
+import { realtimeChannel } from './realtimeChannel';
 
 interface One { matches: CompetitionMatch[]; scores: LiveScore[] }
 export interface ArenaData { matches: CompetitionMatch[]; scores: LiveScore[]; loading: boolean; error: unknown; updatedAt: number | null; connection: Connection; refresh: () => Promise<void> }
@@ -40,7 +41,7 @@ export function useArenaData(competitionIds: readonly string[], opts: { pollMs?:
       const row = (payload.new && 'competition_id' in payload.new ? payload.new : payload.old) as { competition_id?: string } | undefined;
       sync.change(row?.competition_id);
     };
-    const channel = supabase.channel(`arena-${key}`)
+    const channel = realtimeChannel(`arena-${key}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'matches', ...(filter ? { filter } : {}) }, onRow)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'match_live_scores', ...(filter ? { filter } : {}) }, onRow)
       .subscribe(status => { void sync.status(status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED'); });

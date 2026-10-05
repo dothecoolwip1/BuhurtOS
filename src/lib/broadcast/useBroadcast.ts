@@ -12,6 +12,7 @@ import { useAsync } from '../useAsync';
 import { useEventRecordWatch } from '../useEventRecordWatch';
 import { useLystPublic } from '../lyst/useLystPublic';
 import type { ServerClock } from '../lyst/timer';
+import { realtimeChannel } from '../realtimeChannel';
 
 /** Fallback polling while realtime is down: tighter than the venue display, because a result is what the audience waits to see. */
 const BROADCAST_POLL_MS = 5_000;
@@ -69,7 +70,7 @@ export function useBroadcast(slug: string, fieldParam: string | null | undefined
     load();
     const poll = window.setInterval(() => { if (!document.hidden) load(); }, 30_000);
     const nudge = () => { window.clearTimeout(debounce); debounce = window.setTimeout(load, 300); };
-    const channel = supabase.channel(`broadcast-cfg-${eventId}`)
+    const channel = realtimeChannel(`broadcast-cfg-${eventId}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'event_broadcast', filter: `event_id=eq.${eventId}` }, nudge)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'event_sponsors', filter: `event_id=eq.${eventId}` }, nudge)
       .subscribe();

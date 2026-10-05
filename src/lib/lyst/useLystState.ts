@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchCounterState, fetchLystState, type CounterState, type LystState } from '../../data/lyst';
 import { supabase } from '../supabase';
 import { ServerClock, remainingMs, type LystTimer } from './timer';
+import { realtimeChannel } from '../realtimeChannel';
 
 const POLL_MS = 2500;
 
@@ -75,7 +76,7 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
     let debounce: number | undefined;
     const channel = nudge && nudge.length > 0
       ? nudge.reduce((ch, n) => ch.on('postgres_changes', { event: '*', schema: 'public', table: n.table, ...(n.filter ? { filter: n.filter } : {}) }, () => { window.clearTimeout(debounce); debounce = window.setTimeout(() => { void refresh(); }, 250); }),
-          supabase.channel(`lyst-${key}`)).subscribe()
+          realtimeChannel(`lyst-${key}`)).subscribe()
       : null;
     return () => {
       live.current = false; window.clearInterval(poll); window.clearTimeout(debounce);
