@@ -56,6 +56,9 @@ export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId:
   const [query, setQuery] = useState('');
   const [team, setTeam] = useState('');
   const [comp, setComp] = useState('');
+  // A card the desk just acted on stays in view until the filter or search changes, even if it no longer matches (e.g. passed under "Not ready").
+  const [touched, setTouched] = useState<ReadonlySet<string>>(new Set());
+  useEffect(() => { setTouched(new Set()); }, [filter, query, team, comp]);
 
   const load = useCallback(async () => {
     try { setRows(await fetchEventReadiness(eventId)); setLoadError(null); } catch (e) { setLoadError(e); }
@@ -70,7 +73,10 @@ export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId:
 
   const counts = deskCounts(rows ?? []);
   const options = useMemo(() => filterOptions(rows ?? []), [rows]);
-  const shown = useMemo(() => sortDesk(filterDesk(rows ?? [], { filter, query, team: team || null, competition: comp || null }), pinned), [rows, filter, query, team, comp, pinned]);
+  const shown = useMemo(() => {
+    const hit = new Set(filterDesk(rows ?? [], { filter, query, team: team || null, competition: comp || null }).map(r => r.registrationId));
+    return sortDesk((rows ?? []).filter(r => hit.has(r.registrationId) || touched.has(r.registrationId)), pinned);
+  }, [rows, filter, query, team, comp, pinned, touched]);
   const pinnedRow = pinned ? rows?.find(r => r.registrationId === pinned) ?? null : null;
 
   return (
@@ -99,7 +105,7 @@ export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId:
       {!rows && loadError == null && <p className="muted">Loading the list…</p>}
       {rows && shown.length === 0 && <p className="panel info">{rows.length === 0 ? 'Nobody is registered yet.' : 'Nobody matches.'}</p>}
       <div style={{ display: 'grid', gap: 10 }}>
-        {shown.map(r => <DeskCard key={r.registrationId} row={r} roles={roles} pinned={r.registrationId === pinned} onSaved={load} />)}
+        {shown.map(r => <DeskCard key={r.registrationId} row={r} roles={roles} pinned={r.registrationId === pinned} onSaved={async () => { setTouched(t => new Set(t).add(r.registrationId)); await load(); }} />)}
       </div>
       <p className="src">Readiness is a warning for the lists and the Lyst screen. It never stops or reorders a fight. <Link to={`/events/${slug}`}>Back to the event</Link></p>
     </section>

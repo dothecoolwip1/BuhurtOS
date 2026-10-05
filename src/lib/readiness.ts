@@ -73,7 +73,8 @@ export function deskCounts(rows: readonly ReadinessRow[]): DeskCounts {
 
 /** Most urgent first: not ready before ready, then by name. A QR-scanned person can be pinned to the top by the caller. */
 export function sortDesk(rows: readonly ReadinessRow[], pinned?: string | null): ReadinessRow[] {
-  return [...rows].sort((a, b) => Number(b.registrationId === pinned) - Number(a.registrationId === pinned) || Number(a.ready) - Number(b.ready) || a.fullName.localeCompare(b.fullName));
+  // Alphabetical, so a card does not jump when its status changes under the desk's thumb; the counts and filters give the status view.
+  return [...rows].sort((a, b) => Number(b.registrationId === pinned) - Number(a.registrationId === pinned) || a.fullName.localeCompare(b.fullName));
 }
 
 /** The team names and competitions present, for the filter menus. */

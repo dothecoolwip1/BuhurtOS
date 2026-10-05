@@ -36,8 +36,9 @@ describe('readiness desk helpers (Pack 16)', () => {
     expect(filterDesk(rows, { filter: 'all', query: '', team: null, competition: 'Longsword' }).map(r => r.registrationId)).toEqual(['a']);
     expect(filterOptions(rows)).toEqual({ teams: ['Iron'], competitions: ['Longsword', 'Profight'] });
   });
-  it('not ready first; a scanned person is pinned to the top', () => {
-    expect(sortDesk(rows).map(r => r.registrationId).slice(0, 3)).toEqual(['a', 'b', 'c']);
+  it('alphabetical (cards do not jump when a status changes); a scanned person is pinned to the top', () => {
+    expect(sortDesk(rows).map(r => r.fullName)).toEqual(rows.map(r => r.fullName).sort((x, y) => x.localeCompare(y)));
+    expect(sortDesk(rows.map(r => (r.registrationId === 'a' ? { ...r, ready: !r.ready } : r))).map(r => r.registrationId)).toEqual(sortDesk(rows).map(r => r.registrationId));
     expect(sortDesk(rows, 'd')[0].registrationId).toBe('d');
   });
   it('the QR holds only the desk address and an opaque id', () => {
