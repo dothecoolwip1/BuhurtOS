@@ -48,3 +48,16 @@ describe('event plan input', () => {
     expect(planIsSaved(plan, saved)).toBe(true);
   });
 });
+
+describe('published fight times', () => {
+  it('a fight with a published time keeps its time order; untimed fights are planned for rest after them', () => {
+    const entries = [duel('e1', 'a'), duel('e2', 'b'), duel('e3', 'c'), duel('e4', 'd'), duel('e5', 'e'), duel('e6', 'f')];
+    const ms = [
+      m('late', 'e1', 'e2', { scheduledAt: '2026-11-14T11:00:00Z' }), m('early', 'e1', 'e3', { scheduledAt: '2026-11-14T10:00:00Z' }),
+      m('free', 'e5', 'e6')
+    ];
+    const plan = planEvent({ ...base, matches: ms, entries });
+    expect(plan.upcoming).toEqual(['early', 'late', 'free']);
+    expect(plan.byMatch.get('early')!.reasons.map(r => r.text)).toContain('Follows the published fight times');
+  });
+});

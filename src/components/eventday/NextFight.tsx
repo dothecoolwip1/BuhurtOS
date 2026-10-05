@@ -31,9 +31,11 @@ function restLines(f: PlannedFight, m: CompetitionMatch, sides: ReadonlyMap<stri
  * "Who fights next?" for one field (Pack 09D). The recommendation is the planner's: the fight already called, or the best-rested ready fight. Short rest is
  * always said out loud; the organizer can run it anyway or choose another fight. Nothing here moves a fight without a tap.
  */
-export function NextFight({ field, label, plan, matches, fighting, sides, names, competitionNames, notReady, actions }: {
+export function NextFight({ field, label, plan, matches, fighting, called, sides, names, competitionNames, notReady, actions }: {
   /** Field key (lower case, as the planner's lanes) and the name to show. */
   field: string; label: string; plan: Plan; matches: ReadonlyMap<string, CompetitionMatch>; fighting: boolean;
+  /** Something is already on deck (the slot above names it): this line then explains the order instead of repeating the pairing. */
+  called?: boolean;
   sides: ReadonlyMap<string, readonly string[]>; names: ReadonlyMap<string, string>; competitionNames: ReadonlyMap<string, string>;
   /** Fighters in a fight who are not checked in (name list), by match. */
   notReady: ReadonlyMap<string, string[]>;
@@ -49,21 +51,46 @@ export function NextFight({ field, label, plan, matches, fighting, sides, names,
   const missing = notReady.get(m.id) ?? [];
   const short = f.short;
   const worst = f.rests.filter(r => r.rest !== null && r.rest < plan.target).sort((a, b) => a.rest! - b.rest!)[0];
+  const choose = others.length > 0 && <button type="button" className="btn btn-line" disabled={actions.busy} onClick={() => setChoosing(true)}>Choose another fight</button>;
+  const vs = <p className="ed-next-vs"><b>{sideLabel(m.entryA, m.nameA, 'Side A')}</b> <span>vs</span> <b>{sideLabel(m.entryB, m.nameB, 'Side B')}</b></p>;
+  const why = (
+    <ul className="ed-next-why">
+      {lines.map(l => <li key={l}>{l}</li>)}
+      <li className={missing.length > 0 ? 'warn' : 'ok'}>{missing.length > 0 ? `Not checked in: ${missing.join(', ')}` : 'Ready to fight'}</li>
+      <li className="src">{planHeadline(f, plan.target)}{f.reasons.some(r => r.code === 'equipment') ? ' · someone shares equipment: check the gear is free' : ''}</li>
+    </ul>
+  );
+  const shortNote = short && worst && (
+    <p className="ed-short" role="alert"><b>Short rest.</b> {names.get(worst.fighterId) ?? 'A fighter'} has had {worst.rest === 0 ? 'no fights' : `only ${worst.rest} fight${worst.rest === 1 ? '' : 's'}`} between appearances. No better ready matchup is available right now.</p>
+  );
+  // While a fight is on, the fight in progress dominates the screen: the next one is a single line that opens on a tap (the queue has already called it).
+  if (fighting) {
+    return (
+      <details className={`ed-next compact panel${short ? ' short' : ''}`} aria-label={`Next up on ${label}`}>
+        <summary><Chip tone={short ? 'live' : 'win'}>{called ? 'Why this order' : 'Next up'}</Chip> <span className="ed-next-line">{called ? planHeadline(f, plan.target) : `${sideLabel(m.entryA, m.nameA, 'Side A')} vs ${sideLabel(m.entryB, m.nameB, 'Side B')}`}</span>{!called && <span className="src"> · {short ? `short rest (${f.minRest})` : f.minRest === null ? 'fresh' : 'rested'}</span>}</summary>
+        <div className="ed-next-body">
+          <span className="ed-ctx">{sideLabel(m.entryA, m.nameA, 'Side A')} vs {sideLabel(m.entryB, m.nameB, 'Side B')} · {competitionNames.get(m.competitionId) ?? ''} · {m.roundLabel}</span>
+          {why}
+          {shortNote}
+          {choose}
+        </div>
+        {choosing && chooser()}
+      </details>
+    );
+  }
   return (
-    <article className={`ed-next panel${short ? ' short' : ''}`} aria-label={fighting ? `Next up on ${label}` : `Next recommended on ${label}`}>
-      <div className="ed-slot-head"><Chip tone={short ? 'live' : 'win'}>{fighting ? 'Next up' : 'Next recommended'}</Chip><span className="ed-ctx">{competitionNames.get(m.competitionId) ?? ''} · {m.roundLabel}</span></div>
-      <p className="ed-next-vs"><b>{sideLabel(m.entryA, m.nameA, 'Side A')}</b> <span>vs</span> <b>{sideLabel(m.entryB, m.nameB, 'Side B')}</b></p>
-      <ul className="ed-next-why">
-        {lines.map(l => <li key={l}>{l}</li>)}
-        <li className={missing.length > 0 ? 'warn' : 'ok'}>{missing.length > 0 ? `Not checked in: ${missing.join(', ')}` : 'Ready to fight'}</li>
-        <li className="src">{planHeadline(f, plan.target)}{f.reasons.some(r => r.code === 'equipment') ? ' · someone shares equipment: check the gear is free' : ''}</li>
-      </ul>
-      {short && worst && (
-        <p className="ed-short" role="alert"><b>Short rest.</b> {names.get(worst.fighterId) ?? 'A fighter'} has had {worst.rest === 0 ? 'no fights' : `only ${worst.rest} fight${worst.rest === 1 ? '' : 's'}`} between appearances. No better ready matchup is available right now.</p>
-      )}
-      {!fighting && <button type="button" className="btn btn-ink fq-big" disabled={actions.busy} onClick={() => actions.run(m)}>{short ? 'Run anyway' : 'Run this fight'}</button>}
-      {others.length > 0 && <button type="button" className="btn btn-line" disabled={actions.busy} onClick={() => setChoosing(true)}>Choose another fight</button>}
-      {choosing && (
+    <article className={`ed-next panel${short ? ' short' : ''}`} aria-label={`Next recommended on ${label}`}>
+      <div className="ed-slot-head"><Chip tone={short ? 'live' : 'win'}>Next recommended</Chip><span className="ed-ctx">{competitionNames.get(m.competitionId) ?? ''} · {m.roundLabel}</span></div>
+      {vs}
+      {why}
+      {shortNote}
+      <button type="button" className="btn btn-ink fq-big" disabled={actions.busy} onClick={() => actions.run(m)}>{short ? 'Run anyway' : 'Run this fight'}</button>
+      {choose}
+      {choosing && chooser()}
+    </article>
+  );
+  function chooser() {
+    return (
         <Dialog title={`Choose the next fight on ${label}`} onClose={() => setChoosing(false)} variant="drawer">
           <ul className="ed-choose">
             {others.map(({ f: x, m: o }) => (
@@ -76,7 +103,6 @@ export function NextFight({ field, label, plan, matches, fighting, sides, names,
             ))}
           </ul>
         </Dialog>
-      )}
-    </article>
-  );
+    );
+  }
 }

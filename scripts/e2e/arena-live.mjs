@@ -85,7 +85,7 @@ try {
   const { ctx: dctx, page: org } = await open('desktop', 'organizer');
   await org.goto(BASE + MANAGE); await org.waitForSelector('section.ed-field[aria-label="Field 1"]', { timeout: 30000 });
   check('Event day offers the big-screen display', (await org.getByRole('link', { name: /Live display/ }).count()) >= 1);
-  await org.locator('section.ed-field[aria-label="Field 1"]').getByRole('button', { name: 'Start next ready match' }).click();
+  await org.locator('section.ed-field[aria-label="Field 1"]').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).click();
   await waitText(org, 'section.ed-field[aria-label="Field 1"] .ed-now', 'Aldric Stone');
   check('Field 1 is called: 1 active, 2 on deck, 3 in the hole (no field written: the default stays blank)', states(1, 2, 3) === '1:active,2:on_deck,3:in_the_hole' && sql(`select count(*) from public.matches where field is null`) === '10', states(1, 2, 3));
   const sawNow = await waitText(tv, '.ar-main', 'Now fighting');

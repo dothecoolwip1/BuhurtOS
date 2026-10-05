@@ -85,10 +85,12 @@ try {
   await sleep(1500);   // the per-competition checks (preflights) finish
   const ls0 = await rowText(page, 'Longsword (men)'), ss0 = await rowText(page, 'Sword and shield (men)'), po0 = await rowText(page, 'Polearm (men)'), tv0 = await rowText(page, '5v5 (men)'), bu0 = await rowText(page, 'Buckler (men)');
   check('Longsword, one fight still on: in progress 5 / 6, not ready', /5 \/ 6 fights complete/.test(ls0) && !/ready to finalize/.test(ls0), ls0);
-  check('Sword and shield, every fight final but a three-way tie: Needs review, with the tie named', /needs review/.test(ss0) && /tie for a medal place/.test(ss0) && /resolve/.test(ss0), ss0);
-  check('Polearm bracket complete: Ready to finalize with a Review results button', /ready to finalize/.test(po0) && /review results/.test(po0), po0);
+  check('Sword and shield, every fight final but a three-way tie: Needs review, with the tie named', /needs review/.test(ss0) && /tie for a medal place/.test(ss0) && /review wins & losses/.test(ss0), ss0);
+  check('Polearm bracket complete: Ready to finalize with a Review wins & losses button', /ready to finalize/.test(po0) && /review wins & losses/.test(po0), po0);
   check('5v5 final done: Ready to finalize', /ready to finalize/.test(tv0), tv0);
-  check('Buckler never drawn: no draw, no finalize offer', /build a draw/.test(bu0) && !/finalize/.test(bu0), bu0);
+  // Pack 09D: a competition with no draw is one "Not built" line on Event day, never a card with a finalize offer
+  const notBuilt = await body(page, 'section.ed-progress');
+  check('Buckler never drawn: listed as not built, no finalize offer', bu0 === '' && /not built: buckler \(men\)/.test(notBuilt), notBuilt);
   check('finished fights are NOT official results: nothing in results, every competition still running', sql(`select count(*) from public.results where competition_id in ('${C(1)}','${C(2)}','${C(3)}','${C(4)}')`) === '0' && [1, 2, 3, 4].every(n => status(n) === 'running'));
   await shot(page, '01-eventday-before');
 
@@ -99,7 +101,7 @@ try {
   check('... the competition is still running: a finished draw is not an official result', status(1) === 'running' && nResults(1) === 0, comp(1));
   const ready = await page.waitForFunction(() => [...document.querySelectorAll('section.ed-progress li')].some(li => /Longsword \(men\)/.test(li.innerText) && /Ready to finalize/.test(li.innerText)), null, { timeout: 45000 }).then(() => true, () => false);
   check('Event day turns Longsword to Ready to finalize by itself (same page, no reload)', ready && (await page.evaluate(() => window.__marker)) === 'same page', await rowText(page, 'Longsword (men)'));
-  check('... with 6 / 6 fights and a Review results button', /6 \/ 6 fights complete.*review results/.test(await rowText(page, 'Longsword (men)')), await rowText(page, 'Longsword (men)'));
+  check('... with 6 / 6 fights and a Review wins & losses button', /6 \/ 6 fights complete.*review wins & losses/.test(await rowText(page, 'Longsword (men)')), await rowText(page, 'Longsword (men)'));
   await shot(page, '02-eventday-ready');
 
   // ================================================================ 3. the public page, in a second browser with no account, before anything is official
@@ -110,9 +112,13 @@ try {
   await anon.evaluate(() => { window.__marker = 'same page'; });
 
   // ================================================================ 4. Review results: the review screen
-  await progressRow(page, 'Longsword (men)').getByRole('link', { name: 'Review results' }).click();
+  // Pack 09D: Event day opens the Review wins & losses sheet; the full Results tab (Pack 09C review) is still one tap away and is what this run goes on to test
+  await progressRow(page, 'Longsword (men)').getByRole('button', { name: 'Review wins & losses' }).click();
+  check('Review wins & losses opens the review sheet with Confirm results', await waitText(page, '[role="dialog"]', 'confirm results', 30000), await body(page, '[role="dialog"]'));
+  await page.locator('[role="dialog"]').getByRole('button', { name: 'Close' }).click().catch(() => page.keyboard.press('Escape'));
+  await page.goto(BASE + MANAGE + `?tab=finalize&competition=${C(1)}`);
   await page.waitForSelector(REVIEW, { timeout: 30000 }); await waitText(page, REVIEW, 'ready to finalize');
-  check('Review results opens the Results tab on Longsword', /tab=finalize/.test(page.url()) && /competition=00000000-0000-0000-0000-00000000c001/.test(page.url()) && (await page.locator('[aria-label="Area"] button[aria-pressed="true"]').innerText()) === 'Results', page.url());
+  check('the Results tab opens on Longsword', /tab=finalize/.test(page.url()) && /competition=00000000-0000-0000-0000-00000000c001/.test(page.url()) && (await page.locator('[aria-label="Area"] button[aria-pressed="true"]').innerText()) === 'Results', page.url());
   check('the state leads: Ready to finalize, 6 of 6 fights have a result', /ready to finalize.*6 of 6 fights have a result/.test(await body(page, `${REVIEW} .fz-state`)), await body(page, `${REVIEW} .fz-state`));
   const steps = await podiumNames(page, REVIEW);
   check('the podium preview: Bob champion, John silver, Joe bronze; Mike 4th below', steps.length === 3 && /champion.*bob stone/i.test(steps[0]) && /silver.*john oakley/i.test(steps[1]) && /bronze.*joe rhodes/i.test(steps[2]) && /4.*mike voss/i.test(await body(page, `${REVIEW} ol.pd-list`)), JSON.stringify(steps));
@@ -319,7 +325,7 @@ try {
   await waitText(page, 'section.ed-progress', 'this event is closed');
   const edClosed = await body(page, 'section.ed-progress');
   check('Event day says the event is closed and every competition Official, with Official results links', /this event is closed/.test(edClosed) && (await page.locator('section.ed-progress .ed-phase-official').count()) === 4 && (await page.locator('section.ed-progress a', { hasText: 'Official results' }).count()) === 4, edClosed);
-  check('no Start / Open scoreboard controls are offered on a closed event', (await page.getByRole('button', { name: 'Start next ready match' }).count()) === 0, await body(page, 'section.eventday'));
+  check('no Start / Open scoreboard controls are offered on a closed event', (await page.getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).count()) === 0, await body(page, 'section.eventday'));
   await shot(page, '15-eventday-closed');
 
   // ================================================================ 10. reopen the event (audited), then close it again

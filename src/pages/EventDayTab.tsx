@@ -219,7 +219,7 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
         {boards.map(b => (
           <div key={b.key} className={`ed-field-wrap${b.key === pickedKey ? ' picked' : ''}`}>
             <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, timeZone, competitionNames: names, actions }} next={<>
-              <NextFight field={b.key} label={b.name} plan={plan} matches={byMatch} fighting={b.now.length > 0} sides={sides} names={people} competitionNames={names} notReady={notReady} actions={nextActions} />
+              <NextFight field={b.key} label={b.name} plan={plan} matches={byMatch} fighting={b.now.length > 0} called={b.onDeck.length > 0} sides={sides} names={people} competitionNames={names} notReady={notReady} actions={nextActions} />
               {b.upcoming.some(m => m.queueOrder != null) && (
                 <p className="src ed-manual">This field's line was arranged by hand, so BuhurtOS follows it. <button type="button" className="linklike" disabled={busy} onClick={() => replanField(b)}>Let BuhurtOS plan it again</button></p>
               )}

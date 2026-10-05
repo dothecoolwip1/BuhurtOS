@@ -60,11 +60,12 @@ try {
   await page.waitForSelector('section.ed-field[aria-label="Field 1"]', { timeout: 20000 });
   check('Field 1 appears with no setup; Field 2 appears because matches were given it', (await field(page, 'Field 1').count()) === 1 && (await field(page, 'Field 2').count()) === 1);
   check('the matches really have no field in the database (Field 1 is only the default)', sql(`select count(*) from public.matches where field is null`) === '10', sql(`select count(*) from public.matches where field is null`));
-  check('Field 1 says no fight is active and offers to start the next ready match', await has(page, 'No fight is active on Field 1.') && (await page.getByRole('button', { name: 'Start next ready match' }).count()) === 2);
+  // Pack 09D: an idle field shows its next recommended fight with one button (it replaced "Start next ready match")
+  check('Field 1 says what fights next and offers to run it', (await page.locator('article[aria-label^="Next recommended on"]').count()) === 2 && (await page.getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).count()) === 2);
   await shot(page, '1-desktop-before-start');
 
   // ================================================================ 2. start Field 1
-  await field(page, 'Field 1').getByRole('button', { name: 'Start next ready match' }).click();
+  await field(page, 'Field 1').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).click();
   check('starting says what started', await waitText(page, 'section.ed-field[aria-label="Field 1"]', 'Aldric Stone'), await body(page));
   const f1 = field(page, 'Field 1');
   check('NOW is the first fight of the line', /aldric stone.*brann oakley/i.test((await f1.locator('.ed-now').innerText()).replace(/\s+/g, ' ')));
@@ -82,7 +83,7 @@ try {
   check('Needs attention: a fighter in the live fights who is not checked in', /not checked in/.test(att) && /brann oakley/.test(att), att);
   check('Needs attention: the double booking names the fighter, both fights, times and fields', /aldric stone is booked twice/.test(att) && /longsword \(men\) at/.test(att) && /sword and shield \(men\) at/.test(att) && /\(field 2\)/.test(att), att);
   const prog = (await page.locator('section.ed-progress').innerText()).replace(/\s+/g, ' ').toLowerCase();
-  check('Competition progress: not started / no draw / counts from real matches', /longsword \(men\).*0 \/ 6 fights complete/.test(prog) && /buckler \(men\).*no draw yet/.test(prog) && /polearm \(men\).*0 \/ 4/.test(prog), prog);
+  check('Competition progress: not started / no draw / counts from real matches', /longsword \(men\).*0 \/ 6 fights complete/.test(prog) && /not built: .*buckler \(men\)/.test(prog) && /polearm \(men\).*0 \/ 4/.test(prog), prog);
 
   // ================================================================ 3. open the scoreboard, record a result, come back
   await f1.getByRole('link', { name: 'Open scoreboard' }).click();
@@ -150,7 +151,7 @@ try {
   await shot(page, '6-desktop-after-reorder');
 
   // ================================================================ 7. Field 2 is its own queue
-  await field(page, 'Field 2').getByRole('button', { name: 'Start next ready match' }).click();
+  await field(page, 'Field 2').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).click();
   await waitText(page, 'section.ed-field[aria-label="Field 2"] .ed-now', 'Hale Morrow');
   check('Field 2 started on its own, in schedule order (12, then 13, then 11)', states(12, 13, 11) === '12:active,13:on_deck,11:in_the_hole', states(12, 13, 11));
   check('... and Field 1 did not move when Field 2 started', states(3, 21, 5) === '3:active,21:on_deck,5:in_the_hole', states(3, 21, 5));
@@ -172,9 +173,9 @@ try {
   await page.waitForSelector('section.ed-field[aria-label="Arena A"]', { timeout: 40000 });
   const startCalls = [];
   page.on('request', r => { if (r.url().includes('/rpc/advance_field_queue')) startCalls.push(r.postData()); });
-  await field(page, 'Arena A').getByRole('button', { name: 'Start next ready match' }).dblclick();
+  await field(page, 'Arena A').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).dblclick();
   await waitText(page, 'section.ed-field[aria-label="Arena A"] .ed-now', 'Brann Oakley');
-  check('a double tap on "Start next ready match" sends one request, not two', startCalls.length === 1, String(startCalls.length));
+  check('a double tap on "Run this fight" sends one request, not two', startCalls.length === 1, String(startCalls.length));
   check('... and exactly one fight is active on that field', sql(`select count(*) from public.matches where field = 'Arena A' and queue_state = 'active'`) === '1');
   // a stale screen: the fight on deck is finished by someone else a moment before the organizer taps "Skip for now" on it
   const staleDeck = field(page, 'Arena A').locator('li.ed-slot[aria-label^="On deck"]');
@@ -199,14 +200,15 @@ try {
   check('when everything on a field is scored, the field says so', await waitText(page, 'section.ed-field[aria-label="Arena A"]', 'All fights on Arena A are done', 45000));
   sql(`update public.matches set field = 'Hold' where id in ('${mid(23)}', '${mid(24)}')`);   // the final and third place: both still waiting for their entrants
   check('a field where nothing can start yet explains why instead of showing an empty card', await waitText(page, 'section.eventday', 'Nothing on Hold can start yet', 45000) && (await has(page, 'Waiting for the semifinals to finish') || await has(page, 'Waiting for an earlier fight')));
-  check('... and offers no button that would do nothing', (await field(page, 'Hold').getByRole('button', { name: 'Start next ready match' }).count()) === 0);
+  check('... and offers no button that would do nothing', (await field(page, 'Hold').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).count()) === 0);
   sql(`insert into public.events (id, slug, name, status, event_type, starts_on, ends_on) values ('00000000-0000-0000-0000-00000000ed02', 'empty-day', 'Empty Day Open', 'published', 'tournament', current_date, current_date + 1), ('00000000-0000-0000-0000-00000000ed03', 'undrawn-day', 'Undrawn Day Open', 'published', 'tournament', current_date, current_date + 1)`);
   sql(`insert into public.event_staff (event_id, user_id, role) values ('00000000-0000-0000-0000-00000000ed02', '${U(2)}', 'organizer'), ('00000000-0000-0000-0000-00000000ed03', '${U(2)}', 'organizer')`);
   sql(`insert into public.competitions (id, event_id, name, category, gender, tier, structure, sort) values ('00000000-0000-0000-0000-00000000cd09', '00000000-0000-0000-0000-00000000ed03', 'Longsword (open)', 'longsword', 'open', 'Classic', 'round_robin', 1)`);
   await page.goto(BASE + '/events/empty-day/manage'); await page.waitForSelector('section.eventday, .ed-empty', { timeout: 20000 });
   check('an event with no competitions says so and offers to add one', (await has(page, 'No competitions yet')) && (await page.getByRole('link', { name: '+ Add competition' }).count()) === 1 && !(await has(page, 'scary')));
-  await page.goto(BASE + '/events/undrawn-day/manage'); await page.waitForSelector('text=No draw has been built yet', { timeout: 20000 });
-  check('competitions without a draw: "No draw has been built yet" with a way to Run tools, and progress says "No draw yet"', (await page.getByRole('link', { name: 'Open Run tools' }).count()) === 1 && /longsword \(open\).*no draw yet/i.test((await page.locator('section.ed-progress').innerText()).replace(/\s+/g, ' ')));
+  await page.goto(BASE + '/events/undrawn-day/manage'); await page.waitForSelector('text=The tournament is not built yet', { timeout: 20000 });
+  // Pack 09D: the way forward is Build tournament (one draw by hand in Run is still offered); unbuilt competitions are one line
+  check('competitions without a draw: "The tournament is not built yet" with Build tournament and Run, and progress lists it as not built', (await page.getByRole('link', { name: 'Build tournament' }).count()) >= 1 && (await page.getByRole('link', { name: 'Build one draw by hand (Run)' }).count()) === 1 && /not built: .*longsword \(open\)/i.test((await page.locator('section.ed-progress').innerText()).replace(/\s+/g, ' ')));
   check('and no warning is shown for these normal empty states', (await page.locator('section.ed-attention .ed-att').count()) === 0 && (await has(page, 'Nothing needs your attention right now')));
   await page.goto(BASE + MANAGE); await page.waitForSelector('section.ed-field[aria-label="Field 1"]', { timeout: 20000 });
 
@@ -224,7 +226,7 @@ try {
   await anon.goto(BASE + '/events/test-stuff-test'); await anon.waitForSelector('.live-now', { timeout: 30000 });
   const pub = (await anon.locator('.live-now').innerText()).replace(/\s+/g, ' ').toLowerCase();
   check('the public "Now and next" shows both fields from the same queue', /field 1/.test(pub) && /field 2/.test(pub) && /edric hale/.test(pub) && /hale morrow|ivor penn/.test(pub), pub);
-  check('the public page exposes no organizer controls', (await anon.getByRole('button', { name: 'Start next ready match' }).count()) === 0);
+  check('the public page exposes no organizer controls', (await anon.getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).count()) === 0);
   await actx.close();
   const { ctx: sctx, page: score } = await open('desktop', 'scorekeeper');
   await score.goto(BASE + MANAGE); await score.waitForSelector('text=This area is for organizers', { timeout: 20000 });

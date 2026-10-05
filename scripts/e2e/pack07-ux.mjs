@@ -106,7 +106,12 @@ try {
   await page.getByLabel('Venue').fill('Blackfalds Arena');
   await page.getByLabel('City').fill('Blackfalds');
   await page.getByLabel('Province or state').fill('AB');
+  // Pack 09D Quick Setup: an event with no competitions (Clear all), Continue, then Create event on the check screen; Event home opens and Setup is one tap.
+  await page.getByRole('button', { name: 'Clear all' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Create event' }).click();
+  await page.waitForURL(/manage\?tab=home/);
+  await go(new URL(page.url()).pathname + '?tab=setup');
   await page.waitForURL(/manage\?tab=setup/);
   await page.getByText('This event is a draft').waitFor();
   await page.getByTestId('fix-competitions').waitFor();

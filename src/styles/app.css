@@ -1077,7 +1077,9 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .eh-more-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
 .eh-more-list a{display:grid;gap:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;min-height:44px;background:var(--surface)}
 .eh-more-list a:hover{border-color:var(--steel)}
-.mg-more{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mg-more{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
+.mg-more .seg{flex:1 1 auto;min-width:0}
+.mg-more > .btn{flex:none}
 .mg-more-panel{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr))}
 .mg-more-panel a{min-height:44px;display:flex;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;background:var(--surface);font-weight:600}
 .mg-more-panel a[aria-current="page"]{border-color:var(--ink);background:var(--ink);color:var(--ground)}
@@ -1147,3 +1149,7 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .lc-actions .btn{justify-self:start}
 .lc-danger{border-top:1px solid var(--line);padding-top:10px}
 .lc-fighter{display:grid;gap:6px;margin-top:10px;justify-items:start}
+.ed-next.compact{padding:0}
+.ed-next.compact summary{cursor:pointer;min-height:48px;display:flex;align-items:center;gap:8px;padding:6px 14px;flex-wrap:wrap;font-weight:600}
+.ed-next.compact .ed-next-line{overflow-wrap:anywhere}
+.ed-next-body{display:grid;gap:8px;padding:0 14px 14px}

@@ -20,7 +20,8 @@
  *   4. A fight runs on its own field (no field = Field 1).
  *
  * Preferences, in order (the first difference decides)
- *   a. The organizer's hand-made order on that field (Pack 09A "run sooner / later") comes first, in that order.
+ *   a. The organizer's hand-made order on that field (Pack 09A "run sooner / later") comes first, in that order; then fights with a published time,
+ *      in time order (an organizer who published times keeps them). Only fights with neither are ordered for rest.
  *   b. The most rest, counted up to the target (3 fights between appearances by default): 3+ beats 2 beats 1 beats back-to-back. Never-yet-fought counts
  *      as fully rested. Rest beyond the target is not "better": once everyone is rested, the next rules decide.
  *   c. Fighters with more fights still to come go first (spreads a round robin out instead of leaving one fighter's fights for the end).
@@ -46,8 +47,10 @@ export interface PlanMatch {
   ready: boolean;
   /** For finished fights: when they finished (ISO). Orders history. */
   finishedAt?: string | null;
-  /** The organizer's hand-made order on its field (Pack 09A queue_order); null = none. */
+  /** The organizer's hand-made order on its field (Pack 09A queue_order, or a published fight time); null = none. */
   manualOrder?: number | null;
+  /** The hand-made order comes from a published fight time (said as such in the reasons). */
+  scheduled?: boolean;
   /** The normal running order position (lower runs sooner); used only to break ties. */
   baseOrder: number;
 }
@@ -304,7 +307,7 @@ export function planFights(input: PlanInput): Plan {
     const reasons: Reason[] = [];
     if (x.locked) reasons.push({ code: 'called', text: x.m.state === 'active' ? 'Fighting now' : 'Already called' });
     else {
-      if (x.m.manualOrder != null) reasons.push({ code: 'manual', text: 'Placed by hand' });
+      if (x.m.manualOrder != null) reasons.push({ code: 'manual', text: x.m.scheduled ? 'Follows the published fight times' : 'Placed by hand' });
       if (laneUpcoming.get(x.field) === 1) reasons.push({ code: 'only', text: 'Only ready fight on this field' });
       if (minRest === null) reasons.push({ code: 'first', text: 'First fight today for everyone in it' });
       else if (minRest === 0) reasons.push({ code: 'back_to_back', text: 'Back-to-back: no other ready fight gives more rest' });

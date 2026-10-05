@@ -105,13 +105,13 @@ export function FieldBoardView({ board, plan, c, next }: { board: FieldBoard; pl
         </article>
       )}
 
-      {board.now.length > 0 && next}
       {(board.onDeck.length > 0 || board.inTheHole.length > 0) && (
         <ul className="ed-slots" aria-label={`Next on ${board.name}`}>
           {board.onDeck.map(m => <SlotCard key={m.id} m={m} label="On deck" tone="brass" c={c} />)}
           {board.inTheHole.map(m => <SlotCard key={m.id} m={m} label="In the hole" tone="" c={c} />)}
         </ul>
       )}
+      {board.now.length > 0 && next}
       {board.now.length > 0 && board.onDeck.length === 0 && board.inTheHole.length === 0 && board.upcoming.length === 0 && board.state === 'running' && (
         <p className="muted ed-quiet">Nobody is waiting behind this fight{board.waiting.length > 0 ? `; ${board.waiting.length} more ${board.waiting.length === 1 ? 'is' : 'are'} waiting for earlier results` : ''}.</p>
       )}
