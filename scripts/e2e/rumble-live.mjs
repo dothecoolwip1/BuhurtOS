@@ -905,7 +905,7 @@ try {
     await page.getByRole('button', { name: 'Reopen…' }).waitFor({ timeout: 30000 });
     const goldBefore = sql(`select entry_id from public.results where competition_id = '${comp('Women 3v3')}' and final_place = 1`);
     await page.getByRole('button', { name: 'Reopen…' }).click();
-    await page.getByLabel(/Reason/).fill('Score sheet shows the final round went the other way');
+    await page.getByPlaceholder('e.g. the final was scored for the wrong fighter').fill('Score sheet shows the final round went the other way');
     await page.getByRole('button', { name: 'Reopen the result' }).click();
     await waitText(page, 'main', 'reopened', 30000);
     check('[correction] the competition is reopened with the reason recorded; its results are superseded, not deleted', sql(`select status || '|' || (reopened_at is not null) from public.competitions where id = '${comp('Women 3v3')}'`) === 'running|true' || sql(`select (reopened_at is not null)::text from public.competitions where id = '${comp('Women 3v3')}'`) === 'true', sql(`select status || '|' || reopened_at from public.competitions where id = '${comp('Women 3v3')}'`));
