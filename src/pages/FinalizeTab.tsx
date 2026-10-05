@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Dialog } from '../components/Dialog';
+import { TieDecision } from '../components/TieDecision';
 import { Chip, Seg } from '../components/ui';
 import type { LiveCompetition, LiveEvent } from '../data/api';
 import {
   closeEvent, fetchClosePreflight, fetchFinalizePreflight, finalizeCompetition, reopenCompetition, reopenEvent,
   type ClosePreflight, type FinalizePreflight, type MultiplierSource, type Placement
 } from '../data/finalization';
+import { fetchPoolStandings } from '../data/matches';
 import { categoryLabel, divisionLabel } from '../lib/careerView';
 import { buildPodium, closeoutSummary, finalizeAction, nextReady, placeWord, pointsText, reasonOk, representedLine, unattributedFighters } from '../lib/finalization';
 import { friendlyError } from '../lib/friendlyError';
+import { tiesWithin } from '../lib/runDraw';
 import { useAsync } from '../lib/useAsync';
 
 const errorStyle = { color: 'var(--live)' } as const;
@@ -29,8 +32,10 @@ export function FinalizeTab({ event, competitions, onChanged }: { event: LiveEve
   const list = closeout.data?.competitions ?? [];
   const wanted = params.get('competition');
   const picked = competitions.find(c => c.id === wanted) ?? competitions.find(c => list.find(l => l.id === c.id)?.state === 'ready') ?? competitions[0] ?? null;
-  const pick = (id: string) => { const next = new URLSearchParams(params); next.set('tab', 'finalize'); next.set('competition', id); setParams(next, { replace: true }); };
-  const changed = () => { setVersion(v => v + 1); onChanged(); };
+  const [notice, setNotice] = useState<string | null>(null);
+  const pick = (id: string) => { setNotice(null); const next = new URLSearchParams(params); next.set('tab', 'finalize'); next.set('competition', id); setParams(next, { replace: true }); };
+  // The review panel is re-keyed after every change (so it re-reads the server); what just happened is kept here so the message survives that.
+  const changed = (message?: string) => { setNotice(message ?? null); setVersion(v => v + 1); onChanged(); };
   const stateOf = (id: string) => list.find(l => l.id === id)?.state;
   const marker = (id: string) => ({ official: ' ✓', ready: ' ●', running: '', no_draw: '' } as Record<string, string>)[stateOf(id) ?? ''] ?? '';
 
@@ -42,11 +47,11 @@ export function FinalizeTab({ event, competitions, onChanged }: { event: LiveEve
       )}
       {competitions.length === 0 && <div className="panel info"><h3>No competitions yet</h3><p>Add the competitions first; their results are made official here.</p></div>}
       {competitions.length > 0 && (
-        <Seg scroll label="Competition" value={picked?.id ?? ''} options={competitions.map(c => [c.id, `${c.name}${marker(c.id)}`] as const)} onChange={pick} />
+        <div className="fz-pick"><Seg scroll label="Competition" value={picked?.id ?? ''} options={competitions.map(c => [c.id, `${c.name}${marker(c.id)}`] as const)} onChange={pick} /></div>
       )}
       {picked && (
         <ReviewPanel key={`${picked.id}-${picked.status}-${picked.finalizedAt ?? ''}-${version}`} slug={event.slug} competition={picked} eventClosed={!!event.closedAt}
-          nextId={nextReady(list, picked.id)} onPick={pick} onChanged={changed} />
+          nextId={nextReady(list, picked.id)} notice={notice} onPick={pick} onChanged={changed} />
       )}
       {!closeout.data?.closed && <CloseoutCard event={event} pre={closeout.data} loading={closeout.loading} error={closeout.error} onPick={pick} onChanged={changed} />}
     </section>
@@ -54,10 +59,10 @@ export function FinalizeTab({ event, competitions, onChanged }: { event: LiveEve
 }
 
 // ---------------------------------------------------------------- one competition
-function ReviewPanel({ slug, competition, eventClosed, nextId, onPick, onChanged }: {
-  slug: string; competition: LiveCompetition; eventClosed: boolean; nextId: string | null; onPick: (id: string) => void; onChanged: () => void;
+function ReviewPanel({ slug, competition, eventClosed, nextId, notice, onPick, onChanged }: {
+  slug: string; competition: LiveCompetition; eventClosed: boolean; nextId: string | null; notice: string | null; onPick: (id: string) => void; onChanged: (message?: string) => void;
 }) {
-  const [source, setSource] = useState<MultiplierSource>(competition.status === 'finished' ? 'tournament_structure' : 'tournament_structure');
+  const [source, setSource] = useState<MultiplierSource>('tournament_structure');
   const [reload, setReload] = useState(0);
   const pre = useAsync(() => fetchFinalizePreflight(competition.id, source), [competition.id, source, reload]);
   const p = pre.data;
@@ -66,22 +71,25 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, onPick, onChanged
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
-  const [done, setDone] = useState<string | null>(null);
   const podium = useMemo(() => buildPodium(p?.placements ?? []), [p?.placements]);
   const action = p ? finalizeAction({ state: p.state, eventClosed }) : null;
   const unattributed = p ? unattributedFighters(p) : [];
+  const medalTie = !!p?.blockers.some(b => b.code === 'medal_tie');
+  const standings = useAsync(() => (medalTie ? fetchPoolStandings(competition.id) : Promise.resolve([])), [medalTie, competition.id, reload]);
+  const ties = useMemo(() => tiesWithin(standings.data ?? [], 3), [standings.data]);
+  const nameOf = (id: string) => p?.placements.find(e => e.entryId === id)?.name ?? 'Unknown entry';
 
   const finalize = async () => {
     setBusy(true); setProblem(null);
     try {
       const r = await finalizeCompetition(competition.id, source);
-      setDone(r.status === 'official' ? `Official. ${r.entries} placings are now the record.` : 'Another organizer already made this official. Showing the official placings.');
-      setConfirm(null); setReload(k => k + 1); onChanged();
+      setConfirm(null);
+      onChanged(r.status === 'official' ? `Official. ${r.entries} placings are now the record.` : 'Another organizer already made this official. Showing the official placings.');
     } catch (e) { setProblem(friendlyError(e, 'Could not make the result official.')); } finally { setBusy(false); }
   };
   const reopen = async () => {
     setBusy(true); setProblem(null);
-    try { await reopenCompetition(competition.id, reason); setDone('Reopened. The placings are no longer official; correct what is needed and finalize again.'); setConfirm(null); setReason(''); setReload(k => k + 1); onChanged(); }
+    try { await reopenCompetition(competition.id, reason); setConfirm(null); setReason(''); onChanged('Reopened. The placings are no longer official; correct what is needed and finalize again.'); }
     catch (e) { setProblem(friendlyError(e, 'Could not reopen the result.')); } finally { setBusy(false); }
   };
 
@@ -93,7 +101,7 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, onPick, onChanged
       </div>
       {pre.loading && !p && <p className="muted">Checking the competition…</p>}
       {pre.error != null && <p role="alert" style={errorStyle}>{friendlyError(pre.error, 'Could not check this competition.')}</p>}
-      {done && <p role="status" className="panel" style={{ padding: '10px 12px' }}>{done}</p>}
+      {notice && <p role="status" className="panel" style={{ padding: '10px 12px' }}>{notice}</p>}
       {p && (
         <>
           <div className={`fz-state ${p.state}`} role="status">
@@ -113,10 +121,13 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, onPick, onChanged
             )}
           </div>
 
-          {p.blockers.length > 0 && (
+          {p.state === 'official' && eventClosed && <p className="src">The event is closed. Reopen the event before changing this result.</p>}
+          {p.blockers.length > 0 && p.state !== 'official' && (
             <div>
               <p className="eyebrow">Before this can be official</p>
-              <ul className="fz-list">{p.blockers.map(b => <li key={b.code}><span className="fz-dot block" aria-hidden="true" /><span><b>{b.text}</b>{b.code === 'result_conflicts' && <> <Link to={`/events/${slug}/manage?tab=eventday`}>Review on Event day</Link></>}{(b.code === 'medal_tie' || b.code === 'bracket_missing' || b.code === 'open_matches' || b.code === 'live_matches') && <> <Link to={`/events/${slug}/manage?tab=run`}>Open the Run tools</Link></>}</span></li>)}</ul>
+              <ul className="fz-list">{p.blockers.map(b => <li key={b.code}><span className="fz-dot block" aria-hidden="true" /><span><b>{b.text}</b>{b.code === 'result_conflicts' && <> <Link to={`/events/${slug}/manage?tab=eventday`}>Review on Event day</Link></>}{(b.code === 'bracket_missing' || b.code === 'open_matches' || b.code === 'live_matches') && <> <Link to={`/events/${slug}/manage?tab=run`}>Open the Run tools</Link></>}</span></li>)}</ul>
+              {medalTie && ties.map(g => <TieDecision key={`${g.part}-${g.rank}`} comp={competition} group={g} nameOf={nameOf} onDecided={() => { setReload(k => k + 1); onChanged(); }} />)}
+              {medalTie && standings.error != null && <p role="alert" style={errorStyle}>{friendlyError(standings.error, 'Could not load the standings.')}</p>}
             </div>
           )}
           {p.warnings.length > 0 && (
@@ -288,7 +299,7 @@ function ClosedBanner({ event, pre, onChanged }: { event: LiveEvent; pre: CloseP
   return (
     <section className="fz-state official" role="status" aria-label="Event closed">
       <span className="big">Event closed · official results</span>
-      <span>Closed {when(pre.event.closedAt)}. This event is permanent history: {pre.competitions.filter(c => c.state === 'official').length} official competitions. Nothing operational can change.</span>
+      <span>Closed {when(pre.event.closedAt)} · permanent history: {pre.competitions.filter(c => c.state === 'official').length} official competitions. Nothing operational can change.</span>
       <div className="fz-actions">
         <Link className="btn btn-ink" to={`/events/${event.slug}`}>View the results page</Link>
         <button type="button" className="btn btn-line" onClick={() => { setConfirm(true); setProblem(null); }}>Reopen the event…</button>

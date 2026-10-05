@@ -12,7 +12,7 @@ insert into public.platform_roles (user_id, role) values ('00000000-0000-0000-00
 insert into public.organizations (id, slug, name, kind) values ('00000000-0000-0000-0000-00000000a001', 'prairie-league', 'Prairie League', 'regional');
 insert into public.seasons (id, organization_id, slug, name, starts_on, ends_on) values ('00000000-0000-0000-0000-00000000a101', '00000000-0000-0000-0000-00000000a001', 'prairie-2026', 'Prairie 2026', current_date - 120, current_date + 120);
 insert into public.events (id, slug, name, status, event_type, starts_on, ends_on, venue, timezone, organization_id, season_id) values
-  ('00000000-0000-0000-0000-00000000a201', 'closeout-open', 'Closeout Open', 'published', 'tournament', current_date, current_date + 1, 'Test Arena', 'America/Edmonton', '00000000-0000-0000-0000-00000000a001', '00000000-0000-0000-0000-00000000a101');
+  ('00000000-0000-0000-0000-00000000a201', 'closeout-open', 'Closeout Open', 'published', 'tournament', current_date - 1, current_date + 1, 'Test Arena', 'America/Edmonton', '00000000-0000-0000-0000-00000000a001', '00000000-0000-0000-0000-00000000a101');
 insert into public.event_staff (event_id, user_id, role) values
   ('00000000-0000-0000-0000-00000000a201', '00000000-0000-0000-0000-0000000000a2', 'organizer'), ('00000000-0000-0000-0000-00000000a201', '00000000-0000-0000-0000-0000000000a4', 'scorekeeper');
 insert into public.teams (id, slug, name, status, city, country) values
@@ -66,3 +66,5 @@ insert into public.matches (id, competition_id, stage, round_label, position, en
 -- 5v5: one final, Ankle Biters win
 insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, queue_state, result, winner_entry_id, score_a, score_b, finalized_at) values
   (pg_temp.mid(14), '00000000-0000-0000-0000-00000000c004', 'final', 'Final', 0, pg_temp.eid(20), pg_temp.eid(21), 'final', 'a', pg_temp.eid(20), 3, 1, now() - interval '20 minutes');
+-- the four competitions with a draw are running (as build_schedule / the field leave them); Buckler stays in setup
+update public.competitions set status = 'running' where id in ('00000000-0000-0000-0000-00000000c001', '00000000-0000-0000-0000-00000000c002', '00000000-0000-0000-0000-00000000c003', '00000000-0000-0000-0000-00000000c004');

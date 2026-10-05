@@ -965,6 +965,7 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .fz-list li{display:flex;gap:10px;align-items:flex-start;overflow-wrap:anywhere}
 .fz-dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--faint)}
 .fz-dot.block{background:var(--live)} .fz-dot.warn{background:var(--brass)} .fz-dot.ok{background:var(--win)}
+.fz-pick .seg button{min-height:44px}
 .fz-big{min-height:52px;font-size:17px}
 .linklike{background:none;border:0;padding:0;color:var(--steel);text-decoration:underline;cursor:pointer;font:inherit;min-height:0}
 @media (prefers-reduced-motion:reduce){.fade-in,.ar-enter,.fz-state{animation:none;transition:none}}

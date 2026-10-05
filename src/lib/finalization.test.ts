@@ -3,7 +3,7 @@ import { toClosePreflight, toOfficialResult, toPreflight, type OfficialResult } 
 import { blockerLine, buildPodium, closeoutSummary, finalizeAction, nextReady, placeWord, pointsText, reasonOk, recordState, representedLine, unattributedFighters } from './finalization';
 
 // The sums, placings and blockers are the database's (supabase/tests/pack09c_gate.sql proves them). These tests cover what the screens do with them.
-const m = (queueState: string) => ({ queueState });
+const m = (queueState: 'final' | 'active' | 'scheduled') => ({ queueState });
 const row = (o: Partial<OfficialResult> & { place: number; name: string }): OfficialResult => ({
   competitionId: 'k', entryId: o.name, points: 0, kind: 'fighter', teamSlug: null, teamCurrentName: null, fighterId: o.name, entryStatus: 'checked_in',
   representedTeamName: null, representedTeamSlug: null, ...o

@@ -203,7 +203,7 @@ function ProgressPanel({ progress, records, checks, runHref, resultsHref, closed
   return (
     <section className="panel info ed-progress" aria-labelledby="ed-prog-h" style={{ display: 'grid', gap: 10 }}>
       <h2 id="ed-prog-h" className="ed-h">Competition progress</h2>
-      {closed && <p className="ed-calm" role="status"><b>This event is closed.</b> Its results are the permanent record. <Link to={resultsHref}>Results and closeout</Link></p>}
+      {closed && <p className="ed-calm" role="status"><b>This event is closed.</b> Its results are the permanent record. <Link to={resultsHref}>See the results and closeout</Link></p>}
       {!closed && allOfficial && <p role="status" style={{ margin: 0 }}><b>Every competition is official.</b> <Link className="btn btn-ink btn-sm" to={`${resultsHref}#closeout`}>Close the event</Link></p>}
       <ul className="ed-prog-list">
         {progress.map(p => {
@@ -217,8 +217,8 @@ function ProgressPanel({ progress, records, checks, runHref, resultsHref, closed
               {p.total > 0 && (
                 <div className="ed-bar" role="progressbar" aria-label={`${p.name} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={p.percent}><i style={{ width: `${p.percent}%` }} /></div>
               )}
-              <span className="src">{p.total > 0 ? `${p.final} / ${p.total} fights complete · ${p.percent}%` : 'Build a draw in the Run tools to see its fights here.'}{blocker ? ` · ${blocker}` : ''}</span>
-              {p.needsBracket && <Link className="btn btn-line btn-sm" to={runHref}>Build the bracket</Link>}
+              <span className="src">{p.total > 0 ? `${p.final} / ${p.total} fights complete · ${p.percent}%` : closed ? 'Never ran: no draw was built, so it was closed as not held.' : 'Build a draw in the Run tools to see its fights here.'}{blocker ? ` · ${blocker}` : ''}</span>
+              {p.needsBracket && !closed && <Link className="btn btn-line btn-sm" to={runHref}>Build the bracket</Link>}
               {record === 'ready' && !blocker && <Link className="btn btn-ink btn-sm" to={`${resultsHref}&competition=${p.id}`}>Review results</Link>}
               {record === 'ready' && blocker && <Link className="btn btn-line btn-sm" to={`${resultsHref}&competition=${p.id}`}>Resolve</Link>}
               {record === 'official' && <Link className="btn btn-line btn-sm" to={`${resultsHref}&competition=${p.id}`}>Official results</Link>}
