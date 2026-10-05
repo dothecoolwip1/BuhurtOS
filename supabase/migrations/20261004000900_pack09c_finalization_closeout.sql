@@ -177,6 +177,27 @@ revoke execute on function public.competition_finalize_preflight(uuid, text) fro
 grant execute on function public.competition_finalize_preflight(uuid, text) to authenticated;
 
 -- ---------------------------------------------------------------- 4. finish_competition: same computation, now refuses on every blocker and records the metadata
+-- The only places a result row or a tie decision is removed. Every caller below has already written the previous value to result_revisions
+-- (or re-records the decision in the same transaction); clients cannot call these. Kept apart so the removal is one named, reviewable step.
+create or replace function private.discard_results(p_competition uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+begin
+  delete from public.results where competition_id = p_competition;
+end $$;
+revoke execute on function private.discard_results(uuid) from public, anon, authenticated;
+create or replace function private.discard_result(p_id uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+begin
+  delete from public.results where id = p_id;
+end $$;
+revoke execute on function private.discard_result(uuid) from public, anon, authenticated;
+create or replace function private.discard_tie_decisions(p_competition uuid, p_entries uuid[]) returns void
+language plpgsql security definer set search_path = '' as $$
+begin
+  delete from public.pool_tie_decisions where competition_id = p_competition and entry_id = any (p_entries);
+end $$;
+revoke execute on function private.discard_tie_decisions(uuid, uuid[]) from public, anon, authenticated;
+
 create or replace function public.finish_competition(p_competition uuid, p_multiplier_source text default 'tournament_structure') returns integer
 language plpgsql security definer set search_path = '' as $$
 declare v_k public.competitions; v_block jsonb; v_mult numeric; n int := 0; r record; v_old public.results; v_pts numeric;
@@ -208,7 +229,7 @@ begin
   end loop;
   for v_old in select * from public.results where competition_id = p_competition and entry_id not in (select c.entry_id from private.compute_places(p_competition) c) loop
     perform private.log_result_revision(p_competition, v_old.entry_id, 'superseded', v_old.final_place, v_old.points, null, null, 'entry no longer ranked');
-    delete from public.results where id = v_old.id;
+    perform private.discard_result(v_old.id);
   end loop;
   update public.competitions set status = 'finished', finalized_at = coalesce(case when status = 'finished' then finalized_at end, now()), multiplier_source = p_multiplier_source
    where id = p_competition;
@@ -255,7 +276,7 @@ begin
   for r in select * from public.results where competition_id = p_competition loop
     perform private.log_result_revision(p_competition, r.entry_id, 'superseded', r.final_place, r.points, null, null, v_reason);
   end loop;
-  delete from public.results where competition_id = p_competition;
+  perform private.discard_results(p_competition);
   update public.competitions set status = 'running', reopened_at = now(), finalized_at = null where id = p_competition;
   perform set_config('bos.unlock', '', true);
   perform private.audit(v_k.event_id, 'competition.reopened', p_competition::text,
@@ -277,7 +298,7 @@ begin
     for r in select * from public.results where competition_id = new.competition_id loop
       perform private.log_result_revision(new.competition_id, r.entry_id, 'superseded', r.final_place, r.points, null, null, v_reason);
     end loop;
-    delete from public.results where competition_id = new.competition_id;
+    perform private.discard_results(new.competition_id);
     update public.competitions set status = 'running', reopened_at = now(), finalized_at = null where id = new.competition_id;
     perform set_config('bos.unlock', '', true);
     perform private.audit(v_event, 'competition.reopened', new.competition_id::text, jsonb_build_object('match', new.id, 'reason', v_reason, 'results_superseded', true, 'by', 'reopen_match'));
@@ -344,7 +365,7 @@ begin
   if cardinality(v_group) < 2 then raise exception 'there is no tie to decide here' using errcode = '22023'; end if;
   if not (v_group @> p_order and p_order @> v_group and cardinality(p_order) = cardinality(v_group)) then
     raise exception 'list exactly the tied entries, each once' using errcode = '22023'; end if;
-  delete from public.pool_tie_decisions where competition_id = p_competition and entry_id = any (v_group);
+  perform private.discard_tie_decisions(p_competition, v_group);
   for i in 1 .. cardinality(p_order) loop
     insert into public.pool_tie_decisions (competition_id, entry_id, part, rank, note, decided_by) values (p_competition, p_order[i], v_part, i, btrim(p_note), auth.uid());
   end loop;
