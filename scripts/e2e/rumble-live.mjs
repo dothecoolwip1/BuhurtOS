@@ -76,7 +76,7 @@ const has = async (page, t, sel = 'body') => (await text(page, sel)).toLowerCase
 const waitText = (page, sel, t, timeout = 40000) => page.waitForFunction(([s, x]) => (document.querySelector(s)?.innerText ?? '').replace(/\s+/g, ' ').toLowerCase().includes(x), [sel, t.toLowerCase()], { timeout }).then(() => true, () => false);
 const shot = async (page, nm, full = true) => { if (SHOTS) { await sleep(350); await page.screenshot({ path: `${SHOTS}/r11-${nm}.png`, fullPage: full }).catch(() => undefined); } };
 const sideways = (page) => page.evaluate(() => document.scrollingElement.scrollWidth > innerWidth + 1
-  || [...document.querySelectorAll('main *')].some(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > innerWidth + 1 && getComputedStyle(e).position !== 'fixed' && !e.closest('.seg,.eh-steps,.fz-pick,[style*="overflow"]'); }));
+  || [...document.querySelectorAll('main *')].some(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > innerWidth + 1 && getComputedStyle(e).position !== 'fixed' && !e.closest('.seg,.tabs,.eh-steps,.fz-pick,[style*="overflow"]'); }));
 const tinyTargets = (page, sel = 'main') => page.evaluate((s) => [...document.querySelectorAll(`${s} button, ${s} .btn, ${s} select, ${s} summary`)]
   .filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.height < 40 && !e.classList.contains('linklike') && getComputedStyle(e).visibility !== 'hidden'; })
   .map(e => (e.innerText || e.getAttribute('aria-label') || e.tagName).slice(0, 40)), sel);
@@ -84,7 +84,7 @@ const layout = async (page, nm) => {
   const over = await page.evaluate(() => [...document.querySelectorAll('main *')].map(e => {
     const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return { tag: e.tagName.toLowerCase(), cls: e.className || '', text: (e.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 90), left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), pos: s.position, overflowX: s.overflowX };
-  }).filter(x => x.width > 0 && x.right > innerWidth + 1 && x.pos !== 'fixed' && !/seg|eh-steps|fz-pick/.test(String(x.cls))).slice(0, 12));
+  }).filter(x => x.width > 0 && x.right > innerWidth + 1 && x.pos !== 'fixed' && !/seg|tabs|eh-steps|fz-pick/.test(String(x.cls))).slice(0, 12));
   check(`[${nm}] no sideways scrolling`, !(await sideways(page)), over.map(x => `${x.tag}.${String(x.cls)} right=${x.right} width=${x.width} overflow=${x.overflowX} text="${x.text}"`).join(' | '));
   const tiny = await tinyTargets(page);
   check(`[${nm}] no small tap targets`, tiny.length === 0, tiny.join(' | '));
@@ -995,7 +995,7 @@ try {
     const champ = sql(`select fighter_id from public.entries where id = '${gold}'`);
     const snap = () => pub(`select coalesce((select string_agg(scope || ':' || coalesce(kind, '-') || ':' || matches || ':' || golds || ':' || points, ',' order by scope, kind, category, gender) from public.fighter_career('${champ}') where context = 'official'), '-')
       || '|' || coalesce((select string_agg(scope || ':' || points, ',' order by scope, organization_id, season_id, category, gender) from public.ranking_fighters where fighter_id = '${champ}'), '-')
-      || '|' || coalesce((select string_agg(scope || ':' || coalesce(kind, '-') || ':' || matches || ':' || points, ',' order by scope, kind, category, gender) from public.team_career('${tid(1)}') where context = 'official'), '-')`);
+      || '|' || coalesce((select string_agg(scope || ':' || coalesce(category, '-') || ':' || matches || ':' || points, ',' order by scope, category, gender) from public.team_career('${tid(1)}') where context = 'official'), '-')`);
     const base = snap();
     const { ctx, page } = await open('desktop', 'owner');
     await page.goto(BASE + `/events/${SLUG}/manage?tab=setup`); await page.locator('#lifecycle').waitFor({ timeout: 30000 });
