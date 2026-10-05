@@ -7,7 +7,7 @@ import {
 import { friendlyError } from '../lib/friendlyError';
 import { useInstall } from '../lib/install';
 import { currentSubscription, currentSupport, disablePush, enablePush, endpointDigest, permissionState } from '../lib/push';
-import { installHelp } from '../lib/pushSupport';
+import { installHelp, permissionLabel } from '../lib/pushSupport';
 import { timeAgo } from '../lib/notificationView';
 
 const GROUPS: NotificationCategory[] = ['fights', 'team', 'events', 'system'];
@@ -31,13 +31,19 @@ export function NotificationSettings() {
 
   const load = useCallback(async () => {
     try {
-      const [s, d, sub] = await Promise.all([fetchNotificationSettings(), fetchPushDevices(), currentSubscription()]);
-      setSettings(s); setDevices(d); setThisDigest(sub ? await endpointDigest(sub.endpoint) : null); setPerm(permissionState());
+      const [s, d] = await Promise.all([fetchNotificationSettings(), fetchPushDevices()]);
+      setSettings(s); setDevices(d); setPerm(permissionState());
     } catch (e) { setProblem(friendlyError(e, 'Could not load your notification settings.')); }
+    // This browser's own subscription is looked up separately: it can take a moment (or never come, without a service worker) and must not
+    // hold up the settings and device list.
+    const sub = await currentSubscription();
+    setThisDigest(sub ? await endpointDigest(sub.endpoint) : null);
   }, []);
   useEffect(() => { void load(); }, [load]);
 
   const thisOn = devices?.some(d => d.endpointDigest === thisDigest) === true && perm === 'granted';
+  // Two different switches, shown apart so nobody confuses them: what the BROWSER allows, and whether BuhurtOS is sending to this device.
+  const permText = permissionLabel(support, perm);
 
   const turnOn = async () => {
     setBusy(true); setProblem(null); setSaved(null);
@@ -76,6 +82,10 @@ export function NotificationSettings() {
     <section aria-labelledby="notif-set-h" id="notifications" style={{ display: 'grid', gap: 10, scrollMarginTop: 90 }}>
       <h2 id="notif-set-h" className="acct-h">Notifications</h2>
       <div className="panel" style={{ display: 'grid', gap: 14, padding: 18 }}>
+        <dl className="ns-status" aria-label="Alerts on this device">
+          <div><dt>Browser permission</dt><dd data-testid="ns-perm">{permText}</dd></div>
+          <div><dt>BuhurtOS alerts on this device</dt><dd data-testid="ns-device">{devices === null ? '…' : thisOn ? 'On' : 'Off'}</dd></div>
+        </dl>
         {support === 'needs-install' && (
           <div role="note" style={{ display: 'grid', gap: 6 }}>
             <b>To get alerts on iPhone or iPad, add BuhurtOS to your Home Screen first.</b>
@@ -92,7 +102,7 @@ export function NotificationSettings() {
         {support === 'ready' && perm !== 'denied' && !thisOn && (
           <div style={{ display: 'grid', gap: 8 }}>
             <p style={{ margin: 0 }}><b>Want BuhurtOS to tell you when you're coming up to fight?</b></p>
-            <p className="muted" style={{ margin: 0 }}>It sends a short message when you are in the hole, on deck and up. You can switch groups off below and turn it off whenever you like. Your browser will ask permission next.</p>
+            <p className="muted" style={{ margin: 0 }}>It sends a short message when you are 2 fights away, up next and when your fight is ready, and tells you if your fight changes field or the schedule changes. You can switch groups off below and turn it off whenever you like. Your browser will ask permission next.</p>
             <div><button type="button" className="btn btn-ink" disabled={busy} onClick={() => void turnOn()}>{busy ? 'Turning on…' : 'Turn on alerts on this device'}</button></div>
           </div>
         )}

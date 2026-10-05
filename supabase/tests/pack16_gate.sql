@@ -1,4 +1,5 @@
--- Pack 16 gate: check-in, armour inspection, weigh-in, overrides and derived readiness (migration 20261010000100).
+-- Pack 16 gate: check-in, armour inspection, weigh-in, overrides and derived readiness (migration 20261010000100),
+-- and inspection alerts through Pack 15's notifications (migration 20261010000200).
 --   * who may check in / inspect / weigh in / override (event-scoped; a scorekeeper or captain gains nothing; fighters cannot clear themselves)
 --   * inspection history is append-only (a failure is never overwritten); the latest is current; the old kit switch follows it
 --   * readiness is derived with plain reasons; private notes and weights only for the desk; captains and Lyst staff see status words only
@@ -153,6 +154,36 @@ select t.as_admin();
 select t.expect_eq('the old kit flag follows the latest inspection (every older screen agrees)', (select passed from public.registration_checks where registration_id = t.r(6) and check_name = 'kit'), true);
 select t.expect_error('the history cannot be rewritten (even by the database owner)', $$update public.registration_inspections set result = 'passed' where registration_id = t.r(6)$$, '42501');
 select t.expect_error('... nor deleted', $$delete from public.registration_inspections where registration_id = t.r(6)$$, '42501');
+
+-- ---------------------------------------------------------------- inspection alerts through Pack 15's notifications (migration 20261010000200)
+select t.as_admin();
+select t.expect_eq('the fighter got one alert per inspection: 2 needs-correction (conditional, failed) and 1 passed',
+  (select string_agg(kind || ':' || (payload ->> 'result'), ',' order by kind, payload ->> 'result') from public.notifications where user_id = t.u(6) and kind like 'inspection%'),
+  'inspection_needs_correction:conditional,inspection_needs_correction:failed,inspection_passed:passed');
+select t.expect_eq('the inspector''s private notes never go into a notification',
+  (select count(*) from public.notifications where kind like 'inspection%' and (payload::text ilike '%rim strap%' or payload::text ilike '%Fixed%')), 0::bigint);
+select t.expect_eq('each alert has a durable dedupe key per inspection and account',
+  (select count(*) from public.notifications n join public.registration_inspections i on n.dedupe_key = 'inspection:' || i.id::text || ':' || t.u(6)::text where n.user_id = t.u(6)), 3::bigint);
+select t.expect_eq('words: needs a fix, with the item to fix',
+  (select x.title || ' / ' || x.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) x where n.user_id = t.u(6) and n.payload ->> 'result' = 'conditional'),
+  'Armour needs a fix / Inspectors at Readiness Open asked you to fix: shield. Then go back for reinspection.');
+select t.expect_eq('words: did not pass',
+  (select x.title from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) x where n.user_id = t.u(6) and n.payload ->> 'result' = 'failed'), 'Armour did not pass');
+select t.expect_eq('words: passed',
+  (select x.title || ' / ' || x.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) x where n.user_id = t.u(6) and n.kind = 'inspection_passed'),
+  'Armour passed / Your armour passed inspection at Readiness Open.');
+select t.expect_eq('group events, pushable, and opens the fighter''s event page',
+  private.notification_category('inspection_passed') || ' ' || private.notification_pushable('inspection_needs_correction')::text || ' ' ||
+  private.notification_route('inspection_needs_correction', '{"event_slug": "p16-e1"}'), 'events true /events/p16-e1');
+select t.expect_eq('Pack 15''s own kinds are unchanged (fight_called still says report to the field)',
+  (select title from private.notification_text('fight_called', '{"field": "Field 2"}')) || ' / ' || private.notification_category('fight_called') || ' / ' || private.notification_route('event_announcement', '{"event_slug": "x-y"}'),
+  'Your fight is ready / fights / /events/x-y');
+select t.expect_eq('staff are not alerted about a fighter''s inspection (organizer, head marshal, desk, inspector, scorekeeper, captain)',
+  (select count(*) from public.notifications where kind like 'inspection%' and user_id in (t.u(1), t.u(2), t.u(3), t.u(4), t.u(5), t.u(8))), 0::bigint);
+select t.as_user(t.u(7));
+select t.expect_error('another account cannot read the fighter''s alerts (no direct table access)', $$select count(*) from public.notifications where user_id = t.u(6)$$, '42501');
+select t.as_admin();
+select t.expect_eq('the producer is not callable by clients', has_function_privilege('authenticated', 'private.inspection_notify()', 'execute'), false);
 select t.expect_eq('every action is in the audit log with the actor', (select count(*) from public.audit_log where event_id = t.ev(1) and (action like 'checkin.%' or action like 'inspection.%') and actor is not null), 5::bigint);
 select t.expect_eq('... the reinspection is flagged as one', (select details ->> 'reinspection' from public.audit_log where event_id = t.ev(1) and action = 'inspection.passed'), 'true');
 

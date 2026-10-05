@@ -7,6 +7,8 @@ import { deviceLabel, platformOf, pushSupport, sameKey, stillDismissed, urlBase6
  * is only called by a button press that explained why first.
  */
 const flagKey = (userId: string) => `bos-push-on:${userId}`;
+/** The server id of THIS browser's registration, so it can remove exactly its own row later (never anyone else's: the server checks the owner). */
+const deviceKey = (userId: string) => `bos-push-device:${userId}`;
 const ASK_KEY = 'bos-push-ask';
 export const ASK_AGAIN_DAYS = 30;
 
@@ -32,8 +34,13 @@ export function currentSupport(): PushSupport {
 
 export const permissionState = (): NotificationPermission | 'unsupported' => ('Notification' in window ? Notification.permission : 'unsupported');
 
+/** The service worker's registration. `ready` never settles when no worker could be registered (blocked storage, private modes), so give up
+ *  after a few seconds instead of leaving a screen waiting forever: callers then treat this device as "no alerts here". */
 async function registration(): Promise<ServiceWorkerRegistration> {
-  return navigator.serviceWorker.ready;
+  return Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error('The app is not fully installed in this browser yet. Reload and try again.')), 5000))
+  ]);
 }
 
 export async function currentSubscription(): Promise<PushSubscription | null> {
@@ -67,7 +74,12 @@ export async function enablePush(userId: string): Promise<EnableResult> {
   let sub = await reg.pushManager.getSubscription();
   if (sub && !sameKey(sub.options.applicationServerKey, wanted)) { await sub.unsubscribe(); sub = null; }   // the server's key changed: the old subscription can never receive
   sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: wanted as BufferSource });
-  await registerPushDevice(toRegistration(sub), deviceLabel(navigator.userAgent, navigator.maxTouchPoints));
+  const id = await registerPushDevice(toRegistration(sub), deviceLabel(navigator.userAgent, navigator.maxTouchPoints));
+  // The browser gave this device a NEW address (keys rotated, subscription replaced): the old row can never receive again, so remove it now
+  // instead of waiting for the push service to report it gone.
+  const before = store.get(deviceKey(userId));
+  if (before && id && before !== id) await removePushDevice({ id: before }).catch(() => undefined);
+  if (id) store.set(deviceKey(userId), id);
   store.set(flagKey(userId), '1');
   return 'enabled';
 }
@@ -75,7 +87,7 @@ export async function enablePush(userId: string): Promise<EnableResult> {
 /** Turn alerts off for this device. The local unsubscribe always happens (so no alert can arrive even offline); telling the server is best effort. */
 export async function disablePush(userId: string | null): Promise<void> {
   const sub = await currentSubscription();
-  if (userId) store.del(flagKey(userId));
+  if (userId) { store.del(flagKey(userId)); store.del(deviceKey(userId)); }
   if (!sub) return;
   const endpoint = sub.endpoint;
   await sub.unsubscribe().catch(() => undefined);
@@ -90,7 +102,16 @@ export const wantsPush = (userId: string): boolean => store.get(flagKey(userId))
  */
 export async function syncPush(userId: string): Promise<void> {
   try {
-    if (!wantsPush(userId) || currentSupport() !== 'ready' || Notification.permission !== 'granted') return;
+    if (!wantsPush(userId) || currentSupport() !== 'ready') return;
+    if (Notification.permission === 'denied') {
+      // The person blocked BuhurtOS in the browser's own settings: this device can never show an alert again, so it leaves the server's list
+      // (otherwise every alert would still be sent to a dead end). Turning alerts back on registers it again.
+      const id = store.get(deviceKey(userId));
+      if (id) await removePushDevice({ id });
+      store.del(deviceKey(userId)); store.del(flagKey(userId));
+      return;
+    }
+    if (Notification.permission !== 'granted') return;
     await enablePush(userId);
   } catch { /* retried at the next start */ }
 }

@@ -9,7 +9,8 @@ import { supabase } from '../lib/supabase';
 export type JoinStatus = 'pending' | 'approved' | 'declined' | 'cancelled';
 export type JoinDecision = 'approved' | 'declined';
 export type NotificationKind = 'team_join_requested' | 'team_join_decided' | 'team_proposed' | 'registration_submitted' | 'registration_decided' | 'bug_reported' | 'event_invited' | 'registration_withdrawn' | 'fighter_claim_requested' | 'fighter_claim_decided'
-  | 'fight_called' | 'fight_moved' | 'team_member_joined' | 'team_member_added' | 'event_cancelled' | 'test_push';
+  | 'fight_called' | 'fight_moved' | 'team_member_joined' | 'team_member_added' | 'event_cancelled' | 'test_push'
+  | 'schedule_changed' | 'event_announcement' | 'result_needs_review' | 'inspection_needs_correction' | 'inspection_passed';
 export type SocialNetwork = 'facebook' | 'instagram' | 'youtube' | 'tiktok' | 'x' | 'discord' | 'twitch' | 'other';
 
 export const MESSAGE_MAX = 500;

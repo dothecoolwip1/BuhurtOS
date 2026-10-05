@@ -43,7 +43,7 @@ export function PushAsk() {
       {ios
         ? <><span className="muted">On iPhone, alerts work from the Home Screen app. {installHelp(platformOf(navigator.userAgent, navigator.maxTouchPoints)).steps.slice(0, 2).join(' ')}</span><div><button type="button" className="btn btn-line btn-sm" onClick={() => { dismissAsk(); setState('hide'); }}>Got it</button></div></>
         : <>
-            <span className="muted">A short message when you are in the hole, on deck and up. It works with BuhurtOS closed. Turn it off any time.</span>
+            <span className="muted">A short message when you are 2 fights away, up next and when your fight is ready, even with BuhurtOS closed. Turn it off any time.</span>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <button type="button" className="btn btn-ink btn-sm" disabled={busy} onClick={() => void turnOn()}>{busy ? 'Turning on…' : 'Turn on alerts'}</button>
               <button type="button" className="btn btn-line btn-sm" disabled={busy} onClick={() => { dismissAsk(); setState('hide'); }}>Not now</button>

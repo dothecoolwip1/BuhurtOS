@@ -87,6 +87,13 @@ column public.entry_fighters.fighter_id uuid not null
 column public.entry_fighters.id uuid not null
 column public.entry_fighters.permanent_team_id uuid
 column public.entry_fighters.role text not null
+column public.event_announcements.audience text not null
+column public.event_announcements.event_id uuid not null
+column public.event_announcements.id uuid not null
+column public.event_announcements.message text not null
+column public.event_announcements.recipients integer not null
+column public.event_announcements.sent_at timestamp with time zone not null
+column public.event_announcements.sent_by uuid
 column public.event_broadcast.corners text not null
 column public.event_broadcast.event_id uuid not null
 column public.event_broadcast.show_photos boolean not null
@@ -685,6 +692,11 @@ constraint entry_fighters entry_fighters_fighter_id_fkey FOREIGN KEY (fighter_id
 constraint entry_fighters entry_fighters_permanent_team_id_fkey FOREIGN KEY (permanent_team_id) REFERENCES teams(id) ON DELETE SET NULL
 constraint entry_fighters entry_fighters_pkey PRIMARY KEY (id)
 constraint entry_fighters entry_fighters_role_check CHECK ((role = ANY (ARRAY['fighter'::text, 'mercenary'::text, 'guest'::text])))
+constraint event_announcements event_announcements_audience_check CHECK ((audience = ANY (ARRAY['everyone'::text, 'fighters'::text])))
+constraint event_announcements event_announcements_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint event_announcements event_announcements_message_check CHECK (((char_length(message) >= 3) AND (char_length(message) <= 140)))
+constraint event_announcements event_announcements_pkey PRIMARY KEY (id)
+constraint event_announcements event_announcements_sent_by_fkey FOREIGN KEY (sent_by) REFERENCES auth.users(id) ON DELETE SET NULL
 constraint event_broadcast event_broadcast_corners_check CHECK ((corners = ANY (ARRAY['red_blue'::text, 'team_colors'::text])))
 constraint event_broadcast event_broadcast_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 constraint event_broadcast event_broadcast_pkey PRIMARY KEY (event_id)
@@ -857,6 +869,7 @@ constraint matches matches_next_link_has_slot CHECK (((next_match_id IS NULL) OR
 constraint matches matches_next_match_id_fkey FOREIGN KEY (next_match_id) REFERENCES matches(id) ON DELETE SET NULL
 constraint matches matches_next_slot_check CHECK ((next_slot = ANY (ARRAY['a'::text, 'b'::text])))
 constraint matches matches_notify_queue TRIGGER DEFERRABLE INITIALLY DEFERRED
+constraint matches matches_notify_schedule TRIGGER DEFERRABLE INITIALLY DEFERRED
 constraint matches matches_pkey PRIMARY KEY (id)
 constraint matches matches_queue_state_check CHECK ((queue_state = ANY (ARRAY['scheduled'::text, 'on_deck'::text, 'in_the_hole'::text, 'active'::text, 'final'::text])))
 constraint matches matches_result_check CHECK ((result = ANY (ARRAY['a'::text, 'b'::text, 'draw'::text])))
@@ -867,7 +880,7 @@ constraint matches matches_winner_entry_id_fkey FOREIGN KEY (winner_entry_id) RE
 constraint notification_preferences notification_preferences_pkey PRIMARY KEY (user_id)
 constraint notification_preferences notification_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 constraint notifications notifications_category_check CHECK (((category IS NULL) OR (category = ANY (ARRAY['fights'::text, 'team'::text, 'events'::text, 'system'::text]))))
-constraint notifications notifications_kind_check CHECK ((kind = ANY (ARRAY['team_join_requested'::text, 'team_join_decided'::text, 'team_proposed'::text, 'registration_submitted'::text, 'registration_decided'::text, 'bug_reported'::text, 'event_invited'::text, 'registration_withdrawn'::text, 'fighter_claim_requested'::text, 'fighter_claim_decided'::text, 'fight_called'::text, 'fight_moved'::text, 'team_member_joined'::text, 'team_member_added'::text, 'event_cancelled'::text, 'test_push'::text])))
+constraint notifications notifications_kind_check CHECK ((kind = ANY (ARRAY['team_join_requested'::text, 'team_join_decided'::text, 'team_proposed'::text, 'registration_submitted'::text, 'registration_decided'::text, 'bug_reported'::text, 'event_invited'::text, 'registration_withdrawn'::text, 'fighter_claim_requested'::text, 'fighter_claim_decided'::text, 'fight_called'::text, 'fight_moved'::text, 'team_member_joined'::text, 'team_member_added'::text, 'event_cancelled'::text, 'test_push'::text, 'schedule_changed'::text, 'event_announcement'::text, 'result_needs_review'::text, 'inspection_needs_correction'::text, 'inspection_passed'::text])))
 constraint notifications notifications_pkey PRIMARY KEY (id)
 constraint notifications notifications_push_state_check CHECK ((push_state = ANY (ARRAY['none'::text, 'pending'::text, 'done'::text])))
 constraint notifications notifications_route_check CHECK (((route IS NULL) OR ((char_length(route) <= 200) AND (route ~ '^/[A-Za-z0-9/_-]*(\?[A-Za-z0-9=&_-]*)?(#[A-Za-z0-9_-]+)?$'::text))))
@@ -1108,6 +1121,7 @@ function private.entries_lock_guard() secdef=true 83b851ca9433a92887fb09c75ee78e
 function private.entries_represented_team() secdef=true 3dd15fad35aaeeab4dee838897471206
 function private.entry_fighters_fill() secdef=true 895466129a528be643ba0f961719899b
 function private.entry_recipient_users(p_entry uuid) secdef=true 567a36dad96aa195e0d412920fafccd6
+function private.event_audience(p_event uuid, p_audience text) secdef=true d19d0726a38f979bc0e743020f6b159f
 function private.event_bookings(p_event uuid) secdef=true 67fee62420db92885d50fc37ebae6a11
 function private.event_cancel_notify() secdef=true 81fce921d6a0e86b1a7d5b32e0e77c16
 function private.event_closed(p_event uuid) secdef=true 5e9b624d1220bcbf2a57eb38fb72a9d9
@@ -1128,6 +1142,7 @@ function private.group_ranks(p_comp uuid) secdef=true e1c4883b9cc27e91a98689efcf
 function private.guard_gallery_limit() secdef=true a7cbbdc38f1f59f54f7a35b27c1a75c7
 function private.handle_new_user() secdef=true 31f69cfd0d8aec6c3b3ec22e4cb5cf27
 function private.has_event_role(p_event uuid, p_roles text[]) secdef=true 3d97dea8565d1b6add193eacbc40c2d0
+function private.inspection_notify() secdef=true fac27a8b5f403c948f1764049d6f4d10
 function private.is_client_session() secdef=false 13a8d815b0ca40cc0fe631c75b326c24
 function private.is_event_public(p_event uuid) secdef=true ced34450252ce5bb008b7a9347887003
 function private.is_org_admin(p_org uuid) secdef=true 3ba7da7d3c7bbf95a92af8315904a264
@@ -1157,11 +1172,11 @@ function private.match_runnable(p_match matches) secdef=true 81da90f84be5089aa4b
 function private.matches_lock_guard() secdef=true 3cdc8faa4801657851a4765cf2fec0ec
 function private.membership_notify() secdef=true 43715be119aa516af20272eb9513bbc2
 function private.my_event_links(p_uid uuid) secdef=true 6f8bd4b0a35aa65762c8da5fec5fcc36
-function private.notification_category(p_kind text) secdef=false 1aa1fb3e1b53326070e6f195639eff57
+function private.notification_category(p_kind text) secdef=false e1307b9c0b539e6d9863639b65e514aa
 function private.notification_is_synthetic(p_payload jsonb) secdef=true 086f06eff735df252c3eebe48b269b83
-function private.notification_pushable(p_kind text) secdef=false 67aeccfaada220d16c07549bb1e42ea1
-function private.notification_route(p_kind text, p_payload jsonb) secdef=false 9e0da87cfd605dab143480c29abd3620
-function private.notification_text(p_kind text, p_payload jsonb) secdef=false 75ad083643bc602e6a45cd170f53e2eb
+function private.notification_pushable(p_kind text) secdef=false 04bb0fc2fbd603f1d633869403ce920f
+function private.notification_route(p_kind text, p_payload jsonb) secdef=false ae564145d91a6db6b30d529df3ca5d2e
+function private.notification_text(p_kind text, p_payload jsonb) secdef=false 6111edd349fdfee644d2842001f2fc95
 function private.notifications_kick() secdef=true 0152abf57c5c8d0fdefdfb408f630576
 function private.notifications_prepare() secdef=true 93e94655f1fa7cdf21ff482be6c857fb
 function private.org_enabled(p_org uuid) secdef=true fe21f4eb3a5d32ece8a2deb165fe9a61
@@ -1173,7 +1188,7 @@ function private.push_kick() secdef=true 59ea93fa367964e10168630e1dad1ef8
 function private.push_sweep() secdef=true ec105d9f76998da6e6bcdb9ec6c8a26e
 function private.push_ttl(p_category text) secdef=false bb0d2d8963f4ef688b8a530c21429a31
 function private.queue_lock(p_event uuid) secdef=false 4ccb195e7e4fd9bf0f7602f591d1de91
-function private.queue_notify() secdef=true 68b3e6e03114a77ddd6cf34d21263533
+function private.queue_notify() secdef=true 47bcb968ed6b4fc02a67d00c6e1e735a
 function private.queue_ordered(p_event uuid, p_key text, p_states text[]) secdef=true 016132f2320938825d7e2fd01596cdf0
 function private.readiness_append_only() secdef=false 2754437439ba3c3fbacfffb9dc276366
 function private.readiness_rows(p_event uuid, p_detail boolean) secdef=true f12824e68555b6ec72500ee441bd68cf
@@ -1187,8 +1202,10 @@ function private.reopen_match_core(p_match uuid, p_reason text) secdef=true f7da
 function private.represented_team_evidence(p_event uuid, p_fighter uuid, OUT team_id uuid, OUT basis text) secdef=true 34d51ad5425a7a8c226c795938929869
 function private.resolve_withdrawn_walkovers(p_competition uuid) secdef=true 9f56211af5507debff6083af5950104f
 function private.result_revisions_append_only() secdef=false d795b3ab81682d262094bf69356103cf
+function private.review_notify() secdef=true dc9403808491858fccb16246221d6975
 function private.revoke_subscription(p_id uuid) secdef=true 5cfeea7d95782ee153d5efc85d676491
 function private.round_rank(p_stage text, p_label text) secdef=false c346e2163e169752721e61a406c02a05
+function private.schedule_notify() secdef=true df1983843e9bac9a3ec276403d8c0ed0
 function private.settle_field_queue(p_event uuid, p_key text, p_start boolean) secdef=true f71c55456652d4a824fea67c2771718f
 function private.side_rounds(p_detail jsonb, p_side text, p_sf integer, p_sa integer) secdef=false 56a7f063efebbe25d570b1840e46f8d2
 function private.snapshot_entry_team() secdef=true b5381ff8deae6cdc1a1dbf641109f7d5
@@ -1266,6 +1283,7 @@ function public.grant_organization_admin(p_org uuid, p_email text) secdef=true c
 function public.inspection_history(p_reg uuid) secdef=true ddbb545429ea50256098dff6669d97d0
 function public.invite_fighter_to_event(p_event uuid, p_fighter uuid, p_competitions uuid[], p_note text) secdef=true e8b3cf9a73829d8c73ec88c4918db3a2
 function public.list_active_organizations() secdef=true 4eb5989632bc53c657e6d46e490727d0
+function public.list_event_announcements(p_event uuid) secdef=true 9bf36f3876ba159c17fe94c44d048848
 function public.list_event_invitations(p_event uuid) secdef=true 3362914173f527eceb1fd907eca05683
 function public.list_event_staff(p_event uuid) secdef=true eae1f2c481e4f021e4a09bc7958a8bd2
 function public.list_fighter_claims() secdef=true b83fba548dd9ef1cfc6005586a153000
@@ -1334,6 +1352,7 @@ function public.save_event_sponsor(p_event uuid, p_id uuid, p_name text, p_logo_
 function public.save_queue_plan(p_event uuid, p_order uuid[], p_hold uuid[]) secdef=true b923da881b4d247709ce68ae34ce2c9b
 function public.search_fighters_for_entry(p_competition uuid, p_query text) secdef=true 38479287e0c6b86c25454cc616d337b1
 function public.search_unclaimed_fighters(p_query text) secdef=true 4a0498bbb3477c7389b5e0e473fc9083
+function public.send_event_announcement(p_event uuid, p_message text, p_audience text) secdef=true ee1c5c284af21772786369a43736fac9
 function public.send_test_notification() secdef=true 04031894edca2f3c5d81e8d655feeecc
 function public.set_attendance(p_reg uuid, p_state text) secdef=true baff3e65beae5aab6e20515dc8a8ecf7
 function public.set_broadcast_settings(p_event uuid, p_settings jsonb) secdef=true 1dc29791504f882c21e2eb2824d57226
@@ -1400,6 +1419,8 @@ index public.entry_fighters CREATE INDEX ON public.entry_fighters USING btree (f
 index public.entry_fighters CREATE UNIQUE INDEX ON public.entry_fighters USING btree (competition_id, fighter_id)
 index public.entry_fighters CREATE UNIQUE INDEX ON public.entry_fighters USING btree (entry_id, fighter_id)
 index public.entry_fighters CREATE UNIQUE INDEX ON public.entry_fighters USING btree (id)
+index public.event_announcements CREATE INDEX ON public.event_announcements USING btree (event_id, sent_at DESC)
+index public.event_announcements CREATE UNIQUE INDEX ON public.event_announcements USING btree (id)
 index public.event_broadcast CREATE UNIQUE INDEX ON public.event_broadcast USING btree (event_id)
 index public.event_invitation_competitions CREATE UNIQUE INDEX ON public.event_invitation_competitions USING btree (invitation_id, competition_id)
 index public.event_invitations CREATE UNIQUE INDEX ON public.event_invitations USING btree (event_id, fighter_id)
@@ -1615,6 +1636,7 @@ table public.bug_reports rls=true
 table public.competitions rls=true
 table public.entries rls=true
 table public.entry_fighters rls=true
+table public.event_announcements rls=true
 table public.event_broadcast rls=true
 table public.event_invitation_competitions rls=true
 table public.event_invitations rls=true
@@ -1699,11 +1721,13 @@ trigger public.matches matches_links 0e6952187bb28c316b1b233bf44007df
 trigger public.matches matches_lock_guard 7605afcf9c47f0efd857b05baba52ea9
 trigger public.matches matches_lyst_final fad7c5044fe7d6f9db801c5f6a5f278b
 trigger public.matches matches_notify_queue 1c7f9e08deea510657497f9f99f3439a
+trigger public.matches matches_notify_schedule 97e425ba25491c2d04fd071b2f3362d6
 trigger public.matches matches_unfinish 6480b73749c8d5dd24a95139e75e38d8
 trigger public.notifications notifications_kick edae3c68178377d5d688374dda11fe7b
 trigger public.notifications notifications_prepare d600370195c78bac765359cc1d84349d
 trigger public.registration_competitions registration_competitions_gender 2ea3adb8693ffe6aab2aba0b9af5d019
 trigger public.registration_inspections registration_inspections_append_only ec2d18279b0eea834d9f73512bc478df
+trigger public.registration_inspections registration_inspections_notify bfad720fd10cff35c14bb328ab95218e
 trigger public.registration_overrides registration_overrides_append_only 9333db7ff4f24342014809b644c2dcfa
 trigger public.registration_weighins registration_weighins_append_only 9b6ca6ae56cb1074836cdbe394f44a80
 trigger public.registrations registrations_mode_guard e5451eb1c4bc880242a281fecdf7379f
@@ -1711,6 +1735,7 @@ trigger public.registrations registrations_notify 009cdce1b6cbd41828150fbb68cdf7
 trigger public.registrations registrations_org_guard 973a013d5e762d92438c81de43cc2663
 trigger public.registrations registrations_touch d51230d310f85ad30d4cb37976d0ccc0
 trigger public.registrations registrations_volunteer_roles 9617f9c515e507cf6932443820038877
+trigger public.result_proposals result_proposals_notify_review 952505791ba213b73fba24a3450e9374
 trigger public.result_revisions result_revisions_no_change 6117dd6abee472b9d28bea37a8cab968
 trigger public.team_join_requests team_join_requests_org_guard d71e980008a95f7149db47f7477c2f22
 trigger public.team_memberships team_memberships_notify 73724c9329c059cfeab4c844263c3e0b
