@@ -10,12 +10,13 @@
 .bc{--ink:#fff;--glass:rgba(10,14,20,.86);--glass2:rgba(10,14,20,.62);--line:rgba(255,255,255,.16);--red:#D7263D;--blue:#1F6FEB;--win:#39C27E;--amber:#F2B233}
 
 /* event tag, top left */
+.bc-tag.is-under{left:80px;top:188px}
 .bc-tag{position:absolute;left:48px;top:40px;display:grid;gap:4px;padding:12px 20px;border-radius:12px;background:var(--glass);border-left:6px solid var(--amber);max-width:520px}
 .bc-tag b{font:900 30px/1.05 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
 .bc-tag span{font:600 22px/1.1 var(--f-body);color:rgba(255,255,255,.78)}
 
 /* the score bug */
-.bc-bug{position:absolute;top:36px;left:50%;transform:translateX(-50%);width:1480px;display:grid;grid-template-columns:minmax(0,1fr) 232px minmax(0,1fr);gap:0;align-items:stretch;filter:drop-shadow(0 10px 24px rgba(0,0,0,.45))}
+.bc-bug{position:absolute;top:36px;left:50%;transform:translateX(-50%);width:1760px;display:grid;grid-template-columns:minmax(0,1fr) 232px minmax(0,1fr);gap:0;align-items:stretch;filter:drop-shadow(0 10px 24px rgba(0,0,0,.45))}
 .bc-side{display:grid;grid-template-columns:14px 92px minmax(0,1fr) 140px;gap:16px;align-items:center;min-height:132px;padding:0 0 0 0;background:var(--glass);border-radius:14px 0 0 14px;overflow:hidden}
 .bc-side.b{grid-template-columns:140px minmax(0,1fr) 92px 14px;border-radius:0 14px 14px 0;text-align:right}
 .bc-stripe{align-self:stretch;background:var(--corner);display:grid;place-items:center}
@@ -24,7 +25,7 @@
 .bc-side.b .bc-stripe{order:4}
 .bc-side.b .bc-score{order:0}.bc-side.b .bc-who{order:1}.bc-side.b>.bc-photo,.bc-side.b>.bc-crest{order:2}
 .bc-who{display:grid;gap:4px;min-width:0}
-.bc-name{font:900 clamp(34px,3.1vw,52px)/1 var(--f-display);text-transform:uppercase;letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bc-name{font:900 52px/1 var(--f-display);text-transform:uppercase;letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bc-sub{font:600 24px/1.1 var(--f-body);color:rgba(255,255,255,.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bc-score{align-self:stretch;display:grid;place-items:center;background:var(--corner);color:var(--corner-ink);font:900 112px/1 var(--f-display);font-variant-numeric:tabular-nums}
 .bc-side.is-winner .bc-score{background:var(--win);color:#06130C}

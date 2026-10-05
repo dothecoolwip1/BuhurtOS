@@ -61,7 +61,7 @@ export function BroadcastPage() {
     if (layout === 'bug') return f && (liveLike || mode === 'complete' || mode === 'winner') ? <Scorebug key="bug" scene={scene} a={sideOf(f, 'a')} b={sideOf(f, 'b')} server={d.clock} /> : null;
     return (
       <>
-        <div className="bc-tag"><b>{d.event.name}</b>{f ? <span>{f.competition}</span> : next ? <span>{next.competition}</span> : null}</div>
+        <div className={`bc-tag${bug ? ' is-under' : ''}`}><b>{d.event.name}</b>{f ? <span>{f.competition}</span> : next ? <span>{next.competition}</span> : null}</div>
         {bug}
         {(mode === 'intro' || mode === 'ready') && f && (
           <LowerThird kicker={mode === 'ready' ? 'GET READY' : 'NOW ON THE FIELD'} fight={f} a={sideOf(f, 'a')} b={sideOf(f, 'b')} field={scene.field} />

@@ -16,6 +16,9 @@ export function Portrait({ p, size }: { p: SidePresentation; size: number }) {
   return <span className="bc-crest bc-letter" style={{ width: size, height: size, background: p.corner.color, color: p.corner.ink }} aria-hidden="true">{initials(p.name)}</span>;
 }
 
+/** Long names step down so a full name fits on the bug instead of being cut. */
+const nameSize = (n: string) => (n.length > 24 ? 34 : n.length > 19 ? 40 : n.length > 15 ? 46 : 52);
+
 const MARK_CLASS: Record<string, string> = { warning: 'is-warn', card: 'is-card', deduction: 'is-ded', dq: 'is-dq' };
 export function Marks({ fight, side }: { fight: ArenaFight; side: 'a' | 'b' }) {
   const marks = fight.lyst?.marks.filter(m => m.side === side) ?? [];
@@ -50,7 +53,7 @@ export function Scorebug({ scene, a, b, server }: { scene: Scene; a: SidePresent
       <span className="bc-stripe" aria-hidden="true"><i>{p.corner.label}</i></span>
       <Portrait p={p} size={92} />
       <span className="bc-who">
-        <b className="bc-name">{p.name}</b>
+        <b className="bc-name" style={{ fontSize: nameSize(p.name) }}>{p.name}</b>
         <span className="bc-sub">{[p.subtitle, p.record ? `${p.record}` : null].filter(Boolean).join('  ·  ')}</span>
         <Marks fight={f} side={k} />
       </span>
