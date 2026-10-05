@@ -1198,3 +1198,38 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .mf-state{font:800 clamp(34px,10vw,52px)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
 .mf-state.go{color:var(--live)}
 .mf-state.soon{color:var(--brass)}
+
+/* Pack 16: check-in desk and readiness. Status is always words + symbol, never colour alone. */
+.desk{min-width:0}
+.desk-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.desk-counts button{display:grid;justify-items:start;gap:2px;padding:10px 12px;min-height:56px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface);text-align:left}
+.desk-counts b{font:800 24px/1 var(--f-display)}
+.desk-counts span{font-size:12.5px;color:var(--muted)}
+@media (min-width:720px){.desk-counts{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.desk-menus{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.desk-card{padding:14px;gap:10px;min-width:0}
+.desk-card.is-pinned{border:2px solid var(--steel);box-shadow:0 0 0 3px var(--steel-soft)}
+.desk-card[data-ready="no"]{border-left:4px solid var(--live)}
+.desk-card[data-ready="yes"]{border-left:4px solid var(--win)}
+.desk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.desk-head h3{margin:0;font-size:19px;line-height:1.2;overflow-wrap:anywhere;min-width:0}
+.desk-badge{flex:none;padding:5px 10px;border-radius:999px;font:700 12px/1.2 var(--f-data);letter-spacing:.06em}
+.desk-badge.ok{color:var(--win);background:var(--win-soft)}
+.desk-badge.no{color:var(--live);background:var(--live-soft)}
+.desk-reasons{margin:0;padding-left:20px;display:grid;gap:2px;font-weight:600}
+.desk-override{margin:0;padding:8px 10px;border-radius:var(--r-sm);background:var(--brass-soft);color:var(--ink)}
+.desk-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.desk-row .btn{min-height:48px;flex:1 1 auto}
+.desk-state{font-weight:600;flex:1 1 100%;margin:0}
+.desk-note{margin:0;padding:8px 10px;border-radius:var(--r-sm);background:var(--ground);overflow-wrap:anywhere}
+.desk-issue{display:grid;gap:8px;padding:10px;border-radius:var(--r-sm);border:1px dashed var(--line)}
+.desk-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip-btn{min-height:44px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--raised);font-weight:600;font-size:14px}
+.chip-btn.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.chip-btn.on::before{content:"✓ "}
+.desk-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--muted)}
+.desk-history{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px}
+.ready-strip{display:grid;gap:4px;padding:10px 12px;border-radius:var(--r-sm);border-left:4px solid var(--brass);background:var(--brass-soft);color:var(--ink);font-size:14px}
+.ready-strip b{font-weight:700}
+.checkin-qr{display:grid;justify-items:center;gap:8px}
+.checkin-qr svg{width:min(220px,70vw);height:auto;background:#fff;padding:10px;border-radius:var(--r-sm)}

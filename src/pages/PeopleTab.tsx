@@ -8,7 +8,9 @@ const ROLES: [StaffMember['role'], string, string][] = [
   ['head_marshal', 'Head marshal', 'Scores fights and settles it when two devices disagree about a result, or enters one from the paper sheet.'],
   ['marshal', 'Marshal', 'Scores fights.'],
   ['scorekeeper', 'Scorekeeper', 'Enters the agreed result of each fight.'],
-  ['medic', 'Medic', 'Can read the check-in list and medical notes.']
+  ['medic', 'Medic', 'Can read the check-in list and medical notes.'],
+  ['check_in', 'Check-in desk', 'Checks fighters in at the desk. Cannot score or change results.'],
+  ['inspector', 'Armour inspector', 'Inspects armour and kit, and records what needs fixing. Cannot score or change results.']
 ];
 const roleName = (r: string) => ROLES.find(([k]) => k === r)?.[1] ?? r;
 

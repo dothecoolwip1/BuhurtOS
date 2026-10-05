@@ -34,6 +34,7 @@ import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminIn
 import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
+import { CheckinDeskPage } from './pages/CheckinDeskPage';
 
 export function App() {
   const { pathname, search } = useLocation();
@@ -70,6 +71,7 @@ export function App() {
         <Route path="events/:eventId/register" element={<RegisterPage />} />
         <Route path="events/:eventId/field/:field" element={<FieldPage />} />
         <Route path="events/:eventId/manage" element={<ManagePage />} />
+        <Route path="events/:eventId/checkin" element={<CheckinDeskPage />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="organizations/:slug" element={<OrganizationPage />} />
         <Route path="platform" element={<PlatformHomePage />} />

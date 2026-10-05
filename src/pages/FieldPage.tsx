@@ -11,6 +11,7 @@ import { EnterOfficialResult, ResultConflicts } from '../components/ResultReview
 import { QUEUE_LABEL, fieldQueue } from '../lib/fieldScoring';
 import { ScoringScreen, type Opened } from '../components/scoring/ScoringScreen';
 import { LystScoring } from '../components/lyst/LystScoring';
+import { ReadinessStrip } from '../components/ReadinessStrip';
 import { boardModeFor } from '../lib/fieldScoring';
 import { friendlyError } from '../lib/friendlyError';
 import { supabase } from '../lib/supabase';
@@ -164,9 +165,12 @@ export function FieldPage() {
             onStale: (message: string) => { closeOpened(); setNotice(message); reload(); }
           };
           const isDuel = boardModeFor(opened.comp.league, opened.comp.category) === 'duel';
-          return isDuel && !classic
-            ? <LystScoring key={opened.match.id} {...common} canResolve={canResolve} onClassic={() => { writeClassic(true); setClassic(true); }} />
-            : <ScoringScreen key={opened.match.id} {...common} onLyst={isDuel ? () => { writeClassic(false); setClassic(false); } : undefined} />;
+          return <>
+            <ReadinessStrip key={`ready-${opened.match.id}`} matchId={opened.match.id} />
+            {isDuel && !classic
+              ? <LystScoring key={opened.match.id} {...common} canResolve={canResolve} onClassic={() => { writeClassic(true); setClassic(true); }} />
+              : <ScoringScreen key={opened.match.id} {...common} onLyst={isDuel ? () => { writeClassic(false); setClassic(false); } : undefined} />}
+          </>;
         })()
       ) : (
         <>
