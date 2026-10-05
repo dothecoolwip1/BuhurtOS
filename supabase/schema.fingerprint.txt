@@ -924,7 +924,9 @@ function public.event_close_preflight(p_event uuid) secdef=true fbb652344a86144b
 function public.event_delete_check(p_event uuid) secdef=true 64d96ed05ff3325d92e77fe3c0950d8e
 function public.exclude_event_from_stats(p_event uuid, p_reason text) secdef=true 05ab2f6918d8d94a0513ef3f7e3b9fe9
 function public.fighter_bookings(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 42f25793e5ca9afeb59d18cb0bfe36f7
+function public.fighter_career(p_fighter uuid) secdef=false d5829857c7b8078d5e37c0793728c0b4
 function public.fighter_claim_states(p_ids uuid[]) secdef=true 62fe646557addd50d1748693f82f74a5
+function public.fighter_head_to_head(p_fighter uuid) secdef=false 47ca1d1fb26b4af36e78d68871572086
 function public.fighter_is_booked(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 2fd44b2aa0e92b5f9f7f99de67bbcc3d
 function public.fighter_profile(p_fighter uuid) secdef=true 3af81ff3100ce8b5e13f92d2da28bd38
 function public.fighter_schedule_conflicts(p_event uuid) secdef=true 3ce6c7882a6c10645eaafae5aae1e8eb
@@ -994,7 +996,10 @@ function public.set_roster_visibility(p_team uuid, p_fighter uuid, p_visible boo
 function public.set_team_emblem(p_team uuid, p_path text) secdef=true 1b753f492fba3b9d3ee75534ba5a1bff
 function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 11dba67abfcb68f4628112aab5eb696d
 function public.submit_registration(p_event uuid, p_data jsonb) secdef=true 7e0c26d573d1fe442983b2b4b833c0f3
+function public.team_career(p_team uuid) secdef=false 57c0e276f6eec12cedd3129d7f0d2053
 function public.team_clearance(p_event uuid, p_team uuid) secdef=true a0219d10be26cc870881fa950d5b36dd
+function public.team_fighters_represented(p_team uuid) secdef=false 4021104713af8783bf85bd76331328d6
+function public.team_head_to_head(p_team uuid) secdef=false 01025e2f77b315235dbd0f3521deea10
 function public.team_requests_inbox() secdef=true 0e44165a441d977e7a197638ca76db60
 function public.team_roster(p_team uuid) secdef=true 7ed29128b5f8a4760ccf9bc081dc3d39
 function public.team_roster_manage(p_team uuid) secdef=true 56ac3dfe393d737bc858758282f0f732
@@ -1245,6 +1250,10 @@ trigger public.registrations registrations_volunteer_roles 9617f9c515e507cf69324
 trigger public.result_revisions result_revisions_no_change 6117dd6abee472b9d28bea37a8cab968
 trigger public.team_join_requests team_join_requests_org_guard d71e980008a95f7149db47f7477c2f22
 trigger public.teams teams_keep_represented 51304e1a267211ee9e953b6cf814311e
+view public.career_fights opts=security_invoker=true 801ee7383ad86b7c4841a30f6279d231
+view public.career_fights_all opts=security_invoker=true 2bc742d723ef8a9e372a62174e9f272f
+view public.career_results opts=security_invoker=true 06c5d3c32f10abcadab84bad7fdab058
+view public.career_results_all opts=security_invoker=true 38cfc36cd6ed4db8672603d76b68a484
 view public.competition_results opts=security_invoker=true 9aabfbea73c8319cb8da5fc9f449be26
 view public.competition_standings opts=security_invoker=true 8d4ca99c3fd9db2cf2cb8f7fd8b47047
 view public.entry_roster opts=security_invoker=true 336f4b4453c6c8849ae58ace7b889271
@@ -1266,6 +1275,8 @@ view public.result_rows opts=security_invoker=true 8db8f8a68955696d011577ebb7cd3
 view public.result_rows_all opts=security_invoker=true 204e66ec9f404381945429001433ae06
 view public.synthetic_records opts=security_invoker=true 7c70d9a9a984c5d540357da0371a90a7
 view public.team_discipline_contributions opts=security_invoker=true 8a3fe15d8389d3644dfbac3fb18c2ae9
+view public.team_fights opts=security_invoker=true 66d07cc122b400a4ff2a2d8e5f4bf02e
+view public.team_fights_all opts=security_invoker=true a6c2cf7a78d58fbdeaf9e14e7b4dfd15
 view public.team_history opts=security_invoker=true 0cba0ee102557b6d74ee15801a10ace8
 view public.team_results opts=security_invoker=true ce05e553eda835f2eff22b47a1df8144
 view public.team_results_all opts=security_invoker=true 0cba44bbe981577be073ec3e2769abf0
