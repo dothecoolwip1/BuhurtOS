@@ -182,7 +182,7 @@ select public.finalize_match('00000000-0000-0000-0000-00000000ab10', 'a', 5, 4, 
 select t.expect_eq('the withdrawal bracket can finish completely',
   (select count(*) from public.matches where competition_id = :'k5' and queue_state <> 'final'), 0::bigint);
 select t.expect_eq('automatic walkovers are idempotent once the bracket is settled',
-  private.resolve_withdrawn_walkovers(:'k5'::uuid), 0);
+  public.withdraw_entry('00000000-0000-0000-0000-00000000ee10', 'Injured shoulder', true), 0);
 select t.expect_eq('private withdrawal convergence is not executable by authenticated users',
   has_function_privilege('authenticated', 'private.resolve_withdrawn_walkovers(uuid)', 'EXECUTE'), false);
 select t.expect_eq('the public withdrawal command is authenticated-only',
