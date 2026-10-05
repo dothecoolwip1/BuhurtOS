@@ -3,6 +3,7 @@ import { parseStream } from './stream';
 import { visibleSponsors, type Sponsor } from './sponsors';
 import { RED, BLUE, cornerFor, formatRecord, presentSide, type SideSource } from './sides';
 import { COMPLETE_MS, broadcastScene } from './state';
+import { overlayUrl } from './obsUrl';
 import type { ArenaFight, ArenaLyst, ArenaView } from '../arena';
 
 describe('stream addresses: allow-list, embeddable or not', () => {
@@ -148,5 +149,16 @@ describe('broadcast scenes: derived from existing state, never operated', () => 
     expect(s.next?.id).toBe('d');
     expect(s.following.map(f => f.id)).toEqual(['u1', 'u2']);
     expect(s).toMatchObject({ field: 'Field 1', done: 2, total: 8, round: 1 });
+  });
+});
+
+describe('overlayUrl (what OBS opens)', () => {
+  it('is the public address: slug, field and options only', () => {
+    expect(overlayUrl('https://app.example', '/', 'test-event', 'Field 1')).toBe('https://app.example/broadcast/test-event/Field%201');
+    expect(overlayUrl('https://app.example', '/buhurtos/', 'test-event', 'Field 2', { layout: 'bug', bg: 'green' })).toBe('https://app.example/buhurtos/broadcast/test-event/Field%202?layout=bug&bg=green');
+    expect(overlayUrl('https://app.example/', '/', 'e', null, { layout: 'full', bg: 'transparent' })).toBe('https://app.example/broadcast/e');
+  });
+  it('never carries an account, token or key', () => {
+    expect(overlayUrl('https://app.example', '/', 'e', 'Field 1', { layout: 'queue', bg: 'dark' })).not.toMatch(/token|key|user|auth|secret/i);
   });
 });

@@ -8,10 +8,12 @@ import type { Scene, SceneClock } from '../../lib/broadcast/state';
 
 /** Broadcast building blocks. Presentation only: every value arrives already derived from server state. */
 
+const initials = (n: string) => n.trim().split(/\s+/).slice(0, 2).map(w => w.slice(0, 1)).join('').toUpperCase() || '?';
+
 export function Portrait({ p, size }: { p: SidePresentation; size: number }) {
   if (p.avatarUrl) return <img className="bc-photo" src={p.avatarUrl} width={size} height={size} alt="" style={{ width: size, height: size }} />;
   if (p.crest) return <span className="bc-crest" style={{ width: size, height: size }}><Crest team={p.crest} size={Math.round(size * 0.82)} /></span>;
-  return <span className="bc-crest bc-letter" style={{ width: size, height: size, background: p.corner.color, color: p.corner.ink }} aria-hidden="true">{p.name.slice(0, 1).toUpperCase()}</span>;
+  return <span className="bc-crest bc-letter" style={{ width: size, height: size, background: p.corner.color, color: p.corner.ink }} aria-hidden="true">{initials(p.name)}</span>;
 }
 
 const MARK_CLASS: Record<string, string> = { warning: 'is-warn', card: 'is-card', deduction: 'is-ded', dq: 'is-dq' };

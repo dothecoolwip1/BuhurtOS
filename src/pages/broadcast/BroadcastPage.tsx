@@ -80,7 +80,7 @@ export function BroadcastPage() {
   })();
 
   return (
-    <div className="bc" data-scene={mode} data-layout={layout} data-stale={d.stale ? 'true' : 'false'} data-connection={d.connection} data-ready={d.loading ? 'false' : 'true'} data-field={d.field}>
+    <div className="bc" data-scene={mode} data-layout={layout} data-stale={d.stale ? 'true' : 'false'} data-connection={d.connection} data-ready={d.loading || (!scene && !d.error && !d.notPublic) ? 'false' : 'true'} data-field={d.field}>
       <div className="bc-stage" style={{ width: STAGE_W, height: STAGE_H, transform: `translate(${x}px, ${y}px) scale(${k})` }}>
         {stage}
         {showStatus && (

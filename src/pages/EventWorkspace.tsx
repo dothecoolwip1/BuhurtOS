@@ -22,6 +22,7 @@ import { EventDaySchedule } from './EventDaySchedule';
 import { MyNextFight } from './MyNextFight';
 import { MyTeamPanel } from './MyTeamPanel';
 import { ShareEventButton } from '../components/ShareEventButton';
+import { Livestream } from '../components/Livestream';
 import { ScorekeepingPanel } from '../components/ScorekeepingPanel';
 import { NotFoundPage } from './NotFoundPage';
 import { AddToCalendar } from '../components/AddToCalendar';
@@ -221,6 +222,7 @@ export function EventWorkspace() {
       <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}><ShareEventButton title={event.name} /><AddToCalendar event={event} /></div>
       <EventDaySchedule timeNote={event.timeNote} description={event.description} />
+      <Livestream eventId={event.id} slug={event.slug} published={event.status === 'published'} />
       {showLive && <LiveStatus connection={live.connection} />}
       {showLive && <LiveNow matches={allMatches} competitionNames={names} />}
       {showLive && competitions.length > 0 && (

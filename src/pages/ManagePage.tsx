@@ -32,10 +32,11 @@ import { SetupTab } from './SetupTab';
 import { CompetitionsTab } from './CompetitionsTab';
 import { TeamsTab } from './TeamsTab';
 import { EventHomeTab } from './EventHomeTab';
+import { BroadcastTab } from './BroadcastTab';
 import { BuildTournamentTab } from './BuildTournamentTab';
 
-type Tab = 'home' | 'build' | 'eventday' | 'review' | 'fighters' | 'checkin' | 'run' | 'finalize' | 'setup' | 'competitions' | 'people' | 'teams';
-const TABS: Tab[] = ['home', 'build', 'eventday', 'review', 'fighters', 'checkin', 'run', 'finalize', 'setup', 'competitions', 'people', 'teams'];
+type Tab = 'home' | 'build' | 'eventday' | 'review' | 'fighters' | 'checkin' | 'run' | 'finalize' | 'setup' | 'competitions' | 'people' | 'teams' | 'broadcast';
+const TABS: Tab[] = ['home', 'build', 'eventday', 'review', 'fighters', 'checkin', 'run', 'finalize', 'setup', 'competitions', 'people', 'teams', 'broadcast'];
 /**
  * Pack 09D: the normal workflow is four areas (Event home, Registrations, Event day, Results). Everything else stays exactly where it was, under
  * "More options" (same ?tab= addresses, same screens), so nothing is lost and nothing is in the way.
@@ -49,7 +50,8 @@ const MORE: ReadonlyArray<readonly [Tab, string, string]> = [
   ['competitions', 'Competitions', 'Advanced setup: tier, ruleset, rounds to win, structure'],
   ['setup', 'Event settings', 'Dates, venue, fees, waiver, registration, archive'],
   ['people', 'People', 'Organizers, marshals, scorekeepers, medic'],
-  ['teams', 'Teams', 'Team requests and rosters']
+  ['teams', 'Teams', 'Team requests and rosters'],
+  ['broadcast', 'Broadcast', 'Livestream, OBS graphics overlay and sponsors']
 ];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
@@ -179,7 +181,7 @@ export function ManagePage() {
   const ready = all.filter(r => r.status === 'accepted' && blockers(r).length === 0).length;
   const LABELS: Record<Tab, string> = {
     home: 'Event home', review: `Registrations (${counts.pending} waiting)`, eventday: 'Event day', finalize: 'Results', build: 'Build tournament',
-    checkin: `Check-in (${ready}/${counts.accepted} ready)`, fighters: 'Fighters', run: 'Run', competitions: `Competitions (${competitions.length})`, setup: 'Event settings', people: 'People', teams: 'Teams'
+    checkin: `Check-in (${ready}/${counts.accepted} ready)`, fighters: 'Fighters', run: 'Run', competitions: `Competitions (${competitions.length})`, setup: 'Event settings', people: 'People', teams: 'Teams', broadcast: 'Broadcast'
   };
   return (
     <section className="fade-in" style={{ display: 'grid', gap: tab === 'eventday' ? 12 : 18 }}>
@@ -215,6 +217,7 @@ export function ManagePage() {
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'competitions' && <CompetitionsTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'teams' && <TeamsTab />}
+      {tab === 'broadcast' && <BroadcastTab key={event.id} event={event} />}
       {tab === 'people' && <PeopleTab eventId={event.id} myUserId={userId} />}
       {tab === 'checkin' && <CheckinPanel regs={all} loading={regs.loading} onChanged={() => setReloadKey(k => k + 1)} />}
       {tab === 'review' && (<>

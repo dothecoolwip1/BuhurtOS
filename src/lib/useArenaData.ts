@@ -17,7 +17,8 @@ const loadOne = async (id: string): Promise<One> => {
  * fallback while the socket is down, a slow safety refresh while live), plus the live-score table on the same channel. A screen left open all day
  * holds one channel and a few timers; a dropped connection falls back to polling and recovers on its own.
  */
-export function useArenaData(competitionIds: readonly string[]): ArenaData {
+export function useArenaData(competitionIds: readonly string[], opts: { pollMs?: number } = {}): ArenaData {
+  const pollMs = opts.pollMs;
   const [data, setData] = useState<Record<string, One>>({});
   const [state, setState] = useState<{ loading: boolean; error: unknown; updatedAt: number | null; connection: Connection }>({ loading: true, error: undefined, updatedAt: null, connection: 'connecting' });
   const syncRef = useRef<LiveSync<One> | null>(null);
@@ -27,7 +28,7 @@ export function useArenaData(competitionIds: readonly string[]): ArenaData {
     if (ids.length === 0) { setData({}); setState({ loading: false, error: undefined, updatedAt: null, connection: 'connecting' }); return; }
     setState(s => ({ ...s, loading: true }));
     const sync = new LiveSync<One>({
-      ids, fetchOne: loadOne,
+      ids, fetchOne: loadOne, pollMs,
       onData: (patch, full) => { setData(d => (full ? patch : { ...d, ...patch })); setState(s => ({ ...s, loading: false, error: undefined, updatedAt: Date.now() })); },
       onConnection: connection => setState(s => ({ ...s, connection })),
       onError: error => setState(s => ({ ...s, loading: false, error }))
@@ -44,7 +45,7 @@ export function useArenaData(competitionIds: readonly string[]): ArenaData {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'match_live_scores', ...(filter ? { filter } : {}) }, onRow)
       .subscribe(status => { void sync.status(status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED'); });
     return () => { sync.stop(); syncRef.current = null; void supabase.removeChannel(channel); };
-  }, [key]);
+  }, [key, pollMs]);
   const all = Object.values(data);
   return { matches: all.flatMap(d => d.matches), scores: all.flatMap(d => d.scores), refresh: async () => { await syncRef.current?.fullLoad(); }, ...state };
 }

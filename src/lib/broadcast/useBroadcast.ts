@@ -13,6 +13,8 @@ import { useEventRecordWatch } from '../useEventRecordWatch';
 import { useLystPublic } from '../lyst/useLystPublic';
 import type { ServerClock } from '../lyst/timer';
 
+/** Fallback polling while realtime is down: tighter than the venue display, because a result is what the audience waits to see. */
+const BROADCAST_POLL_MS = 5_000;
 /** Data older than this is flagged (the overlay keeps showing the last true state, and recovers by itself when the server answers again). */
 export const STALE_AFTER_MS = 20_000;
 
@@ -38,7 +40,7 @@ export function useBroadcast(slug: string, fieldParam: string | null | undefined
   useEventRecordWatch(event?.id, () => setRecordKey(k => k + 1));
   const competitions = useMemo(() => loaded.data?.competitions ?? [], [loaded.data]);
   const ids = useMemo(() => (event?.status === 'published' ? competitions.map(c => c.id) : []), [event?.status, competitions]);
-  const live = useArenaData(ids);
+  const live = useArenaData(ids, { pollMs: BROADCAST_POLL_MS });
   const lyst = useLystPublic(event?.id, ids.length > 0);
   const fields = useMemo(() => arenaFields(live.matches), [live.matches]);
   const field = pickField(fields, fieldParam);

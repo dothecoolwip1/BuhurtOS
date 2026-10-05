@@ -22,7 +22,7 @@ import type { ArenaFight, ArenaView } from '../arena';
 export type SceneMode = 'idle' | 'upcoming' | 'intro' | 'ready' | 'live' | 'paused' | 'break' | 'equipment' | 'dq_clock' | 'disqualified' | 'complete' | 'winner' | 'between';
 
 /** A result is shown as "match complete" for this long, then as the winner card until the display's hold ends. */
-export const COMPLETE_MS = 6_000;
+export const COMPLETE_MS = 8_000;
 
 export interface SceneClock { mode: string; status: 'idle' | 'running' | 'paused'; remainingMs: number; startedAt: string | null; round: number | null }
 export interface Scene {
@@ -47,7 +47,14 @@ export const SCENE_LABEL: Record<SceneMode, string> = {
   equipment: 'Equipment timeout', dq_clock: 'Disqualification countdown', disqualified: 'Disqualification', complete: 'Match complete', winner: 'Winner', between: 'Up next'
 };
 
+/** The fights after the one on screen / called next: the queue without the fight being shown, and without the one announced as next. */
 export function broadcastScene(view: ArenaView, ctx: { phase: 'past' | 'upcoming' | 'current'; nowMs: number }): Scene {
+  const scene = sceneOf(view, ctx);
+  const shown = new Set([scene.fight?.id, scene.next?.id].filter((x): x is string => !!x));
+  return { ...scene, following: scene.following.filter(f => !shown.has(f.id)) };
+}
+
+function sceneOf(view: ArenaView, ctx: { phase: 'past' | 'upcoming' | 'current'; nowMs: number }): Scene {
   const base = { following: view.upNext, done: view.done, total: view.total, field: view.field };
   const empty = (mode: SceneMode, next: ArenaFight | null): Scene => ({ mode, fight: null, next, clock: null, round: null, label: SCENE_LABEL[mode], disqualified: null, winner: null, ...base });
   const s = view.state;

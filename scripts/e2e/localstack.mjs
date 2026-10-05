@@ -1,6 +1,8 @@
 // A local stand-in for the hosted Supabase API, so the REAL app can run against a REAL Postgres built from the migrations:
 //   /rest/v1/*  -> PostgREST (the real tables, row level security and database functions)
 //   /auth/v1/*  -> just enough for a session that is already in the browser (user lookup, sign-out)
+//   /storage/v1/* -> an in-memory stand-in (upload, public read, remove) so picture uploads can be exercised. It does NOT enforce bucket policies:
+//                    those are tested directly in the database gates.
 //   /realtime   -> not offered (the app then uses its polling fallback)
 // LOCAL EVIDENCE TOOLING ONLY: not part of CI, never pointed at a hosted project. Started by scripts/e2e/eventday-live.sh.
 import http from 'node:http';
@@ -22,7 +24,10 @@ function verify(token) {
 }
 const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': 'GET,POST,PATCH,PUT,DELETE,OPTIONS', 'access-control-expose-headers': '*' };
 
-http.createServer((req, res) => {
+const files = new Map();   // storage stand-in: '<bucket>/<path>' -> { type, body }
+const readBody = (req) => new Promise((ok) => { const c = []; req.on('data', (d) => c.push(d)); req.on('end', () => ok(Buffer.concat(c))); });
+
+http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   if (req.method === 'OPTIONS') { res.writeHead(204, cors); return res.end(); }
   const bearer = (req.headers.authorization ?? '').replace(/^Bearer\s+/i, '');
@@ -37,6 +42,34 @@ http.createServer((req, res) => {
     });
     up.on('error', (e) => { res.writeHead(502, cors); res.end(String(e)); });
     return req.pipe(up);
+  }
+  if (url.pathname.startsWith('/storage/v1/object/')) {
+    const rest = decodeURIComponent(url.pathname.slice('/storage/v1/object/'.length));
+    const json = (code, o) => { res.writeHead(code, { ...cors, 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
+    if (req.method === 'GET' && rest.startsWith('public/')) {
+      const f = files.get(rest.slice('public/'.length));
+      if (!f) return json(404, { message: 'not found' });
+      res.writeHead(200, { ...cors, 'content-type': f.type }); return res.end(f.body);
+    }
+    if (!claims) return json(401, { message: 'sign in required' });
+    if (req.method === 'POST' || req.method === 'PUT') {
+      const raw = await readBody(req);
+      // supabase-js sends multipart/form-data: keep only the file part's bytes
+      const ct = req.headers['content-type'] ?? '';
+      let body = raw, type = 'application/octet-stream';
+      const m = /boundary=(.+)$/.exec(ct);
+      if (m) {
+        const text = raw.toString('latin1'), start = text.indexOf('\r\n\r\n', text.indexOf('filename')) + 4, end = text.lastIndexOf('\r\n--' + m[1]);
+        body = raw.subarray(start, end); type = /Content-Type: ([^\r\n]+)/i.exec(text.slice(0, start))?.[1] ?? type;
+      } else type = ct || type;
+      files.set(rest, { type, body });
+      return json(200, { Key: rest });
+    }
+    if (req.method === 'DELETE') {
+      const bucket = rest, list = JSON.parse((await readBody(req)).toString() || '{}').prefixes ?? [];
+      for (const p of list) files.delete(`${bucket}/${p}`);
+      return json(200, list.map((name) => ({ name })));
+    }
   }
   if (url.pathname === '/auth/v1/user') {
     if (!claims) { res.writeHead(401, { ...cors, 'content-type': 'application/json' }); return res.end('{"msg":"invalid token"}'); }
