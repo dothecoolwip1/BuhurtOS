@@ -41,11 +41,27 @@ export async function fetchEventRoster(competitionIds: readonly string[]): Promi
  * Organizers only (row level security), so a scorekeeper simply gets nothing back.
  */
 export async function fetchRegistrationFlags(eventId: string): Promise<RegistrationFlag[]> {
-  const { data, error } = await supabase.from('registrations').select('id,fighter_id,full_name,status,is_volunteer,registration_checks(check_name,passed)').eq('event_id', eventId).not('fighter_id', 'is', null);
+  const { data, error } = await supabase.from('registrations').select('id,fighter_id,full_name,status,is_volunteer,attend_dates,shares_equipment,registration_checks(check_name,passed)').eq('event_id', eventId).not('fighter_id', 'is', null);
   if (error) throw error;
-  type Row = { id: string; fighter_id: string; full_name: string; status: RegistrationFlag['status']; is_volunteer: boolean; registration_checks: { check_name: string; passed: boolean }[] };
+  type Row = { id: string; fighter_id: string; full_name: string; status: RegistrationFlag['status']; is_volunteer: boolean; attend_dates: string[] | null; shares_equipment: boolean | null; registration_checks: { check_name: string; passed: boolean }[] };
   return (data as unknown as Row[]).map(r => ({
     id: r.id, fighterId: r.fighter_id, fullName: r.full_name, status: r.status, isVolunteer: r.is_volunteer,
-    checkedIn: r.registration_checks.some(c => c.check_name === 'checked_in' && c.passed)
+    checkedIn: r.registration_checks.some(c => c.check_name === 'checked_in' && c.passed),
+    attendDates: r.attend_dates ?? [], sharesEquipment: r.shares_equipment === true
   }));
+}
+
+/**
+ * Save the planner's order of waiting fights (Pack 09D). Organizers only; the database touches only waiting fights of this event, never a called one,
+ * and saving the same plan twice changes nothing. `hold` = fights someone in them cannot attend today: the queue will not call them by itself.
+ */
+export async function saveQueuePlan(eventId: string, order: readonly string[], hold: readonly string[]): Promise<{ changed: number }> {
+  const d = (await rpc('save_queue_plan', { p_event: eventId, p_order: [...order], p_hold: [...hold] })) as { changed?: number } | null;
+  return { changed: d?.changed ?? 0 };
+}
+
+/** "Let BuhurtOS plan this field again": forget the hand-made order of one field's waiting fights. Organizers only. */
+export async function clearManualQueue(eventId: string, field: string): Promise<{ changed: number }> {
+  const d = (await rpc('clear_manual_queue', { p_event: eventId, p_field: field })) as { changed?: number } | null;
+  return { changed: d?.changed ?? 0 };
 }

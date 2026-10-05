@@ -12,6 +12,10 @@ export interface CompetitionMatch {
   scoreA: number | null; scoreB: number | null; detail: Record<string, unknown>; version: number; finalizedAt: string | null;
   /** The organizer's manual running order among a field's waiting matches (lower runs sooner); null or absent means schedule order. */
   queueOrder?: number | null;
+  /** The planner's saved event-wide order of waiting fights (Pack 09D plan_order), after queueOrder; null or absent means none. */
+  planOrder?: number | null;
+  /** Held by the planner: someone in it is not here today, so the queue does not call it by itself (Pack 09D plan_hold). */
+  planHold?: boolean;
 }
 export interface CompetitionEntry { id: string; competitionId: string; teamId: string | null; fighterId: string | null; name: string; pool: string | null; seed: number | null; status: string }
 /** `rank` and `tied` come from the database ranking (pool_standings): spectators and organizers read the same order. */
@@ -23,7 +27,7 @@ type MatchRow = {
   id: string; competition_id: string; stage: PlannedStage; round_label: string; position: number; pool: string | null; field: string | null;
   scheduled_at: string | null; queue_state: QueueState; entry_a: string | null; entry_b: string | null; next_match_id: string | null; next_slot: 'a' | 'b' | null;
   result: MatchResult | null; winner_entry_id: string | null; score_a: number | null; score_b: number | null; detail: Record<string, unknown> | null;
-  version: number; finalized_at: string | null; queue_order?: number | null; a: Named | Named[] | null; b: Named | Named[] | null;
+  version: number; finalized_at: string | null; queue_order?: number | null; plan_order?: number | null; plan_hold?: boolean | null; a: Named | Named[] | null; b: Named | Named[] | null;
 };
 type EntryRow = { id: string; competition_id: string; team_id: string | null; fighter_id: string | null; pool: string | null; seed: number | null; status: string } & Named;
 const one = <T,>(v: T | T[] | null): T | null => (Array.isArray(v) ? v[0] ?? null : v);
@@ -37,7 +41,8 @@ export const toMatch = (r: MatchRow): CompetitionMatch => ({
   id: r.id, competitionId: r.competition_id, stage: r.stage, roundLabel: r.round_label, position: r.position, pool: r.pool, field: r.field?.trim() || 'Field 1',
   scheduledAt: r.scheduled_at, queueState: r.queue_state, entryA: r.entry_a, entryB: r.entry_b, nameA: nameOf(one(r.a)), nameB: nameOf(one(r.b)),
   nextMatchId: r.next_match_id, nextSlot: r.next_slot, result: r.result, winnerEntryId: r.winner_entry_id, scoreA: r.score_a, scoreB: r.score_b,
-  detail: r.detail ?? {}, version: r.version, finalizedAt: r.finalized_at, queueOrder: r.queue_order ?? null
+  detail: r.detail ?? {}, version: r.version, finalizedAt: r.finalized_at, queueOrder: r.queue_order ?? null,
+  planOrder: r.plan_order ?? null, planHold: r.plan_hold === true
 });
 
 /**
@@ -45,9 +50,14 @@ export const toMatch = (r: MatchRow): CompetitionMatch => ({
  * so every public page keeps working against a database that does not have the column yet.
  */
 export async function fetchCompetitionMatchesOrdered(competitionId: string): Promise<CompetitionMatch[]> {
-  const { data, error } = await supabase.from('matches').select(`${MATCH_SELECT},queue_order`).eq('competition_id', competitionId).order('stage').order('position');
-  // 42703 = the column does not exist yet (the database has not had the Pack 09A update): show the matches in schedule order rather than nothing.
-  if (error && (error as { code?: string }).code === '42703') return fetchCompetitionMatches(competitionId);
+  const { data, error } = await supabase.from('matches').select(`${MATCH_SELECT},queue_order,plan_order,plan_hold`).eq('competition_id', competitionId).order('stage').order('position');
+  // 42703 = a column does not exist yet (the database has not had the Pack 09D / 09A update): fall back one step at a time rather than show nothing.
+  if (error && (error as { code?: string }).code === '42703') {
+    const older = await supabase.from('matches').select(`${MATCH_SELECT},queue_order`).eq('competition_id', competitionId).order('stage').order('position');
+    if (older.error && (older.error as { code?: string }).code === '42703') return fetchCompetitionMatches(competitionId);
+    if (older.error) throw older.error;
+    return (older.data as unknown as MatchRow[]).map(toMatch);
+  }
   if (error) throw error;
   return (data as unknown as MatchRow[]).map(toMatch);
 }

@@ -62,12 +62,14 @@ export const competitionSorts = (competitions: readonly { id: string; sort?: num
 
 /**
  * The order waiting matches run in, the same rule the database uses:
- *   manual order (the organizer's, lower first; no manual order goes after those that have one),
+ *   manual order (the organizer's, lower first; no manual order goes after those that have one), the saved plan (Pack 09D, same rule),
  *   scheduled time (no time goes last), the competition's order, stage (pool, elimination, third place, final), round, pool, position, id.
  */
 export function compareRunOrder(a: CompetitionMatch, b: CompetitionMatch, sorts: CompetitionSort): number {
   const qa = a.queueOrder ?? Infinity, qb = b.queueOrder ?? Infinity;
   if (qa !== qb) return qa < qb ? -1 : 1;
+  const pa = a.planOrder ?? Infinity, pb = b.planOrder ?? Infinity;   // Pack 09D: the saved plan, after the organizer's hand-made order
+  if (pa !== pb) return pa < pb ? -1 : 1;
   const ta = timeOf(a.scheduledAt), tb = timeOf(b.scheduledAt);
   if (ta !== tb) return ta < tb ? -1 : 1;
   const sa = sorts.get(a.competitionId) ?? Infinity, sb = sorts.get(b.competitionId) ?? Infinity;
@@ -138,7 +140,8 @@ export function planAdvance(board: FieldBoard, withdrawn: ReadonlySet<string>, s
   // The line: on deck, then in the hole, then waiting. A match that cannot run is never in it.
   let deck = board.onDeck.filter(m => !gone.has(m.id));
   const hole = board.inTheHole.filter(m => !gone.has(m.id));
-  const waiting = [...board.upcoming].sort((a, b) => compareRunOrder(a, b, sorts));
+  // A fight the planner holds (someone in it is not here today) is never called automatically (private.promote_one skips it too).
+  const waiting = [...board.upcoming].filter(m => !m.planHold).sort((a, b) => compareRunOrder(a, b, sorts));
   const promote: AdvancePlan['promote'] = [];
   const take = (from: CompetitionMatch[][]): CompetitionMatch | undefined => { for (const list of from) if (list.length) return list.shift(); return undefined; };
   let hasActive = board.now.length > 0;
@@ -193,7 +196,13 @@ export function competitionProgress(comp: { id: string; name: string }, matches:
 }
 
 // ---------------------------------------------------------------- who is in a match, and are they checked in?
-export interface RegistrationFlag { id: string; fighterId: string; fullName: string; status: 'pending' | 'accepted' | 'declined' | 'withdrawn'; isVolunteer: boolean; checkedIn: boolean }
+export interface RegistrationFlag {
+  id: string; fighterId: string; fullName: string; status: 'pending' | 'accepted' | 'declined' | 'withdrawn'; isVolunteer: boolean; checkedIn: boolean;
+  /** Days the person said they can attend (yyyy-mm-dd); empty = not said. Pack 09D planning. */
+  attendDates?: string[];
+  /** Said they share equipment with someone (who is not recorded). Pack 09D planning: a warning only. */
+  sharesEquipment?: boolean;
+}
 export type Slot = 'now' | 'on_deck' | 'in_the_hole' | 'next';
 export interface CheckinGap { fighterId: string; name: string; problem: 'not_checked_in' | 'registration_not_accepted'; matchId: string; field: string; slot: Slot; teamName: string | null; registrationStatus: RegistrationFlag['status'] }
 
