@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "buhurtos-ai-event-assistant",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-04",
+  "ai": {
+    "binding": "AI"
+  },
+  "vars": {
+    "SUPABASE_URL": "https://mvbxlebznlgroptwwdsm.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_u76M-dggKSsdsyhUQKveJg_5fPJ5Nan"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
