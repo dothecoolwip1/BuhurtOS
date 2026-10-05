@@ -64,3 +64,5 @@ jobs:
           name: pack11-rumble-shots
           path: /tmp/rumble-shots
           if-no-files-found: ignore
+
+# Triggered only on the proof branch; never deploys production.
