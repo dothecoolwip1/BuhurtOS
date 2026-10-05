@@ -18,6 +18,8 @@ export interface BoardProps<S> {
   /** Club or team under a duelist's name. */
   subs?: Record<Side, string>;
   crest?: (side: Side) => ReactNode;
+  /** The page already shows the names and the running score above the board (the field screen): leave them out here. */
+  headless?: boolean;
 }
 
 export function GroupBoard({ state: s, onChange, record, names, crest }: BoardProps<GroupState>) {
@@ -48,13 +50,14 @@ export function GroupBoard({ state: s, onChange, record, names, crest }: BoardPr
   );
 }
 
-export function DuelBoard({ state: s, onChange, record, names, subs }: BoardProps<DuelState>) {
+export function DuelBoard({ state: s, onChange, record, names, subs, headless = false }: BoardProps<DuelState>) {
   const r = s.a.length - 1;
   const ta = duelTotal(s, 'a'), tb = duelTotal(s, 'b');
   const apply = (next: DuelState, kind: string, payload: unknown) => { onChange(next); record(kind, payload); };
   const msg = s.winner ? `${names[s.winner]} wins the match` : r < 2 ? `Round ${r + 1} of 2 · 1:00` : 'Extra round · 30 s · lead of 2 needed';
   const side = (k: Side) => (
-    <div className="dside"><div className="n">{names[k]}</div>{subs?.[k] && <span className="src">{subs[k]}</span>}<div className="dscore mono">{duelTotal(s, k)}</div>
+    <div className={`dside${headless ? ' headless' : ''}`}>{!headless && <><div className="n">{names[k]}</div>{subs?.[k] && <span className="src">{subs[k]}</span>}<div className="dscore mono">{duelTotal(s, k)}</div></>}
+      {headless && <div className="side-tag" aria-hidden="true">{names[k]}</div>}
       <div className="rchips">{s[k].map((x, i) => <span key={i} className={`rchip ${i === r && !s.winner ? 'cur' : ''}`}>R{i + 1} · {x}</span>)}</div>
       <button type="button" className="pbtn s2" disabled={!!s.winner} onClick={() => apply(duelScore(s, k, 2), 'duel.strike', { side: k, points: 2 })}>Head or torso +2</button>
       <button type="button" className="pbtn s1" disabled={!!s.winner} onClick={() => apply(duelScore(s, k, 1), 'duel.strike', { side: k, points: 1 })}>Arm, leg or hand +1</button>
@@ -65,7 +68,7 @@ export function DuelBoard({ state: s, onChange, record, names, subs }: BoardProp
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}><span className={`chip ${s.winner ? 'win' : 'live'}`}>{msg}</span></div>
       <div className="mteams">{side('a')}{side('b')}</div>
       <div className="panel info" style={{ gap: 8 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Match total</span><b className="mono">{ta} – {tb}</b></div>
+        {!headless && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Match total</span><b className="mono">{ta} – {tb}</b></div>}
         <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Lead needed to win</span><b className="mono">2 points {r >= 1 && Math.abs(ta - tb) >= 2 ? '✓' : `(now ${Math.abs(ta - tb)})`}</b></div>
       </div>
       <div className="mactions">
@@ -76,7 +79,7 @@ export function DuelBoard({ state: s, onChange, record, names, subs }: BoardProp
   );
 }
 
-export function ProBoard({ state: s, onChange, record, names, subs }: BoardProps<ProState>) {
+export function ProBoard({ state: s, onChange, record, names, subs, headless = false }: BoardProps<ProState>) {
   const cur = s.rounds[s.current];
   const sc = proRoundScore(cur);
   const total = s.rounds.reduce((t, x) => { const y = proRoundScore(x); return [t[0] + y.a, t[1] + y.b]; }, [0, 0]);
@@ -85,7 +88,7 @@ export function ProBoard({ state: s, onChange, record, names, subs }: BoardProps
     const sd: Side = k === 'A' ? 'a' : 'b';
     const sk = `strikes${k}` as 'strikesA' | 'strikesB', dk = `deductions${k}` as 'deductionsA' | 'deductionsB';
     return (
-      <div className="dside"><div className="n">{names[sd]}</div>{subs?.[sd] && <span className="src">{subs[sd]}</span>}
+      <div className={`dside${headless ? ' headless' : ''}`}>{headless ? <div className="side-tag" aria-hidden="true">{names[sd]}</div> : <><div className="n">{names[sd]}</div>{subs?.[sd] && <span className="src">{subs[sd]}</span>}</>}
         <span className="eyebrow">Strike points</span>
         <div className="stepper"><button type="button" aria-label={`Fewer strike points for ${names[sd]}`} onClick={() => change({ [sk]: Math.max(0, cur[sk] - 1) })}>−</button><output>{cur[sk]}</output><button type="button" aria-label={`More strike points for ${names[sd]}`} onClick={() => change({ [sk]: cur[sk] + 1 })}>+</button></div>
         <span className="eyebrow">Point deductions</span>
@@ -154,7 +157,7 @@ function SeriesSetup({ state: s, onChange, record }: Pick<BoardProps<SeriesState
  * the break timer. Big one-hand targets, undo for a mistaken tap. Marathon rules come from the registration form; for the
  * other series the rules are not loaded and the organizer sets them.
  */
-export function SeriesBoard({ state: s, onChange, record, names, subs, stage = 'pool' }: BoardProps<SeriesState> & { stage?: string }) {
+export function SeriesBoard({ state: s, onChange, record, names, subs, stage = 'pool', headless = false }: BoardProps<SeriesState> & { stage?: string }) {
   const brk = useBreakSeconds(s.breakAt, s.config.breakSeconds || BREAK_SECONDS);
   if (!s.configured) return <SeriesSetup state={s} onChange={onChange} record={record} />;
   const i = currentRound(s);
@@ -179,9 +182,9 @@ export function SeriesBoard({ state: s, onChange, record, names, subs, stage = '
       </div>
       <div className="mteams">
         {sides.map(side => (
-          <div className="dside" key={side}>
-            <div className="n">{names[side]}</div>{subs?.[side] && <span className="src">{subs[side]}</span>}
-            <div className="dscore mono" aria-label={`${names[side]} points`}>{t[side]}</div><span className="eyebrow">points</span>
+          <div className={`dside${headless ? ' headless' : ''}`} key={side}>
+            {headless ? <div className="side-tag" aria-hidden="true">{names[side]}</div> : <><div className="n">{names[side]}</div>{subs?.[side] && <span className="src">{subs[side]}</span>}
+            <div className="dscore mono" aria-label={`${names[side]} points`}>{t[side]}</div><span className="eyebrow">points</span></>}
             {s.kind === 'marathon' && <label className="chk"><input type="checkbox" checked={s.solo[side]} onChange={e => { onChange(seriesSolo(s, side, e.target.checked)); record('marathon.solo', { side, solo: e.target.checked }); }} /> Runs solo</label>}
             <button type="button" className="pbtn s2" disabled={done} aria-label={`${names[side]} win round ${i + 1}`} onClick={() => pick(side)}>{names[side]} win</button>
           </div>

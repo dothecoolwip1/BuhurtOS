@@ -20,27 +20,42 @@ insert into public.competitions (id, event_id, name, category, gender, tier, rul
   ('c95b12ba-f309-52ca-8485-38c2b9a2206e', '0d08ac5a-3bdf-513b-a2ca-c3421e53d9c3', 'Female Longsword', 'longsword', 'women', 'Classic', 'Buhurt International: Duels rules V.26.4', 'round_robin', 'running', null, 50),
   ('32c26418-a1a6-5cf9-b98f-0632b634d2f4', '0d08ac5a-3bdf-513b-a2ca-c3421e53d9c3', 'Male Polearm', 'polearm', 'men', 'Classic', 'Buhurt International: Duels rules V.26.4', 'round_robin', 'running', null, 60)
 on conflict (id) do nothing;
-insert into public.entries (id, competition_id, team_id, fighter_id, status) values
-  ('0763f58c-9bd0-5a72-ad52-e5eb7aa2e897', 'b53fa085-65b4-5386-abf7-a0a957fc5c51', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, 'checked_in'),
-  ('2183c36a-f158-55d7-9605-09feb0ef7265', 'b53fa085-65b4-5386-abf7-a0a957fc5c51', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', null, 'checked_in'),
-  ('0dd91ad6-a5ff-59cb-b402-96aa561a7fd1', 'f73fd579-a175-5131-ad7e-ac29f4183db3', '93d193e0-68eb-5bb6-a045-4b963f97ef22', null, 'checked_in'),
-  ('363b3590-3287-5587-a01b-1482e860bd09', 'f73fd579-a175-5131-ad7e-ac29f4183db3', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', null, 'checked_in'),
-  ('56664742-8cbf-5580-9ae0-524346a65080', '395cd4e7-6b4e-5190-be1d-3075eecf9522', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, 'checked_in'),
-  ('6c151087-e6da-51ab-9e04-186f851bfa47', '395cd4e7-6b4e-5190-be1d-3075eecf9522', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', null, 'checked_in'),
-  ('86ce6c95-0cb8-54ac-971c-d355757d2879', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, 'd3fcbcf8-0c56-5b9c-aba4-bcd0ff57dffd', 'checked_in'),
-  ('85e00bc8-1280-54b2-9864-d0ba761b24cd', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, 'df7d277f-b7dc-5d74-85f9-0a5e44bffad5', 'checked_in'),
-  ('596a0617-0cd1-53c9-a838-12b85228ad57', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, 'fe652e6c-3e68-5ec8-bc6f-66786f9e35e4', 'checked_in'),
-  ('2ae5b94f-d8c8-520b-a6d8-3eadf504d770', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, '2a356b84-e99c-5a0b-a226-dc3cffe04d7d', 'checked_in'),
-  ('a72119e5-6266-52c7-a918-c7aa3127614a', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, '460268e5-c451-567f-8916-b847f5089921', 'checked_in'),
-  ('2f2987b3-e600-5b73-8754-377c18738351', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, 'a92a1c83-58d6-572d-9736-27fde0c87cf7', 'checked_in'),
-  ('10c93523-b70d-5d1f-b3e1-175fc9181552', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, 'ccd25c59-7eec-5757-bff1-3437c26baed8', 'checked_in'),
-  ('59d2b148-40ac-5172-9271-39e493a84ce8', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, 'd71d42ed-a20b-5ded-a3f0-4e1a74309e52', 'checked_in'),
-  ('c6867d47-c14e-5850-bc1f-c249175a7a0b', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, '6bf23048-0668-584a-895b-518e5f46dc88', 'checked_in'),
-  ('fe62b18d-1e62-5162-a087-bb3451f5b1c5', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, 'a495403d-712c-5520-b2a2-f8c766eaaa6b', 'checked_in'),
-  ('8795a1a1-6ba0-5478-a293-726eeb0bb45c', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, '8194d6b9-5987-5e8e-89eb-4daa5083284c', 'checked_in'),
-  ('5abc6323-7b18-5faa-9356-debbc1d8f377', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, 'c500cb85-208c-54bb-8631-dc4fc0403487', 'checked_in'),
-  ('b9b4c1b9-df3a-59ba-ad60-091d89e89fee', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, '406ac370-6c4b-503e-b1f3-0d5cc9ca61e6', 'checked_in')
+insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values
+  ('0763f58c-9bd0-5a72-ad52-e5eb7aa2e897', 'b53fa085-65b4-5386-abf7-a0a957fc5c51', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, null, 'checked_in'),
+  ('2183c36a-f158-55d7-9605-09feb0ef7265', 'b53fa085-65b4-5386-abf7-a0a957fc5c51', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', null, null, 'checked_in'),
+  ('0dd91ad6-a5ff-59cb-b402-96aa561a7fd1', 'f73fd579-a175-5131-ad7e-ac29f4183db3', '93d193e0-68eb-5bb6-a045-4b963f97ef22', null, null, 'checked_in'),
+  ('363b3590-3287-5587-a01b-1482e860bd09', 'f73fd579-a175-5131-ad7e-ac29f4183db3', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', null, null, 'checked_in'),
+  ('56664742-8cbf-5580-9ae0-524346a65080', '395cd4e7-6b4e-5190-be1d-3075eecf9522', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, null, 'checked_in'),
+  ('6c151087-e6da-51ab-9e04-186f851bfa47', '395cd4e7-6b4e-5190-be1d-3075eecf9522', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', null, null, 'checked_in'),
+  ('86ce6c95-0cb8-54ac-971c-d355757d2879', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, 'd3fcbcf8-0c56-5b9c-aba4-bcd0ff57dffd', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', 'checked_in'),
+  ('85e00bc8-1280-54b2-9864-d0ba761b24cd', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, 'df7d277f-b7dc-5d74-85f9-0a5e44bffad5', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', 'checked_in'),
+  ('596a0617-0cd1-53c9-a838-12b85228ad57', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, 'fe652e6c-3e68-5ec8-bc6f-66786f9e35e4', '9ca49345-6351-519e-b23c-de0edff69ee0', 'checked_in'),
+  ('2ae5b94f-d8c8-520b-a6d8-3eadf504d770', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, '2a356b84-e99c-5a0b-a226-dc3cffe04d7d', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', 'checked_in'),
+  ('a72119e5-6266-52c7-a918-c7aa3127614a', '748c63c2-1c96-58fa-8ff3-80e13e7e8e02', null, '460268e5-c451-567f-8916-b847f5089921', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', 'checked_in'),
+  ('2f2987b3-e600-5b73-8754-377c18738351', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, 'a92a1c83-58d6-572d-9736-27fde0c87cf7', '93d193e0-68eb-5bb6-a045-4b963f97ef22', 'checked_in'),
+  ('10c93523-b70d-5d1f-b3e1-175fc9181552', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, 'ccd25c59-7eec-5757-bff1-3437c26baed8', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', 'checked_in'),
+  ('59d2b148-40ac-5172-9271-39e493a84ce8', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, 'd71d42ed-a20b-5ded-a3f0-4e1a74309e52', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', 'checked_in'),
+  ('c6867d47-c14e-5850-bc1f-c249175a7a0b', 'c95b12ba-f309-52ca-8485-38c2b9a2206e', null, '6bf23048-0668-584a-895b-518e5f46dc88', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', 'checked_in'),
+  ('fe62b18d-1e62-5162-a087-bb3451f5b1c5', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, 'a495403d-712c-5520-b2a2-f8c766eaaa6b', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', 'checked_in'),
+  ('8795a1a1-6ba0-5478-a293-726eeb0bb45c', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, '8194d6b9-5987-5e8e-89eb-4daa5083284c', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', 'checked_in'),
+  ('5abc6323-7b18-5faa-9356-debbc1d8f377', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, 'c500cb85-208c-54bb-8631-dc4fc0403487', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', 'checked_in'),
+  ('b9b4c1b9-df3a-59ba-ad60-091d89e89fee', '32c26418-a1a6-5cf9-b98f-0632b634d2f4', null, '406ac370-6c4b-503e-b1f3-0d5cc9ca61e6', '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8', 'checked_in')
 on conflict (id) do nothing;
+select public.set_represented_team(v.e, v.t, 'NACL-test fictional dataset: the team this fictional fighter belongs to') from (values
+  ('86ce6c95-0cb8-54ac-971c-d355757d2879'::uuid, '9e6caec8-33a2-5b5c-97e8-89f86facf0ea'::uuid),
+  ('85e00bc8-1280-54b2-9864-d0ba761b24cd'::uuid, '9e6caec8-33a2-5b5c-97e8-89f86facf0ea'::uuid),
+  ('596a0617-0cd1-53c9-a838-12b85228ad57'::uuid, '9ca49345-6351-519e-b23c-de0edff69ee0'::uuid),
+  ('2ae5b94f-d8c8-520b-a6d8-3eadf504d770'::uuid, '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8'::uuid),
+  ('a72119e5-6266-52c7-a918-c7aa3127614a'::uuid, '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8'::uuid),
+  ('2f2987b3-e600-5b73-8754-377c18738351'::uuid, '93d193e0-68eb-5bb6-a045-4b963f97ef22'::uuid),
+  ('10c93523-b70d-5d1f-b3e1-175fc9181552'::uuid, '9e6caec8-33a2-5b5c-97e8-89f86facf0ea'::uuid),
+  ('59d2b148-40ac-5172-9271-39e493a84ce8'::uuid, '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8'::uuid),
+  ('c6867d47-c14e-5850-bc1f-c249175a7a0b'::uuid, '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8'::uuid),
+  ('fe62b18d-1e62-5162-a087-bb3451f5b1c5'::uuid, '9e6caec8-33a2-5b5c-97e8-89f86facf0ea'::uuid),
+  ('8795a1a1-6ba0-5478-a293-726eeb0bb45c'::uuid, '9e6caec8-33a2-5b5c-97e8-89f86facf0ea'::uuid),
+  ('5abc6323-7b18-5faa-9356-debbc1d8f377'::uuid, '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8'::uuid),
+  ('b9b4c1b9-df3a-59ba-ad60-091d89e89fee'::uuid, '4cbbe4f5-4dcc-5d9c-8923-33ba32a936a8'::uuid)
+) v(e, t) join public.entries x on x.id = v.e where x.represented_team_id is null;
 select public.set_entry_roster('0763f58c-9bd0-5a72-ad52-e5eb7aa2e897', '[{"fighter_id":"8120e2f4-1510-5cfd-a077-7320c47a52a9","role":"fighter"},{"fighter_id":"a495403d-712c-5520-b2a2-f8c766eaaa6b","role":"fighter"},{"fighter_id":"d3fcbcf8-0c56-5b9c-aba4-bcd0ff57dffd","role":"fighter"},{"fighter_id":"33dae536-85e7-5060-a8b0-8eed569e82d3","role":"fighter"},{"fighter_id":"a6d7fbe4-0392-5679-9e83-3a4693aa452d","role":"fighter"}]'::jsonb) where exists (select 1 from public.competitions where id = 'b53fa085-65b4-5386-abf7-a0a957fc5c51' and status <> 'finished');
 select public.set_entry_roster('2183c36a-f158-55d7-9605-09feb0ef7265', '[{"fighter_id":"406ac370-6c4b-503e-b1f3-0d5cc9ca61e6","role":"fighter"},{"fighter_id":"0306adb1-06e0-5a41-bf2b-3354dc84e782","role":"fighter"},{"fighter_id":"c500cb85-208c-54bb-8631-dc4fc0403487","role":"fighter"},{"fighter_id":"2a356b84-e99c-5a0b-a226-dc3cffe04d7d","role":"fighter"},{"fighter_id":"fe652e6c-3e68-5ec8-bc6f-66786f9e35e4","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'b53fa085-65b4-5386-abf7-a0a957fc5c51' and status <> 'finished');
 select public.set_entry_roster('0dd91ad6-a5ff-59cb-b402-96aa561a7fd1', '[{"fighter_id":"a92a1c83-58d6-572d-9736-27fde0c87cf7","role":"fighter"},{"fighter_id":"8a0b0f89-6e54-548f-938c-84238b1e23e1","role":"fighter"},{"fighter_id":"285f8b35-de1b-5ade-82c6-4fe0a0a132d9","role":"fighter"},{"fighter_id":"44de541c-49d9-5576-bad7-2bcd7f194801","role":"mercenary"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'f73fd579-a175-5131-ad7e-ac29f4183db3' and status <> 'finished');
@@ -127,7 +142,7 @@ select public.finalize_match(m.id, 'b', 4, 7, '{"kind":"duel","rounds":{"a":[1,2
 select public.finalize_match(m.id, 'a', 8, 4, '{"kind":"duel","rounds":{"a":[1,0,1,2,4],"b":[1,0,1,2,0]},"totals":{"a":8,"b":4}}'::jsonb, m.version) from public.matches m where m.id = '241a6d7b-1107-5686-a555-f8a4f753d618' and m.queue_state <> 'final';
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = '32c26418-a1a6-5cf9-b98f-0632b634d2f4' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('32c26418-a1a6-5cf9-b98f-0632b634d2f4') where tied group by part, rank loop perform public.record_tie_decision('32c26418-a1a6-5cf9-b98f-0632b634d2f4', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('32c26418-a1a6-5cf9-b98f-0632b634d2f4', 'tournament_structure') where exists (select 1 from public.competitions where id = '32c26418-a1a6-5cf9-b98f-0632b634d2f4' and status <> 'finished');
-reset role;
+reset role; select set_config('request.jwt.claims', '', true);
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', 'b53fa085-65b4-5386-abf7-a0a957fc5c51', 'unverified', 'NACL-test fictional dataset'),
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', 'f73fd579-a175-5131-ad7e-ac29f4183db3', 'unverified', 'NACL-test fictional dataset'),

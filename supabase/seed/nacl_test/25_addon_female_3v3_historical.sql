@@ -7,9 +7,9 @@ select set_config('request.jwt.claims', '{"sub":"__OWNER_ID__","role":"authentic
 insert into public.competitions (id, event_id, name, category, gender, tier, ruleset, structure, status, rounds_to_win, sort) values
   ('9b5162c0-aa0b-5b90-a130-427a366a44b1', '46cf01a4-50b5-57fa-8b49-05e86ec19795', 'Female 3v3', '3v3', 'women', 'Classic', 'Buhurt International: Buhurt Rules V.26.4.1', 'round_robin', 'running', 2, 1000)
 on conflict (id) do nothing;
-insert into public.entries (id, competition_id, team_id, fighter_id, status) values
-  ('151eb79c-9a34-5f62-9dfd-6feb62661e83', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, 'checked_in'),
-  ('9686619b-3296-5b27-8cae-9023155acb77', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '19b99cd7-c067-5ae8-b5ba-88b4dab9678f', null, 'checked_in')
+insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values
+  ('151eb79c-9a34-5f62-9dfd-6feb62661e83', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, null, 'checked_in'),
+  ('9686619b-3296-5b27-8cae-9023155acb77', '9b5162c0-aa0b-5b90-a130-427a366a44b1', '19b99cd7-c067-5ae8-b5ba-88b4dab9678f', null, null, 'checked_in')
 on conflict (id) do nothing;
 select public.set_entry_roster('151eb79c-9a34-5f62-9dfd-6feb62661e83', '[{"fighter_id":"14aed5cd-7ebd-5bd5-a88c-b122058d9b5b","role":"fighter"},{"fighter_id":"f5bf9cb2-e86b-5c61-bcc5-2d3febce1a61","role":"mercenary"},{"fighter_id":"285f8b35-de1b-5ade-82c6-4fe0a0a132d9","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished');
 select public.set_entry_roster('9686619b-3296-5b27-8cae-9023155acb77', '[{"fighter_id":"9b130d30-471b-5ccf-9192-7e0c04af836e","role":"fighter"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"},{"fighter_id":"27a1672b-da85-5cb1-b3d2-29f1d968da7a","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished');
@@ -20,7 +20,7 @@ on conflict (id) do nothing;
 select public.finalize_match(m.id, 'a', 2, 0, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":0},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '6dd6409d-3a5d-55d5-b0da-35d455ba6cbe' and m.queue_state <> 'final';
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('9b5162c0-aa0b-5b90-a130-427a366a44b1') where tied group by part, rank loop perform public.record_tie_decision('9b5162c0-aa0b-5b90-a130-427a366a44b1', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('9b5162c0-aa0b-5b90-a130-427a366a44b1', 'tournament_structure') where exists (select 1 from public.competitions where id = '9b5162c0-aa0b-5b90-a130-427a366a44b1' and status <> 'finished');
-reset role;
+reset role; select set_config('request.jwt.claims', '', true);
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', '9b5162c0-aa0b-5b90-a130-427a366a44b1', 'unverified', 'NACL-test fictional dataset')
 on conflict do nothing;
@@ -37,9 +37,9 @@ select set_config('request.jwt.claims', '{"sub":"__OWNER_ID__","role":"authentic
 insert into public.competitions (id, event_id, name, category, gender, tier, ruleset, structure, status, rounds_to_win, sort) values
   ('dc843e27-563b-5df9-a26d-e65b02ec7608', 'af4e469b-d45f-5a9a-88e4-43a7af2ae72e', 'Female 3v3', '3v3', 'women', 'Regional', 'Buhurt International: Buhurt Rules V.26.4.1', 'round_robin', 'running', 2, 1000)
 on conflict (id) do nothing;
-insert into public.entries (id, competition_id, team_id, fighter_id, status) values
-  ('89ea0d3e-f2c6-5c03-a3d3-53662248a563', 'dc843e27-563b-5df9-a26d-e65b02ec7608', '93d193e0-68eb-5bb6-a045-4b963f97ef22', null, 'checked_in'),
-  ('6c04c59f-8dad-5f12-be7c-005f87709344', 'dc843e27-563b-5df9-a26d-e65b02ec7608', 'b902f3cf-959c-5300-b019-d678b76aee3a', null, 'checked_in')
+insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values
+  ('89ea0d3e-f2c6-5c03-a3d3-53662248a563', 'dc843e27-563b-5df9-a26d-e65b02ec7608', '93d193e0-68eb-5bb6-a045-4b963f97ef22', null, null, 'checked_in'),
+  ('6c04c59f-8dad-5f12-be7c-005f87709344', 'dc843e27-563b-5df9-a26d-e65b02ec7608', 'b902f3cf-959c-5300-b019-d678b76aee3a', null, null, 'checked_in')
 on conflict (id) do nothing;
 select public.set_entry_roster('89ea0d3e-f2c6-5c03-a3d3-53662248a563', '[{"fighter_id":"285f8b35-de1b-5ade-82c6-4fe0a0a132d9","role":"fighter"},{"fighter_id":"f5bf9cb2-e86b-5c61-bcc5-2d3febce1a61","role":"mercenary"},{"fighter_id":"7b2a7b7d-ddd2-595d-9269-7efa0dbacd1a","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished');
 select public.set_entry_roster('6c04c59f-8dad-5f12-be7c-005f87709344', '[{"fighter_id":"0b508c1f-b0a2-524e-b471-331960200135","role":"fighter"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"},{"fighter_id":"14aed5cd-7ebd-5bd5-a88c-b122058d9b5b","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished');
@@ -50,7 +50,7 @@ on conflict (id) do nothing;
 select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = 'd45e9043-288e-5886-a894-550131369a74' and m.queue_state <> 'final';
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('dc843e27-563b-5df9-a26d-e65b02ec7608') where tied group by part, rank loop perform public.record_tie_decision('dc843e27-563b-5df9-a26d-e65b02ec7608', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('dc843e27-563b-5df9-a26d-e65b02ec7608', 'tournament_structure') where exists (select 1 from public.competitions where id = 'dc843e27-563b-5df9-a26d-e65b02ec7608' and status <> 'finished');
-reset role;
+reset role; select set_config('request.jwt.claims', '', true);
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', 'dc843e27-563b-5df9-a26d-e65b02ec7608', 'unverified', 'NACL-test fictional dataset')
 on conflict do nothing;
@@ -67,9 +67,9 @@ select set_config('request.jwt.claims', '{"sub":"__OWNER_ID__","role":"authentic
 insert into public.competitions (id, event_id, name, category, gender, tier, ruleset, structure, status, rounds_to_win, sort) values
   ('f827b32b-f7c9-5e57-be22-df03e7e9921d', '4ce9cfd7-c876-5a1b-928b-ef86ded32066', 'Female 3v3', '3v3', 'women', 'Classic', 'Buhurt International: Buhurt Rules V.26.4.1', 'round_robin', 'running', 2, 1000)
 on conflict (id) do nothing;
-insert into public.entries (id, competition_id, team_id, fighter_id, status) values
-  ('d6d72879-e56e-583f-b310-a02bb6a0ab91', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, 'checked_in'),
-  ('fb7e55fa-f8e8-5730-9638-cdccb88f4ea2', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '5796049c-2e49-521c-b959-47744fa8c73f', null, 'checked_in')
+insert into public.entries (id, competition_id, team_id, fighter_id, represented_team_id, status) values
+  ('d6d72879-e56e-583f-b310-a02bb6a0ab91', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '9e6caec8-33a2-5b5c-97e8-89f86facf0ea', null, null, 'checked_in'),
+  ('fb7e55fa-f8e8-5730-9638-cdccb88f4ea2', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', '5796049c-2e49-521c-b959-47744fa8c73f', null, null, 'checked_in')
 on conflict (id) do nothing;
 select public.set_entry_roster('d6d72879-e56e-583f-b310-a02bb6a0ab91', '[{"fighter_id":"14aed5cd-7ebd-5bd5-a88c-b122058d9b5b","role":"fighter"},{"fighter_id":"285f8b35-de1b-5ade-82c6-4fe0a0a132d9","role":"mercenary"},{"fighter_id":"7b2a7b7d-ddd2-595d-9269-7efa0dbacd1a","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished');
 select public.set_entry_roster('fb7e55fa-f8e8-5730-9638-cdccb88f4ea2', '[{"fighter_id":"27a1672b-da85-5cb1-b3d2-29f1d968da7a","role":"fighter"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"},{"fighter_id":"0b508c1f-b0a2-524e-b471-331960200135","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished');
@@ -80,7 +80,7 @@ on conflict (id) do nothing;
 select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = 'ff72ba27-bc11-5b71-ab7d-87b866a9cbd9' and m.queue_state <> 'final';
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('f827b32b-f7c9-5e57-be22-df03e7e9921d') where tied group by part, rank loop perform public.record_tie_decision('f827b32b-f7c9-5e57-be22-df03e7e9921d', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('f827b32b-f7c9-5e57-be22-df03e7e9921d', 'tournament_structure') where exists (select 1 from public.competitions where id = 'f827b32b-f7c9-5e57-be22-df03e7e9921d' and status <> 'finished');
-reset role;
+reset role; select set_config('request.jwt.claims', '', true);
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', 'f827b32b-f7c9-5e57-be22-df03e7e9921d', 'unverified', 'NACL-test fictional dataset')
 on conflict do nothing;

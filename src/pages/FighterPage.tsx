@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { FighterLifecycle } from '../components/Lifecycle';
 import { useAuth } from '../auth/AuthContext';
 import { Chip, TestBadge } from '../components/ui';
 import { isSynthetic, useSynthetic } from '../data/synthetic';
@@ -100,6 +101,7 @@ function Career({ p }: { p: FighterProfile }) {
           </div></div>
           <SocialLinksRow links={p.socialLinks} label={`${p.displayName} on the web`} />
           {isMine && <p style={{ marginTop: 10 }}><Link className="btn btn-ink" to={`/fighters/${id}/edit`}>Edit my profile</Link></p>}
+          <FighterLifecycle fighterId={id} name={p.displayName} />
           {p.organization && (
             <p style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               <Chip tone="steel">{p.organization.name}</Chip>{!p.organization.enabled && <Chip>Inactive organization</Chip>}
@@ -223,7 +225,7 @@ function Career({ p }: { p: FighterProfile }) {
           <ul className="plain">
             {tournamentHistory(h).map(t => (
               <li key={t.eventSlug}>
-                <Link to={`/events/${t.eventSlug}`}><b>{t.eventName}</b></Link><TestBadge synthetic={t.synthetic} />
+                <Link to={`/events/${t.eventSlug}`}><b>{t.eventName}</b></Link><TestBadge synthetic={t.synthetic} />{t.statsExcluded && <> <Chip>Not counted in statistics</Chip></>}
                 <div className="l">{dateRange(t.startsOn, t.endsOn)}</div>
                 <div className="placings">
                   {t.placements.map((pl, i) => (

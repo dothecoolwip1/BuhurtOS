@@ -47,7 +47,8 @@ export async function fetchMyTeamRosters(eventId: string): Promise<MyTeamRoster[
   const mine = (roles.data as unknown as { team_id: string; teams: { name: string } | { name: string }[] | null }[])
     .map(r => ({ teamId: r.team_id, teamName: (Array.isArray(r.teams) ? r.teams[0] : r.teams)?.name ?? 'Your team' }));
   if (mine.length === 0) return [];
-  const entries = await supabase.from('entries').select('team_id,competitions!inner(event_id)').eq('competitions.event_id', eventId).in('team_id', mine.map(m => m.teamId));
+  // entries reaches competitions two ways (its own competition_id, and many-to-many through pool_tie_decisions): without the hint PostgREST answers 300 (PGRST201).
+  const entries = await supabase.from('entries').select('team_id,competitions!entries_competition_id_fkey!inner(event_id)').eq('competitions.event_id', eventId).in('team_id', mine.map(m => m.teamId));
   if (entries.error) throw entries.error;
   const entered = new Set((entries.data as unknown as { team_id: string }[]).map(e => e.team_id));
   const out: MyTeamRoster[] = [];

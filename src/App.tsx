@@ -30,10 +30,14 @@ import { TeamsPage } from './pages/TeamsPage';
 import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
+import { ArenaPage } from './pages/arena/ArenaPage';
 
 export function App() {
   return (
     <Routes>
+      {/* The venue display lives outside the site chrome: no header, menus or footer on a screen beside the list. */}
+      <Route path="events/:eventId/arena" element={<ArenaPage />} />
+      <Route path="events/:eventId/arena/:field" element={<ArenaPage />} />
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />

@@ -187,23 +187,30 @@ export interface ResultRow {
   synthetic?: boolean;
   /** Team results: the name the team used at the event, and its name today (they differ after a rename or merge). */
   teamNameAtEvent?: string | null; teamCurrentName?: string | null;
+  /** Pack 09D: the event was excluded from official statistics. The result stays in the history; it no longer counts in rankings or totals. */
+  statsExcluded?: boolean;
 }
-type ResultDb = { synthetic?: boolean; team_name_at_event?: string | null; team_current_name?: string | null; competition_id: string; competition_name: string; category: string; gender: 'open' | 'men' | 'women'; tier: string | null; event_id: string; event_slug: string; event_name: string;
+type ResultDb = { stats_excluded?: boolean; synthetic?: boolean; team_name_at_event?: string | null; team_current_name?: string | null; competition_id: string; competition_name: string; category: string; gender: 'open' | 'men' | 'women'; tier: string | null; event_id: string; event_slug: string; event_name: string;
   event_type: string; starts_on: string; event_ends_on: string; season_id: string | null; organization_id: string | null; final_place: number; points: number | string };
 export const toResultRow = (r: ResultDb): ResultRow => ({
   competitionId: r.competition_id, competitionName: r.competition_name, category: r.category, gender: r.gender, tier: r.tier, eventId: r.event_id, eventSlug: r.event_slug, eventName: r.event_name,
   eventType: r.event_type, startsOn: r.starts_on, endsOn: r.event_ends_on, seasonId: r.season_id, organizationId: r.organization_id, finalPlace: r.final_place, points: num(r.points),
-  synthetic: r.synthetic === true, teamNameAtEvent: r.team_name_at_event ?? null, teamCurrentName: r.team_current_name ?? null
+  synthetic: r.synthetic === true, teamNameAtEvent: r.team_name_at_event ?? null, teamCurrentName: r.team_current_name ?? null, statsExcluded: r.stats_excluded === true
 });
+const missingColumn = (e: unknown) => (e as { code?: string } | null)?.code === '42703';
 const RESULT_COLUMNS = 'competition_id,competition_name,category,gender,tier,event_id,event_slug,event_name,event_type,starts_on,event_ends_on,season_id,organization_id,final_place,points';
 /** Newest first. Includes duel entries and team entries the fighter was on the roster of (mercenaries too). */
 export async function fetchFighterHistory(fighterId: string): Promise<ResultRow[]> {
-  const { data, error } = await supabase.from('fighter_results_all').select(`${RESULT_COLUMNS},synthetic`).eq('fighter_id', fighterId).order('event_ends_on', { ascending: false });
+  let res: { data: unknown; error: unknown } = await supabase.from('fighter_results_all').select(`${RESULT_COLUMNS},synthetic,stats_excluded`).eq('fighter_id', fighterId).order('event_ends_on', { ascending: false });
+  if (res.error && missingColumn(res.error)) res = await supabase.from('fighter_results_all').select(`${RESULT_COLUMNS},synthetic`).eq('fighter_id', fighterId).order('event_ends_on', { ascending: false });
+  const { data, error } = res;
   if (error) throw error;
   return (data as unknown as ResultDb[]).map(toResultRow);
 }
 export async function fetchTeamHistory(teamId: string): Promise<ResultRow[]> {
-  const { data, error } = await supabase.from('team_results_all').select(`${RESULT_COLUMNS},synthetic,team_name_at_event,team_current_name`).eq('team_id', teamId).order('event_ends_on', { ascending: false });
+  let res: { data: unknown; error: unknown } = await supabase.from('team_results_all').select(`${RESULT_COLUMNS},synthetic,team_name_at_event,team_current_name,stats_excluded`).eq('team_id', teamId).order('event_ends_on', { ascending: false });
+  if (res.error && missingColumn(res.error)) res = await supabase.from('team_results_all').select(`${RESULT_COLUMNS},synthetic,team_name_at_event,team_current_name`).eq('team_id', teamId).order('event_ends_on', { ascending: false });
+  const { data, error } = res;
   if (error) throw error;
   return (data as unknown as ResultDb[]).map(toResultRow);
 }
@@ -248,6 +255,77 @@ export async function fetchTeamRanking(f: RankingFilter, limit = 100): Promise<R
   const { data, error } = await applyRankingFilter(q, f).order('rank').order('team_name').limit(limit);
   if (error) throw error;
   return (data as unknown as Array<RankDb & { team_id: string; team_name: string; team_slug: string }>).map(toTeamRanking);
+}
+
+/**
+ * The team(s) at rank 1 of every category in a season or organization-career ranking: the overview of "who leads each category", and the
+ * proof of which categories teams really rank in. Same view and filters as the full table, so the two can never disagree.
+ */
+export async function fetchTeamLeaders(f: { scope: 'season' | 'org_career'; organizationId: string; seasonId?: string | null }): Promise<RankingRow[]> {
+  let q = supabase.from('ranking_teams').select('scope,organization_id,season_id,category,gender,team_id,team_name,team_slug,competitions,golds,silvers,bronzes,points,rank')
+    .eq('scope', f.scope).eq('organization_id', f.organizationId).eq('rank', 1);
+  q = f.scope === 'season' ? q.eq('season_id', f.seasonId ?? '') : q.is('season_id', null);
+  const { data, error } = await q.order('category').order('gender').order('team_name').limit(500);
+  if (error) throw error;
+  return (data as unknown as Array<RankDb & { team_id: string; team_name: string; team_slug: string }>).map(toTeamRanking);
+}
+
+// ================================================================ team discipline totals
+// NOT a team competition ranking (that is ranking_teams above). Each row is a team's total of the individual ranking points its fighters earned
+// in one discipline (longsword, sword and shield, ...) while representing it. Disciplines and their names come from the data.
+/** season: one organization's season. org_career: one organization's whole history. career: all time, every organization. */
+export type DisciplineScope = 'season' | 'org_career' | 'career';
+export interface DisciplineFilter { scope: DisciplineScope; organizationId?: string | null; seasonId?: string | null }
+export interface TeamDisciplineRow {
+  scope: DisciplineScope; organizationId: string | null; seasonId: string | null; category: string; categoryName: string;
+  /** The division ('men' | 'women' | 'open'); null = all divisions of the discipline together. */
+  gender: string | null;
+  teamId: string; teamName: string; teamSlug: string; fighters: number; results: number; points: number;
+  /** rank() over points DESC within the discipline and division: equal points share a rank. */
+  rank: number;
+}
+type TeamDisciplineDb = {
+  scope: DisciplineScope; organization_id: string | null; season_id: string | null; category: string; category_name: string; gender: string | null;
+  team_id: string; team_name: string; team_slug: string; fighters: number | string; results: number | string; points: number | string; rank: number | string;
+};
+export const toTeamDisciplineRow = (r: TeamDisciplineDb): TeamDisciplineRow => ({
+  scope: r.scope, organizationId: r.organization_id, seasonId: r.season_id, category: r.category, categoryName: r.category_name, gender: r.gender,
+  teamId: r.team_id, teamName: r.team_name, teamSlug: r.team_slug, fighters: num(r.fighters), results: num(r.results), points: num(r.points), rank: num(r.rank)
+});
+const TEAM_DISCIPLINE_COLUMNS = 'scope,organization_id,season_id,category,category_name,gender,team_id,team_name,team_slug,fighters,results,points,rank';
+/** Scope, organization and season, plus any further columns; a null / undefined value is matched as NULL (as in applyRankingFilter). */
+export function applyDisciplineFilter<T extends Filterable<T>>(q: T, f: DisciplineFilter, more: Array<[string, string | null | undefined]> = []): T {
+  let out = q.eq('scope', f.scope);
+  for (const [col, v] of [['organization_id', f.organizationId], ['season_id', f.seasonId], ...more] as Array<[string, string | null | undefined]>) out = v === null || v === undefined ? out.is(col, null) : out.eq(col, v);
+  return out;
+}
+
+/** Every team at rank 1 of every discipline and division (and of all divisions together): the overview, and the list of disciplines that exist. */
+export async function fetchTeamDisciplineLeaders(f: DisciplineFilter): Promise<TeamDisciplineRow[]> {
+  const q = supabase.from('ranking_team_disciplines').select(TEAM_DISCIPLINE_COLUMNS);
+  const { data, error } = await applyDisciplineFilter(q, f).eq('rank', 1).order('category').order('team_name').limit(1000);
+  if (error) throw error;
+  return (data as unknown as TeamDisciplineDb[]).map(toTeamDisciplineRow);
+}
+/** One discipline's full team table, every division and the all-divisions total, so a team's division split needs no second request. */
+export async function fetchTeamDisciplineBoard(f: DisciplineFilter & { category: string }): Promise<TeamDisciplineRow[]> {
+  const q = supabase.from('ranking_team_disciplines').select(TEAM_DISCIPLINE_COLUMNS);
+  const { data, error } = await applyDisciplineFilter(q, f, [['category', f.category]]).order('rank').order('team_name').limit(2000);
+  if (error) throw error;
+  return (data as unknown as TeamDisciplineDb[]).map(toTeamDisciplineRow);
+}
+
+export interface DisciplineContribution { fighterId: string; displayName: string; teamId: string | null; results: number; points: number }
+type ContributionDb = { fighter_id: string; display_name: string; team_id: string | null; results: number | string; points: number | string };
+/**
+ * Where a team's total comes from: each fighter's points while representing the team. teamId null asks for the points of fighters with no
+ * recorded team in that discipline (they are not credited to anyone).
+ */
+export async function fetchDisciplineContributions(f: DisciplineFilter & { category: string; gender: string | null; teamId: string | null }): Promise<DisciplineContribution[]> {
+  const q = supabase.from('team_discipline_contributions').select('fighter_id,display_name,team_id,results,points');
+  const { data, error } = await applyDisciplineFilter(q, f, [['category', f.category], ['gender', f.gender], ['team_id', f.teamId]]).order('points', { ascending: false }).order('display_name').limit(500);
+  if (error) throw error;
+  return (data as unknown as ContributionDb[]).map(r => ({ fighterId: r.fighter_id, displayName: r.display_name, teamId: r.team_id, results: num(r.results), points: num(r.points) }));
 }
 
 // ================================================================ entry rosters (group fights)

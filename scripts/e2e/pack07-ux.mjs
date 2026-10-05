@@ -81,7 +81,7 @@ try {
   await page.getByRole('tab', { name: 'Results' }).click();
   await page.getByTestId('results-test-data').waitFor();
   const t1 = await body();
-  check('1b. its Results tab shows its own placings instead of "No final placings"', inc(t1, 'Fake Fighter') && inc(t1, '1st') && !inc(t1, 'No final placings'));
+  check('1b. its Results tab shows its own placings (a podium) instead of "No final placings"', inc(t1, 'Fake Fighter') && inc(t1, 'Champion') && !inc(t1, 'No final placings'));
   check('1c. the placings carry the TEST DATA / synthetic label', inc(t1, 'Test data / synthetic event'));
   check('1d. the page read the all-results view, not the official one', mock.st.calls.some(c => c.table === 'result_rows_all') && !mock.st.calls.some(c => c.table === 'result_rows'));
   await shot('p07-synthetic-results');
@@ -106,7 +106,12 @@ try {
   await page.getByLabel('Venue').fill('Blackfalds Arena');
   await page.getByLabel('City').fill('Blackfalds');
   await page.getByLabel('Province or state').fill('AB');
+  // Pack 09D Quick Setup: an event with no competitions (Clear all), Continue, then Create event on the check screen; Event home opens and Setup is one tap.
+  await page.getByRole('button', { name: 'Clear all' }).click();
+  await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Create event' }).click();
+  await page.waitForURL(/manage\?tab=home/);
+  await go(new URL(page.url()).pathname + '?tab=setup');
   await page.waitForURL(/manage\?tab=setup/);
   await page.getByText('This event is a draft').waitFor();
   await page.getByTestId('fix-competitions').waitFor();
@@ -203,7 +208,7 @@ try {
   await page.getByRole('button', { name: 'Male', exact: true }).click();
   await page.getByRole('button', { name: 'HACSA' }).click();
   await page.getByLabel('Where are you from?').selectOption('AB');
-  await page.getByText('Saturday', { exact: false }).click();
+  await page.getByRole('checkbox', { name: /(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d/ }).first().check();   // the first event day, whatever weekday the mock's date lands on
   await page.getByRole('button', { name: 'No', exact: true }).click();
   await page.getByText('Yes, I am a HACSA member', { exact: false }).click();
   await page.getByLabel('Emergency contact name').fill('Pat Robson');

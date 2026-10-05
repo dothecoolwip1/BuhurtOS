@@ -27,10 +27,12 @@ export interface EventFilter {
   q: string; format: 'all' | LeagueId; org: string; region: string; type: string; status: EventStatusFilter; when: EventWhen;
   /** Show fictional/test events. Off by default everywhere. */
   test: boolean;
+  /** Show archived events (Pack 09D). Off by default on the general lists; My events always shows the viewer's own. */
+  archived: boolean;
   /** Only events where the viewer has this relationship ('' = any relationship on My events, ignored elsewhere). */
   role: EventRole | '';
 }
-export const DEFAULT_FILTER: EventFilter = { q: '', format: 'all', org: '', region: '', type: '', status: '', when: 'upcoming', test: false, role: '' };
+export const DEFAULT_FILTER: EventFilter = { q: '', format: 'all', org: '', region: '', type: '', status: '', when: 'upcoming', test: false, archived: false, role: '' };
 
 /** Reads a filter from the URL (?q=&format=&org=&province=&type=&status=&when=&test=1&role=), ignoring values it does not know. */
 export function parseEventFilter(params: URLSearchParams, defaults: Partial<EventFilter> = {}): EventFilter {
@@ -43,6 +45,7 @@ export function parseEventFilter(params: URLSearchParams, defaults: Partial<Even
     status: pick(params.get('status'), STATUS_FILTERS.map(([k]) => k), d.status),
     when: pick(params.get('when'), ['upcoming', 'past', 'all'] as const, d.when),
     test: params.has('test') ? params.get('test') === '1' : d.test,
+    archived: params.has('archived') ? params.get('archived') === '1' : d.archived,
     role: pick(params.get('role'), ['', ...ROLE_FILTERS.map(([k]) => k)] as const, d.role)
   };
 }
@@ -58,12 +61,13 @@ export function eventFilterParams(f: EventFilter, defaults: Partial<EventFilter>
   if (f.status !== d.status) p.set('status', f.status);
   if (f.when !== d.when) p.set('when', f.when);
   if (f.test !== d.test) p.set('test', f.test ? '1' : '0');
+  if (f.archived !== d.archived) p.set('archived', f.archived ? '1' : '0');
   if (f.role !== d.role) p.set('role', f.role);
   return p;
 }
 export const activeFilterCount = (f: EventFilter, defaults: Partial<EventFilter> = {}): number => {
   const d = { ...DEFAULT_FILTER, ...defaults };
-  return (['format', 'org', 'region', 'type', 'status', 'test', 'role'] as const).filter(k => f[k] !== d[k]).length;
+  return (['format', 'org', 'region', 'type', 'status', 'test', 'archived', 'role'] as const).filter(k => f[k] !== d[k]).length;
 };
 
 /** An event with everything the views need to filter and label it. */
@@ -104,6 +108,7 @@ export function applyEventFilter<T extends IndexedEvent>(events: readonly T[], f
   return events.filter(e => {
     if (e.synthetic && !f.test) return false;
     if (e.onlyMine && !mine) return false;
+    if (e.archivedAt && !f.archived && !mine) return false;   // archived: hidden from browsing, still reachable by link and with the toggle
     if (mine && e.roles.length === 0) return false;
     if (mine && f.role && !e.roles.includes(f.role)) return false;
     if (!matchesEventQuery(e, f.q)) return false;

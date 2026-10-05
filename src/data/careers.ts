@@ -22,7 +22,7 @@ export async function fetchSeasons(): Promise<SeasonInfo[]> {
 }
 
 // ================================================================ fighter directory
-export interface DirectoryFilter { q: string; teamId: string; gender: string; discipline: string; region: string; page: number }
+export interface DirectoryFilter { q: string; teamId: string; gender: string; discipline: string; region: string; page: number; /** Pack 09D: include fighters who are not competing now (off by default). */ inactive?: boolean }
 export interface FighterCard {
   id: string; name: string; gender: string | null; city: string | null; region: string | null; disciplines: string[];
   team: { name: string; slug: string } | null;
@@ -41,7 +41,10 @@ export async function fetchFighterDirectory(f: DirectoryFilter): Promise<{ rows:
   if (f.discipline) q = q.contains('disciplines', [f.discipline]);
   if (f.region.trim()) q = q.ilike('region', `${escapeLike(f.region)}%`);
   const from = (Math.max(1, f.page) - 1) * PAGE_SIZE;
-  const { data, error, count } = await q.order('display_name').order('id').range(from, from + PAGE_SIZE - 1);
+  let res = await (f.inactive ? q : q.is('inactive_at', null)).order('display_name').order('id').range(from, from + PAGE_SIZE - 1);
+  // 42703: no inactive_at column yet (Pack 09D not applied); everyone is active then.
+  if (res.error && (res.error as { code?: string }).code === '42703') return fetchFighterDirectory({ ...f, inactive: true });
+  const { data, error, count } = res;
   if (error) throw error;
   const rows = (data as unknown as CardDb[]).map(r => ({ id: r.id, name: r.display_name, gender: r.gender, city: r.city, region: r.region, disciplines: r.disciplines ?? [], team: one(r.teams), teamId: r.team_id }));
   // Fighters whose home team comes from a membership rather than fighters.team_id.

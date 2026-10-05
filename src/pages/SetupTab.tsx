@@ -11,6 +11,7 @@ import { useAsync } from '../lib/useAsync';
 import { PROVINCES } from '../registration/model';
 import { publishChecklist, toPatch, validateSetup, type SetupForm } from '../registration/setup';
 import { WaiverSection } from './WaiverSection';
+import { EventLifecycle } from '../components/Lifecycle';
 
 const fromEvent = (e: LiveEvent): SetupForm => ({
   name: e.name, description: e.description, venue: e.venue ?? '', address: e.address ?? '', city: e.city ?? '', region: e.region ?? '', country: e.country ?? '', latitude: e.latitude, longitude: e.longitude,
@@ -152,6 +153,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         <button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Save changes'}</button>
         {msg && <p role={msg.ok ? 'status' : 'alert'} style={{ color: msg.ok ? 'var(--win)' : 'var(--live)' }}>{msg.text}</p>}
       </form>
+      <EventLifecycle event={event} onChanged={onChanged} />
     </div>
   );
 }

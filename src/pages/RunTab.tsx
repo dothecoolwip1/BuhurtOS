@@ -1,17 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { BulkSchedule } from '../components/BulkSchedule';
 import { MatchSchedule } from '../components/MatchSchedule';
 import { RosterEditor } from '../components/RosterEditor';
 import { ConflictsPanel } from '../components/RunConflicts';
 import { AddEntrant } from '../components/AddEntrant';
 import { Withdrawals } from '../components/Withdrawals';
+import { RepresentedTeams } from '../components/RepresentedTeams';
+import { TieDecision } from '../components/TieDecision';
 import { Chip } from '../components/ui';
 import { fetchCompetitionRoster, fetchEventTimeZone, fetchMatchDurations, DEFAULT_TIME_ZONE } from '../data/runSchedule';
 import type { LiveCompetition, LiveEvent } from '../data/api';
 import { fetchClaimStates } from '../data/entrants';
 import {
-  buildSchedule, fetchCompetitionMatches, fetchEntries, fetchPoolStandings, groupIntoRounds, recordTieDecision, reopenMatch, setQueue,
+  buildSchedule, fetchCompetitionMatches, fetchEntries, fetchPoolStandings, groupIntoRounds, reopenMatch, setQueue,
   type CompetitionEntry, type CompetitionMatch
 } from '../data/matches';
 import type { PlannedMatch } from '../lib/bracket';
@@ -284,37 +286,6 @@ function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition
   );
 }
 
-/** Level entries that decide who advances: the organizer puts them in order and says how it was decided. The database keeps who, when and why. */
-function TieDecision({ comp, group, nameOf, onDecided }: { comp: LiveCompetition; group: { part: string; rank: number; entryIds: string[] }; nameOf: (id: string) => string; onDecided: () => void }) {
-  const [order, setOrder] = useState<string[]>(group.entryIds);
-  const [note, setNote] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const save = async () => {
-    setBusy(true); setError(null);
-    try { await recordTieDecision(comp.id, group.part, order, note); onDecided(); }
-    catch (e) { setError(friendlyError(e, 'Could not save the order.')); } finally { setBusy(false); }
-  };
-  return (
-    <div className="panel" role="group" aria-label={`Tie for place ${group.rank}${group.part ? ` in pool ${group.part}` : ''}`} style={{ display: 'grid', gap: 8 }}>
-      <b>{group.part ? `Pool ${group.part}: ` : ''}these {order.length} are level for place {group.rank}. Put them in the order they should finish.</b>
-      <ol style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 6 }}>
-        {order.map((id, i) => (
-          <li key={id}>{nameOf(id)}{' '}
-            <button type="button" className="btn btn-line btn-sm" aria-label={`Move ${nameOf(id)} up`} disabled={i === 0 || busy} onClick={() => setOrder(moveItem(order, i, -1))}>Up</button>{' '}
-            <button type="button" className="btn btn-line btn-sm" aria-label={`Move ${nameOf(id)} down`} disabled={i === order.length - 1 || busy} onClick={() => setOrder(moveItem(order, i, 1))}>Down</button>
-          </li>
-        ))}
-      </ol>
-      <label className="field-in">How was this decided?
-        <input type="text" value={note} maxLength={200} placeholder="e.g. head marshal drew lots" onChange={e => setNote(e.target.value)} />
-      </label>
-      <button type="button" className="btn btn-ink" disabled={busy || note.trim().length < 3} onClick={save}>{busy ? 'Saving…' : 'Save this order'}</button>
-      {error && <p role="alert" style={errorStyle}>{error}</p>}
-    </div>
-  );
-}
-
 function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled }: { comp: LiveCompetition; eventId: string; timeZone: string; jumpId: string | null; eventDay: boolean; onScheduled: () => void }) {
   const [reload, setReload] = useState(0);
   const [building, setBuilding] = useState(false);
@@ -393,6 +364,8 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
         </details>
       )}
 
+      {comp.league !== 'buhurt' && all.some(e => e.fighterId) && <RepresentedTeams competitionId={comp.id} competitionName={comp.name} reloadKey={reload} />}
+
       {list.some(m => m.queueState !== 'final') && (
         <BulkSchedule matches={list.map(m => ({ matchId: m.id, queueState: m.queueState, scheduledAt: m.scheduledAt }))} timeZone={timeZone}
           onDone={() => { setReload(k => k + 1); onScheduled(); }} />
@@ -415,7 +388,8 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
 export function RunTab({ event, competitions }: { event: LiveEvent; competitions: LiveCompetition[] }) {
   const [conflictsKey, setConflictsKey] = useState(0);
   const [version, setVersion] = useState(0);
-  const [jumpId, setJumpId] = useState<string | null>(null);
+  const [params] = useSearchParams();
+  const [jumpId, setJumpId] = useState<string | null>(params.get('match'));   // Event day links here with ?match=<id>
   const tz = useAsync(() => fetchEventTimeZone(event.id), [event.id]);
   const timeZone = tz.data ?? DEFAULT_TIME_ZONE;
   const names = useMemo(() => new Map(competitions.map(c => [c.id, c.name])), [competitions]);
@@ -423,13 +397,18 @@ export function RunTab({ event, competitions }: { event: LiveEvent; competitions
 
   useEffect(() => {
     if (!jumpId) return;
-    const t = setTimeout(() => {
+    // The match cards load after the tab opens (especially when arriving from a link), so look again until the card exists.
+    let tries = 0;
+    const find = setInterval(() => {
       const el = document.getElementById(`match-${jumpId}`);
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      el?.focus({ preventScroll: true });
-    }, 60);
-    const clear = setTimeout(() => setJumpId(null), 1500);
-    return () => { clearTimeout(t); clearTimeout(clear); };
+      if (el) {
+        clearInterval(find);
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus({ preventScroll: true });
+      } else if (++tries > 40) clearInterval(find);
+    }, 150);
+    const clear = setTimeout(() => setJumpId(null), 8000);
+    return () => { clearInterval(find); clearTimeout(clear); };
   }, [jumpId]);
 
   if (competitions.length === 0) {

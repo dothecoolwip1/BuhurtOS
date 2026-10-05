@@ -70,6 +70,7 @@ export function EventFilters({ value, onChange, options, defaults = {}, mine = f
           {showTest && (
             <label className="toggle"><input type="checkbox" checked={value.test} onChange={e => set('test', e.target.checked)} data-testid="show-test" /> Show test data (fictional events)</label>
           )}
+          <label className="toggle"><input type="checkbox" checked={value.archived} onChange={e => set('archived', e.target.checked)} data-testid="show-archived" /> Show archived events</label>
           {n > 0 && <div style={{ alignSelf: 'end' }}><button type="button" className="btn btn-line" onClick={() => onChange({ ...DEFAULT_FILTER, ...defaults, q: value.q, when: value.when })}>Clear filters</button></div>}
         </div>
       )}

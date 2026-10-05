@@ -14,6 +14,8 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { formatMoney } from '../registration/model';
 import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../registration/review';
 import { fetchScheduleConflicts } from '../data/conflicts';
+import { DEFAULT_TIME_ZONE, fetchEventTimeZone } from '../data/runSchedule';
+import { eventIsRunning } from '../lib/eventDay';
 import { conflictsStripLabel, distinctFighters } from '../lib/runSchedule';
 import { attendanceText } from '../lib/eventDays';
 import { AttentionStrip, CheckinPanel } from './CheckinPanel';
@@ -22,13 +24,33 @@ import { ExportRegistrations } from './ExportRegistrations';
 import { FightersTab } from './FightersTab';
 import { withdrawRegistration } from '../data/invitations';
 import { PeopleTab } from './PeopleTab';
+import { EventDayTab } from './EventDayTab';
 import { RunTab } from './RunTab';
+import { FinalizeTab } from './FinalizeTab';
+import { useEventRecordWatch } from '../lib/useEventRecordWatch';
 import { SetupTab } from './SetupTab';
 import { CompetitionsTab } from './CompetitionsTab';
 import { TeamsTab } from './TeamsTab';
+import { EventHomeTab } from './EventHomeTab';
+import { BuildTournamentTab } from './BuildTournamentTab';
 
-type Tab = 'review' | 'fighters' | 'checkin' | 'run' | 'setup' | 'competitions' | 'people' | 'teams';
-const TABS: Tab[] = ['review', 'fighters', 'checkin', 'run', 'setup', 'competitions', 'people', 'teams'];
+type Tab = 'home' | 'build' | 'eventday' | 'review' | 'fighters' | 'checkin' | 'run' | 'finalize' | 'setup' | 'competitions' | 'people' | 'teams';
+const TABS: Tab[] = ['home', 'build', 'eventday', 'review', 'fighters', 'checkin', 'run', 'finalize', 'setup', 'competitions', 'people', 'teams'];
+/**
+ * Pack 09D: the normal workflow is four areas (Event home, Registrations, Event day, Results). Everything else stays exactly where it was, under
+ * "More options" (same ?tab= addresses, same screens), so nothing is lost and nothing is in the way.
+ */
+const PRIMARY: Tab[] = ['home', 'review', 'eventday', 'finalize'];
+const MORE: ReadonlyArray<readonly [Tab, string, string]> = [
+  ['build', 'Build tournament', 'Formats, draws, fields and fight order from registrations'],
+  ['checkin', 'Check-in', 'Who has arrived, kit and waivers'],
+  ['fighters', 'Fighters', 'Add or remove entrants by hand'],
+  ['run', 'Run', 'Draw tools, times, fields, withdrawals, teams represented'],
+  ['competitions', 'Competitions', 'Advanced setup: tier, ruleset, rounds to win, structure'],
+  ['setup', 'Event settings', 'Dates, venue, fees, waiver, registration, archive'],
+  ['people', 'People', 'Organizers, marshals, scorekeepers, medic'],
+  ['teams', 'Teams', 'Team requests and rosters']
+];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -115,12 +137,19 @@ export function ManagePage() {
   const [filter, setFilter] = useState<ReviewFilter>('pending');
   const [query, setQuery] = useState('');
   const rawTab = params.get('tab');
-  const tab: Tab = TABS.find(t => t === rawTab) ?? 'review';
   const [eventKey, setEventKey] = useState(0);
   const act = useAction(() => setReloadKey(k => k + 1));
 
   const loaded = useAsync(() => fetchEvent(slug), [slug, eventKey]);
   const eventId = loaded.data?.event.id;
+  // A competition becoming official, or the event closing, re-reads the event (realtime, with a slow poll behind it).
+  useEventRecordWatch(eventId, () => setEventKey(k => k + 1));
+  // Event day opens first only while the event is really running; otherwise Manage opens on Event home (Pack 09D), which says what to do next.
+  const zone = useAsync(() => (eventId ? fetchEventTimeZone(eventId) : Promise.resolve(DEFAULT_TIME_ZONE)), [eventId]);
+  const running = loaded.data ? eventIsRunning(loaded.data.event.startsOn, loaded.data.event.endsOn, zone.data ?? DEFAULT_TIME_ZONE) : false;
+  const requested = TABS.find(t => t === rawTab);
+  const tab: Tab = requested ?? (running ? 'eventday' : 'home');
+  const [showMore, setShowMore] = useState(false);
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   const isOrganizer = mine.data?.isOrganizer === true;
   const regs = useAsync(() => (eventId && isOrganizer ? fetchRegistrations(eventId) : Promise.resolve([] as ManagedRegistration[])), [eventId, isOrganizer, reloadKey]);
@@ -133,6 +162,7 @@ export function ManagePage() {
   const { event, competitions } = loaded.data;
   if (!session) return <><PageHead eyebrow="Organizers" title={`Manage ${event.name}`} /><SignIn reason="Sign in with the account that organizes this event." /></>;
   if (mine.loading && !mine.data) return <p className="muted">Loading…</p>;
+  if (!requested && zone.loading && !zone.data) return <p className="muted">Loading…</p>;
   if (!isOrganizer) {
     return (
       <section style={{ display: 'grid', gap: 14 }}>
@@ -147,19 +177,41 @@ export function ManagePage() {
   const counts = countByStatus(all);
   const list = filterRegistrations(all, filter, query);
   const ready = all.filter(r => r.status === 'accepted' && blockers(r).length === 0).length;
+  const LABELS: Record<Tab, string> = {
+    home: 'Event home', review: `Registrations (${counts.pending} waiting)`, eventday: 'Event day', finalize: 'Results', build: 'Build tournament',
+    checkin: `Check-in (${ready}/${counts.accepted} ready)`, fighters: 'Fighters', run: 'Run', competitions: `Competitions (${competitions.length})`, setup: 'Event settings', people: 'People', teams: 'Teams'
+  };
   return (
-    <section className="fade-in" style={{ display: 'grid', gap: 18 }}>
-      <PageHead eyebrow="Organizers" title={`Manage ${event.name}`} />
-      <Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link>
-      <AttentionStrip regs={all} onPick={k => {
-        if (k === 'pending') { setFilter('pending'); setParams({}, { replace: true }); }
-        else if (k === 'blocked') setParams({ tab: 'checkin' }, { replace: true });
-        else { setFilter('accepted'); setParams({}, { replace: true }); }
-      }} extra={clashLabel ? [{ key: 'clash', label: clashLabel, onClick: () => setParams({ tab: 'run' }, { replace: true }) }] : []} />
-      <Seg scroll label="Area" value={tab} options={[['review', `Review (${counts.pending} waiting)`], ['fighters', 'Fighters'], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['competitions', `Competitions (${competitions.length})`], ['people', 'People'], ['teams', 'Teams']] as const}
-        onChange={v => setParams(v === 'review' ? {} : { tab: v }, { replace: true })} />
+    <section className="fade-in" style={{ display: 'grid', gap: tab === 'eventday' ? 12 : 18 }}>
+      {tab === 'eventday'
+        ? <div className="ed-title"><h1>{event.name} <span className="ed-title-tag">Event day</span></h1><Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link></div>
+        : <>
+            <PageHead eyebrow="Organizers" title={`Manage ${event.name}`} />
+            <Link className="more" to={`/events/${event.slug}`}>← Back to the event</Link>
+            {tab !== 'home' && <AttentionStrip regs={all} onPick={k => {
+              if (k === 'pending') { setFilter('pending'); setParams({ tab: 'review' }, { replace: true }); }
+              else if (k === 'blocked') setParams({ tab: 'checkin' }, { replace: true });
+              else { setFilter('accepted'); setParams({ tab: 'review' }, { replace: true }); }
+            }} extra={clashLabel ? [{ key: 'clash', label: clashLabel, onClick: () => setParams({ tab: 'run' }, { replace: true }) }] : []} />}
+          </>}
+      <div className="mg-more">
+        <Seg scroll label="Area" value={tab} options={[
+          ...PRIMARY.map(t => [t, LABELS[t]] as const),
+          ...(PRIMARY.includes(tab) ? [] : [[tab, LABELS[tab]] as const])
+        ]} onChange={v => { setShowMore(false); setParams({ tab: v }, { replace: true }); }} />
+        <button type="button" className="btn btn-line btn-sm" aria-expanded={showMore} aria-controls="mg-more-panel" onClick={() => setShowMore(x => !x)}>{showMore ? 'Fewer options' : 'More options'}</button>
+      </div>
+      {showMore && (
+        <nav id="mg-more-panel" className="mg-more-panel" aria-label="More options">
+          {MORE.map(([t, label]) => <Link key={t} to={`/events/${event.slug}/manage?tab=${t}`} aria-current={t === tab ? 'page' : undefined} onClick={() => setShowMore(false)}>{label}</Link>)}
+        </nav>
+      )}
+      {tab === 'home' && <EventHomeTab key={event.id} event={event} competitions={competitions} regs={all} running={running} onChanged={() => { setEventKey(k => k + 1); setReloadKey(k => k + 1); }} moreTabs={MORE} />}
+      {tab === 'build' && <BuildTournamentTab key={event.id} event={event} competitions={competitions} onChanged={() => setEventKey(k => k + 1)} />}
+      {tab === 'eventday' && <EventDayTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'fighters' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} />}
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
+      {tab === 'finalize' && <FinalizeTab key={event.id} event={event} competitions={competitions} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'competitions' && <CompetitionsTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'teams' && <TeamsTab />}

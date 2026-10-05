@@ -129,3 +129,19 @@ describe('one relationship rule for My events and My calendar (Pack 07 / Pack 1 
     expect(parseEventFilter(new URLSearchParams('role=invited')).role).toBe('invited');
   });
 });
+
+describe('archived events (Pack 09D)', () => {
+  const list = indexEvents([...events, ev({ id: 'arch', name: 'Archived Open', startsOn: '2026-04-10', endsOn: '2026-04-10', archivedAt: '2026-05-01T00:00:00Z' })], synthetic, new Map([['arch', ['organizer']]]), orgs);
+  it('are hidden from normal browsing by default', () => {
+    expect(applyEventFilter(list, { ...DEFAULT_FILTER, when: 'all' }, today).map(e => e.id)).not.toContain('arch');
+  });
+  it('show with the archive toggle, and in the URL', () => {
+    expect(applyEventFilter(list, { ...DEFAULT_FILTER, when: 'all', archived: true }, today).map(e => e.id)).toContain('arch');
+    expect(eventFilterParams({ ...DEFAULT_FILTER, archived: true }).toString()).toBe('archived=1');
+    expect(parseEventFilter(new URLSearchParams('archived=1')).archived).toBe(true);
+    expect(activeFilterCount({ ...DEFAULT_FILTER, archived: true })).toBe(1);
+  });
+  it('still show on My events for the people in them', () => {
+    expect(applyEventFilter(list, { ...DEFAULT_FILTER, when: 'all' }, today, true).map(e => e.id)).toContain('arch');
+  });
+});
