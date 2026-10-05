@@ -62,7 +62,7 @@ try {
   await org.getByText('OBS overlay').first().waitFor({ timeout: 30000 }).catch(() => undefined);
   const t1 = await settledText(org);
   check('1. realtime is really connected in this run (channels joined, as in production)', joins.length > 0, JSON.stringify(joins));
-  check('2. Manage › Broadcast, event with NO event_broadcast row and NO sponsors: still rendered after 4 s (no blank app)', /OBS overlay/.test(t1) && /Livestream link/.test(t1) && /No sponsors yet/.test(t1), t1.slice(0, 300) + ' | errors: ' + org.errors.join(' | '));
+  check('2. Manage › Broadcast, event with NO event_broadcast row and NO sponsors: still rendered after 4 s (no blank app)', /OBS overlay/i.test(t1) && /Livestream link/i.test(t1) && /No sponsors yet/i.test(t1) && (await org.locator('[data-testid=screen-error]').count()) === 0, t1.slice(0, 300) + ' | errors: ' + org.errors.join(' | '));
   check('3. ... no uncaught page error', org.errors.length === 0, org.errors.join(' | '));
   check('4. ... no sideways scrolling at 390 px', await noSideways(org));
   await shot(org, '01-manage-broadcast-empty');
@@ -81,7 +81,7 @@ try {
   await org.reload();
   await org.getByText('OBS overlay').first().waitFor({ timeout: 30000 }).catch(() => undefined);
   const t2 = await settledText(org);
-  check('7. Manage › Broadcast WITH settings and a sponsor: still rendered after 4 s', /OBS overlay/.test(t2) && /Ironworks Armoury/.test(t2) && org.errors.length === 0, t2.slice(0, 300) + ' | ' + org.errors.join(' | '));
+  check('7. Manage › Broadcast WITH settings and a sponsor: still rendered after 4 s', /OBS overlay/i.test(t2) && /Ironworks Armoury/i.test(t2) && org.errors.length === 0, t2.slice(0, 300) + ' | ' + org.errors.join(' | '));
   await shot(org, '02-manage-broadcast-configured');
 
   // 4. moving between Manage tabs (each mount / unmount subscribes and unsubscribes) never blanks the app
@@ -90,7 +90,7 @@ try {
     await sleep(2500);
   }
   const t3 = await rootText(org);
-  check('8. switching Manage tabs back and forth (Event day, Broadcast, Home, Broadcast): the app is still there', /OBS overlay/.test(t3) && org.errors.length === 0, t3.slice(0, 200) + ' | ' + org.errors.join(' | '));
+  check('8. switching Manage tabs back and forth (Event day, Broadcast, Home, Broadcast): the app is still there', /OBS overlay/i.test(t3) && org.errors.length === 0 && (await org.locator('[data-testid=screen-error]').count()) === 0, t3.slice(0, 200) + ' | ' + org.errors.join(' | '));
 
   // 5. the public event page with a stream (it uses the same broadcast hook next to the page's own event watcher)
   const pub = await open(null);
@@ -106,7 +106,7 @@ try {
     const p = await open(who);
     await p.goto(`${BASE}/events/test-stuff-test/manage?tab=broadcast`);
     const t = await settledText(p);
-    check(`11. ${who} on Manage › Broadcast: no broadcast setup offered, and the page is not blank`, t.length > 40 && !/OBS overlay/.test(t) && p.errors.length === 0, t.slice(0, 200) + ' | ' + p.errors.join(' | '));
+    check(`11. ${who} on Manage › Broadcast: no broadcast setup offered, and the page is not blank`, t.length > 40 && !/OBS overlay/i.test(t) && p.errors.length === 0, t.slice(0, 200) + ' | ' + p.errors.join(' | '));
   }
 
   // 7. the OBS overlay and the venue display (public, same hooks)
