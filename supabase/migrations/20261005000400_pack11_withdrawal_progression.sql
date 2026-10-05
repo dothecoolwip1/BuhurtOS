@@ -37,7 +37,7 @@ begin
   perform set_config('bos.withdrawal_cascade', 'on', true);
 
   loop
-    select m.*, ea.status, eb.status
+    select m, ea.status, eb.status
       into v_m, v_a_status, v_b_status
       from public.matches m
       join public.entries ea on ea.id = m.entry_a
