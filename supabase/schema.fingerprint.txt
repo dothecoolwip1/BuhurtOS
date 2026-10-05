@@ -871,6 +871,7 @@ function private.registration_notify() secdef=true e15dc3203f08cb01761e9ccf1bb38
 function private.registration_org_guard() secdef=true 210b63f3e585beabff74e68da1553072
 function private.reopen_match_core(p_match uuid, p_reason text) secdef=true f7da4fd41a83fa2a238107de7e78a9ec
 function private.represented_team_evidence(p_event uuid, p_fighter uuid, OUT team_id uuid, OUT basis text) secdef=true 34d51ad5425a7a8c226c795938929869
+function private.resolve_withdrawn_walkovers(p_competition uuid) secdef=true 9f56211af5507debff6083af5950104f
 function private.result_revisions_append_only() secdef=false d795b3ab81682d262094bf69356103cf
 function private.round_rank(p_stage text, p_label text) secdef=false c346e2163e169752721e61a406c02a05
 function private.settle_field_queue(p_event uuid, p_key text, p_start boolean) secdef=true f71c55456652d4a824fea67c2771718f
@@ -886,6 +887,7 @@ function private.touch_updated_at() secdef=false 587cccdfb0cc0805991745244d57ff0
 function private.unfinish_competition() secdef=true 157cff9e48c462a330d2cafeb8282291
 function private.unlocked() secdef=false 3e7b045970d6b4e5f6da8fd697b577b6
 function private.unresolved_ties(p_comp uuid, p_top integer) secdef=true 46e172bcfb6899e73a43863350c45626
+function private.withdrawal_reason(p_entry uuid) secdef=true 2c0bb5ebb8fe18b853b3f8626f9cf8c5
 function public.add_entrant(p_competition uuid, p_fighter uuid, p_team uuid) secdef=true 6ca865684a42409c9dae9248e5300b7e
 function public.add_my_gallery_photo(p_path text) secdef=true 70680775723c6b073c40d227eb428afb
 function public.add_waiver_version(p_event uuid, p_title text, p_body text, p_kind text, p_document_path text, p_source text) secdef=true fdaa0c85b020c2b01180a2411c97d7f4
@@ -932,7 +934,7 @@ function public.fighter_is_booked(p_event uuid, p_fighter uuid, p_at timestamp w
 function public.fighter_profile(p_fighter uuid) secdef=true 3af81ff3100ce8b5e13f92d2da28bd38
 function public.fighter_schedule_conflicts(p_event uuid) secdef=true 3ce6c7882a6c10645eaafae5aae1e8eb
 function public.finalize_competition(p_competition uuid, p_multiplier_source text) secdef=true 72c5750935ad9d7b10fa4af0a816cf43
-function public.finalize_match(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer) secdef=true b53b032a3f6a89662f83a32312bbb33e
+function public.finalize_match(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer) secdef=true 44def16037b7712018d30b89b698220f
 function public.finish_competition(p_competition uuid, p_multiplier_source text) secdef=true 9d2172354280dfbf96a10ac0d675c504
 function public.grant_event_role_by_email(p_event uuid, p_email text, p_role text) secdef=true aa6ea809d86b2ba8dddc2648b21e632a
 function public.grant_organization_admin(p_org uuid, p_email text) secdef=true ca41db721214c28b4939bdd336986d89
@@ -1011,6 +1013,7 @@ function public.update_competition(p_comp uuid, p_name text, p_category text, p_
 function public.update_my_fighter_profile(p jsonb) secdef=true 7b8d9a4073e6b0fd6fa635e225969e6a
 function public.update_team_profile(p_team uuid, p jsonb) secdef=true f9cff7a70e57aecc107e3d2db25b2cbc
 function public.void_result(p_competition uuid, p_entry uuid, p_reason text) secdef=true 3b36c3d988c7b816401da157329e0028
+function public.withdraw_entry(p_entry uuid, p_reason text, p_walkovers boolean) secdef=true cc9832e8658a563eed2f1e3ad2924cde
 function public.withdraw_my_invitation(p_invitation uuid) secdef=true 66c892ec5d5c1dba3b8cf14cad831b9d
 function public.withdraw_registration(p_reg uuid) secdef=true 40db3227077b7b16bd8d9f675c1997ea
 index public.activity_events CREATE INDEX ON public.activity_events USING btree (at DESC, name)
