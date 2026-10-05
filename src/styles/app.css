@@ -1029,3 +1029,110 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .sk-after{display:grid;gap:10px}
 .sk-after .btn{display:grid;justify-items:center;gap:2px;text-align:center;height:auto;padding:12px 14px}
 .sk-after-k{font:600 11px/1 var(--f-data);letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+
+/* ---------------------------------------------------------------- Pack 09D: Quick Setup */
+.qs-legend{font-weight:700;font-size:17px;padding:0}
+.qs-h{font-size:22px;margin:0}
+.qs-fields{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.qs-fields > span{display:grid;gap:2px}
+.qs-stepper{display:flex;align-items:center;gap:6px}
+.qs-stepper .btn{min-width:48px;min-height:48px;font-size:22px;padding:0}
+.qs-stepper output{min-width:36px;text-align:center;font:700 22px/1 var(--f-data)}
+.qs-cats{display:grid;gap:10px}
+.qs-bulk{display:flex;gap:8px;flex-wrap:wrap}
+.qs-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
+.qs-cat{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:6px;background:var(--surface)}
+.qs-cat.on{border-color:var(--steel);background:var(--steel-soft)}
+.qs-check{display:flex;gap:12px;align-items:center;min-height:44px;cursor:pointer}
+.qs-check input{width:22px;height:22px;flex:none}
+.qs-check > span{display:grid;gap:0}
+.qs-divs{display:flex;gap:6px;flex-wrap:wrap;padding-left:34px}
+.qs-div{min-height:40px;min-width:72px;border-radius:999px;border:1px solid var(--line);background:var(--raised);color:var(--muted);font:inherit;font-weight:600;cursor:pointer;padding:0 14px}
+.qs-div.on{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.qs-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.qs-go{min-height:52px;padding:0 28px;font-size:17px}
+.qs-review{list-style:none;margin:0;padding:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.qs-review li{display:grid;gap:2px}
+.qs-ok{font-weight:600;margin:0}
+
+/* ---------------------------------------------------------------- Pack 09D: Event home */
+.eh-created{display:grid;gap:4px;border-left:4px solid var(--win,#2f7a4d)}
+.eh-created .linklike{justify-self:start}
+.eh-steps{list-style:none;margin:0;padding:2px 0 6px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+.eh-step{display:flex;align-items:center;gap:6px;white-space:nowrap;font:600 13px/1.2 var(--f-body);color:var(--faint);padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);flex:none}
+.eh-step.done{color:var(--muted)}
+.eh-step.current{color:var(--ground);background:var(--ink);border-color:var(--ink)}
+.eh-dot{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;display:inline-grid;place-items:center;font-size:10px;line-height:1}
+.eh-step.current .eh-dot{background:var(--brass);border-color:var(--brass)}
+.eh-next{display:grid;gap:12px;border-top:4px solid var(--brass)}
+.eh-next h2{margin:0;font-size:clamp(20px,5vw,26px);line-height:1.2}
+.eh-primary{min-height:60px;display:grid;justify-items:start;gap:2px;text-align:left;padding:10px 22px;font-size:18px;height:auto;width:100%;max-width:480px}
+.eh-primary small{font-size:13px;font-weight:500;opacity:.8}
+.eh-secondary{display:flex;gap:8px;flex-wrap:wrap}
+.eh-cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}
+.eh-card{display:grid;gap:2px;color:inherit;text-decoration:none;min-height:88px}
+.eh-card b{font:700 26px/1.1 var(--f-data)}
+.eh-card:hover{border-color:var(--steel)}
+.eh-more summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.eh-more-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
+.eh-more-list a{display:grid;gap:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;min-height:44px;background:var(--surface)}
+.eh-more-list a:hover{border-color:var(--steel)}
+.mg-more{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mg-more-panel{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr))}
+.mg-more-panel a{min-height:44px;display:flex;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;background:var(--surface);font-weight:600}
+.mg-more-panel a[aria-current="page"]{border-color:var(--ink);background:var(--ink);color:var(--ground)}
+
+/* ---------------------------------------------------------------- Pack 09D: Review wins & losses */
+.rw-lede{margin:0;font-weight:600}
+.rw-block{display:grid;gap:8px;border-left:4px solid var(--live);padding:8px 12px;background:var(--surface);border-radius:8px}
+.rw-block ul{margin:0;padding-left:18px}
+.rw-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rw-row{border:1px solid var(--line);border-radius:12px;background:var(--surface);display:grid;gap:4px;padding:4px 8px 8px}
+.rw-row.gold{border-color:var(--brass);background:var(--brass-soft)}
+.rw-row.shared .rw-pts{color:var(--live)}
+.rw-main{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;width:100%;min-height:56px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer;padding:4px 0}
+.rw-place{font:700 22px/1 var(--f-data);text-align:center}
+.rw-who{display:grid;gap:0;min-width:0}
+.rw-who b{overflow-wrap:anywhere}
+.rw-pts{display:grid;justify-items:end;font-weight:700}
+.rw-pts small{font-weight:500;color:var(--muted)}
+.rw-cmp{display:inline-flex;gap:8px;align-items:center;min-height:40px;padding-left:46px;font-size:14px;color:var(--muted);cursor:pointer}
+.rw-cmp input{width:20px;height:20px}
+.rw-bouts{list-style:none;margin:0;padding:0 0 0 46px;display:grid;gap:4px}
+.rw-bout{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;border-left:3px solid var(--line);padding-left:8px}
+.rw-bout.won{border-color:var(--win,#2f7a4d)}
+.rw-bout.lost{border-color:var(--live)}
+.rw-compare{display:grid;gap:8px}
+.rw-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rw-two > div{display:grid;gap:2px}
+.rw-actions{display:grid;gap:8px}
+
+/* ---------------------------------------------------------------- Pack 09D: Build tournament */
+.bt-totals{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.bt-totals li{display:grid;font-size:14px;color:var(--muted)}
+.bt-totals b{font:700 28px/1.1 var(--f-data);color:var(--ink)}
+.bt-rest{margin:0}
+.bt-warn{margin:0;border-left:4px solid var(--brass);padding:6px 10px;background:var(--brass-soft);border-radius:6px}
+.bt-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.bt-list > li{display:grid;gap:4px}
+.bt-row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.bt-list summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--steel)}
+.bt-change{display:grid;gap:10px}
+.bt-lanes{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.bt-lanes ol{margin:6px 0 0;padding-left:22px;display:grid;gap:4px}
+.bt-lanes li.short{color:var(--live)}
+
+/* ---------------------------------------------------------------- Pack 09D: next recommended fight */
+.ed-next{display:grid;gap:8px;border:2px solid var(--win);background:var(--win-soft)}
+.ed-next.short{border-color:var(--live);background:var(--live-soft)}
+.ed-next-vs{margin:0;font-size:clamp(20px,5.5vw,26px);line-height:1.2;overflow-wrap:anywhere}
+.ed-next-vs span{color:var(--muted);font-size:.7em;padding:0 4px}
+.ed-next-why{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.ed-next-why .ok::before{content:'✓ ';color:var(--win)}
+.ed-next-why .warn{color:var(--live);font-weight:600}
+.ed-short{margin:0;padding:8px 10px;border-radius:8px;background:var(--raised);border-left:4px solid var(--live)}
+.ed-choose{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ed-choose li{display:grid;gap:4px;padding:10px 12px}
+.ed-choose .warn{color:var(--live)}
+.ed-held{margin:0;border-left:4px solid var(--brass)}
+.ed-manual{margin:0}

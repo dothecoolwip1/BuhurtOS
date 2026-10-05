@@ -72,9 +72,29 @@ describe('fetchCompetitionMatchesOrdered', () => {
     vi.doMock('../lib/supabase', () => ({ supabase: { from: () => ({ select: (cols: string) => chain(cols) }) } }));
     const mod = await import('./matches');
     const list = await mod.fetchCompetitionMatchesOrdered('c');
-    expect(calls).toEqual(['with order', 'without order']);
+    expect(calls).toEqual(['with order', 'with order', 'without order']);   // Pack 09D columns, then Pack 09A's, then the plain list
     expect(list).toHaveLength(1);
     expect(list[0].field).toBe('Field 1');
     expect(list[0].queueOrder).toBeNull();
+  });
+
+  it('keeps the manual order when only the Pack 09D plan columns are missing', async () => {
+    vi.resetModules();
+    const calls: string[] = [];
+    const row = { id: '1', competition_id: 'c', stage: 'pool', round_label: 'Round 1', position: 0, pool: null, field: null, scheduled_at: null, queue_state: 'scheduled', entry_a: 'a', entry_b: 'b',
+      next_match_id: null, next_slot: null, result: null, winner_entry_id: null, score_a: null, score_b: null, detail: null, version: 0, finalized_at: null, queue_order: 2, a: null, b: null };
+    const chain = (cols: string) => {
+      const res = cols.includes('plan_order') ? { data: null, error: { code: '42703', message: 'column matches.plan_order does not exist' } } : { data: [row], error: null };
+      calls.push(cols.includes('plan_order') ? 'plan' : cols.includes('queue_order') ? 'manual' : 'plain');
+      const q: Record<string, unknown> = { eq: () => q, order: () => q, then: (ok: (v: unknown) => unknown) => Promise.resolve(res).then(ok) };
+      return q;
+    };
+    vi.doMock('../lib/supabase', () => ({ supabase: { from: () => ({ select: (cols: string) => chain(cols) }) } }));
+    const mod = await import('./matches');
+    const list = await mod.fetchCompetitionMatchesOrdered('c');
+    expect(calls).toEqual(['plan', 'manual']);
+    expect(list[0].queueOrder).toBe(2);
+    expect(list[0].planOrder).toBeNull();
+    expect(list[0].planHold).toBe(false);
   });
 });

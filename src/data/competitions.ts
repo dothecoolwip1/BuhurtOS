@@ -2,9 +2,9 @@ import { supabase } from '../lib/supabase';
 import type { LeagueKey } from './api';
 
 /** A category from the reference table (what competitions are made of): its league decides the scoring board and the entry kind. */
-export interface RefCategory { code: string; league: LeagueKey; name: string; sort: number }
+export interface RefCategory { code: string; league: LeagueKey; name: string; sort: number; /** The rules document the row cites (Quick Setup names the ruleset from it). */ source?: string | null }
 export async function fetchRefCategories(): Promise<RefCategory[]> {
-  const { data, error } = await supabase.from('ref_categories').select('code,league,name,sort').order('sort');
+  const { data, error } = await supabase.from('ref_categories').select('code,league,name,sort,source').order('sort');
   if (error) throw error;
   return data as RefCategory[];
 }

@@ -19,6 +19,8 @@ export interface LiveEvent {
   organizationId: string | null; seasonId: string | null;
   /** Pack 09C: set once the organizer closed the event (every competition official); when it was last reopened. */
   closedAt?: string | null; reopenedAt?: string | null;
+  /** Pack 09D lifecycle: archived (hidden from current browsing, still counts), excluded from official statistics (with the reason), number of fields. */
+  archivedAt?: string | null; statsExcludedAt?: string | null; statsExcludedReason?: string | null; fieldCount?: number;
 }
 export interface MyEventContext {
   /** Roles on this event from event_staff, plus 'owner' for the platform owner. */
@@ -27,7 +29,10 @@ export interface MyEventContext {
   pendingRegistrations: number | null;
 }
 
-const EVENT_COLUMNS = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id,closed_at,reopened_at';
+const EVENT_COLUMNS_09C = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id,closed_at,reopened_at';
+/** Pack 09D adds the lifecycle and the number of fields. A database without them (42703) is asked again with the older list. */
+const EVENT_COLUMNS = `${EVENT_COLUMNS_09C},archived_at,stats_excluded_at,stats_excluded_reason,field_count`;
+const missingColumn = (e: unknown) => (e as { code?: string } | null)?.code === '42703';
 type EventRow = {
   id: string; slug: string; name: string; description: string; event_type: string; status: LiveEvent['status'];
   venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null; latitude: number | null; longitude: number | null; starts_on: string; ends_on: string;
@@ -35,6 +40,7 @@ type EventRow = {
   fee_cents: number; fee_province: string | null; fee_note: string | null; registration_opens_at: string | null; registration_closes_at: string | null;
   registration_mode: LiveEvent['registrationMode']; external_url: string | null; time_note: string | null; volunteer_info: string | null;
   closed_at?: string | null; reopened_at?: string | null;
+  archived_at?: string | null; stats_excluded_at?: string | null; stats_excluded_reason?: string | null; field_count?: number | null;
 };
 type Ref = { league: LeagueKey } | { league: LeagueKey }[] | null;
 const leagueOf = (r: Ref): LeagueKey => (Array.isArray(r) ? r[0]?.league : r?.league) ?? 'duels';
@@ -42,6 +48,7 @@ const leagueOf = (r: Ref): LeagueKey => (Array.isArray(r) ? r[0]?.league : r?.le
 const toEvent = (r: EventRow, leagues: LeagueKey[] = [], competitionCount = 0): LiveEvent => ({
   id: r.id, slug: r.slug, name: r.name, description: r.description, eventType: r.event_type, status: r.status,
   closedAt: r.closed_at ?? null, reopenedAt: r.reopened_at ?? null,
+  archivedAt: r.archived_at ?? null, statsExcludedAt: r.stats_excluded_at ?? null, statsExcludedReason: r.stats_excluded_reason ?? null, fieldCount: r.field_count ?? 1,
   venue: r.venue, address: r.address, city: r.city, region: r.region, country: r.country ?? null, latitude: r.latitude ?? null, longitude: r.longitude ?? null, startsOn: r.starts_on, endsOn: r.ends_on,
   competitionCount, organizationId: r.organization_id ?? null, seasonId: r.season_id ?? null,
   feeCents: r.fee_cents, feeProvince: r.fee_province, feeNote: r.fee_note,
@@ -51,14 +58,18 @@ const toEvent = (r: EventRow, leagues: LeagueKey[] = [], competitionCount = 0): 
 
 /** Events the caller may see. The database decides: published events for everyone, drafts only for their organizers. */
 export async function fetchEvents(): Promise<LiveEvent[]> {
-  const { data, error } = await supabase.from('events').select(`${EVENT_COLUMNS},competitions(ref_categories(league))`).order('starts_on');
+  let res: { data: unknown; error: unknown } = await supabase.from('events').select(`${EVENT_COLUMNS},competitions(ref_categories(league))`).order('starts_on');
+  if (res.error && missingColumn(res.error)) res = await supabase.from('events').select(`${EVENT_COLUMNS_09C},competitions(ref_categories(league))`).order('starts_on');
+  const { data, error } = res;
   if (error) throw error;
   type Row = EventRow & { competitions: { ref_categories: Ref }[] };
   return (data as unknown as Row[]).map(r => toEvent(r, [...new Set((r.competitions ?? []).map(c => leagueOf(c.ref_categories)))], (r.competitions ?? []).length));
 }
 
 export async function fetchEvent(slug: string): Promise<{ event: LiveEvent; competitions: LiveCompetition[] } | null> {
-  const { data, error } = await supabase.from('events').select(EVENT_COLUMNS).eq('slug', slug).maybeSingle();
+  let res: { data: unknown; error: unknown } = await supabase.from('events').select(EVENT_COLUMNS).eq('slug', slug).maybeSingle();
+  if (res.error && missingColumn(res.error)) res = await supabase.from('events').select(EVENT_COLUMNS_09C).eq('slug', slug).maybeSingle();
+  const { data, error } = res;
   if (error) throw error;
   if (!data) return null;
   const row = data as unknown as EventRow;

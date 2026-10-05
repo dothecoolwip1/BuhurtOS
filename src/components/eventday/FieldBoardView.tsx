@@ -67,7 +67,7 @@ const SHOWN = 5;
  * One field: what is fighting, then who is next, in the order a person at the table needs it. The match fighting now dominates; everything else
  * is smaller. No database words: "now", "on deck", "in the hole", "up next".
  */
-export function FieldBoardView({ board, plan, c }: { board: FieldBoard; plan: AdvancePlan; c: Ctx }) {
+export function FieldBoardView({ board, plan, c, next }: { board: FieldBoard; plan: AdvancePlan; c: Ctx; /** Pack 09D: the recommended next fight, shown under the fight in progress (or instead of the idle card). */ next?: React.ReactNode }) {
   const [all, setAll] = useState(false);
   const { actions } = c;
   const upcoming = all ? board.upcoming : board.upcoming.slice(0, SHOWN);
@@ -92,7 +92,8 @@ export function FieldBoardView({ board, plan, c }: { board: FieldBoard; plan: Ad
       )) : (
         <article className="ed-now ed-idle panel" aria-label={`Nothing active on ${board.name}`}>
           {board.state === 'finished' && <><h3>All fights on {board.name} are done</h3><p className="muted">Nothing is left to run here.</p></>}
-          {board.state === 'ready' && (<>
+          {board.state === 'ready' && next}
+          {board.state === 'ready' && !next && (<>
             <h3>No fight is active on {board.name}.</h3>
             <p className="muted">The next ready fight is {names(nextToStart(board, plan)).a} against {names(nextToStart(board, plan)).b}.</p>
             <button type="button" className="btn btn-ink fq-big" disabled={actions.busy || !canStart} onClick={() => actions.startNext(board)}>Start next ready match</button>
@@ -105,6 +106,7 @@ export function FieldBoardView({ board, plan, c }: { board: FieldBoard; plan: Ad
         </article>
       )}
 
+      {board.now.length > 0 && next}
       {(board.onDeck.length > 0 || board.inTheHole.length > 0) && (
         <ul className="ed-slots" aria-label={`Next on ${board.name}`}>
           {board.onDeck.map(m => <SlotCard key={m.id} m={m} label="On deck" tone="brass" c={c} />)}

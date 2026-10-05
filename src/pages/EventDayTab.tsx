@@ -6,7 +6,7 @@ import { Seg } from '../components/ui';
 import type { LiveCompetition, LiveEvent } from '../data/api';
 import { fetchScheduleConflicts } from '../data/conflicts';
 import { advanceFieldQueue, fetchEventRoster, fetchRegistrationFlags, moveMatchInQueue, type QueueMove } from '../data/eventDay';
-import { fetchResultConflicts, setQueue } from '../data/matches';
+import { fetchResultConflicts, setQueue, type CompetitionMatch } from '../data/matches';
 import { DEFAULT_TIME_ZONE, fetchEventTimeZone } from '../data/runSchedule';
 import {
   attentionItems, buildFieldBoards, checkinGaps, competitionProgress, competitionSorts, matchTitle, planAdvance, withdrawnEntryIds,
@@ -17,6 +17,12 @@ import { useAsync } from '../lib/useAsync';
 import { useEventDayData } from '../lib/useEventDayData';
 import { fetchFinalizePreflight } from '../data/finalization';
 import { RECORD_LABEL, blockerLine, recordState, type RecordState } from '../lib/finalization';
+import { NextFight } from '../components/eventday/NextFight';
+import { ReviewSheet } from '../components/ReviewSheet';
+import { clearManualQueue, saveQueuePlan } from '../data/eventDay';
+import { heldMatches, planEvent, planIsSaved } from '../lib/eventPlan';
+
+const dayIn = (tz: string) => new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 
 type Notice = { kind: 'ok' | 'error'; text: string } | null;
 
@@ -52,6 +58,48 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
   const allOfficial = competitions.length > 0 && competitions.every(c => records.get(c.id) === 'official' || records.get(c.id) === 'no_draw') && competitions.some(c => records.get(c.id) === 'official');
   const names = useMemo(() => new Map(competitions.map(c => [c.id, c.name])), [competitions]);
   const gaps = useMemo(() => checkinGaps(boards, live.entries, roster.data ?? [], regs.data ?? []), [boards, live.entries, roster.data, regs.data]);
+  // ---- Pack 09D: the event-wide fight plan (rest across every field and competition), recomputed on every change and saved when it differs
+  const today = dayIn(timeZone);
+  const sides = useMemo(() => {
+    const m = new Map<string, string[]>();
+    for (const e of live.entries) m.set(e.id, e.fighterId ? [e.fighterId] : (roster.data ?? []).filter(r => r.entryId === e.id).map(r => r.fighterId));
+    return m;
+  }, [live.entries, roster.data]);
+  const people = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const e of live.entries) if (e.fighterId) m.set(e.fighterId, e.name);
+    for (const r of roster.data ?? []) m.set(r.fighterId, r.displayName);
+    return m;
+  }, [live.entries, roster.data]);
+  const plan = useMemo(() => planEvent({ matches: live.matches, entries: live.entries, roster: roster.data ?? [], registrations: regs.data ?? [], sorts, withdrawn, today, fieldCount: event.fieldCount }),
+    [live.matches, live.entries, roster.data, regs.data, sorts, withdrawn, today, event.fieldCount]);
+  const byMatch = useMemo(() => new Map(live.matches.map(m => [m.id, m])), [live.matches]);
+  const saving = useRef<string | null>(null);
+  const [planOff, setPlanOff] = useState(false);
+  useEffect(() => {
+    if (planOff || live.loading || roster.loading || !roster.data || planIsSaved(plan, live.matches)) return;
+    const signature = JSON.stringify([plan.upcoming, heldMatches(plan)]);
+    if (saving.current === signature) return;
+    const t = window.setTimeout(() => {
+      if (busyRef.current) return;
+      saving.current = signature;
+      saveQueuePlan(event.id, plan.upcoming, heldMatches(plan)).then(() => live.refresh()).catch(e => {
+        // The plan is a convenience: without the database update (PGRST202) or the right (42501) the queue keeps its previous order.
+        const code = (e as { code?: string } | null)?.code;
+        if (code === 'PGRST202' || code === '42501') setPlanOff(true);
+        saving.current = null;
+      });
+    }, 1200);
+    return () => window.clearTimeout(t);
+  }, [plan, live.matches, live.loading, roster.loading, roster.data, planOff, event.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const notReady = useMemo(() => {
+    const m = new Map<string, string[]>();
+    for (const g of checkinGaps(boards, live.entries, roster.data ?? [], regs.data ?? [], 6)) m.set(g.matchId, [...(m.get(g.matchId) ?? []), g.name]);
+    return m;
+  }, [boards, live.entries, roster.data, regs.data]);
+  const held = plan.waiting.filter(w => w.code === 'unavailable');
+  const [reviewing, setReviewing] = useState<string | null>(null);
+
   const attention = useMemo(() => attentionItems({
     boards, progress, clashes: clashes.data ?? [], gaps, resultConflicts: reviews.data?.length ?? 0, withdrawn, competitionNames: names, timeZone, now: new Date()
   }), [boards, progress, clashes.data, gaps, reviews.data, withdrawn, names, timeZone, tick]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -91,6 +139,28 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
       void run(async () => { await setQueue(m.id, 'scheduled', null); return 'Sent back to the line.'; });
     }
   };
+
+  const nextActions = {
+    busy,
+    run: (m: CompetitionMatch) => void run(async () => {
+      await setQueue(m.id, 'active', null);
+      await advanceFieldQueue(event.id, m.field, false).catch(() => undefined);
+      return `Started: ${matchTitle(m)}.`;
+    }),
+    choose: (m: CompetitionMatch, startNow: boolean) => void run(async () => {
+      if (startNow) {
+        await setQueue(m.id, 'active', null);
+        await advanceFieldQueue(event.id, m.field, false).catch(() => undefined);
+        return `Started: ${matchTitle(m)}.`;
+      }
+      const r = await moveMatchInQueue(m.id, 'first');
+      return r.changed ? `${matchTitle(m)} is next.` : 'It is already next.';
+    })
+  };
+  const replanField = (b: FieldBoard) => void run(async () => {
+    const r = await clearManualQueue(event.id, b.name);
+    return r.changed > 0 ? `BuhurtOS plans ${b.name} again.` : undefined;
+  });
 
   // ---- which field is showing on a phone (wide screens show them all)
   const [picked, setPicked] = useState<string | null>(null);
@@ -135,6 +205,9 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
         </div>
       )}
 
+      {held.length > 0 && (
+        <p className="panel info ed-held" role="status"><b>{held.length} fight{held.length === 1 ? ' is' : 's are'} held back:</b> someone in {held.length === 1 ? 'it' : 'them'} registered for another day ({[...new Set(held.flatMap(w => w.fighters.map(f => people.get(f) ?? 'a fighter')))].join(', ')}). You can still call {held.length === 1 ? 'it' : 'them'} by hand from the line.</p>
+      )}
       {boards.length > 1 && (
         <div className="ed-picker">
           <Seg scroll label="Field" value={pickedKey} onChange={setPicked}
@@ -144,7 +217,12 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
       <div className="ed-fields">
         {boards.map(b => (
           <div key={b.key} className={`ed-field-wrap${b.key === pickedKey ? ' picked' : ''}`}>
-            <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, timeZone, competitionNames: names, actions }} />
+            <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, timeZone, competitionNames: names, actions }} next={<>
+              <NextFight field={b.key} label={b.name} plan={plan} matches={byMatch} fighting={b.now.length > 0} sides={sides} names={people} competitionNames={names} notReady={notReady} actions={nextActions} />
+              {b.upcoming.some(m => m.queueOrder != null) && (
+                <p className="src ed-manual">This field's line was arranged by hand, so BuhurtOS follows it. <button type="button" className="linklike" disabled={busy} onClick={() => replanField(b)}>Let BuhurtOS plan it again</button></p>
+              )}
+            </>} />
           </div>
         ))}
       </div>
@@ -152,9 +230,12 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
       <div className="ed-lower">
         <AttentionPanel items={attention} href={href} loadingNotes={[clashes.error != null && 'double-bookings', regs.error != null && 'check-in', reviews.error != null && 'results needing review'].filter((x): x is string => !!x)}
           reviewCount={reviews.data?.length ?? 0} eventId={event.id} onReviewed={() => { void live.refresh(); setTick(k => k + 1); }} />
-        <ProgressPanel progress={progress} records={records} checks={checks.data ?? new Map()} runHref={`/events/${slug}/manage?tab=run`} resultsHref={`/events/${slug}/manage?tab=finalize`} closed={!!event.closedAt} allOfficial={allOfficial} />
+        <ProgressPanel progress={progress} records={records} checks={checks.data ?? new Map()} runHref={`/events/${slug}/manage?tab=run`} resultsHref={`/events/${slug}/manage?tab=finalize`} buildHref={`/events/${slug}/manage?tab=build`} closed={!!event.closedAt} allOfficial={allOfficial} onReview={setReviewing} />
       </div>
 
+      {reviewing && competitions.some(c => c.id === reviewing) && (
+        <ReviewSheet event={event} competition={competitions.find(c => c.id === reviewing)!} onClose={() => setReviewing(null)} onChanged={() => { void live.refresh(); setTick(k => k + 1); }} />
+      )}
       <nav className="panel info ed-links" aria-label="More event tools">
         <b>More tools</b>
         <div>
@@ -197,16 +278,21 @@ function AttentionPanel({ items, href, loadingNotes, reviewCount, eventId, onRev
   );
 }
 
-function ProgressPanel({ progress, records, checks, runHref, resultsHref, closed, allOfficial }: {
-  progress: CompetitionProgress[]; records: ReadonlyMap<string, RecordState>; checks: ReadonlyMap<string, string | null>; runHref: string; resultsHref: string; closed: boolean; allOfficial: boolean;
+function ProgressPanel({ progress, records, checks, runHref, resultsHref, buildHref, closed, allOfficial, onReview }: {
+  progress: CompetitionProgress[]; records: ReadonlyMap<string, RecordState>; checks: ReadonlyMap<string, string | null>; runHref: string; resultsHref: string; buildHref: string; closed: boolean; allOfficial: boolean;
+  onReview: (competitionId: string) => void;
 }) {
+  // Pack 09D: an offered competition with no draw is one line, not a card each (nobody entered, or it is waiting to be built).
+  const unbuilt = closed ? [] : progress.filter(p => p.total === 0);
+  const shown = closed ? progress : progress.filter(p => p.total > 0);
   return (
     <section className="panel info ed-progress" aria-labelledby="ed-prog-h" style={{ display: 'grid', gap: 10 }}>
       <h2 id="ed-prog-h" className="ed-h">Competition progress</h2>
       {closed && <p className="ed-calm" role="status"><b>This event is closed.</b> Its results are the permanent record. <Link to={resultsHref}>See the results and closeout</Link></p>}
       {!closed && allOfficial && <p role="status" style={{ margin: 0 }}><b>Every competition is official.</b> <Link className="btn btn-ink btn-sm" to={`${resultsHref}#closeout`}>Close the event</Link></p>}
+      {unbuilt.length > 0 && <p className="src">Not built: {unbuilt.map(p => p.name).join(', ')}. <Link to={buildHref}>Build tournament</Link></p>}
       <ul className="ed-prog-list">
-        {progress.map(p => {
+        {shown.map(p => {
           const record = records.get(p.id) ?? 'running';
           const blocker = record === 'ready' ? checks.get(p.id) ?? null : null;
           const phase = record === 'official' ? 'official' : record === 'ready' ? (blocker ? 'blocked' : 'ready') : record === 'reopened' ? 'reopened' : p.phase;
@@ -219,8 +305,8 @@ function ProgressPanel({ progress, records, checks, runHref, resultsHref, closed
               )}
               <span className="src">{p.total > 0 ? `${p.final} / ${p.total} fights complete · ${p.percent}%` : closed ? 'Never ran: no draw was built, so it was closed as not held.' : 'Build a draw in the Run tools to see its fights here.'}{blocker ? ` · ${blocker}` : ''}</span>
               {p.needsBracket && !closed && <Link className="btn btn-line btn-sm" to={runHref}>Build the bracket</Link>}
-              {record === 'ready' && !blocker && <Link className="btn btn-ink btn-sm" to={`${resultsHref}&competition=${p.id}`}>Review results</Link>}
-              {record === 'ready' && blocker && <Link className="btn btn-line btn-sm" to={`${resultsHref}&competition=${p.id}`}>Resolve</Link>}
+              {record === 'ready' && !blocker && <button type="button" className="btn btn-ink btn-sm" onClick={() => onReview(p.id)}>Review wins &amp; losses</button>}
+              {record === 'ready' && blocker && <button type="button" className="btn btn-line btn-sm" onClick={() => onReview(p.id)}>Review wins &amp; losses</button>}
               {record === 'official' && <Link className="btn btn-line btn-sm" to={`${resultsHref}&competition=${p.id}`}>Official results</Link>}
             </li>
           );

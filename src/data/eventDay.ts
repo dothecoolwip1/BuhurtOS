@@ -65,3 +65,13 @@ export async function clearManualQueue(eventId: string, field: string): Promise<
   const d = (await rpc('clear_manual_queue', { p_event: eventId, p_field: field })) as { changed?: number } | null;
   return { changed: d?.changed ?? 0 };
 }
+
+/**
+ * Put every match of one competition on a field (Build Tournament). Organizers only: row level security and the column grant on matches.field.
+ * Field 1 is the default and is stored as empty, never written as a name (Pack 09A).
+ */
+export async function setCompetitionField(competitionId: string, field: string): Promise<void> {
+  const value = field.trim().toLowerCase() === 'field 1' ? null : field.trim();
+  const { error } = await supabase.from('matches').update({ field: value }).eq('competition_id', competitionId).neq('queue_state', 'final');
+  if (error) throw error;
+}
