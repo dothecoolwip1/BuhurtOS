@@ -1063,7 +1063,8 @@ try {
     const anyReg = sql(`select id from public.registrations where event_id = '${EV}' limit 1`);
     await refuse(null, 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true }, '[permissions] anonymous cannot run a field');
     await refuse('stranger', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true }, '[permissions] a signed-in stranger cannot run a field');
-    await refuse('scorer1', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true }, '[permissions] a scorekeeper cannot run a field');
+    const scorerField = await rpc('scorer1', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true });
+    check('[permissions] a scorekeeper can run their event field but cannot use organizer-only tools', scorerField.status === 200, `${scorerField.status} ${JSON.stringify(scorerField.body)}`);
     await refuse('scorer1', 'decide_registration', { p_reg: anyReg, p_status: 'declined' }, '[permissions] a scorekeeper cannot decide registrations');
     await refuse('scorer1', 'set_registration_check', { p_reg: anyReg, p_check: 'checked_in', p_value: false }, '[permissions] a scorekeeper cannot check people in');
     await refuse('scorer1', 'enter_official_result', { p_match: anyMatch, p_result: 'a', p_score_a: 9, p_score_b: 0, p_detail: {}, p_note: 'nope' }, '[permissions] a scorekeeper cannot enter a paper result');
@@ -1072,7 +1073,8 @@ try {
     await refuse('marshal', 'close_event', { p_event: EV, p_note: null }, '[permissions] the head marshal cannot close the event');
     await refuse('stranger', 'set_entry_roster', { p_entry: teamEntry(1, 'Men 5v5'), p_fighters: [] }, '[permissions] a stranger cannot change a roster');
     await refuse('organizer', 'exclude_event_from_stats', { p_event: EV, p_reason: 'trying' }, '[permissions] an organizer cannot change statistics eligibility');
-    await refuse('stranger', 'my_event_entries', { p_event: EV }, '[permissions] my_event_entries as anonymous is refused').catch(() => undefined);
+    const strangerEntries = await rpc('stranger', 'my_event_entries', { p_event: EV });
+    check('[permissions] a signed-in bystander gets no entries from my_event_entries', strangerEntries.status === 200 && Array.isArray(strangerEntries.body) && strangerEntries.body.length === 0, `${strangerEntries.status} ${JSON.stringify(strangerEntries.body)}`);
     const anonEntries = await rpc(null, 'my_event_entries', { p_event: EV });
     check('[permissions] anonymous gets nothing from my_event_entries', anonEntries.status >= 400 || (Array.isArray(anonEntries.body) && anonEntries.body.length === 0));
     const priv = await rest('scorer1', `registration_private?select=*&limit=1`);
@@ -1113,7 +1115,7 @@ try {
       for (const kind of ['phone', 'tablet']) {
         const w = kind === 'phone' ? '390' : '768';
         const { ctx: c, page: p } = await open(kind, 'organizer');
-        for (const [tab, sel, nm] of [['checkin', 'article[aria-label]', 'check-in'], ['review', 'article[aria-label]', 'review'], ['eventday', 'section.eventday', 'event day'], ['run', 'section[aria-label="Men Longsword"]', 'run'], ['finalize', 'section[aria-label="Results and closeout"]', 'results']]) {
+        for (const [tab, sel, nm] of [['checkin', 'article[aria-label]', 'check-in'], ['review', '[aria-label="Show"]', 'review'], ['eventday', 'section.eventday', 'event day'], ['run', 'section[aria-label="Men Longsword"]', 'run'], ['finalize', 'section[aria-label="Results and closeout"]', 'results']]) {
           const t0 = Date.now();
           await p.goto(BASE + `/events/${SLUG}/manage?tab=${tab}`); await p.locator(sel).first().waitFor({ timeout: 40000 }); await sleep(1500);
           metrics[`${tab}_${w}_ms`] = Date.now() - t0;
