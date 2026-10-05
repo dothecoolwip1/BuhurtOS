@@ -455,7 +455,7 @@ Database gate (`run_all.sh`, includes `team_discipline_rankings_gate.sql`, 53 ch
 - Refreshing the lyst screen returns to the open fight (`?open=`); the classic board keeps its old behaviour (refresh returns to the queue).
 - Nothing was built for Pack 14 (broadcast overlays) beyond the clean public state view `lyst_public_state`.
 
-## Pack 14: Broadcast, livestream and spectator graphics (2026-10-08) — IMPLEMENTED ON BRANCH, NOT MERGED, NOT DEPLOYED
+## Pack 14: Broadcast, livestream and spectator graphics (2026-10-08) — MERGED AND DEPLOYED; PRODUCTION BROWSER VERIFICATION NOT YET DONE
 
 Branch `pack14-broadcast` (from `main` 12f2e66). Architecture and decisions: `docs/claude-packs/PACK_14_BROADCAST.md`. OBS setup and the real-device checklist: `docs/runbooks/PACK14_OBS_SETUP.md`. Constraints from the owner: do not touch Pack 13's deployment workflow; do not deploy Pack 14; no PR and no hosted-database change unless asked. Before any later merge: confirm Pack 13's production deploy state and reconcile with the latest `main`.
 
@@ -471,8 +471,11 @@ Branch `pack14-broadcast` (from `main` 12f2e66). Architecture and decisions: `do
 | Automated tests | typecheck clean; `npx vitest run` 924 passed (25 new broadcast tests); production build passes; `supabase/tests/run_all.sh` DATABASE GATE PASSED (includes `pack14_gate.sql`, 69 checks, and the schema fingerprint) |
 | Browser verified (real Chromium, real Postgres + PostgREST, local stack) | `scripts/e2e/pack14-live.sh`: 63/63 checks (1920x1080 overlay through every scene, score/clock/cards/finalization/Now-Next, refresh and offline recovery, layouts/backgrounds, public page, draft boundary, anonymous/stranger/scorekeeper write attempts refused, admin on a 390x844 phone incl. no sideways scroll and 40 px controls, sponsor add/hide/remove with logo upload, copy link) |
 | Regression browser suites (CI set) | field-pack03, sw-update, pack07-ux, pack08-entrants, pack12-app all exit 0 on this branch |
-| Merged to main | no |
-| Deployed / production verified | no / no |
+| PR | #34 (`pack14-broadcast` into `main`), required CI run #104 on head `685632f`: Typecheck/unit/build PASS, Database gate PASS, Browser tests PASS, Release policy PASS (Vercel preview ready) |
+| Merged to main | **YES**: merge commit `ed9fb3b` (before merging, `main` was still `12f2e66`, the Pack 13 merge whose production run had completed successfully; the branch was 0 behind) |
+| Main production run (`CI and Deploy` #105 on `ed9fb3b`) | Typecheck/unit/build PASS, Database gate PASS, Browser tests PASS, Release policy PASS (the release policy was not bypassed or touched) |
+| GitHub Pages deployment | **PASS**: job `Deploy GitHub Pages` (`actions/deploy-pages@v4`) completed successfully at 2026-10-05 22:00 UTC |
+| Production verified (live site in a browser) | **NO**. The execution environment's network policy denies the production hosts (`github.io` and `supabase.co` answer 403 to CONNECT), so the live site could not be opened from here. Deployment success is NOT claimed as production verification. To do: BuhurtOS loads; an existing user workflow loads; Manage > Broadcast for an organizer; a published event's `/broadcast/<slug>/<field>` loads read-only and shows fighters/score; the public event page livestream block; a draft event is not exposed; refresh keeps the overlay state |
 
 Not verified on hosted (honest list): the storage DELETE policy could not be exercised by direct SQL (every role is refused a direct delete from `storage.objects` by Supabase), so only its definition was verified there and its behaviour is covered locally by `pack14_gate.sql`; a real upload through the Storage API.
 
