@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
 import { FieldPage } from './pages/FieldPage';
 import { EventRoute } from './pages/EventRoute';
@@ -35,7 +36,10 @@ import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 
 export function App() {
+  const { pathname, search } = useLocation();
+  // Last line of defence for the screens outside the site chrome (venue display, broadcast overlay, counter phone); the chrome has its own.
   return (
+    <ErrorBoundary resetKey={pathname + search} fullPage>
     <Routes>
       {/* The venue display lives outside the site chrome: no header, menus or footer on a screen beside the list. */}
       <Route path="events/:eventId/arena" element={<ArenaPage />} />
@@ -86,5 +90,6 @@ export function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
+    </ErrorBoundary>
   );
 }

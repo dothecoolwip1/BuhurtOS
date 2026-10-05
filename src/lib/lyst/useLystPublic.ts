@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchLystPublic, type LystPublic } from '../../data/lyst';
 import { supabase } from '../supabase';
 import { ServerClock } from './timer';
+import { realtimeChannel } from '../realtimeChannel';
 
 /**
  * Official lyst state for the public display (and, later, Broadcast). Public view, official data only. Polls every few seconds and is nudged by realtime; a dropped
@@ -31,7 +32,7 @@ export function useLystPublic(eventId: string | undefined, enabled: boolean) {
     const poll = window.setInterval(() => { if (!document.hidden) void refresh(); }, 3000);
     let debounce: number | undefined;
     const nudge = () => { window.clearTimeout(debounce); debounce = window.setTimeout(() => { void refresh(); }, 200); };
-    const channel = supabase.channel(`lyst-public-${eventId}`)
+    const channel = realtimeChannel(`lyst-public-${eventId}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'lyst_timer', filter: `event_id=eq.${eventId}` }, nudge)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'lyst_rounds', filter: `event_id=eq.${eventId}` }, nudge)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'match_discipline', filter: `event_id=eq.${eventId}` }, nudge)

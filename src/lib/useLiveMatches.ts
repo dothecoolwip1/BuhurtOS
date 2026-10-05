@@ -3,6 +3,7 @@ import { supabase } from './supabase';
 import { fetchCompetitionMatchesOrdered, fetchEntries, fetchStandings, type CompetitionEntry, type CompetitionMatch, type Standing } from '../data/matches';
 import { LiveSync, realtimeFilter, type Connection } from './liveSync';
 import { trackEvent } from './analytics';
+import { realtimeChannel } from './realtimeChannel';
 
 export interface LiveCompetitionData { matches: CompetitionMatch[]; entries: CompetitionEntry[]; standings: Standing[] }
 /**
@@ -45,7 +46,7 @@ export function useLiveMatches(competitionIds: readonly string[]): LiveState {
       const row = (payload.new && 'competition_id' in payload.new ? payload.new : payload.old) as { competition_id?: string } | undefined;
       sync.change(row?.competition_id);
     };
-    const channel = supabase.channel(`live-matches-${key}`)
+    const channel = realtimeChannel(`live-matches-${key}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'matches', ...(filter ? { filter } : {}) }, onRow)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'entries', ...(filter ? { filter } : {}) }, onRow)
       .subscribe(status => { void sync.status(status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED'); });
