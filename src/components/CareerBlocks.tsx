@@ -34,7 +34,7 @@ export function FilterBar({ filters, value, onChange }: { filters: readonly Care
   if (filters.length < 2) return null;
   const key = (f: CareerFilter) => `${f.kind}:${f.id ?? ''}`;
   return (
-    <div className="evfilter" role="region" aria-label="Show statistics for">
+    <div className="evfilter careerfilter" role="region" aria-label="Show statistics for">
       <Seg label="Show statistics for" scroll value={key(value)} options={filters.map(f => [key(f), f.label] as const)} onChange={k => { const f = filters.find(x => key(x) === k); if (f) onChange(f); }} />
     </div>
   );
@@ -75,7 +75,7 @@ export function DisciplineList({ lines, label }: { lines: readonly CareerLine[];
           </li>
         ))}
       </ul>
-      {lines.length > 4 && <button type="button" className="btn btn-line btn-sm" aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Show fewer' : `Show all ${lines.length}`}</button>}
+      {lines.length > 4 && <button type="button" className="btn btn-line" aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Show fewer' : `Show all ${lines.length}`}</button>}
     </>
   );
 }
@@ -123,7 +123,7 @@ export function TeamFightRow({ f, roster }: { f: TeamFight; roster: (entryId: st
         <b>vs {f.opponentTeamSlug ? <Link to={`/teams/${f.opponentTeamSlug}`}>{opponent}</Link> : opponent}</b> <span className="muted">{fightLine(f)}</span>
         <span className="l"><Link to={`/events/${f.eventSlug}`}>{f.eventName}</Link> · {f.categoryName}{f.roundLabel ? ` · ${f.roundLabel}` : ''} · {dateRange(f.startsOn, f.endsOn)}{f.finalPlace !== null && <> · finished <MedalChip medal={f.finalPlace <= 3 ? (['gold', 'silver', 'bronze'] as const)[f.finalPlace - 1] : null} place={f.finalPlace} /></>}</span>
         {(f.synthetic || f.statsExcluded) && <span className="l"><TestBadge synthetic={f.synthetic} />{f.statsExcluded && <Chip>Not counted in statistics</Chip>}</span>}
-        <button type="button" className="btn btn-line btn-sm" style={{ marginTop: 6 }} aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide roster' : 'Roster that day'}</button>
+        <button type="button" className="btn btn-line" style={{ marginTop: 6 }} aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide roster' : 'Roster that day'}</button>
         {open && <div style={{ marginTop: 6 }}>{roster(f.entryId)}</div>}
       </span>
     </li>

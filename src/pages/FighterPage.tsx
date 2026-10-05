@@ -34,7 +34,7 @@ export function FighterPage() {
     return (
       <section className="panel info"><h3>Fighter not found</h3>
         <p className="muted">This fighter does not exist, or the link is not right.</p>
-        <Link className="btn btn-line btn-sm" to="/fighters">All fighters</Link></section>
+        <Link className="btn btn-line" to="/fighters">All fighters</Link></section>
     );
   }
   return <Career p={profile.data} />;
@@ -231,10 +231,10 @@ function Career({ p }: { p: FighterProfile }) {
       <Block title="Teams represented" state={results} empty={() => represented.length === 0 && !p.team} id="teams" note="From the official record: the team a result or fight was earned for. BuhurtOS does not guess when a fighter joined or left a team.">
         {() => (
           <ul className="plain">
-            {p.team && <li><Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link> <Chip tone="brass">{inactive ? 'Last team' : 'Current team'}</Chip></li>}
+            {p.team && !represented.some(t => t.id === p.team?.id) && <li><Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link> <Chip tone="brass">{inactive ? 'Last team' : 'Current team'}</Chip><div className="l">No official result for {p.team.name} yet.</div></li>}
             {represented.map(t => (
               <li key={t.id}>
-                {t.slug ? <Link to={`/teams/${t.slug}`}><b>{t.name}</b></Link> : <b>{t.name}</b>} <span className="muted">{yearSpan(t.firstOn, t.lastOn)}</span>
+                {t.slug ? <Link to={`/teams/${t.slug}`}><b>{t.name}</b></Link> : <b>{t.name}</b>} {t.id === p.team?.id && <Chip tone="brass">{inactive ? 'Last team' : 'Current team'}</Chip>} <span className="muted">{yearSpan(t.firstOn, t.lastOn)}</span>
                 <div className="l">{t.events.map((e, i) => <span key={e.eventId}>{i > 0 && ' · '}<Link to={`/events/${e.eventSlug}`}>{e.eventName}</Link></span>)}</div>
               </li>
             ))}
@@ -287,7 +287,7 @@ function Collapsible({ label, children }: { label: string; children: ReactNode }
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button type="button" className="btn btn-line btn-sm" aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide' : label}</button>
+      <button type="button" className="btn btn-line" aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide' : label}</button>
       {open && children}
     </>
   );
@@ -300,7 +300,7 @@ function RecentFights({ fights, onOpponent }: { fights: readonly Fight[]; onOppo
     <>
       <FormStrip outcomes={fights.slice(0, 10).map(f => f.outcome)} label="Form, newest first" />
       <ul className="plain" aria-label="Recent fights">{shown.map(f => <FightRow key={f.matchId} f={f} onOpponent={onOpponent} />)}</ul>
-      {fights.length > 5 && <button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show last 5' : `Show last ${Math.min(50, fights.length)}`}</button>}
+      {fights.length > 5 && <button type="button" className="btn btn-line" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show last 5' : `Show last ${Math.min(50, fights.length)}`}</button>}
     </>
   );
 }
@@ -322,8 +322,8 @@ function HeadToHead({ me, list, vs, choose, fights }: { me: string; list: Return
         )}
         <ul className="plain" aria-label={`Fights against ${chosen.name}`}>{meetings.map(f => <FightRow key={f.matchId} f={f} />)}</ul>
         <div className="evfilter">
-          <Link className="btn btn-line btn-sm" to={`/fighters/${chosen.id}`}>Open {chosen.name}</Link>
-          <button type="button" className="btn btn-line btn-sm" onClick={() => choose(null)}>All opponents</button>
+          <Link className="btn btn-line" to={`/fighters/${chosen.id}`}>Open {chosen.name}</Link>
+          <button type="button" className="btn btn-line" onClick={() => choose(null)}>All opponents</button>
         </div>
       </div>
     );
@@ -341,7 +341,7 @@ function HeadToHead({ me, list, vs, choose, fights }: { me: string; list: Return
           </li>
         ))}
       </ul>
-      {list.length > 6 && <button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show fewer' : `Show all ${plural(list.length, 'opponent')}`}</button>}
+      {list.length > 6 && <button type="button" className="btn btn-line" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show fewer' : `Show all ${plural(list.length, 'opponent')}`}</button>}
     </>
   );
 }

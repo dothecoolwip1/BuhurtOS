@@ -1155,6 +1155,7 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .ed-next-body{display:grid;gap:8px;padding:0 14px 14px}
 /* ---- Pack 10: career profiles */
 .h3{font-size:24px}
+.careerfilter .seg button{min-height:40px}
 .badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .careerline{margin-top:10px;font-size:16px;overflow-wrap:anywhere}
 .careerline b{font:900 20px/1 var(--f-display)}

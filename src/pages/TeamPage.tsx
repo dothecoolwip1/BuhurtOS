@@ -36,7 +36,7 @@ export function TeamPage() {
     return (
       <section className="panel info"><h3>Team not found</h3>
         <p style={{ color: 'var(--muted)' }}>This team does not exist, or it is not public yet.</p>
-        <Link className="btn btn-line btn-sm" to="/teams">All teams</Link></section>
+        <Link className="btn btn-line" to="/teams">All teams</Link></section>
     );
   }
   return <Workspace t={team.data} />;
@@ -98,7 +98,9 @@ function Workspace({ t }: { t: DirectoryEntry }) {
   const lines = careerLines(career.data ?? [], filter, context);
   const officialFights = useMemo(() => newestFirst(official(fightsIn(fights.data ?? [], filter), context)), [fights.data, filter, context]);
   const nameOf = (fighterId: string) => (representedFighters.data ?? []).find(f => f.fighterId === fighterId)?.displayName;
-  const events = useMemo(() => teamEventHistory(fightsIn(fights.data ?? [], filter), fightsIn(representedResults.data ?? [], filter), nameOf), [fights.data, representedResults.data, filter, representedFighters.data]);
+  // a real team's history never shows a fictional event's rows (a fictional team's shows only those); excluded events stay, marked
+  const inContext = <T extends { synthetic: boolean }>(rows: T[]) => rows.filter(r => r.synthetic === (context === 'test'));
+  const events = useMemo(() => teamEventHistory(inContext(fightsIn(fights.data ?? [], filter)), inContext(fightsIn(representedResults.data ?? [], filter)), nameOf), [fights.data, representedResults.data, filter, representedFighters.data, context]);
   const totals = useMemo(() => disciplineTotals(disciplines.data ?? [], filter, filter.kind === 'season' ? (seasonById.get(filter.id ?? '')?.organizationId ?? memberOrgId) : memberOrgId), [disciplines.data, filter, seasonById, memberOrgId]);
   const highlights = useMemo(() => rankingHighlights(rankings.data ?? [], seasons.data ?? [], today), [rankings.data, seasons.data, today]);
   const bestDisciplines = useMemo(() => disciplineTotals(disciplines.data ?? [], CAREER_FILTER, memberOrgId).slice(0, 2), [disciplines.data, memberOrgId]);
@@ -329,7 +331,7 @@ function DisciplineTotal({ d, scope, teamId }: { d: TeamDisciplineRank; scope: R
       <span style={{ minWidth: 0 }}>
         <b>#{d.rank} {d.categoryName}</b>
         <span className="l">{plural(d.fighters, 'fighter')} · {plural(d.results, 'result')}</span>
-        <button type="button" className="btn btn-line btn-sm" style={{ marginTop: 6 }} aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide fighters' : 'Show fighters'}</button>
+        <button type="button" className="btn btn-line" style={{ marginTop: 6 }} aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide fighters' : 'Show fighters'}</button>
         {open && (
           <div style={{ marginTop: 6 }}>
             {lines.loading && <p className="muted">Loading…</p>}
@@ -368,7 +370,7 @@ function RepresentedFighters({ list }: { list: ReturnType<typeof representedList
           </li>
         ))}
       </ul>
-      {list.length > 8 && <button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show fewer' : `Show all ${plural(list.length, 'fighter')}`}</button>}
+      {list.length > 8 && <button type="button" className="btn btn-line" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show fewer' : `Show all ${plural(list.length, 'fighter')}`}</button>}
     </>
   );
 }
@@ -379,7 +381,7 @@ function TeamFightList({ fights }: { fights: readonly TeamFight[] }) {
   return (
     <>
       <ul className="plain" aria-label="Team fights">{shown.map(f => <TeamFightRow key={f.matchId} f={f} roster={entryId => <EntryRosterList entryId={entryId} />} />)}</ul>
-      {fights.length > 5 && <button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show last 5' : `Show last ${Math.min(100, fights.length)}`}</button>}
+      {fights.length > 5 && <button type="button" className="btn btn-line" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show last 5' : `Show last ${Math.min(100, fights.length)}`}</button>}
     </>
   );
 }
@@ -408,8 +410,8 @@ function TeamHeadToHead({ me, list, vs, choose }: { me: string; list: ReturnType
           {chosen.byCategory.map(c => <li key={`${c.category}:${c.gender}`}><b>{c.categoryName}</b>{c.gender && c.gender !== 'open' ? ` (${divisionLabel(c.gender)})` : ''} <span className="muted">{splitText(c)}</span></li>)}
         </ul>
         <div className="evfilter">
-          {chosen.slug && <Link className="btn btn-line btn-sm" to={`/teams/${chosen.slug}`}>Open {chosen.name}</Link>}
-          <button type="button" className="btn btn-line btn-sm" onClick={() => choose(null)}>All opponents</button>
+          {chosen.slug && <Link className="btn btn-line" to={`/teams/${chosen.slug}`}>Open {chosen.name}</Link>}
+          <button type="button" className="btn btn-line" onClick={() => choose(null)}>All opponents</button>
         </div>
       </div>
     );
@@ -427,7 +429,7 @@ function TeamHeadToHead({ me, list, vs, choose }: { me: string; list: ReturnType
           </li>
         ))}
       </ul>
-      {list.length > 6 && <button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show fewer' : `Show all ${plural(list.length, 'opponent')}`}</button>}
+      {list.length > 6 && <button type="button" className="btn btn-line" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show fewer' : `Show all ${plural(list.length, 'opponent')}`}</button>}
     </>
   );
 }
