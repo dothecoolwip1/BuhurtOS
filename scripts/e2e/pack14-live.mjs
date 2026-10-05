@@ -234,7 +234,7 @@ try {
   check('46. the organizer gets the OBS link from BuhurtOS (public address, field in the path, no token, no sign-in)', (await obs()) === `${BASE}/broadcast/test-stuff-test/Field%201` && !/token|key|auth/i.test(await obs()), await obs());
   await adm.getByLabel('What to draw').selectOption('bug'); await adm.getByLabel('Background').selectOption('green');
   check('47. choosing the score bug and a green background updates the link', (await obs()) === `${BASE}/broadcast/test-stuff-test/Field%201?layout=bug&bg=green`, await obs());
-  await adm.getByLabel('Field', { exact: true }).selectOption('Field 2');
+  await adm.locator('section[aria-label="OBS overlay"] select').first().selectOption('Field 2');
   check('48. choosing Field 2 changes the path', (await obs()).includes('/Field%202?'), await obs());
   await adm.getByRole('button', { name: 'Copy OBS link' }).click();
   check('49. COPY LINK puts exactly that link on the clipboard', (await adm.evaluate(() => navigator.clipboard.readText()).catch(() => '')) === (await obs()));
