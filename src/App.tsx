@@ -32,6 +32,7 @@ import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } fro
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
 import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
+import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 
 export function App() {
   return (
@@ -39,6 +40,9 @@ export function App() {
       {/* The venue display lives outside the site chrome: no header, menus or footer on a screen beside the list. */}
       <Route path="events/:eventId/arena" element={<ArenaPage />} />
       <Route path="events/:eventId/arena/:field" element={<ArenaPage />} />
+      {/* The broadcast overlay (OBS browser source): public, read-only, no site chrome. */}
+      <Route path="broadcast/:eventId" element={<BroadcastPage />} />
+      <Route path="broadcast/:eventId/:field" element={<BroadcastPage />} />
       {/* The counter's phone: no site chrome, one screen, one huge button. */}
       <Route path="lyst/join" element={<CounterPage />} />
       <Route path="lyst/join/:code" element={<CounterPage />} />

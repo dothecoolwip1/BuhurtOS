@@ -116,7 +116,7 @@ describe('Lyst Control on the public display: official state only', () => {
   it('carries the clock and the marshal\'s penalties (official records), with the event\'s own card words', () => {
     const f = now(withLyst([row('m1', { discipline: [{ round: 1, side: 'a', kind: 'card', label: 'Yellow card', amount: 0 }, { round: 1, side: 'b', kind: 'deduction', label: null, amount: 1 }, { round: 2, side: 'b', kind: 'dq', label: null, amount: 0 }] })]));
     expect(f?.lyst?.timer).toMatchObject({ mode: 'fight', status: 'running', remainingMs: 41000, round: 2 });
-    expect(f?.lyst?.marks).toEqual([{ side: 'a', text: 'Yellow card' }, { side: 'b', text: '−1 point' }, { side: 'b', text: 'Disqualified' }]);
+    expect(f?.lyst?.marks).toEqual([{ side: 'a', text: 'Yellow card', kind: 'card' }, { side: 'b', text: '−1 point', kind: 'deduction' }, { side: 'b', text: 'Disqualified', kind: 'dq' }]);
   });
   it('never exposes anything but official fields (no counters, seats, learners, reasons or accounts)', () => {
     const f = now(withLyst([row('m1')]));
