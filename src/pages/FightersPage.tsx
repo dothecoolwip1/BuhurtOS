@@ -2,13 +2,13 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Chip, PageHead, TestBadge } from '../components/ui';
 import { isSynthetic, useSynthetic } from '../data/synthetic';
 import { fetchFighterDirectory, fetchTeamOptions, type FighterCard } from '../data/careers';
+import { fetchCategoryOptions } from '../data/fighters';
 import { categoryLabel, genderLabel, pageInfo, PAGE_SIZE, parsePage } from '../lib/careerView';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useTrackSearch } from '../lib/useTrackSearch';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
-const DISCIPLINES = ['5v5', '3v3', '12v12', '30v30', 'longsword', 'sword_shield', 'buckler', 'polearm', 'profight', 'sabre', 'greatsword'];
 
 export function FighterListing({ f }: { f: FighterCard }) {
   const synthetic = isSynthetic(useSynthetic(), 'fighter', f.id);
@@ -39,6 +39,8 @@ export function FightersPage() {
   const region = params.get('region') ?? '';
   const page = parsePage(params.get('page'));
   const teams = useAsync(fetchTeamOptions, []);
+  // Pack 10: the disciplines come from the reference data, so a new category appears here without a code change.
+  const categories = useAsync(fetchCategoryOptions, []);
   const list = useAsync(() => fetchFighterDirectory({ q, teamId, gender, discipline, region, page }), [q, teamId, gender, discipline, region, page]);
   const set = (key: string, value: string) => {
     const next = new URLSearchParams(params);
@@ -66,7 +68,7 @@ export function FightersPage() {
         <label className="field-in" style={{ flex: '1 1 180px' }}>Discipline
           <select value={discipline} onChange={e => set('discipline', e.target.value)}>
             <option value="">Any</option>
-            {DISCIPLINES.map(d => <option key={d} value={d}>{categoryLabel(d)}</option>)}
+            {(categories.data ?? []).map(d => <option key={d.code} value={d.code}>{d.name}</option>)}
           </select></label>
         <label className="field-in" style={{ flex: '1 1 160px' }}>Region
           <input type="search" value={region} onChange={e => set('region', e.target.value)} placeholder="For example Alberta" /></label>

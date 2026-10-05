@@ -90,7 +90,7 @@ try {
   await sleep(500);
   const t2 = await body();
   check('2a. the fictional fighter\'s career statistics and tournament history stay empty (official views)', !/Events attended/.test(t2) && !inc(t2, 'Gold') && !inc(t2, 'Steel Open-test'));
-  check('2b. rankings and statistics were read from the official views only', mock.st.calls.some(c => c.table === 'fighter_career_stats') && mock.st.calls.some(c => c.table === 'ranking_fighters'));
+  check('2b. rankings and statistics were read from the official sources only (Pack 10: fighter_career, ranking_fighters)', mock.st.calls.some(c => c.fn === 'fighter_career') && mock.st.calls.some(c => c.table === 'ranking_fighters'));
   await go('/rankings');
   await sleep(500);
   check('2c. the rankings page never reads an all-results view', !mock.st.calls.some(c => c.table === 'fighter_results_all' && c.q.includes('ranking')) && mock.st.calls.filter(c => c.table === 'result_rows_all').every(c => c.q.includes('event_id')));
@@ -300,7 +300,7 @@ try {
   const link = page.locator('.sociallink[data-network="instagram"]');
   await link.waitFor();
   check('9c. after reload the public team page shows an Instagram button near the name with the right address', (await link.getAttribute('href')) === 'https://instagram.com/reavers.ab' && (await link.getAttribute('target')) === '_blank');
-  check('9d. the link row sits under the team identity, not buried in About', await page.evaluate(() => { const l = document.querySelector('.sociallink'); const about = [...document.querySelectorAll('h3')].find(h => h.textContent === 'About'); return Boolean(l && about && l.compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING); }));
+  check('9d. the link row sits under the team identity, not buried in About', await page.evaluate(() => { const l = document.querySelector('.sociallink'); const about = [...document.querySelectorAll('h2,h3')].find(h => h.textContent === 'About'); return Boolean(l && about && l.compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING); }));
   await noSideways('team page');
   await shot('p07-team-links');
 
