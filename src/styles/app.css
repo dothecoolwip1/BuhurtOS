@@ -1153,3 +1153,37 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .ed-next.compact summary{cursor:pointer;min-height:48px;display:flex;align-items:center;gap:8px;padding:6px 14px;flex-wrap:wrap;font-weight:600}
 .ed-next.compact .ed-next-line{overflow-wrap:anywhere}
 .ed-next-body{display:grid;gap:8px;padding:0 14px 14px}
+/* ---- Pack 10: career profiles */
+.h3{font-size:24px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.careerline{margin-top:10px;font-size:16px;overflow-wrap:anywhere}
+.careerline b{font:900 20px/1 var(--f-display)}
+.ranklines{display:grid;gap:8px;margin-top:10px}
+.ranklines .rankline{grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline;font-size:15px}
+.ranklines .rk{font-size:20px;min-width:3ch}
+.statcell.wide{grid-column:span 2}
+.disc{display:grid;gap:10px}
+.discline{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.discline:last-child{border-bottom:0;padding-bottom:0}
+.discline .pts{display:grid;text-align:right}
+.discline .pts b{font:900 22px/1 var(--f-display)}
+.discline .pts span{font-size:12px;color:var(--muted)}
+.record{list-style:none;margin:0;padding:0}
+.wl.d{background:var(--ground);color:var(--muted)}
+.highlights{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:12px}
+.highlights li{display:grid;gap:4px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--raised);min-width:0}
+.highlights .v{font-weight:700;overflow-wrap:anywhere}
+.evhist{display:grid;gap:14px}
+.evhist>li{padding-bottom:14px;border-bottom:1px solid var(--line)}
+.evhist>li:last-child{border-bottom:0;padding-bottom:0}
+.opponents{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:10px}
+.opp{display:grid;gap:2px;width:100%;min-height:56px;padding:10px 14px;text-align:left;cursor:pointer}
+.opp:hover{border-color:var(--faint)}
+.opp .n{font-weight:700;overflow-wrap:anywhere}
+.opp .l{margin-top:0}
+.h2h{display:grid;gap:10px}
+.h2h-line{font-size:17px}
+.rosterlist{display:flex;flex-wrap:wrap;gap:6px}
+.chip.loss{color:var(--live);background:var(--live-soft);border-color:transparent}
+.fightline .linklike{padding:0}
+@media (max-width:520px){.statcell b{font-size:24px}.statgrid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}}

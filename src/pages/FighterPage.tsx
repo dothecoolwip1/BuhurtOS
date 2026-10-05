@@ -1,19 +1,18 @@
-import type { ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { FighterLifecycle } from '../components/Lifecycle';
 import { useAuth } from '../auth/AuthContext';
 import { Chip, TestBadge } from '../components/ui';
 import { isSynthetic, useSynthetic } from '../data/synthetic';
+import { fetchFighterAppearances, fetchFighterMemberships, fetchFighterRankings, fetchOrgLites, fetchSeasons, type Appearance } from '../data/careers';
+import { fetchFighterProfile, fetchMyFighterId, avatarUrl, type FighterProfile, type RankingRow } from '../data/fighters';
+import { fetchFighterCareer, fetchFighterFights, fetchFighterHeadToHead, fetchFighterResults, type Fight } from '../data/careerProfile';
+import { fetchFighterLifecycle } from '../data/lifecycle';
 import {
-  fetchFighterAppearances, fetchFighterMemberships, fetchFighterRankings, fetchOrgLites, fetchRecentFights, fetchSeasons, type Appearance
-} from '../data/careers';
-import {
-  fetchFighterCareerStats, fetchFighterHistory, fetchFighterMatchStats, fetchFighterProfile, fetchFighterSeasonStats, fetchMyFighterId, avatarUrl, type FighterProfile
-} from '../data/fighters';
-import {
-  categoryLabel, categoryLines, currentSeasonStats, divisionLabel, formatRecord, formString, genderLabel, guestLabel, INACTIVE_ORG_NOTICE, membershipSpan,
-  orgName, outcomeLabel, placeText, plural, scoreText, sortFighterRankings, sortMemberships, sortFights, sumMatchStats, todayIso, tournamentHistory, winPctText
-} from '../lib/careerView';
+  CAREER_FILTER, careerFilters, careerHighlights, careerLines, careerTotal, contextFor, eventHistory, fightsIn, headToHeadLine, newestFirst, official, opponents, pointsText,
+  rankingHighlights, recordText, splitText, teamsRepresented, yearSpan, type CareerFilter
+} from '../lib/careerProfile';
+import { categoryLabel, divisionLabel, genderLabel, guestLabel, INACTIVE_ORG_NOTICE, membershipSpan, orgName, plural, sortFighterRankings, sortMemberships, todayIso } from '../lib/careerView';
 import { dateRange } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
 import { HISTORY_ROLE_NOTE, historyRoleLabel } from '../lib/teamDirectory';
@@ -23,18 +22,7 @@ import { SocialLinksRow } from '../components/SocialLinks';
 import { FighterGallery } from '../components/FighterGallery';
 import { ClaimRequest } from '../components/ClaimRequest';
 import { fetchClaimStates } from '../data/entrants';
-
-/** One section that loads on its own. Errors stay inside the section; an empty section is hidden (the caller decides with `empty`). */
-function Section<T>({ title, state, empty, children, note }: { title: string; state: AsyncState<T>; empty: (d: T) => boolean; children: (d: T) => ReactNode; note?: string }) {
-  if (state.loading) return <div className="panel info"><h3>{title}</h3><p className="muted">Loading…</p></div>;
-  if (state.error != null) return <div className="panel info"><h3>{title}</h3><p role="alert">{friendlyError(state.error, `Could not load ${title.toLowerCase()}.`)}</p></div>;
-  if (state.data === undefined || empty(state.data)) return null;
-  return <div className="panel info"><h3>{title}</h3>{children(state.data)}{note && <p className="muted" style={{ fontSize: 13 }}>{note}</p>}</div>;
-}
-
-function Tile({ label, value }: { label: string; value: ReactNode }) {
-  return <div className="statcell"><b>{value}</b><span>{label}</span></div>;
-}
+import { Block, DisciplineList, FightRow, FilterBar, FormStrip, HighlightList, MedalChip, RankingLines, SummaryTiles } from '../components/CareerBlocks';
 
 export function FighterPage() {
   const { id = '' } = useParams();
@@ -52,53 +40,101 @@ export function FighterPage() {
   return <Career p={profile.data} />;
 }
 
+/**
+ * Pack 10: a sporting career profile. Who they are, whether they compete now, who they fight for, what they fight, how it has gone: the summary,
+ * the disciplines, the recent fights, the events (with the team represented THERE), head to head. Every number is official (fictional and excluded
+ * events never count); a fictional fighter's page shows its own fictional history, labelled.
+ */
 function Career({ p }: { p: FighterProfile }) {
   const id = p.fighterId;
   const { session } = useAuth();
   const userId = session?.user.id;
+  const synthetic = useSynthetic();
+  const fictional = isSynthetic(synthetic, 'fighter', id);
+  const context = contextFor(fictional);
   const mine = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
   const isMine = mine.data === id;
   const claim = useAsync(() => fetchClaimStates([id]), [id]);
-  const career = useAsync(() => fetchFighterCareerStats(id), [id]);
-  const matchStats = useAsync(() => fetchFighterMatchStats(id), [id]);
-  const seasonStats = useAsync(() => fetchFighterSeasonStats(id), [id]);
-  const history = useAsync(() => fetchFighterHistory(id), [id]);
+  const lifecycle = useAsync(() => fetchFighterLifecycle(id), [id]);
+  const career = useAsync(() => fetchFighterCareer(id), [id]);
+  const fights = useAsync(() => fetchFighterFights(id), [id]);
+  const results = useAsync(() => fetchFighterResults(id), [id]);
+  const h2h = useAsync(() => fetchFighterHeadToHead(id), [id]);
   const rankings = useAsync(() => fetchFighterRankings(id), [id]);
-  const fights = useAsync(() => fetchRecentFights(id, 10), [id]);
   const memberships = useAsync(() => fetchFighterMemberships(id), [id]);
   const appearances = useAsync(() => fetchFighterAppearances(id), [id]);
   const orgs = useAsync(fetchOrgLites, []);
   const seasons = useAsync(fetchSeasons, []);
   const today = todayIso();
-  const orgById = new Map((orgs.data ?? []).map(o => [o.id, o]));
-  const seasonById = new Map((seasons.data ?? []).map(s => [s.id, s]));
+  const orgById = useMemo(() => new Map((orgs.data ?? []).map(o => [o.id, o])), [orgs.data]);
+  const seasonById = useMemo(() => new Map((seasons.data ?? []).map(s => [s.id, s])), [seasons.data]);
+  const rankingLabel = (r: RankingRow) => {
+    const org = r.organizationId ? orgById.get(r.organizationId) : undefined;
+    const season = r.seasonId ? seasonById.get(r.seasonId) : undefined;
+    return [org ? orgName(org) : 'All organizations', season?.name ?? (r.scope === 'org_career' ? 'all time' : r.scope === 'career' ? 'all time' : null), r.category ? categoryLabel(r.category) : null, divisionLabel(r.gender) || null].filter(Boolean).join(' · ');
+  };
+
+  // filter: career, a season, an organization (only those with a record)
+  const filters = useMemo(() => careerFilters(career.data ?? [], seasons.data ?? [], orgs.data ?? [], context), [career.data, seasons.data, orgs.data, context]);
+  const [filter, setFilter] = useState<CareerFilter>(CAREER_FILTER);
+  const total = careerTotal(career.data ?? [], filter, context);
+  const individual = careerLines(career.data ?? [], filter, context, 'individual');
+  const teamLines = careerLines(career.data ?? [], filter, context, 'team');
+  const officialFights = useMemo(() => newestFirst(official(fightsIn(fights.data ?? [], filter), context)), [fights.data, filter, context]);
+  const events = useMemo(() => eventHistory(fightsIn(results.data ?? [], filter), fightsIn(fights.data ?? [], filter)), [results.data, fights.data, filter]);
+  const officialEvents = useMemo(() => events.filter(e => !e.statsExcluded && (context === 'test' ? e.synthetic : !e.synthetic)), [events, context]);
+  const represented = useMemo(() => teamsRepresented(officialEvents), [officialEvents]);
+  const highlights = useMemo(() => rankingHighlights(rankings.data ?? [], seasons.data ?? [], today), [rankings.data, seasons.data, today]);
+  const careerTop = careerTotal(career.data ?? [], CAREER_FILTER, context);
+  const allOfficialFights = useMemo(() => newestFirst(official(fights.data ?? [], context)), [fights.data, context]);
+  const topDisciplines = careerLines(career.data ?? [], CAREER_FILTER, context, 'individual').slice(0, 3).map(l => l.categoryName ?? l.category ?? '');
+  const shownDisciplines = topDisciplines.length > 0 ? topDisciplines : p.disciplines.map(categoryLabel);
+
+  // head to head: ?vs=<fighter id>, chosen from the opponents list or by tapping an opponent in the fight list
+  const [params, setParams] = useSearchParams();
+  const vs = params.get('vs');
+  const chooseOpponent = (fighterId: string | null) => {
+    const next = new URLSearchParams(params);
+    if (fighterId) next.set('vs', fighterId); else next.delete('vs');
+    setParams(next, { replace: true });
+    if (fighterId) setTimeout(() => document.getElementById('head-to-head')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  };
+  const opponentList = useMemo(() => opponents(h2h.data ?? [], context), [h2h.data, context]);
+  const inactive = !!lifecycle.data?.inactiveAt;
+  const unclaimed = claim.data?.get(id) === false && !fictional;
   const where = [p.city, p.region, p.country].filter(Boolean).join(', ');
-  const facts = [
-    p.age !== null && `Age ${p.age}`, genderLabel(p.gender), p.joinedYear !== null && `Fighting since ${p.joinedYear}`
-  ].filter(Boolean) as string[];
-  const hasStory = Boolean(p.fightingStyle || p.disciplines.length > 0 || p.bio || p.highlights.length > 0);
-  const totals = sumMatchStats(matchStats.data ?? []);
-  const places = history.data ?? [];
-  const synthetic = useSynthetic();
-  const unclaimed = claim.data?.get(id) === false && !isSynthetic(synthetic, 'fighter', id);
+  const facts = [p.age !== null && `Age ${p.age}`, genderLabel(p.gender), p.joinedYear !== null && `Fighting since ${p.joinedYear}`].filter(Boolean) as string[];
+  const hasStory = Boolean(p.fightingStyle || p.bio || p.highlights.length > 0);
+  const nothingYet = !career.loading && !career.error && !careerTop;
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <Link className="more" to="/fighters">← All fighters</Link>
-      <div className="teamhead">
+      <header className="teamhead">
         {avatarUrl(p.avatarPath)
           ? <img className="avatar" src={avatarUrl(p.avatarPath)!} alt={`Photo of ${p.displayName}`} width={120} height={120} />
           : <span className="avatar" aria-hidden="true">{p.displayName.charAt(0).toUpperCase()}</span>}
         <div style={{ minWidth: 0 }}>
           <p className="eyebrow">Fighter</p>
-          <h1 style={{ fontSize: 'clamp(38px,6vw,72px)', marginTop: 8 }}>{p.displayName}</h1>
-          <TestBadge synthetic={isSynthetic(synthetic, 'fighter', id)} />
-          {unclaimed && <p style={{ marginTop: 6 }}><Chip>Unclaimed profile</Chip></p>}
+          <h1 style={{ fontSize: 'clamp(34px,6vw,72px)', marginTop: 8, overflowWrap: 'anywhere' }}>{p.displayName}</h1>
+          <p className="badges" style={{ marginTop: 8 }}>
+            {lifecycle.data && (inactive ? <Chip>Inactive</Chip> : <Chip tone="win">Active</Chip>)}
+            {fictional && <TestBadge synthetic />}
+            {unclaimed && <Chip>Unclaimed profile</Chip>}
+          </p>
           <div className="phead"><div className="sub">
-            {p.team && <span>Home team: <Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link></span>}
+            {p.team ? <span>{inactive ? 'Last team: ' : 'Fights for '}<Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link></span> : <span>No team</span>}
+            {shownDisciplines.length > 0 && <span>{shownDisciplines.join(' · ')}</span>}
             {where && <span>{where}</span>}
             {facts.map(f => <span key={f}>{f}</span>)}
           </div></div>
+          {careerTop && (
+            <p className="careerline" data-testid="career-line">
+              <b>{plural(careerTop.matches, 'fight')}</b> · {recordText(careerTop)}{careerTop.podiums > 0 && <> · {careerTop.golds} gold · {careerTop.silvers} silver · {careerTop.bronzes} bronze</>} · {pointsText(careerTop.points)}
+              {context === 'test' && <> <Chip>Test data</Chip></>}
+            </p>
+          )}
+          <RankingLines rows={highlights} label={rankingLabel} more="/rankings" />
           <SocialLinksRow links={p.socialLinks} label={`${p.displayName} on the web`} />
           {isMine && <p style={{ marginTop: 10 }}><Link className="btn btn-ink" to={`/fighters/${id}/edit`}>Edit my profile</Link></p>}
           <FighterLifecycle fighterId={id} name={p.displayName} />
@@ -108,7 +144,7 @@ function Career({ p }: { p: FighterProfile }) {
             </p>
           )}
         </div>
-      </div>
+      </header>
       {p.organization && !p.organization.enabled && <p className="panel info" role="status">{INACTIVE_ORG_NOTICE}</p>}
 
       {unclaimed && !isMine && (
@@ -122,162 +158,114 @@ function Career({ p }: { p: FighterProfile }) {
         </div>
       )}
 
+      {nothingYet && (
+        <section className="panel info" data-testid="career-empty">
+          <h2 className="h3">Career</h2>
+          <p className="muted">No official results are recorded for {p.displayName} yet. The career fills in as organizers record fights and results on BuhurtOS.</p>
+        </section>
+      )}
+
+      {careerTop && <FilterBar filters={filters} value={filter} onChange={setFilter} />}
+
+      <Block title={filter.kind === 'career' ? 'Career summary' : `${filter.label} summary`} state={career} empty={() => !total} id="career"
+        keep={careerTop ? <p className="muted">Nothing recorded for {filter.label}.</p> : undefined}
+        note={<>Fights and the record are from official fight results only; a team fight counts for every fighter on its roster. Medals and ranking points are the official placings. {context === 'test' ? 'This is a fictional fighter: everything here is test data and counts nowhere official.' : 'Fictional events and events excluded from official statistics never count.'}</>}>
+        {() => total && <SummaryTiles t={total} />}
+      </Block>
+
+      {filter.kind === 'career' && careerTop && (
+        <Block title="Highlights" state={fights} empty={() => careerHighlights({ total: careerTop, lines: career.data ?? [], events: officialEvents, rankings: rankings.data ?? [], fights: allOfficialFights, rankingLabel }).length === 0}>
+          {() => <HighlightList items={careerHighlights({ total: careerTop, lines: careerLines(career.data ?? [], CAREER_FILTER, context), events: officialEvents, rankings: rankings.data ?? [], fights: allOfficialFights, rankingLabel })} />}
+        </Block>
+      )}
+
+      <Block title="Disciplines" state={career} empty={() => individual.length === 0} id="disciplines" note="Individual competitions. Points are the ranking points earned in that discipline.">
+        {() => <DisciplineList lines={individual} label="Record by discipline" />}
+      </Block>
+
+      <Block title="Team fights" state={career} empty={() => teamLines.length === 0} id="team-fights" note="Group fights this fighter was on the roster for, from the rosters recorded at each competition. A win is the team's win in a fight they fought in.">
+        {() => <DisciplineList lines={teamLines} label="Record in team fights" />}
+      </Block>
+
+      <Block title="Recent fights" state={fights} empty={() => officialFights.length === 0} id="recent" note="Newest first. Tap an opponent for the head to head.">
+        {() => <RecentFights fights={officialFights} onOpponent={chooseOpponent} />}
+      </Block>
+
+      <Block title="Head to head" state={h2h} empty={() => opponentList.length === 0} id="head-to-head" note="Direct meetings only: the two fought each other in an individual competition. Team fights and placings are never counted as meetings.">
+        {() => (
+          <HeadToHead me={p.displayName} list={opponentList} vs={vs} choose={chooseOpponent} fights={allOfficialFights} />
+        )}
+      </Block>
+
+      <Block title="Event history" state={results} empty={() => events.length === 0} id="events" note="The team shown is the one represented at that event, from the record of the day; it never changes when a fighter changes team.">
+        {() => (
+          <ul className="plain evhist">
+            {events.map(e => (
+              <li key={e.eventId}>
+                <div className="rowline">
+                  <span style={{ minWidth: 0 }}><Link to={`/events/${e.eventSlug}`}><b>{e.eventName}</b></Link>{e.synthetic && <> <TestBadge synthetic /></>}{e.statsExcluded && <> <Chip>Not counted in statistics</Chip></>}</span>
+                  <span className="muted" style={{ fontSize: 13 }}>{dateRange(e.startsOn, e.endsOn)}{e.organizationId && orgById.get(e.organizationId) ? ` · ${orgName(orgById.get(e.organizationId)!)}` : ''}</span>
+                </div>
+                <div className="l">
+                  {e.teams.length > 0 ? <>Represented {e.teams.map((t, i) => <span key={t.id}>{i > 0 && ' and '}{t.slug ? <Link to={`/teams/${t.slug}`}>{t.name}</Link> : t.name}</span>)}</> : 'No team recorded'}
+                  {e.fights > 0 && <> · {plural(e.fights, 'fight')}: {e.wins} W · {e.losses} L{e.draws > 0 ? ` · ${e.draws} D` : ''}</>}
+                </div>
+                {e.placings.length > 0 && (
+                  <ul className="plain placings">
+                    {e.placings.map(pl => (
+                      <li key={pl.competitionId} className="placing">
+                        <MedalChip medal={pl.medal} place={pl.place} /> <Link to={`/events/${e.eventSlug}#results-${pl.competitionId}`}>{pl.competitionName}</Link>
+                        {pl.entryStatus === 'disqualified' && <> <Chip>Disqualified</Chip></>}
+                        <span className="muted"> · {pointsText(pl.points)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {e.placings.length === 0 && e.fights > 0 && <p className="muted" style={{ fontSize: 13, margin: '4px 0 0' }}>No official placing recorded yet.</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Block>
+
+      <Block title="Teams represented" state={results} empty={() => represented.length === 0 && !p.team} id="teams" note="From the official record: the team a result or fight was earned for. BuhurtOS does not guess when a fighter joined or left a team.">
+        {() => (
+          <ul className="plain">
+            {p.team && <li><Link to={`/teams/${p.team.slug}`}><b>{p.team.name}</b></Link> <Chip tone="brass">{inactive ? 'Last team' : 'Current team'}</Chip></li>}
+            {represented.map(t => (
+              <li key={t.id}>
+                {t.slug ? <Link to={`/teams/${t.slug}`}><b>{t.name}</b></Link> : <b>{t.name}</b>} <span className="muted">{yearSpan(t.firstOn, t.lastOn)}</span>
+                <div className="l">{t.events.map((e, i) => <span key={e.eventId}>{i > 0 && ' · '}<Link to={`/events/${e.eventSlug}`}>{e.eventName}</Link></span>)}</div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Block>
+
+      <Block title="All rankings" state={rankings} empty={r => r.length === 0} note="Rank 1 is the most ranking points; equal points share a rank.">
+        {rows => <Collapsible label={`Show all ${plural(rows.length, 'ranking')}`}>
+          <ul className="plain">
+            {sortFighterRankings(rows).map((r, i) => {
+              const org = r.organizationId ? orgById.get(r.organizationId) : undefined;
+              return <li key={i} className="rankline"><span className="rk">#{r.rank}</span><span style={{ minWidth: 0 }}>{rankingLabel(r)}{org && !org.enabled && <> <Chip>Inactive</Chip></>}<span className="l">{pointsText(r.points)} · {plural(r.competitions, 'competition')}</span></span></li>;
+            })}
+          </ul>
+        </Collapsible>}
+      </Block>
+
       {hasStory && (
-        <div className="panel info">
-          <h3>About</h3>
+        <section className="panel info">
+          <h2 className="h3">About</h2>
           {p.fightingStyle && <p><b>Fighting style:</b> {p.fightingStyle}</p>}
-          {p.disciplines.length > 0 && <p style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}><b>Disciplines:</b> {p.disciplines.map(d => <Chip key={d} tone="steel">{categoryLabel(d)}</Chip>)}</p>}
           {p.bio && <p style={{ whiteSpace: 'pre-line', overflowWrap: 'anywhere' }}>{p.bio}</p>}
-          {p.highlights.length > 0 && (<><p className="eyebrow">Highlights</p><ul className="plain">{p.highlights.map((h, i) => <li key={i}>{h}</li>)}</ul></>)}
+          {p.highlights.length > 0 && (<><p className="eyebrow">In their own words</p><ul className="plain">{p.highlights.map((h, i) => <li key={i}>{h}</li>)}</ul></>)}
           <p className="muted" style={{ fontSize: 13 }}>Written by the fighter, not checked by BuhurtOS.</p>
-        </div>
+        </section>
       )}
 
       <FighterGallery fighterId={id} name={p.displayName} />
 
-      <Section title="Career" state={career} empty={c => c === null}>
-        {c => !c ? null : c.eventsAttended === 0 && c.matches === 0 && c.podiums === 0
-          ? <p className="muted">No competitions are recorded for this fighter yet. Their career fills in as organizers record results.</p>
-          : (
-            <>
-              <div className="statgrid">
-                <Tile label="Events attended" value={c.eventsAttended} />
-                <Tile label="Matches" value={c.matches} />
-                <Tile label="Wins" value={c.wins} />
-                <Tile label="Losses" value={c.losses} />
-                {c.draws > 0 && <Tile label="Draws" value={c.draws} />}
-                <Tile label="Win rate" value={winPctText(c.winPct)} />
-                <Tile label="Gold" value={c.golds} />
-                <Tile label="Silver" value={c.silvers} />
-                <Tile label="Bronze" value={c.bronzes} />
-                <Tile label="Podiums" value={c.podiums} />
-                <Tile label="Tournament wins" value={c.tournamentVictories} />
-                <Tile label="League points" value={c.points} />
-                {totals.matches > 0 && <Tile label="Rounds won / lost" value={`${totals.roundsWon} / ${totals.roundsLost}`} />}
-                {totals.matches > 0 && <Tile label="Points for / against" value={`${totals.pointsFor} / ${totals.pointsAgainst}`} />}
-              </div>
-              <p className="muted" style={{ fontSize: 13 }}>Group fights count for every fighter on the roster. Points for and against are rounds won in group fights and strike points in duels.</p>
-            </>
-          )}
-      </Section>
-
-      <Section title="Rankings" state={rankings} empty={r => r.length === 0} note="Rank 1 is the most league points; equal points share a rank.">
-        {rows => (
-          <ul className="plain">
-            {sortFighterRankings(rows).map((r, i) => {
-              const org = r.organizationId ? orgById.get(r.organizationId) : undefined;
-              const season = r.seasonId ? seasonById.get(r.seasonId) : undefined;
-              const label = [org ? orgName(org) : 'All organizations', season?.name, r.category ? categoryLabel(r.category) : null, divisionLabel(r.gender) || null].filter(Boolean).join(' · ');
-              return (
-                <li key={i} className="rankline">
-                  <span className="rk">#{r.rank}</span>
-                  <span style={{ minWidth: 0 }}>{label}{org && !org.enabled && <> <Chip>Inactive</Chip></>}
-                    <span className="l">{r.points} points · {plural(r.competitions, 'competition')}</span></span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </Section>
-
-      <Section title="This season" state={seasonStats} empty={() => seasons.loading || (currentSeasonStats(seasonStats.data ?? [], seasons.data ?? [], today).rows.length === 0)}>
-        {s => {
-          const cur = currentSeasonStats(s, seasons.data ?? [], today);
-          return (
-            <>
-              {!cur.current && <p className="muted">No season is running right now. This is the latest season with a record.</p>}
-              <ul className="plain">
-                {cur.rows.map(r => {
-                  const org = r.organizationId ? orgById.get(r.organizationId) : undefined;
-                  return (
-                    <li key={`${r.seasonId}:${r.organizationId}`}>
-                      <b>{r.season.name}</b>{org && <> <Chip tone="steel">{orgName(org)}</Chip></>}
-                      <div className="l">{plural(r.eventsAttended, 'event')} · record {formatRecord(r.wins, r.losses, r.draws)} · {plural(r.podiums, 'podium')} ({r.golds} gold, {r.silvers} silver, {r.bronzes} bronze) · {r.points} points</div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
-          );
-        }}
-      </Section>
-
-      {(matchStats.data || history.data) && categoryLines(places, matchStats.data ?? []).length > 0 && (
-        <div className="panel info">
-          <h3>By category</h3>
-          <ul className="plain">
-            {categoryLines(places, matchStats.data ?? []).map(l => (
-              <li key={l.key}>
-                <b>{categoryLabel(l.category)}</b> <Chip>{divisionLabel(l.gender)}</Chip>
-                <div className="l">
-                  {l.matches > 0 ? `Record ${formatRecord(l.wins, l.losses, l.draws)}` : 'No matches recorded'}
-                  {l.competitions > 0 && ` · ${plural(l.competitions, 'competition')}, best place ${placeText(l.bestPlace ?? 0)}`}
-                  {l.golds + l.silvers + l.bronzes > 0 && ` · ${l.golds} gold, ${l.silvers} silver, ${l.bronzes} bronze`}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <Section title="Tournament history" state={history} empty={h => h.length === 0}>
-        {h => (
-          <ul className="plain">
-            {tournamentHistory(h).map(t => (
-              <li key={t.eventSlug}>
-                <Link to={`/events/${t.eventSlug}`}><b>{t.eventName}</b></Link><TestBadge synthetic={t.synthetic} />{t.statsExcluded && <> <Chip>Not counted in statistics</Chip></>}
-                <div className="l">{dateRange(t.startsOn, t.endsOn)}</div>
-                <div className="placings">
-                  {t.placements.map((pl, i) => (
-                    <span key={i} className="placing">
-                      {pl.medal ? <Chip tone={pl.medal === 'gold' ? 'brass' : pl.medal === 'silver' ? 'steel' : ''}>{placeText(pl.place)}</Chip> : <Chip>{placeText(pl.place)}</Chip>}
-                      {' '}{pl.competition}
-                    </span>
-                  ))}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Section>
-
-      <Section title="Recent fights" state={fights} empty={f => f.length === 0}>
-        {f => {
-          const sorted = sortFights(f);
-          return (
-            <>
-              <div className="record" aria-label="Recent form, newest first">
-                {formString(sorted).map((l, i) => <span key={i} className={`wl ${l === 'W' ? 'w' : l === 'L' ? 'l' : ''}`}>{l}</span>)}
-              </div>
-              <p className="muted" style={{ fontSize: 13 }}>Last {plural(sorted.length, 'fight')}, newest first.</p>
-              <ul className="plain">
-                {sorted.map(x => (
-                  <li key={x.matchId} className="fightline">
-                    <Chip tone={x.outcome === 'win' ? 'win' : ''}>{outcomeLabel(x.outcome)}</Chip>
-                    <span style={{ minWidth: 0 }}>
-                      <b>{x.opponent ? `Against ${x.opponent}` : 'Opponent not shown'}</b> <span className="muted">{scoreText(x.scoreFor, x.scoreAgainst)}</span>
-                      <span className="l">{x.eventSlug ? <Link to={`/events/${x.eventSlug}`}>{x.eventName}</Link> : x.eventName} · {x.competition}{x.forTeam && ` · for ${x.forTeam}`}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </>
-          );
-        }}
-      </Section>
-
-      <Section title="Season by season" state={seasonStats} empty={s => s.length < 2 || seasons.loading}>
-        {s => (
-          <ul className="plain">
-            {[...s].sort((a, b) => (seasonById.get(b.seasonId)?.endsOn ?? '').localeCompare(seasonById.get(a.seasonId)?.endsOn ?? '')).map(r => (
-              <li key={`${r.seasonId}:${r.organizationId}`}><b>{seasonById.get(r.seasonId)?.name ?? 'Season'}</b>
-                <div className="l">Record {formatRecord(r.wins, r.losses, r.draws)} · {plural(r.podiums, 'podium')} · {r.points} points</div></li>
-            ))}
-          </ul>
-        )}
-      </Section>
-
-      <Section title="Upcoming" state={appearances} empty={a => upcoming(a, today).length === 0}>
+      <Block title="Upcoming" state={appearances} empty={a => upcoming(a, today).length === 0}>
         {a => (
           <ul className="plain">
             {upcoming(a, today).map(x => (
@@ -288,25 +276,89 @@ function Career({ p }: { p: FighterProfile }) {
             ))}
           </ul>
         )}
-      </Section>
+      </Block>
 
       <TeamHistory memberships={memberships} appearances={appearances} homeTeam={p.team?.slug ?? null} />
     </section>
   );
 }
 
+function Collapsible({ label, children }: { label: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" className="btn btn-line btn-sm" aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? 'Hide' : label}</button>
+      {open && children}
+    </>
+  );
+}
+
+function RecentFights({ fights, onOpponent }: { fights: readonly Fight[]; onOpponent: (id: string) => void }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? fights.slice(0, 50) : fights.slice(0, 5);
+  return (
+    <>
+      <FormStrip outcomes={fights.slice(0, 10).map(f => f.outcome)} label="Form, newest first" />
+      <ul className="plain" aria-label="Recent fights">{shown.map(f => <FightRow key={f.matchId} f={f} onOpponent={onOpponent} />)}</ul>
+      {fights.length > 5 && <button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show last 5' : `Show last ${Math.min(50, fights.length)}`}</button>}
+    </>
+  );
+}
+
+function HeadToHead({ me, list, vs, choose, fights }: { me: string; list: ReturnType<typeof opponents>; vs: string | null; choose: (id: string | null) => void; fights: readonly Fight[] }) {
+  const [all, setAll] = useState(false);
+  const chosen = vs ? list.find(o => o.id === vs) : undefined;
+  useEffect(() => { if (vs && list.length > 0 && !chosen) choose(null); }, [vs, chosen, list.length, choose]);
+  if (chosen) {
+    const meetings = fights.filter(f => f.opponentFighterId === chosen.id && f.kind === 'individual');
+    return (
+      <div className="h2h" data-testid="head-to-head">
+        <p className="eyebrow">{me} vs {chosen.name}</p>
+        <p className="h2h-line"><b>{plural(chosen.meetings, 'meeting')}</b> · {headToHeadLine(me, chosen)}</p>
+        {chosen.byCategory.length > 0 && (
+          <ul className="plain" aria-label="By discipline">
+            {chosen.byCategory.map(c => <li key={`${c.category}:${c.gender}`}><b>{c.categoryName}</b>{c.gender && c.gender !== 'open' ? ` (${divisionLabel(c.gender)})` : ''} <span className="muted">{splitText(c)}</span></li>)}
+          </ul>
+        )}
+        <ul className="plain" aria-label={`Fights against ${chosen.name}`}>{meetings.map(f => <FightRow key={f.matchId} f={f} />)}</ul>
+        <div className="evfilter">
+          <Link className="btn btn-line btn-sm" to={`/fighters/${chosen.id}`}>Open {chosen.name}</Link>
+          <button type="button" className="btn btn-line btn-sm" onClick={() => choose(null)}>All opponents</button>
+        </div>
+      </div>
+    );
+  }
+  const shown = all ? list : list.slice(0, 6);
+  return (
+    <>
+      <ul className="plain opponents" aria-label="Opponents">
+        {shown.map(o => (
+          <li key={o.id}>
+            <button type="button" className="panel opp" onClick={() => choose(o.id)} aria-label={`Head to head with ${o.name}: ${plural(o.meetings, 'meeting')}, ${headToHeadLine(me, o)}`}>
+              <span className="n">{o.name}</span>
+              <span className="l">{plural(o.meetings, 'meeting')} · {o.wins} W · {o.losses} L{o.draws > 0 ? ` · ${o.draws} D` : ''}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      {list.length > 6 && <button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(a => !a)}>{all ? 'Show fewer' : `Show all ${plural(list.length, 'opponent')}`}</button>}
+    </>
+  );
+}
+
 const upcoming = (a: Appearance[], today: string): Appearance[] =>
   a.filter(x => x.endsOn >= today && x.eventStatus !== 'cancelled').sort((x, y) => x.startsOn.localeCompare(y.startsOn));
 
+/** Team memberships as recorded (with dates when the record has them) and guest appearances. Separate from "Teams represented", which is evidence from results. */
 function TeamHistory({ memberships, appearances, homeTeam }: { memberships: AsyncState<Awaited<ReturnType<typeof fetchFighterMemberships>>>; appearances: AsyncState<Appearance[]>; homeTeam: string | null }) {
   const guests = (appearances.data ?? []).filter(a => (a.role === 'mercenary' || a.role === 'guest') && a.forTeam).sort((a, b) => b.startsOn.localeCompare(a.startsOn));
   const rows = sortMemberships(memberships.data ?? []);
-  if (memberships.loading) return <div className="panel info"><h3>Team history</h3><p className="muted">Loading…</p></div>;
-  if (memberships.error != null) return <div className="panel info"><h3>Team history</h3><p role="alert">{friendlyError(memberships.error, 'Could not load team history.')}</p></div>;
+  if (memberships.loading) return <div className="panel info"><h2 className="h3">Team memberships</h2><p className="muted">Loading…</p></div>;
+  if (memberships.error != null) return <div className="panel info"><h2 className="h3">Team memberships</h2><p role="alert">{friendlyError(memberships.error, 'Could not load team history.')}</p></div>;
   if (rows.length === 0 && guests.length === 0) return null;
   return (
     <div className="panel info">
-      <h3>Team history</h3>
+      <h2 className="h3">Team memberships</h2>
       <ul className="plain">
         {rows.map(m => (
           <li key={m.id}>
@@ -323,7 +375,7 @@ function TeamHistory({ memberships, appearances, homeTeam }: { memberships: Asyn
         ))}
       </ul>
       {rows.some(m => m.role === 'captain') && <p className="muted" style={{ fontSize: 13 }}>{HISTORY_ROLE_NOTE}</p>}
-      <p className="muted" style={{ fontSize: 13 }}>Fighting as a guest never changes a fighter's home team.</p>
+      <p className="muted" style={{ fontSize: 13 }}>Memberships as recorded by the team. Fighting as a guest never changes a fighter's home team.</p>
     </div>
   );
 }

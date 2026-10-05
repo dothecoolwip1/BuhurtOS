@@ -174,10 +174,3 @@ export async function fetchTeamDisciplineRanks(teamId: string): Promise<TeamDisc
   type R = { scope: TeamDisciplineRank['scope']; organization_id: string | null; season_id: string | null; category: string; category_name: string; gender: string | null; fighters: number | string; results: number | string; points: number | string; rank: number | string };
   return (data as unknown as R[]).map(r => ({ scope: r.scope, organizationId: r.organization_id, seasonId: r.season_id, category: r.category, categoryName: r.category_name, gender: r.gender, fighters: num(r.fighters), results: num(r.results), points: num(r.points), rank: num(r.rank) }));
 }
-
-/** Whether the fighter is inactive (Pack 09D), from the public column. Null when the column is not there yet. */
-export async function fetchFighterInactive(fighterId: string): Promise<{ inactive: boolean }> {
-  const { data, error } = await supabase.from('fighters').select('inactive_at').eq('id', fighterId).maybeSingle();
-  if (error) { if ((error as { code?: string }).code === '42703') return { inactive: false }; throw error; }
-  return { inactive: !!(data as { inactive_at: string | null } | null)?.inactive_at };
-}
