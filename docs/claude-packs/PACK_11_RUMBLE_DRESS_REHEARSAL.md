@@ -127,6 +127,6 @@ Use `docs/runbooks/REAL_PHONE_REHEARSAL.md` rows 1 to 16 on an iPhone and an And
 
 ## Verification evidence (local; see STATUS.md for the release)
 
-Journey: `scripts/e2e/rumble-live.sh` (final run count in STATUS.md); database gate `pack11_gate.sql` 16 checks; full `run_all.sh`;
+Journey: `scripts/e2e/rumble-live.sh`: final run 178 checks green through section 14 (every competition official); sections 14 tail to 19 not reached by a complete run (STATUS.md); database gate `pack11_gate.sql` 16 checks; full `run_all.sh`;
 unit suite; typecheck; production build. Hosted: the migration applied through the Supabase MCP and verified read-only (STATUS.md).
 No real event, result, fighter or team was changed anywhere; the rehearsal event exists only on the local scratch database.
