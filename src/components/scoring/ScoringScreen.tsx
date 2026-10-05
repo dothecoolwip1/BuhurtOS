@@ -200,6 +200,9 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
           <button type="button" className="btn btn-ink fq-big" disabled={busy} onClick={() => void save()}>{busy ? 'Trying…' : 'Try again'}</button>
         </div>
         {error && <p role="alert" style={{ color: 'var(--live)' }}>{error}</p>}
+        {/* Pack 11: the next fight does not wait for the signal. The board and its command id stay on this device; open this fight again to save it. */}
+        <p className="src">The next fight does not have to wait: this result stays on this device, marked pending, until you open this fight again and save it.</p>
+        <button type="button" className="btn btn-line fq-big" disabled={busy} onClick={onExit}>Back to the queue (keep this pending)</button>
       </section>
     );
   }

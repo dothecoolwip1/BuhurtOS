@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CompetitionMatch } from '../data/matches';
-import { aheadText, nextForEntries, recordText, statusLabel } from './myFight';
+import { aheadText, fightsAhead, nextForEntries, recordText, restText, statusLabel } from './myFight';
 
 const m = (over: Partial<CompetitionMatch>): CompetitionMatch => ({
   id: Math.random().toString(), competitionId: 'c', stage: 'pool', roundLabel: 'Round 1', position: 0, pool: null, field: null, scheduledAt: null,
@@ -36,9 +36,61 @@ describe('nextForEntries', () => {
     expect(nextForEntries(matches, ['me']).next?.ahead).toBe(2);
   });
 
-  it('gives no position when the match is not queued or has no field', () => {
+  it('gives no position when the match is neither called nor planned', () => {
     expect(nextForEntries([m({ entryA: 'me', entryB: 'o', queueState: 'scheduled', field: 'Field 1' })], ['me']).next?.ahead).toBeNull();
-    expect(nextForEntries([m({ entryA: 'me', entryB: 'o', queueState: 'on_deck', field: null })], ['me']).next?.ahead).toBeNull();
+    expect(nextForEntries([m({ entryA: 'me', entryB: 'o', queueState: 'scheduled', field: 'Field 1', planOrder: 4, planHold: true })], ['me']).next?.ahead).toBeNull();
+  });
+
+  it('treats a blank field as Field 1 (the default field is stored as nothing)', () => {
+    const matches = [
+      m({ id: 'now', entryA: 'p', entryB: 'q', queueState: 'active', field: null }),
+      m({ id: 'mine', entryA: 'me', entryB: 'o', queueState: 'on_deck', field: null }),
+      m({ id: 'f2', entryA: 'u', entryB: 'v', queueState: 'active', field: 'Field 2' }),
+    ];
+    const s = nextForEntries(matches, ['me']);
+    expect(s.next?.ahead).toBe(1);
+    expect(s.next?.field).toBe('Field 1');
+  });
+
+  it('counts a planned fight\'s place from the called fights plus the saved plan order on its field', () => {
+    const matches = [
+      m({ id: 'now', entryA: 'p', entryB: 'q', queueState: 'active', field: 'Field 1' }),
+      m({ id: 'deck', entryA: 'r', entryB: 's', queueState: 'on_deck', field: 'Field 1' }),
+      m({ id: 'p1', entryA: 't', entryB: 'u', queueState: 'scheduled', field: 'Field 1', planOrder: 3 }),
+      m({ id: 'held', entryA: 'w', entryB: 'x', queueState: 'scheduled', field: 'Field 1', planOrder: 4, planHold: true }),
+      m({ id: 'other', entryA: 'y', entryB: 'z', queueState: 'scheduled', field: 'Field 2', planOrder: 5 }),
+      m({ id: 'mine', entryA: 'me', entryB: 'o', queueState: 'scheduled', field: 'Field 1', planOrder: 9 }),
+    ];
+    expect(fightsAhead(matches, matches[5])).toBe(3);
+    expect(nextForEntries(matches, ['me']).next?.ahead).toBe(3);
+  });
+
+  it('lists every unfinished fight across competitions, most pressing first, and a held one last', () => {
+    const matches = [
+      m({ id: 'held', competitionId: 'c3', entryA: 'me', entryB: 'h', queueState: 'scheduled', planOrder: 1, planHold: true }),
+      m({ id: 'later', competitionId: 'c1', entryA: 'me', entryB: 'o1', queueState: 'scheduled', planOrder: 20 }),
+      m({ id: 'soon', competitionId: 'c2', entryA: 'o2', entryB: 'me', queueState: 'in_the_hole', field: 'Field 2' }),
+      m({ id: 'earlier', competitionId: 'c1', entryA: 'me', entryB: 'o3', queueState: 'scheduled', planOrder: 8 }),
+    ];
+    const s = nextForEntries(matches, ['me']);
+    expect(s.upcoming.map(u => u.match.id)).toEqual(['soon', 'earlier', 'later', 'held']);
+    expect(s.upcoming[3].held).toBe(true);
+  });
+
+  it('warns about short rest only when the next fight is close and fewer than 3 fights finished since the last one', () => {
+    const base = [
+      m({ id: 'mine-done', entryA: 'me', entryB: 'o', queueState: 'final', result: 'a', finalizedAt: '2026-10-05T10:00:00Z' }),
+      m({ id: 'x1', entryA: 'p', entryB: 'q', queueState: 'final', result: 'a', finalizedAt: '2026-10-05T10:05:00Z' }),
+      m({ id: 'before', entryA: 'p', entryB: 'q', queueState: 'final', result: 'a', finalizedAt: '2026-10-05T09:00:00Z' }),
+    ];
+    const close = nextForEntries([...base, m({ id: 'next', entryA: 'me', entryB: 'z', queueState: 'on_deck', field: 'Field 1' })], ['me']);
+    expect(close.rest).toEqual({ since: 1, target: 3 });
+    expect(restText(close.rest!)).toMatch(/Only 1 fight has finished since your last one/);
+    const far = nextForEntries([...base, m({ id: 'next', entryA: 'me', entryB: 'z', queueState: 'scheduled', field: 'Field 1', planOrder: 30 }), ...Array.from({ length: 6 }, (_, i) => m({ id: `s${i}`, entryA: 'p', entryB: 'q', queueState: 'scheduled', field: 'Field 1', planOrder: i + 1 }))], ['me']);
+    expect(far.rest).toBeNull();
+    const rested = nextForEntries([...base, m({ id: 'x2', entryA: 'p', entryB: 'q', queueState: 'final', result: 'a', finalizedAt: '2026-10-05T10:06:00Z' }), m({ id: 'x3', entryA: 'p', entryB: 'q', queueState: 'final', result: 'a', finalizedAt: '2026-10-05T10:07:00Z' }), m({ id: 'next', entryA: 'me', entryB: 'z', queueState: 'on_deck', field: 'Field 1' })], ['me']);
+    expect(rested.rest).toBeNull();
+    expect(restText({ since: 0, target: 3 })).toMatch(/You just fought/);
   });
 
   it('says the opponent is undecided when that side is empty, and flags an unnamed approved-later team', () => {
@@ -81,15 +133,27 @@ describe('statusLabel', () => {
     expect(statusLabel('active', 0, null).detail).toBe('Go to your field.');
   });
   it('shows matches ahead for the hole, and is honest when the position is unknown', () => {
-    expect(statusLabel('in_the_hole', 3, 'Field 1').detail).toContain('3 matches ahead of you');
+    expect(statusLabel('in_the_hole', 3, 'Field 1').detail).toContain('3 fights ahead of you');
     expect(statusLabel('in_the_hole', null, null).detail).not.toMatch(/\d matches/);
   });
-  it('does not invent a queue position for a scheduled match', () => {
+  it('does not invent a position for a scheduled match that is not planned', () => {
     const s = statusLabel('scheduled', null, null);
     expect(s.tone).toBe('wait');
-    expect(s.detail).toMatch(/not in the queue yet/);
+    expect(s.detail).toMatch(/Not in the line yet/);
+  });
+  it('gives a planned fight its place from the plan, soon when 3 or fewer are ahead, never a clock time', () => {
+    const soon = statusLabel('scheduled', 2, 'Field 1');
+    expect(soon.label).toBe('Coming up soon');
+    expect(soon.tone).toBe('soon');
+    expect(soon.detail).toContain('2 fights ahead of you on Field 1');
+    const later = statusLabel('scheduled', 9, 'Field 2');
+    expect(later.label).toBe('Coming up');
+    expect(later.detail).toContain('About 9 fights ahead of you on Field 2');
+    expect(later.detail).not.toMatch(/\d:\d\d/);
+    const held = statusLabel('scheduled', null, 'Field 1', true);
+    expect(held.label).toBe('Held for another day');
   });
   it('words the ahead count', () => {
-    expect([aheadText(0), aheadText(1), aheadText(4)]).toEqual(['You are up next', '1 match ahead of you', '4 matches ahead of you']);
+    expect([aheadText(0), aheadText(1), aheadText(4)]).toEqual(['You are up next', '1 fight ahead of you', '4 fights ahead of you']);
   });
 });

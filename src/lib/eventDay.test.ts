@@ -3,7 +3,7 @@ import { toMatch, type CompetitionMatch } from '../data/matches';
 import {
   DEFAULT_FIELD, attentionItems, blockedReason, buildFieldBoards, checkinGaps, competitionProgress, competitionSorts, compareRunOrder, eventIsRunning, fieldKey, fieldName,
   isRunnable, planAdvance, planAfterResult, roundRank, withdrawnEntryIds, type FieldBoard, type RegistrationFlag
-} from './eventDay';
+, fightingNow } from './eventDay';
 
 const NONE = new Set<string>();
 const m = (n: number, over: Partial<CompetitionMatch> = {}): CompetitionMatch => ({
@@ -294,3 +294,15 @@ describe('when the event is running', () => {
   });
 });
 
+
+
+describe('fightingNow (Pack 11)', () => {
+  it('names every person in an active fight with the field they are on, blank field = Field 1', () => {
+    const sides = new Map<string, string[]>([['ea', ['p1']], ['eb', ['p2', 'p3']], ['ec', ['p4']], ['ed', ['p5']]]);
+    const now = fightingNow([
+      { queueState: 'active', entryA: 'ea', entryB: 'eb', field: null },
+      { queueState: 'on_deck', entryA: 'ec', entryB: 'ed', field: 'Field 2' },
+    ], sides);
+    expect([...now.entries()]).toEqual([['p1', 'Field 1'], ['p2', 'Field 1'], ['p3', 'Field 1']]);
+  });
+});
