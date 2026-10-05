@@ -42,7 +42,10 @@ const toOption = (r: FighterRow): FighterOption => {
 
 /** Fighters whose home team is this team. */
 export async function fetchTeamFighters(teamId: string): Promise<FighterOption[]> {
-  const { data, error } = await supabase.from('fighters').select('id,display_name,team_id,teams(name)').eq('team_id', teamId).order('display_name').limit(100);
+  // Pack 09D: inactive fighters are not offered (their history stays). A database without the column (42703) is asked again without the rule.
+  let res: { data: unknown; error: unknown } = await supabase.from('fighters').select('id,display_name,team_id,teams(name)').eq('team_id', teamId).is('inactive_at', null).order('display_name').limit(100);
+  if ((res.error as { code?: string } | null)?.code === '42703') res = await supabase.from('fighters').select('id,display_name,team_id,teams(name)').eq('team_id', teamId).order('display_name').limit(100);
+  const { data, error } = res;
   if (error) throw error;
   return (data as unknown as FighterRow[]).map(toOption);
 }
@@ -51,7 +54,9 @@ export async function fetchTeamFighters(teamId: string): Promise<FighterOption[]
 export async function searchFighters(query: string): Promise<FighterOption[]> {
   const q = query.trim().replace(/[%_,()\\]/g, ' ').trim();
   if (q.length < 2) return [];
-  const { data, error } = await supabase.from('fighters').select('id,display_name,team_id,teams(name)').ilike('display_name', `%${q}%`).order('display_name').limit(15);
+  let res: { data: unknown; error: unknown } = await supabase.from('fighters').select('id,display_name,team_id,teams(name)').ilike('display_name', `%${q}%`).is('inactive_at', null).order('display_name').limit(15);
+  if ((res.error as { code?: string } | null)?.code === '42703') res = await supabase.from('fighters').select('id,display_name,team_id,teams(name)').ilike('display_name', `%${q}%`).order('display_name').limit(15);
+  const { data, error } = res;
   if (error) throw error;
   return (data as unknown as FighterRow[]).map(toOption);
 }

@@ -202,6 +202,8 @@ export function EventWorkspace() {
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <PageHead eyebrow={eventTypeLabel(event.eventType)} title={event.name} lede={event.description || undefined} />
+      {event.archivedAt && <p className="panel info" role="note"><Chip tone="brass">Archived</Chip> <b>This event is archived.</b> It is kept as history; its official results still count.</p>}
+      {event.statsExcludedAt && <p className="panel info" role="note"><Chip tone="live">Not counted</Chip> <b>This event is not counted in official statistics.</b> Its results are kept here for the record but do not count in rankings, medals or career totals.</p>}
       {isSynthetic(synthetic, 'event', event.id) && <p className="panel info" role="note"><TestBadge synthetic /> <b>This is a fictional test event.</b> Its teams, fighters and results are made up. They are not official records and are excluded from rankings and statistics.</p>}
       {event.status === 'draft' && (
         <section className="panel info" role="status" aria-label="Draft event" style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>

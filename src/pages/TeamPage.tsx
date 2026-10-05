@@ -16,6 +16,7 @@ import { friendlyError } from '../lib/friendlyError';
 import { listedFromLabel, locationText, NO_SOURCE_LABEL, PENDING_LABEL, relationLabel, roleLabel, sinceLabel } from '../lib/teamDirectory';
 import { SocialLinksRow } from '../components/SocialLinks';
 import { useAsync } from '../lib/useAsync';
+import { RosterVisibility } from '../components/Lifecycle';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { crestTeam } from './TeamsPage';
 
@@ -121,6 +122,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
 
       <div className="panel info" id="roster" style={{ scrollMarginTop: 96 }}>
         <h3>Roster</h3>
+        {rights.data?.edit && <RosterVisibility teamId={t.id} onChanged={() => roster.reload()} />}
         {roster.loading && <p className="muted">Loading roster…</p>}
         {roster.error != null && <p role="alert">{friendlyError(roster.error, 'Could not load the roster.')}</p>}
         {!roster.loading && !roster.error && (roster.data ?? []).length === 0 && <p className="muted">No roster has been added yet</p>}
@@ -235,7 +237,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         <ul className="plain">
           {tournamentHistory(history.data ?? []).map(h => (
             <li key={h.eventSlug}>
-              <Link to={`/events/${h.eventSlug}`}><b>{h.eventName}</b></Link><TestBadge synthetic={h.synthetic} />
+              <Link to={`/events/${h.eventSlug}`}><b>{h.eventName}</b></Link><TestBadge synthetic={h.synthetic} />{h.statsExcluded && <> <Chip>Not counted in statistics</Chip></>}
               <div className="l">{dateRange(h.startsOn, h.endsOn)}{h.playedAs && <> · played as <b>{h.playedAs}</b></>}</div>
               <div className="placings">{h.placements.map((pl, i) => <span key={i} className="placing"><Chip tone={pl.medal === 'gold' ? 'brass' : pl.medal === 'silver' ? 'steel' : ''}>{placeText(pl.place)}</Chip> {pl.competition}</span>)}</div>
             </li>
