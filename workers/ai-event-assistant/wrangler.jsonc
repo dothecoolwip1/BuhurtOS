@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "buhurtos-ai-event-assistant",
+  "name": "buhurtos-eventai",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-04",
   "ai": {
