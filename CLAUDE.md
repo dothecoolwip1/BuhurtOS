@@ -45,3 +45,15 @@ Supabase remains the backend.
 - Directly test auth, RLS and permission boundaries when they change.
 - In handoffs distinguish repository changes, test/build results, database state, deployment state and live verification.
 - Never claim something is deployed, secure or verified without evidence.
+
+
+## Cloudflare
+
+- BuhurtOS uses Cloudflare only for the AI Event Assistant. Supabase remains the backend and system of record.
+- The existing Worker is `buhurtos-eventai` at `https://buhurtos-eventai.garrettrobson95.workers.dev`.
+- The Worker source and Wrangler config live in `workers/ai-event-assistant/`.
+- Use the official Cloudflare Skills/MCP integration for Cloudflare platform work and current product guidance.
+- Prefer Wrangler for Worker development, preview and deployment.
+- Do not move BuhurtOS hosting, auth, database or permanent sporting data to Cloudflare unless the owner explicitly requests it.
+- AI output is advisory. Never let the Worker directly create or mutate permanent tournament records without the normal BuhurtOS validation and organizer approval path.
+- See `docs/runbooks/CLOUDFLARE_AI.md` before changing or deploying the Worker.
