@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from './supabase';
 import { fetchCompetitionMatchesOrdered, fetchEntries, type CompetitionEntry, type CompetitionMatch } from '../data/matches';
 import { LiveSync, realtimeFilter, type Connection } from './liveSync';
+import { realtimeChannel } from './realtimeChannel';
 
 interface OneCompetition { matches: CompetitionMatch[]; entries: CompetitionEntry[] }
 export interface EventDayData {
@@ -44,7 +45,7 @@ export function useEventDayData(competitionIds: readonly string[]): EventDayData
       const row = (payload.new && 'competition_id' in payload.new ? payload.new : payload.old) as { competition_id?: string } | undefined;
       sync.change(row?.competition_id);
     };
-    const channel = supabase.channel(`event-day-${key}`)
+    const channel = realtimeChannel(`event-day-${key}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'matches', ...(filter ? { filter } : {}) }, onRow)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'entries', ...(filter ? { filter } : {}) }, onRow)
       .subscribe(status => { void sync.status(status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED'); });

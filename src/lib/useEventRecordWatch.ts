@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { supabase } from './supabase';
+import { realtimeChannel } from './realtimeChannel';
 
 /**
  * Tells a screen when a competition of the event became official (or was reopened) or the event was closed / reopened, so it re-reads the
@@ -14,7 +15,7 @@ export function useEventRecordWatch(eventId: string | undefined, onChange: () =>
     if (!eventId) return;
     let t: ReturnType<typeof setTimeout> | undefined;
     const fire = () => { clearTimeout(t); t = setTimeout(() => cb.current(), 400); };
-    const channel = supabase.channel(`event-record-${eventId}`)
+    const channel = realtimeChannel(`event-record-${eventId}`)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'competitions', filter: `event_id=eq.${eventId}` }, fire)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'events', filter: `id=eq.${eventId}` }, fire)
       .subscribe();

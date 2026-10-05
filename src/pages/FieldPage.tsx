@@ -20,6 +20,7 @@ import { useOutbox } from '../lib/useOutbox';
 import { realtimeFilter } from '../lib/liveSync';
 import { fieldOverview } from '../lib/fieldOverview';
 import { NotFoundPage } from './NotFoundPage';
+import { realtimeChannel } from '../lib/realtimeChannel';
 
 /** Mirrors private.can_score: organizer, marshal, scorekeeper, plus the platform owner. The database enforces it again on every call. */
 const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'owner'];
@@ -97,7 +98,7 @@ export function FieldPage() {
     const nudge = () => { window.clearTimeout(timer.current); timer.current = window.setTimeout(reload, 500); };
     const ids = (comps.data ?? []).map(c => c.id);
     const filter = realtimeFilter(ids);   // only this event's competitions, filtered on the server
-    const channel = supabase.channel(`field-${slug}-${field}`).on('postgres_changes', { event: '*', schema: 'public', table: 'matches', ...(filter ? { filter } : {}) }, nudge).subscribe();
+    const channel = realtimeChannel(`field-${slug}-${field}`).on('postgres_changes', { event: '*', schema: 'public', table: 'matches', ...(filter ? { filter } : {}) }, nudge).subscribe();
     return () => { window.clearInterval(poll); window.clearTimeout(timer.current); void supabase.removeChannel(channel); };
   }, [canScore, slug, field, reload, comps.data]);
 
