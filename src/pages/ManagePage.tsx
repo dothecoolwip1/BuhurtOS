@@ -219,6 +219,7 @@ export function ManagePage() {
       {tab === 'teams' && <TeamsTab />}
       {tab === 'broadcast' && <BroadcastTab key={event.id} event={event} />}
       {tab === 'people' && <PeopleTab eventId={event.id} myUserId={userId} />}
+      {tab === 'checkin' && <p className="panel info" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}><Link className="btn btn-ink" to={`/events/${event.slug}/checkin`}>Open the check-in desk</Link><span className="src">Arrivals, armour inspection with what needs fixing, weigh-in and who is ready, for desk staff and inspectors too.</span></p>}
       {tab === 'checkin' && <CheckinPanel regs={all} loading={regs.loading} onChanged={() => setReloadKey(k => k + 1)} />}
       {tab === 'review' && (<>
       <ExportRegistrations slug={event.slug} registrations={all} />

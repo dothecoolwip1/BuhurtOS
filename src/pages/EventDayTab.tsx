@@ -243,7 +243,8 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
         <b>More tools</b>
         <div>
           <Link className="btn btn-line" to={`/events/${slug}/manage?tab=run`}>Run tools: draws, times, fields</Link>
-          <Link className="btn btn-line" to={`/events/${slug}/manage?tab=checkin`}>Check-in</Link>
+          <Link className="btn btn-line" to={`/events/${slug}/checkin`}>Check-in desk and armour</Link>
+          <Link className="btn btn-line" to={`/events/${slug}/manage?tab=checkin`}>Check-in list (admin)</Link>
           <Link className="btn btn-line" to={`/events/${slug}/manage?tab=competitions`}>Competitions</Link>
           <Link className="btn btn-line" to={`/events/${slug}`}>Public event page</Link>
           <Link className="btn btn-line" to={`/events/${slug}/arena`}>Live display (big screen)</Link>

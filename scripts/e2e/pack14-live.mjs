@@ -151,7 +151,7 @@ try {
   check('28. layout=sponsors draws only sponsors; the default background is transparent', (await lay.locator('.bc-sponsors').count()) === 1 && (await lay.evaluate(() => getComputedStyle(document.body).backgroundColor)) === 'rgba(0, 0, 0, 0)');
   await shot(lay, '15-sponsors');
   await lay.goto(BASE + '/broadcast/test-stuff-test/Field%202?layout=full&bg=dark'); await lay.waitForSelector('.bc[data-ready="true"]', { timeout: 30000 });
-  check('29. Field 2 is its own overlay with its own state (Field 1 has no effect on it)', (await lay.getAttribute('.bc', 'data-field')) === 'Field 2' && (await mode(lay)) === 'upcoming', await mode(lay));
+  check('29. Field 2 is its own overlay with its own state (Field 1 has no effect on it)', (await lay.getAttribute('.bc', 'data-field')) === 'Field 2' && (await waitScene(lay, 'upcoming')) === 'upcoming', await mode(lay));
 
   // ---------------------------------------------------------------- 7. recovery
   await tv.goto(BASE + OV + '?bg=dark&status=1'); await tv.waitForSelector('.bc[data-ready="true"]', { timeout: 30000 });

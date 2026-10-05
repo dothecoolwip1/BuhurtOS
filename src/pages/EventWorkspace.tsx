@@ -29,6 +29,8 @@ import { AddToCalendar } from '../components/AddToCalendar';
 import { fetchMyFighterId } from '../data/fighters';
 import { fetchMyInvitation, withdrawMyInvitation, withdrawRegistration, type MyInvitation } from '../data/invitations';
 import { OfficialResults } from '../components/OfficialResults';
+import { CheckinCode } from '../components/CheckinCode';
+import { DeskEntry } from '../components/DeskEntry';
 import { useEventRecordWatch } from '../lib/useEventRecordWatch';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
@@ -108,6 +110,7 @@ function RegistrationCard({ event, mine, signedIn, onChanged }: { event: LiveEve
         <h3 id="mine-h">Your registration</h3>
         <p><Chip tone={reg.status === 'accepted' ? 'win' : 'brass'}>{word}</Chip></p>
         {reg.feeDueCents > 0 && <p style={{ color: 'var(--muted)' }}>Fee: <b>{formatMoney(reg.feeDueCents)}</b> · {reg.feePaid ? 'paid' : 'not marked paid yet'}</p>}
+        {reg.status === 'accepted' && event.status === 'published' && !event.closedAt && <CheckinCode slug={event.slug} registrationId={reg.id} />}
         {reg.status === 'withdrawn' && event.status === 'published' && win === 'open' && <p><Link className="btn btn-line" to={to}>Register again</Link></p>}
         {(reg.status === 'accepted' || reg.status === 'pending') && !confirm && <p><button type="button" className="btn btn-line btn-sm" disabled={busy} onClick={() => setConfirm(true)}>Withdraw from this event</button></p>}
         {confirm && (
@@ -231,6 +234,7 @@ export function EventWorkspace() {
           <span className="src">Who is fighting now, on deck and in the hole, with the running score. For a TV or projector beside the list.</span>
         </p>
       )}
+      {mine.data && <DeskEntry slug={event.slug} roles={mine.data.roles} />}
       {mine.data && <ScorekeepingPanel slug={event.slug} competitions={competitions} roles={mine.data.roles} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}
       <MyTeamPanel eventId={event.id} userId={userId} />
