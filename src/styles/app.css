@@ -1191,3 +1191,10 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 
 /* Pack 11 rehearsal: every control a thumb reaches on event day is at least 40px tall (segment buttons, small buttons, disclosure summaries). */
 details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor:pointer}
+
+/* Pack 12: installed-app polish, alerts, My next fight state */
+.notif-title{font-weight:700;line-height:1.25}
+.offline-banner{border-left:4px solid var(--brass)}
+.mf-state{font:800 clamp(34px,10vw,52px)/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.mf-state.go{color:var(--live)}
+.mf-state.soon{color:var(--brass)}

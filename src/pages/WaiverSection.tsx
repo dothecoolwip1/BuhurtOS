@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Chip } from '../components/ui';
-import { WAIVER_TEMPLATE, WAIVER_TEMPLATE_NOTICE, WAIVER_TEMPLATE_TITLE, templatePlaceholders } from '../content/waiverTemplate';
+import { WAIVER_TEMPLATE, WAIVER_TEMPLATE_NOTICE, WAIVER_TEMPLATE_TITLE, fillWaiverPlaceholders, missingHint, type WaiverValues } from '../content/waiverTemplate';
 import { addWaiverPdf, addWaiverText, fetchWaiverVersions, waiverDocumentUrl, type Waiver } from '../data/setup';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
@@ -33,7 +33,7 @@ export function WaiverDocumentLink({ path, label = 'Open the PDF' }: { path: str
  * The waiver people accept when they register. Three ways in: the starter template (edited before saving), the organizer's own text,
  * or an uploaded PDF. Any change is a NEW version, made on purpose; older signatures stay tied to the version they signed.
  */
-export function WaiverSection({ eventId, onAdded }: { eventId: string; onAdded: () => void }) {
+export function WaiverSection({ eventId, onAdded, values = {} }: { eventId: string; onAdded: () => void; values?: WaiverValues }) {
   const [key, setKey] = useState(0);
   const versions = useAsync(() => fetchWaiverVersions(eventId), [eventId, key]);
   const w: Waiver | undefined = versions.data?.[0];
@@ -48,17 +48,18 @@ export function WaiverSection({ eventId, onAdded }: { eventId: string; onAdded: 
 
   const start = (c: WaiverChoice) => {
     setProblem(null); setFile(null); setChoice(c);
-    if (c === 'template') { setTitle(WAIVER_TEMPLATE_TITLE); setBody(WAIVER_TEMPLATE); }
+    if (c === 'template') { setTitle(WAIVER_TEMPLATE_TITLE); setBody(WAIVER_TEMPLATE); }   // the [BRACKETS] stay in the text; they are filled in from the event when it is saved
     else if (c === 'paste') { setTitle(w?.kind === 'text' ? w.title : 'Waiver and release'); setBody(w?.kind === 'text' ? (w.body ?? '') : ''); }
     else { setTitle(w?.title ?? 'Waiver and release'); setBody(''); }
   };
   const done = () => { setChoice(null); setKey(k => k + 1); onAdded(); };
   const saveText = async (e: React.FormEvent) => {
     e.preventDefault();
-    const p = textWaiverProblem(title, body);
+    const finished = fillWaiverPlaceholders(body, values).text;   // the saved version holds the finished words, never a placeholder
+    const p = textWaiverProblem(title, finished);
     if (p) { setProblem(p); return; }
     setBusy(true); setProblem(null);
-    try { await addWaiverText(eventId, title, body, choice === 'template' ? 'template' : 'pasted'); done(); }
+    try { await addWaiverText(eventId, title, finished, choice === 'template' ? 'template' : 'pasted'); done(); }
     catch (x) { setProblem(friendlyError(x, 'Could not save the waiver.')); } finally { setBusy(false); }
   };
   const saveFile = async (e: React.FormEvent) => {
@@ -69,7 +70,8 @@ export function WaiverSection({ eventId, onAdded }: { eventId: string; onAdded: 
     try { await addWaiverPdf(eventId, title, file, body.trim() || null); done(); }
     catch (x) { setProblem(friendlyError(x, 'Could not upload the waiver.')); } finally { setBusy(false); }
   };
-  const placeholders = choice === 'template' ? templatePlaceholders(body) : [];
+  const preview = fillWaiverPlaceholders(body, values);
+  const placeholders = choice === 'template' || choice === 'paste' ? preview.missing : [];
   const nextVersion = (w?.version ?? 0) + 1;
 
   return (
@@ -103,8 +105,13 @@ export function WaiverSection({ eventId, onAdded }: { eventId: string; onAdded: 
           <label className="field-in">Title<input value={title} maxLength={120} onChange={e => setTitle(e.target.value)} /></label>
           <label className="field-in">Full text people agree to
             <textarea rows={14} value={body} onChange={e => setBody(e.target.value)} />
-            <span>{choice === 'template' ? (placeholders.length ? `Replace ${placeholders.join(', ')} before saving.` : 'Every placeholder is replaced. Read it through once more.') : 'BuhurtOS does not write or check waiver wording. Use the text your organization or insurer gives you.'}</span>
+            <span>{placeholders.length
+              ? `Still to write yourself before saving: ${placeholders.length === 1 ? '1 placeholder' : `${placeholders.length} placeholders`}.`
+              : preview.filled.length ? 'Every placeholder will be filled in when you save. Read it through once more.'
+                : choice === 'template' ? 'Read it through once more.' : 'BuhurtOS does not write or check waiver wording. Use the wording your organization and insurer approved.'}</span>
           </label>
+          {preview.filled.length > 0 && <p className="src" role="status" style={{ margin: 0 }}>Filled in from your event when you save: {preview.filled.map(t => `${t} → ${t === '[EVENT NAME]' ? values.eventName : t === '[ORGANIZATION NAME]' ? values.organization : t === '[VENUE NAME]' ? values.venue : values.region}`).join(' · ')}. Keep the brackets if you like.</p>}
+          {placeholders.length > 0 && <ul className="plain src" style={{ margin: 0 }} aria-label="Placeholders to write yourself">{placeholders.map(t => <li key={t}>{missingHint(t)}</li>)}</ul>}
           <p className="src">Saving makes this version {nextVersion}. People who already registered keep the version they signed; new registrations accept this one.</p>
           {problem && <p role="alert" style={bad}>{problem}</p>}
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

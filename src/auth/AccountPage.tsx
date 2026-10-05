@@ -14,6 +14,8 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { useAuth } from './AuthContext';
 import { usePlatformRole } from './usePlatformRole';
 import { SignIn } from './SignIn';
+import { NotificationSettings } from '../components/NotificationSettings';
+import { InstallCard } from '../components/InstallCard';
 
 const Chevron = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>;
 
@@ -141,6 +143,9 @@ function SignedIn({ session }: { session: Session }) {
           <Row to="/welcome?edit=1&next=%2Faccount" title="Profile details" sub="Your name, how you take part, where you are" />
         </nav>
       </section>
+
+      <InstallCard />
+      <NotificationSettings />
 
       <section aria-labelledby="acct-ev">
         <h2 id="acct-ev" className="acct-h">Events</h2>

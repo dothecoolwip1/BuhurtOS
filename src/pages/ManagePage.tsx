@@ -209,7 +209,7 @@ export function ManagePage() {
       {tab === 'home' && <EventHomeTab key={event.id} event={event} competitions={competitions} regs={all} running={running} onChanged={() => { setEventKey(k => k + 1); setReloadKey(k => k + 1); }} moreTabs={MORE} />}
       {tab === 'build' && <BuildTournamentTab key={event.id} event={event} competitions={competitions} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'eventday' && <EventDayTab key={event.id} event={event} competitions={competitions} />}
-      {tab === 'fighters' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} />}
+      {tab === 'fighters' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} regs={all} slug={event.slug} />}
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'finalize' && <FinalizeTab key={event.id} event={event} competitions={competitions} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}

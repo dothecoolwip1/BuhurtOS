@@ -4,6 +4,7 @@ import { Chip } from '../components/ui';
 import { VenuePicker, type VenueFields } from '../components/VenuePicker';
 import { EVENT_TYPES, REGISTRATION_MODES, type EventType, type RegistrationMode } from '../data/eventTypes';
 import type { LiveEvent } from '../data/api';
+import { fetchActiveOrganizations } from '../data/organizations';
 import { fetchPublishFacts, setEventStatus, updateEvent } from '../data/setup';
 import { isoToLocal } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
@@ -36,6 +37,9 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
   const [confirm, setConfirm] = useState(false);
   const [factsKey, setFactsKey] = useState(0);
   const facts = useAsync(() => fetchPublishFacts(event.id), [event.id, factsKey]);
+  // The organizer's name for the waiver's [ORGANIZATION NAME]: the event's organization, when it has one.
+  const orgs = useAsync(() => (event.organizationId ? fetchActiveOrganizations() : Promise.resolve([])), [event.organizationId]);
+  const orgName = event.organizationId ? (orgs.data?.find(o => o.id === event.organizationId)?.name ?? null) : null;
   const errors = validateSetup(f);
   const set = <K extends keyof SetupForm>(k: K, v: SetupForm[K]) => setF(p => ({ ...p, [k]: v }));
   const err = (k: string) => (show && errors[k] ? <span role="alert" style={{ color: 'var(--live)' }}>{errors[k]}</span> : null);
@@ -115,7 +119,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         {msg && !confirm && <p role={msg.ok ? 'status' : 'alert'} style={{ color: msg.ok ? 'var(--win)' : 'var(--live)' }}>{msg.text}</p>}
       </section>
 
-      {event.registrationMode === 'buhuros' && <WaiverSection eventId={event.id} onAdded={refresh} />}
+      {event.registrationMode === 'buhuros' && <WaiverSection eventId={event.id} onAdded={refresh} values={{ eventName: event.name, venue: event.venue, region: event.region, organization: orgName }} />}
 
       <form onSubmit={save} noValidate className="panel info" id="details" style={{ display: 'grid', gap: 14, scrollMarginTop: 96 }}>
         <h3>Event details</h3>

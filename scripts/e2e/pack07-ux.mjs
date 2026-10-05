@@ -149,7 +149,7 @@ try {
   check('waiver: the starter template says it is not legal advice', inc(t5, 'does not give legal advice'));
   await page.getByTestId('save-waiver').click();
   await sleep(300);
-  check('waiver: the template cannot be saved with placeholders left in', await has('Replace [EVENT NAME]'));
+  check('waiver: the event name is filled in for the organizer, and a placeholder the event cannot answer still blocks saving', await has('Replace [ORGANIZATION NAME]') && !(await has('Replace [EVENT NAME]')));
   const ta = page.getByLabel('Full text people agree to');
   await ta.fill((await ta.inputValue()).replace(/\[[A-Z][A-Z /]+\]/g, 'Red Deer Rumble Winter'));
   await page.getByTestId('save-waiver').click();

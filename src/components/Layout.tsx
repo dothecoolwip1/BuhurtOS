@@ -9,6 +9,8 @@ import { usePlatformRole } from '../auth/usePlatformRole';
 import { ProfileGate } from '../auth/ProfileGate';
 import { NotificationBell } from './NotificationBell';
 import { UpdateBanner } from './UpdateBanner';
+import { OfflineBanner } from './OfflineBanner';
+import { PushWiring } from './PushWiring';
 
 const NAV = [
   { to: '/', label: 'Home', end: true, icon: <path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z" /> },
@@ -54,10 +56,12 @@ export function Layout() {
     document.addEventListener('visibilitychange', ping);
     return () => { window.clearInterval(t); document.removeEventListener('visibilitychange', ping); };
   }, [pathname, userId]);
-  // The phone bar keeps the four most used places; the rest sit under More.
-  const PHONE = NAV.filter(n => n.to !== '/calendar').slice(0, 4);
-  const EXTRA = NAV.slice(5);
-  const extraActive = EXTRA.some(n => pathname.startsWith(n.to)) || pathname.startsWith('/organizations') || pathname.startsWith('/platform') || pathname.startsWith('/calendar') || pathname.startsWith('/my-events');
+  // The phone bar keeps the four most used places; the rest sit under More. Signed in, "My events" (my fights, my registrations) replaces Fighters in the bar.
+  const MY_EVENTS = { to: '/my-events', label: 'My events', end: false, icon: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4m-7 9 2 2 4-4" /></> };
+  const BAR = NAV.filter(n => n.to !== '/calendar').slice(0, 4);
+  const PHONE = session ? [BAR[0], BAR[1], MY_EVENTS, BAR[2]] : BAR;
+  const EXTRA = session ? [...NAV.slice(4, 5), ...NAV.slice(5)] : NAV.slice(5);
+  const extraActive = EXTRA.some(n => pathname.startsWith(n.to)) || pathname.startsWith('/organizations') || pathname.startsWith('/platform') || pathname.startsWith('/calendar') || (!session && pathname.startsWith('/my-events'));
   return (
     <>
       {sample && <div className="mockflag">SAMPLE MODE · <b>Teams, fighters, events and scores here are invented.</b> <button type="button" className="linklike" onClick={() => setSampleMode(false)}>Leave sample mode</button></div>}
@@ -83,7 +87,7 @@ export function Layout() {
           </button>
         </div>
       </header>
-      <main className="wrap"><UpdateBanner /><ProfileGate /><Outlet /></main>
+      <main className="wrap"><PushWiring /><OfflineBanner /><UpdateBanner /><ProfileGate /><Outlet /></main>
       <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.</span><NavLink className="footlink" to="/privacy">Privacy</NavLink>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {PHONE.map(n => (
@@ -105,9 +109,9 @@ export function Layout() {
               Calendar
             </NavLink>
             {session && (
-              <NavLink to="/my-events">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4m-7 9 2 2 4-4" /></svg>
-                My events
+              <NavLink to="/account#notifications">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+                Alerts and notifications
               </NavLink>
             )}
             {EXTRA.map(n => (

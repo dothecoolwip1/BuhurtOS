@@ -13,6 +13,9 @@ import { useAsync } from '../lib/useAsync';
 import { RankTable } from '../components/RankTable';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { LeagueIcon } from '../components/LeagueIcon';
+import { useAuth } from '../auth/AuthContext';
+import { YourDay } from '../components/YourDay';
+import { InstallCard } from '../components/InstallCard';
 
 function LiveCard() {
   return (
@@ -38,13 +41,16 @@ export function HomePage() {
 /** The real home page: only what the database holds. */
 function LiveHome() {
   const live = useAsync(fetchEvents, []);
+  const { session } = useAuth();
   // Only what is still ahead (or on now), soonest first. Drafts and cancelled events are not featured here.
   const today = todayIso();
   const upcoming = (live.data ?? []).filter(e => e.status === 'published' && e.endsOn >= today).map(e => toSummary(e));
   const next = upcoming[0];
   return (
     <>
-      <section className="hero fade-in">
+      {session
+        ? <YourDay />
+        : <section className="hero fade-in">
         <div>
           <p className="eyebrow">Armored combat, in one place</p>
           <h1 style={{ marginTop: 14 }}>Every list.<br />Every fight.<br /><span className="t">Every result.</span></h1>
@@ -54,7 +60,8 @@ function LiveHome() {
             <Link className="btn btn-line" to="/formats">How each style works</Link>
           </div>
         </div>
-      </section>
+      </section>}
+      {!session && <InstallCard />}
       <section className="section">
         <div className="section-head"><h2>Coming up</h2><Link className="more" to="/events">All events →</Link></div>
         <div className="eventlist">
@@ -62,7 +69,7 @@ function LiveHome() {
           {!live.loading && upcoming.length === 0 && <div className="panel info"><h3>No upcoming events yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them. Past events and results are on the Events page.</p></div>}
         </div>
       </section>
-      <section className="section">
+      {!session && <section className="section">
         <div className="section-head"><h2>Pick your fight</h2><Link className="more" to="/formats">All formats and tournament tiers →</Link></div>
         <div className="lg-cards">
           {LEAGUES.map(l => (
@@ -75,7 +82,7 @@ function LiveHome() {
             </Link>
           ))}
         </div>
-      </section>
+      </section>}
     </>
   );
 }

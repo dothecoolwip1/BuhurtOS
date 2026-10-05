@@ -15,7 +15,7 @@ bad() { printf 'FAIL %s\n' "$1"; FAIL=$((FAIL+1)); }
 step "build $DB from every migration"
 $T/build_scratch.sh "$DB" > /tmp/gate-build.log 2>&1 && ok "migrations apply from zero" || { cat /tmp/gate-build.log; bad "migrations apply from zero"; exit 1; }
 
-for g in security_gate captain_gate team_admin_gate activity_gate pack01_gate pack02_gate pack03_gate pack05_gate pack07_gate pack1_gate pack07_pack1_reconcile_gate pack08_gate synthetic_org_rankings_gate pack09a_gate pack09b_gate team_discipline_rankings_gate pack09c_gate pack09d_gate pack10_gate pack11_gate; do
+for g in security_gate captain_gate team_admin_gate activity_gate pack01_gate pack02_gate pack03_gate pack05_gate pack07_gate pack1_gate pack07_pack1_reconcile_gate pack08_gate synthetic_org_rankings_gate pack09a_gate pack09b_gate team_discipline_rankings_gate pack09c_gate pack09d_gate pack10_gate pack11_gate pack12_gate; do
   step "$g"
   out=$(psql -X -q -d "$DB" -v ON_ERROR_STOP=1 -f "$T/$g.sql" 2>&1); echo "$out" | grep -E "PASSED|FAIL|ERROR" | head -3
   echo "$out" | grep -q "PASSED" && ! echo "$out" | grep -qE "FAIL|ERROR" && ok "$g" || bad "$g"
@@ -42,5 +42,8 @@ $T/pack09a_concurrency.sh > /tmp/gate-p9c.log 2>&1; grep -E "FAIL|PACK09A" /tmp/
 
 step "finalize, reopen and close under two sessions"
 $T/pack09c_concurrency.sh > /tmp/gate-p9cc.log 2>&1; grep -E "FAIL|PACK09C" /tmp/gate-p9cc.log | head -4; grep -q "PACK09C CONCURRENCY OK" /tmp/gate-p9cc.log && ok "pack09c concurrency" || bad "pack09c concurrency"
+
+step "push notifications under real commits and two sessions"
+$T/pack12_commit.sh > /tmp/gate-p12c.log 2>&1; grep -E "FAIL|PACK12" /tmp/gate-p12c.log | head -4; grep -q "PACK12 COMMIT OK" /tmp/gate-p12c.log && ok "pack12 commit" || bad "pack12 commit"
 
 echo; if [ "$FAIL" = 0 ]; then echo "DATABASE GATE PASSED"; else echo "DATABASE GATE FAILED ($FAIL)"; exit 1; fi

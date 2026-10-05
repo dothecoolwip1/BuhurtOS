@@ -5,6 +5,7 @@ import { App } from './App';
 import { AuthProvider } from './auth/AuthContext';
 import { initAnalytics } from './lib/analytics';
 import { registerServiceWorker } from './lib/swUpdate';
+import './lib/install';   // listens for the browser's install event as early as possible
 import './styles/app.css';
 import './styles/arena.css';
 

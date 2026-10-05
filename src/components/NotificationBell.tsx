@@ -1,13 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchMyNotifications, markNotificationsRead, notificationText, type AppNotification } from '../data/teamManager';
+import { fetchMyNotifications, markNotificationsRead, notificationText } from '../data/teamManager';
+import { fetchNotificationFeed } from '../data/notifications';
+import { PUSH_EVENT } from './PushWiring';
 import { badgeText, bellLabel, notificationLink, timeAgo, unreadCount, unreadIds } from '../lib/notificationView';
 
 const POLL_MS = 60_000;
 
-/** Header bell for signed-in people. Polls every minute and when the tab regains focus; no realtime. */
+/** What the bell lists: words and destination come ready-made from the database (the same text a push carries). */
+interface BellItem { id: string; unread: boolean; createdAt: string; title: string | null; text: string; to: string }
+
+/** The newer database function gives the words and the tap destination; an older database falls back to the app's own wording. */
+async function loadBell(): Promise<BellItem[]> {
+  try {
+    return (await fetchNotificationFeed(30)).map(n => ({ id: n.id, unread: n.unread, createdAt: n.createdAt, title: n.title, text: n.body, to: n.route }));
+  } catch (e) {
+    if ((e as { code?: string })?.code !== 'PGRST202') throw e;
+    return (await fetchMyNotifications(30)).map(n => ({ id: n.id, unread: n.unread, createdAt: n.createdAt, title: null, text: notificationText(n), to: notificationLink(n) }));
+  }
+}
+
+/** Header bell for signed-in people. Polls every minute, when the tab regains focus and the moment a push arrives; no realtime. */
 export function NotificationBell() {
-  const [items, setItems] = useState<AppNotification[]>([]);
+  const [items, setItems] = useState<BellItem[]>([]);
   const [open, setOpen] = useState(false);
   const [failed, setFailed] = useState(false);
   const [top, setTop] = useState(64);
@@ -15,7 +30,7 @@ export function NotificationBell() {
   const btn = useRef<HTMLButtonElement>(null);
 
   const load = useCallback(async () => {
-    try { setItems(await fetchMyNotifications(30)); setFailed(false); } catch { setFailed(true); }
+    try { setItems(await loadBell()); setFailed(false); } catch { setFailed(true); }
   }, []);
 
   useEffect(() => {
@@ -23,8 +38,9 @@ export function NotificationBell() {
     const t = window.setInterval(() => { if (!document.hidden) void load(); }, POLL_MS);
     const onFocus = () => void load();
     window.addEventListener('focus', onFocus);
+    window.addEventListener(PUSH_EVENT, onFocus);
     document.addEventListener('visibilitychange', onFocus);
-    return () => { window.clearInterval(t); window.removeEventListener('focus', onFocus); document.removeEventListener('visibilitychange', onFocus); };
+    return () => { window.clearInterval(t); window.removeEventListener('focus', onFocus); window.removeEventListener(PUSH_EVENT, onFocus); document.removeEventListener('visibilitychange', onFocus); };
   }, [load]);
 
   useEffect(() => {
@@ -38,7 +54,7 @@ export function NotificationBell() {
 
   const count = unreadCount(items);
   const markRead = async (ids?: string[]) => {
-    setItems(list => list.map(n => (!ids || ids.includes(n.id) ? { ...n, unread: false, readAt: n.readAt ?? new Date().toISOString() } : n)));
+    setItems(list => list.map(n => (!ids || ids.includes(n.id) ? { ...n, unread: false } : n)));
     try { await markNotificationsRead(ids); } catch { void load(); }
   };
 
@@ -55,12 +71,13 @@ export function NotificationBell() {
             {count > 0 && <button type="button" className="linklike" onClick={() => void markRead(unreadIds(items))}>Mark all read</button>}
           </div>
           {failed && <p role="alert" className="src">Could not refresh. Showing the last list.</p>}
-          {items.length === 0 && !failed && <p className="muted" style={{ padding: '4px 14px 12px' }}>Nothing yet. Sign-ups, join requests and decisions show up here.</p>}
+          {items.length === 0 && !failed && <p className="muted" style={{ padding: '4px 14px 12px' }}>Nothing yet. Your fight alerts, team news and registration decisions show up here.</p>}
           <ul className="notif-list">
             {items.map(n => (
               <li key={n.id}>
-                <Link className={`notif-item${n.unread ? ' unread' : ''}`} to={notificationLink(n)} onClick={() => { setOpen(false); if (n.unread) void markRead([n.id]); }}>
-                  <span className="notif-text">{notificationText(n)}</span>
+                <Link className={`notif-item${n.unread ? ' unread' : ''}`} to={n.to} onClick={() => { setOpen(false); if (n.unread) void markRead([n.id]); }}>
+                  {n.title && <b className="notif-title">{n.title}</b>}
+                  <span className="notif-text">{n.text}</span>
                   <span className="notif-time">{timeAgo(n.createdAt)}</span>
                 </Link>
               </li>
