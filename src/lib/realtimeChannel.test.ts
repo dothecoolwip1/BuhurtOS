@@ -1,10 +1,9 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { realtimeChannel } from './realtimeChannel';
 import { supabase } from './supabase';
 
-const files = (dir: string): string[] => readdirSync(dir).flatMap(n => { const p = join(dir, n); return statSync(p).isDirectory() ? files(p) : /\.(ts|tsx)$/.test(n) && !/\.test\./.test(n) ? [p] : []; });
+// Every source file's text (Vite inlines them at test time), so the check below sees the whole app.
+const SOURCES = import.meta.glob<string>(['/src/**/*.{ts,tsx}', '!/src/**/*.test.{ts,tsx}'], { query: '?raw', import: 'default', eager: true });
 
 describe('realtimeChannel (regression: production blank screen on Manage › Broadcast)', () => {
   it('two subscribers asking for the same name get two independent channels', () => {
@@ -14,7 +13,8 @@ describe('realtimeChannel (regression: production blank screen on Manage › Bro
     void supabase.removeChannel(a); void supabase.removeChannel(b);
   });
   it('no screen or hook opens a realtime channel by a shared name (every subscription goes through realtimeChannel)', () => {
-    const offenders = files('src').filter(f => !f.endsWith('realtimeChannel.ts') && /supabase\s*\.\s*channel\s*\(/.test(readFileSync(f, 'utf8')));
+    expect(Object.keys(SOURCES).length).toBeGreaterThan(100);
+    const offenders = Object.entries(SOURCES).filter(([f, text]) => !f.endsWith('/realtimeChannel.ts') && /supabase\s*\.\s*channel\s*\(/.test(text)).map(([f]) => f);
     expect(offenders).toEqual([]);
   });
 });
