@@ -39,8 +39,9 @@ export function NotificationBell() {
     const onFocus = () => void load();
     window.addEventListener('focus', onFocus);
     window.addEventListener(PUSH_EVENT, onFocus);
+    window.addEventListener('online', onFocus);   // back from a dead zone: read what was missed straight away
     document.addEventListener('visibilitychange', onFocus);
-    return () => { window.clearInterval(t); window.removeEventListener('focus', onFocus); window.removeEventListener(PUSH_EVENT, onFocus); document.removeEventListener('visibilitychange', onFocus); };
+    return () => { window.clearInterval(t); window.removeEventListener('focus', onFocus); window.removeEventListener(PUSH_EVENT, onFocus); window.removeEventListener('online', onFocus); document.removeEventListener('visibilitychange', onFocus); };
   }, [load]);
 
   useEffect(() => {

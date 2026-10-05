@@ -5,9 +5,9 @@ import type { NotificationKind } from './teamManager';
 export type NotificationCategory = 'fights' | 'team' | 'events' | 'system';
 export type NotificationSettings = Record<NotificationCategory, boolean>;
 export const CATEGORY_LABEL: Record<NotificationCategory, { title: string; sub: string }> = {
-  fights: { title: 'Fights', sub: 'You are in the hole, on deck or up now. Changes to your fight.' },
+  fights: { title: 'Event-day fight alerts', sub: 'You are 2 fights away, up next, or your fight is ready. Your fight changed field or the schedule changed.' },
   team: { title: 'Team', sub: 'Someone joins your team, join requests and answers.' },
-  events: { title: 'Events', sub: 'Registration accepted or declined, an event you are in is cancelled.' },
+  events: { title: 'Events', sub: 'Announcements from the organizers of an event you are in, registration decisions, a cancelled event. For organizers and head marshals: a result that needs review.' },
   system: { title: 'BuhurtOS', sub: 'Account news such as a fighter profile you claimed.' }
 };
 export const ALL_ON: NotificationSettings = { fights: true, team: true, events: true, system: true };
@@ -47,9 +47,12 @@ export async function fetchPushDevices(): Promise<PushDevice[]> {
   if (error) throw error;
   return (data as DeviceDb[]).map(d => ({ id: d.id, label: d.label, endpointDigest: d.endpoint_digest, createdAt: d.created_at, lastSuccessAt: d.last_success_at }));
 }
-export async function registerPushDevice(sub: { endpoint: string; p256dh: string; auth: string }, label: string): Promise<void> {
-  const { error } = await supabase.rpc('register_push_device', { p_endpoint: sub.endpoint, p_p256dh: sub.p256dh, p_auth: sub.auth, p_label: label });
+/** Returns the device's id on the server, so this browser can later remove exactly its own registration (permission revoked, address replaced). */
+export async function registerPushDevice(sub: { endpoint: string; p256dh: string; auth: string }, label: string): Promise<string | null> {
+  const { data, error } = await supabase.rpc('register_push_device', { p_endpoint: sub.endpoint, p_p256dh: sub.p256dh, p_auth: sub.auth, p_label: label });
   if (error) throw error;
+  const id = (data as { id?: unknown } | null)?.id;
+  return typeof id === 'string' ? id : null;
 }
 export async function removePushDevice(by: { id: string } | { endpoint: string }): Promise<number> {
   const { data, error } = await supabase.rpc('remove_push_device', { p_id: 'id' in by ? by.id : null, p_endpoint: 'endpoint' in by ? by.endpoint : null });
@@ -66,4 +69,20 @@ export async function sendTestNotification(): Promise<{ devices: number }> {
   const { data, error } = await supabase.rpc('send_test_notification');
   if (error) throw error;
   return { devices: (data as { devices: number }).devices };
+}
+
+// ---------------------------------------------------------------- event announcements (organizers of the event; the database checks again)
+export type AnnouncementAudience = 'everyone' | 'fighters';
+export const ANNOUNCEMENT_MAX = 140;
+export interface Announcement { id: string; message: string; audience: AnnouncementAudience; recipients: number; sentAt: string; sentByName: string }
+type AnnouncementDb = { id: string; message: string; audience: AnnouncementAudience; recipients: number; sent_at: string; sent_by_name: string };
+export async function sendEventAnnouncement(eventId: string, message: string, audience: AnnouncementAudience): Promise<{ recipients: number }> {
+  const { data, error } = await supabase.rpc('send_event_announcement', { p_event: eventId, p_message: message, p_audience: audience });
+  if (error) throw error;
+  return { recipients: (data as { recipients: number }).recipients };
+}
+export async function fetchEventAnnouncements(eventId: string): Promise<Announcement[]> {
+  const { data, error } = await supabase.rpc('list_event_announcements', { p_event: eventId });
+  if (error) throw error;
+  return (data as AnnouncementDb[]).map(a => ({ id: a.id, message: a.message, audience: a.audience, recipients: a.recipients, sentAt: a.sent_at, sentByName: a.sent_by_name }));
 }

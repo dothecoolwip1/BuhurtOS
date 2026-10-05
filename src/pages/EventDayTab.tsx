@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FieldBoardView, scoreboardLink, type BoardActions } from '../components/eventday/FieldBoardView';
 import { ResultConflicts } from '../components/ResultReview';
+import { AnnouncementPanel } from '../components/AnnouncementPanel';
 import { Seg } from '../components/ui';
 import type { LiveCompetition, LiveEvent } from '../data/api';
 import { fetchScheduleConflicts } from '../data/conflicts';
@@ -237,6 +238,7 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
       {reviewing && competitions.some(c => c.id === reviewing) && (
         <ReviewSheet event={event} competition={competitions.find(c => c.id === reviewing)!} onClose={() => setReviewing(null)} onChanged={() => { void live.refresh(); setTick(k => k + 1); }} />
       )}
+      <AnnouncementPanel eventId={event.id} published={event.status === 'published'} />
       <nav className="panel info ed-links" aria-label="More event tools">
         <b>More tools</b>
         <div>

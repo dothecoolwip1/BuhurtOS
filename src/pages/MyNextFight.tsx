@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PushAsk } from '../components/PushAsk';
+import { SignIn } from '../auth/SignIn';
 import { Chip } from '../components/ui';
 import { fetchMyEventEntryIds } from '../data/myFight';
 import { fetchMyEvents } from '../data/myEvents';
@@ -40,7 +41,11 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
   const hasCard = !!userId && !!entryIds && entryIds.length > 0;
   useEffect(() => { if (hasCard && hash === '#my-next-fight') box.current?.scrollIntoView({ block: 'start' }); }, [hasCard, hash]);
 
-  if (!userId) return null;
+  // A fight alert opens this address. Signed out (a new phone, an expired session), say so here and sign in on the spot: the page keeps its
+  // address, so the card appears in place the moment the session exists.
+  if (!userId) return hash === '#my-next-fight'
+    ? <section id="my-next-fight" style={{ scrollMarginTop: 80 }} aria-label="My next fight"><SignIn reason="Sign in to see your next fight and your place in the line. You will stay on this event." /></section>
+    : null;
   if (mine.error != null) return <p role="alert">{friendlyError(mine.error, 'Could not load your fights.')}</p>;
   if (!entryIds || entryIds.length === 0) return null;
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { deviceLabel, installHelp, platformOf, pushSupport, quietRoute, sameKey, stillDismissed, urlBase64ToBytes } from './pushSupport';
+import { deviceLabel, installHelp, platformOf, pushSupport, quietRoute, sameKey, permissionLabel, stillDismissed, urlBase64ToBytes } from './pushSupport';
 
 const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1';
 const ANDROID = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36';
@@ -71,5 +71,17 @@ describe('key helpers', () => {
     expect(sameKey(bytes.buffer.slice(0) as ArrayBuffer, bytes)).toBe(true);
     expect(sameKey(new Uint8Array([1, 2]).buffer, bytes)).toBe(false);
     expect(sameKey(null, bytes)).toBe(false);
+  });
+});
+
+describe('permissionLabel (Pack 15: browser permission shown apart from the BuhurtOS switch)', () => {
+  it('says plainly what the browser allows', () => {
+    expect(permissionLabel('ready', 'granted')).toBe('Allowed');
+    expect(permissionLabel('ready', 'denied')).toBe('Blocked');
+    expect(permissionLabel('ready', 'default')).toBe('Not asked yet');
+  });
+  it('iPhone in Safari needs the Home Screen app first; a browser without push says so', () => {
+    expect(permissionLabel('needs-install', 'default')).toBe('Add BuhurtOS to your Home Screen first');
+    expect(permissionLabel('unsupported', 'unsupported')).toBe('Not available in this browser');
   });
 });

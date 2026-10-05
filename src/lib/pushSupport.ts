@@ -65,3 +65,10 @@ export function sameKey(a: ArrayBuffer | null | undefined, b: Uint8Array): boole
   const x = new Uint8Array(a);
   return x.length === b.length && x.every((v, i) => v === b[i]);
 }
+
+/** What the BROWSER allows for BuhurtOS on this device, in words (kept apart from whether BuhurtOS sends to it, which is the person's choice). */
+export function permissionLabel(support: PushSupport, permission: NotificationPermission | 'unsupported'): string {
+  if (support === 'unsupported' || permission === 'unsupported') return 'Not available in this browser';
+  if (support === 'needs-install') return 'Add BuhurtOS to your Home Screen first';
+  return permission === 'granted' ? 'Allowed' : permission === 'denied' ? 'Blocked' : 'Not asked yet';
+}
