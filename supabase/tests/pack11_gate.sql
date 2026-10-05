@@ -124,5 +124,71 @@ select t.as_anon();
 select t.expect_error('anonymous cannot call fighting_elsewhere', 'select private.fighting_elsewhere(''00000000-0000-0000-0000-00000000e111'', ''00000000-0000-0000-0000-00000000ab02'')');
 select t.as_admin();
 
+-- ---------------------------------------------------------------- withdrawal + bye progression: a future bracket side becomes a walkover as soon as its feeder finishes
+select t.as_user('00000000-0000-0000-0000-0000000000a9');
+select public.create_competition('00000000-0000-0000-0000-00000000e111', 'Men Polearm Withdrawal', 'polearm', 'men') as k5 \gset
+select t.as_admin();
+insert into public.fighters (id, display_name, gender, disciplines) values
+  ('00000000-0000-0000-0000-00000000f108', 'Galen Birch', 'male', '{}');
+insert into public.entries (id, competition_id, fighter_id, status) values
+  ('00000000-0000-0000-0000-00000000ee10', :'k5', '00000000-0000-0000-0000-00000000f101', 'registered'),
+  ('00000000-0000-0000-0000-00000000ee11', :'k5', '00000000-0000-0000-0000-00000000f105', 'registered'),
+  ('00000000-0000-0000-0000-00000000ee12', :'k5', '00000000-0000-0000-0000-00000000f106', 'registered'),
+  ('00000000-0000-0000-0000-00000000ee13', :'k5', '00000000-0000-0000-0000-00000000f107', 'registered'),
+  ('00000000-0000-0000-0000-00000000ee14', :'k5', '00000000-0000-0000-0000-00000000f108', 'registered');
+-- e10 has the bye into semifinal 1. Quarterfinal q1 later supplies its opponent. Semifinal 2 is already known.
+insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, next_match_id, next_slot, queue_state) values
+  ('00000000-0000-0000-0000-00000000ab10', :'k5', 'final', 'Final', 0, null, null, null, null, 'scheduled'),
+  ('00000000-0000-0000-0000-00000000ab11', :'k5', 'third_place', 'Third place', 0, null, null, null, null, 'scheduled'),
+  ('00000000-0000-0000-0000-00000000ab12', :'k5', 'elimination', 'Semifinal', 0, '00000000-0000-0000-0000-00000000ee10', null, '00000000-0000-0000-0000-00000000ab10', 'a', 'scheduled'),
+  ('00000000-0000-0000-0000-00000000ab13', :'k5', 'elimination', 'Semifinal', 1, '00000000-0000-0000-0000-00000000ee13', '00000000-0000-0000-0000-00000000ee14', '00000000-0000-0000-0000-00000000ab10', 'b', 'scheduled'),
+  ('00000000-0000-0000-0000-00000000ab14', :'k5', 'elimination', 'Quarterfinal', 0, '00000000-0000-0000-0000-00000000ee11', '00000000-0000-0000-0000-00000000ee12', '00000000-0000-0000-0000-00000000ab12', 'b', 'scheduled');
+
+select t.as_user('00000000-0000-0000-0000-0000000000a3');
+select t.expect_error('a bystander cannot withdraw an entrant', 'select public.withdraw_entry(''00000000-0000-0000-0000-00000000ee10'', ''injured shoulder'', true)');
+
+select t.as_user('00000000-0000-0000-0000-0000000000a9');
+select t.expect_eq('withdrawing the bye fighter records no walkover until the other semifinal side is known',
+  public.withdraw_entry('00000000-0000-0000-0000-00000000ee10', 'Injured shoulder', true), 0);
+select t.expect_eq('the withdrawal reason is audited',
+  (select details ->> 'reason' from public.audit_log where action = 'entrant.withdrawn' and subject = '00000000-0000-0000-0000-00000000ee10' order by at desc limit 1), 'Injured shoulder');
+
+-- Finish the quarterfinal. Its winner enters semifinal 1; the new server convergence immediately awards that semifinal by walkover.
+select public.finalize_match('00000000-0000-0000-0000-00000000ab14', 'a', 5, 2, '{}'::jsonb,
+  (select version from public.matches where id = '00000000-0000-0000-0000-00000000ab14'));
+select t.expect_eq('when the feeder reveals the withdrawn bye opponent, semifinal 1 becomes an automatic walkover',
+  (select queue_state || '|' || result || '|' || (detail ->> 'walkover') || '|' || (detail ->> 'reason')
+     from public.matches where id = '00000000-0000-0000-0000-00000000ab12'),
+  'final|b|true|Injured shoulder');
+select t.expect_eq('the walkover winner continues into the final',
+  (select entry_a from public.matches where id = '00000000-0000-0000-0000-00000000ab10'),
+  '00000000-0000-0000-0000-00000000ee11'::uuid);
+select t.expect_eq('the withdrawn semifinal loser is held for the third-place path until the other semifinal is known',
+  (select entry_a from public.matches where id = '00000000-0000-0000-0000-00000000ab11'),
+  '00000000-0000-0000-0000-00000000ee10'::uuid);
+
+-- Finish semifinal 2. Its active loser fills third place opposite the withdrawn entrant, which must also settle automatically.
+select public.finalize_match('00000000-0000-0000-0000-00000000ab13', 'a', 5, 3, '{}'::jsonb,
+  (select version from public.matches where id = '00000000-0000-0000-0000-00000000ab13'));
+select t.expect_eq('third place settles automatically instead of leaving the bracket stuck',
+  (select queue_state || '|' || result || '|' || (detail ->> 'walkover')
+     from public.matches where id = '00000000-0000-0000-0000-00000000ab11'),
+  'final|b|true');
+select t.expect_eq('the final now has two active entrants and remains for a real fight',
+  (select (entry_a is not null and entry_b is not null and queue_state <> 'final')::text from public.matches where id = '00000000-0000-0000-0000-00000000ab10'),
+  'true');
+select public.finalize_match('00000000-0000-0000-0000-00000000ab10', 'a', 5, 4, '{}'::jsonb,
+  (select version from public.matches where id = '00000000-0000-0000-0000-00000000ab10'));
+select t.expect_eq('the withdrawal bracket can finish completely',
+  (select count(*) from public.matches where competition_id = :'k5' and queue_state <> 'final'), 0::bigint);
+select t.expect_eq('automatic walkovers are idempotent once the bracket is settled',
+  private.resolve_withdrawn_walkovers(:'k5'::uuid), 0);
+select t.expect_eq('private withdrawal convergence is not executable by authenticated users',
+  has_function_privilege('authenticated', 'private.resolve_withdrawn_walkovers(uuid)', 'EXECUTE'), false);
+select t.expect_eq('the public withdrawal command is authenticated-only',
+  has_function_privilege('anon', 'public.withdraw_entry(uuid,text,boolean)', 'EXECUTE'), false);
+
+select t.as_admin();
+
 select 'PASSED ' || count(*) || ' checks' as result from t.log;
 rollback;
