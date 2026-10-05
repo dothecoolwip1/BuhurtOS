@@ -9,6 +9,9 @@ import { useArenaData } from '../../lib/useArenaData';
 import { useAsync } from '../../lib/useAsync';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
 import { useEventRecordWatch } from '../../lib/useEventRecordWatch';
+import { useLystPublic } from '../../lib/lyst/useLystPublic';
+import { useNow } from '../../lib/lyst/useLystState';
+import { MODE_LABEL, formatClock, remainingMs, type ServerClock, type TimerMode } from '../../lib/lyst/timer';
 
 /**
  * The venue display: what spectators see on a TV, projector or phone beside the list. Public, no sign-in, published events only, nothing but the
@@ -25,6 +28,7 @@ export function ArenaPage() {
   const competitions = useMemo(() => loaded.data?.competitions ?? [], [loaded.data]);
   const ids = useMemo(() => (event?.status === 'published' ? competitions.map(c => c.id) : []), [event?.status, competitions]);
   const live = useArenaData(ids);
+  const lyst = useLystPublic(event?.id, ids.length > 0);
   const fields = useMemo(() => arenaFields(live.matches), [live.matches]);
   const wanted = fieldParam ?? search.get('field');
   const field = pickField(fields, wanted);
@@ -37,7 +41,7 @@ export function ArenaPage() {
     return () => window.clearTimeout(id);
   }, [live.matches, field, now]);
   useEffect(() => { setNow(Date.now()); }, [live.updatedAt]);
-  const view = useMemo(() => buildArena({ matches: live.matches, scores: live.scores, competitions, field, now }), [live.matches, live.scores, competitions, field, now]);
+  const view = useMemo(() => buildArena({ matches: live.matches, scores: live.scores, competitions, field, now, lyst: lyst.rows }), [live.matches, live.scores, competitions, field, now, lyst.rows]);
   useDocumentTitle(event ? `${view.field} · ${event.name}` : 'Live display');
 
   // ---- fullscreen, and a bar that gets out of the way while nobody is touching the screen
@@ -93,7 +97,7 @@ export function ArenaPage() {
         <p className="ar-field">{view.field}<span className="ar-count">{view.total > 0 ? `${view.done} of ${view.total} fights done` : ''}</span></p>
         {event.closedAt
           ? <div className="ar-center ar-enter" key="closed"><p className="ar-label">Event complete</p><h1 className="ar-big">{event.name}</h1><p className="ar-note">Every competition is official.</p><Link className="ar-btn" to={`/events/${event.slug}`}>View results</Link></div>
-          : <Stage view={view} phase={phase} eventStarts={dateRange(event.startsOn, event.endsOn)} timeNote={event.timeNote} loading={live.loading && live.updatedAt === null} resultsTo={competitions.some(c => c.status === 'finished') ? `/events/${event.slug}` : null} />}
+          : <Stage clock={lyst.clock} view={view} phase={phase} eventStarts={dateRange(event.startsOn, event.endsOn)} timeNote={event.timeNote} loading={live.loading && live.updatedAt === null} resultsTo={competitions.some(c => c.status === 'finished') ? `/events/${event.slug}` : null} />}
       </main>
 
       <footer className="ar-next">
@@ -105,10 +109,10 @@ export function ArenaPage() {
   );
 }
 
-function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo }: { view: ArenaView; phase: 'past' | 'upcoming' | 'current'; eventStarts: string; timeNote: string | null; loading: boolean; resultsTo: string | null }) {
+function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo, clock }: { clock: ServerClock; view: ArenaView; phase: 'past' | 'upcoming' | 'current'; eventStarts: string; timeNote: string | null; loading: boolean; resultsTo: string | null }) {
   const s = view.state;
   if (loading) return <div className="ar-center" key="loading"><p className="ar-note">Loading…</p></div>;
-  if (s.kind === 'fighting') return <Fight key={s.now.id} label="Now fighting" fight={s.now} />;
+  if (s.kind === 'fighting') return <Fight key={s.now.id} label="Now fighting" fight={s.now} clock={clock} />;
   if (s.kind === 'result') {
     return <Fight key={`r-${s.result.id}`} label="Result" fight={s.result} result winner={s.drawn ? 'Draw' : s.winnerName ? <>Winner: <b>{s.winnerName}</b></> : 'Result official'} />;
   }
@@ -130,10 +134,10 @@ function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo }: { vie
   );
 }
 
-function Fight({ label, fight, result = false, muted = false, winner = null }: { label: string | null; fight: ArenaFight; result?: boolean; muted?: boolean; winner?: ReactNode }) {
+function Fight({ label, fight, result = false, muted = false, winner = null, clock }: { label: string | null; fight: ArenaFight; result?: boolean; muted?: boolean; winner?: ReactNode; clock?: ServerClock }) {
   const showScore = result || fight.live;
   return (
-    <div className={`ar-fight${result ? ' ar-done' : ''}${muted ? ' ar-muted' : ''} ar-enter`}>
+    <div className={`ar-fight${result ? ' ar-done' : ''}${muted ? ' ar-muted' : ''}${fight.lyst?.timer && !result ? ' has-clock' : ''} ar-enter`}>
       {label && <p className="ar-label">{label}</p>}
       <div className="ar-sides">
         <Side k="a" fight={fight} showScore={showScore} />
@@ -141,6 +145,7 @@ function Fight({ label, fight, result = false, muted = false, winner = null }: {
         <Side k="b" fight={fight} showScore={showScore} />
       </div>
       <p className="ar-ctx">{fight.competition} · {fight.stage}</p>
+      {fight.lyst?.timer && clock && !result && <ArenaClock timer={fight.lyst.timer} clock={clock} />}
       {fight.phase && <p className="ar-phase">{fight.phase}</p>}
       {winner && <p className="ar-winner">{winner}</p>}
       {!result && !fight.live && !muted && <p className="ar-note">The score appears here as soon as the scorer's device reports it.</p>}
@@ -153,6 +158,7 @@ function Side({ k, fight, showScore }: { k: 'a' | 'b'; fight: ArenaFight; showSc
   return (
     <div className={`ar-side ${k}${side.winner ? ' won' : ''}`}>
       <span className="ar-name">{side.name}</span>
+      {fight.lyst && fight.lyst.marks.filter(m => m.side === k).length > 0 && <span className="ar-marks">{fight.lyst.marks.filter(m => m.side === k).map((m, i) => <b key={i} className="ar-mark">{m.text}</b>)}</span>}
       {showScore && <span className="ar-score" aria-label={`${side.name}: ${side.score ?? 0}`}>{side.score ?? 0}{side.winner && <span className="sr-only"> (winner)</span>}</span>}
     </div>
   );
@@ -164,5 +170,19 @@ function NextSlot({ label, fight }: { label: string; fight: ArenaFight | null })
       <span className="ar-slot-k">{label}</span>
       {fight ? <><span className="ar-slot-n"><b>{fight.a.name}</b> <i>vs</i> <b>{fight.b.name}</b></span><span className="ar-slot-c">{fight.competition} · {fight.stage}</span></> : <span className="ar-slot-n muted">—</span>}
     </div>
+  );
+}
+
+/** The official clock, from server state. A display with a wrong clock still shows the right time (the offset is measured on every read). */
+function ArenaClock({ timer, clock }: { timer: NonNullable<NonNullable<ArenaFight['lyst']>['timer']>; clock: ServerClock }) {
+  const running = timer.status === 'running';
+  const now = useNow(running, 250);
+  const left = remainingMs({ status: timer.status, remaining_ms: timer.remainingMs, started_at: timer.startedAt }, clock.now(now));
+  const label = MODE_LABEL[timer.mode as TimerMode] ?? 'Clock';
+  return (
+    <p className={`ar-clock ${running ? 'running' : timer.status}`} role="timer" aria-label={`${label} ${formatClock(left)}${timer.status === 'paused' ? ', paused' : ''}`}>
+      <span className="ar-clock-k">{label}{timer.status === 'paused' ? ' · paused' : ''}</span>
+      <span className="ar-clock-n">{formatClock(left)}</span>
+    </p>
   );
 }

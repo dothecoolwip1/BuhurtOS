@@ -31,6 +31,7 @@ import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
 import { ArenaPage } from './pages/arena/ArenaPage';
+import { CounterPage } from './pages/lyst/CounterPage';
 
 export function App() {
   return (
@@ -38,6 +39,10 @@ export function App() {
       {/* The venue display lives outside the site chrome: no header, menus or footer on a screen beside the list. */}
       <Route path="events/:eventId/arena" element={<ArenaPage />} />
       <Route path="events/:eventId/arena/:field" element={<ArenaPage />} />
+      {/* The counter's phone: no site chrome, one screen, one huge button. */}
+      <Route path="lyst/join" element={<CounterPage />} />
+      <Route path="lyst/join/:code" element={<CounterPage />} />
+      <Route path="lyst/counter" element={<CounterPage />} />
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />

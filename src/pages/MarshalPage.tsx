@@ -24,7 +24,7 @@ function SyncBar({ waiting }: { waiting: number }) {
   );
 }
 
-type Record_ = (kind: string, subject: string, payload: unknown) => Promise<void>;
+type Record_ = (kind: string, subject: string, payload: unknown) => Promise<unknown>;
 
 /** Sample preview: invented fixtures on the shared boards. Nothing here reaches the database. */
 function PreviewGroup({ record }: { record: Record_ }) {

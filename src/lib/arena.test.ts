@@ -93,3 +93,42 @@ describe('what the display shows', () => {
     expect(v.state.kind === 'fighting' && v.state.now.b.name).toBe('To be decided');
   });
 });
+
+describe('Lyst Control on the public display: official state only', () => {
+  const row = (matchId: string, over: Record<string, unknown> = {}) => ({
+    match_id: matchId, event_id: 'e', field_key: 'field 1', queue_state: 'active', timer_mode: 'fight', timer_status: 'running', timer_duration_ms: 60000, timer_remaining_ms: 41000, timer_started_at: '2026-10-04T16:00:00Z', timer_rev: 3, timer_round: 2,
+    round_no: 2, round_status: 'running', official_a: 6, official_b: 5, rounds_confirmed: 1, discipline: [], server_now: '2026-10-04T16:00:05Z', ...over
+  }) as unknown as import('../data/lyst').LystPublic;
+  const withLyst = (lyst: ReturnType<typeof row>[], scores: LiveScore[] = []) => buildArena({ matches: [m(1, { queueState: 'active' })], scores, competitions: COMPS, field: 'Field 1', now: NOW, lyst });
+  const now = (v: ReturnType<typeof arena>) => (v.state.kind === 'fighting' ? v.state.now : null);
+
+  it('shows the marshal-confirmed totals and the round, not a running snapshot', () => {
+    const f = now(withLyst([row('m1')], [score('m1', 99, 99)]));
+    expect(f).toMatchObject({ live: true, phase: 'Round 2', a: { score: 6 }, b: { score: 5 } });
+    expect(f?.detail).toBeNull();
+  });
+  it('says "Scores being confirmed…" until the marshal\'s call is recorded: no provisional number is shown as official', () => {
+    const f = now(withLyst([row('m1', { round_status: 'confirming', timer_mode: 'break' })]));
+    expect(f?.phase).toBe('Scores being confirmed…');
+    expect(f?.a.score).toBe(6);   // the CONFIRMED rounds so far, nothing from this round
+  });
+  it('between rounds it says so', () => { expect(now(withLyst([row('m1', { round_status: 'confirmed', round_no: 1 })]))?.phase).toBe('After round 1'); });
+  it('carries the clock and the marshal\'s penalties (official records), with the event\'s own card words', () => {
+    const f = now(withLyst([row('m1', { discipline: [{ round: 1, side: 'a', kind: 'card', label: 'Yellow card', amount: 0 }, { round: 1, side: 'b', kind: 'deduction', label: null, amount: 1 }, { round: 2, side: 'b', kind: 'dq', label: null, amount: 0 }] })]));
+    expect(f?.lyst?.timer).toMatchObject({ mode: 'fight', status: 'running', remainingMs: 41000, round: 2 });
+    expect(f?.lyst?.marks).toEqual([{ side: 'a', text: 'Yellow card' }, { side: 'b', text: '−1 point' }, { side: 'b', text: 'Disqualified' }]);
+  });
+  it('never exposes anything but official fields (no counters, seats, learners, reasons or accounts)', () => {
+    const f = now(withLyst([row('m1')]));
+    expect(JSON.stringify(f)).not.toMatch(/counter|seat|learning|reason|user|account|tally/i);
+  });
+  it('an event not using Lyst Control behaves exactly as before', () => {
+    const f = now(buildArena({ matches: [m(1, { queueState: 'active' })], scores: [score('m1', 3, 1)], competitions: COMPS, field: 'Field 1', now: NOW }));
+    expect(f).toMatchObject({ phase: 'Round 1 of 2', a: { score: 3 } });
+    expect(f?.lyst).toBeUndefined();
+  });
+  it('once final, the official result is the match result (lyst state never overrides it)', () => {
+    const v = buildArena({ matches: [m(1, { queueState: 'final', result: 'a', winnerEntryId: 'e1a', scoreA: 13, scoreB: 9, finalizedAt: new Date(NOW - 1000).toISOString() })], scores: [], competitions: COMPS, field: 'Field 1', now: NOW, lyst: [row('m1', { official_a: 1, official_b: 1 })] });
+    expect(v.state.kind === 'result' && v.state.result).toMatchObject({ a: { score: 13, winner: true }, b: { score: 9 } });
+  });
+});
