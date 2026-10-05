@@ -481,7 +481,9 @@ try {
     const up0Text = ((await (await up0.$('.ed-up-body')).innerText()) ?? '').replace(/\s+/g, ' ');
     await (await up0.$('button:has-text("Run next")')).click();
     const [na, nbName] = up0Text.split(' Change')[0].split(/ (?:vs|VS) /).map(t => t.replace(/ (Men|Women) .*$/, '').trim());
-    const movedId = sql(`select m.id from public.matches m join public.entries ea on ea.id = m.entry_a join public.entries eb on eb.id = m.entry_b left join public.fighters fa on fa.id = ea.fighter_id left join public.teams ta on ta.id = ea.team_id left join public.fighters fb on fb.id = eb.fighter_id left join public.teams tb on tb.id = eb.team_id join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and lower(coalesce(fa.display_name, ta.name)) = lower('${na.replace(/'/g, "''")}') and lower(coalesce(fb.display_name, tb.name)) = lower('${nbName.replace(/'/g, "''")}') limit 1`);
+    // Capture the exact row the organizer moved. Team names can recur across several round-robin matches, so names alone are not a stable identity.
+    // move_match_in_queue writes the subject match id to queue.reordered.
+    const movedId = await waitDb(() => sql(`select subject from public.audit_log where event_id = '${EV}' and action = 'queue.reordered' and details ->> 'action' = 'first' order by at desc limit 1`), (v) => v.length === 36);
     const nowDeck = await (async () => { let v = ''; for (let i = 0; i < 40; i += 1) { v = sql(`select queue_state from public.matches where id = '${movedId}'`); if (v === 'on_deck' || v === 'in_the_hole') break; await sleep(500); } return v; })();
     check('Run next puts that fight at the front of the line: it is called now (on deck, or in the hole when on deck is taken), the rest shuffle back (no drag and drop)', nowDeck === 'on_deck' || nowDeck === 'in_the_hole', `${up0Text.slice(0, 60)} -> ${nowDeck}`);
     await page.reload(); await field(page, 'Field 1').locator('li.ed-slot').first().waitFor({ timeout: 30000 }); await sleep(800);
