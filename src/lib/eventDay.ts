@@ -319,6 +319,16 @@ export function attentionItems(i: AttentionInput): AttentionItem[] {
 }
 
 // ---------------------------------------------------------------- wording for a match
+/** Fighters who are in a fight that is on right now (active), on any field: a fight with one of them must not start elsewhere. Pack 11. */
+export function fightingNow(matches: Iterable<Pick<CompetitionMatch, 'queueState' | 'entryA' | 'entryB' | 'field'>>, sides: ReadonlyMap<string, readonly string[]>): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const m of matches) {
+    if (m.queueState !== 'active') continue;
+    for (const entry of [m.entryA, m.entryB]) for (const p of (entry ? sides.get(entry) ?? [] : [])) if (!out.has(p)) out.set(p, fieldName(m.field));
+  }
+  return out;
+}
+
 export const matchTitle = versus;
 /** "Longsword · Semifinal" or "5v5 · Pool A, Round 2". */
 export function matchContext(m: Pick<CompetitionMatch, 'pool' | 'roundLabel' | 'stage'>, competitionName: string): string {

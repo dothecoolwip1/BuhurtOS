@@ -107,7 +107,7 @@ main{padding-block:28px 64px}
 .tabs button[aria-selected="true"]{color:var(--ink)}
 .tabs button[aria-selected="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--temper)}
 .seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--ground);border:1px solid var(--line);overflow-x:auto;max-width:100%;scrollbar-width:none}
-.seg button{padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted);white-space:nowrap;min-height:36px}
+.seg button{padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted);white-space:nowrap;min-height:40px}
 .seg button[aria-pressed="true"]{background:var(--raised);color:var(--ink);box-shadow:var(--shadow)}
 .src{font:500 12.5px/1.45 var(--f-body);color:var(--muted)}
 .grid-2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
@@ -482,7 +482,7 @@ main :where(div, section, article, label) { min-width: 0; }
 .pagehead h1{font-size:clamp(38px,5vw,60px)}
 .pagehead p{color:var(--muted);margin-top:8px;max-width:64ch}
 .acts{display:flex;gap:10px;flex-wrap:wrap}
-.btn-sm{min-height:36px;padding:0 14px;font-size:14px}
+.btn-sm{min-height:40px;padding:0 14px;font-size:14px}
 .btn-ok{background:var(--win);color:var(--surface)}
 .btn-bad{border:1px solid color-mix(in oklab,var(--live) 40%,transparent);color:var(--live);background:var(--raised)}
 .attn{display:grid}
@@ -1188,3 +1188,6 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .chip.loss{color:var(--live);background:var(--live-soft);border-color:transparent}
 .fightline .linklike{padding:0}
 @media (max-width:520px){.statcell b{font-size:24px}.statgrid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}}
+
+/* Pack 11 rehearsal: every control a thumb reaches on event day is at least 40px tall (segment buttons, small buttons, disclosure summaries). */
+details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor:pointer}

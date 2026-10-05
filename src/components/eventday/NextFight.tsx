@@ -3,6 +3,7 @@ import { Chip } from '../ui';
 import { Dialog } from '../Dialog';
 import type { CompetitionMatch } from '../../data/matches';
 import { sideLabel } from '../../lib/entryLabel';
+import { fightingNow } from '../../lib/eventDay';
 import { planHeadline, restWords, type Plan, type PlannedFight } from '../../lib/planner';
 
 export interface NextFightActions {
@@ -47,6 +48,12 @@ export function NextFight({ field, label, plan, matches, fighting, called, sides
   const m = f ? matches.get(f.matchId) : undefined;
   if (!f || !m) return null;
   const others = lane.slice(1).map(x => ({ f: x, m: matches.get(x.matchId)! })).filter(x => x.m);
+  // Pack 11: a fight further down the line may hold someone who is fighting on another field at this moment. It can be made next, never started now.
+  const busyNow = fightingNow(matches.values(), sides);
+  const busyIn = (o: CompetitionMatch): string | null => {
+    for (const entry of [o.entryA, o.entryB]) for (const p of (entry ? sides.get(entry) ?? [] : [])) { const where = busyNow.get(p); if (where) return `${names.get(p) ?? 'Someone'} is fighting now on ${where}`; }
+    return null;
+  };
   const lines = restLines(f, m, sides, names);
   const missing = notReady.get(m.id) ?? [];
   const short = f.short;
@@ -93,14 +100,18 @@ export function NextFight({ field, label, plan, matches, fighting, called, sides
     return (
         <Dialog title={`Choose the next fight on ${label}`} onClose={() => setChoosing(false)} variant="drawer">
           <ul className="ed-choose">
-            {others.map(({ f: x, m: o }) => (
-              <li key={o.id} className="panel">
-                <b>{sideLabel(o.entryA, o.nameA, 'Side A')} vs {sideLabel(o.entryB, o.nameB, 'Side B')}</b>
-                <span className="src">{competitionNames.get(o.competitionId) ?? ''} · {o.roundLabel}</span>
-                <span className={x.short ? 'warn' : ''}>{planHeadline(x, plan.target)}</span>
-                <button type="button" className="btn btn-line" disabled={actions.busy} onClick={() => { setChoosing(false); actions.choose(o, !fighting); }}>{fighting ? 'Make this next' : 'Run this instead'}</button>
-              </li>
-            ))}
+            {others.map(({ f: x, m: o }) => {
+              const busy = fighting ? null : busyIn(o);
+              return (
+                <li key={o.id} className={`panel${busy ? ' ed-busy' : ''}`}>
+                  <b>{sideLabel(o.entryA, o.nameA, 'Side A')} vs {sideLabel(o.entryB, o.nameB, 'Side B')}</b>
+                  <span className="src">{competitionNames.get(o.competitionId) ?? ''} · {o.roundLabel}</span>
+                  <span className={x.short ? 'warn' : ''}>{planHeadline(x, plan.target)}</span>
+                  {busy && <span className="warn" role="status">{busy}: it cannot start now.</span>}
+                  <button type="button" className="btn btn-line" disabled={actions.busy || !!busy} onClick={() => { setChoosing(false); actions.choose(o, !fighting); }}>{fighting ? 'Make this next' : 'Run this instead'}</button>
+                </li>
+              );
+            })}
           </ul>
         </Dialog>
     );

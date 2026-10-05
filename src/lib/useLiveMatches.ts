@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase';
-import { fetchCompetitionMatches, fetchEntries, fetchStandings, type CompetitionEntry, type CompetitionMatch, type Standing } from '../data/matches';
+import { fetchCompetitionMatchesOrdered, fetchEntries, fetchStandings, type CompetitionEntry, type CompetitionMatch, type Standing } from '../data/matches';
 import { LiveSync, realtimeFilter, type Connection } from './liveSync';
 import { trackEvent } from './analytics';
 
@@ -14,7 +14,8 @@ export interface LiveState { data: Record<string, LiveCompetitionData>; loading:
 export const POLL_MS = 15_000;
 
 async function loadOne(id: string): Promise<LiveCompetitionData> {
-  const [matches, entries, standings] = await Promise.all([fetchCompetitionMatches(id), fetchEntries(id), fetchStandings(id)]);
+  // The ordered read carries the hand-made order and the saved plan (queue_order, plan_order, plan_hold): My next fight counts a fighter's place from them.
+  const [matches, entries, standings] = await Promise.all([fetchCompetitionMatchesOrdered(id), fetchEntries(id), fetchStandings(id)]);
   return { matches, entries, standings };
 }
 
