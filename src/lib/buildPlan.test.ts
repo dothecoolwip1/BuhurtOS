@@ -74,3 +74,15 @@ describe('preview', () => {
     expect(plan.summary.planned).toBe(1);
   });
 });
+
+describe('fields chosen with the planner', () => {
+  it('never leaves a field idle to win rest, and never does worse than the balanced spread', () => {
+    const shared = (id: string, sort: number) => duels(id, 4, sort, 'p');     // the same four people in two disciplines
+    const comps = [shared('ls', 1), shared('ss', 2), duels('sab', 8, 3, 'q')];
+    const props = propose(comps, 2, new Map([['ls', 1], ['ss', 2], ['sab', 3]]));
+    const used = new Set(props.filter(p => p.state === 'build').map(p => p.field));
+    expect(used.size).toBe(2);
+    const plan = previewPlan(comps, props, 2, new Set());
+    expect(plan.summary.planned).toBe(6 + 6 + 12 /* sabre: 2 pools of 4 = 12 pool fights */);
+  });
+});

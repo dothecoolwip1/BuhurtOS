@@ -125,7 +125,7 @@ export function EventHomeTab({ event, competitions, regs, running, onChanged, mo
       )}
 
       <details className="panel info eh-more">
-        <summary>More options</summary>
+        <summary>All event tools</summary>
         <p className="src">Everything else for this event. You do not need these for a normal event.</p>
         <ul className="eh-more-list">
           {moreTabs.map(([tab, label, help]) => (

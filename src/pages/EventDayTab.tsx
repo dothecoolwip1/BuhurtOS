@@ -199,9 +199,10 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
       {live.loading && live.matches.length === 0 && live.error == null && <p className="muted">Loading the fields…</p>}
       {!live.loading && live.error == null && boards.length === 0 && (
         <div className="panel info ed-empty" style={{ display: 'grid', gap: 10, justifyItems: 'start' }}>
-          <h3>No draw has been built yet</h3>
-          <p>Build a draw for a competition in the Run tools and its fights appear here, on Field 1 unless you give them another field.</p>
-          <Link className="btn btn-ink" to={`/events/${slug}/manage?tab=run`}>Open Run tools</Link>
+          <h3>The tournament is not built yet</h3>
+          <p>Build tournament turns the registrations into draws, fields and a fight order in one step. You check the plan before anything is created.</p>
+          <Link className="btn btn-ink" to={`/events/${slug}/manage?tab=build`}>Build tournament</Link>
+          <Link className="btn btn-line" to={`/events/${slug}/manage?tab=run`}>Build one draw by hand (Run)</Link>
         </div>
       )}
 

@@ -89,10 +89,9 @@ export function FieldBoardView({ board, plan, c, next }: { board: FieldBoard; pl
             </div>
           </details>
         </article>
-      )) : (
+      )) : board.state === 'ready' && next ? next : (
         <article className="ed-now ed-idle panel" aria-label={`Nothing active on ${board.name}`}>
           {board.state === 'finished' && <><h3>All fights on {board.name} are done</h3><p className="muted">Nothing is left to run here.</p></>}
-          {board.state === 'ready' && next}
           {board.state === 'ready' && !next && (<>
             <h3>No fight is active on {board.name}.</h3>
             <p className="muted">The next ready fight is {names(nextToStart(board, plan)).a} against {names(nextToStart(board, plan)).b}.</p>

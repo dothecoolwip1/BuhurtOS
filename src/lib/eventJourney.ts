@@ -74,7 +74,8 @@ export function journey(f: JourneyFacts): Journey {
     if (block) {
       return {
         stage: 'setup', headline: 'Almost ready to open registration.',
-        primary: { label: block.key === 'waiver' ? 'Add the waiver' : block.key === 'link' ? 'Set the sign-up link' : 'Finish setup', detail: block.label, target: { to: 'tab', tab: 'setup', query: `focus=${block.key === 'waiver' ? 'waiver' : 'details'}` } },
+        primary: { label: block.key === 'waiver' ? 'Add the waiver' : block.key === 'link' ? 'Set the sign-up link' : 'Finish setup',
+          detail: block.key === 'waiver' ? 'People accept it when they register' : block.key === 'link' ? 'Where people sign up' : block.label, target: { to: 'tab', tab: 'setup', query: `focus=${block.key === 'waiver' ? 'waiver' : 'details'}` } },
         secondary: [{ label: 'Event settings', detail: 'Dates, venue, fees, registration', target: { to: 'tab', tab: 'setup' } }]
       };
     }

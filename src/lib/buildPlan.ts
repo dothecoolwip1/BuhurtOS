@@ -67,6 +67,47 @@ export function assignFields(items: ReadonlyArray<{ id: string; fights: number; 
   return out;
 }
 
+/** How much worse a plan is for rest: back-to-back weighs most, then 1, then 2 fights of rest. */
+export const restPenalty = (p: Plan): number => p.fights.filter(f => !f.locked).reduce((s, f) => s + (f.minRest === null || !f.short ? 0 : f.minRest === 0 ? 100 : f.minRest === 1 ? 10 : 1), 0);
+
+/**
+ * Fields chosen with the planner itself: biggest competition first, each onto the field whose simulated fight order (everything placed so far plus it)
+ * gives the least rest penalty, then the most even number of fights per field, then the lower field number. No field may carry more fights than the busiest
+ * field of the plain balanced spread (an idle field is never "better rest"). It is compared with that balanced spread
+ * at the end and keeps whichever is better, so it is never worse for rest. Deterministic.
+ */
+function assignFieldsByPlan(comps: readonly BuildCompetition[], items: ReadonlyArray<{ c: BuildCompetition; matches: PlannedMatch[]; seedOrder: number }>, fieldCount: number): Map<string, string> {
+  const n = Math.max(1, fieldCount);
+  const balanced = assignFields(items.map(x => ({ id: x.c.id, fights: x.matches.length, sort: x.c.sort })), n);
+  if (n === 1 || items.length <= 1) return balanced;
+  const proposalsFor = (fields: ReadonlyMap<string, string>): CompetitionProposal[] => items.filter(x => fields.has(x.c.id)).map(x => ({
+    id: x.c.id, name: x.c.name, state: 'build', entrants: x.c.entryIds.length, choice: { format: 'round_robin', poolCount: 0, thirdPlace: false }, why: '', seed: 0, matches: x.matches, field: fields.get(x.c.id)!
+  }));
+  const score = (fields: ReadonlyMap<string, string>) => {
+    const loads = Array.from({ length: n }, () => 0);
+    for (const x of items) { const f = fields.get(x.c.id); if (f) loads[Number(f.replace(/\D/g, '')) - 1] += x.matches.length; }
+    return { rest: restPenalty(previewPlan(comps, proposalsFor(fields), n, new Set())), spread: Math.max(...loads) - Math.min(...loads) };
+  };
+  // Keep the fields moving: no field may carry more fights than the busiest field of the plain balanced spread.
+  const cap = Math.max(...Array.from({ length: n }, (_, i) => items.filter(x => balanced.get(x.c.id) === `Field ${i + 1}`).reduce((s, x) => s + x.matches.length, 0)));
+  const out = new Map<string, string>();
+  const loads = Array.from({ length: n }, () => 0);
+  for (const x of [...items].sort((a, b) => b.matches.length - a.matches.length || a.c.sort - b.c.sort || a.c.id.localeCompare(b.c.id))) {
+    let best = '', bestScore = { rest: Infinity, spread: Infinity };
+    const open = Array.from({ length: n }, (_, i) => i).filter(i => loads[i] + x.matches.length <= cap);
+    for (const i of open.length > 0 ? open : [loads.indexOf(Math.min(...loads))]) {
+      const trial = new Map(out).set(x.c.id, `Field ${i + 1}`);
+      const sc = score(trial);
+      if (sc.rest < bestScore.rest || (sc.rest === bestScore.rest && sc.spread < bestScore.spread)) { best = `Field ${i + 1}`; bestScore = sc; }
+    }
+    out.set(x.c.id, best);
+    loads[Number(best.replace(/\D/g, '')) - 1] += x.matches.length;
+  }
+  // keep the plain spread when it is at least as good
+  const a = score(out), b = score(balanced);
+  return b.rest < a.rest || (b.rest === a.rest && b.spread <= a.spread) ? balanced : out;
+}
+
 export function propose(comps: readonly BuildCompetition[], fieldCount: number, seeds: ReadonlyMap<string, number>, overrides: ReadonlyMap<string, Partial<FormatChoice> & { field?: string }> = new Map()): CompetitionProposal[] {
   const base = comps.map(c => {
     const advice = suggestFormat(c.entryIds.length);
@@ -78,7 +119,7 @@ export function propose(comps: readonly BuildCompetition[], fieldCount: number, 
     const why = state === 'built' ? 'Already built' : state === 'too_few' ? (c.entryIds.length === 0 ? 'Nobody entered: offered, not run' : 'Only 1 entrant: offered, not run') : (o.format ? `${FORMAT_WORD[choice.format]} (your choice)` : advice.why);
     return { c, choice, state, seed, matches, why };
   });
-  const fields = assignFields(base.filter(b => b.state === 'build').map(b => ({ id: b.c.id, fights: b.matches.length, sort: b.c.sort })), fieldCount);
+  const fields = assignFieldsByPlan(comps, base.filter(b => b.state === 'build').map((b, i) => ({ c: b.c, matches: b.matches, seedOrder: i })), fieldCount);
   return base.map(b => ({
     id: b.c.id, name: b.c.name, state: b.state, entrants: b.c.entryIds.length, choice: b.choice, why: b.why, seed: b.seed, matches: b.matches,
     field: overrides.get(b.c.id)?.field ?? fields.get(b.c.id) ?? 'Field 1'

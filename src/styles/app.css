@@ -1066,7 +1066,7 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .eh-step.current .eh-dot{background:var(--brass);border-color:var(--brass)}
 .eh-next{display:grid;gap:12px;border-top:4px solid var(--brass)}
 .eh-next h2{margin:0;font-size:clamp(20px,5vw,26px);line-height:1.2}
-.eh-primary{min-height:60px;display:grid;justify-items:start;gap:2px;text-align:left;padding:10px 22px;font-size:18px;height:auto;width:100%;max-width:480px}
+.eh-primary{box-sizing:border-box;white-space:normal;min-width:0;min-height:60px;display:grid;justify-items:start;gap:2px;text-align:left;padding:10px 22px;font-size:18px;height:auto;width:100%;max-width:480px}
 .eh-primary small{font-size:13px;font-weight:500;opacity:.8}
 .eh-secondary{display:flex;gap:8px;flex-wrap:wrap}
 .eh-cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}
@@ -1123,7 +1123,7 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .bt-lanes li.short{color:var(--live)}
 
 /* ---------------------------------------------------------------- Pack 09D: next recommended fight */
-.ed-next{display:grid;gap:8px;border:2px solid var(--win);background:var(--win-soft)}
+.ed-next{display:grid;gap:8px;padding:14px 16px;border-radius:14px;border:2px solid var(--win);background:var(--win-soft)}
 .ed-next.short{border-color:var(--live);background:var(--live-soft)}
 .ed-next-vs{margin:0;font-size:clamp(20px,5.5vw,26px);line-height:1.2;overflow-wrap:anywhere}
 .ed-next-vs span{color:var(--muted);font-size:.7em;padding:0 4px}
@@ -1136,3 +1136,14 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .ed-choose .warn{color:var(--live)}
 .ed-held{margin:0;border-left:4px solid var(--brass)}
 .ed-manual{margin:0}
+/* Pack 09D: the organizer's main controls are full-size tap targets (44 px) */
+.mg-more .seg button,.mg-more .btn,.qs-bulk .btn,.ed-status .btn,.ed-prog-list .btn,.eh-secondary .btn,.ed-next .btn,.lc .btn,.lc-fighter .btn,.lc-roster .btn{min-height:44px}
+.lc-roster summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.lc-roster ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.lc-roster li{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.lc-state{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.lc-actions{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
+.lc-actions > div{display:grid;gap:6px;align-content:start}
+.lc-actions .btn{justify-self:start}
+.lc-danger{border-top:1px solid var(--line);padding-top:10px}
+.lc-fighter{display:grid;gap:6px;margin-top:10px;justify-items:start}
