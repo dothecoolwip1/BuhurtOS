@@ -127,4 +127,5 @@ is the only new migration; `000500`–`000800` are untouched and were not re-app
 - [x] Unit tests, real-stack journeys with screenshots at 390 / 768 / 1280 / 1920
 - [x] Regression suites
 - [x] Hosted preflight, migration applied through the Supabase tooling, verified, advisors
-- [ ] Merged to `main`, CI green, GitHub Pages deployed, smoke (see STATUS.md)
+- [x] Merged to `main` `08d6487`; CI run #85 green; GitHub Pages deployed from that commit
+- [ ] Production browser smoke: A production browser smoke test was not possible from this session (dothecoolwip1.github.io is blocked by the environment's network policy, HTTP 000); the read-only hosted smoke through the Supabase MCP stands in (see the pack doc). Open Manage › Results on a running event and finalize one competition from a phone to confirm live.
