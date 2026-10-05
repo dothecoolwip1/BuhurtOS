@@ -61,7 +61,8 @@ try {
   check('2. Edric (in the hole) is told "You\'re 2 fights away" with the field', (await words('edric', 'fight_called')) === 'You\'re 2 fights away | Start getting ready for Longsword (men) on Field 1.', await words('edric', 'fight_called'));
   check('3. Cael and Dara (on deck) are told "You\'re up next · Report to Field 1"', (await words('cael', 'fight_called')) === 'You\'re up next | Report to Field 1 and be ready to fight.' && (await words('dara', 'fight_called')).startsWith('You\'re up next'), await words('cael', 'fight_called'));
   check('4. Aldric and Brann (on the field) are told "Your fight is ready · Report to Field 1 now"', (await words('aldric', 'fight_called')) === 'Your fight is ready | Report to Field 1 now.' && (await words('brann', 'fight_called')).startsWith('Your fight is ready'), await words('aldric', 'fight_called'));
-  check('5. each alert is pushed (lock screen) and opens My next fight', sql(`select bool_and(push) and bool_and(route = '/events/test-stuff-test#my-next-fight') from public.notifications where kind = 'fight_called'`) === 't');
+  check('5. each alert opens My next fight; this is a TEST event, so alerts stay in the app and are never pushed to a lock screen', sql(`select bool_and(route = '/events/test-stuff-test#my-next-fight') and not bool_or(push) from public.notifications where kind = 'fight_called'`) === 't');
+  check('5b. the same alert for a real (non-test) event is pushed: the push decision is the database\'s, per event', sql(`select private.notification_pushable('fight_called') and not private.notification_is_synthetic('{"event_slug":"no-such-event"}'::jsonb)`) === 't');
 
   // ================================================================ 2. no duplicates from repeats, reads, refreshes
   const before = Number(sql(`select count(*) from public.notifications`));
@@ -172,6 +173,9 @@ try {
   // ================================================================ 11. installable app + a device whose permission was revoked leaves the list
   const devId = sql(`insert into public.push_subscriptions (user_id, endpoint, endpoint_digest, p256dh, auth, label) values ('${U(4)}', 'https://push.example.test/ep/dara-1', 'x', '${'A'.repeat(87)}', '${'B'.repeat(22)}', 'Android phone') returning id`).split('\n')[0];
   const dara = await open('dara', { sw: true, init: { fn: ([uid, id]) => { localStorage.setItem(`bos-push-on:${uid}`, '1'); localStorage.setItem(`bos-push-device:${uid}`, id); }, arg: [U(4), devId] } });
+  // the person blocked notifications for BuhurtOS in the browser's own settings (what Chrome's site settings do)
+  const cdp = await dara.ctx.newCDPSession(dara);
+  await cdp.send('Browser.setPermission', { permission: { name: 'notifications' }, setting: 'denied', origin: BASE });
   await dara.goto(`${BASE}/`);
   await dara.waitForFunction(() => navigator.serviceWorker?.controller !== null || false, null, { timeout: 30000 }).catch(() => undefined);
   const perm = await dara.evaluate(() => Notification.permission);
@@ -193,7 +197,7 @@ try {
   await dara.ctx.setOffline(false);
   await shot(dara, '06-offline-launch');
 
-  const errs = [fighter, org, out, acct].flatMap(p => p.errors);
+  const errs = Object.entries({ fighter, org, out, acct }).flatMap(([k, p]) => p.errors.map(e => `${k}: ${e}`));
   check('41. no uncaught page errors', errs.length === 0, errs.join(' | '));
 } catch (e) {
   check('the run completed without an exception', false, e?.stack ?? e);

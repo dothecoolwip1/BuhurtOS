@@ -34,8 +34,13 @@ export function currentSupport(): PushSupport {
 
 export const permissionState = (): NotificationPermission | 'unsupported' => ('Notification' in window ? Notification.permission : 'unsupported');
 
+/** The service worker's registration. `ready` never settles when no worker could be registered (blocked storage, private modes), so give up
+ *  after a few seconds instead of leaving a screen waiting forever: callers then treat this device as "no alerts here". */
 async function registration(): Promise<ServiceWorkerRegistration> {
-  return navigator.serviceWorker.ready;
+  return Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error('The app is not fully installed in this browser yet. Reload and try again.')), 5000))
+  ]);
 }
 
 export async function currentSubscription(): Promise<PushSubscription | null> {
