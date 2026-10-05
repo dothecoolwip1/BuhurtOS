@@ -41,7 +41,8 @@ const PHONE = { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile:
 async function open(who, opts = {}) {
   const ctx = await browser.newContext({ ...PHONE, serviceWorkers: opts.sw ? 'allow' : 'block', locale: 'en-CA', timezoneId: 'America/Edmonton' });
   await ctx.route(/posthog\.com|maps\.googleapis\.com|youtube(-nocookie)?\.com|twitch\.tv|vimeo\.com/, r => r.abort('failed'));
-  if (who) await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [STORAGE_KEY, session(WHO[who])]);
+  // (wrapped: the init script also runs inside blocked third-party frames such as the stream embed, where storage is not available)
+  if (who) await ctx.addInitScript(([k, s]) => { try { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); } catch { /* not this frame */ } }, [STORAGE_KEY, session(WHO[who])]);
   if (opts.init) await ctx.addInitScript(opts.init.fn, opts.init.arg);
   const page = await ctx.newPage();
   page.ctx = ctx; page.errors = [];
@@ -164,6 +165,7 @@ try {
   const acct = await open('aldric');
   await acct.goto(`${BASE}/account#notifications`);
   await acct.getByTestId('ns-perm').waitFor({ timeout: 30000 });
+  await acct.waitForFunction(() => /^(On|Off)$/.test(document.querySelector('[data-testid="ns-device"]')?.textContent?.trim() ?? ''), null, { timeout: 15000 }).catch(() => undefined);
   check('33. Settings show the browser permission and the BuhurtOS switch separately', (await acct.getByTestId('ns-perm').innerText()).length > 0 && /^(On|Off)$/.test((await acct.getByTestId('ns-device').innerText()).trim()), `${await acct.getByTestId('ns-perm').innerText()} / ${await acct.getByTestId('ns-device').innerText()}`);
   check('34. the groups explain the new alerts (2 fights away, announcements)', /2 fights away/i.test(await text(acct)) && /announcements/i.test(await text(acct)));
   check('35. settings: no sideways scrolling at 390 px', await noSideways(acct));
@@ -172,10 +174,11 @@ try {
 
   // ================================================================ 11. installable app + a device whose permission was revoked leaves the list
   const devId = sql(`insert into public.push_subscriptions (user_id, endpoint, endpoint_digest, p256dh, auth, label) values ('${U(4)}', 'https://push.example.test/ep/dara-1', 'x', '${'A'.repeat(87)}', '${'B'.repeat(22)}', 'Android phone') returning id`).split('\n')[0];
-  const dara = await open('dara', { sw: true, init: { fn: ([uid, id]) => { localStorage.setItem(`bos-push-on:${uid}`, '1'); localStorage.setItem(`bos-push-device:${uid}`, id); }, arg: [U(4), devId] } });
+  const dara = await open('dara', { sw: true, init: { fn: ([uid, id]) => { try { localStorage.setItem(`bos-push-on:${uid}`, '1'); localStorage.setItem(`bos-push-device:${uid}`, id); } catch { /* not this frame */ } }, arg: [U(4), devId] } });
   // the person blocked notifications for BuhurtOS in the browser's own settings (what Chrome's site settings do)
   const cdp = await dara.ctx.newCDPSession(dara);
-  await cdp.send('Browser.setPermission', { permission: { name: 'notifications' }, setting: 'denied', origin: BASE });
+  const { targetInfo } = await cdp.send('Target.getTargetInfo');
+  await cdp.send('Browser.setPermission', { permission: { name: 'notifications' }, setting: 'denied', origin: new URL(BASE).origin, browserContextId: targetInfo.browserContextId });
   await dara.goto(`${BASE}/`);
   await dara.waitForFunction(() => navigator.serviceWorker?.controller !== null || false, null, { timeout: 30000 }).catch(() => undefined);
   const perm = await dara.evaluate(() => Notification.permission);

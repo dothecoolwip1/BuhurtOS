@@ -31,9 +31,13 @@ export function NotificationSettings() {
 
   const load = useCallback(async () => {
     try {
-      const [s, d, sub] = await Promise.all([fetchNotificationSettings(), fetchPushDevices(), currentSubscription()]);
-      setSettings(s); setDevices(d); setThisDigest(sub ? await endpointDigest(sub.endpoint) : null); setPerm(permissionState());
+      const [s, d] = await Promise.all([fetchNotificationSettings(), fetchPushDevices()]);
+      setSettings(s); setDevices(d); setPerm(permissionState());
     } catch (e) { setProblem(friendlyError(e, 'Could not load your notification settings.')); }
+    // This browser's own subscription is looked up separately: it can take a moment (or never come, without a service worker) and must not
+    // hold up the settings and device list.
+    const sub = await currentSubscription();
+    setThisDigest(sub ? await endpointDigest(sub.endpoint) : null);
   }, []);
   useEffect(() => { void load(); }, [load]);
 
