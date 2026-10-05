@@ -10,6 +10,8 @@ import { setQueue, type CompetitionMatch } from '../data/matches';
 import { EnterOfficialResult, ResultConflicts } from '../components/ResultReview';
 import { QUEUE_LABEL, fieldQueue } from '../lib/fieldScoring';
 import { ScoringScreen, type Opened } from '../components/scoring/ScoringScreen';
+import { LystScoring } from '../components/lyst/LystScoring';
+import { boardModeFor } from '../lib/fieldScoring';
 import { friendlyError } from '../lib/friendlyError';
 import { supabase } from '../lib/supabase';
 import { useAsync } from '../lib/useAsync';
@@ -24,6 +26,10 @@ const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'own
 /** Mirrors private.can_resolve_results: who may settle a disagreement or enter an official result from paper. */
 const RESOLVE_ROLES = ['organizer', 'head_marshal', 'owner'];
 const POLL_MS = 10000;
+/** Duels are scored through Lyst Control (clock, rounds, marshal's call). A marshal can fall back to the classic board; the choice is remembered on this device only. */
+const LYST_MODE_KEY = 'bos-lyst-mode';
+const readClassic = () => { try { return localStorage.getItem(LYST_MODE_KEY) === 'classic'; } catch { return false; } };
+const writeClassic = (v: boolean) => { try { localStorage.setItem(LYST_MODE_KEY, v ? 'classic' : 'lyst'); } catch { /* ignore */ } };
 
 const wrap = { whiteSpace: 'normal', textAlign: 'left', maxWidth: '100%' } as const;
 function SyncBar({ waiting, stuck = 0, heldForOthers = 0, durable = true }: { waiting: number; stuck?: number; heldForOthers?: number; durable?: boolean }) {
@@ -59,7 +65,7 @@ export function FieldPage() {
   const { eventId: slug = '', field: rawField = '' } = useParams();
   const [search, setSearch] = useSearchParams();
   const field = rawField.trim();
-  const wantedMatch = search.get('match');                // Event day opens the scoreboard of one match directly
+  const wantedMatch = search.get('match') ?? search.get('open');   // Event day opens the scoreboard of one match directly; `open` keeps an open fight across a refresh
   const fromEventDay = search.get('from') === 'eventday'; // ... and offers the way back
   const { session, loading: authLoading } = useAuth();
   const userId = session?.user.id;
@@ -69,6 +75,7 @@ export function FieldPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [opening, setOpening] = useState(false);
   const [openError, setOpenError] = useState<string | null>(null);
+  const [classic, setClassic] = useState(readClassic);
 
   const loaded = useAsync(() => fetchEvent(slug), [slug]);
   const event: LiveEvent | undefined = loaded.data?.event;
@@ -82,6 +89,7 @@ export function FieldPage() {
 
   // Keep the queue fresh: poll, and reload when anybody changes a match (realtime is a nudge, polling is the safety net).
   const reload = useCallback(() => setReloadKey(k => k + 1), []);
+  const closeOpened = useCallback(() => { setOpened(null); setSearch(prev => { const n = new URLSearchParams(prev); n.delete('open'); return n; }, { replace: true }); }, [setSearch]);
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (!canScore) return;
@@ -107,6 +115,8 @@ export function FieldPage() {
       const fresh = (await fetchEventMatches([comp])).find(x => x.id === m.id);
       if (!fresh || fresh.queueState === 'final') { setNotice('That match is already final.'); reload(); return; }
       setOpened({ match: fresh, comp, version: fresh.version });
+      // a refresh of the lyst screen comes back to this fight (the clock and rounds live on the server). The classic board keeps its own behaviour: a refresh returns to the queue.
+      if (boardModeFor(comp.league, comp.category) === 'duel' && !classic) setSearch(prev => { const n = new URLSearchParams(prev); n.set('open', m.id); return n; }, { replace: true });
       reload();
     } catch (e) { setOpenError(friendlyError(e)); } finally { setOpening(false); }
   };
@@ -118,9 +128,9 @@ export function FieldPage() {
     if (!wantedMatch || autoOpened.current === wantedMatch || opened || opening || !comps.data?.length || !matches.data?.length) return;
     const target = matches.data.find(x => x.id === wantedMatch);
     autoOpened.current = wantedMatch;
-    const next = new URLSearchParams(search); next.delete('match'); setSearch(next, { replace: true });
+    setSearch(prev => { const n = new URLSearchParams(prev); n.delete('match'); return n; }, { replace: true });
     if (target && target.queueState !== 'final') void open(target);
-    else setNotice('That match is not waiting to be scored any more.');
+    else { setNotice('That match is not waiting to be scored any more.'); setSearch(prev => { const n = new URLSearchParams(prev); n.delete('open'); return n; }, { replace: true }); }
   }); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;
@@ -141,20 +151,22 @@ export function FieldPage() {
     <section className="marshal fade-in">
       <SyncBar waiting={waiting} stuck={stuck} heldForOthers={heldForOthers} durable={durable} />
       {opened ? (
-        <ScoringScreen
-          key={opened.match.id}
-          opened={opened}
-          eventId={event.id}
-          userId={session.user.id}
-          fieldName={field}
-          nextFight={queue.find(m => m.id !== opened.match.id && m.queueState === 'active' && m.entryA && m.entryB) ?? queue.find(m => m.id !== opened.match.id && m.queueState === 'on_deck' && m.entryA && m.entryB) ?? null}
-          backHref={fromEventDay ? { to: `/events/${event.slug}/manage?tab=eventday`, label: 'Back to Event day' } : null}
-          onExit={() => { setOpened(null); reload(); }}
-          onFinished={() => { setOpened(null); reload(); }}
-          onOfficial={reload}
-          onOpenNext={m => { setOpened(null); void open(m); }}
-          onStale={message => { setOpened(null); setNotice(message); reload(); }}
-        />
+        (() => {
+          const common = {
+            opened, eventId: event.id, userId: session.user.id, fieldName: field,
+            nextFight: queue.find(m => m.id !== opened.match.id && m.queueState === 'active' && m.entryA && m.entryB) ?? queue.find(m => m.id !== opened.match.id && m.queueState === 'on_deck' && m.entryA && m.entryB) ?? null,
+            backHref: fromEventDay ? { to: `/events/${event.slug}/manage?tab=eventday`, label: 'Back to Event day' } : null,
+            onExit: () => { closeOpened(); reload(); },
+            onFinished: () => { closeOpened(); reload(); },
+            onOfficial: reload,
+            onOpenNext: (m: CompetitionMatch) => { closeOpened(); void open(m); },
+            onStale: (message: string) => { closeOpened(); setNotice(message); reload(); }
+          };
+          const isDuel = boardModeFor(opened.comp.league, opened.comp.category) === 'duel';
+          return isDuel && !classic
+            ? <LystScoring key={opened.match.id} {...common} canResolve={canResolve} onClassic={() => { writeClassic(true); setClassic(true); }} />
+            : <ScoringScreen key={opened.match.id} {...common} onLyst={isDuel ? () => { writeClassic(false); setClassic(false); } : undefined} />;
+        })()
       ) : (
         <>
           <PageHead eyebrow={event.name} title={field} lede="Matches for this field, in running order. Pick one to start scoring." />

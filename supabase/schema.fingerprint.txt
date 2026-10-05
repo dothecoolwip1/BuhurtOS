@@ -97,6 +97,9 @@ column public.event_invitations.id uuid not null
 column public.event_invitations.note text
 column public.event_invitations.registration_id uuid
 column public.event_invitations.status text not null
+column public.event_lyst_settings.event_id uuid not null
+column public.event_lyst_settings.settings jsonb not null
+column public.event_lyst_settings.updated_at timestamp with time zone not null
 column public.event_staff.event_id uuid not null
 column public.event_staff.role text not null
 column public.event_staff.user_id uuid not null
@@ -182,6 +185,99 @@ column public.fighters.joined_year integer
 column public.fighters.region text
 column public.fighters.social_links jsonb not null
 column public.fighters.team_id uuid
+column public.lyst_counter_rounds.match_id uuid not null
+column public.lyst_counter_rounds.round_no integer not null
+column public.lyst_counter_rounds.seat_id uuid not null
+column public.lyst_counter_rounds.submitted_at timestamp with time zone not null
+column public.lyst_counter_seats.decided_at timestamp with time zone
+column public.lyst_counter_seats.decided_by uuid
+column public.lyst_counter_seats.display_name text not null
+column public.lyst_counter_seats.event_id uuid not null
+column public.lyst_counter_seats.expires_at timestamp with time zone
+column public.lyst_counter_seats.field_key text not null
+column public.lyst_counter_seats.id uuid not null
+column public.lyst_counter_seats.match_id uuid
+column public.lyst_counter_seats.requested_at timestamp with time zone not null
+column public.lyst_counter_seats.role text not null
+column public.lyst_counter_seats.side text
+column public.lyst_counter_seats.slot text
+column public.lyst_counter_seats.status text not null
+column public.lyst_counter_seats.user_id uuid not null
+column public.lyst_counts.created_at timestamp with time zone not null
+column public.lyst_counts.id uuid not null
+column public.lyst_counts.match_id uuid not null
+column public.lyst_counts.round_no integer not null
+column public.lyst_counts.seat_id uuid not null
+column public.lyst_counts.undo_of uuid
+column public.lyst_counts.weight integer not null
+column public.lyst_join_attempts.at timestamp with time zone not null
+column public.lyst_join_attempts.id bigint not null
+column public.lyst_join_attempts.user_id uuid not null
+column public.lyst_join_codes.code text not null
+column public.lyst_join_codes.created_at timestamp with time zone not null
+column public.lyst_join_codes.created_by uuid not null
+column public.lyst_join_codes.event_id uuid not null
+column public.lyst_join_codes.expires_at timestamp with time zone not null
+column public.lyst_join_codes.field_key text not null
+column public.lyst_join_codes.revoked_at timestamp with time zone
+column public.lyst_matches.counter_input text not null
+column public.lyst_matches.created_at timestamp with time zone not null
+column public.lyst_matches.event_id uuid not null
+column public.lyst_matches.field_key text not null
+column public.lyst_matches.match_id uuid not null
+column public.lyst_round_revisions.awarded_a integer not null
+column public.lyst_round_revisions.awarded_b integer not null
+column public.lyst_round_revisions.changed_at timestamp with time zone not null
+column public.lyst_round_revisions.changed_by uuid not null
+column public.lyst_round_revisions.counters jsonb not null
+column public.lyst_round_revisions.id uuid not null
+column public.lyst_round_revisions.kind text not null
+column public.lyst_round_revisions.match_id uuid not null
+column public.lyst_round_revisions.previous_a integer
+column public.lyst_round_revisions.previous_b integer
+column public.lyst_round_revisions.reason text
+column public.lyst_round_revisions.recommended_a integer
+column public.lyst_round_revisions.recommended_b integer
+column public.lyst_round_revisions.round_no integer not null
+column public.lyst_rounds.awarded_a integer
+column public.lyst_rounds.awarded_b integer
+column public.lyst_rounds.confirmed_at timestamp with time zone
+column public.lyst_rounds.created_at timestamp with time zone not null
+column public.lyst_rounds.event_id uuid not null
+column public.lyst_rounds.match_id uuid not null
+column public.lyst_rounds.rev integer not null
+column public.lyst_rounds.round_no integer not null
+column public.lyst_rounds.status text not null
+column public.lyst_timer.duration_ms integer not null
+column public.lyst_timer.event_id uuid not null
+column public.lyst_timer.field_key text not null
+column public.lyst_timer.last_command uuid
+column public.lyst_timer.match_id uuid
+column public.lyst_timer.mode text not null
+column public.lyst_timer.previous jsonb
+column public.lyst_timer.remaining_ms integer not null
+column public.lyst_timer.rev integer not null
+column public.lyst_timer.round_no integer not null
+column public.lyst_timer.started_at timestamp with time zone
+column public.lyst_timer.status text not null
+column public.lyst_timer.updated_at timestamp with time zone not null
+column public.match_discipline.amount integer not null
+column public.match_discipline.created_at timestamp with time zone not null
+column public.match_discipline.event_id uuid not null
+column public.match_discipline.id uuid not null
+column public.match_discipline.kind text not null
+column public.match_discipline.label text
+column public.match_discipline.match_id uuid not null
+column public.match_discipline.related_id uuid
+column public.match_discipline.round_no integer not null
+column public.match_discipline.side text not null
+column public.match_discipline.voided_at timestamp with time zone
+column public.match_discipline_private.called_by text
+column public.match_discipline_private.discipline_id uuid not null
+column public.match_discipline_private.reason text
+column public.match_discipline_private.recorded_by uuid not null
+column public.match_discipline_private.void_reason text
+column public.match_discipline_private.voided_by uuid
 column public.match_live_scores.competition_id uuid not null
 column public.match_live_scores.detail jsonb not null
 column public.match_live_scores.device text not null
@@ -559,6 +655,9 @@ constraint event_invitations event_invitations_note_check CHECK (((note IS NULL)
 constraint event_invitations event_invitations_pkey PRIMARY KEY (id)
 constraint event_invitations event_invitations_registration_id_fkey FOREIGN KEY (registration_id) REFERENCES registrations(id) ON DELETE SET NULL
 constraint event_invitations event_invitations_status_check CHECK ((status = ANY (ARRAY['invited'::text, 'registered'::text, 'withdrawn'::text, 'cancelled'::text])))
+constraint event_lyst_settings event_lyst_settings_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint event_lyst_settings event_lyst_settings_pkey PRIMARY KEY (event_id)
+constraint event_lyst_settings event_lyst_settings_settings_check CHECK ((pg_column_size(settings) <= 8192))
 constraint event_staff event_staff_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 constraint event_staff event_staff_pkey PRIMARY KEY (event_id, user_id, role)
 constraint event_staff event_staff_role_check CHECK ((role = ANY (ARRAY['organizer'::text, 'head_marshal'::text, 'marshal'::text, 'scorekeeper'::text, 'medic'::text])))
@@ -625,6 +724,67 @@ constraint fighters fighters_pkey PRIMARY KEY (id)
 constraint fighters fighters_region_check CHECK (((region IS NULL) OR (char_length(region) <= 80)))
 constraint fighters fighters_social_links_check CHECK ((jsonb_typeof(social_links) = 'object'::text))
 constraint fighters fighters_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
+constraint lyst_counter_rounds lyst_counter_rounds_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint lyst_counter_rounds lyst_counter_rounds_pkey PRIMARY KEY (seat_id, match_id, round_no)
+constraint lyst_counter_rounds lyst_counter_rounds_seat_id_fkey FOREIGN KEY (seat_id) REFERENCES lyst_counter_seats(id) ON DELETE CASCADE
+constraint lyst_counter_seats lyst_counter_seats_display_name_check CHECK ((char_length(display_name) <= 80))
+constraint lyst_counter_seats lyst_counter_seats_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint lyst_counter_seats lyst_counter_seats_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint lyst_counter_seats lyst_counter_seats_pkey PRIMARY KEY (id)
+constraint lyst_counter_seats lyst_counter_seats_role_check CHECK ((role = ANY (ARRAY['official'::text, 'learning'::text])))
+constraint lyst_counter_seats lyst_counter_seats_side_check CHECK (((side IS NULL) OR (side = ANY (ARRAY['a'::text, 'b'::text]))))
+constraint lyst_counter_seats lyst_counter_seats_slot_check CHECK (((slot IS NULL) OR (slot ~ '^[A-Z][0-9A-Z]{0,2}$'::text)))
+constraint lyst_counter_seats lyst_counter_seats_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'active'::text, 'ended'::text, 'declined'::text])))
+constraint lyst_counter_seats lyst_counter_seats_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint lyst_counts lyst_counts_check CHECK ((((undo_of IS NULL) AND (weight >= 1)) OR ((undo_of IS NOT NULL) AND (weight = 0))))
+constraint lyst_counts lyst_counts_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint lyst_counts lyst_counts_pkey PRIMARY KEY (id)
+constraint lyst_counts lyst_counts_round_no_check CHECK (((round_no >= 1) AND (round_no <= 20)))
+constraint lyst_counts lyst_counts_seat_id_fkey FOREIGN KEY (seat_id) REFERENCES lyst_counter_seats(id) ON DELETE CASCADE
+constraint lyst_counts lyst_counts_undo_of_fkey FOREIGN KEY (undo_of) REFERENCES lyst_counts(id)
+constraint lyst_counts lyst_counts_weight_check CHECK (((weight >= 0) AND (weight <= 2)))
+constraint lyst_join_attempts lyst_join_attempts_pkey PRIMARY KEY (id)
+constraint lyst_join_codes lyst_join_codes_code_check CHECK ((code ~ '^[A-Z0-9]{10}$'::text))
+constraint lyst_join_codes lyst_join_codes_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint lyst_join_codes lyst_join_codes_pkey PRIMARY KEY (code)
+constraint lyst_matches lyst_matches_counter_input_check CHECK ((counter_input = ANY (ARRAY['simple'::text, 'weighted'::text])))
+constraint lyst_matches lyst_matches_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint lyst_matches lyst_matches_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint lyst_matches lyst_matches_pkey PRIMARY KEY (match_id)
+constraint lyst_round_revisions lyst_round_revisions_kind_check CHECK ((kind = ANY (ARRAY['confirm'::text, 'correct'::text])))
+constraint lyst_round_revisions lyst_round_revisions_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint lyst_round_revisions lyst_round_revisions_pkey PRIMARY KEY (id)
+constraint lyst_rounds lyst_rounds_awarded_a_check CHECK (((awarded_a IS NULL) OR ((awarded_a >= 0) AND (awarded_a <= 99))))
+constraint lyst_rounds lyst_rounds_awarded_b_check CHECK (((awarded_b IS NULL) OR ((awarded_b >= 0) AND (awarded_b <= 99))))
+constraint lyst_rounds lyst_rounds_check CHECK (((status = 'confirmed'::text) = ((awarded_a IS NOT NULL) AND (awarded_b IS NOT NULL))))
+constraint lyst_rounds lyst_rounds_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint lyst_rounds lyst_rounds_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint lyst_rounds lyst_rounds_pkey PRIMARY KEY (match_id, round_no)
+constraint lyst_rounds lyst_rounds_round_no_check CHECK (((round_no >= 1) AND (round_no <= 20)))
+constraint lyst_rounds lyst_rounds_status_check CHECK ((status = ANY (ARRAY['running'::text, 'confirming'::text, 'confirmed'::text])))
+constraint lyst_timer lyst_timer_duration_ms_check CHECK (((duration_ms >= 1000) AND (duration_ms <= 3600000)))
+constraint lyst_timer lyst_timer_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint lyst_timer lyst_timer_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE SET NULL
+constraint lyst_timer lyst_timer_mode_check CHECK ((mode = ANY (ARRAY['fight'::text, 'break'::text, 'extended_break'::text, 'dq'::text, 'equipment'::text, 'custom'::text])))
+constraint lyst_timer lyst_timer_pkey PRIMARY KEY (event_id, field_key)
+constraint lyst_timer lyst_timer_remaining_ms_check CHECK (((remaining_ms >= 0) AND (remaining_ms <= 3600000)))
+constraint lyst_timer lyst_timer_round_no_check CHECK (((round_no >= 1) AND (round_no <= 20)))
+constraint lyst_timer lyst_timer_status_check CHECK ((status = ANY (ARRAY['idle'::text, 'running'::text, 'paused'::text])))
+constraint match_discipline match_discipline_amount_check CHECK (((amount >= 0) AND (amount <= 10)))
+constraint match_discipline match_discipline_check CHECK (((kind = 'deduction'::text) = (amount > 0)))
+constraint match_discipline match_discipline_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint match_discipline match_discipline_kind_check CHECK ((kind = ANY (ARRAY['warning'::text, 'card'::text, 'deduction'::text, 'dq'::text])))
+constraint match_discipline match_discipline_label_check CHECK (((label IS NULL) OR (char_length(label) <= 30)))
+constraint match_discipline match_discipline_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint match_discipline match_discipline_pkey PRIMARY KEY (id)
+constraint match_discipline match_discipline_related_id_fkey FOREIGN KEY (related_id) REFERENCES match_discipline(id)
+constraint match_discipline match_discipline_round_no_check CHECK (((round_no >= 1) AND (round_no <= 20)))
+constraint match_discipline match_discipline_side_check CHECK ((side = ANY (ARRAY['a'::text, 'b'::text])))
+constraint match_discipline_private match_discipline_private_called_by_check CHECK (((called_by IS NULL) OR (char_length(called_by) <= 60)))
+constraint match_discipline_private match_discipline_private_discipline_id_fkey FOREIGN KEY (discipline_id) REFERENCES match_discipline(id) ON DELETE CASCADE
+constraint match_discipline_private match_discipline_private_pkey PRIMARY KEY (discipline_id)
+constraint match_discipline_private match_discipline_private_reason_check CHECK (((reason IS NULL) OR (char_length(reason) <= 200)))
+constraint match_discipline_private match_discipline_private_void_reason_check CHECK (((void_reason IS NULL) OR (char_length(void_reason) <= 200)))
 constraint match_live_scores match_live_scores_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
 constraint match_live_scores match_live_scores_detail_check CHECK ((pg_column_size(detail) <= 4096))
 constraint match_live_scores match_live_scores_device_check CHECK ((char_length(device) <= 64))
@@ -905,6 +1065,18 @@ function private.is_team_member(p_team uuid, p_user uuid) secdef=true e6e5f1ae09
 function private.join_request_org_guard() secdef=true e1b5ac0af3eeefcb26d3e12b3960b887
 function private.lock_matches_nowait(p_ids uuid[]) secdef=false a4c4d7f9d094948a5db4db119c5bdcb6
 function private.log_result_revision(p_comp uuid, p_entry uuid, p_action text, p_old_place integer, p_old_points numeric, p_new_place integer, p_new_points numeric, p_reason text) secdef=true 33ee1e41e9e2edbe085fd315505bda5e
+function private.lyst_append_only() secdef=false 6e5364bf7b39e37321b5b74881765724
+function private.lyst_counter_snapshot(p_match uuid, p_round integer) secdef=true 69d86b1dfeebfe64a9a81accd25b243a
+function private.lyst_default_settings() secdef=false 8e1b912819c490667070d325ac74e5ca
+function private.lyst_discipline_guard() secdef=false 4ecacbfcf5fbdfd00ef584119ee2bcf2
+function private.lyst_match_check(p_event uuid, p_match uuid, p_field text) secdef=true 08d1a1e2835d4965c9a92c0046a9b417
+function private.lyst_match_final() secdef=true 9533f0df82adaaff0c22bb6f65918d3a
+function private.lyst_remaining_ms(p_status text, p_remaining integer, p_started timestamp with time zone) secdef=false e12ef476375c9b746db508ace187a6ef
+function private.lyst_seat_for_counting(p_seat uuid, p_round integer, p_need_running boolean) secdef=true d24f61172357baa30c23f7ac9ca3ca0d
+function private.lyst_seat_total(p_seat uuid, p_round integer) secdef=true 22d4f3bb5dd56076cb2a354aec4cd98b
+function private.lyst_settings_for(p_event uuid) secdef=true 57956c189bcd8c035bebd07023cf55da
+function private.lyst_side_name(p_entry uuid) secdef=true 398aeeef894bfda31a76870212d810d1
+function private.lyst_timer_json(t lyst_timer) secdef=false 673688cd560b7b896e48e8bd8efce7cf
 function private.match_runnable(p_match matches) secdef=true 81da90f84be5089aa4b51cf225561375
 function private.matches_lock_guard() secdef=true 3cdc8faa4801657851a4765cf2fec0ec
 function private.membership_notify() secdef=true 43715be119aa516af20272eb9513bbc2
@@ -965,6 +1137,7 @@ function public.admin_user_activity(p_from timestamp with time zone, p_to timest
 function public.advance_field_queue(p_event uuid, p_field text, p_start boolean) secdef=true 544eaa07861372f7f70cc382d0cfe62a
 function public.approve_team(p_team uuid) secdef=true ecbc61cbdb3357879f59ef39bb496d96
 function public.archive_event(p_event uuid, p_note text) secdef=true ca31a97bff85cd8d60e44e7cce7bd472
+function public.assign_counter_seat(p_seat uuid, p_match uuid, p_side text, p_role text, p_slot text) secdef=true 34be8cf1f046aa93ca89e15f074b913f
 function public.assign_team_captain(p_team uuid, p_email text) secdef=true aaf46f00fafe292d30450d5a740666ea
 function public.build_schedule(p_competition uuid, p_matches jsonb, p_mode text, p_draw jsonb, p_advance integer) secdef=true f9647e53cded7464a0f5338e83f71927
 function public.can_edit_team(p_team uuid) secdef=true 1df5a2f62ba8298f5a7e1aa38a24b6eb
@@ -973,13 +1146,19 @@ function public.can_rename_team(p_team uuid) secdef=true fe0861b39bd82c4808de3ed
 function public.cancel_fighter_claim(p_request uuid) secdef=true 59d8cac2b09d8396355e621e95873e7c
 function public.cancel_invitation(p_invitation uuid) secdef=true eaffdc35b9e6b6a5844718645c906301
 function public.cancel_team_join(p_request uuid) secdef=true 844b25e37cc7dbcabf5050602d4da76a
+function public.carry_counter_seats(p_from uuid, p_to uuid) secdef=true cd5516fcef58127a622f03c054c25197
 function public.clear_manual_queue(p_event uuid, p_field text) secdef=true 39eb981547195aeeac04cb1e8e66a439
 function public.close_event(p_event uuid, p_note text) secdef=true 2835279399e490855aa2d51678517eaf
 function public.competition_finalize_preflight(p_competition uuid, p_multiplier_source text) secdef=true 194ee55ccb4232da13950f246d32a74c
 function public.complete_my_profile(p_name text, p_interests text[], p_city text, p_region text, p_country text) secdef=true 2c2692a2c5db2e6131d70458c87292bc
 function public.correct_result(p_competition uuid, p_entry uuid, p_place integer, p_points numeric, p_reason text) secdef=true 1f9d08e42466f7315e20d148cf553bf3
+function public.counter_record(p_id uuid, p_seat uuid, p_round integer, p_weight integer) secdef=true 6eeecd9f722067a61dded490090aaab7
+function public.counter_state() secdef=true 873d57e30225c6f3e753f8f4295ede91
+function public.counter_submit(p_seat uuid, p_round integer) secdef=true fd206e7ab7079541d9b92fc10b31ee43
+function public.counter_undo(p_id uuid, p_seat uuid, p_round integer) secdef=true 9332278b34606941715b179a03472d0d
 function public.create_competition(p_event uuid, p_name text, p_category text, p_gender text, p_ruleset text, p_structure text, p_rounds_to_win integer) secdef=true f504e21cabc32c7c1bb789c4d83e7ec6
 function public.create_event(p_slug text, p_name text, p_starts_on date, p_ends_on date, p_venue text, p_address text) secdef=true 47881c4d019464790b52a7b237eab48a
+function public.create_lyst_join_code(p_event uuid, p_field text) secdef=true 85f62fcb448bc5a16d9180a25754817e
 function public.create_season(p_org uuid, p_slug text, p_name text, p_starts_on date, p_ends_on date) secdef=true f5d2ba24f26876c98918aec3efcae63d
 function public.create_team(p_slug text, p_name text, p_city text, p_region text, p_country text) secdef=true e4e4ecf117d4e1c4f9f5742a5d2e7234
 function public.create_unclaimed_fighter(p_event uuid, p_name text, p_home_team uuid, p_city text, p_region text, p_gender text, p_confirmed_distinct boolean, p_competition uuid, p_entry_team uuid) secdef=true 453a0c40a0606341e61a949cb89e4e4d
@@ -987,6 +1166,7 @@ function public.decide_registration(p_reg uuid, p_status text) secdef=true 2b0a8
 function public.decide_team_join(p_request uuid, p_decision text) secdef=true 5add73fdd0bc31c4c9fe640c1600913c
 function public.delete_competition(p_comp uuid) secdef=true 8238aafa1662e2029e8be13218006d67
 function public.delete_event(p_event uuid, p_confirm text) secdef=true 993c603fc956f5898d81c62e11f59fb8
+function public.end_counter_seat(p_seat uuid, p_decline boolean) secdef=true 287634e333310e4acbd022c651887031
 function public.enter_official_result(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_note text) secdef=true 18774a69764c821d799aebae30c60cc1
 function public.event_close_preflight(p_event uuid) secdef=true fbb652344a86144b8b97bf2221949808
 function public.event_delete_check(p_event uuid) secdef=true 64d96ed05ff3325d92e77fe3c0950d8e
@@ -1012,6 +1192,14 @@ function public.list_fighter_identity_reviews() secdef=true 1cd64be43eb4a1a1fdb2
 function public.list_organization_staff(p_org uuid) secdef=true 3148e2f3a5cee3c9187925692ce4c868
 function public.list_result_conflicts(p_event uuid) secdef=true 09f0a3a6a2cb71382b3882c399208c91
 function public.list_team_captains(p_team uuid) secdef=true 29f36411f6e5b56c893fb49db03a2b75
+function public.lyst_confirm_round(p_command uuid, p_match uuid, p_round integer, p_awarded_a integer, p_awarded_b integer, p_expected_rev integer, p_recommended_a integer, p_recommended_b integer, p_reason text) secdef=true 8e23f1488377eeea26e67a060003d17d
+function public.lyst_end_round(p_match uuid, p_round integer) secdef=true 76c3e40d91ef161a3820106fc4237407
+function public.lyst_finalize(p_command uuid, p_match uuid, p_expected_version integer, p_result text, p_basis text, p_reason text) secdef=true 33d966b648895818b64ee77fd8393c5b
+function public.lyst_open(p_match uuid, p_counter_input text) secdef=true 9d29dbb69f65a4acbdd62d03e345a183
+function public.lyst_record_discipline(p_command uuid, p_match uuid, p_round integer, p_side text, p_kind text, p_label text, p_amount integer, p_reason text, p_called_by text, p_related uuid) secdef=true e90dd405222358679114be32550675f2
+function public.lyst_state(p_match uuid) secdef=true 6c63ecd0cda266cf77127729d6c20774
+function public.lyst_timer_command(p_event uuid, p_field text, p_match uuid, p_expected_rev integer, p_command uuid, p_action text, p_mode text, p_duration_ms integer, p_round integer, p_delta_ms integer) secdef=true 3d55aa11e42bed1f99a514269ad0aa0b
+function public.lyst_void_discipline(p_command uuid, p_id uuid, p_reason text) secdef=true 53a3445e175187906aa0cbe83d898db0
 function public.mark_notifications_read(p_ids uuid[]) secdef=true 84b3bf7f83d766241f919b05b3ea2e48
 function public.merge_teams(p_keep uuid, p_remove uuid) secdef=true 569347d4b59acc94d19ae3a85a414bce
 function public.move_match_in_queue(p_match uuid, p_action text) secdef=true 1f838f40e9c33248c0978b96b459156d
@@ -1048,6 +1236,7 @@ function public.reopen_match(p_match uuid, p_reason text) secdef=true 2bfb6353b4
 function public.reorder_my_gallery(p_ids uuid[]) secdef=true 6e9aff3795e805846d0fe351724c00db
 function public.report_bug(p jsonb) secdef=true 7d1ea860d4335a1060158e8f78c967fb
 function public.report_live_score(p_match uuid, p_device text, p_seq bigint, p_score_a integer, p_score_b integer, p_phase text, p_detail jsonb, p_expected_version integer) secdef=true 7b1df6e1c638d9d09de343c9b425229f
+function public.request_counter_seat(p_code text) secdef=true 75c9635b35ec8e64398e591c34f41239
 function public.request_fighter_claim(p_fighter uuid, p_message text) secdef=true 9d87cfb1d0d29b597c2905cd402956b4
 function public.request_new_team(p_payload jsonb) secdef=true ad52e737cbca78ece235bf3209050c6c
 function public.request_team_join(p_team uuid, p_message text) secdef=true 25d5ab4ac2dac9fdb871282ced04ca1c
@@ -1065,6 +1254,7 @@ function public.set_entry_roster(p_entry uuid, p_fighters jsonb) secdef=true 764
 function public.set_event_organization(p_event uuid, p_org uuid) secdef=true 5a4ffe1f50b98f8407ac15e04b629ab1
 function public.set_event_season(p_event uuid, p_season uuid) secdef=true 6a41dbf442e65c78d1fe1ac4757a535b
 function public.set_fighter_active(p_fighter uuid, p_active boolean, p_reason text) secdef=true d3b40a0593965f4440b747fd3d9e39f6
+function public.set_lyst_settings(p_event uuid, p_settings jsonb) secdef=true 7649ee51e0d3dcf159d11eef5fbeecf5
 function public.set_match_queue(p_match uuid, p_state text, p_field text) secdef=true a159e625fd9ac934dab329ee60fc264d
 function public.set_my_fighter_avatar(p_path text) secdef=true eeed532419ebff7e93a0899d34d6407a
 function public.set_notification_settings(p_fights boolean, p_team boolean, p_events boolean, p_system boolean) secdef=true 5bb934647d8d9410ae602be684dd26c4
@@ -1122,6 +1312,7 @@ index public.entry_fighters CREATE UNIQUE INDEX ON public.entry_fighters USING b
 index public.event_invitation_competitions CREATE UNIQUE INDEX ON public.event_invitation_competitions USING btree (invitation_id, competition_id)
 index public.event_invitations CREATE UNIQUE INDEX ON public.event_invitations USING btree (event_id, fighter_id)
 index public.event_invitations CREATE UNIQUE INDEX ON public.event_invitations USING btree (id)
+index public.event_lyst_settings CREATE UNIQUE INDEX ON public.event_lyst_settings USING btree (event_id)
 index public.event_staff CREATE UNIQUE INDEX ON public.event_staff USING btree (event_id, user_id, role)
 index public.events CREATE INDEX ON public.events USING btree (organization_id)
 index public.events CREATE UNIQUE INDEX ON public.events USING btree (id)
@@ -1138,6 +1329,36 @@ index public.fighter_identity_reviews CREATE INDEX ON public.fighter_identity_re
 index public.fighter_identity_reviews CREATE UNIQUE INDEX ON public.fighter_identity_reviews USING btree (fighter_id, candidate_id)
 index public.fighter_identity_reviews CREATE UNIQUE INDEX ON public.fighter_identity_reviews USING btree (id)
 index public.fighters CREATE UNIQUE INDEX ON public.fighters USING btree (id)
+index public.lyst_counter_rounds CREATE INDEX ON public.lyst_counter_rounds USING btree (match_id)
+index public.lyst_counter_rounds CREATE UNIQUE INDEX ON public.lyst_counter_rounds USING btree (seat_id, match_id, round_no)
+index public.lyst_counter_seats CREATE INDEX ON public.lyst_counter_seats USING btree (event_id, field_key)
+index public.lyst_counter_seats CREATE INDEX ON public.lyst_counter_seats USING btree (match_id)
+index public.lyst_counter_seats CREATE INDEX ON public.lyst_counter_seats USING btree (match_id) WHERE (status = 'active'::text)
+index public.lyst_counter_seats CREATE INDEX ON public.lyst_counter_seats USING btree (user_id)
+index public.lyst_counter_seats CREATE UNIQUE INDEX ON public.lyst_counter_seats USING btree (id)
+index public.lyst_counter_seats CREATE UNIQUE INDEX ON public.lyst_counter_seats USING btree (user_id, event_id, field_key) WHERE (status = ANY (ARRAY['pending'::text, 'active'::text]))
+index public.lyst_counts CREATE INDEX ON public.lyst_counts USING btree (match_id, round_no)
+index public.lyst_counts CREATE INDEX ON public.lyst_counts USING btree (seat_id, round_no, created_at)
+index public.lyst_counts CREATE INDEX ON public.lyst_counts USING btree (undo_of)
+index public.lyst_counts CREATE UNIQUE INDEX ON public.lyst_counts USING btree (id)
+index public.lyst_counts CREATE UNIQUE INDEX ON public.lyst_counts USING btree (undo_of) WHERE (undo_of IS NOT NULL)
+index public.lyst_join_attempts CREATE INDEX ON public.lyst_join_attempts USING btree (user_id, at)
+index public.lyst_join_attempts CREATE UNIQUE INDEX ON public.lyst_join_attempts USING btree (id)
+index public.lyst_join_codes CREATE INDEX ON public.lyst_join_codes USING btree (event_id, field_key)
+index public.lyst_join_codes CREATE UNIQUE INDEX ON public.lyst_join_codes USING btree (code)
+index public.lyst_matches CREATE INDEX ON public.lyst_matches USING btree (event_id)
+index public.lyst_matches CREATE UNIQUE INDEX ON public.lyst_matches USING btree (match_id)
+index public.lyst_round_revisions CREATE INDEX ON public.lyst_round_revisions USING btree (match_id, round_no, changed_at)
+index public.lyst_round_revisions CREATE UNIQUE INDEX ON public.lyst_round_revisions USING btree (id)
+index public.lyst_rounds CREATE INDEX ON public.lyst_rounds USING btree (event_id)
+index public.lyst_rounds CREATE UNIQUE INDEX ON public.lyst_rounds USING btree (match_id, round_no)
+index public.lyst_timer CREATE INDEX ON public.lyst_timer USING btree (match_id)
+index public.lyst_timer CREATE UNIQUE INDEX ON public.lyst_timer USING btree (event_id, field_key)
+index public.match_discipline CREATE INDEX ON public.match_discipline USING btree (event_id)
+index public.match_discipline CREATE INDEX ON public.match_discipline USING btree (match_id, created_at)
+index public.match_discipline CREATE INDEX ON public.match_discipline USING btree (related_id) WHERE (related_id IS NOT NULL)
+index public.match_discipline CREATE UNIQUE INDEX ON public.match_discipline USING btree (id)
+index public.match_discipline_private CREATE UNIQUE INDEX ON public.match_discipline_private USING btree (discipline_id)
 index public.match_live_scores CREATE INDEX ON public.match_live_scores USING btree (competition_id)
 index public.match_live_scores CREATE UNIQUE INDEX ON public.match_live_scores USING btree (match_id)
 index public.matches CREATE INDEX ON public.matches USING btree (competition_id, stage, "position")
@@ -1214,12 +1435,29 @@ policy public.event_invitation_competitions event_invitation_competitions_read S
    FROM event_invitations i
   WHERE ((i.id = event_invitation_competitions.invitation_id) AND (private.is_organizer(i.event_id) OR (i.fighter_id = my_fighter_id()))))) check=
 policy public.event_invitations event_invitations_read SELECT roles=authenticated using=(private.is_organizer(event_id) OR (fighter_id = my_fighter_id())) check=
+policy public.event_lyst_settings event_lyst_settings_read SELECT roles=authenticated using=private.can_score(event_id) check=
 policy public.event_staff event_staff_read SELECT roles=authenticated using=((user_id = auth.uid()) OR private.is_organizer(event_id)) check=
 policy public.events events_organizer_update UPDATE roles=authenticated using=private.is_organizer(id) check=private.is_organizer(id)
 policy public.events events_read SELECT roles=anon,authenticated using=(private.is_event_public(id) OR private.can_score(id)) check=
 policy public.fighter_accounts fighter_accounts_own SELECT roles=authenticated using=(user_id = auth.uid()) check=
 policy public.fighter_gallery fighter_gallery_public_read SELECT roles=anon,authenticated using=true check=
 policy public.fighters fighters_public_read SELECT roles=anon,authenticated using=true check=
+policy public.lyst_counter_rounds lyst_counter_rounds_read SELECT roles=authenticated using=(EXISTS ( SELECT 1
+   FROM lyst_counter_seats s
+  WHERE ((s.id = lyst_counter_rounds.seat_id) AND ((s.user_id = ( SELECT auth.uid() AS uid)) OR private.can_score(s.event_id))))) check=
+policy public.lyst_counter_seats lyst_counter_seats_read SELECT roles=authenticated using=((user_id = ( SELECT auth.uid() AS uid)) OR private.can_score(event_id)) check=
+policy public.lyst_counts lyst_counts_read SELECT roles=authenticated using=(private.can_score(private.event_of_match(match_id)) OR (EXISTS ( SELECT 1
+   FROM lyst_counter_seats s
+  WHERE ((s.id = lyst_counts.seat_id) AND (s.user_id = ( SELECT auth.uid() AS uid)))))) check=
+policy public.lyst_join_codes lyst_join_codes_read SELECT roles=authenticated using=private.can_score(event_id) check=
+policy public.lyst_matches lyst_matches_read SELECT roles=authenticated using=private.can_score(event_id) check=
+policy public.lyst_round_revisions lyst_round_revisions_read SELECT roles=authenticated using=private.can_score(private.event_of_match(match_id)) check=
+policy public.lyst_rounds lyst_rounds_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
+policy public.lyst_timer lyst_timer_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
+policy public.match_discipline match_discipline_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
+policy public.match_discipline_private match_discipline_private_read SELECT roles=authenticated using=private.can_score(( SELECT d.event_id
+   FROM match_discipline d
+  WHERE (d.id = match_discipline_private.discipline_id))) check=
 policy public.match_live_scores match_live_scores_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
 policy public.matches matches_organizer_delete DELETE roles=authenticated using=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text)) check=
 policy public.matches matches_organizer_insert INSERT roles=authenticated using= check=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state = 'scheduled'::text) AND (result IS NULL))
@@ -1276,6 +1514,7 @@ table public.entries rls=true
 table public.entry_fighters rls=true
 table public.event_invitation_competitions rls=true
 table public.event_invitations rls=true
+table public.event_lyst_settings rls=true
 table public.event_staff rls=true
 table public.events rls=true
 table public.fighter_accounts rls=true
@@ -1283,6 +1522,17 @@ table public.fighter_claim_requests rls=true
 table public.fighter_gallery rls=true
 table public.fighter_identity_reviews rls=true
 table public.fighters rls=true
+table public.lyst_counter_rounds rls=true
+table public.lyst_counter_seats rls=true
+table public.lyst_counts rls=true
+table public.lyst_join_attempts rls=true
+table public.lyst_join_codes rls=true
+table public.lyst_matches rls=true
+table public.lyst_round_revisions rls=true
+table public.lyst_rounds rls=true
+table public.lyst_timer rls=true
+table public.match_discipline rls=true
+table public.match_discipline_private rls=true
 table public.match_live_scores rls=true
 table public.matches rls=true
 table public.notification_preferences rls=true
@@ -1329,6 +1579,9 @@ trigger public.events events_lock_guard 10ad005f090172343723a0fdae66b9f5
 trigger public.events events_touch ea193b4d94a5077a081709aa310f481a
 trigger public.fighter_gallery fighter_gallery_limit 649ed07e4ca64aa5d7b322678bdf920d
 trigger public.fighters fighters_profile_check e7e82807a0fa9ec51263909bf9a9392c
+trigger public.lyst_counts lyst_counts_no_change e580546fd84cecba5dc4c460fe1e8858
+trigger public.lyst_round_revisions lyst_round_revisions_no_change d680c171e0bffd9bd5a4f6f18a0d1814
+trigger public.match_discipline match_discipline_guard 5d5e823503013f074fd831af9f11d373
 trigger public.matches matches_advance_queue a856fe6168a48243b58bdbc449827f61
 trigger public.matches matches_bump_version 349122f662f9df6a32cd78de47b0e4d4
 trigger public.matches matches_clear_live_score 91aa2e2a9dad90a2285e3d79208fbe6b
@@ -1336,6 +1589,7 @@ trigger public.matches matches_clear_orphan_slots 8b44bfc0ed4fce0385cbf2225971a1
 trigger public.matches matches_clear_tie_decisions b680868d5ce98a216ba490b041c0461a
 trigger public.matches matches_links 0e6952187bb28c316b1b233bf44007df
 trigger public.matches matches_lock_guard 7605afcf9c47f0efd857b05baba52ea9
+trigger public.matches matches_lyst_final fad7c5044fe7d6f9db801c5f6a5f278b
 trigger public.matches matches_notify_queue 1c7f9e08deea510657497f9f99f3439a
 trigger public.matches matches_unfinish 6480b73749c8d5dd24a95139e75e38d8
 trigger public.notifications notifications_kick edae3c68178377d5d688374dda11fe7b
@@ -1365,6 +1619,8 @@ view public.fighter_participation opts=security_invoker=true 7ca57b3e294b8ed789c
 view public.fighter_results opts=security_invoker=true aa25fd7f60924b9c53cd96bbf40a3dcc
 view public.fighter_results_all opts=security_invoker=true 11bea24b47147496ff325c393727e653
 view public.fighter_season_stats opts=security_invoker=true 7f3778d2140e93cbb508cc8476fcc5b2
+view public.lyst_public_state opts=security_invoker=true 49a5921196bcfd075b5b0d855cb1e2de
+view public.lyst_round_scores opts=security_invoker=true b155f2e49a0bfe8212b06ff7bc9f00fd
 view public.match_sides opts=security_invoker=true 39d0277c19521cc5d5d8432f8c6e59f3
 view public.played_events opts=security_invoker=true 649799420f0e96adb6306543db843bea
 view public.ranking_fighters opts=security_invoker=true a48bb17afce25a8f7d01241f1c6c54cb

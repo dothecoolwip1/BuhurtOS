@@ -48,6 +48,19 @@
 .ar-slot-c{font:500 clamp(12px,1.7vmin,20px)/1.3 var(--f-body);color:var(--ar-mute);overflow-wrap:anywhere}
 .ar-enter{animation:arEnter .5s ease both}
 @keyframes arEnter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* Pack 13: official clock and penalties from Lyst Control */
+.ar-clock{margin:0;display:grid;justify-items:center;gap:4px}
+.ar-clock-k{font:700 clamp(12px,2vmin,24px)/1 var(--f-data);letter-spacing:.18em;text-transform:uppercase;color:var(--ar-mute)}
+.ar-clock-n{font:900 clamp(48px,16vmin,220px)/.95 var(--f-display);font-variant-numeric:tabular-nums}
+.ar-clock.paused .ar-clock-n{color:var(--ar-b)}
+.ar-fight.has-clock{gap:clamp(6px,1.4vh,16px)}
+.ar-fight.has-clock .ar-score{font-size:clamp(56px,19vmin,260px)}
+.ar-fight.has-clock .ar-name{font-size:clamp(24px,5.2vmin,80px)}
+.ar-fight.has-clock .ar-side{padding-block:clamp(8px,1.4vh,20px)}
+.ar-fight.has-clock .ar-clock-n{font-size:clamp(40px,11vmin,150px)}
+.ar-fight.has-clock .ar-phase{font-size:clamp(14px,2.6vmin,34px)}
+.ar-marks{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.ar-mark{font:700 clamp(12px,2vmin,24px)/1 var(--f-data);letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:8px;background:color-mix(in oklab,var(--ar-b) 22%,#10151D);color:var(--ar-fg)}
 @media (max-width:640px){
   .ar-sides{grid-template-columns:1fr;gap:8px}
   .ar-vs{display:none}

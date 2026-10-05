@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { classifyRpcError, scoreEventArgs, senderOutcome } from './scoreSender';
+import { classifyRpcError, isLystKind, lystAnswerOutcome, lystCall, scoreEventArgs, senderOutcome } from './scoreSender';
 
 describe('classifyRpcError', () => {
   it('offline when nothing reached the server or the service is unavailable to us', () => {
@@ -53,5 +53,28 @@ describe('realSender', () => {
     expect(r).toMatchObject({ result: 'reject' });
     expect((r as { error: string }).error).toMatch(/newer version/);
     expect(await realSender({ ...base, schema: 1, userId: 'someone-else' })).toBe('offline');
+  });
+});
+
+describe('lyst actions ride the same outbox', () => {
+  it('a confirmed round is sent under the entry id (its command id) with the marshal\'s numbers and nothing else', () => {
+    const c = lystCall({ id: 'c1', kind: 'lyst.confirm_round', payload: { matchId: 'm1', round: 2, a: 6, b: 5, expectedRev: 3, recommendedA: 7, recommendedB: 5, reason: null } });
+    expect(c).toEqual({ fn: 'lyst_confirm_round', args: { p_command: 'c1', p_match: 'm1', p_round: 2, p_awarded_a: 6, p_awarded_b: 5, p_expected_rev: 3, p_recommended_a: 7, p_recommended_b: 5, p_reason: null } });
+  });
+  it('discipline and void are mapped the same way', () => {
+    expect(lystCall({ id: 'd1', kind: 'lyst.discipline', payload: { matchId: 'm1', round: 1, side: 'a', kind: 'deduction', amount: 1, reason: 'Illegal strike', calledBy: 'Lee' } })?.args)
+      .toMatchObject({ p_command: 'd1', p_kind: 'deduction', p_amount: 1, p_side: 'a', p_called_by: 'Lee' });
+    expect(lystCall({ id: 'v1', kind: 'lyst.void', payload: { id: 'd1', reason: 'wrong fighter' } })).toEqual({ fn: 'lyst_void_discipline', args: { p_command: 'v1', p_id: 'd1', p_reason: 'wrong fighter' } });
+  });
+  it('the timer is not an outbox kind: it cannot be changed offline', () => {
+    expect(isLystKind('lyst.timer')).toBe(false);
+    expect(lystCall({ id: 'x', kind: 'lyst.timer', payload: {} })).toBeNull();
+    expect(isLystKind('lyst.confirm_round')).toBe(true);
+  });
+  it('a stale confirm is kept for review, not dropped and not replayed', () => {
+    expect(lystAnswerOutcome({ status: 'stale' })).toMatchObject({ result: 'reject' });
+    expect(lystAnswerOutcome({ status: 'ok' })).toBe('ok');
+    expect(lystAnswerOutcome({ status: 'duplicate' })).toBe('ok');
+    expect(lystAnswerOutcome(null)).toBe('ok');
   });
 });

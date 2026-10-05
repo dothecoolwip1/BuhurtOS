@@ -8,6 +8,7 @@ import { registerServiceWorker } from './lib/swUpdate';
 import './lib/install';   // listens for the browser's install event as early as possible
 import './styles/app.css';
 import './styles/arena.css';
+import './styles/lyst.css';
 
 initAnalytics();
 

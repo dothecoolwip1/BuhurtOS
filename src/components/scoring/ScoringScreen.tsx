@@ -28,8 +28,8 @@ const STATUS_TEXT: Record<Status, { word: string; line: string; tone: string }> 
   review: { word: 'Needs review', line: 'Needs review: not changed', tone: 'is-review' }
 };
 
-export function StatusBanner({ status }: { status: Status }) {
-  const t = STATUS_TEXT[status];
+export function StatusBanner({ status, line }: { status: Status; line?: string }) {
+  const t = { ...STATUS_TEXT[status], ...(line ? { line } : {}) };
   return (
     <div className={`sk-status ${t.tone}`} role="status" aria-live="polite">
       <b>{t.word}</b><span>{t.line}</span>
@@ -66,6 +66,8 @@ export interface ScoringScreenProps {
   nextFight: CompetitionMatch | null;
   backHref: { to: string; label: string } | null;
   onExit: () => void; onFinished: () => void; onOfficial: () => void; onOpenNext: (m: CompetitionMatch) => void; onStale: (message: string) => void;
+  /** Duels only: switch back to the lyst screen (clock, rounds, marshal's call). */
+  onLyst?: () => void;
 }
 
 /**
@@ -73,7 +75,7 @@ export interface ScoringScreenProps {
  * this screen only changes what they see: the sides and the score dominate, one status banner says exactly where the result stands, and when the
  * server confirms it the next fight is one tap away.
  */
-export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale }: ScoringScreenProps) {
+export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, onLyst }: ScoringScreenProps) {
   const { match, comp, version } = opened;
   const mode = boardModeFor(comp.league, comp.category);
   const { waiting, record, drain, rejected, discardRejected, retryRejected } = useOutbox({ eventId });
@@ -267,6 +269,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
       {board.mode === 'series' && <SeriesBoard headless state={board.s} onChange={s => change({ mode: 'series', s })} record={rec} names={names} stage={match.stage} />}
       <div className="mactions sk-actions">
         <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
+        {onLyst && <button type="button" className="btn btn-line fq-big" onClick={onLyst}>Use the lyst screen</button>}
         <button type="button" className={`btn fq-big ${ready ? 'btn-win' : 'btn-ink'}`} disabled={!canOfferFinish(board, match.stage)} onClick={() => { setPhase('confirming'); setError(null); }}>Finish match</button>
       </div>
     </div>

@@ -35,6 +35,7 @@ const browser = await chromium.launch({ executablePath: process.env.CHROME ?? '/
 async function open(kind, who) {
   const vp = { desktop: { viewport: { width: 1280, height: 900 } }, tablet: { viewport: { width: 768, height: 1024 }, hasTouch: true }, phone: { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 } }[kind];
   const ctx = await browser.newContext({ ...vp, serviceWorkers: 'block', locale: 'en-CA', timezoneId: 'America/Edmonton' });
+  await ctx.addInitScript(() => { try { localStorage.setItem('bos-lyst-mode', 'classic'); } catch { /* ignore */ } });   // these journeys drive the classic duel board; Lyst Control has its own journey (pack13-live)
   await ctx.route(/posthog\.com|maps\.googleapis\.com/, r => r.abort('failed'));
   if (who) await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [STORAGE_KEY, session(WHO[who])]);
   const page = await ctx.newPage();

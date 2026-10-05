@@ -59,6 +59,7 @@ const VP = {
 };
 async function open(kind, who, opts = {}) {
   const ctx = await browser.newContext({ ...VP[kind], serviceWorkers: 'block', locale: 'en-CA', timezoneId: 'America/Edmonton', ...opts });
+  await ctx.addInitScript(() => { try { localStorage.setItem('bos-lyst-mode', 'classic'); } catch { /* ignore */ } });   // these journeys drive the classic duel board; Lyst Control has its own journey (pack13-live)
   await ctx.route(/posthog\.com|maps\.googleapis\.com|nominatim/, r => r.abort('failed'));
   if (who) await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [STORAGE_KEY, session(WHO[who])]);
   const page = await ctx.newPage();

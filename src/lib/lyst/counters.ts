@@ -1,0 +1,85 @@
+/**
+ * The counter's phone. A counter taps; the phone shows the count; the server keeps it as PROVISIONAL evidence for the marshal, never as a score.
+ * Taps are saved on the device FIRST and sent in order, each with its own id, so a lost signal, a double send or a refresh can neither lose a tap nor count it twice.
+ * Pure: storage and sending are injected.
+ */
+export const JOIN_CODE_LENGTH = 10;
+
+/** Accepts the bare code, a pasted link, or text with spaces/dashes. Returns the canonical code or null. */
+export function parseJoinCode(input: string | null | undefined): string | null {
+  const raw = (input ?? '').trim();
+  if (!raw) return null;
+  const fromLink = /\/lyst\/join\/([A-Za-z0-9-]+)/.exec(raw)?.[1];
+  const code = (fromLink ?? raw).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  return code.length === JOIN_CODE_LENGTH ? code : null;
+}
+
+/** The address a QR code carries. `base` is the app's base path (for example "/BuhurtOS/"). */
+export function joinUrl(origin: string, base: string, code: string): string {
+  const b = base.endsWith('/') ? base : `${base}/`;
+  return `${origin}${b}lyst/join/${code}`;
+}
+
+export type CountAction = { kind: 'tap'; id: string; weight: number; round: number } | { kind: 'undo'; id: string; round: number };
+
+/** One pending item per tap: the id is created when the finger lands, so the same tap is never sent under two ids. */
+export class TapQueue {
+  private items: CountAction[] = [];
+  constructor(private newId: () => string = () => crypto.randomUUID()) {}
+  get pending(): readonly CountAction[] { return this.items; }
+  get size(): number { return this.items.length; }
+  tap(round: number, weight = 1): CountAction { const a: CountAction = { kind: 'tap', id: this.newId(), weight, round }; this.items.push(a); return a; }
+  undo(round: number): CountAction { const a: CountAction = { kind: 'undo', id: this.newId(), round }; this.items.push(a); return a; }
+  /** Items for a round that is no longer the live one can never be accepted: keep them out of the way (the phone says so). */
+  dropRound(round: number): CountAction[] { const gone = this.items.filter(i => i.round === round); this.items = this.items.filter(i => i.round !== round); return gone; }
+  /** Called when the server accepted (or recognised as already counted) the head item. */
+  shift(id: string): void { if (this.items[0]?.id === id) this.items.shift(); else this.items = this.items.filter(i => i.id !== id); }
+  /** The tally the phone shows right now: what the server last confirmed plus what is still waiting, so every tap answers at once. */
+  display(serverTotal: number, round: number): number {
+    let n = serverTotal;
+    const live = this.items.filter(i => i.round === round);
+    for (const i of live) n = i.kind === 'tap' ? n + i.weight : Math.max(0, n - 1);
+    return n;
+  }
+  load(items: readonly CountAction[]): void { this.items = [...items]; }
+}
+
+export type CounterSend = (a: CountAction) => Promise<{ status: 'ok' | 'duplicate' | 'nothing'; total: number } | { status: 'refused'; reason: 'ROUND_ENDED' | 'ROUND_CHANGED' | 'ROUND_NOT_STARTED' | 'OTHER'; message: string } | { status: 'offline' }>;
+
+/** Send the queue in order until it is empty, the signal is gone, or the server refuses (a round that has ended can never take a tap again). */
+export async function flushTaps(q: TapQueue, send: CounterSend): Promise<{ sent: number; total: number | null; stopped: 'empty' | 'offline' | 'refused'; refusal?: string }> {
+  let sent = 0, total: number | null = null;
+  while (q.size > 0) {
+    const head = q.pending[0];
+    let r: Awaited<ReturnType<CounterSend>>;
+    try { r = await send(head); } catch { return { sent, total, stopped: 'offline' }; }
+    if (r.status === 'offline') return { sent, total, stopped: 'offline' };
+    if (r.status === 'refused') {
+      // the round moved on or ended: nothing waiting for that round can ever count
+      q.dropRound(head.round);
+      return { sent, total, stopped: 'refused', refusal: r.message };
+    }
+    total = r.total; q.shift(head.id); sent += 1;
+  }
+  return { sent, total, stopped: 'empty' };
+}
+
+export const SEAT_WORD = { official: 'Counting', learning: 'Learning' } as const;
+export const slotLabel = (slot: string | null | undefined): string => slot ?? '–';
+/** The words a counter needs when the tablet has not seated them yet, or has moved them on. */
+export function counterBanner(state: { seat: { status: string; role?: string } | null; can_count?: boolean; final?: boolean; round?: { status: string } | null }): string {
+  if (!state.seat) return 'Scan the join code on the lyst tablet.';
+  if (state.seat.status === 'pending') return 'Waiting for the lyst to seat you. Keep this screen open.';
+  if (state.seat.status === 'expired') return 'Your seat has ended. Ask the lyst for a new one.';
+  if (state.final) return 'This fight is finished. Wait for the next one.';
+  if (!state.round) return 'Waiting for the round to start.';
+  if (state.round.status === 'confirming') return 'Round over. The marshal is confirming the score.';
+  if (state.round.status === 'confirmed') return 'Round confirmed. Wait for the next round.';
+  return state.can_count ? 'Tap COUNT for every valid strike.' : 'Waiting for the round to start.';
+}
+
+/** One tap per valid strike, or two buttons (+2 head/torso, +1 limbs) where the ruleset scores that way. 'auto' follows the category's own zone values; an event can force either. */
+export function counterInputFor(category: string, setting: 'auto' | 'simple' | 'weighted' | undefined): 'simple' | 'weighted' {
+  if (setting === 'simple' || setting === 'weighted') return setting;
+  return category === 'sword_shield' || category === 'longsword' ? 'weighted' : 'simple';
+}

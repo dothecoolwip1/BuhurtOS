@@ -420,3 +420,37 @@ Database gate (`run_all.sh`, includes `team_discipline_rankings_gate.sql`, 53 ch
   **Production browser check: NOT done**: this environment's network policy denies `dothecoolwip1.github.io` (proxy 403), so what production serves was not inspected directly; the deploy job's success and the CI browser run of the identical build are the evidence.
   **Physical phone: NOT verified** (install, permission, receipt of a push, tap with the app closed, iPhone Home Screen). The checklist `docs/runbooks/REAL_DEVICE_PUSH_CHECKLIST.md` is unperformed and is required before relying on alerts at the Rumble.
 
+
+## Pack 13: Lyst Control, timing, counter scoring and marshal authority (2026-10-07)
+
+- Full description, security model and defaults: `docs/claude-packs/PACK_13_LYST_CONTROL.md`. Hosted record: `docs/runbooks/PACK13_HOSTED_ROLLOUT.md`. Real-device list: `docs/runbooks/PACK13_REAL_DEVICE_CHECKLIST.md` (**NOT performed; no box is ticked**).
+- The rule: the marshal's call is the only official score. Counters (including learning counters) are provisional evidence with no path to anything official; nothing averages, maxes, votes or auto-accepts them. The result is still saved by a person through the existing finalization path.
+- Migrations (additive): `20261007000100_pack13_lyst_core`, `20261007000200_pack13_lyst_counters`. No Edge Function, cron job or extension.
+
+### Evidence by level (kept apart on purpose)
+| Level | Result |
+| --- | --- |
+| Repository changed | yes: 2 migrations, `src/lib/lyst/*`, `src/data/lyst.ts`, `src/components/lyst/*`, `src/pages/lyst/CounterPage.tsx`, Arena clock/official state, outbox kinds, tests, docs |
+| Local build / unit | typecheck clean; Vitest 899 (incl. 32 lyst lib tests, 10 sender, 19 arena); production build |
+| Local database | `run_all.sh` DATABASE GATE PASSED (all earlier packs + `pack13_gate.sql` **220 checks**); `pack13_commit.sh` **14** real-commit / parallel-session checks (two tablets pause at once, same command sent twice or four times, 30 counters tapping at once, duplicate tap ids, two finishes at once); schema fingerprint updated |
+| Browser (real Chromium, REAL local Postgres + PostgREST, built app) | `scripts/e2e/pack13-live.mjs` **88/88**: tablets, 5 counter phones, head marshal, public display, stranger. Includes refresh-proof clock, pause/resume, two tablets racing, Field 1 + Field 2 independent, QR join + operator seating, learning counter, counting, UNDO LAST, 40-click burst lands exactly 40, break workflow, cards from the event's own list, void with reason, double-tap CONFIRM, correction with reason, finish through the existing path, next fight carries counters, offline marshal's call through the existing outbox, security checks, 390/768/1280 sweeps, keyboard/focus |
+| Measured 30-second break | END ROUND, marshal's score, CONFIRM, START ROUND 2: **5 taps; 4.3-4.6 s of automation** (entry screen up in about 50-60 ms; break clock still had 26 s). Rapid taps: 40 clicks in one burst, exactly 40 recorded. A person is slower; the margin inside a 30 s break is large but is not a human measurement |
+| Regression (local) | CI browser suites on the built app: field-pack03 28, sw-update 28, pack07-ux 89, pack08 54, pack12-app 74, all passed. Real-stack: eventday-live 78/78, finalize-live 126/126. arena-live 102/103 (see below) |
+| Hosted database (mvbxlebznlgroptwwdsm, via Supabase MCP) | read-only preflight (Pack 12 state, no Pack 13 objects); 4 additive migrations applied (`pack13_lyst_core`, `pack13_lyst_counters`, `pack13_trigger_search_path`, `pack13_join_attempts_pk`); verified 12 tables with RLS on, 0 client write grants, anon cannot execute any lyst/counter function, no SECURITY DEFINER function without an empty search_path, private helpers not callable by users, 4 triggers, 3 tables in realtime, 2 views with no sensitive columns; anon refused (permission denied) on counts, seats, revisions, private reasons and settings (rolled-back transaction), anon can read the public state and clock. No real event, result, fighter or team row was created or changed |
+| Advisors vs baseline | Baseline: security 6 groups, performance FK 42 / initplan 11 / unused 2 / multiple-permissive 10. After: **no new** unindexed-FK, initplan or permissive-policy findings (covering indexes added, `(select auth.uid())` used). Fixed after the first check: 2 trigger functions without a pinned search_path, 1 table without a primary key. New and accepted: 18 "authenticated can execute SECURITY DEFINER" notices (the same intended class as the existing 132; every function checks role or ownership inside), 1 INFO `lyst_join_attempts` RLS with no policy (server-only by design, like other private tables), 17 INFO "unused index" on the new tables (they have not been used yet) |
+| CI / deploy / production | recorded below after the merge |
+| Physical device / real hall | **NOT tested** |
+
+### Known, not caused by Pack 13
+`scripts/e2e/arena-live.mjs` fails one check ("a result on Field 2 leaves Field 1 alone": queue is `13:on_deck,11:in_the_hole`, the script expects `13:active,11:on_deck`). It fails identically on `757123b` (the code before Pack 13), so it predates this pack; that suite is not part of CI. Not changed here.
+
+### Bugs the new tests caught before release (fixed)
+- A wrong join code raised an error, which rolled back the attempt row, so the brute-force limit never counted guesses. Now answered as `invalid` after the attempt is recorded.
+- A counter seat carried to the next fight inherited its old fight's tally. Tallies and submissions are now per match.
+- A late answer to an earlier poll put an old count back on a counter's phone. Answers requested before the last tap was sent are ignored.
+
+### Decisions recorded
+- Lyst Control applies to duels (the round-scored boards). Team fights, Profight and the series boards are unchanged; a marshal can switch to the classic board per device.
+- All durations, regular rounds (2), extra-round length (30 s), deduction amounts, reasons and the card list are event settings. The card list starts empty: no card names are invented.
+- Refreshing the lyst screen returns to the open fight (`?open=`); the classic board keeps its old behaviour (refresh returns to the queue).
+- Nothing was built for Pack 14 (broadcast overlays) beyond the clean public state view `lyst_public_state`.

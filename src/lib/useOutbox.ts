@@ -60,10 +60,12 @@ export function useOutbox(opts: { preview?: boolean; eventId?: string } = {}) {
     window.addEventListener('online', on);
     return () => { window.clearInterval(t); window.removeEventListener('online', on); };
   }, [flush]);
-  const record = useCallback(async (kind: string, subject: string, payload: unknown) => {
-    if (!userId) return;
-    await ch.box.enqueue({ userId, eventId }, kind, subject, payload);
+  /** Save an action on the device and start sending it. Resolves with its id (the server's idempotency key), or null when nobody is signed in. */
+  const record = useCallback(async (kind: string, subject: string, payload: unknown): Promise<string | null> => {
+    if (!userId) return null;
+    const entry = await ch.box.enqueue({ userId, eventId }, kind, subject, payload);
     void flush();
+    return entry.id;
   }, [ch, flush, userId, eventId]);
   /** Send everything waiting for one match. Resolves clear=false if signal never came back in time. */
   const drain = useCallback((subject: string): Promise<DrainResult> => drainSubject(ch.box, ch.send, userId, subject), [ch, userId]);
