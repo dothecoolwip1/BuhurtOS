@@ -94,5 +94,35 @@ select t.expect_error('anonymous cannot call my_event_entries', 'select * from p
 select t.as_admin();
 select t.expect_eq('the function stays security definer with an empty search_path', (select prosecdef and exists (select 1 from unnest(proconfig) c where c like 'search_path=%') from pg_proc where proname = 'my_event_entries'), true);
 
+-- ---------------------------------------------------------------- two fields: automatic promotion never makes a person active twice
+insert into public.teams (id, slug, name, status) values ('00000000-0000-0000-0000-00000000d112', 'ferns', 'Iron Ferns', 'approved'), ('00000000-0000-0000-0000-00000000d113', 'wolves', 'Mire Wolves', 'approved');
+insert into public.fighters (id, display_name, team_id, gender, disciplines) values
+  ('00000000-0000-0000-0000-00000000f105', 'Piers Crane', '00000000-0000-0000-0000-00000000d112', 'male', '{}'),
+  ('00000000-0000-0000-0000-00000000f106', 'Edric Hale', '00000000-0000-0000-0000-00000000d112', 'male', '{}'),
+  ('00000000-0000-0000-0000-00000000f107', 'Finn Marsh', '00000000-0000-0000-0000-00000000d113', 'male', '{}');
+insert into public.entries (id, competition_id, team_id, fighter_id, status) values
+  ('00000000-0000-0000-0000-00000000ee05', :'k3', null, '00000000-0000-0000-0000-00000000f105', 'registered'),
+  ('00000000-0000-0000-0000-00000000ee06', :'k1', '00000000-0000-0000-0000-00000000d112', null, 'registered'),
+  ('00000000-0000-0000-0000-00000000ee07', :'k1', '00000000-0000-0000-0000-00000000d113', null, 'registered');
+update public.entries set status = 'registered' where id = '00000000-0000-0000-0000-00000000ee03';
+insert into public.entry_fighters (entry_id, competition_id, fighter_id, role) values
+  ('00000000-0000-0000-0000-00000000ee06', :'k1', '00000000-0000-0000-0000-00000000f106', 'fighter'),
+  ('00000000-0000-0000-0000-00000000ee07', :'k1', '00000000-0000-0000-0000-00000000f107', 'fighter');
+-- M1: Aldric (f1) is fighting NOW on Field 1 (longsword). M2 on Field 2: his club's 5v5 (roster f1, f4) vs Iron Ferns. M3 on Field 2: Iron Ferns vs Mire Wolves.
+insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, field, queue_state) values
+  ('00000000-0000-0000-0000-00000000ab01', :'k3', 'pool', 'Round 1', 1, '00000000-0000-0000-0000-00000000ee03', '00000000-0000-0000-0000-00000000ee05', null, 'active'),
+  ('00000000-0000-0000-0000-00000000ab02', :'k1', 'pool', 'Round 1', 1, '00000000-0000-0000-0000-00000000ee01', '00000000-0000-0000-0000-00000000ee06', 'Field 2', 'scheduled'),
+  ('00000000-0000-0000-0000-00000000ab03', :'k1', 'pool', 'Round 1', 2, '00000000-0000-0000-0000-00000000ee06', '00000000-0000-0000-0000-00000000ee07', 'Field 2', 'scheduled');
+select t.expect_eq('the club''s 5v5 has someone fighting now on Field 1 (through the roster)', private.fighting_elsewhere('00000000-0000-0000-0000-00000000e111', '00000000-0000-0000-0000-00000000ab02'), true);
+select t.expect_eq('Ferns vs Wolves has nobody fighting elsewhere', private.fighting_elsewhere('00000000-0000-0000-0000-00000000e111', '00000000-0000-0000-0000-00000000ab03'), false);
+select t.expect_eq('automatic promotion to ACTIVE on Field 2 skips the fight whose fighter is busy on Field 1 and takes the next one', private.promote_one('00000000-0000-0000-0000-00000000e111', 'field 2', array['scheduled'], 'active'), '00000000-0000-0000-0000-00000000ab03'::uuid);
+update public.matches set queue_state = 'scheduled' where id = '00000000-0000-0000-0000-00000000ab03';
+select t.expect_eq('... but on deck / in the hole may still be filled with it (the other fight will be over by then)', private.promote_one('00000000-0000-0000-0000-00000000e111', 'field 2', array['scheduled'], 'on_deck'), '00000000-0000-0000-0000-00000000ab02'::uuid);
+update public.matches set queue_state = 'final', result = 'a', winner_entry_id = '00000000-0000-0000-0000-00000000ee03', score_a = 4, score_b = 0 where id = '00000000-0000-0000-0000-00000000ab01';
+select t.expect_eq('once the Field 1 fight is over, the club''s 5v5 can go active', private.promote_one('00000000-0000-0000-0000-00000000e111', 'field 2', array['on_deck', 'scheduled'], 'active'), '00000000-0000-0000-0000-00000000ab02'::uuid);
+select t.as_anon();
+select t.expect_error('anonymous cannot call fighting_elsewhere', 'select private.fighting_elsewhere(''00000000-0000-0000-0000-00000000e111'', ''00000000-0000-0000-0000-00000000ab02'')');
+select t.as_admin();
+
 select 'PASSED ' || count(*) || ' checks' as result from t.log;
 rollback;

@@ -29,3 +29,43 @@ language sql stable security definer set search_path = '' as $$
 $$;
 revoke execute on function public.my_event_entries(uuid) from public, anon;
 grant execute on function public.my_event_entries(uuid) to authenticated;
+
+-- ---------------------------------------------------------------- two fields: never the same person in two fights at once
+-- Rehearsal finding: automatic promotion (advance_field_queue → promote_one) chose the next fight of a field by its order alone, so with two
+-- fields running at different paces a fighter could be made ACTIVE on both at the same moment. Event day only flagged it afterwards.
+-- Now a fight is not promoted to active while someone in it (the fighter of a duel side, the recorded roster of a team side) is in an active
+-- fight anywhere in the event. On deck / in the hole are unaffected (by the time they start the other fight is over), and an organizer's explicit
+-- call (set_match_queue, "Run this fight") is unchanged: the screen marks such fights and will not start them.
+create or replace function private.fighting_elsewhere(p_event uuid, p_match uuid) returns boolean
+language sql stable security definer set search_path = '' as $$
+  with ppl as (
+    select coalesce(e.fighter_id, ef.fighter_id) as fighter_id
+    from public.matches m join public.entries e on e.id in (m.entry_a, m.entry_b)
+    left join public.entry_fighters ef on ef.entry_id = e.id and e.fighter_id is null
+    where m.id = p_match)
+  select exists (
+    select 1 from public.matches a join public.competitions k on k.id = a.competition_id
+    join public.entries e on e.id in (a.entry_a, a.entry_b)
+    left join public.entry_fighters ef on ef.entry_id = e.id and e.fighter_id is null
+    where k.event_id = p_event and a.queue_state = 'active' and a.id <> p_match
+      and coalesce(e.fighter_id, ef.fighter_id) in (select fighter_id from ppl where fighter_id is not null))
+$$;
+revoke execute on function private.fighting_elsewhere(uuid, uuid) from public, anon, authenticated;
+
+create or replace function private.promote_one(p_event uuid, p_key text, p_from text[], p_to text) returns uuid
+language plpgsql security definer set search_path = '' as $$
+declare r record;
+begin
+  for r in select x as id from private.queue_ordered(p_event, p_key, p_from) x
+           join public.matches m on m.id = x
+           where not (m.plan_hold and m.queue_state = 'scheduled')
+             and (p_to <> 'active' or not private.fighting_elsewhere(p_event, m.id))
+           limit 6 loop
+    if private.lock_matches_nowait(array[r.id]) then
+      update public.matches set queue_state = p_to, queue_order = null where id = r.id and queue_state = any (p_from);
+      if found then return r.id; end if;
+    end if;
+  end loop;
+  return null;
+end $$;
+revoke execute on function private.promote_one(uuid, text, text[], text) from public, anon, authenticated;
