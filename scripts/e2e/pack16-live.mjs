@@ -159,6 +159,13 @@ try {
   await brann.locator('[data-testid="checkin-code"] summary').click({ timeout: 20000 });
   check('32. Brann sees "Your check-in code" on his own registration and it draws a QR', await until(async () => (await brann.locator('[data-testid="checkin-code"] svg').count()) === 1));
   await shot(brann, '10-fighter-qr');
+  await brann.getByRole('button', { name: /^Notifications/ }).first().click();
+  const bell = await until(async () => /Armour passed/.test(await text(brann, '#notif-panel')), 10000).then(() => text(brann, '#notif-panel'));
+  check('32a. Brann\'s notifications (the Pack 15 bell) say "Armour needs a fix … helmet" and then "Armour passed"', /Armour needs a fix/.test(bell) && /fix: helmet/i.test(bell) && /Armour passed/.test(bell), bell);
+  check('32b. ... without the inspector\'s private note', !/Grille/.test(bell));
+  check('32c. one alert per inspection for Brann (dedupe), none for staff', sql(`select count(*) from public.notifications where user_id = '${WHO.brann[0]}' and kind like 'inspection%'`) === '2' && sql(`select count(*) from public.notifications where kind like 'inspection%' and user_id in ('${U('d1')}', '${U('d2')}', '${U('d3')}', '${U('a2')}', '${U('a4')}')`) === '0');
+  await shot(brann, '10b-fighter-alerts');
+  await brann.keyboard.press('Escape');
   await brann.goto(BASE + `${DESK}?r=${REG(2)}`);
   check('33. the QR address opened by the FIGHTER grants nothing: "for staff" message, no list', await until(async () => /check-in desk and armour inspectors/.test(await text(brann))) && (await brann.locator('article.desk-card').count()) === 0, await text(brann));
   check('34. the fighter cannot check himself in or clear himself (database refuses)', refused(await rpc('brann', 'set_attendance', { p_reg: REG(2), p_state: 'checked_in' })) && refused(await rpc('brann', 'record_inspection', { p_reg: REG(2), p_result: 'passed', p_issues: [], p_note: null })) && refused(await rpc('brann', 'event_readiness', { p_event: EVENT })));
