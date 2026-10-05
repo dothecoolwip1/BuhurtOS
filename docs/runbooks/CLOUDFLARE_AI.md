@@ -2,7 +2,44 @@
 
 BuhurtOS keeps Supabase as its authoritative backend. Cloudflare is used only as a protected AI inference service for organizer assistance.
 
-## What this worker does
+## Existing Cloudflare Worker
+
+Worker name:
+
+```text
+buhurtos-eventai
+```
+
+Production URL:
+
+```text
+https://buhurtos-eventai.garrettrobson95.workers.dev
+```
+
+The Worker was initially created in Cloudflare with the default Workers AI example. The source in this repository is intended to replace that example with the protected BuhurtOS Event Assistant implementation.
+
+## Claude Code + Cloudflare setup
+
+Cloudflare's current Claude Code setup recommends its official Skills plugin plus Cloudflare MCP access.
+
+From Claude Code, run:
+
+```text
+/plugin marketplace add cloudflare/skills
+/plugin install cloudflare@cloudflare
+```
+
+Then verify:
+
+```bash
+claude mcp list
+```
+
+The first time Claude uses a Cloudflare MCP tool, complete Cloudflare's OAuth flow in the browser and approve the permissions you want Claude to have.
+
+The Cloudflare plugin provides persistent Cloudflare Skills and registers Cloudflare MCP servers. Wrangler remains the preferred tool for Worker-local development and deployment.
+
+## What the BuhurtOS Worker does
 
 - exposes a health endpoint at `GET /health`
 - exposes `POST /v1/event-assistant`
@@ -14,10 +51,9 @@ BuhurtOS keeps Supabase as its authoritative backend. Cloudflare is used only as
 
 The organizer must review and approve AI output before the normal BuhurtOS save path is used.
 
-## Deploy
+## Replace the current example Worker
 
-1. Create or sign in to a Cloudflare account.
-2. From this repository:
+From the repository root:
 
 ```bash
 cd workers/ai-event-assistant
@@ -26,29 +62,29 @@ npx wrangler login
 npm run deploy
 ```
 
-3. Cloudflare will return a URL similar to:
+Wrangler should deploy to the existing Worker name `buhurtos-eventai` because that name is set in `wrangler.jsonc`.
+
+Do not paste Cloudflare API tokens or account secrets into source files. Interactive local deployment should use Wrangler login or the Cloudflare MCP OAuth flow.
+
+## Frontend configuration
+
+The BuhurtOS frontend should use:
 
 ```text
-https://buhurtos-ai-event-assistant.<your-subdomain>.workers.dev
+VITE_AI_WORKER_URL=https://buhurtos-eventai.garrettrobson95.workers.dev
 ```
 
-4. Add that URL to the BuhurtOS frontend deployment as:
+This URL is public by design. The AI endpoint itself authenticates requests with the signed-in user's Supabase bearer token.
 
-```text
-VITE_AI_WORKER_URL=https://buhurtos-ai-event-assistant.<your-subdomain>.workers.dev
-```
-
-5. Redeploy BuhurtOS.
-
-## Verify the worker
+## Verify the deployed Worker
 
 Open:
 
 ```text
-https://<worker-url>/health
+https://buhurtos-eventai.garrettrobson95.workers.dev/health
 ```
 
-Expected shape:
+Expected shape after the repository Worker replaces the starter example:
 
 ```json
 {
@@ -58,7 +94,7 @@ Expected shape:
 }
 ```
 
-The AI endpoint requires a valid BuhurtOS Supabase session token. It should reject anonymous calls with HTTP 401.
+The AI endpoint must reject anonymous calls with HTTP 401.
 
 ## Free-plan behaviour
 
