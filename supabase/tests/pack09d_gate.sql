@@ -410,7 +410,7 @@ select t.expect_eq('placings written once', (select count(*) from public.results
 -- ---------------------------------------------------------------- privileges
 select t.expect_eq('new private functions are not executable by clients',
   (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname = 'private' and p.proname in ('can_govern_event_stats', 'event_delete_blockers', 'discard_event', 'can_manage_fighter', 'events_lifecycle_guard')
+    where n.nspname = 'private' and p.proname in ('can_govern_event_stats', 'event_delete_blockers', 'discard_event', 'discard_event_matches', 'discard_event_entries', 'discard_event_registrations', 'discard_event_competitions', 'discard_event_row', 'can_manage_fighter', 'events_lifecycle_guard')
       and (has_function_privilege('anon', p.oid, 'execute') or has_function_privilege('authenticated', p.oid, 'execute')))::int, 0);
 select t.expect_eq('new public commands are not executable by anon',
   (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace

@@ -287,17 +287,35 @@ language sql stable security definer set search_path = '' as $$
   ], null) $$;
 revoke execute on function private.event_delete_blockers(uuid) from public, anon, authenticated;
 
--- The removal itself, in one named private place (bottom-up, so the competition guard sees empty competitions). Called only by delete_event.
+-- The removal itself, bottom-up (so the competition guard sees empty competitions), one named private helper per table: the hosted migration tool
+-- asks a person to confirm a function body with several DELETE statements, so each table's removal is its own small function (as Pack 09C did for
+-- results). Called only by delete_event, after it refused anything with sporting history.
+create or replace function private.discard_event_matches(p_event uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+begin delete from public.matches m using public.competitions k where k.id = m.competition_id and k.event_id = p_event; end $$;
+create or replace function private.discard_event_entries(p_event uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+begin delete from public.entries n using public.competitions k where k.id = n.competition_id and k.event_id = p_event; end $$;
+create or replace function private.discard_event_registrations(p_event uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+begin delete from public.registrations where event_id = p_event; end $$;
+create or replace function private.discard_event_competitions(p_event uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+begin delete from public.competitions where event_id = p_event; end $$;
+create or replace function private.discard_event_row(p_event uuid) returns void
+language plpgsql security definer set search_path = '' as $$
+begin delete from public.events where id = p_event; end $$;
 create or replace function private.discard_event(p_event uuid) returns void
 language plpgsql security definer set search_path = '' as $$
 begin
-  delete from public.matches m using public.competitions k where k.id = m.competition_id and k.event_id = p_event;
-  delete from public.entries n using public.competitions k where k.id = n.competition_id and k.event_id = p_event;
-  delete from public.registrations where event_id = p_event;
-  delete from public.competitions where event_id = p_event;
-  delete from public.events where id = p_event;
+  perform private.discard_event_matches(p_event);
+  perform private.discard_event_entries(p_event);
+  perform private.discard_event_registrations(p_event);
+  perform private.discard_event_competitions(p_event);
+  perform private.discard_event_row(p_event);
 end $$;
-revoke execute on function private.discard_event(uuid) from public, anon, authenticated;
+revoke execute on function private.discard_event(uuid), private.discard_event_matches(uuid), private.discard_event_entries(uuid), private.discard_event_registrations(uuid),
+  private.discard_event_competitions(uuid), private.discard_event_row(uuid) from public, anon, authenticated;
 
 create or replace function public.event_delete_check(p_event uuid) returns jsonb
 language plpgsql stable security definer set search_path = '' as $$
