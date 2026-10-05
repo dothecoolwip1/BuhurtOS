@@ -262,7 +262,7 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('dd910fb2-0663-5520-9d5e-d73fef03093b', 'd357e371-d496-5d50-bc74-9237fc88bd4e', 'round_robin', 'Round 3', 0, null, 'ff051577-267c-5d35-acb9-2b658263ebb0', 'f907e108-c6a9-5a2d-a5b9-9edde4edc833', 'Ring 1', (timestamp '2026-11-14 13:11' at time zone 'America/Edmonton'), 8),
   ('26e6f28a-6d6b-5fff-83a4-161c0b76d560', 'd357e371-d496-5d50-bc74-9237fc88bd4e', 'round_robin', 'Round 3', 1, null, '2e13aec6-dd91-565e-bab1-946626c046ce', '5b6fa6b8-8b9c-53a1-8313-8e2d989454fd', 'Ring 1', (timestamp '2026-11-14 13:21' at time zone 'America/Edmonton'), 8)
 on conflict (id) do nothing;
-reset role;
+reset role; select set_config('request.jwt.claims', '', true);
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', '2f4043cc-ea99-58b3-94e4-4232766d2a61', 'unverified', 'NACL-test fictional dataset'),
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', 'edfb5380-b9ee-5aa2-a43e-4e18883ccc4b', 'unverified', 'NACL-test fictional dataset'),
