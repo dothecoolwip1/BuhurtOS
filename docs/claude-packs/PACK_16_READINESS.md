@@ -1,6 +1,7 @@
 # Pack 16: check-in, armour control and fighter readiness (2026-10-10)
 
-Branch `pack16-readiness` from `main` at `8d71688` (Pack 14 and the Broadcast fix #35 merged; **Pack 15 is NOT on main**, so nothing here uses it).
+Branch `pack16-readiness` from `main` at `8d71688` (Pack 14 and the Broadcast fix #35). Pack 15 merged to `main` (#36, `6d9f137`) while Pack 16 was in
+progress; `main` was merged into this branch at `82f139b` with Pack 15 preserved as merged, and §6 was then wired into Pack 15's notifications.
 Read with `STATUS.md` (Pack 16 section).
 
 ## 1. Investigation: what already exists (reused, not duplicated)
@@ -61,10 +62,14 @@ Nothing blocks or rewrites a fight. The Lyst screen shows a warning strip for a 
 armour needs correction"), from `match_readiness`. Event day keeps its existing "not checked in" attention item. A wrong readiness state can never
 stop the event: the queue does not read it, and an override exists for the genuine exception.
 
-## 6. Pack 15 (notifications) integration point
-Pack 15 is not on `main`, so no notification is produced here. When it merges, add kinds `inspection_needs_correction` / `inspection_passed` to
-Pack 15's `notification_kind` list, text and routes, and insert them from `record_inspection` (fighter account of the registration; dedupe key
-`inspection:<inspection id>`). Nothing else changes.
+## 6. Pack 15 (notifications): wired in, no second system
+Migration `20261010000200_pack16_inspection_alerts.sql` adds two kinds to Pack 15's `notifications` and nothing else:
+`inspection_needs_correction` ("Armour needs a fix: … Then go back for reinspection." / "Armour did not pass: … Talk to the inspectors before you
+fight.") and `inspection_passed` ("Your armour passed inspection at …"). Group *events*, pushable, opens the fighter's event page. One AFTER INSERT
+trigger on `registration_inspections` sends them to the registration's account and the fighter's linked accounts (dedupe key
+`inspection:<inspection id>:<account>`), never to staff or captains. The inspector's note is staff-only and is **not** in the payload. Pack 15's
+group / push / route / words functions are extended in place (each patch asserts its anchor, so a changed Pack 15 definition fails the migration
+loudly instead of silently). Like Pack 15's producers, an alert failure never undoes the inspection. A reset sends nothing.
 
 ## 7. Not built (and why)
 - Weight classes (the rules text has them, the product has no class configuration; inventing it would be a new rule system). Weigh-in records the
