@@ -49,3 +49,11 @@ Not built (and why): a second queue or scheduler (forbidden; the queue is Pack 1
 
 ## 5. Security
 Unchanged boundaries: no client grant on subscriptions, preferences, deliveries or announcements; every new function is SECURITY DEFINER with an empty search_path, explicit revoke from public/anon and grant to authenticated only where a person calls it. Announcements: organizer of that event (platform owner per the existing platform rule), never a scorekeeper / marshal / fighter; recipients only from that event. Payloads carry no counter, seat, private reason, contact, health or account data. Tested in `supabase/tests/pack15_gate.sql`.
+
+## 6. Evidence
+See `STATUS.md` (Pack 15). In short: DATABASE GATE PASSED (pack15_gate 61, pack12_gate 122 with the new words); real-stack browser 42/42; regression suites green; Broadcast realtime 15/15 and Pack 13 rehearsal 88/88 on the merged branch.
+Not proven here: delivery by a real push service to a physical phone, a tap on a real lock-screen notification with the app closed, iOS Home Screen behaviour (runbook `docs/runbooks/PACK15_DEVICE_RUNBOOK.md`).
+
+## 7. Release notes (when the owner asks)
+1. Apply `20261009000100_pack15_event_day_alerts.sql` to hosted Supabase (additive; no Edge Function or cron change: the Pack 12 dispatcher sends the new kinds as is).
+2. Open the PR, let CI run, merge, let the main workflow deploy; then run the phone runbook.
