@@ -105,7 +105,7 @@ on conflict (id) do nothing;`);
     o.push(`select public.set_entry_roster(${q(e.id)}, ${qJson(roster)}) where exists (select 1 from public.competitions where id = ${q(s.comp.id)} and status <> 'finished');`);
   }
   for (const s of ew.sims) o.push(...compMatches(ev, s, played));
-  o.push('reset role;');
+  o.push("reset role; select set_config('request.jwt.claims', '', true);");   // back to the loader: no claims, so the record locks know it is not a client
   o.push(`${RS_COLS}\n  ${ew.sims.map(s => rs('competition', q(s.comp.id))).join(',\n  ')}\non conflict do nothing;`);
   if (played) {
     o.push(`insert into public.record_sources (source_id, entity_type, entity_id, status, note) select ${q(SOURCE_ID)}, 'result', r.id, 'unverified', ${q(NOTE)} from public.results r join public.competitions c on c.id = r.competition_id where c.event_id = ${q(ev.id)} on conflict do nothing;`);

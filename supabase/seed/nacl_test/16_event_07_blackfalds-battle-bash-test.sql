@@ -197,7 +197,7 @@ select public.finalize_match(m.id, 'a', 7, 4, '{"kind":"duel","rounds":{"a":[0,0
 select public.finalize_match(m.id, 'b', 1, 6, '{"kind":"duel","rounds":{"a":[0,1],"b":[3,3]},"totals":{"a":1,"b":6}}'::jsonb, m.version) from public.matches m where m.id = '6f8d82d9-2cff-5a1d-8b81-54fb81635aa1' and m.queue_state <> 'final';
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = 'd23b1270-5964-5596-a90a-177eec066cec' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('d23b1270-5964-5596-a90a-177eec066cec') where tied group by part, rank loop perform public.record_tie_decision('d23b1270-5964-5596-a90a-177eec066cec', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('d23b1270-5964-5596-a90a-177eec066cec', 'tournament_structure') where exists (select 1 from public.competitions where id = 'd23b1270-5964-5596-a90a-177eec066cec' and status <> 'finished');
-reset role;
+reset role; select set_config('request.jwt.claims', '', true);
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', '0020f56d-908d-5942-b2d9-e08961adb754', 'unverified', 'NACL-test fictional dataset'),
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', '9cbce0bb-d25e-5ed9-b468-efe31c720def', 'unverified', 'NACL-test fictional dataset'),

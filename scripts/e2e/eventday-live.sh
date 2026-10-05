@@ -3,17 +3,18 @@
 # (scripts/e2e/localstack.mjs) and the real built app. LOCAL ONLY (refuses anything but a local socket / localhost). Not part of CI.
 #   PGHOST=/var/tmp/run PGPORT=55432 PGUSER=postgres POSTGREST_BIN=/path/to/postgrest scripts/e2e/eventday-live.sh [shots-dir]
 # E2E_SCRIPT picks the browser script (default scripts/e2e/eventday-live.mjs; scripts/e2e/arena-live.sh runs the Pack 09B one on the same stack).
+# E2E_FIXTURE / E2E_DB pick the fixture and the scratch database (scripts/e2e/finalize-live.sh uses them for the Pack 09C journeys).
 set -uo pipefail
 case "${PGHOST:-}" in /*|localhost|127.0.0.1) ;; *) echo "refusing: PGHOST must be a local socket directory or localhost" >&2; exit 2;; esac
 if [ -n "${DATABASE_URL:-}" ] || [ -n "${SUPABASE_DB_URL:-}" ]; then echo "refusing: a database URL is set" >&2; exit 2; fi
 : "${POSTGREST_BIN:?set POSTGREST_BIN to a PostgREST binary}"
 cd "$(dirname "$0")/../.."
-DB=bos_ed; export JWT_SECRET="local-event-day-secret-0123456789-abcdef"
+DB="${E2E_DB:-bos_ed}"; export JWT_SECRET="local-event-day-secret-0123456789-abcdef"
 SHOTS="${1:-${E2E_SHOTS:-/tmp/eventday-shots}}"; mkdir -p "$SHOTS"
 PIDS=(); cleanup() { for p in "${PIDS[@]}"; do kill "$p" 2>/dev/null; done; }; trap cleanup EXIT
 
 supabase/tests/build_scratch.sh $DB > /dev/null || exit 1
-psql -X -q -d $DB -v ON_ERROR_STOP=1 -f scripts/e2e/fixtures/eventday.sql || exit 1
+psql -X -q -d $DB -v ON_ERROR_STOP=1 -f "${E2E_FIXTURE:-scripts/e2e/fixtures/eventday.sql}" || exit 1
 
 CONF=$(mktemp); cat > "$CONF" <<CFG
 db-uri = "postgresql://postgres@/$DB?host=$PGHOST&port=${PGPORT:-5432}"

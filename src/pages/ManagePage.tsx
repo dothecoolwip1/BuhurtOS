@@ -26,12 +26,14 @@ import { withdrawRegistration } from '../data/invitations';
 import { PeopleTab } from './PeopleTab';
 import { EventDayTab } from './EventDayTab';
 import { RunTab } from './RunTab';
+import { FinalizeTab } from './FinalizeTab';
+import { useEventRecordWatch } from '../lib/useEventRecordWatch';
 import { SetupTab } from './SetupTab';
 import { CompetitionsTab } from './CompetitionsTab';
 import { TeamsTab } from './TeamsTab';
 
-type Tab = 'eventday' | 'review' | 'fighters' | 'checkin' | 'run' | 'setup' | 'competitions' | 'people' | 'teams';
-const TABS: Tab[] = ['eventday', 'review', 'fighters', 'checkin', 'run', 'setup', 'competitions', 'people', 'teams'];
+type Tab = 'eventday' | 'review' | 'fighters' | 'checkin' | 'run' | 'finalize' | 'setup' | 'competitions' | 'people' | 'teams';
+const TABS: Tab[] = ['eventday', 'review', 'fighters', 'checkin', 'run', 'finalize', 'setup', 'competitions', 'people', 'teams'];
 
 /** Runs an organizer action on one registration, shows a plain-language error, then asks for fresh data. */
 function useAction(reload: () => void) {
@@ -123,6 +125,8 @@ export function ManagePage() {
 
   const loaded = useAsync(() => fetchEvent(slug), [slug, eventKey]);
   const eventId = loaded.data?.event.id;
+  // A competition becoming official, or the event closing, re-reads the event (realtime, with a slow poll behind it).
+  useEventRecordWatch(eventId, () => setEventKey(k => k + 1));
   // Event day opens first only while the event is really running; otherwise Manage opens on registrations as it always did.
   const zone = useAsync(() => (eventId ? fetchEventTimeZone(eventId) : Promise.resolve(DEFAULT_TIME_ZONE)), [eventId]);
   const running = loaded.data ? eventIsRunning(loaded.data.event.startsOn, loaded.data.event.endsOn, zone.data ?? DEFAULT_TIME_ZONE) : false;
@@ -168,11 +172,12 @@ export function ManagePage() {
               else { setFilter('accepted'); setParams({ tab: 'review' }, { replace: true }); }
             }} extra={clashLabel ? [{ key: 'clash', label: clashLabel, onClick: () => setParams({ tab: 'run' }, { replace: true }) }] : []} />
           </>}
-      <Seg scroll label="Area" value={tab} options={[['eventday', 'Event day'], ['review', `Review (${counts.pending} waiting)`], ['fighters', 'Fighters'], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['setup', 'Setup'], ['competitions', `Competitions (${competitions.length})`], ['people', 'People'], ['teams', 'Teams']] as const}
+      <Seg scroll label="Area" value={tab} options={[['eventday', 'Event day'], ['review', `Review (${counts.pending} waiting)`], ['fighters', 'Fighters'], ['checkin', `Check-in (${ready}/${counts.accepted} ready)`], ['run', 'Run'], ['finalize', 'Results'], ['setup', 'Setup'], ['competitions', `Competitions (${competitions.length})`], ['people', 'People'], ['teams', 'Teams']] as const}
         onChange={v => setParams({ tab: v }, { replace: true })} />
       {tab === 'eventday' && <EventDayTab key={event.id} event={event} competitions={competitions} />}
       {tab === 'fighters' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} />}
       {tab === 'run' && <RunTab key={event.id} event={event} competitions={competitions} />}
+      {tab === 'finalize' && <FinalizeTab key={event.id} event={event} competitions={competitions} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'setup' && <SetupTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'competitions' && <CompetitionsTab key={event.id} event={event} onChanged={() => setEventKey(k => k + 1)} />}
       {tab === 'teams' && <TeamsTab />}

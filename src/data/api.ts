@@ -1,7 +1,12 @@
 import { supabase } from '../lib/supabase';
 
 export type LeagueKey = 'buhurt' | 'duels' | 'outrance' | 'hacsa';
-export interface LiveCompetition { id: string; name: string; category: string; league: LeagueKey; gender: 'open' | 'men' | 'women'; ruleset: string | null; status: string; /** Running order of the event's competitions (the Sort column). */ sort?: number }
+export interface LiveCompetition {
+  id: string; name: string; category: string; league: LeagueKey; gender: 'open' | 'men' | 'women'; ruleset: string | null; status: string;
+  /** Running order of the event's competitions (the Sort column). */ sort?: number;
+  /** Pack 09C: when the placings became official; when an official result was last reopened (null: never / not applicable). */
+  finalizedAt?: string | null; reopenedAt?: string | null;
+}
 export interface LiveEvent {
   id: string; slug: string; name: string; description: string; eventType: string; status: 'draft' | 'published' | 'cancelled';
   venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null;
@@ -12,6 +17,8 @@ export interface LiveEvent {
   /** How many competitions the event has (0 for a tournament draft means "needs competition setup"). */
   competitionCount: number;
   organizationId: string | null; seasonId: string | null;
+  /** Pack 09C: set once the organizer closed the event (every competition official); when it was last reopened. */
+  closedAt?: string | null; reopenedAt?: string | null;
 }
 export interface MyEventContext {
   /** Roles on this event from event_staff, plus 'owner' for the platform owner. */
@@ -20,19 +27,21 @@ export interface MyEventContext {
   pendingRegistrations: number | null;
 }
 
-const EVENT_COLUMNS = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id';
+const EVENT_COLUMNS = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id,closed_at,reopened_at';
 type EventRow = {
   id: string; slug: string; name: string; description: string; event_type: string; status: LiveEvent['status'];
   venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null; latitude: number | null; longitude: number | null; starts_on: string; ends_on: string;
   organization_id: string | null; season_id: string | null;
   fee_cents: number; fee_province: string | null; fee_note: string | null; registration_opens_at: string | null; registration_closes_at: string | null;
   registration_mode: LiveEvent['registrationMode']; external_url: string | null; time_note: string | null; volunteer_info: string | null;
+  closed_at?: string | null; reopened_at?: string | null;
 };
 type Ref = { league: LeagueKey } | { league: LeagueKey }[] | null;
 const leagueOf = (r: Ref): LeagueKey => (Array.isArray(r) ? r[0]?.league : r?.league) ?? 'duels';
 
 const toEvent = (r: EventRow, leagues: LeagueKey[] = [], competitionCount = 0): LiveEvent => ({
   id: r.id, slug: r.slug, name: r.name, description: r.description, eventType: r.event_type, status: r.status,
+  closedAt: r.closed_at ?? null, reopenedAt: r.reopened_at ?? null,
   venue: r.venue, address: r.address, city: r.city, region: r.region, country: r.country ?? null, latitude: r.latitude ?? null, longitude: r.longitude ?? null, startsOn: r.starts_on, endsOn: r.ends_on,
   competitionCount, organizationId: r.organization_id ?? null, seasonId: r.season_id ?? null,
   feeCents: r.fee_cents, feeProvince: r.fee_province, feeNote: r.fee_note,
@@ -53,10 +62,10 @@ export async function fetchEvent(slug: string): Promise<{ event: LiveEvent; comp
   if (error) throw error;
   if (!data) return null;
   const row = data as unknown as EventRow;
-  const c = await supabase.from('competitions').select('id,name,category,gender,ruleset,status,sort,ref_categories(league)').eq('event_id', row.id).order('sort');
+  const c = await supabase.from('competitions').select('id,name,category,gender,ruleset,status,sort,finalized_at,reopened_at,ref_categories(league)').eq('event_id', row.id).order('sort');
   if (c.error) throw c.error;
-  type CRow = { id: string; name: string; category: string; gender: LiveCompetition['gender']; ruleset: string | null; status: string; sort?: number; ref_categories: Ref };
-  const competitions = (c.data as unknown as CRow[]).map(k => ({ id: k.id, name: k.name, category: k.category, gender: k.gender, ruleset: k.ruleset, status: k.status, sort: k.sort ?? 0, league: leagueOf(k.ref_categories) }));
+  type CRow = { id: string; name: string; category: string; gender: LiveCompetition['gender']; ruleset: string | null; status: string; sort?: number; finalized_at?: string | null; reopened_at?: string | null; ref_categories: Ref };
+  const competitions = (c.data as unknown as CRow[]).map(k => ({ id: k.id, name: k.name, category: k.category, gender: k.gender, ruleset: k.ruleset, status: k.status, sort: k.sort ?? 0, league: leagueOf(k.ref_categories), finalizedAt: k.finalized_at ?? null, reopenedAt: k.reopened_at ?? null }));
   return { event: toEvent(row, [...new Set(competitions.map(k => k.league))], competitions.length), competitions };
 }
 

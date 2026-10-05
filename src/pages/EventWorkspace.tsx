@@ -27,6 +27,8 @@ import { NotFoundPage } from './NotFoundPage';
 import { AddToCalendar } from '../components/AddToCalendar';
 import { fetchMyFighterId } from '../data/fighters';
 import { fetchMyInvitation, withdrawMyInvitation, withdrawRegistration, type MyInvitation } from '../data/invitations';
+import { OfficialResults } from '../components/OfficialResults';
+import { useEventRecordWatch } from '../lib/useEventRecordWatch';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
 const GENDER: Record<LiveCompetition['gender'], string> = { open: 'Open', men: 'Men', women: 'Women' };
@@ -158,8 +160,10 @@ export function EventWorkspace() {
   const { session } = useAuth();
   const synthetic = useSynthetic();
   const userId = session?.user.id;
-  const loaded = useAsync(() => fetchEvent(slug), [slug]);
+  const [recordKey, setRecordKey] = useState(0);
+  const loaded = useAsync(() => fetchEvent(slug), [slug, recordKey]);
   const eventId = loaded.data?.event.id;
+  useEventRecordWatch(eventId, () => setRecordKey(k => k + 1));
   const [mineKey, setMineKey] = useState(0);
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId, mineKey]);
   const myFighter = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
@@ -190,7 +194,10 @@ export function EventWorkspace() {
   const fee = feeText(event);
   const names = new Map(competitions.map(c => [c.id, c.name]));
   const allMatches = Object.values(live.data).flatMap(d => d.matches);
-  const completed = event.status === 'published' && eventPhase(event.startsOn, event.endsOn, todayIso()) === 'past';
+  const closed = !!event.closedAt;
+  const completed = event.status === 'published' && (closed || eventPhase(event.startsOn, event.endsOn, todayIso()) === 'past');
+  const officialCount = competitions.filter(c => c.status === 'finished').length;
+  const running = competitions.filter(c => c.status !== 'finished');
 
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
@@ -202,6 +209,7 @@ export function EventWorkspace() {
           {mine.data?.isOrganizer && <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/manage?tab=setup`}>Publish this event (Setup tab)</Link>}
         </section>
       )}
+      {closed && <p className="panel info" role="status" data-testid="event-closed"><Chip tone="win">Official results</Chip> <b>This event is complete.</b> The placings below are its permanent record.</p>}
       <div style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>
         <Chip>{dateRange(event.startsOn, event.endsOn)}</Chip>
         {event.timeNote && <p style={{ overflowWrap: 'anywhere' }}><b>{event.timeNote}</b></p>}
@@ -242,19 +250,21 @@ export function EventWorkspace() {
         ))}
         <p className="src">Rulesets are named as the organizer announced them. BuhurtOS shows what is recorded and does not guess; where a ruleset says it is not loaded, its text is not in BuhurtOS yet.</p>
       </section>}
-      {completed && competitions.length > 0 && <EventHistory eventId={event.id} competitions={competitions} live={live} />}
+      {completed && competitions.length > 0 && <EventHistory eventId={event.id} competitions={competitions} live={live} recordKey={recordKey} />}
       {showLive && !completed && competitions.length > 0 && (
         <section className="live-results" aria-labelledby="live-h">
           <h2 id="live-h">Results</h2>
+          {officialCount > 0 && <OfficialResults competitions={competitions} version={recordKey} heading={null} />}
+          {officialCount > 0 && running.length > 0 && <h3 style={{ margin: '6px 0 0' }}>Still being fought</h3>}
           {live.loading && live.updatedAt === null && <p className="muted">Loading results…</p>}
           {live.error != null && live.updatedAt === null && <p role="alert">{friendlyError(live.error, 'Could not load the results.')}</p>}
-          {live.updatedAt !== null && competitions.map(c => {
+          {live.updatedAt !== null && running.map(c => {
             const d = live.data[c.id];
             if (!d) return null;
             const hasDraw = d.matches.length > 0;
             return (
               <div key={c.id} className="panel info live-comp">
-                <h3>{c.name}</h3>
+                <h3>{c.name} <span className="src">not official yet</span></h3>
                 {!hasDraw && <p className="muted">The draw has not been made yet.</p>}
                 {hasDraw && <LivePools standings={d.standings} entries={d.entries} matches={d.matches} />}
                 {hasDraw && <LiveBracket matches={d.matches} liveOk={live.connection === 'live'} />}

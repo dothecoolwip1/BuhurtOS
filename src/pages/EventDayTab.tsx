@@ -15,6 +15,8 @@ import {
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useEventDayData } from '../lib/useEventDayData';
+import { fetchFinalizePreflight } from '../data/finalization';
+import { RECORD_LABEL, blockerLine, recordState, type RecordState } from '../lib/finalization';
 
 type Notice = { kind: 'ok' | 'error'; text: string } | null;
 
@@ -43,6 +45,11 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
   const boards = useMemo(() => buildFieldBoards(live.matches, sorts, withdrawn), [live.matches, sorts, withdrawn]);
   const plans = useMemo(() => new Map(boards.map(b => [b.key, planAdvance(b, withdrawn, sorts, { start: true })])), [boards, withdrawn, sorts]);
   const progress = useMemo(() => competitions.map(c => competitionProgress(c, live.matches.filter(m => m.competitionId === c.id))), [competitions, live.matches]);
+  // The record state of each competition (official / ready / reopened ...). For the ones that are ready, the server says whether something still stands in the way.
+  const records = useMemo(() => new Map(competitions.map(c => [c.id, recordState(c, live.matches.filter(m => m.competitionId === c.id))])), [competitions, live.matches]);
+  const readyIds = useMemo(() => competitions.filter(c => records.get(c.id) === 'ready').map(c => c.id), [competitions, records]);
+  const checks = useAsync(async () => new Map(await Promise.all(readyIds.map(async id => [id, blockerLine(await fetchFinalizePreflight(id))] as const))), [readyIds.join(','), live.updatedAt]);
+  const allOfficial = competitions.length > 0 && competitions.every(c => records.get(c.id) === 'official' || records.get(c.id) === 'no_draw') && competitions.some(c => records.get(c.id) === 'official');
   const names = useMemo(() => new Map(competitions.map(c => [c.id, c.name])), [competitions]);
   const gaps = useMemo(() => checkinGaps(boards, live.entries, roster.data ?? [], regs.data ?? []), [boards, live.entries, roster.data, regs.data]);
   const attention = useMemo(() => attentionItems({
@@ -145,7 +152,7 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
       <div className="ed-lower">
         <AttentionPanel items={attention} href={href} loadingNotes={[clashes.error != null && 'double-bookings', regs.error != null && 'check-in', reviews.error != null && 'results needing review'].filter((x): x is string => !!x)}
           reviewCount={reviews.data?.length ?? 0} eventId={event.id} onReviewed={() => { void live.refresh(); setTick(k => k + 1); }} />
-        <ProgressPanel progress={progress} runHref={`/events/${slug}/manage?tab=run`} />
+        <ProgressPanel progress={progress} records={records} checks={checks.data ?? new Map()} runHref={`/events/${slug}/manage?tab=run`} resultsHref={`/events/${slug}/manage?tab=finalize`} closed={!!event.closedAt} allOfficial={allOfficial} />
       </div>
 
       <nav className="panel info ed-links" aria-label="More event tools">
@@ -190,21 +197,34 @@ function AttentionPanel({ items, href, loadingNotes, reviewCount, eventId, onRev
   );
 }
 
-function ProgressPanel({ progress, runHref }: { progress: CompetitionProgress[]; runHref: string }) {
+function ProgressPanel({ progress, records, checks, runHref, resultsHref, closed, allOfficial }: {
+  progress: CompetitionProgress[]; records: ReadonlyMap<string, RecordState>; checks: ReadonlyMap<string, string | null>; runHref: string; resultsHref: string; closed: boolean; allOfficial: boolean;
+}) {
   return (
     <section className="panel info ed-progress" aria-labelledby="ed-prog-h" style={{ display: 'grid', gap: 10 }}>
       <h2 id="ed-prog-h" className="ed-h">Competition progress</h2>
+      {closed && <p className="ed-calm" role="status"><b>This event is closed.</b> Its results are the permanent record. <Link to={resultsHref}>See the results and closeout</Link></p>}
+      {!closed && allOfficial && <p role="status" style={{ margin: 0 }}><b>Every competition is official.</b> <Link className="btn btn-ink btn-sm" to={`${resultsHref}#closeout`}>Close the event</Link></p>}
       <ul className="ed-prog-list">
-        {progress.map(p => (
-          <li key={p.id}>
-            <div className="ed-prog-head"><b>{p.name}</b><span className={`ed-phase ed-phase-${p.phase}`}>{p.label}</span></div>
-            {p.total > 0 && (
-              <div className="ed-bar" role="progressbar" aria-label={`${p.name} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={p.percent}><i style={{ width: `${p.percent}%` }} /></div>
-            )}
-            <span className="src">{p.total > 0 ? `${p.final} / ${p.total} fights complete · ${p.percent}%` : 'Build a draw in the Run tools to see its fights here.'}</span>
-            {p.needsBracket && <Link className="btn btn-line btn-sm" to={runHref}>Build the bracket</Link>}
-          </li>
-        ))}
+        {progress.map(p => {
+          const record = records.get(p.id) ?? 'running';
+          const blocker = record === 'ready' ? checks.get(p.id) ?? null : null;
+          const phase = record === 'official' ? 'official' : record === 'ready' ? (blocker ? 'blocked' : 'ready') : record === 'reopened' ? 'reopened' : p.phase;
+          const label = record === 'official' ? 'Official' : record === 'ready' ? (blocker ? 'Needs review' : 'Ready to finalize') : record === 'reopened' ? RECORD_LABEL.reopened : p.label;
+          return (
+            <li key={p.id}>
+              <div className="ed-prog-head"><b>{p.name}</b><span className={`ed-phase ed-phase-${phase}`}>{label}</span></div>
+              {p.total > 0 && (
+                <div className="ed-bar" role="progressbar" aria-label={`${p.name} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={p.percent}><i style={{ width: `${p.percent}%` }} /></div>
+              )}
+              <span className="src">{p.total > 0 ? `${p.final} / ${p.total} fights complete · ${p.percent}%` : closed ? 'Never ran: no draw was built, so it was closed as not held.' : 'Build a draw in the Run tools to see its fights here.'}{blocker ? ` · ${blocker}` : ''}</span>
+              {p.needsBracket && !closed && <Link className="btn btn-line btn-sm" to={runHref}>Build the bracket</Link>}
+              {record === 'ready' && !blocker && <Link className="btn btn-ink btn-sm" to={`${resultsHref}&competition=${p.id}`}>Review results</Link>}
+              {record === 'ready' && blocker && <Link className="btn btn-line btn-sm" to={`${resultsHref}&competition=${p.id}`}>Resolve</Link>}
+              {record === 'official' && <Link className="btn btn-line btn-sm" to={`${resultsHref}&competition=${p.id}`}>Official results</Link>}
+            </li>
+          );
+        })}
       </ul>
     </section>
   );
