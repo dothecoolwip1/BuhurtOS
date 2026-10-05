@@ -97,7 +97,7 @@ export function useBroadcast(slug: string, fieldParam: string | null | undefined
   const lastOk = Math.max(live.updatedAt ?? 0, lyst.updatedAt ?? 0);
   const stale = lastOk > 0 && now - lastOk > STALE_AFTER_MS;
   return {
-    loading: loaded.loading && !loaded.data, error: loaded.error, notPublic: Boolean(loaded.data && event?.status !== 'published'),
+    loading: loaded.loading && !loaded.data, error: loaded.error, notPublic: !loaded.loading && loaded.error == null && (!loaded.data || event?.status !== 'published'),
     event: event ? { id: event.id, slug: event.slug, name: event.name, startsOn: event.startsOn, endsOn: event.endsOn, closedAt: event.closedAt ?? null } : null,
     field, fields, view, scene, settings: config.settings, sponsors: config.sponsors, sides, clock: lyst.clock, stale, connection: live.connection
   };

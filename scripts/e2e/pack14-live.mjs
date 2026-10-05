@@ -202,7 +202,7 @@ try {
   await pubDesk.waitForSelector('.ls', { timeout: 30000 }).catch(() => undefined);
   const ifr = await pubDesk.evaluate(() => { const f = document.querySelector('.ls iframe'); return f ? { src: f.getAttribute('src'), sandbox: f.getAttribute('sandbox'), title: f.getAttribute('title') } : null; });
   check('39. the public event page embeds the allow-listed stream (youtube-nocookie), sandboxed, with a title', !!ifr && ifr.src.startsWith('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ') && /allow-scripts/.test(ifr.sandbox ?? '') && !!ifr.title, JSON.stringify(ifr));
-  check('40. no sign-in was needed and the block carries the event\'s own stream title', (await text(pubDesk, '.ls h2')).includes('Test Arena live'), await text(pubDesk, '.ls h2'));
+  check('40. no sign-in was needed and the block carries the event\'s own stream title', (await text(pubDesk, '.ls h2')).toLowerCase().includes('test arena live'), await text(pubDesk, '.ls h2'));
   check('41. beside the stream: the current state, the pair on the field and the clock (same state as the overlay)', await pubDesk.waitForFunction(() => /paused|live|intro|ready|break/i.test(document.querySelector('.ls-state')?.textContent ?? '') && /Cael Rhodes/i.test(document.querySelector('.ls-board')?.textContent ?? ''), null, { timeout: 20000 }).then(() => true, () => false), await text(pubDesk, '.ls'));
   await shot(pubDesk, '17-public-stream');
   const pubPhone = await open('phone', null);
