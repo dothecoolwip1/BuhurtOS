@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Chip } from './ui';
-import { recordWalkovers, reinstateEntry, walkoverTargets, withdrawEntry, type CompetitionEntry, type CompetitionMatch } from '../data/matches';
+import { reinstateEntry, walkoverTargets, withdrawEntry, type CompetitionEntry, type CompetitionMatch } from '../data/matches';
 import { friendlyError } from '../lib/friendlyError';
 
 const errorStyle = { color: 'var(--live)' } as const;
@@ -27,10 +27,9 @@ export function Withdrawals({ entries, unclaimed, matches, eventDay, onChanged, 
     if (!picked) return;
     setBusy(true); setError(null); setNote(null);
     try {
-      await withdrawEntry(picked.id);
+      const n = await withdrawEntry(picked.id, why, eventDay);
       if (eventDay) {
-        const n = await recordWalkovers(matches, picked.id, why);
-        setNote(`${picked.name} is out. ${n === 0 ? 'They had no match left with a known opponent.' : `${n} ${n === 1 ? 'match was' : 'matches were'} recorded as a walkover for the opponent.`}`);
+        setNote(`${picked.name} is out. ${n === 0 ? 'They had no match left with a known opponent yet. Any later bracket match will become a walkover automatically.' : `${n} ${n === 1 ? 'match was' : 'matches were'} recorded as a walkover for the opponent. Any later bracket match will follow automatically.`}`);
       } else {
         setNote(`${picked.name} is out. Build the new draw below so the pools stay even.`);
         onRedraw(picked.name);

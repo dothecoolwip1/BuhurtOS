@@ -205,10 +205,10 @@ export function groupIntoRounds(matches: readonly CompetitionMatch[]): MatchRoun
 }
 
 // ---------------------------------------------------------------- withdrawals (injury, or someone who no longer wants to fight)
-/** Marks an entry withdrawn. Organizers of the event only (row level security). It then no longer counts for a new draw. */
-export async function withdrawEntry(entryId: string): Promise<void> {
-  const { error } = await supabase.from('entries').update({ status: 'withdrawn' }).eq('id', entryId);
-  if (error) throw error;
+/** Marks an entry withdrawn through the server-side sporting action. On event day it also settles every walkover that is already knowable; future bracket walkovers settle when their feeder result arrives. */
+export async function withdrawEntry(entryId: string, reason = 'Withdrawn', walkovers = false): Promise<number> {
+  const data = await rpc('withdraw_entry', { p_entry: entryId, p_reason: reason, p_walkovers: walkovers });
+  return Number(data ?? 0);
 }
 /** Puts a withdrawn entry back. */
 export async function reinstateEntry(entryId: string): Promise<void> {

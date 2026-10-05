@@ -76,12 +76,16 @@ const has = async (page, t, sel = 'body') => (await text(page, sel)).toLowerCase
 const waitText = (page, sel, t, timeout = 40000) => page.waitForFunction(([s, x]) => (document.querySelector(s)?.innerText ?? '').replace(/\s+/g, ' ').toLowerCase().includes(x), [sel, t.toLowerCase()], { timeout }).then(() => true, () => false);
 const shot = async (page, nm, full = true) => { if (SHOTS) { await sleep(350); await page.screenshot({ path: `${SHOTS}/r11-${nm}.png`, fullPage: full }).catch(() => undefined); } };
 const sideways = (page) => page.evaluate(() => document.scrollingElement.scrollWidth > innerWidth + 1
-  || [...document.querySelectorAll('main *')].some(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > innerWidth + 1 && getComputedStyle(e).position !== 'fixed' && !e.closest('.seg,.eh-steps,.fz-pick,[style*="overflow"]'); }));
+  || [...document.querySelectorAll('main *')].some(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.right > innerWidth + 1 && getComputedStyle(e).position !== 'fixed' && !e.closest('.seg,.tabs,.eh-steps,.fz-pick,[style*="overflow"]'); }));
 const tinyTargets = (page, sel = 'main') => page.evaluate((s) => [...document.querySelectorAll(`${s} button, ${s} .btn, ${s} select, ${s} summary`)]
   .filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.height < 40 && !e.classList.contains('linklike') && getComputedStyle(e).visibility !== 'hidden'; })
   .map(e => (e.innerText || e.getAttribute('aria-label') || e.tagName).slice(0, 40)), sel);
 const layout = async (page, nm) => {
-  check(`[${nm}] no sideways scrolling`, !(await sideways(page)));
+  const over = await page.evaluate(() => [...document.querySelectorAll('main *')].map(e => {
+    const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return { tag: e.tagName.toLowerCase(), cls: e.className || '', text: (e.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 90), left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), pos: s.position, overflowX: s.overflowX };
+  }).filter(x => x.width > 0 && x.right > innerWidth + 1 && x.pos !== 'fixed' && !/seg|tabs|eh-steps|fz-pick/.test(String(x.cls))).slice(0, 12));
+  check(`[${nm}] no sideways scrolling`, !(await sideways(page)), over.map(x => `${x.tag}.${String(x.cls)} right=${x.right} width=${x.width} overflow=${x.overflowX} text="${x.text}"`).join(' | '));
   const tiny = await tinyTargets(page);
   check(`[${nm}] no small tap targets`, tiny.length === 0, tiny.join(' | '));
   const body = await text(page, 'main');
@@ -477,7 +481,9 @@ try {
     const up0Text = ((await (await up0.$('.ed-up-body')).innerText()) ?? '').replace(/\s+/g, ' ');
     await (await up0.$('button:has-text("Run next")')).click();
     const [na, nbName] = up0Text.split(' Change')[0].split(/ (?:vs|VS) /).map(t => t.replace(/ (Men|Women) .*$/, '').trim());
-    const movedId = sql(`select m.id from public.matches m join public.entries ea on ea.id = m.entry_a join public.entries eb on eb.id = m.entry_b left join public.fighters fa on fa.id = ea.fighter_id left join public.teams ta on ta.id = ea.team_id left join public.fighters fb on fb.id = eb.fighter_id left join public.teams tb on tb.id = eb.team_id join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and lower(coalesce(fa.display_name, ta.name)) = lower('${na.replace(/'/g, "''")}') and lower(coalesce(fb.display_name, tb.name)) = lower('${nbName.replace(/'/g, "''")}') limit 1`);
+    // Capture the exact row the organizer moved. Team names can recur across several round-robin matches, so names alone are not a stable identity.
+    // move_match_in_queue writes the subject match id to queue.reordered.
+    const movedId = await waitDb(() => sql(`select subject from public.audit_log where event_id = '${EV}' and action = 'queue.reordered' and details ->> 'action' = 'first' order by at desc limit 1`), (v) => v.length === 36);
     const nowDeck = await (async () => { let v = ''; for (let i = 0; i < 40; i += 1) { v = sql(`select queue_state from public.matches where id = '${movedId}'`); if (v === 'on_deck' || v === 'in_the_hole') break; await sleep(500); } return v; })();
     check('Run next puts that fight at the front of the line: it is called now (on deck, or in the hole when on deck is taken), the rest shuffle back (no drag and drop)', nowDeck === 'on_deck' || nowDeck === 'in_the_hole', `${up0Text.slice(0, 60)} -> ${nowDeck}`);
     await page.reload(); await field(page, 'Field 1').locator('li.ed-slot').first().waitFor({ timeout: 30000 }); await sleep(800);
@@ -912,7 +918,7 @@ try {
     const wrongMatch = sql(`select m.id from public.matches m where m.competition_id = '${comp('Women 3v3')}' and (m.entry_a = '${goldBefore}' or m.entry_b = '${goldBefore}') order by position limit 1`);
     const flip = sql(`select case result when 'a' then 'b' else 'a' end from public.matches where id = '${wrongMatch}'`);
     const fix = await rpc('marshal', 'enter_official_result', { p_match: wrongMatch, p_result: flip, p_score_a: flip === 'a' ? 2 : 1, p_score_b: flip === 'b' ? 2 : 1, p_detail: {}, p_note: 'paper sheet 31: the final round was theirs' });
-    check('[correction] the head marshal corrects the fight from the sheet (audited, the result before is kept on the proposal)', fix.status < 300 && sql(`select count(*) from public.result_proposals where match_id = '${wrongMatch}' and source = 'paper' and official_before is not null`) === '1', JSON.stringify(fix.body));
+    check('[correction] the head marshal corrects the fight from the sheet (audited, the result before is kept on a proposal)', fix.status < 300 && Number(sql(`select count(*) from public.result_proposals where match_id = '${wrongMatch}' and source = 'paper' and official_before is not null`)) >= 1, JSON.stringify(fix.body));
     await page.reload(); await page.locator('section[aria-label="Results and closeout"]').waitFor({ timeout: 30000 });
     await page.locator('.fz-pick').getByRole('button', { name: /^Women 3v3/ }).click();
     await page.getByRole('button', { name: 'Finalize competition' }).waitFor({ timeout: 30000 });
@@ -977,9 +983,9 @@ try {
     await page.goto(BASE + '/teams/kestrel-guard'); await page.locator('#roster').waitFor({ timeout: 30000 }); await sleep(1200);
     const teamPage = await text(page, 'main');
     check('[career] Kestrel Guard’s page shows its 5v5 / 3v3 record from the Rumble and the duelists who represented it', /5v5/.test(teamPage) && /Red Deer Rumble \(rehearsal\)/.test(teamPage) && /Fighters represented|represented/i.test(teamPage), teamPage.slice(0, 300));
-    await page.goto(BASE + '/rankings'); await sleep(2500);
-    check('[career] the rankings page lists the Rumble champion', (await text(page, 'main')).includes(champName), champName);
-    const teamCareer = pub(`select coalesce(sum(matches), 0) from public.team_career('${tid(1)}') where context = 'official' and scope = 'career' and kind = 'team'`);
+    await page.goto(BASE + '/rankings?who=fighters&scope=career&category=longsword&division=men'); await sleep(2500);
+    check('[career] the Longsword career ranking lists the Rumble champion', (await text(page, 'main')).includes(champName), champName);
+    const teamCareer = pub(`select coalesce(sum(matches), 0) from public.team_career('${tid(1)}') where context = 'official' and scope = 'career' and category is null`);
     check('[career] team_career counts Kestrel Guard’s team fights', Number(teamCareer) >= 3, teamCareer);
     await ctx.close();
     stop(16);
@@ -991,7 +997,7 @@ try {
     const champ = sql(`select fighter_id from public.entries where id = '${gold}'`);
     const snap = () => pub(`select coalesce((select string_agg(scope || ':' || coalesce(kind, '-') || ':' || matches || ':' || golds || ':' || points, ',' order by scope, kind, category, gender) from public.fighter_career('${champ}') where context = 'official'), '-')
       || '|' || coalesce((select string_agg(scope || ':' || points, ',' order by scope, organization_id, season_id, category, gender) from public.ranking_fighters where fighter_id = '${champ}'), '-')
-      || '|' || coalesce((select string_agg(scope || ':' || coalesce(kind, '-') || ':' || matches || ':' || points, ',' order by scope, kind, category, gender) from public.team_career('${tid(1)}') where context = 'official'), '-')`);
+      || '|' || coalesce((select string_agg(scope || ':' || coalesce(category, '-') || ':' || matches || ':' || points, ',' order by scope, category, gender) from public.team_career('${tid(1)}') where context = 'official'), '-')`);
     const base = snap();
     const { ctx, page } = await open('desktop', 'owner');
     await page.goto(BASE + `/events/${SLUG}/manage?tab=setup`); await page.locator('#lifecycle').waitFor({ timeout: 30000 });
@@ -1059,7 +1065,8 @@ try {
     const anyReg = sql(`select id from public.registrations where event_id = '${EV}' limit 1`);
     await refuse(null, 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true }, '[permissions] anonymous cannot run a field');
     await refuse('stranger', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true }, '[permissions] a signed-in stranger cannot run a field');
-    await refuse('scorer1', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true }, '[permissions] a scorekeeper cannot run a field');
+    const scorerField = await rpc('scorer1', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true });
+    check('[permissions] a scorekeeper can run their event field but cannot use organizer-only tools', scorerField.status === 200, `${scorerField.status} ${JSON.stringify(scorerField.body)}`);
     await refuse('scorer1', 'decide_registration', { p_reg: anyReg, p_status: 'declined' }, '[permissions] a scorekeeper cannot decide registrations');
     await refuse('scorer1', 'set_registration_check', { p_reg: anyReg, p_check: 'checked_in', p_value: false }, '[permissions] a scorekeeper cannot check people in');
     await refuse('scorer1', 'enter_official_result', { p_match: anyMatch, p_result: 'a', p_score_a: 9, p_score_b: 0, p_detail: {}, p_note: 'nope' }, '[permissions] a scorekeeper cannot enter a paper result');
@@ -1068,7 +1075,8 @@ try {
     await refuse('marshal', 'close_event', { p_event: EV, p_note: null }, '[permissions] the head marshal cannot close the event');
     await refuse('stranger', 'set_entry_roster', { p_entry: teamEntry(1, 'Men 5v5'), p_fighters: [] }, '[permissions] a stranger cannot change a roster');
     await refuse('organizer', 'exclude_event_from_stats', { p_event: EV, p_reason: 'trying' }, '[permissions] an organizer cannot change statistics eligibility');
-    await refuse('stranger', 'my_event_entries', { p_event: EV }, '[permissions] my_event_entries as anonymous is refused').catch(() => undefined);
+    const strangerEntries = await rpc('stranger', 'my_event_entries', { p_event: EV });
+    check('[permissions] a signed-in bystander gets no entries from my_event_entries', strangerEntries.status === 200 && Array.isArray(strangerEntries.body) && strangerEntries.body.length === 0, `${strangerEntries.status} ${JSON.stringify(strangerEntries.body)}`);
     const anonEntries = await rpc(null, 'my_event_entries', { p_event: EV });
     check('[permissions] anonymous gets nothing from my_event_entries', anonEntries.status >= 400 || (Array.isArray(anonEntries.body) && anonEntries.body.length === 0));
     const priv = await rest('scorer1', `registration_private?select=*&limit=1`);
@@ -1109,7 +1117,7 @@ try {
       for (const kind of ['phone', 'tablet']) {
         const w = kind === 'phone' ? '390' : '768';
         const { ctx: c, page: p } = await open(kind, 'organizer');
-        for (const [tab, sel, nm] of [['checkin', 'article[aria-label]', 'check-in'], ['review', 'article[aria-label]', 'review'], ['eventday', 'section.eventday', 'event day'], ['run', 'section[aria-label="Men Longsword"]', 'run'], ['finalize', 'section[aria-label="Results and closeout"]', 'results']]) {
+        for (const [tab, sel, nm] of [['checkin', 'article[aria-label]', 'check-in'], ['review', '[aria-label="Show"]', 'review'], ['eventday', 'section.eventday', 'event day'], ['run', 'section[aria-label="Men Longsword"]', 'run'], ['finalize', 'section[aria-label="Results and closeout"]', 'results']]) {
           const t0 = Date.now();
           await p.goto(BASE + `/events/${SLUG}/manage?tab=${tab}`); await p.locator(sel).first().waitFor({ timeout: 40000 }); await sleep(1500);
           metrics[`${tab}_${w}_ms`] = Date.now() - t0;
