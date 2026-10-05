@@ -14,13 +14,15 @@ export const TBD = 'To be decided';
 
 export interface ArenaSide { name: string; score: number | null; winner: boolean }
 /** Official lyst state for the display: the confirmed rounds, the clock, the marshal's penalties. Never a counter's tally, never an unconfirmed score. */
-export interface ArenaMark { side: 'a' | 'b'; text: string }
+export interface ArenaMark { side: 'a' | 'b'; text: string; kind: 'warning' | 'card' | 'deduction' | 'dq' }
 export interface ArenaLyst {
   round: number | null; roundStatus: 'running' | 'confirming' | 'confirmed' | null; roundsConfirmed: number;
   timer: { mode: string; status: 'idle' | 'running' | 'paused'; remainingMs: number; startedAt: string | null; round: number | null } | null;
   marks: ArenaMark[];
 }
-export interface ArenaFight { id: string; competition: string; stage: string; a: ArenaSide; b: ArenaSide; phase: string | null; live: boolean; detail: LiveScore['detail'] | null; lyst?: ArenaLyst }
+export interface ArenaFight { id: string; competition: string; stage: string; a: ArenaSide; b: ArenaSide; phase: string | null; live: boolean; detail: LiveScore['detail'] | null; lyst?: ArenaLyst;
+  /** When the result became official (a final match), so a presentation can tell "just finished" from "result on screen". */
+  finalizedAt?: string | null; entryA?: string | null; entryB?: string | null }
 export type ArenaState =
   | { kind: 'fighting'; now: ArenaFight }
   /** `next` is the fight already called on this field while the result holds the screen (the queue advances the moment a result is saved). */
@@ -43,7 +45,7 @@ function lystOf(row: LystPublic | undefined): ArenaLyst | undefined {
   return {
     round: row.round_no, roundStatus: row.round_status, roundsConfirmed: row.rounds_confirmed,
     timer: row.timer_status && row.timer_mode ? { mode: row.timer_mode, status: row.timer_status, remainingMs: row.timer_remaining_ms ?? 0, startedAt: row.timer_started_at, round: row.timer_round } : null,
-    marks: (row.discipline ?? []).map(d => ({ side: d.side, text: CARD_TEXT(d) }))
+    marks: (row.discipline ?? []).map(d => ({ side: d.side, text: CARD_TEXT(d), kind: d.kind }))
   };
 }
 
@@ -57,7 +59,8 @@ function fight(m: CompetitionMatch, names: ReadonlyMap<string, string>, score: L
     // a match run through Lyst Control shows ONLY the marshal-confirmed totals; the classic board's running snapshot is used only when there is no lyst state
     a: { name: a, score: final ? m.scoreA : lystRow && lyst ? lystRow.official_a : score ? score.scoreA : null, winner: winA },
     b: { name: b, score: final ? m.scoreB : lystRow && lyst ? lystRow.official_b : score ? score.scoreB : null, winner: winB },
-    phase: final ? null : lyst ? lystPhase(lyst) : score?.phase || null, live: !final && (!!score || !!lyst), detail: lyst ? null : score?.detail ?? null, ...(lyst ? { lyst } : {})
+    phase: final ? null : lyst ? lystPhase(lyst) : score?.phase || null, live: !final && (!!score || !!lyst), detail: lyst ? null : score?.detail ?? null, ...(lyst ? { lyst } : {}),
+    finalizedAt: m.finalizedAt, entryA: m.entryA, entryB: m.entryB
   };
 }
 

@@ -9,6 +9,8 @@ import { ServerClock } from './timer';
  */
 export function useLystPublic(eventId: string | undefined, enabled: boolean) {
   const [rows, setRows] = useState<LystPublic[]>([]);
+  /** Device time of the last successful read (for "is this data stale?"). */
+  const [updatedAt, setUpdatedAt] = useState<number | null>(null);
   const clock = useRef(new ServerClock());
   const live = useRef(true);
   const busy = useRef(false);
@@ -19,7 +21,7 @@ export function useLystPublic(eventId: string | undefined, enabled: boolean) {
       const r = await fetchLystPublic(eventId);
       const at = r.rows[0]?.server_now ? Date.parse(r.rows[0].server_now) : NaN;
       if (Number.isFinite(at)) clock.current.sample(at, r.sentAt, r.receivedAt);
-      if (live.current) setRows(r.rows);
+      if (live.current) { setRows(r.rows); setUpdatedAt(Date.now()); }
     } catch { /* no signal or no access: keep what is on screen */ } finally { busy.current = false; }
   }, [eventId]);
   useEffect(() => {
@@ -36,5 +38,5 @@ export function useLystPublic(eventId: string | undefined, enabled: boolean) {
       .subscribe();
     return () => { live.current = false; window.clearInterval(poll); window.clearTimeout(debounce); void supabase.removeChannel(channel); };
   }, [eventId, enabled, refresh]);
-  return { rows, clock: clock.current };
+  return { rows, clock: clock.current, updatedAt };
 }
