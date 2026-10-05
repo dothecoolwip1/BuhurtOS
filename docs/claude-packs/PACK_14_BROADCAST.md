@@ -36,5 +36,11 @@ What does **not** exist and is therefore the only new state: a stream address fo
 - Storage bucket `sponsor-logos`: public read; insert / update / delete only for an organizer of the event named by the first path segment; png / jpg / webp, 512 KB.
 - Every write is audited with `private.audit`. No account ids in any public column.
 
-## 4. Status of each level
+## 4. What was built (on the branch)
+- Overlay `/broadcast/<event>/<field>?layout=full|bug|queue|sponsors&bg=transparent|green|dark&scale=fit|1&status=1` (public, read-only, 1920x1080 stage). Hooks: `src/lib/broadcast/useBroadcast.ts` over `useArenaData` (5 s polling fallback), `useLystPublic`, `buildArena`; scene machine `state.ts`; fighter/team graphics `sides.ts`; `sponsors.ts`; `stream.ts` (embed allow-list); `obsUrl.ts`.
+- Admin Manage > Broadcast (`src/pages/BroadcastTab.tsx`), linked from Event day. Public event page block `src/components/Livestream.tsx` (renders only when the event has a stream address).
+- Arena data gained `kind` on penalty marks and `finalizedAt` / entry ids on fights (additive); `useArenaData` accepts an optional poll interval.
+- Local test tooling: `scripts/e2e/pack14-live.{sh,mjs}`, fixture `fixtures/pack14.sql`, and an in-memory storage stand-in in `localstack.mjs` (no policy enforcement).
+
+## 5. Status of each level
 See `STATUS.md`. Hosted Supabase is **not** touched by this pack until the owner asks.

@@ -455,15 +455,20 @@ Database gate (`run_all.sh`, includes `team_discipline_rankings_gate.sql`, 53 ch
 - Refreshing the lyst screen returns to the open fight (`?open=`); the classic board keeps its old behaviour (refresh returns to the queue).
 - Nothing was built for Pack 14 (broadcast overlays) beyond the clean public state view `lyst_public_state`.
 
-## Pack 14: Broadcast, livestream and spectator graphics (2026-10-08) — IN PROGRESS
+## Pack 14: Broadcast, livestream and spectator graphics (2026-10-08) — IMPLEMENTED ON BRANCH, NOT MERGED, NOT DEPLOYED
 
-Branch `pack14-broadcast` (from `main` 12f2e66). Architecture and decisions: `docs/claude-packs/PACK_14_BROADCAST.md`. Constraints from the owner: do not touch Pack 13's deployment workflow; do not deploy Pack 14; no PR and no hosted-database change unless asked. Before any later merge: confirm Pack 13's production deploy state and reconcile with the latest `main`.
+Branch `pack14-broadcast` (from `main` 12f2e66). Architecture and decisions: `docs/claude-packs/PACK_14_BROADCAST.md`. OBS setup and the real-device checklist: `docs/runbooks/PACK14_OBS_SETUP.md`. Constraints from the owner: do not touch Pack 13's deployment workflow; do not deploy Pack 14; no PR and no hosted-database change unless asked. Before any later merge: confirm Pack 13's production deploy state and reconcile with the latest `main`.
 
-| Piece | Repository | Migration created | Applied locally | Applied hosted | Automated tests | Browser verified |
-| --- | --- | --- | --- | --- | --- | --- |
-| Settings, sponsors, logo bucket, functions (`20261008000100_pack14_broadcast.sql`) | yes | yes | yes (scratch DB) | **NO** | `pack14_gate.sql` 69 checks | n/a |
-| Pure libs (stream URL, presentation state machine, sponsors) | not yet | n/a | n/a | n/a | not yet | n/a |
-| Overlay page `/broadcast/:event/:field` | not yet | n/a | n/a | n/a | not yet | not yet |
-| Admin Broadcast tab + public event page livestream | not yet | n/a | n/a | n/a | not yet | not yet |
+| Level | Status |
+| --- | --- |
+| Implemented in repository | yes: overlay `/broadcast/:event/:field`, scene state machine, fighter/team graphics, sponsors, admin Manage > Broadcast, public event-page livestream block, OBS link builder |
+| Migration created | yes: `20261008000100_pack14_broadcast.sql` (additive: `event_broadcast`, `event_sponsors`, bucket `sponsor-logos`, 3 organizer functions) |
+| Applied locally | yes (scratch databases only) |
+| Applied to hosted Supabase | **NO** (not requested) |
+| Automated tests | typecheck clean; `npx vitest run` 924 passed (25 new broadcast tests); production build passes; `supabase/tests/run_all.sh` DATABASE GATE PASSED (includes `pack14_gate.sql`, 69 checks, and the schema fingerprint) |
+| Browser verified (real Chromium, real Postgres + PostgREST, local stack) | `scripts/e2e/pack14-live.sh`: 63/63 checks (1920x1080 overlay through every scene, score/clock/cards/finalization/Now-Next, refresh and offline recovery, layouts/backgrounds, public page, draft boundary, anonymous/stranger/scorekeeper write attempts refused, admin on a 390x844 phone incl. no sideways scroll and 40 px controls, sponsor add/hide/remove with logo upload, copy link) |
+| Regression browser suites (CI set) | field-pack03, sw-update, pack07-ux, pack08-entrants, pack12-app all exit 0 on this branch |
+| Merged to main | no |
+| Deployed / production verified | no / no |
 
-Merged to main: no. Deployed: no. Production verified: no.
+Not verified (honest list): a real OBS browser source on a real streaming computer; real phones/tablets/TV; real YouTube/Twitch embeds (the sandbox blocks external hosts, so only the embed address, sandbox attributes and layout were checked, not playback); realtime websockets (the local stack has none, so the polling fallback was what ran: overlay polls every 5 s, 3 s for the clock; with realtime it is faster); the sponsor-logo storage policies in a browser (the local storage stand-in does not enforce policies; they are tested in `pack14_gate.sql`); the hosted database and production. The last CSS nudge (event tag position under the score bug) was not re-screenshotted after the final browser run. The pre-existing `arena-live` failure noted under Pack 13 is unrelated and unchanged.
