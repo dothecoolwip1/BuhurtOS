@@ -24,6 +24,7 @@ create or replace function private.resolve_withdrawn_walkovers(p_competition uui
 language plpgsql security definer set search_path = '' as $$
 declare
   v_m public.matches;
+  v_match uuid;
   v_a_status text;
   v_b_status text;
   v_out uuid;
@@ -37,8 +38,8 @@ begin
   perform set_config('bos.withdrawal_cascade', 'on', true);
 
   loop
-    select m, ea.status, eb.status
-      into v_m, v_a_status, v_b_status
+    select m.id, ea.status, eb.status
+      into v_match, v_a_status, v_b_status
       from public.matches m
       join public.entries ea on ea.id = m.entry_a
       join public.entries eb on eb.id = m.entry_b
@@ -58,6 +59,7 @@ begin
      for update of m;
 
     exit when not found;
+    select * into v_m from public.matches where id = v_match;
 
     if v_a_status = 'withdrawn' then
       v_out := v_m.entry_a;
