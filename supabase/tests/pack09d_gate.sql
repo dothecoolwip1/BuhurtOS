@@ -346,6 +346,67 @@ select t.expect_eq('after clearing, the plan decides', (select string_agg(x::tex
   concat_ws(',', t.gu('m:q4'), t.gu('m:q3'), t.gu('m:q2')));
 select t.expect_eq('the plan is audited', t.audits('queue.planned', t.id('d9e3')::text) >= 1, true);
 
+
+-- ---------------------------------------------------------------- bracket automation (the existing server path, exercised end to end)
+-- 5 entrants, single elimination with a third-place fight: three byes go straight to the semifinals; only one quarterfinal is fought.
+select t.as_admin();
+insert into public.fighters (id, display_name) values (t.id('d9b0'), 'Br One'), (t.id('d9b1'), 'Br Two'), (t.id('d9b2'), 'Br Three'), (t.id('d9b3'), 'Br Four'), (t.id('d9b4'), 'Br Five');
+insert into public.competitions (id, event_id, name, category, gender, tier, structure, sort) values (t.id('d904'), t.id('d9e3'), 'Sword & Buckler (open)', 'buckler', 'open', 'Classic', 'elimination', 2);
+select t.ent('b1', t.id('d904'), t.id('d9b0')), t.ent('b2', t.id('d904'), t.id('d9b1')), t.ent('b3', t.id('d904'), t.id('d9b2')), t.ent('b4', t.id('d904'), t.id('d9b3')), t.ent('b5', t.id('d904'), t.id('d9b4'));
+select t.as_user(t.uid(2));
+select t.expect_ok('the bracket is built through build_schedule', format($$select public.build_schedule(%L, %L::jsonb, 'new', '{"format":"single_elimination","mode":"random","seed":7,"algorithm":"ts-draw-v1"}'::jsonb, null)$$, t.id('d904'),
+  jsonb_build_array(
+    jsonb_build_object('key', 'q1', 'stage', 'elimination', 'round_label', 'Quarterfinal', 'position', 0, 'pool', null, 'a', t.gu('e:b4'), 'b', t.gu('e:b5'), 'next_key', 's2', 'next_slot', 'b'),
+    jsonb_build_object('key', 's1', 'stage', 'elimination', 'round_label', 'Semifinal', 'position', 0, 'pool', null, 'a', t.gu('e:b1'), 'b', t.gu('e:b2'), 'next_key', 'f', 'next_slot', 'a'),
+    jsonb_build_object('key', 's2', 'stage', 'elimination', 'round_label', 'Semifinal', 'position', 1, 'pool', null, 'a', t.gu('e:b3'), 'b', null, 'next_key', 'f', 'next_slot', 'b'),
+    jsonb_build_object('key', 'f', 'stage', 'final', 'round_label', 'Final', 'position', 0, 'pool', null, 'a', null, 'b', null, 'next_key', null, 'next_slot', null),
+    jsonb_build_object('key', 't', 'stage', 'third_place', 'round_label', 'Third place', 'position', 0, 'pool', null, 'a', null, 'b', null, 'next_key', null, 'next_slot', null))::text));
+select t.as_admin();
+select t.put('m:bq1', (select id::text from public.matches where competition_id = t.id('d904') and round_label = 'Quarterfinal'));
+select t.put('m:bs1', (select id::text from public.matches where competition_id = t.id('d904') and round_label = 'Semifinal' and position = 0));
+select t.put('m:bs2', (select id::text from public.matches where competition_id = t.id('d904') and round_label = 'Semifinal' and position = 1));
+select t.put('m:bf', (select id::text from public.matches where competition_id = t.id('d904') and stage = 'final'));
+select t.put('m:bt', (select id::text from public.matches where competition_id = t.id('d904') and stage = 'third_place'));
+create function t.runnable(k text) returns boolean language sql stable security definer as $$ select private.match_runnable(m) from public.matches m where m.id = t.gu(k) $$;
+select t.expect_eq('byes: the three top entrants are already in the semifinals', (select count(*) from public.matches where competition_id = t.id('d904') and round_label = 'Semifinal' and entry_a is not null)::int, 2);
+select t.expect_eq('the semifinal waiting for a quarterfinal winner is not ready', t.runnable('m:bs2'), false);
+select t.expect_eq('the final is not ready before the semifinals', t.runnable('m:bf'), false);
+select t.expect_eq('a fight with an unknown side is never in the line', (select count(*) from private.queue_ordered(t.id('d9e3'), 'field 1', array['scheduled']) x where x in (t.gu('m:bs2'), t.gu('m:bf'), t.gu('m:bt')))::int, 0);
+select t.as_user(t.uid(4));
+select t.put('v:bq1', (select version::text from public.matches where id = t.gu('m:bq1')));
+select t.fin('bq1', 'a', 5, 2);
+select t.as_admin();
+select t.expect_eq('winner advances automatically into the semifinal slot', (select entry_b from public.matches where id = t.gu('m:bs2')), t.gu('e:b4'));
+select t.expect_eq('that semifinal is now ready (newly schedulable)', t.runnable('m:bs2'), true);
+select t.as_user(t.uid(4));
+select t.expect_error('a stale result (old version) is refused and changes nothing', format($$select public.finalize_match(%L, 'b', 1, 5, '{}'::jsonb, %s)$$, t.gu('m:bq1'), (select v from t.nx where k = 'v:bq1')));
+select t.as_admin();
+select t.expect_eq('the stale result did not corrupt the bracket', (select entry_b from public.matches where id = t.gu('m:bs2')), t.gu('e:b4'));
+select t.expect_eq('no duplicate advancement: the winner sits in exactly one later slot', (select count(*) from public.matches where competition_id = t.id('d904') and t.gu('e:b4') in (entry_a, entry_b) and queue_state <> 'final')::int, 1);
+select t.as_user(t.uid(4));
+select t.fin('bs1', 'a', 5, 3);
+select t.as_admin();
+select t.expect_eq('semifinal winner goes to the final', (select entry_a from public.matches where id = t.gu('m:bf')), t.gu('e:b1'));
+select t.expect_eq('semifinal loser goes to the third-place fight', (select t.gu('e:b2') in (entry_a, entry_b) from public.matches where id = t.gu('m:bt')), true);
+select t.expect_eq('the final waits for the other semifinal', t.runnable('m:bf'), false);
+select t.as_user(t.uid(4));
+select t.fin('bs2', 'a', 5, 4);
+select t.as_admin();
+select t.expect_eq('both finalists known: the final is ready', t.runnable('m:bf'), true);
+select t.expect_eq('both third-place fighters known: ready', t.runnable('m:bt'), true);
+select t.as_user(t.uid(2));
+select t.expect_eq('bracket not complete yet: still running', public.competition_finalize_preflight(t.id('d904')) ->> 'state', 'running');
+select t.as_user(t.uid(4));
+select t.fin('bt', 'a', 5, 1), t.fin('bf', 'b', 2, 5);
+select t.as_user(t.uid(2));
+select t.expect_eq('every required fight done: the competition is ready for review by itself', public.competition_finalize_preflight(t.id('d904')) ->> 'state', 'ready');
+select t.expect_eq('...and NOT official until a person confirms', (select status from public.competitions where id = t.id('d904')) <> 'finished', true);
+select t.expect_eq('the review shows the calculated champion', (select p ->> 'name' from jsonb_array_elements(public.competition_finalize_preflight(t.id('d904')) -> 'placements') p where (p ->> 'place')::int = 1), 'Br Three');
+select t.expect_eq('Confirm results = Pack 09C finalize_competition', public.finalize_competition(t.id('d904')) ->> 'status', 'official');
+select t.expect_eq('confirming twice is harmless', public.finalize_competition(t.id('d904')) ->> 'status', 'already_official');
+select t.as_admin();
+select t.expect_eq('placings written once', (select count(*) from public.results where competition_id = t.id('d904'))::int, 5);
+
 -- ---------------------------------------------------------------- privileges
 select t.expect_eq('new private functions are not executable by clients',
   (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
