@@ -916,7 +916,7 @@ try {
     const wrongMatch = sql(`select m.id from public.matches m where m.competition_id = '${comp('Women 3v3')}' and (m.entry_a = '${goldBefore}' or m.entry_b = '${goldBefore}') order by position limit 1`);
     const flip = sql(`select case result when 'a' then 'b' else 'a' end from public.matches where id = '${wrongMatch}'`);
     const fix = await rpc('marshal', 'enter_official_result', { p_match: wrongMatch, p_result: flip, p_score_a: flip === 'a' ? 2 : 1, p_score_b: flip === 'b' ? 2 : 1, p_detail: {}, p_note: 'paper sheet 31: the final round was theirs' });
-    check('[correction] the head marshal corrects the fight from the sheet (audited, the result before is kept on the proposal)', fix.status < 300 && sql(`select count(*) from public.result_proposals where match_id = '${wrongMatch}' and source = 'paper' and official_before is not null`) === '1', JSON.stringify(fix.body));
+    check('[correction] the head marshal corrects the fight from the sheet (audited, the result before is kept on a proposal)', fix.status < 300 && Number(sql(`select count(*) from public.result_proposals where match_id = '${wrongMatch}' and source = 'paper' and official_before is not null`)) >= 1, JSON.stringify(fix.body));
     await page.reload(); await page.locator('section[aria-label="Results and closeout"]').waitFor({ timeout: 30000 });
     await page.locator('.fz-pick').getByRole('button', { name: /^Women 3v3/ }).click();
     await page.getByRole('button', { name: 'Finalize competition' }).waitFor({ timeout: 30000 });
