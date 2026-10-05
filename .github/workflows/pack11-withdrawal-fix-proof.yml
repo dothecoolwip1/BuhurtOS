@@ -1,0 +1,90 @@
+name: Pack 11 Withdrawal Fix Proof
+
+on:
+  push:
+    branches: [pack11-withdrawal-fix]
+
+permissions:
+  contents: write
+
+jobs:
+  proof:
+    name: Withdrawal progression + full Rumble rehearsal
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pack11-withdrawal-fix
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Install Postgres client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client xz-utils
+
+      - name: Build migrations and refresh fingerprint
+        run: |
+          supabase/tests/build_scratch.sh bos_fingerprint
+          supabase/tests/check_fingerprint.sh bos_fingerprint --update
+          if ! git diff --quiet -- supabase/schema.fingerprint.txt; then
+            git config user.name "Pack 11 proof"
+            git config user.email "actions@users.noreply.github.com"
+            git add supabase/schema.fingerprint.txt
+            git commit -m "Pack 11: refresh schema fingerprint"
+            git push origin HEAD:pack11-withdrawal-fix
+          fi
+
+      - name: Typecheck, unit tests, build
+        run: |
+          npm run typecheck
+          npm test
+          npm run build
+
+      - name: Full database gate
+        run: supabase/tests/run_all.sh
+
+      - name: Install Chromium and PostgREST
+        run: |
+          npx playwright-core install --with-deps chromium
+          curl -L --fail --retry 3 \
+            https://github.com/PostgREST/postgrest/releases/download/v16.4/postgrest-v16.4-linux-static-x86-64.tar.xz \
+            -o /tmp/postgrest.tar.xz
+          tar -xJf /tmp/postgrest.tar.xz -C /tmp
+          chmod +x /tmp/postgrest
+
+      - name: Full Pack 11 Rumble rehearsal
+        env:
+          POSTGREST_BIN: /tmp/postgrest
+        run: |
+          export CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")"
+          scripts/e2e/rumble-live.sh /tmp/rumble-shots
+
+      - name: Upload rehearsal screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pack11-withdrawal-fix-shots
+          path: /tmp/rumble-shots
+          if-no-files-found: ignore
