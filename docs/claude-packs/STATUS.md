@@ -454,3 +454,16 @@ Database gate (`run_all.sh`, includes `team_discipline_rankings_gate.sql`, 53 ch
 - All durations, regular rounds (2), extra-round length (30 s), deduction amounts, reasons and the card list are event settings. The card list starts empty: no card names are invented.
 - Refreshing the lyst screen returns to the open fight (`?open=`); the classic board keeps its old behaviour (refresh returns to the queue).
 - Nothing was built for Pack 14 (broadcast overlays) beyond the clean public state view `lyst_public_state`.
+
+## Pack 14: Broadcast, livestream and spectator graphics (2026-10-08) — IN PROGRESS
+
+Branch `pack14-broadcast` (from `main` 12f2e66). Architecture and decisions: `docs/claude-packs/PACK_14_BROADCAST.md`. Constraints from the owner: do not touch Pack 13's deployment workflow; do not deploy Pack 14; no PR and no hosted-database change unless asked. Before any later merge: confirm Pack 13's production deploy state and reconcile with the latest `main`.
+
+| Piece | Repository | Migration created | Applied locally | Applied hosted | Automated tests | Browser verified |
+| --- | --- | --- | --- | --- | --- | --- |
+| Settings, sponsors, logo bucket, functions (`20261008000100_pack14_broadcast.sql`) | yes | yes | yes (scratch DB) | **NO** | `pack14_gate.sql` 69 checks | n/a |
+| Pure libs (stream URL, presentation state machine, sponsors) | not yet | n/a | n/a | n/a | not yet | n/a |
+| Overlay page `/broadcast/:event/:field` | not yet | n/a | n/a | n/a | not yet | not yet |
+| Admin Broadcast tab + public event page livestream | not yet | n/a | n/a | n/a | not yet | not yet |
+
+Merged to main: no. Deployed: no. Production verified: no.
