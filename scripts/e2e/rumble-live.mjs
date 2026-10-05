@@ -81,7 +81,11 @@ const tinyTargets = (page, sel = 'main') => page.evaluate((s) => [...document.qu
   .filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.height < 40 && !e.classList.contains('linklike') && getComputedStyle(e).visibility !== 'hidden'; })
   .map(e => (e.innerText || e.getAttribute('aria-label') || e.tagName).slice(0, 40)), sel);
 const layout = async (page, nm) => {
-  check(`[${nm}] no sideways scrolling`, !(await sideways(page)));
+  const over = await page.evaluate(() => [...document.querySelectorAll('main *')].map(e => {
+    const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return { tag: e.tagName.toLowerCase(), cls: e.className || '', text: (e.textContent || '').trim().replace(/\\s+/g, ' ').slice(0, 90), left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), pos: s.position, overflowX: s.overflowX };
+  }).filter(x => x.width > 0 && x.right > innerWidth + 1 && x.pos !== 'fixed' && !/seg|eh-steps|fz-pick/.test(String(x.cls))).slice(0, 12));
+  check(`[${nm}] no sideways scrolling`, !(await sideways(page)), over.map(x => `${x.tag}.${String(x.cls)} right=${x.right} width=${x.width} overflow=${x.overflowX} text="${x.text}"`).join(' | '));
   const tiny = await tinyTargets(page);
   check(`[${nm}] no small tap targets`, tiny.length === 0, tiny.join(' | '));
   const body = await text(page, 'main');
@@ -977,9 +981,9 @@ try {
     await page.goto(BASE + '/teams/kestrel-guard'); await page.locator('#roster').waitFor({ timeout: 30000 }); await sleep(1200);
     const teamPage = await text(page, 'main');
     check('[career] Kestrel Guard’s page shows its 5v5 / 3v3 record from the Rumble and the duelists who represented it', /5v5/.test(teamPage) && /Red Deer Rumble \(rehearsal\)/.test(teamPage) && /Fighters represented|represented/i.test(teamPage), teamPage.slice(0, 300));
-    await page.goto(BASE + '/rankings'); await sleep(2500);
-    check('[career] the rankings page lists the Rumble champion', (await text(page, 'main')).includes(champName), champName);
-    const teamCareer = pub(`select coalesce(sum(matches), 0) from public.team_career('${tid(1)}') where context = 'official' and scope = 'career' and kind = 'team'`);
+    await page.goto(BASE + '/rankings?who=fighters&scope=career&category=longsword&division=men'); await sleep(2500);
+    check('[career] the Longsword career ranking lists the Rumble champion', (await text(page, 'main')).includes(champName), champName);
+    const teamCareer = pub(`select coalesce(sum(matches), 0) from public.team_career('${tid(1)}') where context = 'official' and scope = 'career' and category is null`);
     check('[career] team_career counts Kestrel Guard’s team fights', Number(teamCareer) >= 3, teamCareer);
     await ctx.close();
     stop(16);
