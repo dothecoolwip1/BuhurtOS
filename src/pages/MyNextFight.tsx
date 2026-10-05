@@ -1,4 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { PushAsk } from '../components/PushAsk';
 import { Chip } from '../components/ui';
 import { fetchMyEventEntryIds } from '../data/myFight';
 import { fetchMyEvents } from '../data/myEvents';
@@ -13,6 +15,9 @@ const TONE_STYLE = {
   wait: {}
 } as const;
 
+/** The one unmistakable word for a called fight: the same states a push alert announces. */
+const STATE_BADGE: Partial<Record<string, string>> = { active: 'Up now', on_deck: 'On deck', in_the_hole: 'In the hole' };
+
 const aheadChip = (u: NextFight) => (u.match.queueState === 'active' ? 'Fighting now' : u.held ? 'Held for another day' : u.ahead === null ? 'Not in the line yet' : u.ahead === 0 ? 'Next up' : u.ahead === 1 ? '1 fight ahead' : `${u.ahead} fights ahead`);
 
 /**
@@ -24,10 +29,16 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
   const mine = useAsync(() => (userId ? fetchMyEventEntryIds(eventId) : Promise.resolve([] as string[])), [eventId, userId]);
   const me = useAsync(() => (userId ? fetchMyEvents().catch(() => []) : Promise.resolve([])), [eventId, userId]);
   const entryIds = mine.data;
+  const box = useRef<HTMLElement>(null);
+  const { hash } = useLocation();
   const summary = useMemo(() => {
     const all = Object.values(live.data).flatMap(d => d.matches);
     return nextForEntries(all, entryIds ?? []);
   }, [live.data, entryIds]);
+
+  // A tapped notification lands here (#my-next-fight): bring the card into view once it exists.
+  const hasCard = !!userId && !!entryIds && entryIds.length > 0;
+  useEffect(() => { if (hasCard && hash === '#my-next-fight') box.current?.scrollIntoView({ block: 'start' }); }, [hasCard, hash]);
 
   if (!userId) return null;
   if (mine.error != null) return <p role="alert">{friendlyError(mine.error, 'Could not load your fights.')}</p>;
@@ -43,7 +54,7 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
   const where = (u: NextFight) => `${compName(u.match.competitionId)} · ${u.match.pool ? `Pool ${u.match.pool}, ` : ''}${u.match.roundLabel}`;
 
   return (
-    <section className="panel info" style={{ display: 'grid', gap: 12, ...(status ? TONE_STYLE[status.tone] : {}) }} aria-labelledby="mynext-h" aria-live="polite">
+    <section ref={box} id="my-next-fight" className="panel info" style={{ display: 'grid', gap: 12, scrollMarginTop: 80, ...(status ? TONE_STYLE[status.tone] : {}) }} aria-labelledby="mynext-h" aria-live="polite">
       <div className="eyebrow">My next fight</div>
       {waiting && <p className="muted">Loading your fights…</p>}
       {live.error != null && live.updatedAt === null && <p role="alert">{friendlyError(live.error, 'Could not load the fights.')}</p>}
@@ -55,6 +66,7 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
       )}
       {next && status && (
         <>
+          {STATE_BADGE[next.match.queueState] && <div className={`mf-state ${status.tone}`} data-testid="mf-state" aria-hidden="true">{STATE_BADGE[next.match.queueState]}</div>}
           <h2 id="mynext-h" style={{ fontSize: status.tone === 'go' ? 30 : 26 }}>{status.label}</h2>
           <p style={{ fontSize: 17 }}><b>vs {next.opponent}</b></p>
           <p>{status.detail}</p>
@@ -108,6 +120,7 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
         </div>
       )}
       {live.error != null && live.updatedAt !== null && <p className="src">Could not refresh just now. Showing the last information we have.</p>}
+      {next && <PushAsk />}
     </section>
   );
 }

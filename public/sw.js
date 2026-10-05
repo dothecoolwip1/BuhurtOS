@@ -1,4 +1,4 @@
-/* BuhurtOS service worker: the app opens and scores with no signal after one visit. */
+/* BuhurtOS service worker: the app opens and scores with no signal after one visit, and shows push notifications (fight alerts, team and event news) when the app is closed. */
 const BUILD_ID = 'dev';
 const PRECACHE = [];
 const CACHE = 'bos-v2-' + BUILD_ID;
@@ -104,3 +104,52 @@ async function apiRead(event, req, table) {
   if (hit) { event.waitUntil(fresh.catch(() => {})); return hit; }
   return fresh;
 }
+
+// ---------------------------------------------------------------- push notifications (Pack 12)
+// The server (the database picks who and what; an Edge Function delivers) sends a short encrypted JSON message: {title, body, route, tag, urgent}.
+// Nothing sensitive is in it, and nothing here is needed for scoring or the queue. Every push shows a notification (browsers require it).
+const ICON = new URL('icon-192.png', BASE).href;
+const safeRoute = r => (typeof r === 'string' && /^\/[A-Za-z0-9/_?=&#-]*$/.test(r) && r.length < 200 ? r : '/');
+const routeUrl = r => new URL(safeRoute(r).replace(/^\//, ''), BASE).href;
+
+self.addEventListener('push', event => {
+  let m = {};
+  try { m = event.data ? event.data.json() : {}; } catch { m = {}; }
+  const title = typeof m.title === 'string' && m.title ? m.title.slice(0, 80) : 'BuhurtOS';
+  const options = {
+    body: typeof m.body === 'string' ? m.body.slice(0, 200) : '',
+    icon: ICON,
+    badge: ICON,
+    tag: typeof m.tag === 'string' && m.tag ? m.tag.slice(0, 64) : undefined,   // a newer alert for the same fight replaces the older one on the lock screen
+    renotify: typeof m.tag === 'string' && !!m.tag,
+    requireInteraction: m.urgent === true,
+    vibrate: m.urgent === true ? [200, 100, 200] : undefined,
+    data: { route: safeRoute(m.route), category: typeof m.category === 'string' ? m.category : '' }
+  };
+  event.waitUntil((async () => {
+    await self.registration.showNotification(title, options);
+    // Tell any open window so the bell and My next fight refresh now.
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    wins.forEach(w => w.postMessage({ type: 'PUSH_RECEIVED' }));
+  })());
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const route = safeRoute(event.notification.data && event.notification.data.route);
+  event.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const mine = wins.find(w => w.url.startsWith(BASE));
+    if (mine) {
+      mine.postMessage({ type: 'NAVIGATE', route });   // the app routes in place: nothing reloads, nothing in progress is lost
+      await mine.focus().catch(() => undefined);       // bringing it to the front can be refused; the route has been sent either way
+      return;
+    }
+    await self.clients.openWindow(routeUrl(route));   // installed app closed, or a fresh browser: open straight onto the destination
+  })());
+});
+
+// The browser replaced the subscription (keys rotated or expired). The app re-registers the device the next time it opens (src/lib/push.ts).
+self.addEventListener('pushsubscriptionchange', event => {
+  event.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(wins => wins.forEach(w => w.postMessage({ type: 'PUSH_SUBSCRIPTION_CHANGED' }))));
+});

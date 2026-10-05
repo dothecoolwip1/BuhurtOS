@@ -77,6 +77,7 @@ export function validate(f: RegForm, comps: CompetitionOption[], fee: EventFee):
   for (const id of f.competitionIds) {
     const c = comps.find(x => x.id === id);
     if (!c) continue;
+    if (f.gender && !genderAllows(f.gender, c)) e.competitionIds = `${c.name} is not open to the gender you chose. Remove it, or change your gender if it is wrong.`;
     if (needsTeam(c) && !(f.details[id]?.teamId || f.teamId)) e[`team:${id}`] = `Choose your team for ${c.name}. Fighters without a team do not fight.`;
     if (needsWeight(c) && !f.details[id]?.weight?.trim()) e[`weight:${id}`] = `Enter your weight for ${c.name}.`;
   }
@@ -110,3 +111,15 @@ export function buildPayload(f: RegForm, waiverVersionId: string) {
   };
 }
 const stripEmpty = (d: CompDetails) => Object.fromEntries(Object.entries(d).filter(([, v]) => v !== undefined && v !== ''));
+
+// ---------------------------------------------------------------- gender decides which categories apply
+export type Gender = 'male' | 'female' | 'other';
+/**
+ * Male: men's and open categories. Female: women's and open. Other: every category (the organizer places the fighter). No gender chosen yet: none.
+ * The database refuses a mismatch as well (registration_competitions trigger); this is what the form offers.
+ */
+export const genderAllows = (gender: RegForm['gender'], c: Pick<CompetitionOption, 'gender'>): boolean =>
+  gender === '' ? false : gender === 'other' || c.gender === 'open' || (gender === 'male' ? c.gender === 'men' : c.gender === 'women');
+export const categoriesFor = <T extends Pick<CompetitionOption, 'gender'>>(gender: RegForm['gender'], comps: readonly T[]): T[] => comps.filter(c => genderAllows(gender, c));
+export const genderRuleText = (gender: RegForm['gender']): string =>
+  gender === 'male' ? 'Showing men\'s and open categories.' : gender === 'female' ? 'Showing women\'s and open categories.' : gender === 'other' ? 'Showing every category. The organizers place you.' : 'Choose your gender above to see the categories you can enter.';

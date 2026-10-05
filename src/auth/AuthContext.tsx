@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
+import { disablePush } from '../lib/push';
 import { identifyUser, isNewAccount, markSignInStarted, resetUser, takeSignInStarted, trackEvent, wantOnboarding } from '../lib/analytics';
 
 interface AuthValue {
@@ -36,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           wantOnboarding(s.user.id);
         }
       }
-      if (event === 'SIGNED_OUT') resetUser();
+      if (event === 'SIGNED_OUT') { resetUser(); void disablePush(null); }   // never leave this device subscribed to the previous person's alerts
     });
     return () => { live = false; sub.subscription.unsubscribe(); };
   }, []);
@@ -61,7 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
     return error ? friendlyError(error) : null;
   }, []);
-  const signOut = useCallback(async () => { await supabase.auth.signOut(); }, []);
+  // Alerts are removed (here and on the server) while still signed in, so a shared phone never keeps delivering this person's fights.
+  const signOut = useCallback(async () => { await disablePush(session?.user.id ?? null).catch(() => undefined); await supabase.auth.signOut(); }, [session]);
 
   const value = useMemo(() => ({ session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signOut }), [session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signOut]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

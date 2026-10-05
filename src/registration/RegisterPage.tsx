@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
@@ -10,11 +10,13 @@ import { fetchMyRegistration, type MyRegistration } from '../data/myEvents';
 import { INSURANCE_LABEL } from './review';
 import { trackEvent } from '../lib/analytics';
 import {
-  INSURANCE_OPTIONS, PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, emptyForm, feeFor, formatMoney, validate,
+  INSURANCE_OPTIONS, PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, categoriesFor, emptyForm, feeFor, formatMoney, genderAllows, genderRuleText, validate,
   type CompetitionOption, type EventFee, type LeagueKey, type RegForm
 } from './model';
 import { WaiverDocumentLink } from '../pages/WaiverSection';
 import { fetchMyFighterId } from '../data/fighters';
+import { fetchRegistrationDefaults } from '../data/registrationDefaults';
+import { applyDefaults } from './defaults';
 import { fetchMyInvitation, type MyInvitation } from '../data/invitations';
 
 interface Loaded {
@@ -113,6 +115,8 @@ export function RegisterPage() {
   const [done, setDone] = useState(false);
   const [existing, setExisting] = useState<MyRegistration | null | undefined>(undefined);   // undefined: not looked up yet
   const [changing, setChanging] = useState(false);
+  const [prefilled, setPrefilled] = useState<string[]>([]);
+  const defaultsApplied = useRef(false);
 
   useEffect(() => {
     if (preview) return;
@@ -123,6 +127,17 @@ export function RegisterPage() {
     }).catch(e => setLoadError(e instanceof Error && !('code' in e) && e.message ? e.message : friendlyError(e, 'Could not load this event.')));
   }, [slug, preview]);
   useEffect(() => { if (session?.user.email) setF(p => (p.email ? p : { ...p, email: session.user.email ?? '' })); }, [session]);
+  // What BuhurtOS already knows (profile, fighter page, last registration) fills the empty fields once; nothing typed is overwritten and everything stays editable.
+  useEffect(() => {
+    if (preview || !data || !session || defaultsApplied.current) return;
+    defaultsApplied.current = true;
+    let live = true;
+    fetchRegistrationDefaults(session.user.id).then(src => {
+      if (!live) return;
+      setF(p => { const r = applyDefaults(p, src, data.teams.map(t => t.id)); setPrefilled(r.filled); return r.form; });
+    }).catch(() => { /* the form simply starts empty */ });
+    return () => { live = false; };
+  }, [preview, data, session]);
   useEffect(() => {
     if (preview || !data || data.mode !== 'buhuros' || !session) { setExisting(null); return; }
     let live = true;
@@ -192,9 +207,10 @@ export function RegisterPage() {
           </div>
         )}
         <section className="card field"><h3>About you</h3>
+          {prefilled.length > 0 && <p className="src" role="status" data-testid="prefilled">Filled in from your profile and last registration. Check it, and change anything that is different.</p>}
           {text('fullName', 'Full name', { autoComplete: 'name' })}
           {text('email', 'Email', { type: 'email', autoComplete: 'email' })}
-          <div><p>Gender (decides which categories apply)</p><Seg label="Gender" value={f.gender} options={[['male', 'Male'], ['female', 'Female'], ['other', 'Other']] as const} onChange={v => set('gender', v)} /><Err m={shown('gender')} /></div>
+          <div><p>Gender (decides which categories apply)</p><Seg label="Gender" value={f.gender} options={[['male', 'Male'], ['female', 'Female'], ['other', 'Other']] as const} onChange={v => setF(p => ({ ...p, gender: v, competitionIds: p.competitionIds.filter(id => { const c = data.comps.find(x => x.id === id); return c ? genderAllows(v, c) : false; }) }))} /><Err m={shown('gender')} /></div>
           <div><p>Organization</p><Seg label="Organization" value={f.organization} options={[['HACSA', 'HACSA'], ['MCC', 'MCC'], ['other', 'Other']] as const} onChange={v => set('organization', v)} /><Err m={shown('organization')} /></div>
           <label className="field-in">Where are you from?
             <select value={f.province} onChange={e => set('province', e.target.value)}><option value="">Choose…</option>{PROVINCES.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select>
@@ -208,9 +224,11 @@ export function RegisterPage() {
 
         <section className="card field"><h3>What are you doing?</h3>
           <label><input type="checkbox" checked={f.isVolunteer} onChange={e => set('isVolunteer', e.target.checked)} /> I am volunteering (no fee)</label>
+          {f.isVolunteer && f.competitionIds.length > 0 && <p role="note" className="src" style={{ margin: 0 }}>You chose categories as well as volunteering, so you will be listed as a fighter and as a volunteer.</p>}
           {f.isVolunteer && <VolunteerBlock f={f} set={set} info={data.volunteerInfo} toggle={toggle} error={shown('volunteerOther')} />}
           <p>Categories</p>
-          {data.comps.map(c => (
+          <p className="src" data-testid="gender-rule" style={{ margin: 0 }}>{genderRuleText(f.gender)}</p>
+          {categoriesFor(f.gender, data.comps).map(c => (
             <label key={c.id} style={{ display: 'block' }}><input type="checkbox" checked={f.competitionIds.includes(c.id)} onChange={() => set('competitionIds', toggle(f.competitionIds, c.id))} /> {c.name}</label>
           ))}
           <Err m={shown('competitionIds')} />

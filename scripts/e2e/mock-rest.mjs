@@ -3,6 +3,7 @@
  * Storage uploads and public URLs). It is a TEST DOUBLE that proves how the built app behaves in a real browser at phone size; it proves
  * nothing about the real database, which supabase/tests/*.sql covers. Nothing here ever talks to a hosted project.
  */
+import { createHash, generateKeyPairSync } from 'node:crypto';
 export const REF = 'mvbxlebznlgroptwwdsm';
 const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
 export const jwt = (sub) => `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub, role: 'authenticated', exp: 4102444800 })}.sig`;
@@ -22,10 +23,12 @@ export const IDS = {
 };
 const today = new Date(); const iso = (d) => d.toISOString().slice(0, 10);
 const plus = (days) => iso(new Date(today.getTime() + days * 86400000));
+const PUSH_KEY = (() => { const { publicKey } = generateKeyPairSync('ec', { namedCurve: 'prime256v1' }); return publicKey.export({ format: 'der', type: 'spki' }).subarray(-65).toString('base64url'); })();
 let seq = 0; const uid = () => `00000000-0000-0000-0000-${String(++seq).padStart(12, '0')}`;
 
 export function createMock() {
   const db = {
+    notif_settings: {}, push_devices: [], fight_now: {},
     events: [
       { id: IDS.rumble, slug: 'red-deer-rumble', name: 'Red Deer Rumble', description: 'The big one.', event_type: 'tournament', status: 'published', venue: 'Horse In Hand Ranch', address: null, city: 'Blackfalds', region: 'AB', country: 'CA', latitude: null, longitude: null, starts_on: plus(20), ends_on: plus(21), fee_cents: 0, fee_province: null, fee_note: null, registration_opens_at: null, registration_closes_at: null, registration_mode: 'buhuros', external_url: null, time_note: null, volunteer_info: null, organization_id: IDS.org, season_id: null },
       { id: IDS.fake, slug: 'central-alberta-steel-open-test', name: 'Central Alberta Steel Open-test', description: '', event_type: 'tournament', status: 'published', venue: null, address: null, city: 'Red Deer', region: 'AB', country: 'CA', latitude: null, longitude: null, starts_on: plus(-40), ends_on: plus(-39), fee_cents: 0, fee_province: null, fee_note: null, registration_opens_at: null, registration_closes_at: null, registration_mode: 'buhuros', external_url: null, time_note: null, volunteer_info: null, organization_id: null, season_id: null },
@@ -202,6 +205,11 @@ export function createMock() {
     const ev = (id) => db.events.find(e => e.id === id);
     switch (fn) {
       case 'my_fighter_id': return myFighter(who);
+      case 'my_notification_feed': return db.notifications.filter(n => n.user_id === who).sort((x, y) => y.created_at.localeCompare(x.created_at)).slice(0, a.p_limit ?? 50).map(({ user_id: _u, ...n }) => {
+        const p = n.payload ?? {};
+        const text = n.kind === 'event_invited' ? ["You've been added to an event", `The organizers added you to ${p.event_name}. Finish your registration.`] : ['BuhurtOS', 'You have a new notification.'];
+        return { ...n, category: 'events', title: text[0], body: text[1], route: p.event_slug ? `/events/${p.event_slug}` : '/account' };
+      });
       case 'my_notifications': return db.notifications.filter(n => n.user_id === who).sort((x, y) => y.created_at.localeCompare(x.created_at)).slice(0, a.p_limit ?? 50).map(({ user_id: _u, ...n }) => n);
       case 'mark_notifications_read': { let n = 0; for (const x of db.notifications) if (x.user_id === who && !x.read_at && (!a.p_ids || a.p_ids.includes(x.id))) { x.read_at = new Date().toISOString(); n++; } return n; }
       case 'my_event_relations': return links(who);
@@ -348,6 +356,21 @@ export function createMock() {
         for (const o of db.fighter_claims.filter(x => x.fighter_id === f.id && x.status === 'pending')) { o.status = 'declined'; o.note = 'Another account was linked to this profile.'; }
         return 'approved';
       }
+      // ---- Pack 12: alerts, devices, settings, Home
+      case 'push_public_key': return PUSH_KEY;
+      case 'my_notification_settings': return db.notif_settings[who] ?? { fights: true, team: true, events: true, system: true };
+      case 'set_notification_settings': { db.notif_settings[who] = { fights: a.p_fights, team: a.p_team, events: a.p_events, system: a.p_system }; return db.notif_settings[who]; }
+      case 'my_push_devices': return db.push_devices.filter(d => d.user_id === who && !d.revoked).map(d => ({ id: d.id, label: d.label, endpoint_digest: d.digest, created_at: d.created_at, last_success_at: null }));
+      case 'register_push_device': {
+        const digest = createHash('sha256').update(a.p_endpoint).digest('hex');
+        const old = db.push_devices.find(d => d.endpoint === a.p_endpoint);
+        if (old) { old.user_id = who; old.revoked = false; old.label = a.p_label ?? 'This device'; return { id: old.id }; }
+        const d = { id: uid(), user_id: who, endpoint: a.p_endpoint, keys: { p256dh: a.p_p256dh, auth: a.p_auth }, digest, label: a.p_label ?? 'This device', created_at: new Date().toISOString(), revoked: false };
+        db.push_devices.push(d); return { id: d.id };
+      }
+      case 'remove_push_device': { let n = 0; for (const d of db.push_devices) if (d.user_id === who && !d.revoked && (d.id === a.p_id || d.endpoint === a.p_endpoint)) { d.revoked = true; n++; } return n; }
+      case 'send_test_notification': { db.notifications.push({ id: uid(), user_id: who, kind: 'test_push', payload: {}, created_at: new Date().toISOString(), read_at: null }); return { id: uid(), devices: db.push_devices.filter(d => d.user_id === who && !d.revoked).length }; }
+      case 'my_fight_now': return db.fight_now[who] ?? [];
       default: return null;
     }
   }

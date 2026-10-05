@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Chip } from '../components/ui';
 import type { LiveCompetition } from '../data/api';
+import type { ManagedRegistration } from '../data/manage';
 import { cancelInvitation, fetchEventInvitations, inviteFighter, type EventInvitation } from '../data/invitations';
 import { searchFighters, type FighterOption } from '../data/runSchedule';
 import { friendlyError } from '../lib/friendlyError';
@@ -14,7 +16,7 @@ const TONE: Record<InvitationState, '' | 'win' | 'brass' | 'steel' | 'live'> = {
  * Organizer → Event → Fighters: add a known fighter record to the event (this is NOT staff; staff live on the People tab), see what
  * each added fighter still has to do themselves, and take an invitation back. Real registrations are reviewed on the Review tab.
  */
-export function FightersTab({ eventId, competitions, registrationMode }: { eventId: string; competitions: LiveCompetition[]; registrationMode: string }) {
+export function FightersTab({ eventId, competitions, registrationMode, regs = [], slug }: { eventId: string; competitions: LiveCompetition[]; registrationMode: string; regs?: ManagedRegistration[]; slug?: string }) {
   const [key, setKey] = useState(0);
   const list = useAsync(() => fetchEventInvitations(eventId), [eventId, key]);
   const [adding, setAdding] = useState(false);
@@ -23,6 +25,9 @@ export function FightersTab({ eventId, competitions, registrationMode }: { event
   const [notice, setNotice] = useState<string | null>(null);
   const rows = list.data ?? [];
   const counts = countInvitationStates(rows);
+  // Everyone who registered themselves to fight (accepted or waiting for review), whether or not they also volunteer. Added fighters are listed below.
+  const registered = regs.filter(r => (r.status === 'accepted' || r.status === 'pending') && r.categories.length > 0);
+  const registeredNames = new Set(registered.map(r => r.fullName.trim().toLowerCase()));
   const cancel = async (i: EventInvitation) => {
     setBusy(i.id); setProblem(null);
     try { await cancelInvitation(i.id); setKey(k => k + 1); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(null); }
@@ -37,10 +42,31 @@ export function FightersTab({ eventId, competitions, registrationMode }: { event
         <p className="src">Adding a fighter is not the same as adding staff: they are expected to fight, and they still complete the registration form and sign the waiver themselves. Marshals, scorekeepers and medics go on the People tab.</p>
         {registrationMode !== 'buhuros' && <p role="status" className="src">This event does not take registrations on BuhurtOS, so fighters cannot be added here. Change "How do people sign up" in Setup first.</p>}
         {adding && (
-          <AddFighterForm eventId={eventId} competitions={competitions} onDone={(n, notified) => { setAdding(false); setKey(k => k + 1); setNotice(notified ? `${n} was added and told in BuhurtOS.` : `${n} was added. This record has no BuhurtOS account, so nobody was notified; the fighter cannot confirm until they claim it.`); }} onCancel={() => setAdding(false)} />
+          <AddFighterForm eventId={eventId} competitions={competitions} registeredNames={registeredNames} onDone={(n, notified) => { setAdding(false); setKey(k => k + 1); setNotice(notified ? `${n} was added and told in BuhurtOS.` : `${n} was added. This record has no BuhurtOS account, so nobody was notified; the fighter cannot confirm until they claim it.`); }} onCancel={() => setAdding(false)} />
         )}
         {notice && <p role="status" style={{ color: 'var(--win)' }}>{notice}</p>}
       </section>
+
+      {registrationMode === 'buhuros' && (
+        <section className="panel info" style={{ display: 'grid', gap: 10 }} aria-labelledby="reg-h" data-testid="registered-fighters">
+          <h3 id="reg-h">Registered fighters <Chip>{registered.length}</Chip></h3>
+          <p className="src">People who registered themselves for a competition. They are already in: there is nothing to add. Accept, check in or change them on the <Link to={slug ? `/events/${slug}/manage?tab=review` : '?tab=review'}>Review</Link> tab.</p>
+          {registered.length === 0 && <p className="muted">Nobody has registered to fight yet.</p>}
+          <ul className="plain" style={{ display: 'grid', gap: 8 }}>
+            {registered.map(r => (
+              <li key={r.id} className="panel" style={{ padding: '10px 14px', display: 'grid', gap: 4 }} data-testid="registered-row">
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <b style={{ overflowWrap: 'anywhere' }}>{r.fullName}</b>
+                  <Chip tone={r.status === 'accepted' ? 'win' : 'brass'}>{r.status === 'accepted' ? 'Accepted' : 'Waiting for review'}</Chip>
+                  {r.isVolunteer && <Chip tone="steel">Also volunteering</Chip>}
+                  {r.teamName && <span className="src">{r.teamName}</span>}
+                </div>
+                <span className="src">{r.categories.map(c => c.name).join(', ')}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="panel info" style={{ display: 'grid', gap: 10 }} aria-labelledby="inv-h">
         <h3 id="inv-h">Where they stand</h3>
@@ -78,7 +104,7 @@ export function FightersTab({ eventId, competitions, registrationMode }: { event
   );
 }
 
-function AddFighterForm({ eventId, competitions, onDone, onCancel }: { eventId: string; competitions: LiveCompetition[]; onDone: (name: string, notified: boolean) => void; onCancel: () => void }) {
+function AddFighterForm({ eventId, competitions, registeredNames, onDone, onCancel }: { eventId: string; competitions: LiveCompetition[]; registeredNames: ReadonlySet<string>; onDone: (name: string, notified: boolean) => void; onCancel: () => void }) {
   const [q, setQ] = useState('');
   const [hits, setHits] = useState<FighterOption[]>([]);
   const [searching, setSearching] = useState(false);
@@ -103,7 +129,10 @@ function AddFighterForm({ eventId, competitions, onDone, onCancel }: { eventId: 
     if (comps.length === 0) { setProblem('Choose at least one competition.'); return; }
     setBusy(true);
     try { const r = await inviteFighter(eventId, picked.fighterId, comps, note.trim() || null); onDone(picked.displayName, r.notified); }
-    catch (x) { setProblem(friendlyError(x)); } finally { setBusy(false); }
+    catch (x) {
+      const msg = friendlyError(x);
+      setProblem(/already registered/i.test(msg) ? `${picked.displayName} is already registered for this event, so there is nothing to add. They are listed under Registered fighters above, and on the Review tab.` : msg);
+    } finally { setBusy(false); }
   };
 
   return (
@@ -121,7 +150,7 @@ function AddFighterForm({ eventId, competitions, onDone, onCancel }: { eventId: 
           {hits.map(h => (
             <li key={h.fighterId}>
               <button type="button" className="btn btn-line" style={{ width: '100%', justifyContent: 'space-between', minHeight: 48 }} onClick={() => setPicked(h)}>
-                <span><b>{h.displayName}</b>{h.homeTeamName && <span className="muted"> · {h.homeTeamName}</span>}</span><span aria-hidden="true">→</span>
+                <span><b>{h.displayName}</b>{h.homeTeamName && <span className="muted"> · {h.homeTeamName}</span>}{registeredNames.has(h.displayName.trim().toLowerCase()) && <span className="chip" style={{ marginLeft: 8 }}>Already registered</span>}</span><span aria-hidden="true">→</span>
               </button>
             </li>
           ))}

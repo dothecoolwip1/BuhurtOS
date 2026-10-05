@@ -80,6 +80,6 @@ function png(size, px) {
 
 const any = { scale: 10.67, tx: 96, ty: 74, radius: 96 };
 const maskable = { scale: 8, tx: 136, ty: 120, radius: 0 };
-const jobs = [['icon-192.png', 192, any], ['icon-512.png', 512, any], ['icon-maskable-512.png', 512, maskable]];
+const jobs = [['icon-192.png', 192, any], ['icon-512.png', 512, any], ['icon-maskable-512.png', 512, maskable], ['apple-touch-icon.png', 180, maskable]];   // iOS rounds the corners itself, so this one is full-bleed and opaque
 for (const [name, size, opts] of jobs) fs.writeFileSync(new URL(`../public/${name}`, import.meta.url), png(size, render(size, opts)));
 console.log('wrote', jobs.map(j => j[0]).join(', '));

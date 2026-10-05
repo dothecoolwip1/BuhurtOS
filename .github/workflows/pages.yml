@@ -113,6 +113,9 @@ jobs:
       - name: Add entrant and profile claims against a mocked Supabase (search, create unclaimed fighter, same-name confirmation, group fights, claim request and owner decision)
         run: E2E_BASE=http://localhost:4180 CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/pack08-entrants.mjs
 
+      - name: Pack 12 app (installable PWA, offline shell, push delivered to the service worker, install prompt, alerts settings, signed-in Home, gender-filtered registration, phone / tablet / desktop sweeps)
+        run: E2E_BASE=http://localhost:4180 CHROME="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" node scripts/e2e/pack12-app.mjs
+
   release-policy:
     name: Release policy (is production frozen?)
     runs-on: ubuntu-latest

@@ -1,17 +1,26 @@
 {
+  "id": "./",
   "name": "BuhurtOS",
   "short_name": "BuhurtOS",
-  "description": "Events, brackets, teams and rules for armored combat.",
-  "start_url": "./",
+  "description": "Events, brackets, teams and rules for armored combat. Get told when you are coming up to fight.",
+  "lang": "en",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
   "background_color": "#E9ECF0",
   "theme_color": "#0F141B",
+  "categories": ["sports", "events"],
+  "prefer_related_applications": false,
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
     { "src": "icon-any.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "My events", "short_name": "My events", "description": "Your registrations and fights", "url": "./my-events", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Events", "short_name": "Events", "description": "Find and follow events", "url": "./events", "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }] }
   ]
 }
