@@ -484,7 +484,7 @@ Not verified (honest list): a real OBS browser source on a real streaming comput
 ### Broadcast blank-screen fix (2026-10-05), after Pack 14
 - Production bug: Manage › Broadcast showed content for about 0.5 s, then the whole app unmounted to a blank page. Root cause: two hooks (ManagePage and the Broadcast tab, and the public event page with a stream) asked supabase-js for the same realtime topic `event-record-<id>`; the client returns the SAME channel object, and once realtime had joined (only with a live connection, i.e. production) the second `.on()` threw inside an effect with no error boundary.
 - Fix (PR #35, branch `fix-broadcast-blank`, merged to `main` as `8d71688`): `src/lib/realtimeChannel.ts` (one channel per subscriber, used by every subscription) and `src/components/ErrorBoundary.tsx` (a failing screen shows Try again / Reload instead of blanking the app). Regression: `scripts/e2e/broadcast-realtime.{sh,mjs}` runs the real app with a realtime stand-in in the browser (2/5 on the unfixed code, 15/15 fixed) and `src/lib/realtimeChannel.test.ts`.
-- PR #35 CI run 106 passed. Deployment of `8d71688` and production verification: not recorded by this session (merge was done by the owner).
+- PR #35 CI run 106 passed. Merged by the owner; main run 107 on `8d71688`: typecheck/unit/build, database gate, browser tests, release policy and **Deploy GitHub Pages all succeeded** (2026-10-05 22:25 UTC). Production browser check: NOT done from this environment (production hosts denied by the network policy); the owner's phone is the real check.
 
 ## Pack 15: installable app, push notifications and event-day alerts (2026-10-09) — IMPLEMENTED ON BRANCH, NOT MERGED, NOT DEPLOYED
 
