@@ -925,6 +925,49 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .ed-phase{font-size:13px;color:var(--muted)}
 .ed-phase-pools_done{color:var(--brass);font-weight:700}
 .ed-phase-final_underway{color:var(--live);font-weight:700}
+.ed-phase-official{color:var(--win);font-weight:700}
+.ed-phase-ready{color:var(--steel);font-weight:700}
+.ed-phase-blocked{color:var(--brass);font-weight:700}
+.ed-phase-reopened{color:var(--brass);font-weight:700}
+/* ---- Official results (Pack 09C): the podium and the full placings, on the public event page and on the organizer's review screen. */
+.ofc{display:grid;gap:14px;min-width:0}
+.ofc-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.ofc-head h3{margin:0}
+.podium{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:640px){.podium{grid-template-columns:repeat(3,minmax(0,1fr))} .podium.one{grid-template-columns:minmax(0,1fr)} .podium.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pd-step{display:grid;gap:6px;padding:14px 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--raised);min-width:0;align-content:start}
+.pd-step.gold{border-color:var(--brass);background:var(--brass-soft)}
+.pd-step.silver{border-color:var(--steel);background:var(--steel-soft)}
+.pd-step.bronze{background:var(--ground)}
+.pd-place{font:900 36px/1 var(--f-display)}
+.pd-label{font:600 12px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.pd-entry{display:grid;gap:2px;min-width:0;padding-top:4px}
+.pd-entry+.pd-entry{border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+.pd-name{font-weight:700;font-size:18px;overflow-wrap:anywhere;display:block}
+.pd-sub{font-size:13px;color:var(--muted);overflow-wrap:anywhere;display:block}
+.pd-pts{font:900 20px/1 var(--f-display);white-space:nowrap}
+.pd-pts small{font:600 11px var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pd-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pd-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 12px;border-radius:var(--r-sm);background:var(--raised);border:1px solid var(--line)}
+.pd-row .rk{font:900 20px/1 var(--f-display);min-width:2.5ch;text-align:center}
+.pd-roster{display:block;margin-top:4px;font-size:13px}
+.pd-roster ul{margin:4px 0 0;padding:0 0 0 14px;display:grid;gap:2px;font-size:14px}
+.ofc-rest summary{cursor:pointer;padding:6px 0}
+.ofc-rest .pd-list{margin-top:8px}
+/* ---- the organizer's review screen */
+.fz-state{display:grid;gap:8px;padding:16px 18px;border-radius:var(--r);border:1px solid var(--line);background:var(--raised)}
+.fz-state.official{border-color:var(--win);background:var(--win-soft)}
+.fz-state.ready{border-color:var(--steel);background:var(--steel-soft)}
+.fz-state.blocked{border-color:var(--brass);background:var(--brass-soft)}
+.fz-state .big{font:900 28px/1 var(--f-display);overflow-wrap:anywhere}
+.fz-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.fz-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.fz-list li{display:flex;gap:10px;align-items:flex-start;overflow-wrap:anywhere}
+.fz-dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--faint)}
+.fz-dot.block{background:var(--live)} .fz-dot.warn{background:var(--brass)} .fz-dot.ok{background:var(--win)}
+.fz-big{min-height:52px;font-size:17px}
+.linklike{background:none;border:0;padding:0;color:var(--steel);text-decoration:underline;cursor:pointer;font:inherit;min-height:0}
+@media (prefers-reduced-motion:reduce){.fade-in,.ar-enter,.fz-state{animation:none;transition:none}}
 .ed-bar{height:8px;border-radius:999px;background:var(--ground);overflow:hidden;border:1px solid var(--line)}
 .ed-bar i{display:block;height:100%;background:var(--steel)}
 .ed-links{display:grid;gap:8px}

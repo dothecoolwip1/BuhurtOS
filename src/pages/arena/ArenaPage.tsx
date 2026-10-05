@@ -8,6 +8,7 @@ import { friendlyError } from '../../lib/friendlyError';
 import { useArenaData } from '../../lib/useArenaData';
 import { useAsync } from '../../lib/useAsync';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
+import { useEventRecordWatch } from '../../lib/useEventRecordWatch';
 
 /**
  * The venue display: what spectators see on a TV, projector or phone beside the list. Public, no sign-in, published events only, nothing but the
@@ -17,8 +18,10 @@ import { useDocumentTitle } from '../../lib/useDocumentTitle';
 export function ArenaPage() {
   const { eventId: slug = '', field: fieldParam } = useParams();
   const [search] = useSearchParams();
-  const loaded = useAsync(() => fetchEvent(slug), [slug]);
+  const [recordKey, setRecordKey] = useState(0);
+  const loaded = useAsync(() => fetchEvent(slug), [slug, recordKey]);
   const event = loaded.data?.event;
+  useEventRecordWatch(event?.id, () => setRecordKey(k => k + 1));
   const competitions = useMemo(() => loaded.data?.competitions ?? [], [loaded.data]);
   const ids = useMemo(() => (event?.status === 'published' ? competitions.map(c => c.id) : []), [event?.status, competitions]);
   const live = useArenaData(ids);
@@ -88,7 +91,9 @@ export function ArenaPage() {
 
       <main className="ar-main" aria-live="polite">
         <p className="ar-field">{view.field}<span className="ar-count">{view.total > 0 ? `${view.done} of ${view.total} fights done` : ''}</span></p>
-        <Stage view={view} phase={phase} eventStarts={dateRange(event.startsOn, event.endsOn)} timeNote={event.timeNote} loading={live.loading && live.updatedAt === null} />
+        {event.closedAt
+          ? <div className="ar-center ar-enter" key="closed"><p className="ar-label">Event complete</p><h1 className="ar-big">{event.name}</h1><p className="ar-note">Every competition is official.</p><Link className="ar-btn" to={`/events/${event.slug}`}>View results</Link></div>
+          : <Stage view={view} phase={phase} eventStarts={dateRange(event.startsOn, event.endsOn)} timeNote={event.timeNote} loading={live.loading && live.updatedAt === null} resultsTo={competitions.some(c => c.status === 'finished') ? `/events/${event.slug}` : null} />}
       </main>
 
       <footer className="ar-next">
@@ -100,14 +105,14 @@ export function ArenaPage() {
   );
 }
 
-function Stage({ view, phase, eventStarts, timeNote, loading }: { view: ArenaView; phase: 'past' | 'upcoming' | 'current'; eventStarts: string; timeNote: string | null; loading: boolean }) {
+function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo }: { view: ArenaView; phase: 'past' | 'upcoming' | 'current'; eventStarts: string; timeNote: string | null; loading: boolean; resultsTo: string | null }) {
   const s = view.state;
   if (loading) return <div className="ar-center" key="loading"><p className="ar-note">Loading…</p></div>;
   if (s.kind === 'fighting') return <Fight key={s.now.id} label="Now fighting" fight={s.now} />;
   if (s.kind === 'result') {
     return <Fight key={`r-${s.result.id}`} label="Result" fight={s.result} result winner={s.drawn ? 'Draw' : s.winnerName ? <>Winner: <b>{s.winnerName}</b></> : 'Result official'} />;
   }
-  if (s.kind === 'finished') return <div className="ar-center ar-enter" key="finished"><p className="ar-label">All done</p><h1 className="ar-big">{view.field} is complete</h1></div>;
+  if (s.kind === 'finished') return <div className="ar-center ar-enter" key="finished"><p className="ar-label">Field complete</p><h1 className="ar-big">{view.field} is complete</h1>{resultsTo && <Link className="ar-btn" to={resultsTo}>View results</Link>}</div>;
   if (s.kind === 'no_matches') {
     return (
       <div className="ar-center ar-enter" key="none">

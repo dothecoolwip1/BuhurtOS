@@ -6,9 +6,10 @@ import { LivePools } from './LivePools';
 import { fetchEventHistory, fetchOrgLites, fetchSeasons, type EventMeta } from '../data/careers';
 import type { LiveCompetition } from '../data/api';
 import type { LiveState } from '../lib/useLiveMatches';
-import { attendanceTotals, categoryLabel, divisionLabel, entriesByTeam, INACTIVE_ORG_NOTICE, medalOf, medalTable, orgName, placeText, plural } from '../lib/careerView';
+import { attendanceTotals, categoryLabel, divisionLabel, entriesByTeam, INACTIVE_ORG_NOTICE, medalTable, orgName, plural } from '../lib/careerView';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
+import { OfficialResults } from './OfficialResults';
 
 /** The organization chip (and the inactive notice) for any event that belongs to an organization. Renders nothing otherwise. */
 export function EventOrganization({ meta }: { meta: EventMeta | null | undefined }) {
@@ -33,7 +34,7 @@ type Tab = 'attendance' | 'categories' | 'brackets' | 'results' | 'stats';
 const TABS: ReadonlyArray<readonly [Tab, string]> = [['attendance', 'Attendance'], ['categories', 'Categories'], ['brackets', 'Brackets'], ['results', 'Results'], ['stats', 'Statistics']];
 
 /** The permanent record of a completed event. Everything comes from entries, matches and results the organizers recorded. */
-export function EventHistory({ eventId, competitions, live }: { eventId: string; competitions: LiveCompetition[]; live: LiveState }) {
+export function EventHistory({ eventId, competitions, live, recordKey = 0 }: { eventId: string; competitions: LiveCompetition[]; live: LiveState; recordKey?: number }) {
   const [tab, setTab] = useState<Tab>('results');
   const ids = competitions.map(c => c.id);
   const data = useAsync(() => fetchEventHistory(eventId, ids), [eventId, ids.join(',')]);
@@ -108,23 +109,10 @@ export function EventHistory({ eventId, competitions, live }: { eventId: string;
           {testData && <p className="panel info" role="note" data-testid="results-test-data"><TestBadge synthetic /> <b>Test data / synthetic event.</b> These placings are fictional. They are shown here because this is the event's own page; they are not official records and never count towards rankings, fighter or team statistics or event counts.</p>}
           {d.results.length === 0 && <div className="panel info"><h3>Results</h3><p className="muted">No final placings are recorded for this event yet. They appear when the organizer finishes a competition.</p></div>}
           {d.synthetic && d.results.length > 0 && <p className="panel info" role="note"><TestBadge synthetic /> <b>Fictional results.</b> These placings belong to a test event. They are shown here as this event's own record and are never counted in rankings, career statistics or team records.</p>}
-          {competitions.map(c => {
-            const rows = d.results.filter(r => r.competitionId === c.id);
-            if (rows.length === 0) return null;
-            return (
-              <div key={c.id} className="panel info">
-                <h3>{c.name}</h3>
-                <ol className="plain placelist">
-                  {rows.map(r => (
-                    <li key={r.entryId} className="rowline">
-                      <span><span className={`medal ${medalOf(r.finalPlace) ?? ''}`}>{placeText(r.finalPlace)}</span> <b>{nameOfTeam(r)}</b></span>
-                      <span className="muted">{r.points} points</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            );
-          })}
+          <OfficialResults competitions={competitions} version={recordKey} heading={null} />
+          {competitions.some(c => c.status !== 'finished' && d.results.some(r => r.competitionId === c.id)) && (
+            <p className="src">Placings of a competition that is not official are not shown.</p>
+          )}
         </>
       )}
 
