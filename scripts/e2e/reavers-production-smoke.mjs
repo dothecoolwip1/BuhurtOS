@@ -71,7 +71,9 @@ async function siteSignIn(p, who) {
 }
 
 let aId = null, bId = null;
+const ONLY_APPROVED = process.env.ONLY === 'approved';
 try {
+  if (!ONLY_APPROVED) {
   // ================================================================ 1. the live websites
   const p = await open('phone');
   await p.goto(SITE);
@@ -180,6 +182,7 @@ try {
   check('18 Forgot password on the live club website sends a reset email (accepted by Supabase)', await until(async () => d.locator('#forgot-check').isVisible(), 30000), await text(d, '#status'));
   await shot(d, '18-site-reset-requested');
 
+  }
   // ================================================================ 5. approval -> eligible without paying; proxy
   const ta2 = await token(A.email, A.password), tb2 = await token(B.email, B.password);
   if (ta2.ok && tb2.ok) {
@@ -196,7 +199,7 @@ try {
     await s.getByRole('button', { name: 'Voting by Proxy', exact: true }).click();
     await until(async () => (await s.locator('[data-testid=proxy-form]').count()) > 0, 20000);
     await s.locator('#proxy-holder').selectOption({ label: B.name });
-    await s.locator('#proxy-ok').check();
+    await s.locator('label.check', { hasText: 'I authorize the selected member' }).click();
     await s.getByRole('button', { name: 'Save my proxy' }).click();
     check('21 Voting by Proxy: "Your Proxy: <member>" on the live site', await until(async () => (await text(s, '[data-testid=proxy-holder]')) === B.name, 20000), await text(s, '#view'));
     await shot(s, '21-site-proxy');
