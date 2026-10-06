@@ -1,0 +1,109 @@
+name: Fetch BI archive PDFs (one-shot)
+
+# One-shot: downloads every PDF in the three Buhurt International archive folders (Tournament, Marshal, Authenticity) shared on Google Drive,
+# into rules-library/bi-source-drop/2026-10-06/<Committee>/Archive/, keeping the Drive file names. Never overwrites: an identical file at the same
+# path is skipped; a different file with the same name is kept beside it with the smallest suffix, and the manifest says why.
+# Removed again right after it has run (like fetch-bi-source-pdfs.yml).
+on:
+  push:
+    branches:
+      - pack22-bi-sources
+    paths:
+      - .github/workflows/fetch-bi-archive-pdfs.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pack22-bi-sources
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install downloader
+        run: python -m pip install --disable-pip-version-check gdown
+
+      - name: Fetch archive PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, shutil, sys, tempfile, time
+          import gdown
+
+          ROOT = 'rules-library/bi-source-drop/2026-10-06'
+          FOLDERS = {
+              'Tournament': '17scM3X5Bj-OjsWCEiNi4An4g7CdeOGjm',
+              'Marshal': '1Fp2DnI_flj9Ot-cEKRHMKRzoo9Iksdq_',
+              'Authenticity': '1VR9EXb0EQd-Ez2yngEos6RrfXi9-K_Yz',
+          }
+          def sha(p):
+              h = hashlib.sha256()
+              with open(p, 'rb') as f:
+                  for b in iter(lambda: f.read(1 << 20), b''): h.update(b)
+              return h.hexdigest()
+
+          manifest = {'retrieved_at': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'gdown': gdown.__version__, 'folders': {}, 'files': []}
+          for committee, folder_id in FOLDERS.items():
+              url = f'https://drive.google.com/drive/folders/{folder_id}'
+              listing = gdown.download_folder(url=url, skip_download=True, quiet=True, use_cookies=False)
+              if listing is None: sys.exit(f'could not list {committee} archive folder {folder_id}')
+              manifest['folders'][committee] = {'drive_folder_id': folder_id, 'url': url, 'entries': len(listing)}
+              dest_dir = os.path.join(ROOT, committee, 'Archive')
+              os.makedirs(dest_dir, exist_ok=True)
+              for item in listing:
+                  title = item.path  # path inside the folder (gdown writes "/" inside a Drive title as "_", like the existing archive file)
+                  rec = {'committee': committee, 'drive_file_id': item.id, 'drive_path': title}
+                  if not title.lower().endswith('.pdf'):
+                      rec['action'] = 'not_a_pdf_skipped'; manifest['files'].append(rec); continue
+                  tmp = tempfile.mktemp(suffix='.pdf')
+                  for attempt in range(5):
+                      try:
+                          gdown.download(id=item.id, output=tmp, quiet=True, use_cookies=False)
+                          break
+                      except Exception as e:  # noqa: BLE001
+                          print('retry', title, e); time.sleep(3 * (attempt + 1))
+                  with open(tmp, 'rb') as f:
+                      if f.read(4) != b'%PDF': sys.exit(f'{committee}/{title}: not a PDF')
+                  digest, size = sha(tmp), os.path.getsize(tmp)
+                  rel = title  # gdown already replaced "/" and "\\" inside a title by "_"; a "/" here is a sub-folder
+                  target = os.path.join(dest_dir, rel)
+                  os.makedirs(os.path.dirname(target), exist_ok=True)
+                  rec.update({'sha256': digest, 'bytes': size})
+                  if os.path.exists(target):
+                      if sha(target) == digest:
+                          rec.update({'action': 'skipped_identical', 'repo_path': target}); os.remove(tmp)
+                          manifest['files'].append(rec); continue
+                      base, ext = os.path.splitext(target); n = 2
+                      while os.path.exists(f'{base} (drive copy {n}){ext}'): n += 1
+                      new = f'{base} (drive copy {n}){ext}'
+                      rec.update({'action': 'added_renamed', 'repo_path': new,
+                                  'reason': f'a different file with the same name already exists at {target} (sha256 {sha(target)})'})
+                      shutil.move(tmp, new)
+                  else:
+                      rec.update({'action': 'added', 'repo_path': target}); shutil.move(tmp, target)
+                  print(rec['action'], rec['repo_path'])
+                  manifest['files'].append(rec)
+          with open(os.path.join(ROOT, 'archive-fetch-manifest.json'), 'w') as f:
+              json.dump(manifest, f, indent=2, ensure_ascii=False); f.write('\n')
+          print(json.dumps({k: v['entries'] for k, v in manifest['folders'].items()}))
+          PY
+
+      - name: Commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "buhurtos-source-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rules-library/bi-source-drop/2026-10-06
+          git commit -m "Pack 22: fetch Buhurt International archive PDFs from Drive [skip rules source fetch]" || echo "nothing new"
+          git push origin HEAD:pack22-bi-sources
