@@ -1,6 +1,6 @@
 name: Pack 22 production check (one-shot)
 # Read-only browser check of the LIVE site after the Pack 22 deploy: scripts/e2e/pack22-production-check.mjs (desktop + phone-sized, fresh contexts).
-# Runs only when this file changes on the Pack 22 branch; it never publishes and never writes data. No secrets are passed.
+# Runs only when this file changes on the Pack 22 branch; it never publishes and never writes data. No secrets are passed. (run 2)
 on:
   push:
     branches: [ccr-321cc545-1coq4p]

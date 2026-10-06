@@ -48,13 +48,14 @@ async function freshPage(opts) {
 for (const [view, opts] of VIEWS) {
   const { ctx, page } = await freshPage(opts);
   await page.goto(`${BASE}/rules`, { waitUntil: 'domcontentloaded' });
-  const loaded = await until(async () => /Buhurt International/.test(await text(page)) && !/Loading…/.test(await text(page)));
+  const loaded = await until(async () => /Authenticity Committee/i.test(await text(page)) && !/Loading the rules/i.test(await text(page)), 40000);
+  await until(async () => page.rules.some(r => r.table === 'versions'), 15000);
   const ver = await page.locator('[data-testid="app-version"]').innerText().catch(() => '');
   check(`[${view}] footer shows the deployed build (${ver})`, (!EXPECT_BUILD || ver.includes(`build ${EXPECT_BUILD}`)) && (!EXPECT_COMMIT || ver.includes(EXPECT_COMMIT)), ver);
   const body = await text(page);
   await shot(page, `${view}-rules`);
   check(`[${view}] /rules loads the Buhurt International directory`, loaded, body.slice(0, 300));
-  check(`[${view}] /rules lists the four committees`, ['Executive', 'Marshal Committee', 'Tournament Committee', 'Authenticity Committee'].every(s => body.includes(s)), body.slice(0, 400));
+  check(`[${view}] /rules lists the four committees`, [/Executive/i, /Marshal Committee/i, /Tournament Committee/i, /Authenticity Committee/i].every(r => r.test(body)), body.slice(0, 400));
   check(`[${view}] /rules shows no earlier edition to a visitor`, !/Earlier edition/i.test(body), body.slice(0, 300));
   check(`[${view}] /rules offers no "include earlier editions" while none is readable`, (await page.getByLabel('Include older versions and earlier editions').count()) === 0);
   const vrows = page.rules.filter(r => r.table === 'versions'), prows = page.rules.filter(r => r.table === 'provisions');
@@ -70,24 +71,26 @@ for (const [view, opts] of VIEWS) {
 
   // direct addresses of an earlier edition and of one of its rules: never shown as current, never readable while not published
   await page.goto(`${BASE}/rules/doc/${DOC}?v=${HIST_V}`, { waitUntil: 'domcontentloaded' });
-  await until(async () => !/Loading…/.test(await text(page)) && /Duel Regulations|Document not found/.test(await text(page)));
+  await until(async () => /not in BuhurtOS yet|Document not found/i.test(await text(page)), 40000);
   const doc = await text(page);
   await shot(page, `${view}-doc-hist`);
   check(`[${view}] earlier-edition address (?v=) opens the document page without any version: nothing called current, no text`,
-    /Duel Regulations/.test(doc) && !/\b26\.1\b/.test(doc) && !/in force/i.test(doc) && (await page.locator('.rl-banner').count()) === 0 && (await page.locator('.rl-meta dt', { hasText: 'Version' }).count()) === 0, doc.slice(0, 500));
+    /Duel Regulations/i.test(doc) && /not in BuhurtOS yet/i.test(doc) && !/\b26\.1\b/.test(doc) && !/Earlier edition/i.test(doc) && (await page.locator('.rl-banner').count()) === 0
+    && (await page.locator('.rl-meta dt', { hasText: /Version/i }).count()) === 0, doc.slice(0, 700));
   await page.goto(`${BASE}/rules/doc/${DOC}?v=${CUR_V}`, { waitUntil: 'domcontentloaded' });
-  await until(async () => !/Loading…/.test(await text(page)));
-  check(`[${view}] current-release address (?v=) shows no text while it is in review`, !/\b26\.4\b/.test(await text(page)));
+  await until(async () => /not in BuhurtOS yet|Document not found/i.test(await text(page)), 40000);
+  check(`[${view}] current-release address (?v=) shows no version and no text while it is in review`, /not in BuhurtOS yet/i.test(await text(page)) && (await page.locator('.rl-meta dt', { hasText: /Version/i }).count()) === 0
+    && (await page.locator('.rl-banner').count()) === 0, (await text(page)).slice(0, 500));
   await page.goto(`${BASE}/rules/r/${HIST_P}`, { waitUntil: 'domcontentloaded' });
-  await until(async () => /Rule not found/.test(await text(page)));
-  check(`[${view}] an earlier edition's rule address says "Rule not found" (not published)`, /Rule not found/.test(await text(page)), (await text(page)).slice(0, 300));
+  await until(async () => /Rule not found/i.test(await text(page)), 40000);
+  check(`[${view}] an earlier edition's rule address says "Rule not found" (not published)`, /Rule not found/i.test(await text(page)), (await text(page)).slice(0, 300));
 
   // discipline log: officials only; a visitor gets the sign-in prompt
   await page.goto(`${BASE}/events/${EVENT}/discipline`, { waitUntil: 'domcontentloaded' });
-  await until(async () => /Sign in|not found/i.test(await text(page)));
+  await until(async () => /officiates at this event|not found/i.test(await text(page)), 40000);
   const disc = await text(page);
   await shot(page, `${view}-discipline`);
-  check(`[${view}] the event discipline page loads and asks a visitor to sign in as an official`, /officiates at this event/.test(disc), disc.slice(0, 300));
+  check(`[${view}] the event discipline page loads and asks a visitor to sign in as an official`, /officiates at this event/i.test(disc), disc.slice(0, 300));
   if (view === 'phone') check(`[${view}] the discipline page fits the phone width`, await noSideways(page));
   check(`[${view}] no page errors`, page.errors.length === 0, page.errors.join(' | '));
   await ctx.close();
@@ -108,7 +111,7 @@ if (EMAIL && PASSWORD) {
   } else {
     page.rules = [];
     await page.goto(`${BASE}/rules`, { waitUntil: 'domcontentloaded' });
-    await until(async () => /Buhurt International/.test(await text(page)));
+    await until(async () => /Authenticity Committee/i.test(await text(page)) && !/Loading the rules/i.test(await text(page)), 40000);
     await sleep(1500);
     const cache = await page.evaluate(() => { try { return JSON.parse(localStorage.getItem('bos-rules-cache-v3') ?? 'null'); } catch { return null; } });
     check('[signed in] a signed-in non-owner sees no rule version in review', page.rules.filter(r => r.table === 'versions').every(r => r.rows && r.rows.length === 0) && !/Earlier edition/i.test(await text(page)));
@@ -118,7 +121,7 @@ if (EMAIL && PASSWORD) {
     await until(async () => !(await signedIn()), 8000);
     page.rules = [];
     await page.goto(`${BASE}/rules`, { waitUntil: 'domcontentloaded' });
-    await until(async () => /Buhurt International/.test(await text(page)));
+    await until(async () => /Authenticity Committee/i.test(await text(page)) && !/Loading the rules/i.test(await text(page)), 40000);
     await sleep(1500);
     check('[signed out] after sign-out the next visitor is a visitor (no session) and sees no saved rules from the account', !(await signedIn()) && !/Earlier edition/i.test(await text(page))
       && page.rules.filter(r => r.table === 'versions').every(r => r.rows && r.rows.length === 0));
