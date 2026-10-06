@@ -1,0 +1,120 @@
+name: Fetch BI source PDFs
+
+on:
+  push:
+    branches:
+      - pack22-bi-sources
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pack22-bi-sources
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install downloader
+        run: python -m pip install --disable-pip-version-check gdown
+
+      - name: Fetch official BI PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="rules-library/bi-source-drop/2026-10-06"
+          mkdir -p "$ROOT"/{Executive,Marshal,Tournament,Authenticity}
+
+          fetch_bi() {
+            local url="$1"
+            local out="$2"
+            echo "BI: $out"
+            curl -fL --retry 5 --retry-delay 2 --connect-timeout 30 --max-time 180               -A "Mozilla/5.0" "$url" -o "$out"
+            test -s "$out"
+            head -c 4 "$out" | grep -q '%PDF'
+          }
+
+          fetch_drive() {
+            local url="$1"
+            local out="$2"
+            echo "Drive: $out"
+            gdown --fuzzy "$url" -O "$out"
+            test -s "$out"
+            head -c 4 "$out" | grep -q '%PDF'
+          }
+
+          # Executive
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/d219c5_cd29c29d07894734abfd546ea3665066.pdf" "$ROOT/Executive/Gender policies V2024.06.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/735f05_eae9128857c1444290eaee38ec0fa73b.pdf" "$ROOT/Executive/Code of Conduct.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/735f05_5ca8040d7eca41c896090743c2bc9fab.pdf" "$ROOT/Executive/NO Agreement V26.1.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/d219c5_0fec8c7da3bb4ab4a6f507e1ea724410.pdf" "$ROOT/Executive/Rules Update Policy V2024.06.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/d219c5_08fcf19112fc416992b0b429ba714b84.pdf" "$ROOT/Executive/Committees Internal Regulations.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/d219c5_8f5a49fd19eb4c0696ad541e20b40ee4.pdf" "$ROOT/Executive/Judiciary Committee V2024.06.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/d219c5_78b65da8c8f041eda86d604ca17a67f6.pdf" "$ROOT/Executive/Committees Decision-making process.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/d219c5_ffce59b9558045d8a5dec698616e1b21.pdf" "$ROOT/Executive/Committees Structure Accreditation and Titles V2024.12.pdf"
+
+          # Marshal
+          fetch_drive "https://drive.google.com/file/d/1peAGsMBV8ldNkSlgR-U33V0JqCFYL8ja/view" "$ROOT/Marshal/Buhurt Rules 26.4.1.pdf"
+          fetch_drive "https://drive.google.com/file/d/1BsQVd3-9v_mp8l5DPj2p_jDUGn2hZPrD/view" "$ROOT/Marshal/Duels rules 26.4.pdf"
+          fetch_drive "https://drive.google.com/file/d/1nRkVgelFzD3Vrk4EGXIAvZaCzWYniqQz/view" "$ROOT/Marshal/Outrance Rules and Regulations 26.4.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/53cbbd_aadb219ddd34443c817c2c5f6236a6a9.pdf" "$ROOT/Marshal/Marshal Accreditation.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/53cbbd_8340848f5250498c85d1c11c1b3653c8.pdf" "$ROOT/Marshal/Marshal Jobs Titles Uniforms and Accreditation.pdf"
+          fetch_drive "https://drive.google.com/file/d/1n1JTMVa9t4lgQdTEp9kU8U63flesYTqy/view" "$ROOT/Marshal/Weapons Shield Chart V26.2.1.pdf"
+
+          # Tournament
+          fetch_drive "https://drive.google.com/file/d/154lPdIUM8lnf4VSZmY_vlY88Waygzoq5/view" "$ROOT/Tournament/Buhurt Regulations 26.4.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/735f05_c0af5616cd814a779c43181befa8b29c.pdf" "$ROOT/Tournament/Tournament Structure 26.1.pdf"
+          fetch_drive "https://drive.google.com/file/d/1gr2EmgMvo5SprZo46vBgGKWOOg6m7bTx/view" "$ROOT/Tournament/Duels Regulations 26.4.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/735f05_a1ec192413a34eef82ef91f57207ab80.pdf" "$ROOT/Tournament/League Structure 26.1.pdf"
+          fetch_bi "https://www.buhurtinternational.com/_files/ugd/d219c5_bb995d5ca4d345d2a649067d7cb9d494.pdf" "$ROOT/Tournament/Secretary Accreditation V2024.06.pdf"
+
+          # Authenticity
+          fetch_drive "https://drive.google.com/file/d/1NQ5O-CT62qn-V6w3Zh4JqcCzKJVxEZS5/view" "$ROOT/Authenticity/Infraction classification and application 26.4.pdf"
+          fetch_drive "https://drive.google.com/file/d/1yQDGSiXkM2pjHS9yj5e-HLJklWIeRKZE/view" "$ROOT/Authenticity/Technical Requirements for Armors.pdf"
+          fetch_drive "https://drive.google.com/file/d/1cVip6PUx62koGD1yzrygb9p0sAJ44IOj/view" "$ROOT/Authenticity/Weapons requirements 26.4.pdf"
+          fetch_drive "https://drive.google.com/file/d/1mkBe8JCRfQxDuPPTMJImzV_UWaW4Mgvc/view" "$ROOT/Authenticity/Tabards.pdf"
+          fetch_drive "https://drive.google.com/file/d/1blWdDUbcSepUW9dy1C4x-MCzGFymFki6/view" "$ROOT/Authenticity/Falchions.pdf"
+          fetch_drive "https://drive.google.com/file/d/1eTch7jpn5rapbeYvzmIZ48g49bcIKF4O/view" "$ROOT/Authenticity/Armors and Weapons Aesthetics and Decorations.pdf"
+          fetch_drive "https://drive.google.com/file/d/1a7vTdkrW4ZhS-SdA22eczMmKrTUR2X38/view" "$ROOT/Authenticity/Textiles and Leather.pdf"
+          fetch_drive "https://drive.google.com/file/d/1u3RCMI3PhELiRPootNoVZiLR9YbU5Nzt/view" "$ROOT/Authenticity/Shields and Bucklers 26.4.pdf"
+          fetch_drive "https://drive.google.com/file/d/1ATswdLydtmGmWQeiTmF7GmyAod7GSQci/view" "$ROOT/Authenticity/Belt Flags.pdf"
+          fetch_drive "https://drive.google.com/file/d/1u71LdLSm6zVKW7jhI5djRKiF7D5UtqRS/view" "$ROOT/Authenticity/Gauntlets.pdf"
+          fetch_drive "https://drive.google.com/file/d/1f9RnYIO90XcFlZyoKKVo6HjoM_3WH8xE/view" "$ROOT/Authenticity/Greaves.pdf"
+          fetch_drive "https://drive.google.com/file/d/1xeX4tDns1F0hnF1mGNhfDbtYTwPScrhv/view" "$ROOT/Authenticity/Sabatons.pdf"
+          fetch_drive "https://drive.google.com/file/d/1bo8-eNr_pTawNLNGod5mN64-d4EkkLS-/view" "$ROOT/Authenticity/Neck Protections.pdf"
+          fetch_drive "https://drive.google.com/file/d/1skAksQXo5-RNNdEP1Tje8dGw_uiJ_ucb/view" "$ROOT/Authenticity/Eye Bars.pdf"
+          fetch_drive "https://drive.google.com/file/d/1zllcOqunbMXrrV1K1PPtahGEjncrol3V/view" "$ROOT/Authenticity/Barbutes.pdf"
+          fetch_drive "https://drive.google.com/file/d/1nGbacRRmwzdVNeJg2OrkxRItcKL_Bu9a/view" "$ROOT/Authenticity/Klappvisors.pdf"
+          fetch_drive "https://drive.google.com/file/d/1hXeuPmztpXG9LdNrGV8j5dlr7ne7R93p/view" "$ROOT/Authenticity/Perforated Visor Bascinets 26.4.pdf"
+          fetch_drive "https://drive.google.com/file/d/1v9GjZNB6xaTEkKWBgC-zo0tkiCin6VSc/view" "$ROOT/Authenticity/Side-pivoting visored Bascinets.pdf"
+          fetch_drive "https://drive.google.com/file/d/1nKUSTq1LoUk3-OTymAJa4Pa_SWcJQA0h/view" "$ROOT/Authenticity/Aventails.pdf"
+          fetch_drive "https://drive.google.com/file/d/12ImGYz_z95qyThLls4MI8j0IUDuRDkq8/view" "$ROOT/Authenticity/Great Helms.pdf"
+          fetch_drive "https://drive.google.com/file/d/1UhguW3phwP3DUHV1kiUcsu8pM1nQ0z7M/view" "$ROOT/Authenticity/Nasals and Breteches.pdf"
+          fetch_drive "https://drive.google.com/file/d/1wQX1hGzV4fkjc8R5cmV_HsLYMDlmfEw6/view" "$ROOT/Authenticity/Sallets.pdf"
+          fetch_drive "https://drive.google.com/file/d/1hd82Hg44UkAK7xa2puStRUIxoGKC_McR/view" "$ROOT/Authenticity/Wolf Ribs.pdf"
+
+          find "$ROOT" -type f -name '*.pdf' -print0 | sort -z | xargs -0 sha256sum > "$ROOT/SHA256SUMS.txt"
+          count="$(find "$ROOT" -type f -name '*.pdf' | wc -l)"
+          test "$count" -eq 42
+
+      - name: Commit source drop
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "buhurtos-source-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add rules-library/bi-source-drop/2026-10-06
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Pack 22: add official BI source PDF drop [skip rules source fetch]"
+          git push origin HEAD:pack22-bi-sources
