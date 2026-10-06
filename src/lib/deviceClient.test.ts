@@ -113,4 +113,15 @@ describe('the client', () => {
       expect(seen[0].get('authorization')).not.toContain('jwt-0');
     } finally { globalThis.fetch = real; }
   });
+  it('hands the live-updates socket each fresh token when the session refreshes (a long event outlives many 10-minute tokens)', () => {
+    const { src } = source();
+    const listeners = new Set<() => void>();
+    const withSub: ShimSource = { ...src, subscribe: (f: () => void) => { listeners.add(f); return () => { listeners.delete(f); }; } };
+    const client = createDeviceClient('http://localhost:54321', 'pub-key', withSub);
+    const setAuth = vi.spyOn(client.realtime, 'setAuth').mockResolvedValue(undefined as never);
+    expect(listeners.size).toBe(1);
+    listeners.forEach(f => f());
+    expect(setAuth).toHaveBeenCalledTimes(1);
+    expect(setAuth).toHaveBeenCalledWith();   // no argument: the client asks the device session for the token itself
+  });
 });

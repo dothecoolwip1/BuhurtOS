@@ -23,6 +23,8 @@ export interface HandlerEnv {
   signing: { alg: 'HS256'; secret: string } | { alg: 'ES256'; jwk: Record<string, unknown>; kid: string };
   /** Origins that may call this function from a browser. '*' only on the local test stack. */
   allowedOrigins: string[];
+  /** Test hook only (the local stack's reliability scenario shortens it); the deployed function never sets it, so the token lasts TOKEN_TTL_SECONDS. */
+  tokenTtlSeconds?: number;
 }
 export interface RpcResult { ok: boolean; status: number; data: unknown }
 export interface Deps {
@@ -114,8 +116,9 @@ export async function handleRequest(req: Request, deps: Deps): Promise<Response>
 
   const mint = async (o: Opened) => {
     const iat = Math.floor(deps.nowMs() / 1000);
-    const token = await signToken(deps.env, { aud: 'authenticated', role: dbRole(o.kind ?? 'device'), sub: o.session_id, session_id: o.session_id, iat, exp: iat + TOKEN_TTL_SECONDS });
-    return { access_token: token, expires_in: TOKEN_TTL_SECONDS, expires_at: iat + TOKEN_TTL_SECONDS,
+    const ttl = deps.env.tokenTtlSeconds && deps.env.tokenTtlSeconds > 0 ? deps.env.tokenTtlSeconds : TOKEN_TTL_SECONDS;
+    const token = await signToken(deps.env, { aud: 'authenticated', role: dbRole(o.kind ?? 'device'), sub: o.session_id, session_id: o.session_id, iat, exp: iat + ttl });
+    return { access_token: token, expires_in: ttl, expires_at: iat + ttl,
       whoami: { session_id: o.session_id, credential_id: o.credential_id, kind: o.kind, role: o.role, label: o.label, event: o.event, expires_at: o.expires_at } };
   };
 

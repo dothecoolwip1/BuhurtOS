@@ -89,7 +89,7 @@ http.createServer(async (req, res) => {
       up.end(payload);
     });
     const out = await mod.handleRequest(request, {
-      env: { pepper: process.env.DEVICE_CODE_PEPPER ?? 'local-device-pepper-0123456789-abcdefghij', signing: { alg: 'HS256', secret: SECRET }, allowedOrigins: ['*'] },
+      env: { pepper: process.env.DEVICE_CODE_PEPPER ?? 'local-device-pepper-0123456789-abcdefghij', signing: { alg: 'HS256', secret: SECRET }, allowedOrigins: ['*'], tokenTtlSeconds: Number(process.env.DEVICE_TOKEN_TTL_S) || undefined },
       rpc: rest, nowMs: () => Date.now(), randomBytes: (n) => crypto.randomBytes(n), sleep: (ms) => new Promise((r) => setTimeout(r, ms))
     });
     res.writeHead(out.status, { ...cors, ...Object.fromEntries(out.headers) });

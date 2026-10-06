@@ -29,7 +29,7 @@ export function shimSession(w: DeviceWhoami, accessToken: string, expiresAtS: nu
 }
 
 /** The pieces of the device manager the shim needs (so it can be tested without a browser). */
-export type ShimSource = Pick<DeviceManager, 'getSession' | 'getAccessToken' | 'signOut'>;
+export type ShimSource = Pick<DeviceManager, 'getSession' | 'getAccessToken' | 'signOut'> & Partial<Pick<DeviceManager, 'subscribe'>>;
 
 export function makeAuthShim(src: ShimSource) {
   const session = async (): Promise<Session | null> => {
@@ -58,5 +58,7 @@ export function makeAuthShim(src: ShimSource) {
 export function createDeviceClient(url: string, key: string, src: ShimSource): SupabaseClient {
   const client = createClient(url, key, { accessToken: () => src.getAccessToken() });
   Object.defineProperty(client, 'auth', { value: makeAuthShim(src), configurable: true, enumerable: true, writable: false });
+  // A live-updates socket is opened with the token it had at the time; hand it each fresh token as the device refreshes (a long event outlives many 10-minute tokens).
+  src.subscribe?.(() => { try { void client.realtime.setAuth(); } catch { /* polling keeps the screens current regardless */ } });
   return client;
 }

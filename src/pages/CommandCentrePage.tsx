@@ -243,6 +243,7 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
           {fields.map(f => <Link key={f.key} className="btn btn-line" to={fieldHref(event.slug, f.name)}>Lyst Control · {f.name}</Link>)}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'eventday')}>Event day (call fights, results)</Link>}
           {viewer.announce && <a className="btn btn-line" href="#cc-announce">Send an announcement</a>}
+          {organizer && <button type="button" className="btn btn-line" onClick={() => { const d = document.getElementById('cc-devices') as HTMLDetailsElement | null; if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); } }}>Event devices (phones and tablets)</button>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'review')}>Registrations</Link>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'people')}>People and roles</Link>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'broadcast')}>Broadcast</Link>}
