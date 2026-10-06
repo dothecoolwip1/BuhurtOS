@@ -82,14 +82,14 @@ function AnnouncerScreen() {
   // a fighter card the announcer opened: it stays open and keeps updating while the fights move
   const [picked, setPicked] = useState<Picked | null>(null);
   const eventTest = useAsync(() => (eventIdForReads ? fetchEventIsTest(eventIdForReads) : Promise.resolve(false)), [eventIdForReads]);
-  const career = useAsync(() => (picked ? fetchEntryCareer(picked.entryId) : Promise.resolve([])), [picked?.entryId ?? ''], [finals]);
+  const career = useAsync(() => (picked ? fetchEntryCareer(picked.entryId) : Promise.resolve(null)), [picked?.entryId ?? ''], [finals]);
   const pickedSide = useMemo(() => {
     if (!picked) return null;
     const f = view.lysts.flatMap(l => [l.now, l.next, ...l.coming]).find(x => x?.id === picked.matchId);
     return f ? f[picked.side] : picked.snapshot;
   }, [picked, view.lysts]);
   const info: EntryInfo | null = useMemo(() => (picked && pickedSide
-    ? buildEntryInfo({ side: pickedSide, competition: picked.competition, matches: live.matches, competitions, career: career.loading ? null : career.data, eventIsTest: eventTest.data === true })
+    ? buildEntryInfo({ side: pickedSide, competition: picked.competition, matches: live.matches, competitions, career: career.loading ? null : career.data?.lines, entryIds: career.loading ? null : career.data?.entryIds, eventIsTest: eventTest.data === true })
     : null), [picked, pickedSide, live.matches, competitions, career.loading, career.data, eventTest.data]);
 
   useDocumentTitle(event ? `Announcer · ${event.name}` : 'Announcer');
@@ -315,7 +315,7 @@ function InfoPanel({ info, loading, onClose }: { info: EntryInfo; loading: boole
         <button ref={closeRef} type="button" className="an-btn an-close" onClick={onClose}>Close</button>
       </header>
       <dl className="an-facts">
-        <div><dt>{info.kind === 'team' ? 'Team record' : 'Career record'}{info.test ? ' (Test)' : ''}</dt><dd>{info.career ? <>{info.career.text}<small> · {info.career.matches} fights, {info.career.events} events</small></> : loading ? 'Loading…' : 'No record on file'}</dd></div>
+        <div><dt>{info.kind === 'team' ? 'Team record' : 'Career record'}{info.test ? ' (Test)' : ''}</dt><dd>{info.career ? <>{info.career.text}<small> · {info.career.matches} {info.career.matches === 1 ? 'fight' : 'fights'}, {info.career.events} {info.career.events === 1 ? 'event' : 'events'}</small></> : loading ? 'Loading…' : 'No record on file'}</dd></div>
         <div><dt>At this event</dt><dd>{info.event.text}</dd></div>
       </dl>
       <h3 className="an-info-h">Earlier fights at this event</h3>

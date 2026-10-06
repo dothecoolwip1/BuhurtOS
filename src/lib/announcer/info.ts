@@ -35,15 +35,16 @@ export function careerTotal(lines: readonly Pick<CareerLine, 'context' | 'scope'
 }
 
 /** This event's final fights of one entry, oldest first, as that entry's own record of the day. */
-export function earlierFights(entryId: string, matches: readonly CompetitionMatch[], competitions: readonly { id: string; name: string }[]): EarlierFight[] {
+export function earlierFights(entryId: string | readonly string[], matches: readonly CompetitionMatch[], competitions: readonly { id: string; name: string }[]): EarlierFight[] {
   const names = new Map(competitions.map(c => [c.id, c.name]));
+  const mineIds = new Set(typeof entryId === 'string' ? [entryId] : entryId);
   return matches
-    .filter(m => m.queueState === 'final' && m.entryA && m.entryB && (m.entryA === entryId || m.entryB === entryId))
+    .filter(m => m.queueState === 'final' && m.entryA && m.entryB && (mineIds.has(m.entryA) || mineIds.has(m.entryB)))
     .sort((x, y) => (x.finalizedAt ?? '').localeCompare(y.finalizedAt ?? '') || (x.id < y.id ? -1 : x.id > y.id ? 1 : 0))
     .map(m => {
-      const mine = m.entryA === entryId ? 'a' : 'b';
+      const mine = mineIds.has(m.entryA as string) ? 'a' : 'b';
       const opp = mine === 'a' ? sideLabel(m.entryB, m.nameB, TBD) : sideLabel(m.entryA, m.nameA, TBD);
-      const outcome: EarlierFight['outcome'] = m.result === 'draw' || !m.winnerEntryId ? 'Drew' : m.winnerEntryId === entryId ? 'Won' : 'Lost';
+      const outcome: EarlierFight['outcome'] = m.result === 'draw' || !m.winnerEntryId ? 'Drew' : mineIds.has(m.winnerEntryId) ? 'Won' : 'Lost';
       const basis = basisOf(m.detail);
       const mineScore = mine === 'a' ? m.scoreA : m.scoreB, theirs = mine === 'a' ? m.scoreB : m.scoreA;
       return {
@@ -59,10 +60,12 @@ export function buildEntryInfo(input: {
   career: readonly CareerLine[] | null | undefined;
   /** The event is a test event (its history is synthetic). */
   eventIsTest?: boolean;
+  /** All entries of this fighter / team (other competitions at the same event); the entry shown is always included. */
+  entryIds?: readonly string[] | null;
 }): EntryInfo {
   const { side } = input;
   const entryId = side.entryId ?? '';
-  const earlier = entryId ? earlierFights(entryId, input.matches, input.competitions) : [];
+  const earlier = entryId ? earlierFights([...new Set([entryId, ...(input.entryIds ?? [])])], input.matches, input.competitions) : [];
   const wins = earlier.filter(f => f.outcome === 'Won').length, losses = earlier.filter(f => f.outcome === 'Lost').length, draws = earlier.filter(f => f.outcome === 'Drew').length;
   const total = careerTotal(input.career);
   return {

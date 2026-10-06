@@ -19,15 +19,23 @@ export async function fetchReadiness(eventId: string): Promise<ReadinessRow[] | 
     .map(r => ({ match_id: r.match_id, side: r.side as 'a' | 'b', ready: r.ready === true }));
 }
 
-/** The career lines of the fighter or team behind one entry (public totals). Empty when the entry has none or cannot be read. */
-export async function fetchEntryCareer(entryId: string): Promise<CareerLine[]> {
+export interface EntryProfile {
+  lines: CareerLine[];
+  /** Every entry of the same fighter (or team), across competitions: a fighter entered in two competitions fights in both, and the card shows the day as a whole. */
+  entryIds: string[];
+}
+
+/** The career lines of the fighter or team behind one entry (public totals) and the ids of all that fighter's / team's entries. Empty when the entry has none or cannot be read. */
+export async function fetchEntryCareer(entryId: string): Promise<EntryProfile> {
   const { data, error } = await supabase.from('entries').select('id,team_id,fighter_id').eq('id', entryId).maybeSingle();
   if (error) throw error;
   const e = data as { team_id: string | null; fighter_id: string | null } | null;
-  if (!e) return [];
-  if (e.team_id) return fetchTeamCareer(e.team_id);
-  if (e.fighter_id) return fetchFighterCareer(e.fighter_id);
-  return [];
+  if (!e) return { lines: [], entryIds: [entryId] };
+  const sibs = await supabase.from('entries').select('id').eq(e.team_id ? 'team_id' : 'fighter_id', (e.team_id ?? e.fighter_id) as string).limit(200);
+  const entryIds = [...new Set([entryId, ...((sibs.data ?? []) as Array<{ id: string }>).map(r => r.id)])];
+  if (e.team_id) return { lines: await fetchTeamCareer(e.team_id), entryIds };
+  if (e.fighter_id) return { lines: await fetchFighterCareer(e.fighter_id), entryIds };
+  return { lines: [], entryIds };
 }
 
 /** True when this event's recorded fights are synthetic (a test event), so the screen can label them "Test". Best effort: false when unknown. */
