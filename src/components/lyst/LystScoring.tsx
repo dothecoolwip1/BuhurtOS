@@ -350,15 +350,21 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
       {!correctingRound && zone === 'loading' && <p className="muted" role="status">Opening the lyst…</p>}
 
+      {/* ly-act: the round's primary action, one row. In the focus layout it stays in reach at the bottom of the screen (sticky, never fixed: it settles
+          back into place, so nothing below it is covered for good). It is a direct child of .ly so it can stick; the secondary links sit just after it. */}
       {!correctingRound && zone === 'start' && (
-        <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline} onClick={() => startRound(1)}>Start round 1 · {presetOf(presets, 'fight').seconds >= 60 ? `${Math.floor(roundSeconds(1, settings!, fightSeconds) / 60)}:${String(roundSeconds(1, settings!, fightSeconds) % 60).padStart(2, '0')}` : `${fightSeconds}s`}</button>
+        <div className="ly-zone ly-act">
+          <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline} onClick={() => startRound(1)}>Start round 1 · {presetOf(presets, 'fight').seconds >= 60 ? `${Math.floor(roundSeconds(1, settings!, fightSeconds) / 60)}:${String(roundSeconds(1, settings!, fightSeconds) % 60).padStart(2, '0')}` : `${fightSeconds}s`}</button>
+        </div>
       )}
 
       {!correctingRound && zone === 'fighting' && !early && (
-        <div className="ly-zone">
-          <button type="button" className={`btn fq-big ly-go ${leftMs <= 0 ? 'btn-win is-urgent' : 'btn-ink'}`} disabled={timerBusy || lyst.offline} onClick={() => endRound('break')}>{leftMs <= 0 ? 'Time. End round and start the break' : 'End round · start break'}</button>
+        <>
+          <div className="ly-zone ly-act">
+            <button type="button" className={`btn fq-big ly-go ${leftMs <= 0 ? 'btn-win is-urgent' : 'btn-ink'}`} disabled={timerBusy || lyst.offline} onClick={() => endRound('break')}>{leftMs <= 0 ? 'Time. End round and start the break' : 'End round · start break'}</button>
+          </div>
           <button type="button" className="ly-link" onClick={() => setEarly(true)}>Enter the score now without a break</button>
-        </div>
+        </>
       )}
 
       {!correctingRound && showEntry && entryRound && !pendingRound && (
@@ -375,13 +381,15 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       )}
 
       {!correctingRound && zone === 'between' && !pendingRound && (
-        <div className="ly-zone">
+        <>
           {rule.decided && <p className="ly-hint-line" role="status">{names[rule.winner!]} lead by {Math.abs(totals.a - totals.b)} after {totals.rounds} rounds: the lead rule says the match can finish.</p>}
           {rule.extraRound && <p className="ly-hint-line" role="status">Level or close after {totals.rounds} rounds: an extra round of {roundSeconds(nextRoundNo, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds)} s decides it under the lead rule.</p>}
-          <button type="button" className={`btn fq-big ly-go ${rule.decided ? 'btn-line' : 'btn-win'}`} disabled={timerBusy || lyst.offline} onClick={() => startRound(nextRoundNo)}>Start round {nextRoundNo} · {(() => { const s = roundSeconds(nextRoundNo, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; })()}</button>
-          <button type="button" className={`btn fq-big ly-go ${rule.decided ? 'btn-win' : 'btn-line'}`} disabled={!finishReady || busy} onClick={() => { setPhase('confirming'); setError(null); }}>Finish match</button>
+          <div className="ly-zone ly-act ly-act-two">
+            <button type="button" className={`btn fq-big ly-go ${rule.decided ? 'btn-line' : 'btn-win'}`} disabled={timerBusy || lyst.offline} onClick={() => startRound(nextRoundNo)}>Start round {nextRoundNo} · {(() => { const s = roundSeconds(nextRoundNo, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; })()}</button>
+            <button type="button" className={`btn fq-big ly-go ${rule.decided ? 'btn-win' : 'btn-line'}`} disabled={!finishReady || busy} onClick={() => { setPhase('confirming'); setError(null); }}>Finish match</button>
+          </div>
           {timer?.mode === 'break' || timer?.mode === 'extended_break' ? null : <button type="button" className="ly-link" disabled={timerBusy || lyst.offline} onClick={() => endRound('extended_break')}>Start a long break</button>}
-        </div>
+        </>
       )}
 
       <nav className="ly-tools" aria-label="Lyst tools">

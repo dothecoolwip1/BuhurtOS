@@ -22,6 +22,7 @@ import { realtimeFilter } from '../lib/liveSync';
 import { fieldOverview } from '../lib/fieldOverview';
 import { NotFoundPage } from './NotFoundPage';
 import { realtimeChannel } from '../lib/realtimeChannel';
+import { useFocusBar } from '../components/FocusLayout';
 
 /** Mirrors private.can_score: organizer, marshal, scorekeeper, plus the platform owner. The database enforces it again on every call. */
 const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'owner'];
@@ -88,6 +89,12 @@ export function FieldPage() {
   const comps = useAsync(() => (eventId && canScore ? fetchFieldCompetitions(eventId) : Promise.resolve([] as FieldCompetition[])), [eventId, canScore]);
   const matches = useAsync(() => (comps.data?.length ? fetchEventMatches(comps.data) : Promise.resolve([] as CompetitionMatch[])), [comps.data], [reloadKey]);
   useDocumentTitle(event ? `${field} · ${event.name}` : 'Field scoring');
+  const lystOpen = opened !== null && boardModeFor(opened.comp.league, opened.comp.category) === 'duel' && !classic;
+  useFocusBar({
+    eventName: event?.name, context: lystOpen ? `Lyst · ${field}` : field,
+    exit: fromEventDay ? { to: `/events/${slug}/manage?tab=eventday`, label: 'Event day' } : { to: `/events/${slug}#scorekeeping`, label: 'Event' },
+    pending: canScore ? waiting : undefined
+  });
 
   // Keep the queue fresh: poll, and reload when anybody changes a match (realtime is a nudge, polling is the safety net).
   const reload = useCallback(() => setReloadKey(k => k + 1), []);
