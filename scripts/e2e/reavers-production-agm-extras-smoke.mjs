@@ -96,10 +96,11 @@ const openAgm = async (p) => { await tab(p, '2026 AGM'); await until(async () =>
 
 try {
   // ================================================================ 00. what the live club website is serving right now
-  const base = SITE.replace(/members\.html$/, '');
+  const base = SITE.replace(/members\.html$/, ''); const live = {};
   for (const f of ['members.html', 'assets/js/buhurtos-config.js', 'assets/js/member-portal.js', 'assets/js/vendor/supabase-js-2.117.2.umd.js']) {
     const r = await fetch(base + f, { cache: 'no-store' }).catch(e => ({ status: 0, text: async () => String(e) }));
     const body = await r.text();
+    live[f] = body;
     note(`live ${f}: HTTP ${r.status}, ${body.length} bytes${f.endsWith('member-portal.js') ? `, has the new AGM concern/nomination code: ${body.includes('club_agm_member_view')}` : ''}${f.endsWith('config.js') ? `, defines window.BUHURTOS: ${body.includes('window.BUHURTOS')}` : ''}`);
   }
   // ================================================================ 0. three TEST accounts, confirmed by the operator
@@ -133,6 +134,28 @@ try {
     page0.includes('In Person') && page0.includes('Voting by Proxy') && page0.includes('Something you want discussed?') && page0.includes('Submit AGM Concern / Topic') && page0.includes('Executive Nominations') && page0.includes('Nominate Myself') && page0.includes('Nominate Another Member'), page0.slice(0, 500));
   check('3b the nominations section names the current officers from the officer records, never an e-mail address', /Current Officer: /.test(page0) && !/@/.test(await text(px, '[data-testid=agm-nominations]')));
   await shot(px, 'n03-agm-page-x');
+  // ---- "How the AGM Works" (member help) on the live page
+  const helpTitles = await px.locator('[data-testid=agm-help] summary').allInnerTexts();
+  check('3c the live AGM tab has "How the AGM Works" with six headings, closed until tapped', helpTitles.join('|') === 'Who can vote?|How to join|Executive roles|How nominations work|Submit an AGM topic|RSVP and proxy voting' && (await px.locator('[data-testid=agm-help] details[open]').count()) === 0, helpTitles.join('|'));
+  await shot(px, 'n03a-help-closed-x');
+  await px.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  const ht = await text(px, '[data-testid=agm-help]');
+  check('3d live executive roles: President shows "Kedrixx (no currently active account)"', /President Helps lead the society and meetings\. Currently: Kedrixx \(no currently active account\)/.test(ht), ht.slice(ht.indexOf('Executive roles'), ht.indexOf('Executive roles') + 500));
+  check('3e live executive roles: Secretary shows Garrett Robson (from the officer records)', /Secretary Helps keep society records, meeting information and official paperwork organized\. Currently: Garrett Robson/.test(ht));
+  check('3f live executive roles: Treasurer shows "Carmalee (no currently active account)"', /Treasurer Helps manage the society's money and financial records\. Currently: Carmalee \(no currently active account\)/.test(ht));
+  check('3g live: the 2026 fee is waived (normal $20), an account alone is not enough, same account never two', ht.includes('Membership fees are waived for 2026. You do not need to pay the normal $20 fee to vote this year.') && ht.includes('Making an account is not enough on its own.') && ht.includes('You never need two.'));
+  check('3h live: the date and place come from the AGM record', ht.includes('AGM: Sunday, October 18, 2026 at 5:30 PM'), ht.slice(ht.indexOf('AGM:'), ht.indexOf('AGM:') + 120));
+  const outside = live['assets/js/member-portal.js'].split('function agmHelp()')[0] + live['assets/js/member-portal.js'].split('// ---- concerns / topics')[1] + live['members.html'];
+  const quoted = [...new Set([...ht.matchAll(/“([^”]+)”/g)].map(x => x[1]))];
+  const missing = quoted.filter(n => !(outside.includes(n) || outside.includes(n.replace(/'/g, "\\'"))));
+  check(`3i live: every button or heading quoted in the help (${quoted.length}) is a real label on the live site`, quoted.length >= 14 && missing.length === 0, missing.join(' | '));
+  check('3j live: the help, fully open, fits a 390px phone', await noSideways(px));
+  await shot(px, 'n03b-help-open-x');
+  const pd = await open('desktop');
+  await siteSignIn(pd, X); await openAgm(pd);
+  await pd.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  check('3k live: the help is readable on desktop (no sideways scroll)', await noSideways(pd) && (await text(pd, '[data-testid=agm-help]')).includes('How to join'));
+  await shot(pd, 'n03c-help-open-desktop');
   for (const [btn, shown] of [['Video Call', 'Attending by Video Call'], ['Not Attending', 'Not Attending']]) {
     await px.getByRole('button', { name: btn, exact: true }).click();
     check(`4 the existing RSVP "${btn}" still works`, await until(async () => (await text(px, '[data-testid=rsvp-now]')).includes(shown), 20000));
