@@ -19,6 +19,14 @@ export interface RuleVersion {
   id: string; ruleset_id: string; version: string; title: string | null; status: VersionStatus; published_on: string | null; effective_from: string | null; effective_to: string | null;
   source_url: string | null; source_sha256: string | null; source_retrieved_at: string | null; page_count: number | null; import_release: string | null; imported_at: string | null;
   published_at: string | null; successor_version_id: string | null; withdrawn_reason: string | null; synthetic: boolean; note: string | null;
+  /** An earlier edition from the governing body's archive: never the version in force. Older rows (before Pack 22 history) read as false. */
+  historical?: boolean;
+  /** Order among the document's historical editions (1 = oldest), from the documents' own evidence. */
+  edition_seq?: number | null;
+  /** Why this archived file is this document and this edition. */
+  edition_evidence?: string | null;
+  /** The archive files that are this edition (byte-identical copies included). */
+  source_files?: { file: string; archive: string; sha256: string; drive_file_id: string | null }[] | null;
 }
 export interface RuleProvision {
   id: string; ruleset_version_id: string; parent_id: string | null; ordinal: number; depth: number; kind: string; number: string | null; title: string | null; body: string;
@@ -33,7 +41,7 @@ export interface RuleProvision {
 export interface RulesData { documents: RuleDocument[]; versions: RuleVersion[]; provisions: RuleProvision[]; loadedAt: string }
 
 const DOC_COLS = 'id, slug, name, governing_body, inventory_key, committee, committee_name, heading, kind, applies_to, relevance, official_url, source_host, listed_on_page, page_order, previously_cited_as, classification_note, synthetic';
-const VER_COLS = 'id, ruleset_id, version, title, status, published_on, effective_from, effective_to, source_url, source_sha256, source_retrieved_at, page_count, import_release, imported_at, published_at, successor_version_id, withdrawn_reason, synthetic, note';
+const VER_COLS = 'id, ruleset_id, version, title, status, published_on, effective_from, effective_to, source_url, source_sha256, source_retrieved_at, page_count, import_release, imported_at, published_at, successor_version_id, withdrawn_reason, synthetic, note, historical, edition_seq, edition_evidence, source_files';
 const PROV_COLS = 'id, ruleset_version_id, parent_id, ordinal, depth, kind, number, title, body, page_from, page_to, stable_key, review_status, review_note, keywords, cross_refs, topics, has_figures, extraction';
 const PAGE = 1000;
 
@@ -60,15 +68,15 @@ export async function fetchRulesData(): Promise<RulesData> {
 }
 
 /* ---------------- the saved copy in this browser ---------------- */
-// v2: provisions carry topics, pictures and how they were read (Pack 22 import of the official documents).
-const CACHE_KEY = 'bos-rules-cache-v2';
+// v3: versions say whether they are an earlier (historical) edition. v2: provisions carry topics, pictures and how they were read.
+const CACHE_KEY = 'bos-rules-cache-v3';
 let memory: RulesData | null = null;
 let inflight: Promise<RulesData> | null = null;
 const subs = new Set<(d: RulesData) => void>();
 
 export function readCachedRules(): RulesData | null {
   if (memory) return memory;
-  try { localStorage.removeItem('bos-rules-cache-v1'); const raw = localStorage.getItem(CACHE_KEY); if (raw) memory = JSON.parse(raw) as RulesData; } catch { /* storage blocked or full: just load */ }
+  try { localStorage.removeItem('bos-rules-cache-v1'); localStorage.removeItem('bos-rules-cache-v2'); const raw = localStorage.getItem(CACHE_KEY); if (raw) memory = JSON.parse(raw) as RulesData; } catch { /* storage blocked or full: just load */ }
   return memory;
 }
 /** Loads the library (once at a time), keeps it in memory and in this browser, and tells everyone showing rules. */
@@ -106,13 +114,33 @@ export interface RulesIndex {
 
 const STATUS_ORDER: Record<VersionStatus, number> = { published: 0, in_review: 1, draft: 2, superseded: 3, withdrawn: 4 };
 
+/** An earlier edition from the archive (never the version in force). */
+export const isHistorical = (v: RuleVersion) => v.historical === true;
+/** The current release's text: the version in force, or (for the owner) a current version still in review. Never an earlier edition. */
+export const isCurrentText = (v: RuleVersion) => !isHistorical(v) && (v.status === 'published' || v.status === 'in_review');
+/**
+ * The one order of a document's versions: the version in force, then current versions in review / drafts, then the current release's older
+ * versions, then the earlier (historical) editions newest first by their evidence-based order, withdrawn last. Never by label text alone.
+ */
+export function compareVersions(a: RuleVersion, b: RuleVersion): number {
+  const rank = (v: RuleVersion) => (v.status === 'withdrawn' ? 9 : isHistorical(v) ? 5 : STATUS_ORDER[v.status]);
+  return rank(a) - rank(b) || (b.edition_seq ?? 0) - (a.edition_seq ?? 0) || (b.published_on ?? '').localeCompare(a.published_on ?? '') || (b.imported_at ?? '').localeCompare(a.imported_at ?? '') || b.version.localeCompare(a.version);
+}
+/**
+ * Which versions /rules searches. By default only the current text (the version in force, or the current release in review for the owner): an
+ * earlier edition or an older version is searched only when the person explicitly includes them, and every result then names its version.
+ */
+export const inSearchScope = (v: RuleVersion, includeOlder: boolean) => (includeOlder ? v.status !== 'draft' : isCurrentText(v));
+/** "Earlier edition 2025.03" / "26.4": how a version is named next to a rule. */
+export const versionName = (v: RuleVersion) => (isHistorical(v) ? `Earlier edition ${v.version}` : v.version);
+
 export function buildRulesIndex(data: RulesData): RulesIndex {
   const docById = new Map(data.documents.map(d => [d.id, d]));
   const docBySlug = new Map(data.documents.map(d => [d.slug, d]));
   const versionById = new Map(data.versions.map(v => [v.id, v]));
   const versionsByDoc = new Map<string, RuleVersion[]>();
   for (const v of data.versions) versionsByDoc.set(v.ruleset_id, [...(versionsByDoc.get(v.ruleset_id) ?? []), v]);
-  for (const list of versionsByDoc.values()) list.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status] || (b.published_on ?? '').localeCompare(a.published_on ?? '') || b.version.localeCompare(a.version));
+  for (const list of versionsByDoc.values()) list.sort(compareVersions);
   const provisionById = new Map(data.provisions.map(p => [p.id, p]));
   const byVersion = new Map<string, RuleProvision[]>();
   for (const p of data.provisions) byVersion.set(p.ruleset_version_id, [...(byVersion.get(p.ruleset_version_id) ?? []), p]);
@@ -132,13 +160,17 @@ export function buildRulesIndex(data: RulesData): RulesIndex {
 /** Not a rule: the document's own change log, its cover, or a page that is pictures only. Browsable, but left out of rule search. */
 export const isRuleText = (p: RuleProvision) => !(p.topics ?? []).some(t => t === 'changelog' || t === 'cover') && !(p.kind === 'figure' && !p.body);
 
-/** The version a document is currently governed by: the published one, else (for the owner) the newest in review. */
-export const currentVersion = (idx: RulesIndex, docId: string): RuleVersion | null => (idx.versionsByDoc.get(docId) ?? []).find(v => v.status === 'published') ?? null;
+/** The version a document is currently governed by: the published one (a historical edition never is). */
+export const currentVersion = (idx: RulesIndex, docId: string): RuleVersion | null => (idx.versionsByDoc.get(docId) ?? []).find(v => v.status === 'published' && !isHistorical(v)) ?? null;
+/** The version a document page opens on: the one in force, else (for the owner) the current release in review, else the newest edition there is. */
+export const defaultVersion = (idx: RulesIndex, docId: string): RuleVersion | null => {
+  const list = idx.versionsByDoc.get(docId) ?? [];
+  return currentVersion(idx, docId) ?? list.find(isCurrentText) ?? list.find(v => !isHistorical(v) && v.status !== 'withdrawn') ?? list[0] ?? null;
+};
 
 /** The same rule (same stable key) in the other versions of its document, newest first. */
 export function sameRuleElsewhere(idx: RulesIndex, p: RuleProvision): RuleEntry[] {
-  return idx.entries.filter(e => e.provision.stable_key === p.stable_key && e.provision.id !== p.id)
-    .sort((a, b) => STATUS_ORDER[a.version.status] - STATUS_ORDER[b.version.status] || (b.version.published_on ?? '').localeCompare(a.version.published_on ?? ''));
+  return idx.entries.filter(e => e.provision.stable_key === p.stable_key && e.provision.id !== p.id).sort((a, b) => compareVersions(a.version, b.version));
 }
 
 /** A link to the official file, at the page where the provision is printed when the file is the site's own PDF (Drive viewers ignore page anchors). */
@@ -193,7 +225,7 @@ export interface DisciplineLogRow {
   created_at: string; voided_at: string | null; reason: string | null; called_by: string | null; void_reason: string | null; recorded_by_name: string | null; recorded_by_me: boolean;
   field: string | null; round_label: string | null; queue_state: string | null; competition_id: string; competition_name: string;
   entry_id: string | null; fighter_id: string | null; team_id: string | null; against: string | null;
-  provision_id: string | null; rule_number: string | null; rule_title: string | null; rule_document: string | null; rule_version: string | null; rule_version_status: string | null; citation_changes: number;
+  provision_id: string | null; rule_number: string | null; rule_title: string | null; rule_document: string | null; rule_version: string | null; rule_version_status: string | null; rule_version_historical?: boolean | null; citation_changes: number;
 }
 export async function fetchDisciplineLog(eventId: string): Promise<DisciplineLogRow[]> {
   const { data, error } = await supabase.rpc('event_discipline_log', { p_event: eventId });

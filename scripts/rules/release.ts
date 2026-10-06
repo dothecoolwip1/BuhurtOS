@@ -107,6 +107,38 @@ export function applyOverrides(provisions: Provision[], o: Overrides): Provision
   });
 }
 
+/** pdftotext's version, as the extractor string records it. */
+export function pdftotextVersion(): string {
+  const version = execFileSync('pdftotext', ['-v'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).toString() || '';
+  return (version.match(/pdftotext version ([\d.]+)/) ?? [])[1] ?? 'unknown';
+}
+
+/**
+ * One PDF, page by page: the text layer (pdftotext -layout), pages with real pictures, and OCR (with each line's confidence) for a page with
+ * (almost) no text layer. Shared by the current release (release.ts extract) and the historical editions (history.ts extract).
+ */
+export function extractPdf(src: string, ver: string) {
+  const info = execFileSync('pdfinfo', [src], { encoding: 'utf8' });
+  const field = (k: string) => (info.match(new RegExp(`^${k}:\\s*(.*)$`, 'm')) ?? [])[1]?.trim() || null;
+  const text = execFileSync('pdftotext', ['-layout', '-enc', 'UTF-8', src, '-'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const pages: SourcePage[] = text.split('\f').map((t, i) => ({ page: i + 1, text: t, method: 'text' as const, figures: false }));
+  const pageCount = Number(field('Pages'));
+  if (pages.length > pageCount && !pages[pages.length - 1].text.trim()) pages.pop();
+  for (const pg of pictureImagePages(execFileSync('pdfimages', ['-list', src], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }))) if (pages[pg - 1]) pages[pg - 1].figures = true;
+  // A page with (almost) no text layer is an image of text: read it with OCR, and keep OCR's own confidence for every line.
+  let ocrUsed = false;
+  for (const pg of pages) {
+    const letters = (pg.text.match(/[A-Za-z]/g) ?? []).length;
+    if (letters >= 120) continue;
+    const o = JSON.parse(execFileSync('python3', ['-I', 'scripts/rules/ocr_page.py', src, String(pg.page)], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 })) as { text: string; engine: string; mean_conf: number | null; lines: SourcePage['ocr_lines']; figures: boolean };
+    const ol = (o.text.match(/[A-Za-z]/g) ?? []).length;
+    if (ol >= Math.max(20, letters * 2)) { pg.text = o.text; pg.method = 'ocr'; pg.ocr_engine = o.engine; pg.ocr_mean_conf = o.mean_conf; pg.ocr_lines = o.lines; pg.figures = pg.figures || o.figures; ocrUsed = true; }
+    else if (o.figures) pg.figures = true;
+  }
+  const extractor = `pdftotext ${ver} -layout -enc UTF-8${ocrUsed ? ` + OCR (${pages.find(p => p.method === 'ocr')?.ocr_engine}) on ${pages.filter(p => p.method === 'ocr').length} page(s) without a text layer` : ''}`;
+  return { pages, pageCount, field, extractor, ocrUsed };
+}
+
 function main(argv: string[]) {
   const [cmd, bodyDir, release, ...rest] = argv;
   if (!cmd || !bodyDir) { console.error('usage: release.ts <inventory-sql|fetch|extract|structure|reconcile|sql> <body-dir> [release] ...'); process.exit(2); }
@@ -197,32 +229,15 @@ function main(argv: string[]) {
   if (cmd === 'extract') {
     // Optional: only the given inventory keys (OCR is slow; several extract runs can share a release, one per set of documents).
     const only = new Set(rest);
-    const version = execFileSync('pdftotext', ['-v'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).toString() || '';
-    const ver = (version.match(/pdftotext version ([\d.]+)/) ?? [])[1] ?? 'unknown';
+    const ver = pdftotextVersion();
     for (const d of docs) {
       if (only.size && !only.has(d.key)) continue;
       const src = sourcePath(d.key);
       if (!existsSync(src)) { console.error(`MISSING ${d.key}: fetch or register it first`); process.exitCode = 1; continue; }
-      const info = execFileSync('pdfinfo', [src], { encoding: 'utf8' });
-      const field = (k: string) => (info.match(new RegExp(`^${k}:\\s*(.*)$`, 'm')) ?? [])[1]?.trim() || null;
-      const text = execFileSync('pdftotext', ['-layout', '-enc', 'UTF-8', src, '-'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-      const pages: SourcePage[] = text.split('\f').map((t, i) => ({ page: i + 1, text: t, method: 'text' as const, figures: false }));
-      const pageCount = Number(field('Pages'));
-      if (pages.length > pageCount && !pages[pages.length - 1].text.trim()) pages.pop();
-      for (const pg of pictureImagePages(execFileSync('pdfimages', ['-list', src], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }))) if (pages[pg - 1]) pages[pg - 1].figures = true;
-      // A page with (almost) no text layer is an image of text: read it with OCR, and keep OCR's own confidence for every line.
-      let ocrUsed = false;
-      for (const pg of pages) {
-        const letters = (pg.text.match(/[A-Za-z]/g) ?? []).length;
-        if (letters >= 120) continue;
-        const o = JSON.parse(execFileSync('python3', ['-I', 'scripts/rules/ocr_page.py', src, String(pg.page)], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 })) as { text: string; engine: string; mean_conf: number | null; lines: SourcePage['ocr_lines']; figures: boolean };
-        const ol = (o.text.match(/[A-Za-z]/g) ?? []).length;
-        if (ol >= Math.max(20, letters * 2)) { pg.text = o.text; pg.method = 'ocr'; pg.ocr_engine = o.engine; pg.ocr_mean_conf = o.mean_conf; pg.ocr_lines = o.lines; pg.figures = pg.figures || o.figures; ocrUsed = true; }
-        else if (o.figures) pg.figures = true;
-      }
+      const { pages, pageCount, field, extractor, ocrUsed } = extractPdf(src, ver);
       writeJson(join(dir, 'text', `${fileKey(d.key)}.json`), {
         inventory_key: d.key, sha256: sha256File(src), source_file: rel.source_drop?.files[d.key] ?? null,
-        extractor: `pdftotext ${ver} -layout -enc UTF-8${ocrUsed ? ` + OCR (${pages.find(p => p.method === 'ocr')?.ocr_engine}) on ${pages.filter(p => p.method === 'ocr').length} page(s) without a text layer` : ''}`,
+        extractor,
         pdfinfo: { pages: pageCount, title: field('Title'), creator: field('Creator'), producer: field('Producer'), created: field('CreationDate'), modified: field('ModDate') }, pages
       });
       console.log(`ok   ${d.key} ${pages.length} pages${ocrUsed ? `, OCR on ${pages.filter(p => p.method === 'ocr').length}` : ''}, pictures on ${pages.filter(p => p.figures).length}`);

@@ -405,3 +405,127 @@ how they are attributed in the files, and publishing (Platform › Rules) is the
    - how an existing entry should be handled when a suspension arrives mid-event; today readiness flags it and the organizer withdraws it.
 4. Live verification on a phone after the hosted rollout. NOT VERIFIED.
 
+## 11. Historical editions (earlier versions from the archive folders)
+
+Added after the current release, on the same branch. The current 2026-10-06 release is unchanged and stays authoritative.
+
+### Source and identity
+
+- **Archive files:** 42 PDFs from Buhurt International's Tournament (10), Marshal (10) and Authenticity (22) archive folders
+  (`bi-source-drop/2026-10-06/<Committee>/Archive/`, merged from `pack22-bi-sources` at `06b671d`). **38 are unique** by SHA-256.
+- **Byte-identical pairs (4), each imported once with both file names kept as provenance:**
+  - Buhurt Regulations 26.1 / 26.1(1);
+  - Duels Regulations V2024.12 / V2024.12(1);
+  - Duels Regulations 26.1 / 26.1(1);
+  - Duels Regulations 2025.03 / the unversioned "Duels Regulations.pdf".
+- **Semantic duplicates beyond bytes:** none. Every consecutive pair of editions differs by real wording changes; the smallest gap is 26 words
+  (Perforated Visor Bascinets 26.1 → current 26.4). No archive file is the current edition again.
+- **Held for review, not imported (1):** `Marshal/Archive/Weapons_Shield Chart - Shields 2025.3.pdf`. It is a one-page export of a single sheet,
+  word for word the shields sheet (page 2) of `Weapons_Shield Chart 2024.12.13.pdf`. It is not a separate edition and not the whole document.
+- **Mappings were proved from the documents, not the file names.** Each edition's evidence is stored with it (`edition_evidence`) and in
+  `history.json`. Two mappings needed real proof:
+  - *Side-hinged visored Bascinets* is the earlier name of **Side-pivoting visored Bascinets**. The current 26.1 change log says "Replace throughout
+    the document 'Side-hinged visored Bascinets' by 'Side-pivoting visored Bascinets'" and keeps the same December-2024 and February-2025 entries.
+  - *Technical Requirements for Weapons* is **Weapon requirements**: the current document's own footer reads "Technical Requirements for Weapons
+    V. 26.4".
+- **Version labels are the label printed on each document's cover** (read by OCR of the page image), the same rule as the current import. Where the
+  cover, change log and file name disagree, the label is the cover's and the disagreement is written on the edition (`note`). Examples:
+  - Sabatons and Side-hinged Bascinets are named "V2024.12" but their covers read "VER. 2025.01";
+  - Aventails, Wolf Ribs and Side-hinged Bascinets (2025.02) have covers reading 2025.02 while their change logs read V2025.03;
+  - Shields and Bucklers(1) has a cover reading 2025.03 and a change log reading V2025.02;
+  - Duels Regulations 2025.03 has a cover reading 2025.03, while its change log says "2024.12 to 2025.02";
+  - the Weapons/Shield Chart "2024.12.13" file prints V2024.12.13 on its weapons sheet and V2025.03 on its shields sheet.
+- **Order is from evidence:** each later edition's change log contains the earlier one's entries plus newer ones. The label scheme moves from
+  "2025.xx" to "26.1" = January 2026 (Duel Regulations change log: "January 2026 (2025.02 to 2026.1)"). No date is stored that the documents do
+  not state exactly (`published_on` stays empty).
+
+| Document | Earlier editions, oldest → newest | Current version |
+| --- | --- | --- |
+| Duel Regulations | 2024.12 (2 identical files), 2025.03 (2 identical files), 26.1 (2 identical files) | 26.4 |
+| Buhurt Regulations | 2025.03, 26.1 (2 identical files) | 26.4 |
+| Tournament Structure | 2024.06 | January 2026 |
+| Buhurt Rules | 2024.12.13, 2026.1.1 | 26.4.1 |
+| Duels Rules | 2025.03, 26.1 | 26.4 |
+| Outrance Rules and Regulations | 2025.03, 26.1 | 26.4 |
+| Weapons/Shield Chart | 2024.12.13, 26.1, 26.2 | 26.2.1 |
+| Infractions | 2025.02, 26.1 | 26.4 |
+| Shields & Bucklers | 2025.03, 26.1, 26.2 | 26.4 |
+| Side-pivoting visored Bascinets | 2025.01, 2025.02 (as "Side-hinged") | 26.1 |
+| Perforated Visor Bascinets · Weapon requirements | 26.1 · 26.1 | 26.4 · 26.4 |
+| Aventails · Neck Protection · Wolf Ribs | 2025.02 · 2025.02 · 2025.02 | 26.1 |
+| Greaves · Klappvisors · Nasals & Breteches | 2025.03 · 2025.03 · 2025.03 | 26.1 |
+| Sabatons | 2025.01 | 26.1 |
+| Aesthetics & Decorations · Belt flag · Eyebars · Great Helms · Tabards · Textile & Leather | 2024.12 each | 26.1 |
+
+**Total: 37 historical editions of 25 logical documents.**
+
+### Extraction and reconciliation
+
+The same extraction, OCR, structuring and content hashes as the current release were used (`extractPdf` is now shared).
+
+- **Pages:** 494 pages read from 38 unique files. **85 pages had no text layer and were read by OCR**, in 20 editions. Five editions are OCR
+  throughout ("Google Docs" prints): Infractions 26.1, Perforated Visor Bascinets 26.1, Shields & Bucklers 26.1 and 26.2, and Weapon
+  requirements 26.1.
+- **Pictures:** 16 picture-only pages, and 376 provisions on pages with pictures. 92 lines of lettering inside pictures were set aside.
+- **Provisions:** 1357 in official numbering. Character coverage is 99.39 %–100 % per edition. Reconciliation **PASSED** (`history/archive-2026-10-06/reconciliation.md`).
+- **Review: 44 provisions are flagged for a person**, and none was resolved by guessing:
+  - 22 table-like layouts;
+  - 17 lines OCR could not read with confidence;
+  - 5 numbering gaps.
+
+  No OCR correction or table transcription was made for the history; the flags stay until someone checks the archived page. An edition with an open
+  item cannot be published.
+- **Reproducibility:** the generated migration regenerates byte for byte, and a unit test re-structures all 37 editions from the committed text and
+  overrides.
+
+### Schema and import (migrations `20261015000800`, `20261015000900`)
+
+- **New columns on `ruleset_versions`:**
+  - `historical` (never changes once imported);
+  - `edition_seq` (unique per document);
+  - `edition_evidence`;
+  - `source_files` (each archive file: name, archive, SHA-256, Drive id).
+- **Guard:** a historical edition can **never** take the status `published` (in force), by any path, including the owner's direct table access.
+  After review, `publish_historical_version` (owner only) makes it readable as an older version (`superseded`), pointing at the next newer edition or
+  the current version.
+- **The importers never cross:** the current release importer refuses historical payloads and historical rows. The historical importer refuses:
+  - a current version's label;
+  - the same text or the same file as another version;
+  - missing provenance or order.
+- **Discipline log:** it now also says whether a cited rule is from an earlier edition (`rule_version_historical`). Nothing else in discipline,
+  cards, eligibility, suspensions, scoring or competitions changed.
+
+### App
+
+- **Current rules stay the default everywhere:**
+  - `/rules` search covers the current text only;
+  - document pages open on the version in force (or, for the owner, the current release in review);
+  - the officials' rule picker on the tablet and desk offers versions in force only.
+- **Earlier editions appear only on purpose:** through "Include older versions and earlier editions", a document's "Earlier editions" group (newest
+  first), or by opening one. They are always labelled "Earlier edition", with a banner ("not the rules in force") and a link to the current wording.
+- **Provenance:** a document page shows "How BuhurtOS knows this edition", with the evidence and every archive file.
+- **Compare:** a rule page compares the same rule with another version, marking added and removed words, for reading only.
+- **Platform › Rules:** earlier editions are listed apart, with their own "Publish as earlier edition" and confirm step. "Publish all ready" never
+  includes them.
+
+### Evidence (historical editions)
+
+| Level | Result |
+| --- | --- |
+| Importer tests | `scripts/rules` 32/32, including decision and edition checks and reproducibility of all 37 editions |
+| Unit tests | Vitest **1052/1052**: rules history scope, order and defaults 6; word diff 5. Typecheck clean. Build OK |
+| Database gate | `run_all.sh` **DATABASE GATE PASSED**: `pack22_history_gate` **46**, `pack22_gate` 139, `pack22_discipline_gate` 119, `pack22_qa_fixes_gate` 43; fingerprint 2563 lines |
+| Browser (real Chromium, built app, real Postgres + PostgREST, 390×844 and desktop) | `pack22-history-live` **28/28**, `pack22-live` 71/71, `pack22-discipline-live` 56/56, `pack13-live` 88/88 |
+| Determinism | migration `20261015000900` regenerates byte for byte; `20261015000400` (current release) also unchanged |
+| Current release | fingerprint of the 42 current versions (document = label = content hash) `2ee64069ffe03f4d73876825ec7d32a8`, identical before and after history |
+| Hosted / published / deployed | **NO / NO / NO** |
+
+What stays unpublished:
+- all 37 earlier editions, in review;
+- the 44 provisions flagged for review;
+- the held shields-sheet file.
+
+What needs a decision:
+- whether cover labels are the right label where a cover, its change log or its file name disagree (the editions listed under "Version labels" above);
+- whether to record the held shields-sheet file as anything more than a copy;
+- when, if ever, to publish the earlier editions.

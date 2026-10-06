@@ -1,0 +1,153 @@
+{
+  "sha256": "9873607afbf3713917d5db4d159eb0dede126d23503147240525533314d590b4",
+  "files": [
+    "Authenticity/Archive/Tabards V2024.12.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 14,
+    "title": "Tabards V2024.12",
+    "creator": null,
+    "producer": "Skia/PDF m133 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "ypBunuRTy¢\n\nVER. 2024.12\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 72.1,
+      "ocr_lines": [
+        {
+          "text": "ypBunuRTy¢",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            "ypBunuRTy¢"
+          ],
+          "box": [
+            844,
+            255,
+            1619,
+            381
+          ],
+          "paper": 0,
+          "height": 126,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 2024.12",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            700,
+            1412,
+            1165,
+            1485
+          ],
+          "paper": 0,
+          "height": 73
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            696,
+            1588,
+            1650,
+            1781
+          ],
+          "paper": 0,
+          "height": 193
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "                                                                        Tabards\n          Table of Contents\n\n\n          1. Definition and general requirements...................................................................................2\n              1.1 Definition......................................................................................................................... 2\n              1.2 Types of tabards..............................................................................................................2\n              1.3 Material requirements......................................................................................................3\n              1.4 Fastening systems requirements.................................................................................... 3\n              1.5 Colors requirements........................................................................................................ 3\n              1.6 Symbols and decorations requirements.......................................................................... 3\n              1.7 Exception for cuirass....................................................................................................... 4\n          2. Sleeveless tabard..................................................................................................................5\n              2.1 Historical sources and datation....................................................................................... 5\n              2.2 Specific requirements......................................................................................................5\n              2.3 Examples of Approved reproductions............................................................................. 6\n              2.4 Examples of Denied reproductions................................................................................. 6\n          3. Short-sleeves tabard.............................................................................................................7\n              3.1 Historical sources and datation....................................................................................... 7\n              3.2 Specific requirements......................................................................................................8\n              3.3 Examples of Approved reproductions............................................................................. 8\n          4. Long-Sleeves tabard.............................................................................................................9\n              4.1 Historical sources and datation....................................................................................... 9\n              4.2 Specific requirements......................................................................................................9\n              4.3 Examples of Approved reproductions........................................................................... 10\n              4.4 Examples of Denied reproductions............................................................................... 10\n          5. Examples of Approved designs and decorations............................................................ 11\n          6. Fastening systems..............................................................................................................12\n              6.1 Examples of Approved systems.................................................................................... 12\n              6.2 Examples of Denied systems........................................................................................ 12\n          7. Change log...........................................................................................................................13\n\n\n\n\nTabards                                                                                                                        1\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "              1.​ Definition and general requirements\n          1.1 Definition\n             ●​ Tabards is a generic term used to describe the cloth worn upon the armor. It is made to\n                show the heraldry of the wearer and prove your wealth and status on the battlefield, or\n                in the list.\n             ●​ Nowadays, tabards have the same function as a sports jersey: to indicate the team you\n                belong to.\n\n          1.2 Types of tabards\n             ●​ Sleeveless tabard : Tabards without sleeves. Simple design, common in the 13th\n                century and 14th century. Tend to be rare in the 15th century.\n             ●​ Short-sleeves tabard : Tabards with short sleeves that can go up to the elbow.\n                Common design in the 14th century. Tend to be rare in the 15th century.\n             ●​ Long-sleeves tabard : Tabards with long sleeves that cover the whole arms, from\n                shoulder to hand. Common design in the 14th and the 15th century.\n             ●​ Eastern tabard : We do not have many historical references for eastern tabard. It is\n                allowed to use the same tabard as European armors. Eastern stylization of tabard are\n                displayed in the document “Eastern Armors”.\n             ●​ Exception for full plates armors : Wearing full plates armor makes the use of tabard not\n                practical. Therefore, it is allowed to wear only a scarf. Scarf must follow the general\n                requirements (1.3).\n\n\n               Example of scarf:\n\n\n\n\n                                           Picture from The Medieval Things ©\n\n\n\n\nTabards                                                                                2\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 4,
+      "text": "          1.3 Material requirements\n          All tabards and scarf must must respect the following requirements:\n             ●​ Shapes, decorations and designs must be based on historical sources.\n             ●​ Tabards must conform to the Textiles and Leather rules document.\n             ●​ Tabards can be made of the following materials:\n                     ○​ Wool\n                     ○​ Linen\n                     ○​ Silk\n                     ○​ Coton\n                     ○​ Any other material based on historical sources.\n             ●​ Tabards can be made of modern materials in the following cases:\n                     ○​ The modern material replicates the aesthetic of an approved material listed in\n                        1.3.2\n                     ○​ The modern material is strong enough to endure full contact fights and to not be\n                        damaged too easily.\n                     ○​ We recommend asking for approval of the Authenticity Committee regarding\n                        tabard made of modern materials before placing an order.\n\n          1.4 Fastening systems requirements\n             ●​ Tabards can be tied with the following systems:\n                     ○​ Buttons made of fabric, wood, bone, or metal.\n                     ○​ Laces, made of leather, rope or fabric.\n                     ○​ Any other system based on historical sources.\n                     ○​ Any modern fastening system is denied. (Zips, snap buttons, velcro, paracord,\n                        nylon rope etc.)\n             ●​ Tabards can be open on the side, tied with laces.\n             ●​ Tabards can be open on the front, and tied with buttons.\n\n          1.5 Colors requirements\n             ●​ Colors used for tabards must be based on historical sources. Any clearly modern color\n                is denied. (Neon pink, fluorescent yellow etc.)\n             ●​ For the Marshal's safety, the use of yellow as a main color of a tabard is denied. Yellow\n                color must represent less than 50% of the tabard colors. The combination of black and\n                yellow must not be inspired by Marshal’s uniforms.\n\n          1.6 Symbols and decorations requirements\n             ●​ Symbols and decorations used for tabards must be based on historical sources. Any\n                clearly modern symbol or decoration is denied. (Warhammer logo, movies or TV show\n                imagery, modern slogan etc.)\n             ●​ We recommend taking inspiration from middle ages manuscripts to create your\n                symbols.\n\n\n\n\nTabards                                                                                 3\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "             ●​ Symbols and decorations used for tabards must be made with the following\n                techniques:\n                    ○​ Embroidery.\n                    ○​ Painting: can be by hand or by stamp.\n                    ○​ Sewing a patchwork of clothes to create a design.\n                    ○​ Any other techniques based on historical sources.\n\n          1.7 Exception for cuirass\n             ●​ When wearing a cuirass, it is allowed to wear the tabard under it. In this case, it is also\n                allowed to wear the pauldrons upon the tabard.\n             ●​ Example :\n\n\n\n\n                                                      Picture from Helli ©\n\n\n\n\nTabards                                                                                   4\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 6,
+      "text": "                                   2.​ Sleeveless tabard\n          2.1 Historical sources and datation\n             ●​ Sleeveless tabard is an easy way to display your heraldic. This type of tabard has been\n                used all along the middle-ages, from knight templars to late 15th century armors.\n             ●​ They are approved for 14th century, Transitional and 15th century armors.\n\n\n\n\n                       A​                               B​                             C\n\n\n          A: Life of Eustace and Other Saints - 1300 - France ​\n          B: Weltchronik - 1360 - Germany\n          C: Bibliothèque de Besançon - 1410 - France\n\n          2.2 Specific requirements\n             ●​ Sleeveless tabard must follow the general requirements\n             ●​ Sleeveless tabard must not be too long.\n             ●​ Knee is the limit, tabard must not go below.\n\n\n\n\nTabards                                                                               5\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "          2.3 Examples of Approved reproductions\n\n\n\n\n                                       Pictures from Age of Craft ©\n\n\n          2.4 Examples of Denied reproductions\n\n\n\n\n            Yellow as a main color​                                   ​   Over long tabard\n\n\n\n\nTabards                                                                              6\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "                                 3.​ Short-sleeves tabard\n          3.1 Historical sources and datation\n             ●​ Short-sleeves tabard is the main design of the 14th century and later. Its simple shape\n                makes it easy to craft and to wear. Many different designs can be documented by\n                historical sources\n             ●​ They are approved for 14th century, Transitional and 15th century armors.\n\n\n\n\n                      A​                                B​                           C\n\n          A: Bible historiale - 1360 - France\n          B: Weltchronik - 1360 - Germany\n          C: Office of the Feast of Corpus Christi - 1403 - Austria\n\n\n\n\nTabards                                                                                7\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 9,
+      "text": "          3.2 Specific requirements\n             ●​ Short-sleeves tabard must follow the general requirements\n             ●​ Short-sleeves tabard must not be too long. Knee is the limit.\n             ●​ The sleeves must not be too long. Elbow is the limit, unless it can be documented by\n                historical sources.\n             ●​ The sleeves can be open or plain (as a shirt).\n\n\n\n\n                        Open sleeves​                                           Plain sleeves\n\n                        Open sleeve​                                               Plain sleeve\n\n          3.3 Examples of Approved reproductions\n\n\n\n\n                                                Pictures from Gohurt ©\n\n\n\n\nTabards                                                                                8\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 10,
+      "text": "                                 4.​ Long-Sleeves tabard\n          4.1 Historical sources and datation\n             ●​ Long-sleeves tabard combine the role of exposing your heraldry and protecting your\n                armor. The sleeves often cover the whole arm, up to the wrist, but can be shorter (up to\n                mid-forearm). Many different designs can be documented by historical sources.\n             ●​ They are approved for 14th century, Transitional and 15th century armors.\n\n\n\n\n           A​                          B​                          C​                             D\n\n          A: Guiron le Courtois - 1380 - France\n          B: Knebel von Katzenelnbogen - 1401 - Germany\n          C: Bible historiale, BL Royal 15 D III - 1420 - France\n          D: Le Livre et le vraye hystoire du bon roy Alixandre - 1420 - France\n\n          4.2 Specific requirements\n             ●​ Long-sleeves tabard must follow the general requirements\n             ●​ Long-sleeves tabard must not be too long. Knee is the limit.\n             ●​ The sleeves must cover the arm up to the middle of the forearm as a minimum.\n             ●​ The sleeves must be plain (as a shirt).\n\n\n\n\nTabards                                                                                9\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 11,
+      "text": "          4.3 Examples of Approved reproductions\n\n\n\n\n                                 Pictures from The Medieval Things ©\n\n\n\n\n          4.4 Examples of Denied reproductions\n\n\n\n\n                                       Yellow as the main colour\n                                     Pictures from The Medieval Things ©\n\n\n\n\nTabards                                                                    10\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 12,
+      "text": "          5.​Examples of Approved designs and decorations\n\n\n\n\nTabards                                         11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 13,
+      "text": "                                    6.​ Fastening systems\n\n          6.1 Examples of Approved systems\n\n\n\n\n          Metal buttons covered with fabric​     Wood buttons​                                      Laces\n                                               Pictures from\n                        S.Bier ©​                              A. Labat © ​               The Medieval Thing ©\n\n\n          6.2 Examples of Denied systems\n\n\n\n\n                                                                                 Velcro\n                                                                     Picture from The Medieval Thing ©\n\n\n\n\nTabards                                                                                        12\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 14,
+      "text": "                                    7.​ Change log\n     Below, we will keep track of all the changes made over the lifetime of this document. This way, all\n                      our members can see how the documents are changing over time.\n\n\n\n\n          December-2024: -Add ​\n          Document has been created\n\n\n\n\nTabards                                                                                13\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

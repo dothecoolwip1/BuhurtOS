@@ -1,0 +1,187 @@
+{
+  "sha256": "dcc5ba335e3b1a4266ba6c97cd4fb97af39f517136dc1f7aaff295b0d9c3a9de",
+  "files": [
+    "Authenticity/Archive/Aventails.docx.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 17,
+    "title": "Aventails.docx",
+    "creator": null,
+    "producer": "Skia/PDF m136 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\i) BOHURT (7\n\nas aa\n\nVER. 2025.02\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 65,
+      "ocr_lines": [
+        {
+          "text": "\\i) BOHURT (7",
+          "conf_mean": 51.1,
+          "conf_min": 17.7,
+          "words": 3,
+          "uncertain": [
+            "\\i)"
+          ],
+          "box": [
+            812,
+            172,
+            1526,
+            287
+          ],
+          "paper": 0,
+          "height": 37,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 51.1"
+        },
+        {
+          "text": "as aa",
+          "conf_mean": 39.3,
+          "conf_min": 36.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            847,
+            773,
+            1503,
+            1135
+          ],
+          "paper": 0.06,
+          "height": 362,
+          "in_picture": "on a coloured or photographic background (paper 6%), confidence 39.3"
+        },
+        {
+          "text": "VER. 2025.02",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            692,
+            1331,
+            1255,
+            1402
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            691,
+            1508,
+            1809,
+            1704
+          ],
+          "paper": 0,
+          "height": 196
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "                                                    ​\n\n    Table of contents\n     Authenticity Rules - Aventails​                         3\n     1. Definition and general requirements​                 3\n         1.1. Definition​                                    3\n         1.2. Aventails description​                         3\n         1.3. General Requirements​                          3\n     2. Chainmail Aventail​                                  4\n         2.1. Historical Sources and Datation​               4\n         2.2. Specific Requirements​                         4\n         2.3. Examples of Approved Reproductions​            5\n         2.4. Examples of Denied Reproductions​              6\n     3. Scales Aventail​                                     7\n         3.1. Historical Sources and Datation​               7\n         3.2. Specific Requirements​                         7\n         3.3. Examples of Approved Reproductions​            8\n         3.4. Examples of Denied Reproductions​              9\n     4. Fabric Aventails​                                   10\n         4.1. Historical Sources and Datation​              10\n         4.2. Specific Requirements​                        11\n         4.3. Examples of Approved Reproductions​           11\n         4.4. Examples of Denied Reproductions​             12\n     5. Suspension System​                                  13\n         5.1. Historical Sources and Datation​              13\n         5.2. Examples of suspension systems:​              14\n         5.3. Specific Requirements​                        15\n         5.4. Materials Requirements​                       15\n         5.5. Examples of Approved Reproductions​           16\n     6. Change log​                                         17\n\n\n\n\nAvetails                                                2\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                          Authenticity Rules - Aventails\n\n          1.​ Definition and general requirements\n​\n           1.1.​ Definition\n            ●​ An aventail, also called a camail, is a flexible neck defense attached to a helmet, typically made from\n                 chainmail. Scales aventails also appear in period art. The purpose of the aventail is to protect the\n                 neck, throat, and shoulders of the wearer by draping over the shoulders and upper chest. It typically\n                 hangs from the lower edge of the helmet and was popular from the 13th to 15th centuries, providing\n                 flexible but effective protection.\n            ●​ By the turn of the 15th century, aventails were commonly sewn onto a leather band that ran around\n                 the base of the helmet. This was secured with cords to studs known as vervelles. Beneath the\n                 aventail, a padded liner called a pelerine extended from the helmet liner to cushion and distribute the\n                 impact of strikes. The outer edge of the aventail’s rings was stitched to the pelerine for stability and\n                 to prevent shifting during combat.\n            ●​ Aventails were primarily seen on bascinet-style helmets but could be adapted for other helmets like\n                 great helms or kettle hats. Many aventails were elaborately decorated, featuring quilted covers with\n                 heraldic designs as well as decorative chainmail rings and latten vervelle covers.\n\n           1.2.​ Aventails description\n                 Aventails can be:\n                    ●​ Chainmail Aventail: Aventails made from chainmail elements, attached to the helmet with a\n                       suspension system.\n                    ●​ Scales Aventail: Aventails made of metal scales riveted to the pelerine.\n                    ●​ Fabric Aventail: Aventails made from fabric, used to display heraldry and must be decorated.\n\n           1.3.​ General Requirements\n                 All types of aventails must respect the following requirements :\n                    ●​   Must be based on historical sources.\n                    ●​   Must be firmly attached to the helmet with a vervelle and leather system.\n                    ●​   Must be appropriately sized for the wearer, as depicted in historical sources.\n                    ●​   It is not allowed to combine two or more different types of aventails (e.g., chainmail and\n                         fabric) unless documented by historical sources.\n\n                Each helmet-related document will explain what types of aventail are allowed and denied.\n\n\n\n\n    Avetails                                                                                  3\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "                             2.​ Chainmail Aventail​\n\n       2.1.​ Historical Sources and Datation\n             Chainmail aventails have been part of armor since the earliest helmets. By the 14th and 15th\n             centuries, it was almost impossible to have a helmet without a chainmail aventail.\n\n            They are Approved for 14th-century, transitional, and 15th-century armors.\n\n\n\n\n            Book of the Queen - 1410/1414 - France ​   ​   ​    ​      ​       Wallace Collection - 1390/1410 - UK​\n\n\n       2.2.​ Specific Requirements\n                ●​ The outer edge of the chainmail aventail must be securely stitched to a padded pelerine to\n                    prevent displacement.\n                ●​ The aventail must cover the shoulders, throat, and neck at all times without gaps.\n                ●​ Chainmail aventails must be properly maintained: damaged rings must be replaced, rust must\n                    be removed, etc.\n                ●​ Chainmail Aventails must follow the general requirements (1.3)\n                      ​\n\n\n\n\nAvetails                                                                                  4\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "​\n​\n\n           2.3.​ Examples of Approved Reproductions\n\n​\n\n\n\n\n                      Picture from Master Uley©​   ​         ​        ​          Picture from The Medieval Things\n\n\n\n\n                                                   Picture from The Medieval Things ©\n\n\n\n\n    Avetails                                                                                                  5\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 6,
+      "text": "       2.4.​ Examples of Denied Reproductions\n\n\n\n\n                                                 Incomplete aventails​ ​   ​   ​   ​\n\n\n\n\n                                     Poorly made aventails\n\n\n                                     Pictures from The Medieval Things ©\n\n\n\n\nAvetails                                                                       6\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "                                     3.​ Scales Aventail​\n\n       3.1.​ Historical Sources and Datation\n             Scales aventails consist of metal scales riveted to a leather or fabric base. Though no artifacts\n             remain, they can be documented in manuscripts.\n\n              They are Approved for 14th-century, transitional, and 15th-century armors.\n\n\n\n\n     Book of Hours - 1425/1435 - France ​          Concerning the Fates of Illustrious Men and Women - 1415 - France\n\n\n\n\n                                            ​   Sint-Martinusbasiliek - 1409 - Belgium\n\n\n       3.2.​ Specific Requirements\n                ●​ Scales must be contoured (not flat) and securely riveted to the pelerine for a proper fit and\n                    protection.\n                ●​ Allowed shapes include square, triangular, and semicircular designs.\n                ●​ Scales must lay evenly and overlap slightly to ensure full protection with no gaps.\n                ●​ Scales Aventails must follow the general requirements (1.3)\n\n\n                                 ​\n                                 ​\n\n\nAvetails                                                                                                    7\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "                        ​\n\n\n\n\n       3.3.​ Examples of Approved Reproductions\n\n\n\n\n                                     Pictures from The Medieval Things ©\n\n\n\n\n                                    Picture from Forge of Svan ©​ ​\n\n\n\n\nAvetails                                                                   8\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 9,
+      "text": "           3.4.​ Examples of Denied Reproductions\n\n\n\n\n​\n\n                                           Poorly made scales aventail\n                                                        ​\n                                            Picture from The Medieval Things ©\n\n\n\n\n    Avetails                                                                     9\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 10,
+      "text": "                                      4.​ Fabric Aventails​\n\n             4.1.​ Historical Sources and Datation\n\n                 Fabric aventails, often displayed over chainmail aventails, serve decorative purposes. They may\n                 feature multi-colored designs, decorative stitching, embroidery, and coats of arms. While this type of\n                 aventail is documented by sources from the 14th century, there is no evidence of fabric aventail later\n                 on. The mail present with other 15th helmets like barbutes and sallets are not aventail but mail\n                 standards/collars.\n\n                 They are Approved for 14th-century and Transitional armors.\n\n                 They are Denied for 15th century armors.​\n\n\n\n\n​        ​        ​      De Bello Civili - 1373 - Italy​   ​     ​         ​   ​   Weltchronik - 1385 - Germany\n\n\n\n\n                         Church of St Georges, Schenna - 1380/1400 - Italy​​   ​   Runkelstein Castle, Ritten- 1395/1405 - Italy\n\n\n\n    Avetails                                                                                            10\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 11,
+      "text": "       4.2.​ Specific Requirements\n                ●​ Fabric aventails must consist of at least one layer of fabric, attached to the helmet using the\n                    same suspension method as other aventails (see 6.).\n                ●​ Fabric aventail must conform to the Textiles and Leather document.\n                ●​ Fabric aventails must follow the general requirements (1.3)​\n\n            Fabric aventails must include at least one of the approved decoration methods, such as:\n               ●​ Multi-color base (at least 2 distinct colors)\n               ●​ Embroidery\n               ●​ Stitching\n               ●​ Stamp-printing\n               ●​ Decorations must be inspired by medieval images and not be offensive.\n               ●​ Any additional plates must be concealed when standing.\n               ●​ It is recommended to sew the fabric aventail to the pelerine.\n\n       4.3.​ Examples of Approved Reproductions\n\n\n\n\n                                      ​      Pictures from The Medieval Things ©\n\n\n\n\nAvetails                                                                                11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 12,
+      "text": "              4.4.​ Examples of Denied Reproductions\n\n\n\n\n​         ​       Only 1 color with no decoration​       ​         ​         ​       Mix of chainmail and fabric aventails\n\n\n\n\n                                                 Metal plates must be concealed​            ​       ​        ​     ​\n\n\n\n\n        ​ ​       ​       ​       ​      ​       ​       ​\n\n\n                  Only 1 color, and floppy aventail\n                                                 Pictures from The Medieval Things\n\n\n\n\n    Avetails                                                                                            12\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 13,
+      "text": "                        5.​ Suspension System\n       5.1.​ Historical Sources and Datation\n\n           From the first bascinets of the 14th century until the late armets, aventails were attached to helmets\n           using a suspension system made of vervelles and leather. This system was used from the 14th to\n           the 16th centuries.\n\n           It is Approved for 14th-century, transitional, and 15th-century armors.\n\n\n\n\n                                   Bascinet Royal Armouries, Leeds - 1380/1400 - Italy\n\n\n\n\n                    ​\n\n\n\n\nAvetails                                                                                 13\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 14,
+      "text": "​\n\n\n             5.2.​ Examples of suspension systems:​​\n\n\n​        ​       ​      Vervelles\n\n\n\n\n​        ​       ​      Piece of leather\n\n\n\n\n​        ​       ​      Thread​​\n\n\n\n\n        Examples of vervelles\n\n\n\n\n    Avetails                                           14\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 15,
+      "text": "            ​\n\n       5.3.​ Specific Requirements\n             The suspension system consists of vervelles, a piece of leather, and thread.\n\n                ●​ Vervelles: These are metal components with a hole, allowing threads (metal or leather) to\n                   pass through.\n                ●​ Leather Piece: The aventail (chainmail neck guard) is attached to a leather piece, which can\n                   be riveted or sewn.\n                ●​ Thread: The thread, made of either metal or leather (or materials that replicate their look),\n                   passes through the vervelles to secure the leather piece to the helmet.\n            ​\n            Alternative Method for fabric aventail: the aventail can be sewn directly to the helmet’s edge.\n\n       5.4.​ Materials Requirements\n             All materials used in the suspension system must comfort with the following documents\n                 ●​ Metal Parts: armors and weapons aesthetics and decoration.\n                 ●​ Fabric and Leather Parts: textiles and leather.\n\n\n\n\nAvetails                                                                                 15\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 16,
+      "text": "       5.5.​ Examples of Approved Reproductions\n\n\n\n\n                                    Leather and vervelle system\n                                   Pictures from The Medieval Things©\n\n\n\n\nAvetails                                                                16\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 17,
+      "text": "                                     6.​ Change log\n           Below, we will keep track of all the changes made over the lifetime of this document. This way, all our\n                              members can see how the documents are changing over time.\n\n\n\n           February-2025 (V2025.03)​\n           Clarification: 4.1\n           Format: Grammar and Formatting​\n           ​\n           December-2024: -Add ​\n           Document has been created\n\n\n\n\nAvetails                                                                                    17\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

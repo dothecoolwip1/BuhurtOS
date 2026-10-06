@@ -1,0 +1,171 @@
+{
+  "sha256": "fc959c05280842b660fe1e96ec792b23eb1893ef7b8a83731c8fd6921bdb4032",
+  "files": [
+    "Authenticity/Archive/Wolf Ribs.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 10,
+    "title": "Helmet - Wolf Ribs",
+    "creator": null,
+    "producer": "Skia/PDF m136 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "                                                        Wolf Ribs Helmet\n         Table of Contents\n\n\n         1. Definition................................................................................................................................2\n         2. Historical sources and datation...........................................................................................3\n         3. Requirements........................................................................................................................ 4\n             3.1 General Requirements.................................................................................................... 4\n             3.2 Visor Requirements.........................................................................................................4\n             3.3 Eye-slots..........................................................................................................................4\n             3.4 Aventail............................................................................................................................4\n             3.5 Others..............................................................................................................................4\n         4. Approved Reproductions..................................................................................................... 6\n         5. Denied Reproductions..........................................................................................................7\n\n\n\n\nHelmet Wolf Ribs                                                                                                              1\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                                           1.​ Definition\n\n            ●​ Wolf ribs helmets are bascinet-based helmets topped by a central-pivot facial grill. The\n               few available sources are paintings from the Czech Republic and Germany. The\n               primary sources are dated from 1380 and 1450.\n            ●​ The helmet is very similar to other bascinets. It is constructed with a center-hinge visor\n               (such as Klappvisor), locked with a “spoon”, and is worn with an aventail.\n            ●​ Wolf ribs helmets are approved for 14th-century and transitional armor.\n            ●​ Wolf ribs helmets with bascinet shape are denied for 15th century armors.\n\n\n\n\nHelmet Wolf Ribs                                                                       2\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 4,
+      "text": "                   2.​ Historical sources and datation\n\n\n\n\n         Třeboň-altarpiece resurrection, Praha ​   ​    Master of the Karlsruhe Passion - Christ\n            1380/1385 - Czech Republic ​      ​        Carrying the Cross - 1450/1474 - Germany\n\n\n\n\nHelmet Wolf Ribs                                                                 3\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "                                      3.​ Requirements\n         3.1 General Requirements\n            ●​ Reproductions must closely resemble the appearance and proportions of the sources.\n            ●​ Any metal part of the helmet must conform to the Armors and weapons Aesthetics and\n               decorations document.\n            ●​ Any textile or leather part of the helmet must conform to the Textiles and Leather\n               document.\n\n         3.2 Visor Requirements\n            ●​ The visor must not be too long or too short and respect the proportions of historical\n               sources.\n            ●​ The hinge must be reproduced as per historical sources.\n            ●​ It is permitted to weld the hinge. Welded hinges must resemble a functional hinge.\n            ●​ It is permitted to weld the visor down. A welded visor must resemble a functional\n               removable visor.\n            ●​ It is permitted to add a metal plate to protect the throat. Such a plate must be strong\n               enough to endure full contact fight and must be concealed under the aventail.\n            ●​ The visor must consist of 5 horizontal ribs.\n            ●​ Ribs must be round or bar-shaped.\n            ●​ Ribs can not be made of flat sheets.\n\n         3.3 Eye-slots\n            ●​ It is not recommended to have oversized eye slots (over 30x50mm).\n            ●​ It is permitted to add up to four (4) vertical safety eyebars on the visor: two (2) on each\n               side of the visor.\n            ●​ Eyebars must conform to the Eye Bars rules document.\n\n         3.4 Aventail\n            ●​ Wolf ribs helmets can be worn with chainmail or fabric aventails. Scale aventails are\n               not permitted.\n            ●​ Aventails must conform to the Aventails document.\n            ●​ The aventail must be fastened down to the outer edge of a padded pelerine attached to\n               the helmet liner.\n            ●​ Protective plates covering the cervical spine should be hidden under the aventail.\n               Supplemental hidden collar plates are permitted.\n\n         3.5 Others\n            ●​ Wolf ribs helmets may be decorated in the spirit of medieval styles, such as an orle,\n               torse, decorated aventails (with copper/brass chainmail rings), vervelle covers, coat of\n               arms badges, etc.\n            ●​ Such decoration must be made in coherence with historical sources.\n            ●​ Using modern and/or offensive imagery and slogans is prohibited.\n\n\n\n\nHelmet Wolf Ribs                                                                        4\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 6,
+      "text": "Spoon Fixation\n\n5 Horizontal Ribs / Not Flat Ribs\n\nVertical Eye Bars\n\nRecommendations for Eyes slots :\n\nEyeSlot\n\n50mm",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.3,
+      "ocr_lines": [
+        {
+          "text": "Spoon Fixation",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1177,
+            463,
+            1487,
+            511
+          ],
+          "paper": 0.62,
+          "height": 48
+        },
+        {
+          "text": "5 Horizontal Ribs / Not Flat Ribs",
+          "conf_mean": 95.6,
+          "conf_min": 92.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1089,
+            593,
+            1574,
+            635
+          ],
+          "paper": 0.64,
+          "height": 28
+        },
+        {
+          "text": "Vertical Eye Bars",
+          "conf_mean": 96.8,
+          "conf_min": 96.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1189,
+            705,
+            1475,
+            743
+          ],
+          "paper": 0.57,
+          "height": 31
+        },
+        {
+          "text": "Recommendations for Eyes slots :",
+          "conf_mean": 94.3,
+          "conf_min": 92.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            303,
+            1299,
+            1044,
+            1343
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "EyeSlot",
+          "conf_mean": 91.8,
+          "conf_min": 91.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1699,
+            1747,
+            1807,
+            1780
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "50mm",
+          "conf_mean": 95.1,
+          "conf_min": 95.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1706,
+            1911,
+            1801,
+            1935
+          ],
+          "paper": 0.59,
+          "height": 24
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "                   4.​ Approved Reproductions\n\n\n\n\n                           Picture from I. Zadesenets ©\n\n\n\n\n                           Pictures from V. Mishurin ©\n\n\n\n\nHelmet Wolf Ribs                                          6\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "                             5.​ Denied Reproductions\n\n\n\n\n         More than 5 horizontal ribs​ ​      ​      ​       ​   Flat ribs\n\n\n\n\n         Frame around visor, not based on historical sources​     ​      Welding spot visible\n\n                                                                      Eyebars not black-painted\n\n\n\n\nHelmet Wolf Ribs                                                                 7\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 9,
+      "text": "                   Neck protection is visible, it must be concealed under the aventail\n                                     Pictures from The Medieval Things ©\n\n\n\n\nHelmet Wolf Ribs                                                                  8\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 10,
+      "text": "                                      6.​ Change log\n             Below, we will keep track of all the changes made over the lifetime of this document. This\n                       way, all our members can see how the documents are changing over time.\n         March - 2025 (V2025.03)​\n         - Clarification: Wolf ribs helmets with bascinet shape are denied for 15th century\n         armors\n\n         February - 2025 (V2025.02)​\n         - Format: formatting and grammar improvements\n         - Replaced: 3.3 It is permitted to add up to four (4) vertical Buhurt Optimized eyebars\n                     on the visor: two (2) on each side of the visor. || It is permitted to add up\n                     to four (4) vertical safety eyebars on the visor: two (2) on each side of the\n                     visor.\n\n         December - 2024 (V2024.12)\n         -Add: Document has been created\n\n\n\n\nHelmet Wolf Ribs                                                                         9\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Seg } from '../components/ui';
 import { Highlight, RuleRow, SourceNote } from '../components/rules/RuleBits';
-import { currentVersion, isRuleText, summaryEntries, type RuleDocument, type RulesIndex } from '../data/rules';
+import { currentVersion, inSearchScope, isHistorical, isRuleText, summaryEntries, type RuleDocument, type RulesIndex } from '../data/rules';
 import { searchRules } from '../lib/rules/search';
 import { useRules } from '../lib/rules/useRules';
 import { useSampleMode } from '../data/mode';
@@ -61,13 +61,13 @@ export function RulesPage() {
   };
   // Test rulesets show only in sample mode, like other test data.
   const docs = useMemo(() => (index?.data.documents ?? []).filter(d => (sample || !d.synthetic) && docFits(d, f)), [index, sample, f]);
-  const official = useMemo(() => (index?.entries ?? []).filter(e => isRuleText(e.provision) && (sample || !e.doc.synthetic) && docFits(e.doc, f) && (older ? e.version.status !== 'draft' : e.version.status === 'published' || e.version.status === 'in_review')), [index, sample, f, older]);
+  const official = useMemo(() => (index?.entries ?? []).filter(e => isRuleText(e.provision) && (sample || !e.doc.synthetic) && docFits(e.doc, f) && inSearchScope(e.version, older)), [index, sample, f, older]);
   const summaries = useMemo(() => summaryEntries(index?.data.documents ?? []).filter(s => f === 'all' || s.summary.kind.includes(SUMMARY_WORD[f]) || /All formats|Tournaments/.test(s.summary.kind)), [index, f]);
   const needle = q.trim();
   const res = useMemo(() => (needle ? searchRules(official, needle, 80) : null), [official, needle]);
   const sres = useMemo(() => (needle ? searchRules(summaries, needle, 20) : null), [summaries, needle]);
   const textCount = useMemo(() => new Set(official.map(e => e.version.id)).size, [official]);
-  const anyOlder = (index?.data.versions ?? []).some(v => v.status === 'superseded' || v.status === 'withdrawn');
+  const anyOlder = (index?.data.versions ?? []).some(v => v.status === 'superseded' || v.status === 'withdrawn' || isHistorical(v));
 
   return (
     <section className="fade-in rl-page">
@@ -84,7 +84,7 @@ export function RulesPage() {
       </form>
       <div className="rl-filters">
         <Seg label="Format" value={f} options={FORMATS} onChange={x => set({ f: x })} scroll />
-        {anyOlder && <label className="rl-check"><input type="checkbox" checked={older} onChange={e => set({ old: e.target.checked })} /> Include older versions</label>}
+        {anyOlder && <label className="rl-check"><input type="checkbox" checked={older} onChange={e => set({ old: e.target.checked })} /> Include older versions and earlier editions</label>}
       </div>
       {!needle && textCount > 0 && (
         <div className="rl-quick" role="group" aria-label="Common questions">
@@ -157,12 +157,13 @@ function Browse({ idx, docs, textCount }: { idx: RulesIndex; docs: RuleDocument[
             <ul className="rl-doclist">
               {g.docs.map(d => {
                 const v = currentVersion(idx, d.id);
+                const earlier = (idx.versionsByDoc.get(d.id) ?? []).filter(isHistorical).length;
                 const folder = d.source_host === 'drive_folder';
                 return (
                   <li key={d.id}>
                     {folder
                       ? <a className="rl-docrow" href={d.official_url ?? '#'} target="_blank" rel="noopener noreferrer"><span><b>{d.name}</b>{d.heading && <span className="rl-sub">{d.heading}</span>}</span><span className="chip">Earlier versions ↗</span></a>
-                      : <Link className="rl-docrow" to={`/rules/doc/${d.slug}`}><span><b>{d.name}</b>{d.heading && <span className="rl-sub">{d.heading}</span>}</span>{v ? <span className="chip win">Text · {v.version}</span> : <span className="chip">Official file</span>}</Link>}
+                      : <Link className="rl-docrow" to={`/rules/doc/${d.slug}`}><span><b>{d.name}</b>{d.heading && <span className="rl-sub">{d.heading}</span>}</span><span className="rl-docchips">{v ? <span className="chip win">Text · {v.version}</span> : <span className="chip">Official file</span>}{earlier > 0 && <span className="chip old">{earlier} earlier edition{earlier === 1 ? '' : 's'}</span>}</span></Link>}
                   </li>
                 );
               })}

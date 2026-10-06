@@ -14,13 +14,15 @@ interface Waiting {
   id: string; version: string; status: 'draft' | 'in_review'; import_release: string | null; page_count: number | null; note: string | null;
   doc: { name: string; slug: string; committee_name: string | null; governing_body: string | null; synthetic: boolean };
   provisions: number; needsReview: number; reconciled: boolean; coverage: number | null; ocrCorrections: number; pictureText: number;
+  /** An earlier edition from the archive: published only AS HISTORICAL, never as the version in force. */
+  historical: boolean; editionSeq: number | null;
 }
 
 async function fetchWaiting(): Promise<Waiting[]> {
-  const v = await supabase.from('ruleset_versions').select('id, version, status, import_release, page_count, note, reconciliation, rulesets(name, slug, committee_name, governing_body, synthetic, page_order)')
+  const v = await supabase.from('ruleset_versions').select('id, version, status, import_release, page_count, note, reconciliation, historical, edition_seq, rulesets(name, slug, committee_name, governing_body, synthetic, page_order)')
     .in('status', ['draft', 'in_review']);
   if (v.error) throw v.error;
-  type Row = { id: string; version: string; status: 'draft' | 'in_review'; import_release: string | null; page_count: number | null; note: string | null; reconciliation: Record<string, unknown> | null;
+  type Row = { id: string; version: string; status: 'draft' | 'in_review'; import_release: string | null; page_count: number | null; note: string | null; reconciliation: Record<string, unknown> | null; historical: boolean | null; edition_seq: number | null;
     rulesets: { name: string; slug: string; committee_name: string | null; governing_body: string | null; synthetic: boolean; page_order: number | null } };
   const rows = (v.data ?? []) as unknown as Row[];
   const counts = new Map<string, { n: number; open: number }>();
@@ -41,7 +43,8 @@ async function fetchWaiting(): Promise<Waiting[]> {
     doc: { name: r.rulesets.name, slug: r.rulesets.slug, committee_name: r.rulesets.committee_name, governing_body: r.rulesets.governing_body, synthetic: r.rulesets.synthetic },
     provisions: counts.get(r.id)?.n ?? 0, needsReview: counts.get(r.id)?.open ?? 0, reconciled: r.reconciliation?.ok === true,
     coverage: typeof r.reconciliation?.char_coverage === 'number' ? (r.reconciliation.char_coverage as number) : null,
-    ocrCorrections: Number(r.reconciliation?.ocr_corrections ?? 0), pictureText: Number(r.reconciliation?.picture_text_lines ?? 0)
+    ocrCorrections: Number(r.reconciliation?.ocr_corrections ?? 0), pictureText: Number(r.reconciliation?.picture_text_lines ?? 0),
+    historical: r.historical === true, editionSeq: r.edition_seq
   })).sort((a, b) => (a.doc.governing_body ?? '').localeCompare(b.doc.governing_body ?? '') || (a.doc.committee_name ?? '').localeCompare(b.doc.committee_name ?? '') || a.doc.name.localeCompare(b.doc.name));
 }
 const ready = (w: Waiting) => w.status === 'in_review' && w.reconciled && w.needsReview === 0 && w.provisions > 0;
@@ -58,6 +61,7 @@ export function PlatformRulesPage() {
       <section className="plat" style={{ display: 'grid', gap: 22 }}>
         <PageHead eyebrow="Platform" title="Rules and suspensions" lede="Publish imported official documents, and record suspensions that apply to every event." />
         <Publish />
+        <PublishHistorical />
         <SuspensionAdmin organizationId={null} title="Platform suspensions" />
       </section>
     </PlatformGate>
@@ -71,7 +75,7 @@ function Publish() {
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const rows = list.data ?? [];
+  const rows = useMemo(() => (list.data ?? []).filter(w => !w.historical), [list.data]);
   const okRows = useMemo(() => rows.filter(ready), [rows]);
   const publish = async (items: Waiting[]) => {
     setBusy(true); setErr(null); setDone(null);
@@ -116,6 +120,62 @@ function Publish() {
             {confirm.length > 1 && <ul className="src" style={{ maxHeight: 220, overflow: 'auto', margin: 0 }}>{confirm.map(w => <li key={w.id}>{w.doc.name} {w.version}</li>)}</ul>}
             <div className="dd-actions">
               <button type="button" className="btn btn-ink" disabled={busy} onClick={() => void publish(confirm)}>{busy ? 'Publishing…' : 'Yes, publish'}</button>
+              <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirm(null)}>Cancel</button>
+            </div>
+          </div>
+        </Dialog>
+      )}
+    </section>
+  );
+}
+
+/**
+ * Earlier editions from the governing body's archive, waiting in review. Publishing one makes it readable as an older version, beside the version
+ * in force; it never replaces it (the database refuses), and competitions, citations and discipline are untouched.
+ */
+function PublishHistorical() {
+  const [tick, setTick] = useState(0);
+  const list = useAsync(fetchWaiting, [], [tick]);
+  const [confirm, setConfirm] = useState<Waiting | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const rows = useMemo(() => (list.data ?? []).filter(w => w.historical).sort((a, b) => a.doc.name.localeCompare(b.doc.name) || (b.editionSeq ?? 0) - (a.editionSeq ?? 0)), [list.data]);
+  if (list.data && rows.length === 0) return null;
+  const open = rows.reduce((n, w) => n + w.needsReview, 0);
+  const publish = async (w: Waiting) => {
+    setBusy(true); setErr(null); setDone(null);
+    try {
+      const { error } = await supabase.rpc('publish_historical_version', { p_version: w.id, p_note: `Published as a historical edition from the platform rules desk (${w.import_release ?? '—'})` });
+      if (error) throw error;
+      setDone(`${w.doc.name} ${w.version} is published as an earlier edition.`);
+    } catch (e) { setErr(friendlyError(e, 'Could not publish.')); }
+    finally { setBusy(false); setConfirm(null); setTick(t => t + 1); clearRulesCache(); void refreshRules().catch(() => undefined); }
+  };
+  return (
+    <section className="dd-panel" aria-labelledby="pr-hist">
+      <div className="dd-head"><h2 id="pr-hist" className="rl-h2">Earlier editions (historical) <span className="mono">{rows.length}</span></h2></div>
+      <p className="src">Older versions found in the governing body's archive folders. They are never the version in force: publishing one only makes it readable as an earlier edition, so people can see how a rule changed. {open ? `${open} provision${open === 1 ? '' : 's'} still need checking against the archived file before their edition can be published.` : ''}</p>
+      {done && <p role="status" className="rl-banner">{done}</p>}
+      {err && <p role="alert" className="dd-err">{err}</p>}
+      {list.loading && !list.data && <p className="src" role="status">Loading…</p>}
+      <ul className="dd-list">
+        {rows.map(w => (
+          <li key={w.id}>
+            <span className="dd-what"><b><Link className="lnk" to={`/rules/doc/${w.doc.slug}?v=${w.id}`}>{w.doc.name}</Link></b> · earlier edition {w.version}
+              {ready(w) ? <span className="chip win">Ready</span> : <span className="chip brass">{w.status === 'draft' ? 'Draft: did not reconcile' : w.needsReview ? `${w.needsReview} to check` : 'Not ready'}</span>}</span>
+            <span className="dl-where">{w.provisions} provisions{w.page_count ? ` · ${w.page_count} pages` : ''}{w.coverage != null ? ` · ${(w.coverage * 100).toFixed(1)}% of the text accounted for` : ''}</span>
+            {w.note && <span className="dl-where">{w.note}</span>}
+            {ready(w) && <span className="dd-btns"><button type="button" className="btn btn-line btn-sm" disabled={busy} onClick={() => setConfirm(w)}>Publish as earlier edition</button></span>}
+          </li>
+        ))}
+      </ul>
+      {confirm && (
+        <Dialog title={`Publish ${confirm.doc.name} ${confirm.version} as an earlier edition?`} onClose={() => setConfirm(null)} busy={busy}>
+          <div className="dd-form">
+            <p>It becomes readable by everyone as an earlier edition, marked as not in force. The version in force does not change. Published text is never edited again.</p>
+            <div className="dd-actions">
+              <button type="button" className="btn btn-ink" disabled={busy} onClick={() => void publish(confirm)}>{busy ? 'Publishing…' : 'Yes, publish as earlier edition'}</button>
               <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirm(null)}>Cancel</button>
             </div>
           </div>

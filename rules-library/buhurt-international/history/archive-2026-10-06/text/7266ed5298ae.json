@@ -1,0 +1,109 @@
+{
+  "sha256": "7266ed5298ae1a9138f6933c0bf71052af09db16f5f82a4f0c7d259f569d2c4e",
+  "files": [
+    "Authenticity/Archive/Belt Flag V2024.12.docx.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 4,
+    "title": "Belt Flag V2024.12.docx",
+    "creator": null,
+    "producer": "Skia/PDF m133 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\i) BOHURT (7\n\nas aa\n\nVER. 2024.12\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 65.1,
+      "ocr_lines": [
+        {
+          "text": "\\i) BOHURT (7",
+          "conf_mean": 51.1,
+          "conf_min": 17.7,
+          "words": 3,
+          "uncertain": [
+            "\\i)"
+          ],
+          "box": [
+            812,
+            172,
+            1526,
+            287
+          ],
+          "paper": 0,
+          "height": 37,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 51.1"
+        },
+        {
+          "text": "as aa",
+          "conf_mean": 39.3,
+          "conf_min": 36.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            847,
+            773,
+            1503,
+            1135
+          ],
+          "paper": 0.06,
+          "height": 362,
+          "in_picture": "on a coloured or photographic background (paper 6%), confidence 39.3"
+        },
+        {
+          "text": "VER. 2024.12",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            680,
+            1594,
+            1228,
+            1655
+          ],
+          "paper": 0,
+          "height": 61
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            679,
+            1749,
+            1796,
+            1920
+          ],
+          "paper": 0,
+          "height": 171
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "   Table of content\n   1. Authenticity rules Belt Flag​                    3\n       1.1. Definition and general requirements​       3\n       1.2. Examples of Approved reproductions​        4\n   2. Change log​                                      5\n\n\n\n\nBelt flag                                          2\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                     1.​ Authenticity rules Belt Flag\n\n     1.1.​ Definition and general requirements\n       ●​ A competitor must have a belt flag with your number on it that identifies you\n       ●​ A competitor may have a second belt flag that is decorative symbols and decorations used for this\n           must be based on historical sources. Any clearly modern symbol or decoration is denied.\n       ●​ No more than two belt flags may be worn by a competitor\n                   Examples: Warhammer logo, movies or TV show imagery, modern slogan etc\n      ●​ Belt flag is an element hung on a belt designed to show your belt number in the list.\n      ●​ Belt flag must be made of fabric or leather.\n      ●​ Belt flag must conform with the Textiles and Leather rules document.\n      ●​ Belt flag consists of a base and a number.\n      ●​ Base must respect the following requirements:\n               ○​Base shape can be square, rectangular or triangular.\n               ○​Base must have a trim to be worn with a belt.\n               ○​Base must be made of one main color.\n               ○​Some decoration can be added on the edges of the base.\n               ○​Such decoration must not interfere with the readability of the belt flag.\n       ●​ Number must respect the following requirements:\n               ○​Individual figures must be from 0 to 9.\n               ○​Numbers must be from 01 to 99.\n               ○​Number must be written in Arabic numerals.\n               ○​Number must be 13 cm tall as a minimum.\n               ○​Number can be of any color, contrasting with the base main color.\n       ●​ All Belt flags must respect the following dimensions:\n               ○​Length: from 26 cm to 36 cm.\n               ○​Width: from 14 cm to 18 cm.\n\n     1.2.​ Examples of Approved reproductions\n\n\n\n\n            Picture by Zoom en Lice​                        Pictures by The Medieval Things\n\n\n\n\nBelt flag                                                                                     3\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "                                    2.​ Change log\n      Below, we will keep track of all the changes made over the lifetime of this document. This way, all our\n                         members can see how the documents are changing over time.\n\n\n\n\n  11-Nov-2024: -add ​\n  Document has been created\n\n\n\n\nBelt flag                                                                                4\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

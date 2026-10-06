@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { appliesLabel, RuleRow, SourceNote, STATUS_WORD, VersionChip } from '../../components/rules/RuleBits';
+import { appliesLabel, RuleRow, SourceNote, STATUS_WORD, statusWords, VersionChip } from '../../components/rules/RuleBits';
 import { RuleBody } from '../../components/rules/RuleBody';
-import { currentVersion, fetchConflicts, fetchRevisions, officialLink, sameRuleElsewhere, type RuleEntry, type RulesIndex } from '../../data/rules';
+import { compareVersions, currentVersion, defaultVersion, fetchConflicts, fetchRevisions, isHistorical, officialLink, sameRuleElsewhere, type RuleEntry, type RulesIndex } from '../../data/rules';
+import { sameWords, wordDiff } from '../../lib/rules/diff';
 import { useAsync } from '../../lib/useAsync';
 import { useRules } from '../../lib/rules/useRules';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
@@ -28,6 +29,9 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
   const cur = currentVersion(idx, e.doc.id);
   const elsewhere = sameRuleElsewhere(idx, p);
   const inCurrent = cur && cur.id !== v.id ? elsewhere.find(x => x.version.id === cur.id) : null;
+  // the current release's text of this rule (in force, or for the owner still in review): what an earlier edition is compared with first
+  const curText = defaultVersion(idx, e.doc.id);
+  const inCurText = curText && curText.id !== v.id && !isHistorical(curText) ? elsewhere.find(x => x.version.id === curText.id) ?? null : null;
   const revisions = useAsync(() => fetchRevisions(p.id), [p.id]);
   const conflicts = useAsync(() => fetchConflicts([v.id]), [v.id]);
   const mine = (conflicts.data ?? []).filter(c => c.provision_a === p.id || c.provision_b === p.id || (!c.provision_a && !c.provision_b));
@@ -49,11 +53,14 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
         {e.ancestors.map(a => <span key={a.id} className="rl-crumb"><span aria-hidden="true">›</span><Link to={`/rules/r/${a.id}`}>{a.number ? `${a.number} ` : ''}{a.title ?? ''}</Link></span>)}
       </nav>
 
-      {v.status === 'superseded' && (
+      {isHistorical(v) && (
+        <p className="rl-banner rl-hist" role="note"><b>Earlier edition ({v.version}): not the rule in force.</b> {inCurText ? <>The current wording is in {curText!.version}: <Link className="lnk" to={`/rules/r/${inCurText.id}`}>open {inCurText.provision.number ?? 'it'}</Link>.</> : curText ? <>This rule number is not in the current version ({curText.version}).</> : null} {v.status === 'superseded' ? 'Kept so changes over time can be read.' : 'Not published: the platform owner sees it for review only.'}</p>
+      )}
+      {!isHistorical(v) && v.status === 'superseded' && (
         <p className="rl-banner" role="note"><b>Older version ({v.version}).</b> {inCurrent ? <>The wording in force is in {cur!.version}: <Link className="lnk" to={`/rules/r/${inCurrent.id}`}>open {inCurrent.provision.number ?? 'it'}</Link>.</> : cur ? <>This rule number is not in the version in force ({cur.version}).</> : null} Results decided under {v.version} keep this wording.</p>
       )}
       {v.status === 'withdrawn' && <p className="rl-banner" role="note"><b>Withdrawn version ({v.version}).</b> {v.withdrawn_reason}</p>}
-      {(v.status === 'draft' || v.status === 'in_review') && <p className="rl-banner" role="note"><b>{STATUS_WORD[v.status]}.</b> Only the platform owner sees this until it is published.</p>}
+      {!isHistorical(v) && (v.status === 'draft' || v.status === 'in_review') && <p className="rl-banner" role="note"><b>{STATUS_WORD[v.status]}.</b> Only the platform owner sees this until it is published.</p>}
 
       <header className="rl-rhead">
         {p.number && <span className="rl-bignum mono">{p.number}</span>}
@@ -102,6 +109,7 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
         <section className="rl-block" aria-labelledby="rl-vers">
           <h2 id="rl-vers" className="rl-h2">This rule in other versions</h2>
           <div className="rl-list">{elsewhere.map(x => <RuleRow key={x.id} e={x} />)}</div>
+          <Compare e={e} others={elsewhere} preferred={inCurText ?? elsewhere[0]} />
         </section>
       )}
       <nav className="rl-prevnext" aria-label="Next and previous in the document">
@@ -119,5 +127,33 @@ function Rel({ title, list }: { title: string; list: RuleEntry[] }) {
       <h2 className="rl-h2">{title}</h2>
       <div className="rl-list">{list.map(x => <RuleRow key={x.id} e={x} showDoc={false} />)}</div>
     </section>
+  );
+}
+
+/** This rule beside the same rule (same number in the same document) in another version: older wording struck through, newer wording marked. */
+function Compare({ e, others, preferred }: { e: RuleEntry; others: RuleEntry[]; preferred: RuleEntry | undefined }) {
+  const [withId, setWithId] = useState<string>('');
+  const other = others.find(x => x.id === withId) ?? null;
+  if (!others.length) return null;
+  const [older, newer] = other && compareVersions(other.version, e.version) > 0 ? [other, e] : [e, other];
+  const text = (x: RuleEntry) => [x.provision.title, x.provision.body].filter(Boolean).join('\n');
+  const parts = other ? wordDiff(text(older!), text(newer!)) : null;
+  return (
+    <div className="rl-compare">
+      <label className="field-in">Compare with
+        <select value={withId} onChange={ev => setWithId(ev.target.value)}>
+          <option value="">Choose a version…</option>
+          {others.map(x => <option key={x.id} value={x.id}>{x.version.version} · {statusWords(x.version)}{x.id === preferred?.id ? ' (suggested)' : ''}</option>)}
+        </select>
+      </label>
+      {other && (
+        <div className="rl-diff" aria-live="polite">
+          <p className="src">From <b>{older!.version.version}</b> ({statusWords(older!.version)}) to <b>{newer!.version.version}</b> ({statusWords(newer!.version)}). Struck-through words were removed; marked words were added. For reading only: the version in force is the one that applies.</p>
+          {sameWords(text(older!), text(newer!)) ? <p className="rl-banner">The wording is the same in both versions.</p>
+            : parts ? <p className="rl-body rl-diffbody">{parts.map((d, i) => d.kind === 'same' ? <span key={i}>{d.text}</span> : d.kind === 'added' ? <ins key={i}>{d.text}</ins> : <del key={i}>{d.text}{parts[i + 1]?.kind === 'added' && !/\s$/.test(d.text) ? ' ' : ''}</del>)}</p>
+            : <><p className="src">Too long to mark word by word; both texts follow.</p><div className="rl-body">{text(older!)}</div><div className="rl-body">{text(newer!)}</div></>}
+        </div>
+      )}
+    </div>
   );
 }

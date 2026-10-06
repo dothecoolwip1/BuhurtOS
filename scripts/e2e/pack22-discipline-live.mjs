@@ -75,7 +75,7 @@ async function pickPerson(page, name) {
 try {
   if (REAL) check('REAL_AUTH: every role signed in through the real Supabase Auth server (password grant), sessions issued by Auth', realSessions.size === Object.keys(WHO).length && [...realSessions.values()].every(b => b.user?.aud === 'authenticated'));
   check('fixture: the BI release is in the database (42 documents), 11 published for this run, and one yellow card against Brann carries its concept',
-    sql(`select count(*) from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International'`) === '42'
+    sql(`select count(*) from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International' and not v.historical`) === '42'
     && sql(`select count(*) from public.ruleset_versions where status = 'published'`) === '11'
     && sql(`select card_key from public.match_discipline where id = '00000000-0000-0000-0000-00000000dd01'`) === 'yellow_card');
 

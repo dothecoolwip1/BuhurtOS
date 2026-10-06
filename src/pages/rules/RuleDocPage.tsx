@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { appliesLabel, RuleRow, SourceNote, VersionChip } from '../../components/rules/RuleBits';
-import { officialLink, type RuleEntry } from '../../data/rules';
+import { defaultVersion, isHistorical, officialLink, type RuleEntry, type RuleVersion } from '../../data/rules';
 import { searchRules } from '../../lib/rules/search';
 import { useRules } from '../../lib/rules/useRules';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
@@ -19,7 +19,11 @@ export function RuleDocPage() {
   useDocumentTitle(doc ? doc.name : 'Rules');
   const versions = doc ? index!.versionsByDoc.get(doc.id) ?? [] : [];
   const picked = params.get('v');
-  const version = versions.find(v => v.id === picked) ?? versions.find(v => v.status === 'published') ?? versions[0] ?? null;
+  // Opens on the version in force (or, for the owner, the current release in review); an earlier edition opens only when asked for (?v=).
+  const version = versions.find(v => v.id === picked) ?? (doc ? defaultVersion(index!, doc.id) : null);
+  const currentList = versions.filter(v => !isHistorical(v));
+  const earlierList = versions.filter(isHistorical);
+  const pick = (id: string) => { const p = new URLSearchParams(params); p.set('v', id); setParams(p, { replace: true }); };
   const entries = useMemo(() => (index && version ? (index.byVersion.get(version.id) ?? []).map(p => index.entryById.get(p.id)!).filter(Boolean) : []), [index, version]);
   const res = useMemo(() => (q.trim() ? searchRules(entries, q, 100) : null), [entries, q]);
 
@@ -45,13 +49,20 @@ export function RuleDocPage() {
       {link && <a className="btn btn-line rl-official" href={link} target="_blank" rel="noopener noreferrer">Open the official document ↗</a>}
 
       {versions.length > 1 && (
-        <div className="rl-versions" role="group" aria-label="Versions">
-          {versions.map(v => <button key={v.id} type="button" className="rl-vbtn" aria-pressed={v.id === version?.id} onClick={() => { const p = new URLSearchParams(params); p.set('v', v.id); setParams(p, { replace: true }); }}><VersionChip v={v} /></button>)}
+        <div className="rl-versions-wrap">
+          {currentList.length > 0 && <VersionButtons label={earlierList.length ? 'Current release' : 'Versions'} list={currentList} active={version} pick={pick} />}
+          {earlierList.length > 0 && <VersionButtons label={`Earlier editions (${earlierList.length}), newest first`} list={earlierList} active={version} pick={pick} />}
         </div>
       )}
-      {version && version.status === 'superseded' && <p className="rl-banner">This is an older version. {(() => { const cur = versions.find(v => v.status === 'published'); return cur ? <button type="button" className="lnk" onClick={() => { const p = new URLSearchParams(params); p.set('v', cur.id); setParams(p, { replace: true }); }}>Open the version in force ({cur.version})</button> : null; })()}</p>}
+      {version && isHistorical(version) && (
+        <div className="rl-banner rl-hist" role="note">
+          <p><b>Earlier edition {version.version}: not the rules in force.</b> {(() => { const cur = versions.find(v => v.status === 'published' && !isHistorical(v)) ?? currentList.find(v => v.status === 'in_review'); return cur ? <button type="button" className="lnk" onClick={() => pick(cur.id)}>Open the current version ({cur.version})</button> : null; })()}</p>
+          <p className="src">From the governing body's archive{version.status === 'superseded' ? '' : '; not published (the platform owner reviews it first)'}. {version.note ?? ''}</p>
+        </div>
+      )}
+      {version && !isHistorical(version) && version.status === 'superseded' && <p className="rl-banner">This is an older version. {(() => { const cur = versions.find(v => v.status === 'published'); return cur ? <button type="button" className="lnk" onClick={() => pick(cur.id)}>Open the version in force ({cur.version})</button> : null; })()}</p>}
       {version && version.status === 'withdrawn' && <p className="rl-banner">Withdrawn: {version.withdrawn_reason}</p>}
-      {version && (version.status === 'draft' || version.status === 'in_review') && <p className="rl-banner">Not published: visible to the platform owner only, for review.</p>}
+      {version && !isHistorical(version) && (version.status === 'draft' || version.status === 'in_review') && <p className="rl-banner">Not published: visible to the platform owner only, for review.</p>}
 
       {!version && (
         <div className="panel rule rl-notext">
@@ -72,7 +83,8 @@ export function RuleDocPage() {
           ) : <Contents entries={entries} />}
         </>
       )}
-      {version && <p className="src">Imported {version.imported_at?.slice(0, 10) ?? '—'} from the official file{version.page_count ? ` (${version.page_count} pages)` : ''}{version.source_sha256 ? `, checksum ${version.source_sha256.slice(0, 12)}…` : ''}.</p>}
+      {version && <p className="src">Imported {version.imported_at?.slice(0, 10) ?? '—'} from the {isHistorical(version) ? 'archived' : 'official'} file{version.page_count ? ` (${version.page_count} pages)` : ''}{version.source_sha256 ? `, checksum ${version.source_sha256.slice(0, 12)}…` : ''}.</p>}
+      {version && isHistorical(version) && <EditionSource v={version} />}
       <SourceNote />
     </section>
   );
@@ -97,5 +109,28 @@ function Contents({ entries }: { entries: RuleEntry[] }) {
         );
       })}
     </ol>
+  );
+}
+
+function VersionButtons({ label, list, active, pick }: { label: string; list: RuleVersion[]; active: RuleVersion | null; pick: (id: string) => void }) {
+  return (
+    <div className="rl-versions" role="group" aria-label={label}>
+      <span className="rl-vlabel">{label}</span>
+      {list.map(v => <button key={v.id} type="button" className="rl-vbtn" aria-pressed={v.id === active?.id} onClick={() => pick(v.id)}><VersionChip v={v} /></button>)}
+    </div>
+  );
+}
+
+/** Where an earlier edition comes from: why it is this document and this edition, and every archive file that is it. */
+function EditionSource({ v }: { v: RuleVersion }) {
+  return (
+    <details className="rl-block rl-edsrc">
+      <summary className="rl-h2">How BuhurtOS knows this edition</summary>
+      {v.edition_evidence && <p>{v.edition_evidence}</p>}
+      <ul className="src">
+        {(v.source_files ?? []).map(f => <li key={f.file}>{f.archive} archive · <span className="mono">{f.file.split('/').pop()}</span> · sha256 <span className="mono">{f.sha256.slice(0, 12)}…</span></li>)}
+      </ul>
+      {(v.source_files?.length ?? 0) > 1 && <p className="src">These files are the same edition (identical files), imported once.</p>}
+    </details>
   );
 }

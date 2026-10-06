@@ -1,0 +1,190 @@
+{
+  "sha256": "d2c9760c257657120df7d3222ce20a03f1831f6b7d5b9b2d4cf392d7cb02a3c3",
+  "files": [
+    "Tournament/Archive/Buhurt Regulations 26.1.pdf",
+    "Tournament/Archive/Buhurt Regulations 26.1(1).pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 18,
+    "title": "Buhurt Regulations 26.1",
+    "creator": null,
+    "producer": "Skia/PDF m145 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "BUHURT\n\nVER. 26.1\n\nBuhurt\nRegulations",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "BUHURT",
+          "conf_mean": 92.5,
+          "conf_min": 92.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            970,
+            82,
+            1515,
+            217
+          ],
+          "paper": 0.28,
+          "height": 135
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.4,
+          "conf_min": 95,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            698,
+            1335,
+            1036,
+            1390
+          ],
+          "paper": 0,
+          "height": 55
+        },
+        {
+          "text": "Buhurt",
+          "conf_mean": 90.9,
+          "conf_min": 90.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            708,
+            1476,
+            1247,
+            1588
+          ],
+          "paper": 0,
+          "height": 112
+        },
+        {
+          "text": "Regulations",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            708,
+            1672,
+            1632,
+            1822
+          ],
+          "paper": 0,
+          "height": 150
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. General Regulations​                                                   4\n    1.1. Weight Limit​                                                    4\n    1.2. The Marshals Team Includes​                                      4\n    1.3. List Requirements​                                               4\n        1.3.1. Dimensions​                                                4\n        1.3.2. List Height​                                               4\n        1.3.3. Safe Zone​                                                 4\n        1.3.4. Table top size​                                            4\n    1.4. Roles Allowed in the Safe Zone​                                  4\n    1.5. Penalty​                                                         4\n2. Team Structure​                                                        6\n    2.1. Composition​                                                     6\n    2.2. Competitors​                                                     6\n    2.3. Number of Reserve Competitors and Support in the Safety Zone​    6\n    2.4. Alternative composition​                                         6\n3. Match Structure​                                                       7\n    3.1. Match Duration​                                                  7\n    3.2. Match and Round Win Criteria​                                    7\n    3.3. Group Stage​                                                     7\n    3.4. Round Robin, Elimination Brackets, Semi-finals, and Finals​      7\n        3.4.1. Resolving a Draw​                                          8\n        3.4.2. Group stage or round robin​                                8\n    3.5. Champion's Fight Rules​                                          8\n        3.5.1. General Setup​                                             8\n        3.5.2. Time Limit​                                                8\n        3.5.3. Prohibited Actions​                                        8\n        3.5.4. Permitted Actions​                                         9\n        3.5.5. Victory Conditions​                                        9\n4. Preparation for the Match​                                            10\n    4.1. Team Invitation and Preparation​                                10\n        4.1.1. Important​                                                10\n    4.2. Identity Verification​                                          10\n    4.3. Enter the list​                                                 10\n        4.3.1. Line up​                                                  10\n        4.3.2. Preparing for the match​                                  10\n        4.3.3. Start of the Fight​                                       11\n        4.3.4. Role of the Knight Marshal​                               11\n        4.3.5. Role of Field Marshal​                                    11\n        4.3.6. Observations by Line Marshals and Video Supervisors​      11\n        4.3.7. Important​                                                11\n    4.4. Grounding a Competitor​                                         12\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "    4.5. Removing Competitor from the list​                     12\n    4.6. End of the Round​                                      12\n        4.6.1. Forfeit​                                         12\n        4.6.2. Forfeits During the Tournament​                  12\n    4.7. Handling Grounded Competitors​                         12\n    4.8. Post-Round Procedures​                                 12\n        4.8.1. Important​                                       13\n    4.9. Record Keeping​                                        13\n    4.10. Match win​                                            13\n5. Penalties​                                                   14\n    5.1. Verbal Warning​                                        14\n    5.2. Warning (Yellow Card)​                                 14\n        5.2.1. Reasons for Receiving a Yellow Card​             14\n        5.2.2. Important​                                       14\n    5.3. Disqualification (Red Card)​                           14\n        5.3.1. Reasons for Disqualification (Red Card)​         14\n        5.3.2. Harsh and systematic arguments​                  15\n        5.3.3. Injury Clause​                                   15\n        5.3.4. Red Card Consequences​                           15\n        Example​                                                15\n    5.4 Infraction in Authenticity Rules (Green Card)​          15\n    5.4. Team Disqualification​                                 15\n        5.4.1. Exceeding the permitted number of competitors​   15\n        5.4.2. Card limit​                                      15\n        5.4.3. Harassment or Systematic Arguing​                16\n    5.5. Additional Notes on Cards​                             16\n6. Appeal​                                                      17\n    6.1. How to Appeal​                                         17\n    6.2. When to Appeal​                                        17\n    6.3. Why to Appeal​                                         17\n    6.4. Result of the Appeal​                                  17\n    6.5. Appeal to the Judiciary Committee​                     17\n7. Change log​                                                  18\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "                        1.​General Regulations\n1.1.​ Weight Limit\n      There are no weight categories in group battles.\n\n1.2.​ The Marshals Team Includes\n       ●​ Knight Marshal\n       ●​ Field Marshals (should be no less than 2 field marshals and 1 knight marshal in the list)\n       ●​ Line Marshals\n       ●​ Video Supervisors (recommended)\n       ●​ Secretary (a timekeeper)\n       ●​ Authenticity Committee Representative (AC Rep)\n\n1.3.​ List Requirements\n      Fights of the Buhurt International group battles category are conducted in the list with a hard\n      surface and a rail. Depending on the type of the tournament, the size of the list may vary,\n      provided it was agreed with Buhurt International and documented in the tournament\n      Regulations.\n\n     1.3.1.​ Dimensions\n         ●​ 3v3: Length: 7 to 20 m | Width: 5 to 15 m\n         ●​ 5v5: Length: 9 to 20 m | Width: 7 to 15 m\n         ●​ 12v12: Length: 15 to 20 m | Width: 7 to 15 m\n         ●​ 30v30: Length: 25 to 30 m | Width: 12.5 to 20 m\n\n     1.3.2.​ List Height\n             The height of the rail is 0.9 to 1.3 m.\n\n     1.3.3.​ Safe Zone\n             An organizer must provide a fenced, 2m wide safety zone around every side of the\n             list.\n\n     1.3.4.​ Table top size\n             The table top width should be between 50 - 70 cm.\n\n1.4.​ Roles Allowed in the Safe Zone\n       ●​ Marshals\n       ●​ Team support (Handing over reserve weapons) in designated areas within the safe zone\n       ●​ Team manager (Captain, Coach) in designated areas within the safe zone\n       ●​ Secretaries\n       ●​ Technical staff (List maintenance)\n       ●​ Media (Only approved media staff)\n\n1.5.​ Penalty\n         ●​ Accessing the safe zone without a designated role above may result in a penalty\n            (yellow card) for the individual or team.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "●​ Of the above roles, only marshal teams are allowed to rest their hands on top of the\n   list; this may result in a penalty.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 6,
+      "text": "                             2.​Team Structure\n2.1.​ Composition\n      Teams participating in group battles consist of the following members:\n         ●​ Team Manager (captain, coach)\n         ●​ Team Support\n         ●​ Competitors\n\n2.2.​ Competitors\n        ●​ Competitors cannot be on multiple teams in a single category at a tournament.\n        ●​ Once the tournament has started, team rosters are locked in and can not be\n           changed.\n        ●​ Teams may replace competitors from their tournament roster in any frequency and\n           number between the rounds or matches.\n\n2.3.​ Number of Reserve Competitors and Support in the Safety Zone\n      Competitors can have a team manager or support role.\n        ●​ 3v3 Team: 5 competitors,1 team manager, 1 support\n        ●​ 5v5 Team: 8 competitors, 1 team manager, 1 support\n        ●​ 12v12 Team: 20 competitors, 1 team manager, 2 supports\n        ●​ 30v30 Team: 50 competitors, 1 team manager, 3 supports\n\n     During the Matches the competitors are not allowed in the safety zone. They will get\n     penalised following article 1.5.\n\n2.4.​ Alternative composition\n      Organizers decide on the team composition for other types of group battles.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 7,
+      "text": "                            3.​Match Structure\n3.1.​ Match Duration\n         ●​ A match consists of 2 rounds, each lasting 5 minutes of effective fighting time.\n         ●​ If the command \"Stop Fight\" is called the timer must be paused.\n         ●​ If the winner cannot be determined after two rounds, additional rounds are fought.\n\n3.2.​ Match and Round Win Criteria\n         ●​ A match is won when a team secures victory in two rounds before the opposing\n            team.\n         ●​ A round is stopped when a team is outnumbered by a ratio of 3 to 1, with a round\n            victory going to the outnumbering team. On scoresheet you will record 3-1 ratio\n            Examples:\n                ●​ 12v12:\n                    1 vs. 3 = stop fight\n                    4 vs. 12 = stop fight\n                    3 vs. 11 = stop fight\n                    4 vs. 11 = continue fight\n                ●​ 5v5:\n                    2 vs. 5 = continue fight\n                    2 vs. 4 = continue fight\n                    1 vs. 4 = stop fight\n                    1 vs. 3 = stop fight\n\n3.3.​ Group Stage\n         ●​ Time Limit for Each Match: 10 minutes.\n         ●​ Time Limit for Each Round: 5 minutes.\n         ●​ If the time limit is reached, the team with the most active (not grounded) competitors\n            wins.\n         ●​ If the match ends in a draw (provided the number of round victories was a draw),\n            record the match as a draw.\n\n3.4.​ Round Robin, Elimination Brackets, Semi-finals, and Finals\n         ●​ A match cannot end in a draw.\n         ●​ The time limit for the match is unlimited.\n         ●​ The time limit for each round is 5 minutes.\n         ●​ If the time limit is reached, the team with the most active (not grounded) competitors\n            wins.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 8,
+      "text": "     3.4.1.​ Resolving a Draw in a match\n\n             Initial Rounds\n               ●​ If no team wins two rounds after the set rounds, a third round is fought.\n\n             Third Round\n              ●​ During the third round:\n                  ●​ If both teams have only one competitor left standing, the fight stops\n                     upon a 'Break' command.\n                  ●​ The timer is paused.\n                  ●​ Competitors are led to the middle of the list. Then initiate the Champions\n                     Fight\n                  ●​ A winner is determined according to the rules of the ‘Champion’s Fight’.\n                  ●​ If the third round ends in a draw, a fourth round is fought.\n\n             Fourth Round\n              ●​ During the fourth round:\n                  ●​ If both teams have only one competitor left standing, the fight stops\n                      upon a 'Break' command.\n                  ●​ The timer is paused.\n                  ●​ Competitors are led to the middle of the list. Then initiate the Champions\n                      Fight\n                  ●​ A winner is determined according to the rules of the ‘Champion’s Fight’.\n              ●​ If the fourth round ends in a draw, a fifth round is fought.​\n\n             Fifth Round\n             ●​ The rules of the 'Champion’s Fight' are applied.\n             ●​ Teams are allowed to select a competitor to represent them in this final round.\n             ●​ If a draw repeat this process\n\n\n\n3.5.​ Champion's Fight Rules\n      The Champion's Fight follows the general rules for group fights with specific adjustments and\n      limitations.\n\n     3.5.1.​ General Setup\n             The fight begins with both competitors positioned in the middle of the list.\n\n     3.5.2.​ Time Limit\n             There is no time limit for the Champion's Fight. The fight continues until a winner is\n             determined.\n\n     3.5.3.​ Prohibited Actions\n             It is strictly prohibited to touch the barrier of the list with any part of the body,\n             including:\n                   ●​ Extremities (arms, hands, legs, feet),\n                   ●​ Head,\n                   ●​ Shield.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 9,
+      "text": "       A competitor who touches the barrier of the list with any of these parts is\n       immediately declared the loser of the fight.\n\n3.5.4.​ Permitted Actions\n        Weapons are allowed to make contact with the barrier of the list during the fight.\n\n\n\n3.5.5.​ Victory Conditions\n        A competitor loses the fight if:\n           ●​ They touch the barrier of the list as described above.\n           ●​ They are otherwise defeated according to the rules of group fights.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 10,
+      "text": "                 4.​Preparation for the Match\n4.1.​ Team Invitation and Preparation\n         ●​ The Knight Marshal (either directly or via the Secretary) invites two teams to the list\n            and announces their preparation.\n\n     4.1.1.​ Important\n         ●​ The two invited teams must report to the designated area next to the list for Invited\n             teams are expected to report to the list within one (1) minute.\n         ●​ If a team fails to report to the list within three (3) minutes , their opponent is awarded\n             a technical win of the match or the fight starts with an uneven number of\n             competitors (5-4, 5-3).\n\n4.2.​ Identity Verification\n         ●​ The Knight Marshal can request competitors to enter the list with their helmets off.\n         ●​ Once the competitors identities are verified:\n                 ○​ They are given 90 seconds to put on their helmets and prepare for the fight.\n                 ○​ Support outside of the list may assist competitors during this preparation\n                     phase.\n         ●​ Competitors are not allowed to leave the list before the start of the fight.\n                 ○​ This measure ensures that no unregistered competitors are fielded by the\n                     team.\n\n4.3.​ Enter the list\n      The competitors enter the list prepared for the Match\n\n     4.3.1.​ Line up\n             ●​ 5v5\n             Competitors line up entering the list for the marshal check.\n\n            ●​ 12v12\n            competitors form 2 rows of 6 competitors, keeping column alignment\n\n            ●​ 30v30\n            competitors form 3 rows of 10 competitors, keeping column alignment.\n\n            ●​ The formations for other types of fights must be documented in the Tournament\n               Regulations or determined by the Knight Marshal.\n\n     4.3.2.​ Preparing for the match\n             ●​ Everyone, except for the Knight Marshal, field marshals, competitors, and a Team\n                Manager (captain, coach), leaves the list.\n\n            ●​ The Team Manager (captain, coach) counts their competitors and reports\n               readiness to the Knight Marshal.\n\n            ●​ The Knight Marshal checks the number of competitors on each team.​\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 11,
+      "text": "       ●​ Technical and Authenticity checks equipment before the fight.\n           ○​ Technical check is carried out by the team of marshals and the Knight\n              Marshal.\n           ○​ Authenticity check is carried out by an authenticity officer.\n\n       ●​ Team Managers (captains, coaches) leave the list.\n\n       ●​ Field Marshals take positions behind the teams’ formations near the gates.\n\n       ●​ The Knight Marshal requests field marshals to signal readiness and absence of\n          unauthorized participants in the list.\n\n       ●​ The Knight Marshal commands “Team ready.” Teams can then assume their\n          positions.\n\n4.3.3.​ Start of the Fight\n        ●​ The Knight Marshal signals the start of the fight with the command “Fight.”\n\n       ●​ The Knight Marshal or a field marshal accompanies the voice command with a\n          signal of a flag.\n\n4.3.4.​ Role of the Knight Marshal\n        The Knight Marshal observes the general course of the fight and assesses team\n        engagement and compliance with the rules\n\n       They can:\n       ●​ Return competitors to the fight (if grounded by unauthorized technique).\n       ●​ Ground competitors.\n       ●​ Break inactive clinches lasting 10 seconds or longer.\n       ●​ Give penalties (cards) to competitors.\n\n4.3.5.​ Role of Field Marshal\n        Field marshals observe the fight in the list and ensure compliance with the rules.\n\n       They can:\n       ●​ Return competitors to the fight (if grounded by unauthorized technique).\n       ●​ Ground competitors.\n       ●​ Break inactive clinches lasting 10 seconds or longer.\n\n4.3.6.​ Observations by Line Marshals and Video Supervisors\n        ●​ Line marshals or video supervisors observe the fight in their local sectors of the list\n           from behind the barrier.\n        ●​ They are responsible for recording any rules violations.\n\n4.3.7.​ Important\n        ●​ A line marshal may only interfere with the fight under the following conditions:\n            ○​ By direct order of the Knight Marshal.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 12,
+      "text": "                ○​ To prevent a direct threat to a competitor’s safety.\n            ●​ A line marshal may also break an inactive clinch\n\n4.4.​ Grounding a Competitor\n      Both the Knight Marshal and Field marshals can ground a competitor from the list in the\n      following cases:\n\n        ●​ Multiple verbal warnings being ignored in a round.\n        ●​ Multiple Fighting Techniques or Other Prohibited Actions.\n        ●​ Grounding your opponent by an illegal action where your opponent is unable to\n           immediately rejoin the round.\n        ●​ Being grounded does not replace other penalties (e.g., yellow or red cards)\n\n4.5.​ Removing Competitor from the list\n      Both the Knight Marshal and field marshals must withdraw a competitor from the list in the\n      following cases:\n\n        ●​ A competitor continues offensive actions after being grounded.\n        ●​ A competitor loses their helmet.\n        ●​ A Knight marshal can remove a competitor if they deem necessary.\n\n4.6.​ End of the Round\n         ●​ A round is finished only after the Knight Marshal’s command of \"Stop fight!\"\n\n     4.6.1.​ Forfeit\n         ●​ A team manager (captain, coach) can throw a white flag “forfeit\" to signal the Knight\n             Marshal to stop the fight.\n         ●​ In such cases:\n                ○​ The opponents are awarded a technical win.\n                ○​ The number of active competitors in the list is recorded as 5-0.\n\n     4.6.2.​ Forfeits During the Tournament\n         ●​ The first white flag results in a round loss.\n         ●​ The second white flag results in a match loss.\n         ●​ After the third white flag, the team is withdrawn from the tournament.\n\n4.7.​ Handling Grounded Competitors\n         ●​ Grounded competitors must remain on the ground until the Knight Marshal\n            commands “All Rise.”\n         ●​ After the “All Rise” command, teams return to their initial positions.\n\n4.8.​ Post-Round Procedures\n         ●​ Marshals report any registered rules violations to the Knight Marshal.\n         ●​ The Knight Marshal, based on these reports and personal observations:\n               ○​ Decide the result.\n               ○​ Processes appeals.\n               ○​ Announces the score of the round or fight.\n               ○​ Imposes warnings, yellow cards, or red cards.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 13,
+      "text": "      4.8.1.​ Important\n          ●​ After the end of the round or fight, the Knight Marshal can:\n                 ○​ Declare the round finished and announce the score.\n                 ○​ Announce a rematch with full or differentiated teams (e.g., 2v3, 3v4, 4v4, 4v5)\n                     if deemed necessary.\n\n 4.9.​ Record Keeping\n       The secretary records the results. At the end of the round, the secretary registers:\n          ●​ The round win.\n          ●​ The round score (number of active competitors of the both teams at the end of the\n             round).\n          ●​ The time of the round.\n\n4.10.​ Match win\n       Is one (1) match win on the scoresheet. Round victories and standing versus grounded\n       scores are supplementary data.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 14,
+      "text": "                                    5.​Penalties\n5.1.​ Verbal Warning\n         ●​ A verbal warning is imposed for insignificant rule violations and serves to indicate the\n             violation to the competitor. Record on the scoresheet\n         ●​ Collect belt flag number, description of warning, name of competitor\n         ●​ Cannot affect scoring\n\n5.2.​ Warning (Yellow Card)\n        ●​ A yellow card will be recorded on the scoresheet. Collect belt flag number,\n            description of incident, name of competitor\n        ●​ Can affect scoring.\n\n     5.2.1.​ Reasons for Receiving a Yellow Card\n         ●​ The competitor delivered a prohibited action listed in “Buhurt Rules” (Article 5 and\n             6).\n         ●​ The competitor performed an action not listed in the Authorized Fighting\n             Techniques section listed in “Buhurt Rules” (Article 4) .\n         ●​ The competitor got to their feet from being grounded before the command “All\n             Rise.”\n         ●​ The competitor started the fight before the “Fight” command.\n         ●​ The competitor conducted offensive actions after the “Stop Fight” command and\n             while the yellow flag was hung in front of their helmet.\n         ●​ The competitor purposely ignored a marshal’s command.\n         ●​ The competitor continued to fight while aware that they had lost a significant element\n             of their armor.\n\n     5.2.2.​ Important\n         ●​ Depending on the severity of the violation, the Knight Marshal may impose one (1) or\n             two (2) yellow cards for these actions.\n         ●​ A competitor who receives two (2) yellow cards is disqualified.\n         ●​ Two yellow cards are equivalent to a red card.\n\n5.3.​ Disqualification (Red Card)\n      ●​ A red card is imposed for severe rule violations or as a result of receiving a second yellow\n         card.\n      ●​ A red card will be recorded on the scoresheet. Collect belt flag number, description of\n         incident, name of competitor\n      ●​ Can affect scoring.\n      ●​ A competitor who receives a red card is withdrawn from the tournament.\n\n     5.3.1.​ Reasons for Disqualification (Red Card)\n             ●​ Systematic rule violations (e.g., two (2) yellow cards during the tournament).\n             ●​ Injuring an opponent with unauthorized action, resulting in the opponent's\n                inability to continue participating in the tournament (requires confirmation by a\n                medic).\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 15,
+      "text": "     5.3.2.​ Harsh and systematic arguments\n             Harsh and systematic arguments with marshals, groundless challenging of decisions,\n             or rude/derogatory behavior toward opponents or participants.\n\n     5.3.3.​ Injury Clause\n               ●​ If an injured competitor continues competing and claims injury later in the\n                  tournament, this will not lead to a red card. If the injured competitor participates\n                  in any category, the red card will be downgraded, and the Judiciary Committee\n                  will investigate and penalties may apply.\n               ●​ If a competitor continues to fight in rounds after receiving an illegal hit but later\n                  withdraws due to an “injury” claimed to be from the illegal hit, this does not result\n                  in an upgrade to a red card.\n\n     5.3.4.​ Red Card Consequences\n             When a competitor is disqualified, their team fields one less competitor than their\n             opposition (but no fewer than 3 competitors) for:\n              ●​ The match during which the disqualification was imposed.\n              ●​ The next match in the tournament.\n\n            Example\n            If the opposition cannot meet the required number of competitors (e.g., 12 in 12v12),\n            the penalized team will be placed in a disadvantageous position. If both teams\n            receive red cards, neither gains an advantage.\n\n   5.4 Infraction in Authenticity Rules (Green Card)\n\n     An official authenticity warning (green card) is a penalty imposed for an authenticity rule\n     violation that is registered in the protocol of the tournament, and affects the competitor’s\n     rating. A green card combined with a yellow card result in a red card, and the fighter is\n     disqualified.\n\n     The competitor can receive one (1) green card only once they choose to enter the list with\n     the appropriate infraction level based upon the Infraction classification document.\n\n5.4.​ Team Disqualification\n      A team may be disqualified under the following circumstances:\n\n     5.4.1.​ Exceeding the permitted number of competitors\n                ●​ In such cases, their opposition is automatically awarded the victory.\n                ●​ Important: If this rule violation is detected after the fact, the violating team’s\n                   results are annulled.\n                ●​ If detected during finals, trophies are withdrawn, and other competitors move\n                   up the ladder.\n\n     5.4.2.​ Card limit\n             The team’s competitors/support receive a combination of card as followed:\n                ●​ Two red cards and one yellow card.\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 16,
+      "text": "               ●​ Any variation totaling five (5) yellow cards (red cards count as two yellow\n                  cards).\n               ●​ Note: This applies only to the category being competed in.\n               ●​ Note: green cards do not count in team disqualification.\n\n\n    5.4.3.​ Harassment or Systematic Arguing\n               ●​ Harsh and systematic arguments with marshals.\n               ●​ Groundless challenges to decisions.\n               ●​ Rude or derogatory behavior toward opponents or participants.\n\n    5.4.4.​ A competitor entered the list after the competitors were counted.\n\n5.5.​ Additional Notes on Cards\n        ●​ All cards are individual warnings and are observed by the Judiciary Committee.\n        ●​ Yellow cards received by a team manager (captain, coach) or support staff result in\n           disciplinary measures per general card regulations.\n        ●​ Cards are summed regardless of the person’s role (competitor, team manager, or\n           support).​\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 17,
+      "text": "                                       6.​Appeal\n6.1.​ How to Appeal\n        ●​ The team captain or the captain’s representative may appeal a decision made by\n            the Marshals’ Team or the Knight Marshal.\n        ●​ Appeals are submitted to the Secretary.\n        ●​ The number of appeals is determined by the Tournament Organizer. It is\n            recommended to allow one (1) appeal.\n        ●​ Important: If an appeal is approved, the competitor may submit an additional appeal.\n\n6.2.​ When to Appeal\n        ●​ The team captain or captain’s representative must announce their intention to\n            appeal in person to the Secretary.\n        ●​ Appeals must be submitted:\n               ○​ Within 15 minutes after the end of the match.\n               ○​ Before the start of the fights in the next phase of the competition.\n\n6.3.​ Why to Appeal\n      An appeal can be filed for the following reasons:\n         ●​ False implementation of a penalty (reprimand, warning, or disqualification).\n         ●​ Unregistered rule violations by the opponent that should result in a penalty\n            (reprimand, warning, or disqualification).\n\n6.4.​ Result of the Appeal\n      The possible outcomes of an appeal could include:\n         ●​ A general rematch of the round.\n         ●​ Restart from a particular point.\n         ●​ The imposition or withdrawal of yellow cards.\n\n6.5.​ Appeal to the Judiciary Committee\n        ●​ If the team captain is dissatisfied with the Knight Marshal’s decision, they may appeal\n            to the Buhurt International Judiciary Committee.\n\n\n\n\n                                 7.​Change log\n          This will be the change log of this document. It will be updated regularly and we will\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 18,
+      "text": "       display what has been removed/added/reworded/formatted. This way we keep\n                    transparent communication and clarity about the rules\n\n\nUpdate: January -2026.1\nAdd: 3.2 On scoresheet you will record 3-1 ratio\nClarification: 3.4.1 Champions Fight\nAdd: 5.1 Verbal Warning\n   ●​ A verbal warning is imposed for insignificant rule violations and serves to indicate the\n        violation to the competitor. Record on the scoresheet\n   ●​ Collect belt flag number, description of warning, name of competitor\n   ●​ Cannot affect scoring\nClarification: 5.2 and 5.3\n\n\n\nupdate: March-2025 (V2025.03)​\nClarification: 2.3: Added competitors amount per category\nAdd: 5.4 Infraction in Authenticity Rules (Green Card)\nRemoved: 5.2.1: The competitor used equipment in the list that had not passed technical or\nauthenticity checks.​\nRemoved: 5.2.2: A competitor is not allowed in the list if they fail to follow the Buhurt\nInternational requirements documents.\nClarification: 5.4.2 Note: green cards do not count in team disqualification\n\n\nupdate: December-2025\n-add: Document created following BI Format and incorporated the document structures and\nrules\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

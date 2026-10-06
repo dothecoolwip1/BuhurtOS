@@ -74,6 +74,32 @@ Every OCR line keeps its confidence. Only genuinely uncertain lines are flagged 
 | `review` | per provision: `status`, `note`, `reviewed_by`, and `content_sha256` of the text reviewed. If the text changes later, the review is stale and the provision is back to `needs_review` |
 | `keywords` | BuhurtOS search words (not official) |
 
+## Historical editions (earlier versions from the archive folders)
+
+Earlier editions are a SEPARATE workflow (`scripts/rules/history.ts`) so the current release's safeguards stay exactly as they are. A history lives in
+`<body-dir>/history/<name>/` (current: `history/archive-2026-10-06/`, from the 42 PDFs in `bi-source-drop/2026-10-06/<Committee>/Archive/`).
+
+```
+node scripts/rules/history.ts files     rules-library/buhurt-international archive-2026-10-06   # the archive files by SHA-256 (byte-identical copies grouped)
+node scripts/rules/history.ts extract   rules-library/buhurt-international archive-2026-10-06   # text of each UNIQUE file once (OCR only where a page has no text)
+node scripts/rules/history.ts structure rules-library/buhurt-international archive-2026-10-06   # provisions + per-edition reconciliation (checks history.json first)
+node scripts/rules/history.ts reconcile rules-library/buhurt-international archive-2026-10-06   # every archive file accounted for; no duplicate editions
+node scripts/rules/history.ts sql       rules-library/buhurt-international archive-2026-10-06 supabase/migrations/<ts>_rules_bi_history_<name>.sql
+```
+
+- `history.json` holds a person's decisions, each with its evidence: which logical document each archive file is, which files are the same edition, the
+  edition order (`seq`, 1 = oldest, from the documents' own covers and change logs, never from file names), files that are the current edition again
+  (`same_as_current`, provenance only) and files that cannot be matched with confidence (`held`, with the reason, never imported).
+- An edition's id is `<inventory key>@<version as printed>`; its overrides file works exactly like a release's (confirmed label, OCR fixes, tables,
+  reviews bound to content hashes). Stable keys use the document's own series, so the same rule lines up across versions.
+- `reconcile` refuses: an unaccounted archive file, a file claimed twice, byte-identical files split across editions, two editions with the same text,
+  an edition with the same text as the current version, a label the current version already uses, an unconfirmed label.
+- The generated migration loads editions as `historical` versions **in review**. In the database a historical edition can never become the version in
+  force; after review the platform owner publishes it AS HISTORICAL from Platform › Rules (`publish_historical_version`), which only makes it readable
+  as an earlier edition. The current release's importer never touches a historical edition and the historical importer never touches a current version.
+- In the app, current rules stay the default everywhere (search, document pages, the officials' rule picker); earlier editions appear only when someone
+  opens one or ticks "Include older versions and earlier editions", and are always labelled "Earlier edition".
+
 ## Updating when Buhurt International publishes new documents
 
 Run every command from the repository root. The examples use release name `2026-11`.

@@ -116,7 +116,7 @@ function Item({ r }: { r: DisciplineLogRow }) {
       <span className="dl-what">{describeRow(r)} · round {r.round_no}{r.voided_at ? ' · voided' : ''}</span>
       <span className="dl-where">{r.competition_name}{r.round_label ? ` · ${r.round_label}` : ''}{r.field ? ` · ${r.field}` : ''} · {at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
       {(r.reason || r.called_by) && <span className="dl-where">{[r.reason, r.called_by ? `called by ${r.called_by}` : null].filter(Boolean).join(' · ')}</span>}
-      {r.provision_id && <span className="rl-cite">Rule cited: <Link className="lnk" to={`/rules/r/${r.provision_id}`}>{r.rule_number ? `${r.rule_number} ` : ''}{r.rule_title ?? ''}</Link> ({r.rule_document} {r.rule_version}{r.rule_version_status && r.rule_version_status !== 'published' ? `, ${r.rule_version_status}` : ''}){r.citation_changes > 1 ? ' · changed since first recorded' : ''}</span>}
+      {r.provision_id && <span className="rl-cite">Rule cited: <Link className="lnk" to={`/rules/r/${r.provision_id}`}>{r.rule_number ? `${r.rule_number} ` : ''}{r.rule_title ?? ''}</Link> ({r.rule_document} {r.rule_version}{r.rule_version_historical ? ', earlier edition, not in force' : r.rule_version_status && r.rule_version_status !== 'published' ? `, ${r.rule_version_status}` : ''}){r.citation_changes > 1 ? ' · changed since first recorded' : ''}</span>}
       {r.voided_at && r.void_reason && <span className="dl-where">Voided: {r.void_reason}</span>}
       {r.recorded_by_name && <span className="dl-where">Recorded by {r.recorded_by_me ? 'you' : r.recorded_by_name}</span>}
     </li>

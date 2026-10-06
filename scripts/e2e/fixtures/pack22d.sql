@@ -18,7 +18,7 @@ update public.events set organization_id = '00000000-0000-0000-0000-0000000a0a01
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000a1', false);
 select public.publish_ruleset_version(v.id, 'published for the browser run')
   from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id
- where r.governing_body = 'Buhurt International' and r.inventory_key in ('marshal/buhurt-rules', 'tournament/buhurt-regulations', 'marshal/duels-rules', 'tournament/duel-regulations',
+ where r.governing_body = 'Buhurt International' and not v.historical and r.inventory_key in ('marshal/buhurt-rules', 'tournament/buhurt-regulations', 'marshal/duels-rules', 'tournament/duel-regulations',
        'authenticity/infractions', 'marshal/accreditation', 'marshal/weapon-shield-chart', 'authenticity/falchions', 'authenticity/tabards',
        'tournament/league-structure', 'tournament/tournament-structure');
 select set_config('request.jwt.claim.sub', '', false);

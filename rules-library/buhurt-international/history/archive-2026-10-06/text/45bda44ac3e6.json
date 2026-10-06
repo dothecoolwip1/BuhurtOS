@@ -1,0 +1,253 @@
+{
+  "sha256": "45bda44ac3e67d68e69364b2028f0581c0e46f97dbcba1346a0767e4fb663a10",
+  "files": [
+    "Authenticity/Archive/Eyebars V2024.12.docx.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 8,
+    "title": "Eyebars V2024.12.docx",
+    "creator": null,
+    "producer": "Skia/PDF m133 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)) BUHURT(Z\n\nA (\nNe iy) 2Z\nim BX\nC WK \\/ HL .\nAah Lee\n\ne\n\n~\nticity Conm™\n\nVER. 2024.12\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 45.4,
+      "ocr_lines": [
+        {
+          "text": "\\)) BUHURT(Z",
+          "conf_mean": 40.6,
+          "conf_min": 33.2,
+          "words": 2,
+          "uncertain": [
+            "BUHURT(Z"
+          ],
+          "box": [
+            735,
+            172,
+            1449,
+            247
+          ],
+          "paper": 0,
+          "height": 75,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 40.6"
+        },
+        {
+          "text": "A (",
+          "conf_mean": 41.2,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            801,
+            361,
+            1383,
+            482
+          ],
+          "paper": 0,
+          "height": 121,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 41.2"
+        },
+        {
+          "text": "Ne iy) 2Z",
+          "conf_mean": 31.6,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [
+            "iy)"
+          ],
+          "box": [
+            716,
+            505,
+            1466,
+            647
+          ],
+          "paper": 0,
+          "height": 101,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 31.6"
+        },
+        {
+          "text": "im BX",
+          "conf_mean": 28.4,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            772,
+            635,
+            1400,
+            747
+          ],
+          "paper": 0,
+          "height": 112,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 28.4"
+        },
+        {
+          "text": "C WK \\/ HL .",
+          "conf_mean": 31.9,
+          "conf_min": 0,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            766,
+            717,
+            1409,
+            874
+          ],
+          "paper": 0.02,
+          "height": 73,
+          "in_picture": "on a coloured or photographic background (paper 2%), confidence 31.9"
+        },
+        {
+          "text": "Aah Lee",
+          "conf_mean": 22.5,
+          "conf_min": 3.4,
+          "words": 2,
+          "uncertain": [
+            "Aah",
+            "Lee"
+          ],
+          "box": [
+            684,
+            769,
+            1470,
+            1012
+          ],
+          "paper": 0.07,
+          "height": 243,
+          "in_picture": "on a coloured or photographic background (paper 7%), confidence 22.5"
+        },
+        {
+          "text": "e",
+          "conf_mean": 92.3,
+          "conf_min": 92.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            796,
+            985,
+            841,
+            1026
+          ],
+          "paper": 0,
+          "height": 41,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "~",
+          "conf_mean": 61.4,
+          "conf_min": 61.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1361,
+            967,
+            1396,
+            1003
+          ],
+          "paper": 0,
+          "height": 36,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 61.4"
+        },
+        {
+          "text": "ticity Conm™",
+          "conf_mean": 42.3,
+          "conf_min": 26.2,
+          "words": 2,
+          "uncertain": [
+            "ticity",
+            "Conm™"
+          ],
+          "box": [
+            834,
+            980,
+            1381,
+            1135
+          ],
+          "paper": 0.03,
+          "height": 155,
+          "in_picture": "on a coloured or photographic background (paper 3%), confidence 42.3"
+        },
+        {
+          "text": "VER. 2024.12",
+          "conf_mean": 95.4,
+          "conf_min": 94.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            620,
+            1488,
+            1169,
+            1549
+          ],
+          "paper": 0,
+          "height": 61
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 95.9,
+          "conf_min": 95.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            619,
+            1642,
+            1737,
+            1814
+          ],
+          "paper": 0,
+          "height": 172
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "                                 Table of content​\n  1. Definition and General Requirements​                2\n      1.2. Eye bars description​                         2\n      1.3. General requirements​                         2\n  2. Externally Riveted Eye Bars​                        3\n      2.1. Historical Sources and Dating​                3\n      2.2. Specific Requirements​                        3\n      2.3. Examples of Approved reproductions​           4\n  3. Buhurt “Optimized” Eye Bars​                        5\n      3.1. Historical Sources and Dating​                5\n      3.2. Specific Requirements​                        5\n      3.3. Examples of Approved Reproductions​           5\n      3.4. Examples of Denied Reproductions​             6\n  4. Change log​                                         7\n\n\n\n\nEyebars                                              1\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "              1.​Definition and General Requirements​\n  1.1.​         Definition\n          ●​ Eye Bars are the term used to describe additional protection for the eye slots of a helmet.\n          ●​ Rare historical sources display some additional eye protection, mainly for great helms.\n          ●​ However, it is permitted to add eye bars that do not rely on historical sources to increase the\n             safety of helmets. The number and type of permitted eye bars are displayed in each helmet\n             rules document\n\n  1.2.​     Eye bars description\n   Eye bars can be:\n\n       ●​ Externally Riveted Eye Bars​\n          This type of eye bar is documented by historical sources. It consists of metal plates riveted\n          externally.\n       ●​ Buhurt “Optimized” Eye Bars​\n          This type of eye bar is not documented by historical sources. It consists of metal plates riveted\n          or welded to the inside of a helmet.\n  1.3.​ General requirements\n\n   All types of eye bars must respect the following requirements\n\n              ●​Be firmly attached to prevent any breakage and maintain a high level of protection in any\n                situation.\n              ●​Protect the whole eye slot from top to bottom.\n\n                          Recommended: Eye slots should not exceed an opening of 25 mm\n\n\n\n\nEyebars                                                                                     2\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "                     2.​Externally Riveted Eye Bars​\n\n  2.1.​ Historical Sources and Dating\n\n       A few historical sources display this type of eye bar.​\n       The main source is the Great Helm from Nuremberg (1350).\n\n\n\n\n       Despite its rarity, it is approved for 14th-century, transitional, and 15th-century armors.\n\n  2.2.​ Specific Requirements\n      ●​Externally riveted eye bars must conform with the general requirements (1.3)\n      ●​Externally riveted eye bars must be firmly riveted to the outside of the eye slot.\n      ●​Externally riveted eye bars must resemble the historical sources and not exceed a width of 30mm.\n      ●​Externally riveted eye bars must be made of metal.\n\n\n\n\nEyebars                                                                                     3\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "  2.3.​ Examples of Approved reproductions​\n\n\n\n\n                                         Picture by Zoom en Lice ©\n\n\n\n\nEyebars                                                              4\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 6,
+      "text": "                  3.​Buhurt “Optimized” Eye Bars\n\n  3.1.​ Historical Sources and Dating\n\n       There are no historical sources for eye bars welded onto eye slots.\n       Nevertheless, for safety reasons, they are approved for 14th-century, transitional, and 15th-century\n       armor.\n\n  3.2.​ Specific Requirements\n        ●​Buhurt-optimized eye bars must conform with the general requirements (1.3)\n        ●​Buhurt-optimized eye bars must be welded or riveted from the inside of the helm.\n        ●​Buhurt-optimized eye bars must be strong enough to endure full-contact fights.\n        ●​Buhurt-optimized eye bars must be painted black.\n\n\n  3.3.​ Examples of Approved Reproductions\n\n\n\n\n                                           Pictures from The Medieval Things ©\n\n\n\n\nEyebars                                                                                 5\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "  3.4.​ Examples of Denied Reproductions\n\n\n\n\n                                           Too much eyebars\n\n                                      Pictures from The Medieval Things ©\n\n\n\n\nEyebars                                                                     6\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "                                   4.​Change log\n          Below, we will keep track of all the changes made over the lifetime of this document. This way,\n                     all our members can see how the documents are changing over time.\n\n\n\n\n      December-2024: -add ​\n      Document has been created\n\n\n\n\nEyebars                                                                                   7\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

@@ -594,3 +594,21 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Applied to hosted Supabase | **NO** (hosted database not touched) |
 | Published BI versions | **None** (all 42 wait in review for the owner) |
 | PR / merged / deployed / production verified | no / no / no / **NOT VERIFIED** |
+
+### Pack 22 historical editions (earlier versions from the archive) — 2026-10-06
+
+| Level | Status |
+| --- | --- |
+| Source files collected | **YES**: 42 archive PDFs (Tournament 10, Marshal 10, Authenticity 22) on `pack22-bi-sources` (`06b671d`), checksummed; merged into the Pack 22 branch |
+| Historical importer implemented | **YES**: `scripts/rules/history.ts` (separate from the current release workflow); migration `20261015000800` (historical flag, order, evidence, provenance; guard; historical importer; `publish_historical_version`) |
+| Mapped and reconciled | **YES**: 37 historical editions of 25 documents; 4 byte-identical pairs imported once; 0 semantic duplicates; 1 file held for review (one-sheet shields export); reconciliation PASSED; 44 provisions flagged for review (not resolved by guessing) |
+| Imported locally | **YES**: generated migration `20261015000900` loads the 37 editions in review (1357 provisions); regenerates byte for byte |
+| Locally verified | **YES**: history gate 46 checks; DATABASE GATE PASSED; Vitest 1052/1052; typecheck clean; build OK; browser history 28/28, rules 71/71, discipline 56/56, Pack 13 88/88 |
+| Current 2026-10-06 release changed | **NO** (fingerprint of its 42 versions unchanged; migration `20261015000400` byte-identical) |
+| Committed / pushed | see the final handoff (branch `ccr-321cc545-1coq4p`) |
+| Merged to main | **NO** |
+| Hosted database applied | **NO** |
+| Deployed | **NO** |
+| Current rules published | **NO** (42 versions in review) |
+| Historical rules published | **NO** (37 editions in review) |
+| Production verified | **NOT VERIFIED** |

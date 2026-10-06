@@ -1,0 +1,5109 @@
+{
+  "sha256": "54eddb12c8eb3af317a05c78e0a8cf6e4eec8b4484836de7f4deba5a9d8df3d3",
+  "files": [
+    "Authenticity/Archive/Technical Requirements for Weapons.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 14 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 14,
+    "title": "Weapons requirements V2024.12.13 - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:30:16 2026 UTC",
+    "modified": "Wed Jan 28 14:30:16 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")pBUHURT(G\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 71.7,
+      "ocr_lines": [
+        {
+          "text": ")pBUHURT(G",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            ")pBUHURT(G"
+          ],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 116,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.2,
+          "conf_min": 93.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1272,
+            991,
+            1343
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            606,
+            1449,
+            1724,
+            1643
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n● Introduction and Definitions 2\n1.1. Equipment 3\n1.2. List 3\n1.3. Categories 3\n1.4. Striking Edge / Non-striking Edge (of the Weapon) 3\n1.5. Historical Sources 3\n\n2. Historical Consistency Requirements 4\n2.1. Equipment from Historical Sources 4\n2.2. Dates of Sources 4\n2.3. Prohibited Features 4\n2.4. Consistency in Equipment 4\n\n2.4.1. Western Europe Style 4\n2.4.2. Slavic Influence 4\n2.4.3. Eastern Influence 4\n2.4.4. Authorized Deviations 5\n\n3. General Requirements 5\n3.1. Competitor Responsibility 5\n3.2. Quality Equipment 5\n3.3. Access to the List 5\n\n4. Weapons Definitions 6\n4.1. Types of Weapons 6\n\n4.1.1. Bladed Weapons 6\n4.1.2, Hafted Weapons 6\n4.2. Subgenres of Weapons 6\n4.2.1. Duels 6\n4.2.2. Group (3v3,5v5 etc...) 6\n\n5. Safety Requirements 7\n\n6. Authenticity Requirements 7\n\n7. Specific Requirements 8\n7.1. Bladed Weapons 8\n7.2. Hafted Weapons 8\n\n7.2.1. Components 8\n7.2.2. Haft Requirements 9\n\n8. Duels Weapons 11\n8.1. Sword and Shield / Sword and Buckler Category 11\n8.2. Longsword category 11\n8.3. Polearm category 11\n\n9. Outrance Weapons 12\nPoint of Balance 12\n\n10. Buhurt/Group Weapons 13\n10.1. Type 2 & 3 Bladed 13\n10.2. Type 2 & 3 Hafted 13\n\n11. Changelog 14\n\nTechnical Requirements for Weapons V. 26.] 2/14",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.8,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            195,
+            285,
+            636,
+            325
+          ],
+          "paper": 0.58,
+          "height": 39
+        },
+        {
+          "text": "● Introduction and Definitions 2",
+          "conf_mean": 90.8,
+          "conf_min": 71.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            357,
+            2301,
+            391
+          ],
+          "paper": 0.9,
+          "height": 34,
+          "raw": ". Introduction and Definitions 2"
+        },
+        {
+          "text": "1.1. Equipment 3",
+          "conf_mean": 95.5,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            231,
+            422,
+            2301,
+            464
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "1.2. List 3",
+          "conf_mean": 95.7,
+          "conf_min": 93.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            231,
+            488,
+            2301,
+            521
+          ],
+          "paper": 0.97,
+          "height": 33
+        },
+        {
+          "text": "1.3. Categories 3",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            231,
+            553,
+            2300,
+            596
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "1.4. Striking Edge / Non-striking Edge (of the Weapon) 3",
+          "conf_mean": 95,
+          "conf_min": 90.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            231,
+            618,
+            2301,
+            661
+          ],
+          "paper": 0.85,
+          "height": 43
+        },
+        {
+          "text": "1.5. Historical Sources 3",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            231,
+            683,
+            2301,
+            717
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "2. Historical Consistency Requirements 4",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            152,
+            748,
+            2301,
+            791
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "2.1. Equipment from Historical Sources 4",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            227,
+            813,
+            2301,
+            856
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "2.2. Dates of Sources 4",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            878,
+            2301,
+            912
+          ],
+          "paper": 0.93,
+          "height": 33
+        },
+        {
+          "text": "2.3. Prohibited Features 4",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            227,
+            944,
+            2301,
+            977
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "2.4. Consistency in Equipment 4",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            1009,
+            2301,
+            1052
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "2.4.1. Western Europe Style 4",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            303,
+            1074,
+            2301,
+            1117
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "2.4.2. Slavic Influence 4",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            303,
+            1139,
+            2301,
+            1173
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "2.4.3. Eastern Influence 4",
+          "conf_mean": 95.9,
+          "conf_min": 94.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            303,
+            1204,
+            2301,
+            1238
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "2.4.4. Authorized Deviations 5",
+          "conf_mean": 95.8,
+          "conf_min": 94,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            303,
+            1270,
+            2301,
+            1303
+          ],
+          "paper": 0.9,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements 5",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1335,
+            2301,
+            1377
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "3.1. Competitor Responsibility 5",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1400,
+            2301,
+            1443
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "3.2. Quality Equipment 5",
+          "conf_mean": 94.6,
+          "conf_min": 89.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1465,
+            2301,
+            1508
+          ],
+          "paper": 0.94,
+          "height": 42
+        },
+        {
+          "text": "3.3. Access to the List 5",
+          "conf_mean": 96.1,
+          "conf_min": 94.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1530,
+            2301,
+            1564
+          ],
+          "paper": 0.93,
+          "height": 33
+        },
+        {
+          "text": "4. Weapons Definitions 6",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            152,
+            1595,
+            2301,
+            1638
+          ],
+          "paper": 0.94,
+          "height": 34
+        },
+        {
+          "text": "4.1. Types of Weapons 6",
+          "conf_mean": 96.1,
+          "conf_min": 93.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            1661,
+            2301,
+            1704
+          ],
+          "paper": 0.94,
+          "height": 34
+        },
+        {
+          "text": "4.1.1. Bladed Weapons 6",
+          "conf_mean": 94.8,
+          "conf_min": 92.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            302,
+            1726,
+            2301,
+            1768
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4.1.2, Hafted Weapons 6",
+          "conf_mean": 94,
+          "conf_min": 91.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            302,
+            1791,
+            2301,
+            1833
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4.2. Subgenres of Weapons 6",
+          "conf_mean": 95,
+          "conf_min": 93.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            1856,
+            2301,
+            1899
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "4.2.1. Duels 6",
+          "conf_mean": 96.7,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            302,
+            1922,
+            2301,
+            1955
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "4.2.2. Group (3v3,5v5 etc...) 6",
+          "conf_mean": 93.4,
+          "conf_min": 85.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            302,
+            1986,
+            2301,
+            2029
+          ],
+          "paper": 0.93,
+          "height": 43
+        },
+        {
+          "text": "5. Safety Requirements 7",
+          "conf_mean": 95.1,
+          "conf_min": 92.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            2052,
+            2301,
+            2094
+          ],
+          "paper": 0.93,
+          "height": 42
+        },
+        {
+          "text": "6. Authenticity Requirements 7",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            2117,
+            2301,
+            2160
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "7. Specific Requirements 8",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            2182,
+            2301,
+            2225
+          ],
+          "paper": 0.93,
+          "height": 43
+        },
+        {
+          "text": "7.1. Bladed Weapons 8",
+          "conf_mean": 94.5,
+          "conf_min": 91.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            2248,
+            2301,
+            2290
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "7.2. Hafted Weapons 8",
+          "conf_mean": 94.6,
+          "conf_min": 91.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            2313,
+            2301,
+            2355
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "7.2.1. Components 8",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            303,
+            2378,
+            2301,
+            2420
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "7.2.2. Haft Requirements 9",
+          "conf_mean": 94.9,
+          "conf_min": 90.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            303,
+            2443,
+            2301,
+            2485
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "8. Duels Weapons 11",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            2508,
+            2295,
+            2550
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "8.1. Sword and Shield / Sword and Buckler Category 11",
+          "conf_mean": 95.4,
+          "conf_min": 92,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            228,
+            2573,
+            2295,
+            2616
+          ],
+          "paper": 0.86,
+          "height": 34
+        },
+        {
+          "text": "8.2. Longsword category 11",
+          "conf_mean": 94.2,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            2639,
+            2295,
+            2681
+          ],
+          "paper": 0.93,
+          "height": 41
+        },
+        {
+          "text": "8.3. Polearm category 11",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            2704,
+            2295,
+            2747
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "9. Outrance Weapons 12",
+          "conf_mean": 94.8,
+          "conf_min": 92.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            2769,
+            2301,
+            2811
+          ],
+          "paper": 0.94,
+          "height": 34
+        },
+        {
+          "text": "Point of Balance 12",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            229,
+            2834,
+            2301,
+            2868
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "10. Buhurt/Group Weapons 13",
+          "conf_mean": 94.3,
+          "conf_min": 91.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            156,
+            2899,
+            2301,
+            2941
+          ],
+          "paper": 0.92,
+          "height": 41
+        },
+        {
+          "text": "10.1. Type 2 & 3 Bladed 13",
+          "conf_mean": 94.4,
+          "conf_min": 92,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            2964,
+            2300,
+            3007
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "10.2. Type 2 & 3 Hafted 13",
+          "conf_mean": 93.9,
+          "conf_min": 91.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3029,
+            2300,
+            3072
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "11. Changelog 14",
+          "conf_mean": 95.7,
+          "conf_min": 95.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            3094,
+            2301,
+            3137
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.] 2/14",
+          "conf_mean": 91.1,
+          "conf_min": 82.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Introduction and Definitions\n\nThis document will display all requirements for armors, shields, and Weapons used in any category.\nEvery competitor is solely responsible for the quality of his/her equipment. Marshals and Authenticity\nOfficers are responsible for the correct application of this document.\n\n1.1. Equipment\n\nArmors, clothes, shields and Weapons used by a competitor.\n\n1.2. List\n\nPlace where the fights occur.\n\n1.3. Categories\n\n● Duel\n\n1v1 sword and shield, sword and buckler, longsword, polearm.\n● Buhurt\n\nGroup fight, 5v5, 12v12, 30v30.\n● Outrance\n\n1.4. Striking Edge / Non-striking Edge (of the Weapon)\n\nStriking Edge is a part of the Weapon designed to hit an opponent.\nNon-striking edge is a part of the Weapon not designed to hit an opponent.\n\n=—y =\n\nHere are some examples with the striking edge being red\n\n1.5. Historical Sources\n\nIt is the result of research to conclude the plausibility of the item had existed. Historical sources can be\nprimary (artifacts, museum originals...) or secondary (images, paintings, statues, description, writings...).\nAny historical source must be analyzed through criticism and logic.\n\nTechnical Requirements for Weapons V. 26.1 3/14",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "1. Introduction and Definitions",
+          "conf_mean": 95.5,
+          "conf_min": 95.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            549,
+            290,
+            1964,
+            361
+          ],
+          "paper": 0.62,
+          "height": 70
+        },
+        {
+          "text": "This document will display all requirements for armors, shields, and Weapons used in any category.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            471,
+            2188,
+            514
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Every competitor is solely responsible for the quality of his/her equipment. Marshals and Authenticity",
+          "conf_mean": 96.3,
+          "conf_min": 94.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            532,
+            2301,
+            575
+          ],
+          "paper": 0.74,
+          "height": 43
+        },
+        {
+          "text": "Officers are responsible for the correct application of this document.",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            593,
+            1547,
+            635
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "1.1. Equipment",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            240,
+            729,
+            633,
+            778
+          ],
+          "paper": 0.67,
+          "height": 49
+        },
+        {
+          "text": "Armors, clothes, shields and Weapons used by a competitor.",
+          "conf_mean": 96.1,
+          "conf_min": 93,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            179,
+            840,
+            1405,
+            882
+          ],
+          "paper": 0.72,
+          "height": 39
+        },
+        {
+          "text": "1.2. List",
+          "conf_mean": 96.8,
+          "conf_min": 96.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            240,
+            963,
+            450,
+            1002
+          ],
+          "paper": 0.66,
+          "height": 39
+        },
+        {
+          "text": "Place where the fights occur.",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            183,
+            1074,
+            761,
+            1117
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "1.3. Categories",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            240,
+            1197,
+            631,
+            1248
+          ],
+          "paper": 0.69,
+          "height": 51
+        },
+        {
+          "text": "● Duel",
+          "conf_mean": 94.4,
+          "conf_min": 92.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1308,
+            397,
+            1342
+          ],
+          "paper": 0.65,
+          "height": 34,
+          "raw": "e Duel"
+        },
+        {
+          "text": "1v1 sword and shield, sword and buckler, longsword, polearm.",
+          "conf_mean": 94,
+          "conf_min": 88.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            306,
+            1382,
+            1560,
+            1424
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Buhurt",
+          "conf_mean": 88.4,
+          "conf_min": 87.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1455,
+            451,
+            1488
+          ],
+          "paper": 0.64,
+          "height": 33,
+          "raw": "e Buhurt"
+        },
+        {
+          "text": "Group fight, 5v5, 12v12, 30v30.",
+          "conf_mean": 91.4,
+          "conf_min": 88.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            303,
+            1528,
+            936,
+            1570
+          ],
+          "paper": 0.74,
+          "height": 39
+        },
+        {
+          "text": "● Outrance",
+          "conf_mean": 88.5,
+          "conf_min": 84.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1601,
+            500,
+            1634
+          ],
+          "paper": 0.63,
+          "height": 33,
+          "raw": "e Outrance"
+        },
+        {
+          "text": "1.4. Striking Edge / Non-striking Edge (of the Weapon)",
+          "conf_mean": 94.6,
+          "conf_min": 90.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            240,
+            1736,
+            1635,
+            1787
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Striking Edge is a part of the Weapon designed to hit an opponent.",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            1848,
+            1524,
+            1891
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Non-striking edge is a part of the Weapon not designed to hit an opponent.",
+          "conf_mean": 96,
+          "conf_min": 91,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            1908,
+            1687,
+            1951
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "=—y =",
+          "conf_mean": 15.2,
+          "conf_min": 0.2,
+          "words": 2,
+          "uncertain": [
+            "=—y"
+          ],
+          "box": [
+            334,
+            2088,
+            2207,
+            2488
+          ],
+          "paper": 0.63,
+          "height": 400,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "Here are some examples with the striking edge being red",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            665,
+            2575,
+            1817,
+            2611
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "1.5. Historical Sources",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            240,
+            2697,
+            827,
+            2738
+          ],
+          "paper": 0.62,
+          "height": 40
+        },
+        {
+          "text": "It is the result of research to conclude the plausibility of the item had existed. Historical sources can be",
+          "conf_mean": 96.1,
+          "conf_min": 94.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            184,
+            2809,
+            2300,
+            2852
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "primary (artifacts, museum originals...) or secondary (images, paintings, statues, description, writings...).",
+          "conf_mean": 95,
+          "conf_min": 89.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            182,
+            2870,
+            2299,
+            2913
+          ],
+          "paper": 0.74,
+          "height": 43
+        },
+        {
+          "text": "Any historical source must be analyzed through criticism and logic.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            2931,
+            1524,
+            2973
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 3/14",
+          "conf_mean": 95.1,
+          "conf_min": 93,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "2. Historical Consistency Requirements\n\n2.1. Equipment from Historical Sources\n\nOnly Weapons derived from historical sources are permitted for use.\nWeapons must align with Authenticity Rules documents.\n\n2.2. Dates of Sources\n\nWeapons must align with sources dating between the 14th (1300) and 17th (1600) centuries.\n\nFor safety considerations, reproductions of armors predating the 13th century are prohibited, as are\nWeapons of the same period.\n\n2.3. Prohibited Features\n\nProhibited features encompass evident indications of modern materials or manufacturing techniques\nincluding: neon colors, obvious nylon cords, plastic ties, visible welded seams, heat-induced\ndiscoloration and other visible modern equipment.\n\n2.4. Consistency in Equipment\n\nArmors, shields and Weapons must consist of pieces from the same style. Distinct styles are defined in\nmodern-day terms as:\n\n2.4.1. | Western Europe Style\n\n● 14th century: from 1300 to 1380\n\n● Transitional: from 1380 to 1420\n\n● 15th century: from 1420 to 1500. 15th century style armor must be approved by the Authenticity\nCommittee. We recommended seeking approval before buying such armor.\n\nWestern Europe includes the following modern countries: Great Britain, Ireland, France, Portugal, Spain,\nGermany, Italy, Norway, Denmark, Sweden, Finland, Austria, Switzerland, Belgium, and the Netherlands\n\n2.4.2. Slavic Influence\n\n● Central Europe 14th: from 1300 to 1400\n● Russian late armors: from 1500 to 1700\n\nSlavic Influence includes the following modern countries: Czech Republic, Romania, Hungary, Poland,\nSlovakia, Slovenia, Croatia, Latvia, Estonia, Moldova, Serbia, Ukraine, Russia, and Belarus.\n\n2.4.3. Eastern Influence\n\n● Chinese style: from 1300 to 1600\n● Japanese samurai style: from 1400 to 1700\n● Middle-East style: from 1300 to 1700\n\nEastern influence includes the following modern countries: China, Japan, India, Korea, Iran, Iraq, Turkey,\nEgypt.\n\nTechnical Requirements for Weapons V. 26.] 4/14",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.9,
+      "ocr_lines": [
+        {
+          "text": "2. Historical Consistency Requirements",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            333,
+            290,
+            2174,
+            380
+          ],
+          "paper": 0.69,
+          "height": 88,
+          "dropped": [
+            "a"
+          ]
+        },
+        {
+          "text": "2.1. Equipment from Historical Sources",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            473,
+            1257,
+            523
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Only Weapons derived from historical sources are permitted for use.",
+          "conf_mean": 96.5,
+          "conf_min": 95.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            585,
+            1557,
+            628
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Weapons must align with Authenticity Rules documents.",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            658,
+            1313,
+            701
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2.2. Dates of Sources",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            793,
+            792,
+            833
+          ],
+          "paper": 0.61,
+          "height": 40
+        },
+        {
+          "text": "Weapons must align with sources dating between the 14th (1300) and 17th (1600) centuries.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            905,
+            2051,
+            948
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "For safety considerations, reproductions of armors predating the 13th century are prohibited, as are",
+          "conf_mean": 96.6,
+          "conf_min": 95.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            978,
+            2298,
+            1021
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Weapons of the same period.",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1038,
+            773,
+            1081
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2.3. Prohibited Features",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1174,
+            860,
+            1214
+          ],
+          "paper": 0.58,
+          "height": 39
+        },
+        {
+          "text": "Prohibited features encompass evident indications of modern materials or manufacturing techniques",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1285,
+            2301,
+            1328
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "including: neon colors, obvious nylon cords, plastic ties, visible welded seams, heat-induced",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            1346,
+            2300,
+            1389
+          ],
+          "paper": 0.78,
+          "height": 39
+        },
+        {
+          "text": "discoloration and other visible modern equipment.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            181,
+            1407,
+            1186,
+            1449
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "2.4. Consistency in Equipment",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            1542,
+            1033,
+            1593
+          ],
+          "paper": 0.69,
+          "height": 50
+        },
+        {
+          "text": "Armors, shields and Weapons must consist of pieces from the same style. Distinct styles are defined in",
+          "conf_mean": 96.3,
+          "conf_min": 92.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1654,
+            2298,
+            1697
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "modern-day terms as:",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            1715,
+            621,
+            1757
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "2.4.1. | Western Europe Style",
+          "conf_mean": 82.6,
+          "conf_min": 66.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            262,
+            1829,
+            922,
+            1880
+          ],
+          "paper": 0.75,
+          "height": 41
+        },
+        {
+          "text": "● 14th century: from 1300 to 1380",
+          "conf_mean": 95.3,
+          "conf_min": 90.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            1902,
+            948,
+            1945
+          ],
+          "paper": 0.77,
+          "height": 33,
+          "raw": "e 14th century: from 1300 to 1380"
+        },
+        {
+          "text": "● Transitional: from 1380 to 1420",
+          "conf_mean": 95.7,
+          "conf_min": 92.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            1963,
+            931,
+            1997
+          ],
+          "paper": 0.68,
+          "height": 34,
+          "raw": "e Transitional: from 1380 to 1420"
+        },
+        {
+          "text": "● 15th century: from 1420 to 1500. 15th century style armor must be approved by the Authenticity",
+          "conf_mean": 95.9,
+          "conf_min": 91.5,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            230,
+            2023,
+            2302,
+            2066
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e 15th century: from 1420 to 1500. 15th century style armor must be approved by the Authenticity"
+        },
+        {
+          "text": "Committee. We recommended seeking approval before buying such armor.",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            303,
+            2084,
+            1819,
+            2127
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Western Europe includes the following modern countries: Great Britain, Ireland, France, Portugal, Spain,",
+          "conf_mean": 94.8,
+          "conf_min": 77.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            2157,
+            2297,
+            2200
+          ],
+          "paper": 0.74,
+          "height": 40
+        },
+        {
+          "text": "Germany, Italy, Norway, Denmark, Sweden, Finland, Austria, Switzerland, Belgium, and the Netherlands",
+          "conf_mean": 96.1,
+          "conf_min": 94.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            2218,
+            2282,
+            2261
+          ],
+          "paper": 0.73,
+          "height": 39
+        },
+        {
+          "text": "2.4.2. Slavic Influence",
+          "conf_mean": 96.1,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            262,
+            2337,
+            796,
+            2371
+          ],
+          "paper": 0.63,
+          "height": 34
+        },
+        {
+          "text": "● Central Europe 14th: from 1300 to 1400",
+          "conf_mean": 95.4,
+          "conf_min": 91.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2406,
+            1106,
+            2448
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Central Europe 14th: from 1300 to 1400"
+        },
+        {
+          "text": "● Russian late armors: from 1500 to 1700",
+          "conf_mean": 94.6,
+          "conf_min": 92.2,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2467,
+            1103,
+            2500
+          ],
+          "paper": 0.68,
+          "height": 33,
+          "raw": "e Russian late armors: from 1500 to 1700"
+        },
+        {
+          "text": "Slavic Influence includes the following modern countries: Czech Republic, Romania, Hungary, Poland,",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            2540,
+            2298,
+            2582
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Slovakia, Slovenia, Croatia, Latvia, Estonia, Moldova, Serbia, Ukraine, Russia, and Belarus.",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            2600,
+            2036,
+            2640
+          ],
+          "paper": 0.72,
+          "height": 39
+        },
+        {
+          "text": "2.4.3. Eastern Influence",
+          "conf_mean": 94.9,
+          "conf_min": 93.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            263,
+            2719,
+            831,
+            2753
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "● Chinese style: from 1300 to 1600",
+          "conf_mean": 95.3,
+          "conf_min": 92,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            2789,
+            971,
+            2832
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e Chinese style: from 1300 to 1600"
+        },
+        {
+          "text": "● Japanese samurai style: from 1400 to 1700",
+          "conf_mean": 95.6,
+          "conf_min": 91.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2849,
+            1177,
+            2892
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e Japanese samurai style: from 1400 to 1700"
+        },
+        {
+          "text": "● Middle-East style: from 1300 to 1700",
+          "conf_mean": 95.3,
+          "conf_min": 92.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            2910,
+            1045,
+            2953
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Middle-East style: from 1300 to 1700"
+        },
+        {
+          "text": "Eastern influence includes the following modern countries: China, Japan, India, Korea, Iran, Iraq, Turkey,",
+          "conf_mean": 91.2,
+          "conf_min": 48.1,
+          "words": 14,
+          "uncertain": [
+            "Iran,"
+          ],
+          "box": [
+            183,
+            2983,
+            2297,
+            3026
+          ],
+          "paper": 0.74,
+          "height": 39
+        },
+        {
+          "text": "Egypt.",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            3044,
+            306,
+            3086
+          ],
+          "paper": 0.66,
+          "height": 42
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.] 4/14",
+          "conf_mean": 91.1,
+          "conf_min": 82.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "2.4.4. Authorized Deviations\n\nCompetitors may deviate from these specified styles if they provide sources supporting their equipment\nchoices.\n\nCompetitors who deviate from these’ specified styles must send an_= email to\nauthenticity@buhurtinternational.com to obtain validation of their armor.\n\n3. General Requirements\n\n3.1. Competitor Responsibility\n\nEvery competitor is responsible for the quality and the safety of his/her equipment.\n\n3.2. Quality Equipment\nAll Weapon parts must be made of strong materials able to endure full contact fights.\nPoor quality equipment is not allowed in any category.\n\nPoor quality Weapon examples: loose guard, pommel or other element of a Weapon that may break,\ndented blade, cracks in metal part etc.\n\n3.3. Access to the List\n\nMarshals are allowed to deny any competitor with clearly poor quality equipment to enter the list.\n\nTechnical Requirements for Weapons V. 26.1 5/14",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.8,
+      "ocr_lines": [
+        {
+          "text": "2.4.4. Authorized Deviations",
+          "conf_mean": 87.4,
+          "conf_min": 83.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            263,
+            407,
+            932,
+            441
+          ],
+          "paper": 0.61,
+          "height": 34
+        },
+        {
+          "text": "Competitors may deviate from these specified styles if they provide sources supporting their equipment",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            476,
+            2301,
+            519
+          ],
+          "paper": 0.74,
+          "height": 41
+        },
+        {
+          "text": "choices.",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            537,
+            343,
+            571
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Competitors who deviate from these’ specified styles must send an_= email to",
+          "conf_mean": 70.4,
+          "conf_min": 22.4,
+          "words": 12,
+          "uncertain": [
+            "these’",
+            "an_=",
+            "email"
+          ],
+          "box": [
+            181,
+            639,
+            2301,
+            682
+          ],
+          "paper": 0.81,
+          "height": 33
+        },
+        {
+          "text": "authenticity@buhurtinternational.com to obtain validation of their armor.",
+          "conf_mean": 95.8,
+          "conf_min": 91.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            700,
+            1622,
+            743
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            672,
+            979,
+            1836,
+            1068
+          ],
+          "paper": 0.69,
+          "height": 71
+        },
+        {
+          "text": "3.1. Competitor Responsibility",
+          "conf_mean": 96,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1163,
+            1027,
+            1213
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "Every competitor is responsible for the quality and the safety of his/her equipment.",
+          "conf_mean": 96.2,
+          "conf_min": 91.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            1274,
+            1841,
+            1317
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "3.2. Quality Equipment",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1438,
+            832,
+            1489
+          ],
+          "paper": 0.68,
+          "height": 49
+        },
+        {
+          "text": "All Weapon parts must be made of strong materials able to endure full contact fights.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1550,
+            1888,
+            1593
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Poor quality equipment is not allowed in any category.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            1652,
+            1266,
+            1695
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Poor quality Weapon examples: loose guard, pommel or other element of a Weapon that may break,",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            183,
+            1755,
+            2299,
+            1798
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "dented blade, cracks in metal part etc.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            1816,
+            949,
+            1858
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "3.3. Access to the List",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1980,
+            817,
+            2020
+          ],
+          "paper": 0.62,
+          "height": 40
+        },
+        {
+          "text": "Marshals are allowed to deny any competitor with clearly poor quality equipment to enter the list.",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            183,
+            2092,
+            2126,
+            2134
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 5/14",
+          "conf_mean": 91.3,
+          "conf_min": 69.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "4. Weapons Definitions\n\n4.1. Types of Weapons\n\nThere are 2 types of Weapons:\n\n4.1.1. Bladed Weapons\nWeapon with a long metal blade and a hilt with a hand guard.\nExamples of Bladed Weapons:\n● swords,\n●  falchions,\n● longswords,\n● etc...\n\n4.1.2. | Hafted Weapons\nWeapon which the main fighting part of the Weapon is fitted to the end of a long shaft\nExamples of Hafted Weapons:\n● axe,\n● polearm,\n● glaive,\n● maces,\n\n4.2. Subgenres of Weapons\n\n4.2.1. Duels\n\n● Duels Sword\n● Duels Longsword\n● Duels Polearm\n\n4.2.2. | Group (3v3,5v5 etc...)\n\n● Type 1 Bladed\n\n● Type 2 Bladed\n\n● Type 3 Bladed\n\n● Type 1 Hafted (mace)\n\n● Type 2 Hafted (axe)\n\n● Type 3 Hafted\n\n● Type 4 Hafted\n\nTechnical Requirements for Weapons V. 26.1 6/14",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89,
+      "ocr_lines": [
+        {
+          "text": "4. Weapons Definitions",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            709,
+            290,
+            1798,
+            379
+          ],
+          "paper": 0.68,
+          "height": 71
+        },
+        {
+          "text": "4.1. Types of Weapons",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            473,
+            825,
+            524
+          ],
+          "paper": 0.69,
+          "height": 49
+        },
+        {
+          "text": "There are 2 types of Weapons:",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            180,
+            585,
+            803,
+            628
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "4.1.1. Bladed Weapons",
+          "conf_mean": 75.2,
+          "conf_min": 54.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            262,
+            704,
+            817,
+            746
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Weapon with a long metal blade and a hilt with a hand guard.",
+          "conf_mean": 95.9,
+          "conf_min": 93.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            773,
+            1415,
+            816
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Examples of Bladed Weapons:",
+          "conf_mean": 94.2,
+          "conf_min": 90.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            846,
+            804,
+            888
+          ],
+          "paper": 0.71,
+          "height": 41
+        },
+        {
+          "text": "● swords,",
+          "conf_mean": 88.1,
+          "conf_min": 79.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            920,
+            455,
+            959
+          ],
+          "paper": 0.76,
+          "height": 39,
+          "raw": "e swords,"
+        },
+        {
+          "text": "●  falchions,",
+          "conf_mean": 11,
+          "conf_min": 11,
+          "words": 2,
+          "uncertain": [
+            " falchions,"
+          ],
+          "box": [
+            230,
+            980,
+            490,
+            1019
+          ],
+          "paper": 0.75,
+          "height": 39,
+          "raw": "e  falchions,",
+          "in_picture": "nothing read with confidence (best word 11): marks of a picture"
+        },
+        {
+          "text": "● longswords,",
+          "conf_mean": 85.1,
+          "conf_min": 85.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1041,
+            541,
+            1083
+          ],
+          "paper": 0.74,
+          "height": 42,
+          "raw": "e longswords,"
+        },
+        {
+          "text": "● etc...",
+          "conf_mean": 90.9,
+          "conf_min": 88.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1102,
+            402,
+            1135
+          ],
+          "paper": 0.8,
+          "height": 33,
+          "raw": "e etc..."
+        },
+        {
+          "text": "4.1.2. | Hafted Weapons",
+          "conf_mean": 68.4,
+          "conf_min": 43.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            262,
+            1216,
+            807,
+            1266
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "Weapon which the main fighting part of the Weapon is fitted to the end of a long shaft",
+          "conf_mean": 96.1,
+          "conf_min": 94.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            1289,
+            1903,
+            1332
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Examples of Hafted Weapons:",
+          "conf_mean": 94.7,
+          "conf_min": 92.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            1362,
+            796,
+            1405
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "● axe,",
+          "conf_mean": 68.7,
+          "conf_min": 42.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1444,
+            383,
+            1475
+          ],
+          "paper": 0.73,
+          "height": 31,
+          "raw": "@ axe,"
+        },
+        {
+          "text": "● polearm,",
+          "conf_mean": 80.4,
+          "conf_min": 75.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1496,
+            475,
+            1538
+          ],
+          "paper": 0.77,
+          "height": 42,
+          "raw": "e polearm,"
+        },
+        {
+          "text": "● glaive,",
+          "conf_mean": 66.2,
+          "conf_min": 66.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1557,
+            429,
+            1599
+          ],
+          "paper": 0.76,
+          "height": 42,
+          "raw": "e glaive,"
+        },
+        {
+          "text": "● maces,",
+          "conf_mean": 52.3,
+          "conf_min": 8.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1626,
+            445,
+            1657
+          ],
+          "paper": 0.71,
+          "height": 31,
+          "raw": "@ maces,"
+        },
+        {
+          "text": "4.2. Subgenres of Weapons",
+          "conf_mean": 94.4,
+          "conf_min": 91.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            1753,
+            952,
+            1803
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "4.2.1. Duels",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            262,
+            1881,
+            573,
+            1915
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "● Duels Sword",
+          "conf_mean": 95.1,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1950,
+            557,
+            1984
+          ],
+          "paper": 0.69,
+          "height": 34,
+          "raw": "e Duels Sword"
+        },
+        {
+          "text": "● Duels Longsword",
+          "conf_mean": 90.6,
+          "conf_min": 87.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2011,
+            651,
+            2053
+          ],
+          "paper": 0.74,
+          "height": 42,
+          "raw": "e Duels Longsword"
+        },
+        {
+          "text": "● Duels Polearm",
+          "conf_mean": 94.8,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2071,
+            598,
+            2105
+          ],
+          "paper": 0.68,
+          "height": 34,
+          "raw": "e Duels Polearm"
+        },
+        {
+          "text": "4.2.2. | Group (3v3,5v5 etc...)",
+          "conf_mean": 80.3,
+          "conf_min": 57.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            262,
+            2186,
+            920,
+            2237
+          ],
+          "paper": 0.78,
+          "height": 43
+        },
+        {
+          "text": "● Type 1 Bladed",
+          "conf_mean": 92.5,
+          "conf_min": 91.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2260,
+            590,
+            2303
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e Type 1 Bladed"
+        },
+        {
+          "text": "● Type 2 Bladed",
+          "conf_mean": 93.4,
+          "conf_min": 92.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2320,
+            590,
+            2363
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e Type 2 Bladed"
+        },
+        {
+          "text": "● Type 3 Bladed",
+          "conf_mean": 92.5,
+          "conf_min": 90.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2381,
+            590,
+            2424
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e Type 3 Bladed"
+        },
+        {
+          "text": "● Type 1 Hafted (mace)",
+          "conf_mean": 93.4,
+          "conf_min": 90.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            2441,
+            739,
+            2484
+          ],
+          "paper": 0.75,
+          "height": 42,
+          "raw": "e Type 1 Hafted (mace)"
+        },
+        {
+          "text": "● Type 2 Hafted (axe)",
+          "conf_mean": 93.6,
+          "conf_min": 91.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            2502,
+            701,
+            2545
+          ],
+          "paper": 0.75,
+          "height": 43,
+          "raw": "e Type 2 Hafted (axe)"
+        },
+        {
+          "text": "● Type 3 Hafted",
+          "conf_mean": 91.9,
+          "conf_min": 90.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2562,
+            583,
+            2605
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Type 3 Hafted"
+        },
+        {
+          "text": "● Type 4 Hafted",
+          "conf_mean": 93.2,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2623,
+            583,
+            2666
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Type 4 Hafted"
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 6/14",
+          "conf_mean": 95.1,
+          "conf_min": 93,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "5. Safety Requirements\n\nAll Weapons must be able to endure full contact fights.\nAll edges of all Weapons must be rebated in compliance with this document.\n\nThe edge of both striking and non-striking edges must be rebated and have a thickness of 2 mm or\nmore.\n\nThe radius of striking and non-striking edges must be more than 10mm.\nWeapons constructed solely for stabbing are prohibited (spears for example)\nWeight permissible upward error for Weapons is 100 grams\n\nAny heavier Weapon, including permissible upward error, is prohibited.\n\nIt is allowed to use leather thread to secure the Weapon in hand. Such leather thread must conform to\nthe “Textiles and Leather’ document .\n\nEvery Weapon to be used at a tournament must be first approved for safety by the Marshals and\nAuthenticity Officers during Weapons check.\n\n6. Authenticity Requirements\n\nAll Weapons must be based on historical sources and repeat the form of the original in all three\ndimensions.\n\nAll Weapons must match the style of the armor kit of the competitor.\n\nAll decorations on Weapons must be stylized in accordance with the style of the armor kit of the\ncompetitor.\n\nIt is prohibited to decorate Weapons with images that are clearly modern and/or offensive.\nAll decorations must conform to the “Armors and Weapons Aesthetics and Decorations’ document .\nWeapons must conform to Authenticity Rules documents\n\nTechnical Requirements for Weapons V. 26.1 7/14",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.5,
+      "ocr_lines": [
+        {
+          "text": "5. Safety Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            708,
+            290,
+            1802,
+            380
+          ],
+          "paper": 0.68,
+          "height": 88
+        },
+        {
+          "text": "All Weapons must be able to endure full contact fights.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            471,
+            1280,
+            514
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "All edges of all Weapons must be rebated in compliance with this document.",
+          "conf_mean": 96.3,
+          "conf_min": 95,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            545,
+            1720,
+            588
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The edge of both striking and non-striking edges must be rebated and have a thickness of 2 mm or",
+          "conf_mean": 96,
+          "conf_min": 92.6,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            618,
+            2303,
+            661
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "more.",
+          "conf_mean": 96.9,
+          "conf_min": 96.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            687,
+            292,
+            712
+          ],
+          "paper": 0.54,
+          "height": 25
+        },
+        {
+          "text": "The radius of striking and non-striking edges must be more than 10mm.",
+          "conf_mean": 95.5,
+          "conf_min": 92.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            751,
+            1624,
+            794
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Weapons constructed solely for stabbing are prohibited (spears for example)",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            824,
+            1727,
+            867
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "Weight permissible upward error for Weapons is 100 grams",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            897,
+            1382,
+            940
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Any heavier Weapon, including permissible upward error, is prohibited.",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            179,
+            971,
+            1606,
+            1013
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "It is allowed to use leather thread to secure the Weapon in hand. Such leather thread must conform to",
+          "conf_mean": 96.1,
+          "conf_min": 92.3,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            184,
+            1043,
+            2298,
+            1086
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "the “Textiles and Leather’ document .",
+          "conf_mean": 93.9,
+          "conf_min": 90.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            180,
+            1104,
+            932,
+            1138
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "Every Weapon to be used at a tournament must be first approved for safety by the Marshals and",
+          "conf_mean": 96.4,
+          "conf_min": 94.1,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            1177,
+            2297,
+            1220
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "Authenticity Officers during Weapons check.",
+          "conf_mean": 95.8,
+          "conf_min": 95.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            179,
+            1238,
+            1073,
+            1281
+          ],
+          "paper": 0.73,
+          "height": 41
+        },
+        {
+          "text": "6. Authenticity Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            575,
+            1404,
+            1935,
+            1493
+          ],
+          "paper": 0.68,
+          "height": 88
+        },
+        {
+          "text": "All Weapons must be based on historical sources and repeat the form of the original in all three",
+          "conf_mean": 96.3,
+          "conf_min": 94.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            1584,
+            2299,
+            1627
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "dimensions.",
+          "conf_mean": 94.5,
+          "conf_min": 94.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1645,
+            420,
+            1679
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "All Weapons must match the style of the armor kit of the competitor.",
+          "conf_mean": 96.6,
+          "conf_min": 95,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            1718,
+            1547,
+            1761
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "All decorations on Weapons must be stylized in accordance with the style of the armor kit of the",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            1791,
+            2300,
+            1834
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "competitor.",
+          "conf_mean": 95.7,
+          "conf_min": 95.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1852,
+            399,
+            1894
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "It is prohibited to decorate Weapons with images that are clearly modern and/or offensive.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            184,
+            1925,
+            1994,
+            1968
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "All decorations must conform to the “Armors and Weapons Aesthetics and Decorations’ document .",
+          "conf_mean": 93.8,
+          "conf_min": 80.3,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            1998,
+            2189,
+            2040
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Weapons must conform to Authenticity Rules documents",
+          "conf_mean": 95.8,
+          "conf_min": 95.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            2071,
+            1327,
+            2114
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 7/14",
+          "conf_mean": 94.9,
+          "conf_min": 93,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "7. Specific Requirements\n\n7.1. Bladed Weapons\n\nThe Bladed Weapon must be made of the following elements:\n\n● Blade: it is the main striking edge of the Weapon,\n\n● Hilt: it is composed of:\n○ Pommel: it is a striking edge,\n○ Handle: only place where you're allowed to hold the Weapon,\n○ Guard: it is a striking edge.\n\nWhen holding the Bladed Weapon firmly, the guard is not allowed to extend the gauntlet of the bearer for\nmore than 3.5 cm.\n\nBUHURT\n\ni\n\n7.2. Hafted Weapons\n\n7.2.1. Components\nHafted Weapon must be made of the following elements:\n● Head: it is composed of:\n○ Blade: it is the main striking edge of the Weapon,\n○ Back of the head: it is a striking edge but hitting an opponent with this part is prohibited,\n● Haft: the main handle,\n● Bottom: the lower part of the haft. It is a striking edge.\nNote: a mace does not have a back of the head. Each blade of a flanged mace is considered as a striking edge.\n\nTechnical Requirements for Weapons V. 26.1 8/14",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.8,
+      "ocr_lines": [
+        {
+          "text": "7. Specific Requirements",
+          "conf_mean": 95.4,
+          "conf_min": 94.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            668,
+            290,
+            1842,
+            379
+          ],
+          "paper": 0.69,
+          "height": 88
+        },
+        {
+          "text": "7.1. Bladed Weapons",
+          "conf_mean": 94.1,
+          "conf_min": 92.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            474,
+            787,
+            524
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "The Bladed Weapon must be made of the following elements:",
+          "conf_mean": 95.8,
+          "conf_min": 92.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            584,
+            1425,
+            628
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "● Blade: it is the main striking edge of the Weapon,",
+          "conf_mean": 96,
+          "conf_min": 92.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            230,
+            657,
+            1299,
+            701
+          ],
+          "paper": 0.73,
+          "height": 34,
+          "raw": "e Blade: it is the main striking edge of the Weapon,"
+        },
+        {
+          "text": "● Hilt: it is composed of:",
+          "conf_mean": 95.2,
+          "conf_min": 92.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            718,
+            753,
+            761
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e Hilt: it is composed of:"
+        },
+        {
+          "text": "○ Pommel: it is a striking edge,",
+          "conf_mean": 91.3,
+          "conf_min": 79.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            380,
+            779,
+            1043,
+            822
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "o Pommel: it is a striking edge,"
+        },
+        {
+          "text": "○ Handle: only place where you're allowed to hold the Weapon,",
+          "conf_mean": 94.4,
+          "conf_min": 83.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            380,
+            840,
+            1695,
+            883
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "o Handle: only place where you're allowed to hold the Weapon,"
+        },
+        {
+          "text": "○ Guard: it is a striking edge.",
+          "conf_mean": 92.7,
+          "conf_min": 81,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            380,
+            900,
+            1000,
+            944
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "o Guard: it is a striking edge."
+        },
+        {
+          "text": "When holding the Bladed Weapon firmly, the guard is not allowed to extend the gauntlet of the bearer for",
+          "conf_mean": 96,
+          "conf_min": 91.6,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            973,
+            2304,
+            1017
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "more than 3.5 cm.",
+          "conf_mean": 95.9,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            1034,
+            549,
+            1068
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "BUHURT",
+          "conf_mean": 91.9,
+          "conf_min": 91.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            898,
+            1152,
+            976,
+            1164
+          ],
+          "paper": 0.01,
+          "height": 12,
+          "in_picture": "lettering 12px tall, smaller than any printed text"
+        },
+        {
+          "text": "i",
+          "conf_mean": 62.3,
+          "conf_min": 62.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            921,
+            1177,
+            956,
+            1210
+          ],
+          "paper": 0,
+          "height": 33,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 62.3"
+        },
+        {
+          "text": "7.2. Hafted Weapons",
+          "conf_mean": 92.9,
+          "conf_min": 90.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2017,
+            775,
+            2068
+          ],
+          "paper": 0.68,
+          "height": 41
+        },
+        {
+          "text": "7.2.1. Components",
+          "conf_mean": 56.7,
+          "conf_min": 47.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            263,
+            2145,
+            729,
+            2188
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "Hafted Weapon must be made of the following elements:",
+          "conf_mean": 95.8,
+          "conf_min": 92.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            2215,
+            1326,
+            2258
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● Head: it is composed of:",
+          "conf_mean": 95.6,
+          "conf_min": 92.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            2288,
+            791,
+            2331
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e Head: it is composed of:"
+        },
+        {
+          "text": "○ Blade: it is the main striking edge of the Weapon,",
+          "conf_mean": 94.2,
+          "conf_min": 70.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            380,
+            2348,
+            1449,
+            2392
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "o Blade: it is the main striking edge of the Weapon,"
+        },
+        {
+          "text": "○ Back of the head: it is a striking edge but hitting an opponent with this part is prohibited,",
+          "conf_mean": 95.5,
+          "conf_min": 85.8,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            380,
+            2409,
+            2240,
+            2452
+          ],
+          "paper": 0.73,
+          "height": 34,
+          "raw": "o Back of the head: it is a striking edge but hitting an opponent with this part is prohibited,"
+        },
+        {
+          "text": "● Haft: the main handle,",
+          "conf_mean": 94.6,
+          "conf_min": 90.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            2470,
+            750,
+            2510
+          ],
+          "paper": 0.71,
+          "height": 34,
+          "raw": "e Haft: the main handle,"
+        },
+        {
+          "text": "● Bottom: the lower part of the haft. It is a striking edge.",
+          "conf_mean": 95.1,
+          "conf_min": 90.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            230,
+            2530,
+            1397,
+            2574
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e Bottom: the lower part of the haft. It is a striking edge."
+        },
+        {
+          "text": "Note: a mace does not have a back of the head. Each blade of a flanged mace is considered as a striking edge.",
+          "conf_mean": 96.5,
+          "conf_min": 95.3,
+          "words": 23,
+          "uncertain": [],
+          "box": [
+            316,
+            2598,
+            2165,
+            2642
+          ],
+          "paper": 0.78,
+          "height": 28
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 8/14",
+          "conf_mean": 89.1,
+          "conf_min": 56.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "BUHURT\n\nBUBURY\n\ni\n\nThe head of any Hafted Weapon must be secured to the haft by at least 2 different methods.\nAllowed methods are:\n\n● wedges,\n\n● straps,\n\n● glue,\n\n● rivets or nails,\n● langets.\n\nWeapons with sharp corners (Less than 90 degrees) and corners that can be considered dangerous are\nprohibited.\n\nAny point on the Striking Edge of the Weapon must have an angle more than 90 degrees.\n\nA Hafted Weapon may have a rebated hook or hammerhead on the non-striking part. Any strikes with\nthese elements are strictly prohibited.\n\nAny rebated hook or hammerhead must not present any sharp or pointed edge.\n\n7.2.2. Haft Requirements\n\nHaft must be made of strong wood or modern material that replicate the wood’s properties in terms of\naspect, handling and stiffness.\n\nIt is forbidden to use soft or flexible material for haft, such as rattan.\nIt is forbidden to use metal haft for Hafted Weapons.\nIt is allowed to use a covering with the following materials:\n\n● neutral rope with glue,\n● linen thread with glue,\n● neutral color textile tape (I.E black, brown, grey).\n\nTechnical Requirements for Weapons V. 26.1 9/14",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.3,
+      "ocr_lines": [
+        {
+          "text": "BUHURT",
+          "conf_mean": 90.2,
+          "conf_min": 90.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1299,
+            357,
+            1386,
+            371
+          ],
+          "paper": 0.02,
+          "height": 14,
+          "in_picture": "lettering 14px tall, smaller than any printed text"
+        },
+        {
+          "text": "BUBURY",
+          "conf_mean": 13.4,
+          "conf_min": 13.4,
+          "words": 1,
+          "uncertain": [
+            "BUBURY"
+          ],
+          "box": [
+            980,
+            1059,
+            1059,
+            1070
+          ],
+          "paper": 0.03,
+          "height": 11,
+          "in_picture": "lettering 11px tall, smaller than any printed text"
+        },
+        {
+          "text": "i",
+          "conf_mean": 45.9,
+          "conf_min": 45.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1004,
+            1085,
+            1038,
+            1124
+          ],
+          "paper": 0,
+          "height": 39,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 45.9"
+        },
+        {
+          "text": "The head of any Hafted Weapon must be secured to the haft by at least 2 different methods.",
+          "conf_mean": 95.4,
+          "conf_min": 89.7,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            1501,
+            2061,
+            1544
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Allowed methods are:",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            179,
+            1574,
+            631,
+            1608
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "● wedges,",
+          "conf_mean": 86.8,
+          "conf_min": 78.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1648,
+            468,
+            1690
+          ],
+          "paper": 0.76,
+          "height": 42,
+          "raw": "e wedges,"
+        },
+        {
+          "text": "● straps,",
+          "conf_mean": 93.7,
+          "conf_min": 93,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1709,
+            435,
+            1750
+          ],
+          "paper": 0.77,
+          "height": 41,
+          "raw": "e straps,"
+        },
+        {
+          "text": "● glue,",
+          "conf_mean": 93.6,
+          "conf_min": 91.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1769,
+            397,
+            1812
+          ],
+          "paper": 0.79,
+          "height": 43,
+          "raw": "e glue,"
+        },
+        {
+          "text": "● rivets or nails,",
+          "conf_mean": 92.1,
+          "conf_min": 89,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            1829,
+            579,
+            1869
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e rivets or nails,"
+        },
+        {
+          "text": "● langets.",
+          "conf_mean": 69.8,
+          "conf_min": 69.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1891,
+            457,
+            1933
+          ],
+          "paper": 0.75,
+          "height": 42,
+          "raw": "e langets."
+        },
+        {
+          "text": "Weapons with sharp corners (Less than 90 degrees) and corners that can be considered dangerous are",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1963,
+            2299,
+            2006
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "prohibited.",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            2024,
+            412,
+            2066
+          ],
+          "paper": 0.6,
+          "height": 42
+        },
+        {
+          "text": "Any point on the Striking Edge of the Weapon must have an angle more than 90 degrees.",
+          "conf_mean": 96.3,
+          "conf_min": 95.2,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            2125,
+            1988,
+            2169
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "A Hafted Weapon may have a rebated hook or hammerhead on the non-striking part. Any strikes with",
+          "conf_mean": 95.1,
+          "conf_min": 90.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            2228,
+            2299,
+            2271
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "these elements are strictly prohibited.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            2289,
+            957,
+            2331
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "Any rebated hook or hammerhead must not present any sharp or pointed edge.",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            2391,
+            1782,
+            2434
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "7.2.2. Haft Requirements",
+          "conf_mean": 83.1,
+          "conf_min": 71.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            263,
+            2509,
+            856,
+            2552
+          ],
+          "paper": 0.71,
+          "height": 35
+        },
+        {
+          "text": "Haft must be made of strong wood or modern material that replicate the wood’s properties in terms of",
+          "conf_mean": 96.1,
+          "conf_min": 92.2,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            2579,
+            2302,
+            2622
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "aspect, handling and stiffness.",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            2639,
+            791,
+            2683
+          ],
+          "paper": 0.72,
+          "height": 41
+        },
+        {
+          "text": "It is forbidden to use soft or flexible material for haft, such as rattan.",
+          "conf_mean": 95.8,
+          "conf_min": 92.8,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            2741,
+            1560,
+            2781
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "It is forbidden to use metal haft for Hafted Weapons.",
+          "conf_mean": 94.1,
+          "conf_min": 91.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            2844,
+            1254,
+            2886
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "It is allowed to use a covering with the following materials:",
+          "conf_mean": 95.1,
+          "conf_min": 88.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            2946,
+            1362,
+            2989
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● neutral rope with glue,",
+          "conf_mean": 92.5,
+          "conf_min": 78.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3049,
+            748,
+            3092
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e neutral rope with glue,"
+        },
+        {
+          "text": "● linen thread with glue,",
+          "conf_mean": 94.4,
+          "conf_min": 90.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3109,
+            743,
+            3152
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e linen thread with glue,"
+        },
+        {
+          "text": "● neutral color textile tape (I.E black, brown, grey).",
+          "conf_mean": 91.6,
+          "conf_min": 72.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            3169,
+            1280,
+            3213
+          ],
+          "paper": 0.76,
+          "height": 39,
+          "raw": "e neutral color textile tape (I.E black, brown, grey)."
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 9/14",
+          "conf_mean": 89.2,
+          "conf_min": 56.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "Any covering with a clearly modern appearance are prohibited\nIt is not allowed to enter the list with a damaged covering.\nThe general appearance of the covering will be examined by Authenticity Officers.\n\nIt is allowed to decorate hafts with colored tape. Such decorations can not reproduce modern patterns.\nTeam or country flags colors are allowed.\n\nAny covering must conform with the “Textile and Leather’ document.\n\nExamples:\n\nPictures from The Medieval Things ©\n\nThe bottom of the haft can be protected by a metal part. It must be rounded as per Striking Edge rules.\n\nHaft can be protected with metal plates. Such plates must be firmly attached to the haft and must not\npresent any sharp edge.\n\nWeapons with poorly secured heads are prohibited.\n\nTechnical Requirements for Weapons V. 26.1 10/14",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95,
+      "ocr_lines": [
+        {
+          "text": "Any covering with a clearly modern appearance are prohibited",
+          "conf_mean": 96.1,
+          "conf_min": 95.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            179,
+            390,
+            1433,
+            433
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "It is not allowed to enter the list with a damaged covering.",
+          "conf_mean": 96.3,
+          "conf_min": 94.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            184,
+            493,
+            1339,
+            535
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "The general appearance of the covering will be examined by Authenticity Officers.",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            595,
+            1832,
+            638
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "It is allowed to decorate hafts with colored tape. Such decorations can not reproduce modern patterns.",
+          "conf_mean": 96,
+          "conf_min": 92.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            697,
+            2298,
+            739
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Team or country flags colors are allowed.",
+          "conf_mean": 96.2,
+          "conf_min": 94.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            757,
+            1008,
+            800
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Any covering must conform with the “Textile and Leather’ document.",
+          "conf_mean": 96,
+          "conf_min": 94.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            860,
+            1559,
+            903
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Examples:",
+          "conf_mean": 95.3,
+          "conf_min": 95.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1083,
+            392,
+            1126
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            969,
+            1865,
+            1515,
+            1897
+          ],
+          "paper": 0.7,
+          "height": 25
+        },
+        {
+          "text": "The bottom of the haft can be protected by a metal part. It must be rounded as per Striking Edge rules.",
+          "conf_mean": 96.1,
+          "conf_min": 92.9,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            180,
+            2087,
+            2250,
+            2130
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Haft can be protected with metal plates. Such plates must be firmly attached to the haft and must not",
+          "conf_mean": 95.8,
+          "conf_min": 91.9,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            183,
+            2189,
+            2300,
+            2233
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "present any sharp edge.",
+          "conf_mean": 96.7,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2251,
+            670,
+            2293
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "Weapons with poorly secured heads are prohibited.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            2352,
+            1241,
+            2395
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 10/14",
+          "conf_mean": 89.1,
+          "conf_min": 56.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "8. Duels Weapons\n\nDuels Weapons are built with the intent of agility and swordsmanship vs striking and punishment.\nException: all Type 3 Hafted Weapons are permitted for Polearm Category. Any Weapons not shown\nbelow must be approved by Marshal and Authenticity Committee Representatives.\n\n8.1. Sword and Shield / Sword and Buckler Category\n\nAllowed Weapons: Type 1 Bladed\n\na ee\nSg, a= =|\n\na lO)\n\n8.2. Longsword category\n\nAllowed Weapons: Type 2 Bladed\n\n8.3. Polearm category\n\nAllowed Weapons:\n\n● Type 3 Hafted\n● Type 4 Hafted\n\nTechnical Requirements for Weapons V. 26.] 11/14",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 88.6,
+      "ocr_lines": [
+        {
+          "text": "8. Duels Weapons",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            828,
+            291,
+            1681,
+            379
+          ],
+          "paper": 0.68,
+          "height": 70
+        },
+        {
+          "text": "Duels Weapons are built with the intent of agility and swordsmanship vs striking and punishment.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            471,
+            2297,
+            514
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "Exception: all Type 3 Hafted Weapons are permitted for Polearm Category. Any Weapons not shown",
+          "conf_mean": 96.1,
+          "conf_min": 92.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            532,
+            2298,
+            575
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "below must be approved by Marshal and Authenticity Committee Representatives.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            182,
+            593,
+            1841,
+            636
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "8.1. Sword and Shield / Sword and Buckler Category",
+          "conf_mean": 95.4,
+          "conf_min": 92.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            238,
+            801,
+            1592,
+            852
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "Allowed Weapons: Type 1 Bladed",
+          "conf_mean": 94.5,
+          "conf_min": 91.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            179,
+            913,
+            875,
+            956
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "a ee",
+          "conf_mean": 3.4,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            190,
+            1047,
+            2011,
+            1163
+          ],
+          "paper": 0.79,
+          "height": 116,
+          "in_picture": "nothing read with confidence (best word 7): marks of a picture"
+        },
+        {
+          "text": "Sg, a= =|",
+          "conf_mean": 40.4,
+          "conf_min": 36.9,
+          "words": 3,
+          "uncertain": [
+            "Sg,"
+          ],
+          "box": [
+            135,
+            1288,
+            1985,
+            1420
+          ],
+          "paper": 0.71,
+          "height": 80
+        },
+        {
+          "text": "a lO)",
+          "conf_mean": 15.7,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "lO)"
+          ],
+          "box": [
+            161,
+            1604,
+            1319,
+            1661
+          ],
+          "paper": 0.28,
+          "height": 57,
+          "in_picture": "on a coloured or photographic background (paper 28%), confidence 15.7"
+        },
+        {
+          "text": "8.2. Longsword category",
+          "conf_mean": 93.5,
+          "conf_min": 90.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1926,
+            885,
+            1976
+          ],
+          "paper": 0.67,
+          "height": 49
+        },
+        {
+          "text": "Allowed Weapons: Type 2 Bladed",
+          "conf_mean": 94.4,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            2038,
+            875,
+            2080
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "8.3. Polearm category",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2831,
+            807,
+            2881
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Allowed Weapons:",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            179,
+            2942,
+            569,
+            2984
+          ],
+          "paper": 0.67,
+          "height": 41
+        },
+        {
+          "text": "● Type 3 Hafted",
+          "conf_mean": 92.8,
+          "conf_min": 91.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3015,
+            583,
+            3058
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Type 3 Hafted"
+        },
+        {
+          "text": "● Type 4 Hafted",
+          "conf_mean": 92.7,
+          "conf_min": 90.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3075,
+            583,
+            3118
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e Type 4 Hafted"
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.] 11/14",
+          "conf_mean": 91,
+          "conf_min": 82.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "9. Outrance Weapons\n\nOutrance Weapons are any Weapon that passes the measurement requirements from Duels or Buhurt\ncategories.\n\nWeapons used in outrance fights must respect their classification requirements (l.e: a sword must\nrespect the Bladed Weapons requirements).\n\nPoint of Balance\n\nThe Point of Balance of Outrance Bladed Weapons must be:\n● 15cm from the top edge of the handle for men fights,\n● 10cm from the top edge of the handle for women fights.\n\nPoint of Balance is the precise point on a blade where its weight is equally distributed to each side.\n\nTechnical Requirements for Weapons V. 26.] 12/14",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.7,
+      "ocr_lines": [
+        {
+          "text": "9. Outrance Weapons",
+          "conf_mean": 93.6,
+          "conf_min": 91.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            747,
+            290,
+            1761,
+            379
+          ],
+          "paper": 0.69,
+          "height": 71
+        },
+        {
+          "text": "Outrance Weapons are any Weapon that passes the measurement requirements from Duels or Buhurt",
+          "conf_mean": 95.2,
+          "conf_min": 91.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            471,
+            2252,
+            514
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "categories.",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            532,
+            399,
+            575
+          ],
+          "paper": 0.7,
+          "height": 43
+        },
+        {
+          "text": "Weapons used in outrance fights must respect their classification requirements (l.e: a sword must",
+          "conf_mean": 91.6,
+          "conf_min": 41.2,
+          "words": 14,
+          "uncertain": [
+            "(l.e:"
+          ],
+          "box": [
+            180,
+            605,
+            2151,
+            648
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "respect the Bladed Weapons requirements).",
+          "conf_mean": 95.1,
+          "conf_min": 92.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            666,
+            1071,
+            709
+          ],
+          "paper": 0.72,
+          "height": 40
+        },
+        {
+          "text": "Point of Balance",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            183,
+            801,
+            601,
+            841
+          ],
+          "paper": 0.56,
+          "height": 39
+        },
+        {
+          "text": "The Point of Balance of Outrance Bladed Weapons must be:",
+          "conf_mean": 94.8,
+          "conf_min": 90.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            913,
+            1401,
+            955
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● 15cm from the top edge of the handle for men fights,",
+          "conf_mean": 95.1,
+          "conf_min": 90.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            973,
+            1374,
+            1016
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e 15cm from the top edge of the handle for men fights,"
+        },
+        {
+          "text": "● 10cm from the top edge of the handle for women fights.",
+          "conf_mean": 95.7,
+          "conf_min": 92.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            1034,
+            1433,
+            1077
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e 10cm from the top edge of the handle for women fights."
+        },
+        {
+          "text": "Point of Balance is the precise point on a blade where its weight is equally distributed to each side.",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            183,
+            1107,
+            2172,
+            1150
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.] 12/14",
+          "conf_mean": 90.8,
+          "conf_min": 82.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "10. Buhurt/Group Weapons\n\nBuhurt/Group Weapons may use Duels specific Weapons and any shapes that are _ historically\ndocumentable to the timeframe of the sport. Please reference the “Weapons/Shield Chart’ document for\nweights and sizing.\n\n10.1. Type 2 & 3 Bladed\n\nThese are examples for type 2 & 3:\n\n● longswords,\n● 2-handed falchions,\n● zweihanders,\n\n● etc.\nSs\n\n10.2. Type 2 & 3 Hafted\n\nThese are examples:\n\n● Type 2 Hafted: Axe\n● Type 3 Hafted: Longaxe\n\nPP =F Ww =\npg Ww wr\n\nTechnical Requirements for Weapons V. 26.1 13/14",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87,
+      "ocr_lines": [
+        {
+          "text": "10. Buhurt/Group Weapons",
+          "conf_mean": 93,
+          "conf_min": 91.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            648,
+            290,
+            1864,
+            379
+          ],
+          "paper": 0.67,
+          "height": 88
+        },
+        {
+          "text": "Buhurt/Group Weapons may use Duels specific Weapons and any shapes that are _ historically",
+          "conf_mean": 90.8,
+          "conf_min": 68.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            467,
+            2301,
+            518
+          ],
+          "paper": 0.79,
+          "height": 42
+        },
+        {
+          "text": "documentable to the timeframe of the sport. Please reference the “Weapons/Shield Chart’ document for",
+          "conf_mean": 94.7,
+          "conf_min": 88.4,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            532,
+            2301,
+            575
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "weights and sizing.",
+          "conf_mean": 96.7,
+          "conf_min": 96.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            179,
+            593,
+            563,
+            636
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "10.1. Type 2 & 3 Bladed",
+          "conf_mean": 93.9,
+          "conf_min": 92.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            210,
+            776,
+            813,
+            827
+          ],
+          "paper": 0.69,
+          "height": 40
+        },
+        {
+          "text": "These are examples for type 2 & 3:",
+          "conf_mean": 95.3,
+          "conf_min": 92.5,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            888,
+            888,
+            931
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● longswords,",
+          "conf_mean": 78.5,
+          "conf_min": 78.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            961,
+            541,
+            1004
+          ],
+          "paper": 0.76,
+          "height": 43,
+          "raw": "e longswords,"
+        },
+        {
+          "text": "● 2-handed falchions,",
+          "conf_mean": 89.3,
+          "conf_min": 87.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1021,
+            697,
+            1061
+          ],
+          "paper": 0.73,
+          "height": 40,
+          "raw": "e 2-handed falchions,"
+        },
+        {
+          "text": "● zweihanders,",
+          "conf_mean": 89.6,
+          "conf_min": 89.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1082,
+            567,
+            1121
+          ],
+          "paper": 0.74,
+          "height": 39,
+          "raw": "e zweihanders,"
+        },
+        {
+          "text": "● etc.",
+          "conf_mean": 89.4,
+          "conf_min": 88.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1144,
+            371,
+            1177
+          ],
+          "paper": 0.77,
+          "height": 33,
+          "raw": "e etc."
+        },
+        {
+          "text": "Ss",
+          "conf_mean": 34.5,
+          "conf_min": 34.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            579,
+            1256,
+            1775,
+            1436
+          ],
+          "paper": 0.73,
+          "height": 180,
+          "in_picture": "nothing read with confidence (best word 35): marks of a picture"
+        },
+        {
+          "text": "10.2. Type 2 & 3 Hafted",
+          "conf_mean": 93.5,
+          "conf_min": 91.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            210,
+            1581,
+            801,
+            1631
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "These are examples:",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            1692,
+            603,
+            1735
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Type 2 Hafted: Axe",
+          "conf_mean": 93.4,
+          "conf_min": 90.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            1766,
+            688,
+            1809
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e Type 2 Hafted: Axe"
+        },
+        {
+          "text": "● Type 3 Hafted: Longaxe",
+          "conf_mean": 93,
+          "conf_min": 91.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            1826,
+            786,
+            1869
+          ],
+          "paper": 0.75,
+          "height": 42,
+          "raw": "e Type 3 Hafted: Longaxe"
+        },
+        {
+          "text": "PP =F Ww =",
+          "conf_mean": 22.7,
+          "conf_min": 0,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            159,
+            1977,
+            2259,
+            2398
+          ],
+          "paper": 0.77,
+          "height": 218
+        },
+        {
+          "text": "pg Ww wr",
+          "conf_mean": 52,
+          "conf_min": 29.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            487,
+            2388,
+            2028,
+            2634
+          ],
+          "paper": 0.68,
+          "height": 183
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.1 13/14",
+          "conf_mean": 94.6,
+          "conf_min": 93,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "text": "11. Changelog\n\nThis will be the change log of this document. It will be updated regularly and we will\ndisplay what has been removed/added/reworded/formatted. This way we keep\ntransparent communication and clarity about the rules\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nClarification:\n\n- Restructuration of the document to make it more easy to read,\n\n- Minor grammatical/formating corrections,\n\n- Those clarifications have no impact on the document content, except for those listed in this\nChangelog.\n\nReplace:\n\n- In 5.4.1 Components: An image has been changed\n\nSuppression:\n\n- In 5.4.2 Haft Requirements: “If a haft is not made of wood, it is mandatory to use a covering for\nthe whole haft (from head to bottom) one end must be exposed so it can be verified what the material is”\nAdd:\n\n- In 7.2.2. Haft Requirements:\n\n- “It is allowed to decorate hafts with colored tape. Such decorations can not reproduce modern\npatterns. Team or country flags colors are allowed. Any covering must conform with “Textile and\nLeather’ document.”\n\n- “Haft can be protected with metal plates. Such plates must be firmly attached to the haft and must\nnot present any sharp edge.”\n\nClarification:\n- Addition of a subsection about polearm in “Duel Weapons’.\n\n(Version update from 2024.03 to 2024.12.13)\n\nUpdate date: December-2024\n- changed: Upwards weight error from 100,200,300 has been limited to 100 grams for all Weapons\n\nThe subgenres of Weapons,Duels,Duels Sword,Duels Longsword,Duels Polearm,\n\nGroup: Type 1 Bladed, Type 2 Bladed, Type 3 Bladed, Type 1 Hafted (axe), Type 1 Hafted (mace), Type 2 Hafted, Type 3 hafte,\nRemoveds\\(Has been moved to document: (Weapon/Shield requirements excel)\n\n4.4.1 Specific requirements\n\nReémoved|(Has been moved to document: (Weapon/Shield requirements excel)\n\n4.4.2 Weights and measurements\n\nUpdate date: March-2024\n\n- format: new design format, document will be used from now on.\n- Update document based on my document (16/05/2024)\n\n- Update document (format)\n\nTechnical Requirements for Weapons V. 26.] 14/14",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.3,
+      "ocr_lines": [
+        {
+          "text": "11. Changelog",
+          "conf_mean": 95.7,
+          "conf_min": 95.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            940,
+            290,
+            1572,
+            380
+          ],
+          "paper": 0.67,
+          "height": 90
+        },
+        {
+          "text": "This will be the change log of this document. It will be updated regularly and we will",
+          "conf_mean": 96.4,
+          "conf_min": 93.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            401,
+            471,
+            2080,
+            514
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "display what has been removed/added/reworded/formatted. This way we keep",
+          "conf_mean": 95.2,
+          "conf_min": 90.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            451,
+            532,
+            2031,
+            575
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "transparent communication and clarity about the rules",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            697,
+            593,
+            1784,
+            636
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.5,
+          "conf_min": 91.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            710,
+            679,
+            753
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            761,
+            2163,
+            805
+          ],
+          "paper": 0,
+          "height": 39
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            822,
+            427,
+            857
+          ],
+          "paper": 0,
+          "height": 35
+        },
+        {
+          "text": "- Restructuration of the document to make it more easy to read,",
+          "conf_mean": 95.8,
+          "conf_min": 91.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            883,
+            1583,
+            926
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "- Minor grammatical/formating corrections,",
+          "conf_mean": 93.4,
+          "conf_min": 91.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            943,
+            1155,
+            986
+          ],
+          "paper": 0.77,
+          "height": 39
+        },
+        {
+          "text": "- Those clarifications have no impact on the document content, except for those listed in this",
+          "conf_mean": 96.1,
+          "conf_min": 91.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1004,
+            2163,
+            1046
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Changelog.",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1064,
+            409,
+            1108
+          ],
+          "paper": 0.71,
+          "height": 44
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1125,
+            356,
+            1168
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 5.4.1 Components: An image has been changed",
+          "conf_mean": 95.8,
+          "conf_min": 92.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1186,
+            1360,
+            1229
+          ],
+          "paper": 0.78,
+          "height": 33
+        },
+        {
+          "text": "Suppression:",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1246,
+            443,
+            1289
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 5.4.2 Haft Requirements: “If a haft is not made of wood, it is mandatory to use a covering for",
+          "conf_mean": 95.7,
+          "conf_min": 92,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            180,
+            1307,
+            2244,
+            1350
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "the whole haft (from head to bottom) one end must be exposed so it can be verified what the material is”",
+          "conf_mean": 95.9,
+          "conf_min": 92.5,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            180,
+            1368,
+            2285,
+            1410
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1419,
+            273,
+            1471
+          ],
+          "paper": 0,
+          "height": 52
+        },
+        {
+          "text": "- In 7.2.2. Haft Requirements:",
+          "conf_mean": 95.3,
+          "conf_min": 92.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1489,
+            898,
+            1531
+          ],
+          "paper": 0.79,
+          "height": 33
+        },
+        {
+          "text": "- “It is allowed to decorate hafts with colored tape. Such decorations can not reproduce modern",
+          "conf_mean": 89.7,
+          "conf_min": 48.6,
+          "words": 16,
+          "uncertain": [
+            "“It"
+          ],
+          "box": [
+            228,
+            1549,
+            2195,
+            1592
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "patterns. Team or country flags colors are allowed. Any covering must conform with “Textile and",
+          "conf_mean": 95.7,
+          "conf_min": 85.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            304,
+            1610,
+            2236,
+            1653
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Leather’ document.”",
+          "conf_mean": 90.3,
+          "conf_min": 84,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            303,
+            1671,
+            711,
+            1705
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "- “Haft can be protected with metal plates. Such plates must be firmly attached to the haft and must",
+          "conf_mean": 94.3,
+          "conf_min": 70.9,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            228,
+            1731,
+            2301,
+            1774
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "not present any sharp edge.”",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            304,
+            1792,
+            885,
+            1835
+          ],
+          "paper": 0.74,
+          "height": 41
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1852,
+            427,
+            1886
+          ],
+          "paper": 0,
+          "height": 34
+        },
+        {
+          "text": "- Addition of a subsection about polearm in “Duel Weapons’.",
+          "conf_mean": 93.8,
+          "conf_min": 82.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1913,
+            1521,
+            1955
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "(Version update from 2024.03 to 2024.12.13)",
+          "conf_mean": 95.9,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            769,
+            2034,
+            1713,
+            2077
+          ],
+          "paper": 0.67,
+          "height": 42
+        },
+        {
+          "text": "Update date: December-2024",
+          "conf_mean": 93.7,
+          "conf_min": 91.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            2091,
+            571,
+            2118
+          ],
+          "paper": 0.65,
+          "height": 21
+        },
+        {
+          "text": "- changed: Upwards weight error from 100,200,300 has been limited to 100 grams for all Weapons",
+          "conf_mean": 96.4,
+          "conf_min": 93,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            2129,
+            1446,
+            2157
+          ],
+          "paper": 0.64,
+          "height": 22
+        },
+        {
+          "text": "The subgenres of Weapons,Duels,Duels Sword,Duels Longsword,Duels Polearm,",
+          "conf_mean": 92.7,
+          "conf_min": 90.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            2207,
+            1231,
+            2234
+          ],
+          "paper": 0.69,
+          "height": 25
+        },
+        {
+          "text": "Group: Type 1 Bladed, Type 2 Bladed, Type 3 Bladed, Type 1 Hafted (axe), Type 1 Hafted (mace), Type 2 Hafted, Type 3 hafte,",
+          "conf_mean": 94.2,
+          "conf_min": 92,
+          "words": 24,
+          "uncertain": [],
+          "box": [
+            181,
+            2245,
+            1816,
+            2273
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Removeds\\(Has been moved to document: (Weapon/Shield requirements excel)",
+          "conf_mean": 84.5,
+          "conf_min": 7.1,
+          "words": 8,
+          "uncertain": [
+            "Removeds\\(Has"
+          ],
+          "box": [
+            179,
+            2278,
+            1205,
+            2311
+          ],
+          "paper": 0.65,
+          "height": 27
+        },
+        {
+          "text": "4.4.1 Specific requirements",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            179,
+            2323,
+            531,
+            2350
+          ],
+          "paper": 0.71,
+          "height": 27
+        },
+        {
+          "text": "Reémoved|(Has been moved to document: (Weapon/Shield requirements excel)",
+          "conf_mean": 87.8,
+          "conf_min": 34.1,
+          "words": 8,
+          "uncertain": [
+            "Reémoved|(Has"
+          ],
+          "box": [
+            179,
+            2355,
+            1197,
+            2388
+          ],
+          "paper": 0.66,
+          "height": 27
+        },
+        {
+          "text": "4.4.2 Weights and measurements",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            179,
+            2400,
+            613,
+            2427
+          ],
+          "paper": 0.7,
+          "height": 21
+        },
+        {
+          "text": "Update date: March-2024",
+          "conf_mean": 94.2,
+          "conf_min": 92.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            2477,
+            518,
+            2504
+          ],
+          "paper": 0.64,
+          "height": 21
+        },
+        {
+          "text": "- format: new design format, document will be used from now on.",
+          "conf_mean": 96.1,
+          "conf_min": 92.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2515,
+            1013,
+            2542
+          ],
+          "paper": 0.63,
+          "height": 21
+        },
+        {
+          "text": "- Update document based on my document (16/05/2024)",
+          "conf_mean": 96.1,
+          "conf_min": 93.2,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            2554,
+            911,
+            2581
+          ],
+          "paper": 0.71,
+          "height": 21
+        },
+        {
+          "text": "- Update document (format)",
+          "conf_mean": 95.5,
+          "conf_min": 93.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            2592,
+            536,
+            2620
+          ],
+          "paper": 0.7,
+          "height": 26
+        },
+        {
+          "text": "Technical Requirements for Weapons V. 26.] 14/14",
+          "conf_mean": 91.1,
+          "conf_min": 82.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    }
+  ]
+}

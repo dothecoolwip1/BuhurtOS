@@ -1,0 +1,356 @@
+{
+  "name": "archive-2026-10-06",
+  "governing_body": "Buhurt International",
+  "current_release": "2026-10-06",
+  "source_drop": {
+    "dir": "rules-library/bi-source-drop/2026-10-06",
+    "checksums": "SHA256SUMS.txt",
+    "manifest": "archive-fetch-manifest.json"
+  },
+  "editions": [
+    {
+      "id": "authenticity/aesthetics-and-decorations@2024.12",
+      "inventory_key": "authenticity/aesthetics-and-decorations",
+      "files": [
+        "Authenticity/Archive/Armors and weapons Aesthetics and Decoration V2024.12.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Armors and weapons Aesthetics and Decoration\" (the current document is \"Armors and Weapons Aesthetics and Decoration\"); cover \"VER. 2024.12\"; change log only \"11-Nov-2024: Document has been created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/aventails@2025.02",
+      "inventory_key": "authenticity/aventails",
+      "files": [
+        "Authenticity/Archive/Aventails.docx.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Aventails\"; cover \"VER. 2025.02\". Its change log heads the latest entry \"February-2025 (V2025.03)\": the cover and the change log disagree; the label is the cover's, the disagreement is recorded. Entries Dec-2024 and Feb-2025 are both in the current 26.1 change log."
+    },
+    {
+      "id": "authenticity/belt-flag-s@2024.12",
+      "inventory_key": "authenticity/belt-flag-s",
+      "files": [
+        "Authenticity/Archive/Belt Flag V2024.12.docx.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Belt flag\"; cover \"VER. 2024.12\"; change log only \"11-Nov-2024: document has been created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/eyebars@2024.12",
+      "inventory_key": "authenticity/eyebars",
+      "files": [
+        "Authenticity/Archive/Eyebars V2024.12.docx.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Eyebars\"; cover \"VER. 2024.12\"; change log only \"December-2024: Document has been created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/greaves@2025.03",
+      "inventory_key": "authenticity/greaves",
+      "files": [
+        "Authenticity/Archive/Greaves.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Greaves\"; cover \"VER. 2025.03\"; change log latest \"March-2025 (V2025.03)\" after \"December-2024: created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/great-helms@2024.12",
+      "inventory_key": "authenticity/great-helms",
+      "files": [
+        "Authenticity/Archive/Helmet - Great Helms 2024.12.docx.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Helmet - Great Helms\"; cover \"VER. 2024.12\"; change log only \"December-2024: Document has been created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/infractions@2025.02",
+      "inventory_key": "authenticity/infractions",
+      "files": [
+        "Authenticity/Archive/Infraction classification and application.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Infraction classification and application\"; cover \"VER. 2025.02\"; change log latest \"February - 2025\" (green card rule) after \"December 2024: created\". "
+    },
+    {
+      "id": "authenticity/infractions@26.1",
+      "inventory_key": "authenticity/infractions",
+      "files": [
+        "Authenticity/Archive/Infractions Classification and Application.pdf"
+      ],
+      "seq": 2,
+      "evidence": "Title \"Infraction classification and application\"; cover \"VER. 26.1\", footer \"Infractions Classification and Application V. 26.1\"; change log \"January - 2026 (V. 26.1)\" above the February-2025 entries of edition 2025.02. Older than the current 26.4."
+    },
+    {
+      "id": "authenticity/klappvisors@2025.03",
+      "inventory_key": "authenticity/klappvisors",
+      "files": [
+        "Authenticity/Archive/Klappvisors.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Klappvisors\"; cover \"VER. 2025.03\"; change log latest \"March-2025\" after \"11-Nov-2024: created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/nasals-and-breteches@2025.03",
+      "inventory_key": "authenticity/nasals-and-breteches",
+      "files": [
+        "Authenticity/Archive/Nasal and Breteche.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Helmet - Nasal and Breteche\" (the current document is \"Nasal and Breteche\"); cover \"VER. 2025.03\"; change log latest \"February-2025 (2025.03)\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/neck-protection@2025.02",
+      "inventory_key": "authenticity/neck-protection",
+      "files": [
+        "Authenticity/Archive/Neck Protection.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Neck Protection\"; cover \"VER. 2025.02\"; change log latest \"February-2025 (V2025.02)\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/perforated-visor-bascinets@26.1",
+      "inventory_key": "authenticity/perforated-visor-bascinets",
+      "files": [
+        "Authenticity/Archive/Perforated Visor Bascinets.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title and footer \"Perforated Visor Bascinets V. 26.1\"; cover \"VER. 26.1\"; change log \"January - 2026 (V. 26.1) Document has been created\". Older than the current 26.4."
+    },
+    {
+      "id": "authenticity/sabatons@2025.01",
+      "inventory_key": "authenticity/sabatons",
+      "files": [
+        "Authenticity/Archive/Sabatons V2024.12.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Sabatons\"; cover \"VER. 2025.01\" although the file is named \"V2024.12\" and the change log has only \"December-2024: created\". The label is the cover's; the file name and change log are recorded. Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/shields-and-bucklers@2025.03",
+      "inventory_key": "authenticity/shields-and-bucklers",
+      "files": [
+        "Authenticity/Archive/Shields and Bucklers(1).pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Shields and Bucklers\"; cover \"VER. 2025.03\" while the change log heads its latest entry \"March-2025 (V2025.02)\": the label is the cover's, the disagreement is recorded. The 26.1 edition's change log continues from this \"March-2025 (V2025.02)\" entry."
+    },
+    {
+      "id": "authenticity/shields-and-bucklers@26.1",
+      "inventory_key": "authenticity/shields-and-bucklers",
+      "files": [
+        "Authenticity/Archive/Shields and Bucklers.pdf"
+      ],
+      "seq": 2,
+      "evidence": "Title \"Shields and Bucklers\"; cover \"VER. 26.1\"; change log \"January - 2026 (V. 26.1)\" above \"March-2025 (V2025.02)\"."
+    },
+    {
+      "id": "authenticity/shields-and-bucklers@26.2",
+      "inventory_key": "authenticity/shields-and-bucklers",
+      "files": [
+        "Authenticity/Archive/Shields_and_Bucklers V26.2.pdf"
+      ],
+      "seq": 3,
+      "evidence": "Title \"Shields and Bucklers 26.2\"; cover \"VER. 26.2\"; change log \"February - 2026 (V. 26.2)\" above \"January - 2026 (V. 26.1)\". Older than the current 26.4."
+    },
+    {
+      "id": "authenticity/side-pivoting-visored-bascinets@2025.01",
+      "inventory_key": "authenticity/side-pivoting-visored-bascinets",
+      "files": [
+        "Authenticity/Archive/Side-hinged visored Bascinets V2024.12.pdf"
+      ],
+      "seq": 1,
+      "evidence": "\"Side-hinged visored Bascinets\" is this document's earlier name: the current 26.1 change log says \"Replace throughout the document Side-hinged visored Bascinets by Side-pivoting visored Bascinets\" and keeps the same Dec-2024 / Feb-2025 entries. Cover \"VER. 2025.01\" although the file is named \"V2024.12\"; change log only \"December-2024: Add\"."
+    },
+    {
+      "id": "authenticity/side-pivoting-visored-bascinets@2025.02",
+      "inventory_key": "authenticity/side-pivoting-visored-bascinets",
+      "files": [
+        "Authenticity/Archive/Side-hinged visored Bascinets.pdf"
+      ],
+      "seq": 2,
+      "evidence": "Same document under its earlier name (see edition 2025.01). Cover \"VER. 2025.02\" while the change log heads the latest entry \"February-2025 (V2025.03)\": the label is the cover's, the disagreement is recorded. Newer than 2025.01 (it adds the February-2025 entry); older than the current 26.1."
+    },
+    {
+      "id": "authenticity/tabards@2024.12",
+      "inventory_key": "authenticity/tabards",
+      "files": [
+        "Authenticity/Archive/Tabards V2024.12.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Tabards\"; cover \"VER. 2024.12\"; change log only \"December-2024: created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/weapon-requirements@26.1",
+      "inventory_key": "authenticity/weapon-requirements",
+      "files": [
+        "Authenticity/Archive/Technical Requirements for Weapons.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title and footer \"Technical Requirements for Weapons V. 26.1\" — the current document's footer reads \"Technical Requirements for Weapons V. 26.4\" (file title \"Weapons requirements\"); cover \"VER. 26.1\". Older than the current 26.4."
+    },
+    {
+      "id": "authenticity/textile-and-leather@2024.12",
+      "inventory_key": "authenticity/textile-and-leather",
+      "files": [
+        "Authenticity/Archive/Textiles and Leather V2024.12.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Textiles and Leather\"; cover \"VER. 2024.12\"; change log only \"December-2024: created\". Older than the current 26.1."
+    },
+    {
+      "id": "authenticity/wolfribs@2025.02",
+      "inventory_key": "authenticity/wolfribs",
+      "files": [
+        "Authenticity/Archive/Wolf Ribs.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Helmet - Wolf Ribs\"; cover \"VER. 2025.02\" while the change log lists \"March - 2025 (V2025.03)\" above \"February - 2025 (V2025.02)\": the label is the cover's, the disagreement is recorded. Older than the current 26.1."
+    },
+    {
+      "id": "marshal/buhurt-rules@2024.12.13",
+      "inventory_key": "marshal/buhurt-rules",
+      "files": [
+        "Marshal/Archive/Buhurt Rules 2024.12.13.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Buhurt Rules\", footer \"Buhurt Rules\"; cover \"VER. 2024.12.13\". Older than 2026.1.1 and the current 26.4.1."
+    },
+    {
+      "id": "marshal/buhurt-rules@2026.1.1",
+      "inventory_key": "marshal/buhurt-rules",
+      "files": [
+        "Marshal/Archive/Buhurt Rules 2026.1.1.pdf"
+      ],
+      "seq": 2,
+      "evidence": "Title \"Buhurt Rules\"; cover \"VER. 2026.1.1\" (January 2026). Newer than 2024.12.13, older than the current 26.4.1. Version labels: \"2024.12\" style until 2025, then \"26.1\" = January 2026 (Duel Regulations change log: \"January 2026 (2025.02 to 2026.1)\"; Infractions: \"January - 2026 (V. 26.1)\")."
+    },
+    {
+      "id": "marshal/duels-rules@2025.03",
+      "inventory_key": "marshal/duels-rules",
+      "files": [
+        "Marshal/Archive/Duels rules 2025.03.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Duels Rules\"; cover \"VER. 2025.03\". Older than 26.1 and the current 26.4."
+    },
+    {
+      "id": "marshal/duels-rules@26.1",
+      "inventory_key": "marshal/duels-rules",
+      "files": [
+        "Marshal/Archive/Duels rules 26.1.pdf"
+      ],
+      "seq": 2,
+      "evidence": "Title \"Duels Rules\"; cover \"VER. 26.1\". Version labels: \"2024.12\" style until 2025, then \"26.1\" = January 2026 (Duel Regulations change log: \"January 2026 (2025.02 to 2026.1)\"; Infractions: \"January - 2026 (V. 26.1)\")."
+    },
+    {
+      "id": "marshal/outrance-rules@2025.03",
+      "inventory_key": "marshal/outrance-rules",
+      "files": [
+        "Marshal/Archive/Outrance Rules 2025.3.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title and footer \"Outrance Rules and Regulations\"; cover \"VER. 2025.03\" (file named \"2025.3\"). Older than 26.1 and the current 26.4."
+    },
+    {
+      "id": "marshal/outrance-rules@26.1",
+      "inventory_key": "marshal/outrance-rules",
+      "files": [
+        "Marshal/Archive/Outrance Rules 26.1.pdf"
+      ],
+      "seq": 2,
+      "evidence": "Title and footer \"Outrance Rules and Regulations\"; cover \"VER. 26.1\". Version labels: \"2024.12\" style until 2025, then \"26.1\" = January 2026 (Duel Regulations change log: \"January 2026 (2025.02 to 2026.1)\"; Infractions: \"January - 2026 (V. 26.1)\")."
+    },
+    {
+      "id": "marshal/weapon-shield-chart@2024.12.13",
+      "inventory_key": "marshal/weapon-shield-chart",
+      "files": [
+        "Marshal/Archive/Weapons_Shield Chart 2024.12.13.pdf"
+      ],
+      "seq": 1,
+      "evidence": "\"Weapons/Shield Chart\" (Google Sheets): weapons sheet \"TECHNICAL REQUIREMENTS FOR PERMITTED WEAPONS V2024.12.13\"; its SHIELDS sheet (page 2) is printed \"V2025.03\"; change log has only the undated \"Older vers.\" entries. Labelled by the first sheet as printed; the mixed sheet versions are recorded. Older than 26.1."
+    },
+    {
+      "id": "marshal/weapon-shield-chart@26.1",
+      "inventory_key": "marshal/weapon-shield-chart",
+      "files": [
+        "Marshal/Archive/Weapons_Shield Chart 26.1.pdf"
+      ],
+      "seq": 2,
+      "evidence": "\"Weapons/Shield Chart\": \"VER. 26.1\" on the weapons sheet; change log \"VER 26.1\" above \"Older vers.\"."
+    },
+    {
+      "id": "marshal/weapon-shield-chart@26.2",
+      "inventory_key": "marshal/weapon-shield-chart",
+      "files": [
+        "Marshal/Archive/Weapons_Shield Chart V26.2.pdf"
+      ],
+      "seq": 3,
+      "evidence": "\"Weapons/Shield Chart\": \"VER. 26.2\"; change log \"VER 26.2\" above \"VER 26.1\". The current 26.2.1 change log continues \"VER 26.2.1\" above \"VER 26.2\"."
+    },
+    {
+      "id": "tournament/buhurt-regulations@2025.03",
+      "inventory_key": "tournament/buhurt-regulations",
+      "files": [
+        "Tournament/Archive/Buhurt Regulations 2025.03.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title \"Buhurt Regulations\"; cover \"VER. 2025.03\"; change log \"February-2025 (V2025.03)\" (and a \"December-2025\" document-created entry, as printed). Older than 26.1."
+    },
+    {
+      "id": "tournament/buhurt-regulations@26.1",
+      "inventory_key": "tournament/buhurt-regulations",
+      "files": [
+        "Tournament/Archive/Buhurt Regulations 26.1.pdf",
+        "Tournament/Archive/Buhurt Regulations 26.1(1).pdf"
+      ],
+      "seq": 2,
+      "evidence": "Title \"Buhurt Regulations 26.1\"; cover \"VER. 26.1\"; change log \"Update: January -2026.1\" above \"March-2025 (V2025.03)\". Two byte-identical files (SHA-256), one edition. Older than the current 26.4."
+    },
+    {
+      "id": "tournament/duel-regulations@2024.12",
+      "inventory_key": "tournament/duel-regulations",
+      "files": [
+        "Tournament/Archive/Duels Regulations V2024.12.pdf",
+        "Tournament/Archive/Duels Regulations V2024.12(1).pdf"
+      ],
+      "seq": 1,
+      "evidence": "Cover \"VER. 2024.12\" (heading \"Rules and Regulations\"), footer \"Duel Rules and Regulations\"; change log \"December 2024 (Version update from 2024.06 to 2024.12)\" — the same entries continue in the later Duels Regulations editions, so it is the same document. Two byte-identical files."
+    },
+    {
+      "id": "tournament/duel-regulations@2025.03",
+      "inventory_key": "tournament/duel-regulations",
+      "files": [
+        "Tournament/Archive/Duels Regulations 2025.03.pdf",
+        "Tournament/Archive/Duels Regulations.pdf"
+      ],
+      "seq": 2,
+      "evidence": "Title \"Duels Regulations\"; cover \"VER. 2025.03\" while the change log says \"February 2025 (Version update from 2024.12 to 2025.02)\": the label is the cover's, the disagreement is recorded. The unversioned \"Duels Regulations.pdf\" is byte-identical (SHA-256)."
+    },
+    {
+      "id": "tournament/duel-regulations@26.1",
+      "inventory_key": "tournament/duel-regulations",
+      "files": [
+        "Tournament/Archive/Duels Regulations 26.1.pdf",
+        "Tournament/Archive/Duels Regulations 26.1(1).pdf"
+      ],
+      "seq": 3,
+      "evidence": "Title \"Duels Regulations 26.1\"; cover \"VER. 26.1\"; change log \"January 2026 (2025.02 to 2026.1)\". Two byte-identical files. Older than the current 26.4."
+    },
+    {
+      "id": "tournament/tournament-structure@2024.06",
+      "inventory_key": "tournament/tournament-structure",
+      "files": [
+        "Tournament/Archive/Tournament Structure V2024.06.pdf"
+      ],
+      "seq": 1,
+      "evidence": "Title and footer \"Tournament Structure and Formats\"; cover \"VER. 2024.06\"; change log latest \"april-2024\". Older than the current (January 2026)."
+    }
+  ],
+  "same_as_current": [],
+  "held": [
+    {
+      "file": "Marshal/Archive/Weapons_Shield Chart - Shields 2025.3.pdf",
+      "reason": "A one-page export of a single sheet (\"TECHNICAL REQUIREMENTS FOR PERMITTED SHIELDS V2025.03\"). Its text is word-for-word the shields sheet (page 2) of \"Weapons_Shield Chart 2024.12.13.pdf\", which is imported as edition 2024.12.13. It is not a separate edition of the Weapons/Shield Chart, and not the whole document: held for a person to decide whether it should be recorded as anything more than a copy of that page."
+    }
+  ]
+}

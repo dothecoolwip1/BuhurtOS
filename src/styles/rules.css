@@ -152,3 +152,16 @@
 /* official words keep their printed case: no global table-heading styling inside a rule's table */
 .rl-table th{text-transform:none;letter-spacing:0;font-family:var(--f-body);font-size:15px;color:var(--ink)}
 .dd-actions .dd-confirm{flex:1 1 100%;margin:0}
+
+/* Pack 22: earlier (historical) editions and comparing versions */
+.rl-versions-wrap{display:grid;gap:8px;margin:4px 0}
+.rl-vlabel{flex-basis:100%;font-size:.8rem;color:var(--muted);letter-spacing:.02em}
+.rl-hist{border-left:4px solid var(--faint)}
+.rl-hist p{margin:0 0 4px}
+.rl-docchips{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;flex:none;max-width:55%}
+.rl-edsrc summary{cursor:pointer}
+.rl-edsrc ul{padding-left:18px;overflow-wrap:anywhere}
+.rl-compare{display:grid;gap:10px;margin-top:12px}
+.rl-diffbody{white-space:pre-wrap}
+.rl-diff ins{background:var(--win-soft);text-decoration:none;border-bottom:2px solid var(--win)}
+.rl-diff del{color:var(--muted);text-decoration:line-through}

@@ -35,7 +35,7 @@ create function t.x(n int) returns uuid language sql immutable as $$ select ('00
 create function t.team() returns uuid language sql immutable as $$ select '00000000-0000-0000-0000-0000000d5a01'::uuid $$;
 create function t.org(n int) returns uuid language sql immutable as $$ select ('00000000-0000-0000-0000-' || lpad('0a5' || n, 12, '0'))::uuid $$;
 create function t.ver(doc text) returns uuid language sql stable security definer as $$
-  select rv.id from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.inventory_key = doc order by rv.imported_at desc limit 1 $$;
+  select rv.id from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.inventory_key = doc and not rv.historical order by rv.imported_at desc limit 1 $$;   -- the current release (not an earlier edition)
 create function t.bp(doc text, num text) returns uuid language sql stable security definer as $$
   select p.id from public.rule_provisions p where p.ruleset_version_id = t.ver(doc) and p.number = num $$;
 -- notifications for one account (the table is read by its owner through the app, not directly)

@@ -58,21 +58,22 @@ select t.expect_eq('BI directory: the core rulebooks are there with the format t
   (select string_agg(inventory_key || ':' || array_to_string(applies_to, '+'), ',' order by inventory_key) from public.rulesets where inventory_key in ('marshal/buhurt-rules', 'marshal/duels-rules', 'marshal/outrance-rules')),
   'marshal/buhurt-rules:buhurt,marshal/duels-rules:duels,marshal/outrance-rules:outrance');
 -- The official text (migration 20261015000400, generated from rules-library/buhurt-international/releases/2026-10-06): 42 documents, reconciled.
+-- (The earlier editions loaded by 20261015000900 are checked in pack22_history_gate.sql; these checks are about the current release.)
 select t.expect_eq('BI release: one version for each of the 42 documents, none for the archive folders',
-  (select count(*) || '/' || count(distinct r.id) || '/' || count(*) filter (where r.source_host = 'drive_folder') from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International'), '42/42/0');
+  (select count(*) || '/' || count(distinct r.id) || '/' || count(*) filter (where r.source_host = 'drive_folder') from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International' and not rv.historical), '42/42/0');
 select t.expect_eq('BI release: every version reconciled, in review (waiting for the owner to publish), from release 2026-10-06, not synthetic',
-  (select count(*) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International'
+  (select count(*) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International' and not rv.historical
      and rv.status = 'in_review' and (rv.reconciliation ->> 'ok')::boolean and rv.import_release = '2026-10-06' and not rv.synthetic and rv.source_sha256 ~ '^[0-9a-f]{64}$' and rv.page_count > 0)::int, 42);
-select t.expect_eq('BI release: 42 different source files', (select count(distinct rv.source_sha256) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International')::int, 42);
+select t.expect_eq('BI release: 42 different source files', (select count(distinct rv.source_sha256) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International' and not rv.historical)::int, 42);
 select t.expect_eq('BI release: no provision is left needing review, and every version has text',
-  (select count(*) filter (where p.review_status = 'needs_review') || '/' || count(distinct p.ruleset_version_id) from public.rule_provisions p join public.ruleset_versions rv on rv.id = p.ruleset_version_id join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International'), '0/42');
+  (select count(*) filter (where p.review_status = 'needs_review') || '/' || count(distinct p.ruleset_version_id) from public.rule_provisions p join public.ruleset_versions rv on rv.id = p.ruleset_version_id join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International' and not rv.historical), '0/42');
 select t.expect_eq('BI release: version labels read from the documents themselves',
   (select string_agg(r.inventory_key || '=' || rv.version, ',' order by r.inventory_key) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id
-    where r.inventory_key in ('marshal/buhurt-rules', 'marshal/duels-rules', 'tournament/buhurt-regulations', 'authenticity/infractions', 'executive/judiciary-committee', 'marshal/weapon-shield-chart')),
+    where not rv.historical and r.inventory_key in ('marshal/buhurt-rules', 'marshal/duels-rules', 'tournament/buhurt-regulations', 'authenticity/infractions', 'executive/judiciary-committee', 'marshal/weapon-shield-chart')),
   'authenticity/infractions=26.4,executive/judiciary-committee=2024.06,marshal/buhurt-rules=26.4.1,marshal/duels-rules=26.4,marshal/weapon-shield-chart=26.2.1,tournament/buhurt-regulations=26.4');
 select t.expect_eq('BI release: a picture-only page is a figure with no words of BuhurtOS''s own (empty body)',
   (select count(*) filter (where p.body <> '' or not p.has_figures) || '/' || sign(count(*)) from public.rule_provisions p join public.ruleset_versions rv on rv.id = p.ruleset_version_id join public.rulesets r on r.id = rv.ruleset_id
-    where r.governing_body = 'Buhurt International' and p.kind = 'figure'), '0/1');
+    where r.governing_body = 'Buhurt International' and not rv.historical and p.kind = 'figure'), '0/1');
 select t.expect_eq('BI release: text read from page images is marked as OCR',
   (select count(*) from public.rule_provisions p where p.ruleset_version_id = t.ver('authenticity/gauntlets', '26.1') and p.extraction = 'ocr') > 20, true);
 select t.expect_eq('BI release: Buhurt Rules 4.12 is "Striking Grounded competitors", word for word (capital G as printed)',

@@ -1,0 +1,709 @@
+{
+  "edition": "authenticity/eyebars@2024.12",
+  "inventory_key": "authenticity/eyebars",
+  "seq": 1,
+  "version": {
+    "version": "2024.12",
+    "title": "Eyebars V2024.12.docx",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Title \"Eyebars\"; cover \"VER. 2024.12\"; change log only \"December-2024: Document has been created\". Older than the current 26.1.",
+    "source_url": "https://drive.google.com/file/d/1skAksQXo5-RNNdEP1Tje8dGw_uiJ_ucb/view?usp=sharing",
+    "source_sha256": "45bda44ac3e67d68e69364b2028f0581c0e46f97dbcba1346a0767e4fb663a10",
+    "retrieved_at": null,
+    "page_count": 8,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+    "content_sha256": "df18b44bca2ea550f3ff1839b1e5f35753f419394672fd076294a012efda99aa",
+    "detected": {
+      "version": "2024.12",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 historical import), read from the archived PDF: cover (OCR of the page image), footers and change log",
+    "historical": true,
+    "edition_seq": 1,
+    "edition_evidence": "Title \"Eyebars\"; cover \"VER. 2024.12\"; change log only \"December-2024: Document has been created\". Older than the current 26.1.",
+    "source_files": [
+      {
+        "file": "Authenticity/Archive/Eyebars V2024.12.docx.pdf",
+        "archive": "Authenticity",
+        "sha256": "45bda44ac3e67d68e69364b2028f0581c0e46f97dbcba1346a0767e4fb663a10",
+        "drive_file_id": "1WU2uGVz4giun-pOs8YRND6xN7OQ4m8fU"
+      }
+    ],
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "pages": 8,
+      "source_lines": 85,
+      "assigned_lines": 129,
+      "furniture_lines": 30,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99389,
+      "provisions": 15,
+      "numbered": 14,
+      "needs_review": 0,
+      "verified": 0,
+      "empty_pages": [],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 11,
+      "picture_text_lines": 9,
+      "ocr_corrections": 0
+    }
+  },
+  "file_contents": [],
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "note",
+      "number": null,
+      "title": null,
+      "body": "VER. 2024.12\n\nAuthenticity",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "eyebars:p0001",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "introduction"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "91cc874cc0c2306e0ce50ffd6d96f3b0ed6424411ad0724ce818c906154971d9",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "1:1",
+        "1:7",
+        "1:9",
+        "1:12",
+        "1:13",
+        "1:14",
+        "1:15",
+        "2:14",
+        "2:15",
+        "2:16",
+        "2:17",
+        "2:19"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Definition and General Requirements",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "16f6f8920e5eb6836999f83839be69d2e96e3a5b5fa2ec8b8a840d9f67bd81fe",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:0"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.1",
+      "title": "Definition",
+      "body": "● Eye Bars are the term used to describe additional protection for the eye slots of a helmet.\n● Rare historical sources display some additional eye protection, mainly for great helms.\n● However, it is permitted to add eye bars that do not rely on historical sources to increase the safety of helmets. The number and type of permitted eye bars are displayed in each helmet rules document",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:1.1",
+      "parent_key": "eyebars:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "be0e1e2a7ea5de69fa454080084940e88e3a20d5f128fcd35e3f2e1dea1bd852",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4",
+        "3:5",
+        "3:6",
+        "3:7"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.2",
+      "title": "Eye bars description",
+      "body": "Eye bars can be:\n\n● Externally Riveted Eye Bars This type of eye bar is documented by historical sources. It consists of metal plates riveted externally.\n● Buhurt “Optimized” Eye Bars This type of eye bar is not documented by historical sources. It consists of metal plates riveted or welded to the inside of a helmet.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:1.2",
+      "parent_key": "eyebars:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a6f334f5977f4b128d851ba4204ca354c8acef382f2d12dc18667944820277b9",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.3",
+      "title": "General requirements",
+      "body": "All types of eye bars must respect the following requirements\n\n● Be firmly attached to prevent any breakage and maintain a high level of protection in any situation.\n● Protect the whole eye slot from top to bottom.\n\nRecommended: Eye slots should not exceed an opening of 25 mm",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:1.3",
+      "parent_key": "eyebars:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "988393e21950d8be79116063ed5fccb64935a7b92f79442e70f25f1c9f3c9fca",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27",
+        "3:28",
+        "3:29",
+        "3:31"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Externally Riveted Eye Bars",
+      "body": "",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "eyebars:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d82403d6da6882bacef61d16ff555b3e2dd4178e96ca9b79e0ebcc95049538bb",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "4:0",
+        "4:1"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.1",
+      "title": "Historical Sources and Dating",
+      "body": "A few historical sources display this type of eye bar.\nThe main source is the Great Helm from Nuremberg (1350).\n\nDespite its rarity, it is approved for 14th-century, transitional, and 15th-century armors.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "eyebars:2.1",
+      "parent_key": "eyebars:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "e124e2e33a3b7e4637c54d442f1825613609493dc9980e73f54e2234e18a1379",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10",
+        "4:11"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.2",
+      "title": "Specific Requirements",
+      "body": "● Externally riveted eye bars must conform with the general requirements (1.3)\n● Externally riveted eye bars must be firmly riveted to the outside of the eye slot.\n● Externally riveted eye bars must resemble the historical sources and not exceed a width of 30mm.\n● Externally riveted eye bars must be made of metal.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "eyebars:2.2",
+      "parent_key": "eyebars:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a5ccfedbfb311c10f9cd3dd66e6c64fc26b469339a84b044ae55606b6a07f7dd",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "4:12",
+        "4:13",
+        "4:14",
+        "4:15",
+        "4:16",
+        "4:17",
+        "4:18",
+        "4:19",
+        "4:20",
+        "4:22"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.3",
+      "title": "Examples of Approved reproductions",
+      "body": "Picture by Zoom en Lice ©",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "eyebars:2.3",
+      "parent_key": "eyebars:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "be6b3cd0087f2771426d9a7661d7de35ce542a9f436e43f835bfb141c239f7d2",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3",
+        "5:4",
+        "5:5",
+        "5:6",
+        "5:7",
+        "5:8",
+        "5:9",
+        "5:11"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "Buhurt “Optimized” Eye Bars",
+      "body": "",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "eyebars:3",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "80380b26d420fa2c494d13cfc1e9ea0df3442de4ec3e5370e500a23eed5abab3",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "6:0",
+        "6:1"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.1",
+      "title": "Historical Sources and Dating",
+      "body": "There are no historical sources for eye bars welded onto eye slots.\nNevertheless, for safety reasons, they are approved for 14th-century, transitional, and 15th-century armor.",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "eyebars:3.1",
+      "parent_key": "eyebars:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "00e7f90080cc0634ebe24676ee89f8c95b1d6709bd8a9af171ca0951978def97",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "6:2",
+        "6:3",
+        "6:4",
+        "6:5",
+        "6:6",
+        "6:7"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.2",
+      "title": "Specific Requirements",
+      "body": "● Buhurt-optimized eye bars must conform with the general requirements (1.3)\n● Buhurt-optimized eye bars must be welded or riveted from the inside of the helm.\n● Buhurt-optimized eye bars must be strong enough to endure full-contact fights.\n● Buhurt-optimized eye bars must be painted black.",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "eyebars:3.2",
+      "parent_key": "eyebars:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "ba2a8851c1e30bd7b5922a5b9f24d2d623ee8a53da02f8b70e9bc21be7429a40",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "6:8",
+        "6:9",
+        "6:10",
+        "6:11",
+        "6:12",
+        "6:13",
+        "6:14"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Pictures from The Medieval Things ©",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "eyebars:3.3",
+      "parent_key": "eyebars:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a1130db5edf777b376e9569c379053eba7b176dabdc15d499d5ff24f22276fd2",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "6:15",
+        "6:16",
+        "6:17",
+        "6:18",
+        "6:19",
+        "6:20",
+        "6:21",
+        "6:22",
+        "6:23",
+        "6:24",
+        "6:26"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.4",
+      "title": "Examples of Denied Reproductions",
+      "body": "Too much eyebars\n\nPictures from The Medieval Things ©",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "eyebars:3.4",
+      "parent_key": "eyebars:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "acff33f676cf3f2a0de9453283e91c030809fecbc8c4dde92f53ad5122e93f9c",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "7:0",
+        "7:1",
+        "7:2",
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6",
+        "7:7",
+        "7:8",
+        "7:9",
+        "7:10",
+        "7:11",
+        "7:13"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 0,
+      "kind": "note",
+      "number": "4",
+      "title": "Change log",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nDecember-2024: -add Document has been created",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "eyebars:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d1a65e57aa9ae1fde0d4ca7cd6c4970c925a72393fc04f35254a4d1c387650bd",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "8:0",
+        "8:1",
+        "8:2",
+        "8:3",
+        "8:4",
+        "8:5",
+        "8:6",
+        "8:7",
+        "8:8",
+        "8:9",
+        "8:10",
+        "8:11",
+        "8:12",
+        "8:14"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "1:0",
+      "page": 1,
+      "text": "\\)) BUHURT(Z",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 40.6)"
+    },
+    {
+      "id": "1:2",
+      "page": 1,
+      "text": "A (",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 41.2)"
+    },
+    {
+      "id": "1:3",
+      "page": 1,
+      "text": "Ne iy) 2Z",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 31.6)"
+    },
+    {
+      "id": "1:4",
+      "page": 1,
+      "text": "im BX",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 28.4)"
+    },
+    {
+      "id": "1:5",
+      "page": 1,
+      "text": "C WK \\/ HL .",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 2%), confidence 31.9)"
+    },
+    {
+      "id": "1:6",
+      "page": 1,
+      "text": "Aah Lee",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 7%), confidence 22.5)"
+    },
+    {
+      "id": "1:8",
+      "page": 1,
+      "text": "e",
+      "reason": "OCR: text inside a picture (no readable word: marks of a drawing)"
+    },
+    {
+      "id": "1:10",
+      "page": 1,
+      "text": "~",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 61.4)"
+    },
+    {
+      "id": "1:11",
+      "page": 1,
+      "text": "ticity Conm™",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 3%), confidence 42.3)"
+    },
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "                                 Table of content",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:1",
+      "page": 2,
+      "text": "  1. Definition and General Requirements                 2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "      1.2. Eye bars description                          2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "      1.3. General requirements                          2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "  2. Externally Riveted Eye Bars                         3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "      2.1. Historical Sources and Dating                 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "      2.2. Specific Requirements                         3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "      2.3. Examples of Approved reproductions            4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "  3. Buhurt “Optimized” Eye Bars                         5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "      3.1. Historical Sources and Dating                 5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "      3.2. Specific Requirements                         5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "      3.3. Examples of Approved Reproductions            5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "      3.4. Examples of Denied Reproductions              6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "  4. Change log                                          7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "Eyebars                                              1",
+      "reason": "table of contents"
+    },
+    {
+      "id": "3:30",
+      "page": 3,
+      "text": "Eyebars                                                                                     2",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "4:21",
+      "page": 4,
+      "text": "Eyebars                                                                                     3",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "5:10",
+      "page": 5,
+      "text": "Eyebars                                                              4",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "6:25",
+      "page": 6,
+      "text": "Eyebars                                                                                 5",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "7:12",
+      "page": 7,
+      "text": "Eyebars                                                                     6",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "8:13",
+      "page": 8,
+      "text": "Eyebars                                                                                   7",
+      "reason": "repeated on most pages (header or footer)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": []
+}

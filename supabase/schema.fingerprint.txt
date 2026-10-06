@@ -784,9 +784,12 @@ column public.rule_provisions.title text
 column public.rule_provisions.topics text[] not null
 column public.ruleset_versions.content_sha256 text
 column public.ruleset_versions.created_at timestamp with time zone not null
+column public.ruleset_versions.edition_evidence text
+column public.ruleset_versions.edition_seq integer
 column public.ruleset_versions.effective_from date
 column public.ruleset_versions.effective_to date
 column public.ruleset_versions.extractor text
+column public.ruleset_versions.historical boolean not null
 column public.ruleset_versions.id uuid not null
 column public.ruleset_versions.import_release text
 column public.ruleset_versions.imported_at timestamp with time zone
@@ -797,6 +800,7 @@ column public.ruleset_versions.published_by uuid
 column public.ruleset_versions.published_on date
 column public.ruleset_versions.reconciliation jsonb
 column public.ruleset_versions.ruleset_id uuid not null
+column public.ruleset_versions.source_files jsonb
 column public.ruleset_versions.source_id uuid
 column public.ruleset_versions.source_retrieved_at timestamp with time zone
 column public.ruleset_versions.source_sha256 text
@@ -1484,13 +1488,17 @@ constraint rule_provisions rule_provisions_title_check CHECK (((title IS NULL) O
 constraint rule_provisions rule_provisions_topics_check CHECK ((cardinality(topics) <= 12))
 constraint ruleset_versions ruleset_versions_check CHECK (((effective_to IS NULL) OR (effective_from IS NULL) OR (effective_to >= effective_from)))
 constraint ruleset_versions ruleset_versions_content_sha256_check CHECK (((content_sha256 IS NULL) OR (content_sha256 ~ '^[0-9a-f]{64}$'::text)))
+constraint ruleset_versions ruleset_versions_edition_evidence_check CHECK (((edition_evidence IS NULL) OR (char_length(edition_evidence) <= 1000)))
+constraint ruleset_versions ruleset_versions_edition_seq_check CHECK (((edition_seq IS NULL) OR (edition_seq > 0)))
 constraint ruleset_versions ruleset_versions_extractor_check CHECK (((extractor IS NULL) OR (char_length(extractor) <= 200)))
+constraint ruleset_versions ruleset_versions_historical_shape CHECK (((historical = (edition_seq IS NOT NULL)) AND (historical OR (source_files IS NULL)) AND ((NOT historical) OR (jsonb_array_length(source_files) > 0))))
 constraint ruleset_versions ruleset_versions_import_release_check CHECK (((import_release IS NULL) OR (char_length(import_release) <= 80)))
 constraint ruleset_versions ruleset_versions_note_check CHECK (((note IS NULL) OR (char_length(note) <= 500)))
 constraint ruleset_versions ruleset_versions_page_count_check CHECK (((page_count IS NULL) OR ((page_count >= 1) AND (page_count <= 2000))))
 constraint ruleset_versions ruleset_versions_pkey PRIMARY KEY (id)
 constraint ruleset_versions ruleset_versions_ruleset_id_fkey FOREIGN KEY (ruleset_id) REFERENCES rulesets(id) ON DELETE CASCADE
 constraint ruleset_versions ruleset_versions_ruleset_id_version_key UNIQUE (ruleset_id, version)
+constraint ruleset_versions ruleset_versions_source_files_check CHECK (((source_files IS NULL) OR (jsonb_typeof(source_files) = 'array'::text)))
 constraint ruleset_versions ruleset_versions_source_id_fkey FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE SET NULL
 constraint ruleset_versions ruleset_versions_source_sha256_check CHECK (((source_sha256 IS NULL) OR (source_sha256 ~ '^[0-9a-f]{64}$'::text)))
 constraint ruleset_versions ruleset_versions_source_url_check CHECK (((source_url IS NULL) OR ((char_length(source_url) <= 500) AND (source_url ~ '^https://'::text))))
@@ -1773,10 +1781,11 @@ function private.rule_content_sha256(p_number text, p_title text, p_body text) s
 function private.rule_provision_guard() secdef=false 5c7efb79ac25e76895522c9cd8fadf28
 function private.rule_revision_guard() secdef=false 55d1ff3d96fb0ed7b899db9279cbbe57
 function private.rule_version_readable(p_version uuid) secdef=true eba08970f63ad8bb7a56fbf4813c5c93
+function private.rules_import_historical_version(p jsonb) secdef=true 99cbba8b50717062f38a4e493bd8c990
 function private.rules_import_inventory(p jsonb) secdef=true 45c6af91ab1fa0db771338352ce60b3b
-function private.rules_import_version(p jsonb) secdef=true df7f28dc24333374c64f83ba9b6cd069
+function private.rules_import_version(p jsonb) secdef=true ada4e6ba6157bf22817d47ec4502dfce
 function private.ruleset_guard() secdef=false 1f130763785b35e5d76151940522871f
-function private.ruleset_version_guard() secdef=false 1218bc89d2538379fc82c049d242dd80
+function private.ruleset_version_guard() secdef=false d69ec6dcb0bd224bb96b7add6c69ac90
 function private.schedule_notify() secdef=true df1983843e9bac9a3ec276403d8c0ed0
 function private.settle_field_queue(p_event uuid, p_key text, p_start boolean) secdef=true f71c55456652d4a824fea67c2771718f
 function private.side_rounds(p_detail jsonb, p_side text, p_sf integer, p_sa integer) secdef=false 56a7f063efebbe25d570b1840e46f8d2
@@ -1867,7 +1876,7 @@ function public.enter_official_result(p_match uuid, p_result text, p_score_a int
 function public.event_close_preflight(p_event uuid) secdef=true fbb652344a86144b8b97bf2221949808
 function public.event_command_snapshot(p_event uuid) secdef=true 397f6a48f6a2235646a55eb33fbb8788
 function public.event_delete_check(p_event uuid) secdef=true 64d96ed05ff3325d92e77fe3c0950d8e
-function public.event_discipline_log(p_event uuid) secdef=true e037a596e1348c527bd7c94cb9205364
+function public.event_discipline_log(p_event uuid) secdef=true c62deb35d003f5b6661cefda67eabc1f
 function public.event_discipline_overview(p_event uuid) secdef=true c6d9b9baf61023fe899f49c1a543a173
 function public.event_readiness(p_event uuid) secdef=true 01b7717e2334798be3f3382a5add5589
 function public.exclude_event_from_stats(p_event uuid, p_reason text) secdef=true 05ab2f6918d8d94a0513ef3f7e3b9fe9
@@ -1930,6 +1939,7 @@ function public.my_team_requests() secdef=true a6e88a25fc0a79a4fbd27621a8bc20ef
 function public.new_team_request_details(p_team uuid) secdef=true ad83db5bbcbdfdc1e5782c4d51a9fe9d
 function public.note_rule_conflict(p_version_a uuid, p_provision_a uuid, p_version_b uuid, p_provision_b uuid, p_description text) secdef=true b239f36b17ccafbbdc5c12510bd590f1
 function public.pool_standings(p_competition uuid) secdef=true b1f41fde5830d12578118986ca51733d
+function public.publish_historical_version(p_version uuid, p_note text) secdef=true 3d4eef318af4c19c110736d098cd9f12
 function public.publish_ruleset_version(p_version uuid, p_note text) secdef=true adac54880fa3e2e1c11f7c6e4f09e947
 function public.push_claim(p_limit integer) secdef=true 46244c9df87ef5f171ccd689767ba1f5
 function public.push_dispatch_config() secdef=true 2b4de1672c2b32b651ed2522b9771be3
@@ -2213,6 +2223,7 @@ index public.ruleset_versions CREATE INDEX ON public.ruleset_versions USING btre
 index public.ruleset_versions CREATE INDEX ON public.ruleset_versions USING btree (successor_version_id) WHERE (successor_version_id IS NOT NULL)
 index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (id)
 index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (ruleset_id) WHERE (status = 'published'::text)
+index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (ruleset_id, edition_seq) WHERE historical
 index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (ruleset_id, version)
 index public.rulesets CREATE INDEX ON public.rulesets USING btree (inventory_source_id) WHERE (inventory_source_id IS NOT NULL)
 index public.rulesets CREATE UNIQUE INDEX ON public.rulesets USING btree (governing_body, inventory_key) WHERE (inventory_key IS NOT NULL)

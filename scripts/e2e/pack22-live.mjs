@@ -61,9 +61,10 @@ const pageErrors = [];
 try {
   const exSlug = sql(`select slug from public.rulesets where inventory_key = 'marshal/example-combat-rules'`);
   const biSlug = sql(`select slug from public.rulesets where inventory_key = 'marshal/buhurt-rules'`);
-  check('fixture: the Buhurt International directory (45 entries, its 42 documents imported and waiting in review) and the example rulesets (V.1.0 superseded, V.1.1 and V.2.0 published) are in the database',
+  check('fixture: the Buhurt International directory (45 entries, its 42 documents imported and waiting in review; 37 earlier editions in review beside them) and the example rulesets (V.1.0 superseded, V.1.1 and V.2.0 published) are in the database',
     sql(`select count(*) from public.rulesets where governing_body = 'Buhurt International'`) === '45'
-    && sql(`select count(*) from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International' and v.status = 'in_review'`) === '42'
+    && sql(`select count(*) from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International' and v.status = 'in_review' and not v.historical`) === '42'
+    && sql(`select count(*) from public.ruleset_versions where historical and status = 'in_review'`) === '37'
     && sql(`select string_agg(version || ':' || status, ',' order by version) from public.ruleset_versions where synthetic`) === 'V.1.0:superseded,V.1.1:published,V.2.0:published');
 
   // ================================================================ 1. anonymous visitor on a phone, sample mode OFF: the real directory, no test rules

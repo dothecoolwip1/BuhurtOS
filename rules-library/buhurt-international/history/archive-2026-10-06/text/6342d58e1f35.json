@@ -1,0 +1,35 @@
+{
+  "sha256": "6342d58e1f352c97104dcfaa3a8af740720efd35c7e3a5780449d2f2e7b5cd73",
+  "files": [
+    "Marshal/Archive/Weapons_Shield Chart V26.2.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8",
+  "pdfinfo": {
+    "pages": 3,
+    "title": "Weapons/Shield Chart",
+    "creator": "Google Sheets",
+    "producer": null,
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "                                            TECHNICAL REQUIREMENTS FOR PERMITTED WEAPONS\n                                                                                                        VER. 26.2\n\n                                                                                   All weights and sizes are in metric (kg and cm)\n\nBladed Weapons (Sword, Saber, Falchion, etc)                   Weight        Length          Length of the Blade     Length of the Handle                              Special Restrictions\n\nType 1 Bladed (Arming sword, Falchion, Saber)                 1.1 - 1.7      72 - 100              60 - 80                   12 - 20\n\nType 2 Bladed (Longsword)                                     1.7 - 2.3      100 - 140             70 - 100                  20 - 50          The Hilt should not extend more then 35mm over the Bearer's hand.\n\nType 3 Bladed                                                 2.3 - 3.0      120 - 160             90 - 130                  30 - 50\n\n\nHafted Weapons (Polearm, Poleaxe, 2-handed axe, etc)           Weight        Length        Length of Striking Edge                            Special Restrictions\n\nType 1 Hafted (Mace)                                           0.7 -1.3       50-70                  >5\n\nType 2 Hafted (Axe)                                           0.7 - 1.3       50 - 90                >7              Type 1 Hafted (Maces) must have 6 or more flanges or be a ball. All Hafted weapons with sharp\n                                                                                                                     corners (Less than 90 degrees) and corners that can be considered dangerous\n                                                                                                                     are not permitted. Any point on the Striking Edge of the weapon Must have an angle more than 90\nType 3 Hafted (Longaxe)                                       1.3 - 2.5      90 - 130                >9              degrees.\n\nType 4 Hafted (Polearm)                                       2.2 - 3.2      130 - 220              > 12\n\n\n\nOutrance Bladed Weapons (Sword, Saber, Falchion, etc)                      Calculation                                                        Special Restrictions\n\nMen                                                                       Balance Point of 15cm or more\n                                                                                                                     Outrance swords must also meet the Bladed Weapons Technical Requirements.\n                                                                                                                     Balance points are measured from the edge of the grip zone and includes the crossguard.\nWomen                                                                     Balance Point of 10cm or more\n\n\n                                                                                         Other Restrictions for all Weapon Types\n\nThe permissible upwards error for all weapons is 100g.\nHeavier weapons or thrust weapons are not allowed under any circumstance.\nThe edge of all blades must be rebated and have a thickness of 2mm or more. This applies to striking and non-striking edges of all weapons.\nThe Radius of all edges must be more than 10mm.\nOnly Weapons which have chronological validity of a specific historical period as confirmed by the Authenticity Committee are allowed.\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "                                  TECHNICAL REQUIREMENTS FOR PERMITTED SHIELDS\n                                                           VER. 26.2\n\n                                         All weights and sizes are in metric (kg and cm)\n\nHeather and Punch Shields                                                Lenght                  Width              Weight\n\nHeater shield                                                             55 - 75                30 - 65\n                                                                                                                      ≤5\nPunch shield                                                              55 - 75                30 - 50\n\nRound Shields and Bucklers                                                            Diameter                      Weight\n\n                   Round shield                                                        25 - 70\nBuhurt                                                                                                                ≤5\n                   Buckler                                                             20 - 40\n\n\n                   Round Shield                                                        25 - 35\nDuel                                                                                                                  ≤5\n                   Buckler                                                             20 - 35\n\n                                  Other Restrictions for all Shield and Buckler Types\nAll shapes must be conform with the \"Shields and Bucklers\" rule document.\nThe Radius of striking edge must be more than 7 cm.\nOnly Shields which have chronological validity of a specific historical period as confirmed by the Authenticity Committee are\nallowed.\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 3,
+      "text": "                                                  Changelog\nVER 26.2\n- change   Correction of the maximum diameter of Buckler for Buhurt to match \"Shields and Bucklers\" document.\nVER 26.1\n- format   Changed the layout of shields.\n- change   Correction of the minimum lenght of Heather shield to match \"Shields and Bucklers\" document.\n- change   Modification of the maximum diameter for Round shield and Bucklers in duels.\n- change   Precision for Weight: \"≤ 5\".\n\nOlder vers.\n    -add    Shields sheet has been added\n - change The permissible upwards error (Has been changed to 100gram for all weapons)\n - change minium size of round shields was removed\n    -add    Round shields for Duels\n - format Changed the layout of shields\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

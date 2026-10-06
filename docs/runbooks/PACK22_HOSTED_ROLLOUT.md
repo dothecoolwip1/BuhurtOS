@@ -4,7 +4,7 @@ Project `mvbxlebznlgroptwwdsm`. Nothing below has been done. Apply only when the
 
 ## Order
 
-Apply the files in this order. Every file is additive.
+Apply the files in this order (nine Pack 22 migrations). Every file is additive.
 
 1. Confirm hosted already has `club_membership_dues_voting` and `club_fee_waiver_and_agm` (it did on 2026-10-06). Pack 22 does not depend on them,
    but its migration versions follow them.
@@ -32,6 +32,13 @@ Apply the files in this order. Every file is additive.
    suspension participants, delete guards on teams and fighters) and column grants (no `*_by` account ids by direct read), and corrects the BI
    event-appeal rule row.
 
+9. `20261015000800_pack22_historical_versions.sql`: historical editions. Four columns on `ruleset_versions`, the version guard extended (a
+   historical edition is never the version in force), the current importer refusing historical rows, `rules_import_historical_version`,
+   `publish_historical_version`, and one extra field in `event_discipline_log`.
+10. `20261015000900_rules_bi_history_archive_2026_10_06.sql`: **about 970 KB of data**, the 37 earlier editions **in review** (1357 provisions).
+    Same size caveat as the current release's data file (SQL Editor or `psql -f` if the migration tool rejects it). Idempotent: a second run
+    reports "unchanged".
+
 ## Read-only checks afterwards
 
 - Documents:
@@ -55,6 +62,10 @@ Apply the files in this order. Every file is additive.
   - the others in those migrations.
 - Advisors: expect only the existing accepted class "authenticated can execute SECURITY DEFINER" for the new functions (each checks its role inside).
 
+- Historical editions: `select status, count(*) from ruleset_versions where historical group by 1` → `in_review 37`; and
+  `select count(*) from ruleset_versions where not historical and status = 'published'` is unchanged by migrations 800/900 (0 before any publishing).
+- As anon: `select count(*) from ruleset_versions where historical` → 0 (nothing in review is public).
+
 ## Publishing (the owner, after the checks)
 
 Platform › Rules (`/platform/rules`) lists the 42 versions with their reconciliation. Open any of them first. Then use "Publish all 42 ready" (or
@@ -73,3 +84,9 @@ publish one at a time), and confirm. Published text is frozen; a later official 
   - is refused for a stranger;
   - every dangerous action asks twice.
 - Check-in desk: a suspended fighter shows the block in plain words, with no check-in or override button.
+
+## Earlier editions (historical), when the owner wants them public
+
+Platform › Rules lists them apart under "Earlier editions (historical)". An edition with provisions still to check cannot be published (44 open
+items across the 37 editions on 2026-10-06; see `rules-library/buhurt-international/history/archive-2026-10-06/reconciliation.md`). "Publish as
+earlier edition" makes it readable as an older version; it never changes the version in force.

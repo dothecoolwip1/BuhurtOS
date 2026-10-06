@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Dialog } from '../Dialog';
-import { Highlight, STATUS_WORD } from './RuleBits';
+import { Highlight, statusWords } from './RuleBits';
 import { isRuleText, officialLink, type RuleEntry, type RulesIndex } from '../../data/rules';
 import { RuleBody } from './RuleBody';
 import { searchRules } from '../../lib/rules/search';
@@ -48,7 +48,7 @@ export function RulesSheet({ onClose }: { onClose: () => void }) {
             <h3>{open.provision.title ?? open.doc.name}</h3>
             <RuleBody body={open.provision.body} />
             {open.provision.has_figures && <p className="src">The official page also has pictures: open the official document to see them.</p>}
-            <p className="src">{open.doc.name} · {open.version.version} ({STATUS_WORD[open.version.status]}){open.provision.page_from ? ` · page ${open.provision.page_from}` : ''}{open.ancestors.length ? ` · in ${open.ancestors.map(a => a.number ?? a.title).join(' › ')}` : ''}</p>
+            <p className="src">{open.doc.name} · {open.version.version} ({statusWords(open.version)}){open.provision.page_from ? ` · page ${open.provision.page_from}` : ''}{open.ancestors.length ? ` · in ${open.ancestors.map(a => a.number ?? a.title).join(' › ')}` : ''}</p>
             {open.provision.review_status === 'needs_review' && <p className="rl-banner rl-warn">Check the official document: {open.provision.review_note}</p>}
             <div className="rl-picked">
               <Link className="lnk" to={`/rules/r/${open.provision.id}`} target="_blank" rel="noopener">Open the full rule page ↗</Link>
@@ -109,5 +109,5 @@ export function RulePicker({ value, onChange, startOpen = false }: { value: stri
 export function citationLabel(idx: RulesIndex | null, provisionId: string | null | undefined): string | null {
   if (!provisionId) return null;
   const e = idx?.entryById.get(provisionId);
-  return e ? `${e.provision.number ? `Rule ${e.provision.number}` : 'Rule'}${e.provision.title ? ` · ${e.provision.title}` : ''} (${e.doc.name} ${e.version.version})` : 'A rule (not available on this device)';
+  return e ? `${e.provision.number ? `Rule ${e.provision.number}` : 'Rule'}${e.provision.title ? ` · ${e.provision.title}` : ''} (${e.doc.name} ${e.version.version}${e.version.historical ? ', earlier edition, not in force' : e.version.status === 'superseded' ? ', older version' : ''})` : 'A rule (not available on this device)';
 }

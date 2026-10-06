@@ -1,0 +1,4884 @@
+{
+  "sha256": "c55557f38036e9a6e6914f88f44bc0f779272ada71cb290c6c7dd1de5fb5e3cb",
+  "files": [
+    "Authenticity/Archive/Shields_and_Bucklers V26.2.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 19 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 19,
+    "title": "Shields and Bucklers 26.2 - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Thu Feb 26 19:41:52 2026 UTC",
+    "modified": "Thu Feb 26 19:41:52 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)\\) BUHURT (7\n\nVER. 26.2\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 76.1,
+      "ocr_lines": [
+        {
+          "text": "\\)\\) BUHURT (7",
+          "conf_mean": 55.9,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 40,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 55.9"
+        },
+        {
+          "text": "VER. 26.2",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1275,
+            1012,
+            1346
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1452,
+            1724,
+            1646
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n3. General Requirements 3\n4. Wooden Shields Requirements 4\n5. Metal Shields Requirements 4\n6. Heater Shields 5\n6.1. Historical Sources and Datation 5\n6.2. Specific Requirements 6\n6.3. Examples of Approved Reproductions 7\n6.4. Examples of Denied Reproductions 7\n7. Punch Shields 8\n7.1. Historical Sources and Datation 8\n7.2. Specific Requirements 10\n7.3. Examples of Approved Reproductions 11\n7.4. Examples of Denied Reproductions 13\n8. Round Shields 14\n8.1. Historical Sources and Datation 14\n8.2. Specific Requirements 14\n8.3. Examples of Approved Reproductions 15\n8.4. Examples of Denied Reproductions 15\n9. Bucklers 16\n9.1. Historical Sources and Datation 16\n9.2. Specific Requirements 16\n9.3. Examples of Approved Reproductions 17\n9.4. Examples of Denied Reproductions 17\n10. Fastening Systems 18\n10.1. Historical Sources and Datation 18\n10.2. Specific requirements 18\n10.3. Examples of Approved Systems 18\n11. Changelog 19\n\nShields and Bucklers V. 26.2 2/19",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.3,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            366,
+            621,
+            406
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            438,
+            2217,
+            480
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            503,
+            2217,
+            537
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements 3",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            568,
+            2217,
+            611
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4. Wooden Shields Requirements 4",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            152,
+            633,
+            2217,
+            676
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "5. Metal Shields Requirements 4",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            699,
+            2217,
+            741
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "6. Heater Shields 5",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            764,
+            2217,
+            798
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "6.1. Historical Sources and Datation 5",
+          "conf_mean": 95,
+          "conf_min": 92.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            829,
+            2217,
+            863
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "6.2. Specific Requirements 6",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            894,
+            2217,
+            936
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "6.3. Examples of Approved Reproductions 7",
+          "conf_mean": 95.3,
+          "conf_min": 91,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            959,
+            2217,
+            1001
+          ],
+          "paper": 0.88,
+          "height": 41
+        },
+        {
+          "text": "6.4. Examples of Denied Reproductions 7",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1024,
+            2217,
+            1067
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "7. Punch Shields 8",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1090,
+            2217,
+            1124
+          ],
+          "paper": 0.94,
+          "height": 34
+        },
+        {
+          "text": "7.1. Historical Sources and Datation 8",
+          "conf_mean": 94.5,
+          "conf_min": 91.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1155,
+            2217,
+            1189
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "7.2. Specific Requirements 10",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1220,
+            2217,
+            1262
+          ],
+          "paper": 0.92,
+          "height": 41
+        },
+        {
+          "text": "7.3. Examples of Approved Reproductions 11",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1285,
+            2210,
+            1328
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "7.4. Examples of Denied Reproductions 13",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1350,
+            2217,
+            1393
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "8. Round Shields 14",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1415,
+            2217,
+            1449
+          ],
+          "paper": 0.93,
+          "height": 33
+        },
+        {
+          "text": "8.1. Historical Sources and Datation 14",
+          "conf_mean": 95,
+          "conf_min": 91.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1481,
+            2217,
+            1515
+          ],
+          "paper": 0.87,
+          "height": 33
+        },
+        {
+          "text": "8.2. Specific Requirements 14",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1546,
+            2217,
+            1588
+          ],
+          "paper": 0.91,
+          "height": 42
+        },
+        {
+          "text": "8.3. Examples of Approved Reproductions 15",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1611,
+            2217,
+            1654
+          ],
+          "paper": 0.88,
+          "height": 43
+        },
+        {
+          "text": "8.4. Examples of Denied Reproductions 15",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1676,
+            2217,
+            1719
+          ],
+          "paper": 0.88,
+          "height": 34
+        },
+        {
+          "text": "9. Bucklers 16",
+          "conf_mean": 93.9,
+          "conf_min": 91.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1742,
+            2217,
+            1775
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "9.1. Historical Sources and Datation 16",
+          "conf_mean": 95.1,
+          "conf_min": 91.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1807,
+            2217,
+            1840
+          ],
+          "paper": 0.86,
+          "height": 33
+        },
+        {
+          "text": "9.2. Specific Requirements 16",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1872,
+            2217,
+            1914
+          ],
+          "paper": 0.91,
+          "height": 42
+        },
+        {
+          "text": "9.3. Examples of Approved Reproductions 17",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1937,
+            2217,
+            1979
+          ],
+          "paper": 0.87,
+          "height": 42
+        },
+        {
+          "text": "9.4. Examples of Denied Reproductions 17",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            2002,
+            2217,
+            2044
+          ],
+          "paper": 0.88,
+          "height": 34
+        },
+        {
+          "text": "10. Fastening Systems 18",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            156,
+            2067,
+            2217,
+            2110
+          ],
+          "paper": 0.93,
+          "height": 42
+        },
+        {
+          "text": "10.1. Historical Sources and Datation 18",
+          "conf_mean": 95.1,
+          "conf_min": 91.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            2132,
+            2217,
+            2167
+          ],
+          "paper": 0.87,
+          "height": 33
+        },
+        {
+          "text": "10.2. Specific requirements 18",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            231,
+            2198,
+            2217,
+            2240
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "10.3. Examples of Approved Systems 18",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            2263,
+            2217,
+            2306
+          ],
+          "paper": 0.89,
+          "height": 41
+        },
+        {
+          "text": "11. Changelog 19",
+          "conf_mean": 96.1,
+          "conf_min": 94.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            2328,
+            2217,
+            2371
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "Shields and Bucklers V. 26.2 2/19",
+          "conf_mean": 94.6,
+          "conf_min": 91.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\n“Shields and Bucklers” are the terms used to describe every protection made of wood or steel\nand designed to protect yourself.\n\nShields and Bucklers can be:\n● Heater Shields\n\nShields made of triangular shape, the most common shape of Shields from the Xlllth century and\nbeyond. They must be made of wood.\n\n● Punch Shields\n\nPunch Shields are primarily designed to hit the opponent. It includes a wide variety of shapes. They must\nbe made of wood.\n\n● Round Shields\n\nShields made of a round shape, very common throughout the middle ages. They can be made of wood\nor metal.\n\n● Bucklers\n\nSmall round shape Shields with central handle, mainly used in duels and as a secondary equipment for\nclose defense. They can be made of wood or metal.\n\n3. General Requirements\n\nAll types of Shields and Bucklers must respect the following requirements:\n\n● be based on historical sources,\n\n● must reproduce the proportions and curves based on historical sources,\n\n● must be made of wood or metal. Any other material must be approved by the Authenticity\nCommittee to be allowed in Buhurt International events,\n\n● must match the style of the armor kit of the competitor.\n\nAll images, drawings, and paintings on Shields must be stylized in accordance with the style of the armor\nkit of the competitor.\n\nIt is prohibited to decorate Shields and Bucklers with images that are clearly modern and/or offensive.\nThe weight of all Shields and Bucklers must not exceed 5 kg.\nIt is allowed to use bolts and nuts to fasten straps:\n\n● nuts must not protrude the screw,\n● bolts and nuts must be painted in black or concealed with leather or fabric.\n\nAll straps must be made of leather.\n\nAny metal part of the Shield or Buckler must conform to the “Armors and Weapons Aesthetics and\nDecorations’ document.\n\nAny textile or leather part of the Shield or Buckler must conform to the “Textiles and Leather’ document.\n\nShields and Bucklers V. 26.2 3/19",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.2,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.2,
+          "conf_min": 94.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            759,
+            218,
+            1603,
+            306
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            398,
+            1955,
+            441
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            459,
+            1714,
+            501
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            887,
+            624,
+            1469,
+            695
+          ],
+          "paper": 0.61,
+          "height": 71
+        },
+        {
+          "text": "“Shields and Bucklers” are the terms used to describe every protection made of wood or steel",
+          "conf_mean": 95,
+          "conf_min": 77.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            805,
+            2178,
+            848
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "and designed to protect yourself.",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            866,
+            840,
+            909
+          ],
+          "paper": 0.73,
+          "height": 41
+        },
+        {
+          "text": "Shields and Bucklers can be:",
+          "conf_mean": 94.5,
+          "conf_min": 91.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            968,
+            766,
+            1002
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "● Heater Shields",
+          "conf_mean": 94.1,
+          "conf_min": 92,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1029,
+            617,
+            1062
+          ],
+          "paper": 0.58,
+          "height": 33,
+          "raw": "e Heater Shields"
+        },
+        {
+          "text": "Shields made of triangular shape, the most common shape of Shields from the Xlllth century and",
+          "conf_mean": 92.1,
+          "conf_min": 30.8,
+          "words": 16,
+          "uncertain": [
+            "Xlllth"
+          ],
+          "box": [
+            181,
+            1102,
+            2298,
+            1145
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "beyond. They must be made of wood.",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            1163,
+            942,
+            1206
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Punch Shields",
+          "conf_mean": 94.5,
+          "conf_min": 92.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1236,
+            614,
+            1270
+          ],
+          "paper": 0.6,
+          "height": 34,
+          "raw": "e Punch Shields"
+        },
+        {
+          "text": "Punch Shields are primarily designed to hit the opponent. It includes a wide variety of shapes. They must",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            1309,
+            2302,
+            1352
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "be made of wood.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            1369,
+            539,
+            1403
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "● Round Shields",
+          "conf_mean": 94.7,
+          "conf_min": 92.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1442,
+            619,
+            1476
+          ],
+          "paper": 0.59,
+          "height": 34,
+          "raw": "e Round Shields"
+        },
+        {
+          "text": "Shields made of a round shape, very common throughout the middle ages. They can be made of wood",
+          "conf_mean": 96.1,
+          "conf_min": 94.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            1515,
+            2300,
+            1558
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "or metal.",
+          "conf_mean": 95.6,
+          "conf_min": 95.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            1577,
+            354,
+            1610
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "● Bucklers",
+          "conf_mean": 86.2,
+          "conf_min": 86.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1650,
+            492,
+            1683
+          ],
+          "paper": 0.6,
+          "height": 33,
+          "raw": "e Bucklers"
+        },
+        {
+          "text": "Small round shape Shields with central handle, mainly used in duels and as a secondary equipment for",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            1722,
+            2302,
+            1765
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "close defense. They can be made of wood or metal.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            1783,
+            1227,
+            1826
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 95.8,
+          "conf_min": 95.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            598,
+            1960,
+            1762,
+            2049
+          ],
+          "paper": 0.69,
+          "height": 71
+        },
+        {
+          "text": "All types of Shields and Bucklers must respect the following requirements:",
+          "conf_mean": 95.9,
+          "conf_min": 93,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            179,
+            2141,
+            1675,
+            2184
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "● be based on historical sources,",
+          "conf_mean": 93.3,
+          "conf_min": 89.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            2215,
+            928,
+            2254
+          ],
+          "paper": 0.72,
+          "height": 34,
+          "raw": "e be based on historical sources,"
+        },
+        {
+          "text": "● must reproduce the proportions and curves based on historical sources,",
+          "conf_mean": 94.7,
+          "conf_min": 88.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            230,
+            2275,
+            1751,
+            2318
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e must reproduce the proportions and curves based on historical sources,"
+        },
+        {
+          "text": "● must be made of wood or metal. Any other material must be approved by the Authenticity",
+          "conf_mean": 95.6,
+          "conf_min": 82.1,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            230,
+            2336,
+            2181,
+            2379
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e must be made of wood or metal. Any other material must be approved by the Authenticity"
+        },
+        {
+          "text": "Committee to be allowed in Buhurt International events,",
+          "conf_mean": 94.9,
+          "conf_min": 91.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            303,
+            2396,
+            1422,
+            2436
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "● must match the style of the armor kit of the competitor.",
+          "conf_mean": 95.6,
+          "conf_min": 91.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            2457,
+            1399,
+            2500
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e must match the style of the armor kit of the competitor."
+        },
+        {
+          "text": "All images, drawings, and paintings on Shields must be stylized in accordance with the style of the armor",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            2530,
+            2303,
+            2573
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "kit of the competitor.",
+          "conf_mean": 96.7,
+          "conf_min": 96.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2591,
+            586,
+            2633
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "It is prohibited to decorate Shields and Bucklers with images that are clearly modern and/or offensive.",
+          "conf_mean": 96,
+          "conf_min": 92.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            2664,
+            2229,
+            2706
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "The weight of all Shields and Bucklers must not exceed 5 kg.",
+          "conf_mean": 95.6,
+          "conf_min": 92.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2737,
+            1410,
+            2780
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "It is allowed to use bolts and nuts to fasten straps:",
+          "conf_mean": 96.2,
+          "conf_min": 94.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            2810,
+            1189,
+            2852
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● nuts must not protrude the screw,",
+          "conf_mean": 95.1,
+          "conf_min": 92.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            2884,
+            974,
+            2926
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e nuts must not protrude the screw,"
+        },
+        {
+          "text": "● bolts and nuts must be painted in black or concealed with leather or fabric.",
+          "conf_mean": 95.7,
+          "conf_min": 88.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            230,
+            2944,
+            1802,
+            2986
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e bolts and nuts must be painted in black or concealed with leather or fabric."
+        },
+        {
+          "text": "All straps must be made of leather.",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            179,
+            3017,
+            881,
+            3059
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Any metal part of the Shield or Buckler must conform to the “Armors and Weapons Aesthetics and",
+          "conf_mean": 95.8,
+          "conf_min": 91.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            3090,
+            2304,
+            3133
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Decorations’ document.",
+          "conf_mean": 86.8,
+          "conf_min": 77.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            3150,
+            661,
+            3184
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Any textile or leather part of the Shield or Buckler must conform to the “Textiles and Leather’ document.",
+          "conf_mean": 95.7,
+          "conf_min": 87.2,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            3223,
+            2269,
+            3266
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Shields and Bucklers V. 26.2 3/19",
+          "conf_mean": 94.6,
+          "conf_min": 91.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "4. Wooden Shields Requirements\n\nThe entire edge must be covered with either a band of strong leather, or with at least three or more\nlayers of fabric.\n\nA leather band must be glued, sewn or riveted, to the Shield. Any rivets must be neatly finished, the\nedge of the rivet should not stick out.\n\nThe flat outside a wooden Shield must be covered with leather or fabric.\nThe handles must be made of leather.\nWooden Buckler and Heater Shield with a central handle must have a handle made of wood.\n\nShield boss (umbo) made of metal must conform to the “Armors and Weapons Aesthetics and\nDecorations” document.\n\n5. Metal Shields Requirements\n\nMust be of round shapes, based on historical sources, and repeat the form of the original in all three\ndimensions.\n\nThe entire edge of metal Shields must be rolled to the thickness of a minimum of 4 mm or more.\nThe handles must be made of metal and or wood\n\nMetal Shield and Shield boss (umbo) must conform to the “Armors and Weapons Aesthetics and\nDecorations” document.\n\nIt is allowed to blacken the back part of a metal Shield or metal Buckler.\nExample:\n\nPicture from O. Haguenstein ©\n\nShields and Bucklers V. 26.2 4/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.4,
+      "ocr_lines": [
+        {
+          "text": "4. Wooden Shields Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            403,
+            217,
+            1955,
+            306
+          ],
+          "paper": 0.68,
+          "height": 71,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "The entire edge must be covered with either a band of strong leather, or with at least three or more",
+          "conf_mean": 96.4,
+          "conf_min": 94.8,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            180,
+            398,
+            2299,
+            441
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "layers of fabric.",
+          "conf_mean": 96.1,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            459,
+            486,
+            502
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "A leather band must be glued, sewn or riveted, to the Shield. Any rivets must be neatly finished, the",
+          "conf_mean": 96.5,
+          "conf_min": 95.5,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            532,
+            2301,
+            575
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "edge of the rivet should not stick out.",
+          "conf_mean": 95.4,
+          "conf_min": 91.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            593,
+            921,
+            636
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "The flat outside a wooden Shield must be covered with leather or fabric.",
+          "conf_mean": 96.1,
+          "conf_min": 94.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            666,
+            1629,
+            700
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "The handles must be made of leather.",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            739,
+            944,
+            773
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Wooden Buckler and Heater Shield with a central handle must have a handle made of wood.",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            812,
+            2049,
+            846
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Shield boss (umbo) made of metal must conform to the “Armors and Weapons Aesthetics and",
+          "conf_mean": 95.3,
+          "conf_min": 90,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            885,
+            2304,
+            928
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "Decorations” document.",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            946,
+            661,
+            979
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "5. Metal Shields Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            471,
+            1124,
+            1889,
+            1212
+          ],
+          "paper": 0.66,
+          "height": 70
+        },
+        {
+          "text": "Must be of round shapes, based on historical sources, and repeat the form of the original in all three",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            183,
+            1304,
+            2299,
+            1347
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "dimensions.",
+          "conf_mean": 95.2,
+          "conf_min": 95.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1366,
+            420,
+            1399
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "The entire edge of metal Shields must be rolled to the thickness of a minimum of 4 mm or more.",
+          "conf_mean": 96.1,
+          "conf_min": 94.3,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            180,
+            1438,
+            2116,
+            1481
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "The handles must be made of metal and or wood",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1511,
+            1172,
+            1545
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "Metal Shield and Shield boss (umbo) must conform to the “Armors and Weapons Aesthetics and",
+          "conf_mean": 95.4,
+          "conf_min": 92.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            1584,
+            2302,
+            1627
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "Decorations” document.",
+          "conf_mean": 95.6,
+          "conf_min": 95.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            1645,
+            661,
+            1679
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "It is allowed to blacken the back part of a metal Shield or metal Buckler.",
+          "conf_mean": 96,
+          "conf_min": 92.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            184,
+            1718,
+            1622,
+            1761
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Example:",
+          "conf_mean": 78.1,
+          "conf_min": 78.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1792,
+            369,
+            1834
+          ],
+          "paper": 0.7,
+          "height": 42
+        },
+        {
+          "text": "Picture from O. Haguenstein ©",
+          "conf_mean": 94.2,
+          "conf_min": 91.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1016,
+            2958,
+            1469,
+            2989
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "Shields and Bucklers V. 26.2 4/19",
+          "conf_mean": 94.6,
+          "conf_min": 91.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "__ 6. Heater Shields\n\n6.1. Historical Sources and Datation\n\nThe Heater Shield the main Shield shape for knights of the Middle Ages. Its triangular shape is typical of\nthe 14th century. The shape goes thinner as the armors become more effective.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nShield of Loew von Steinfurth - 1380 - Germany Grande Chroniques de France - 1400 - France\n\nPolitica & Economica - 1376 - France Ab Urbe Condita - 1390/1400 - France\n\nshields and Bucklers V. 26.2 5/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.8,
+      "ocr_lines": [
+        {
+          "text": "__ 6. Heater Shields",
+          "conf_mean": 73.9,
+          "conf_min": 7.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            0,
+            114,
+            1584,
+            302
+          ],
+          "paper": 0.83,
+          "height": 71
+        },
+        {
+          "text": "6.1. Historical Sources and Datation",
+          "conf_mean": 95,
+          "conf_min": 92.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            400,
+            1090,
+            437
+          ],
+          "paper": 0.61,
+          "height": 37
+        },
+        {
+          "text": "The Heater Shield the main Shield shape for knights of the Middle Ages. Its triangular shape is typical of",
+          "conf_mean": 96.4,
+          "conf_min": 95.2,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            506,
+            2302,
+            549
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "the 14th century. The shape goes thinner as the armors become more effective.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            566,
+            1788,
+            610
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            639,
+            1772,
+            683
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Shield of Loew von Steinfurth - 1380 - Germany Grande Chroniques de France - 1400 - France",
+          "conf_mean": 94.1,
+          "conf_min": 91.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            331,
+            1879,
+            2130,
+            1911
+          ],
+          "paper": 0.8,
+          "height": 24
+        },
+        {
+          "text": "Politica & Economica - 1376 - France Ab Urbe Condita - 1390/1400 - France",
+          "conf_mean": 93.3,
+          "conf_min": 91.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            495,
+            2771,
+            2067,
+            2797
+          ],
+          "paper": 0.77,
+          "height": 24
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 5/19",
+          "conf_mean": 84.8,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "6.2. Specific Requirements\n\nHeater Shields must:\n\n● conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4\nabove),\n\n● be made of wood,\n\n● have a rectangular shape with a pointy shape at the bottom:\n\n● becurved, not flat:\n\n'\n4 mK\n\n● have a length of 55 cm to 75 cm,\n\n● have a width of 30 cm to 65 cm,\n\n● have handles made of leather:\nExample:\n\nOS ‘\nWay '<\n‘ he\n\n’ hes Sie a tf “AMS 4\nRi % ih. mt \"4 ‘Fie Sho hs,\n\nPicture from O. Haguenstein ©\n\nIt is allowed to add a Shield boss (umbo) on a Heater Shield with a central handle, as documented by\nhistorical sources.\n\nCentral handles must be made of wood.\n\nshields and Bucklers V. 26.2 6/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 79.6,
+      "ocr_lines": [
+        {
+          "text": "6.2. Specific Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            251,
+            216,
+            863,
+            262
+          ],
+          "paper": 0.66,
+          "height": 42,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Heater Shields must:",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            183,
+            323,
+            600,
+            356
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "● conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4",
+          "conf_mean": 96.1,
+          "conf_min": 92.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            224,
+            396,
+            2217,
+            438
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4"
+        },
+        {
+          "text": "above),",
+          "conf_mean": 96.8,
+          "conf_min": 96.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            297,
+            456,
+            444,
+            499
+          ],
+          "paper": 0.74,
+          "height": 43
+        },
+        {
+          "text": "● be made of wood,",
+          "conf_mean": 87.2,
+          "conf_min": 76.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            517,
+            655,
+            556
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be made of wood,"
+        },
+        {
+          "text": "● have a rectangular shape with a pointy shape at the bottom:",
+          "conf_mean": 79.7,
+          "conf_min": 0,
+          "words": 12,
+          "uncertain": [
+            "rectangular"
+          ],
+          "box": [
+            224,
+            578,
+            1505,
+            621
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e have a rectangular shape with a pointy shape at the bottom:"
+        },
+        {
+          "text": "● becurved, not flat:",
+          "conf_mean": 88.3,
+          "conf_min": 80.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            1089,
+            667,
+            1129
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e becurved, not flat:"
+        },
+        {
+          "text": "'",
+          "conf_mean": 70,
+          "conf_min": 70,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1322,
+            1299,
+            1331,
+            1316
+          ],
+          "paper": 0,
+          "height": 17,
+          "in_picture": "lettering 17px tall, smaller than any printed text"
+        },
+        {
+          "text": "4 mK",
+          "conf_mean": 22.4,
+          "conf_min": 2.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            838,
+            1357,
+            1719,
+            1491
+          ],
+          "paper": 0.82,
+          "height": 134
+        },
+        {
+          "text": "● have a length of 55 cm to 75 cm,",
+          "conf_mean": 93.4,
+          "conf_min": 79.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            1600,
+            1005,
+            1644
+          ],
+          "paper": 0.77,
+          "height": 33,
+          "raw": "e have a length of 55 cm to 75 cm,"
+        },
+        {
+          "text": "● have a width of 30 cm to 65 cm,",
+          "conf_mean": 93.6,
+          "conf_min": 74.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            1674,
+            987,
+            1714
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e have a width of 30 cm to 65 cm,"
+        },
+        {
+          "text": "● have handles made of leather:",
+          "conf_mean": 87.3,
+          "conf_min": 41.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            183,
+            1747,
+            941,
+            1781
+          ],
+          "paper": 0.7,
+          "height": 34,
+          "raw": "° have handles made of leather:"
+        },
+        {
+          "text": "Example:",
+          "conf_mean": 47.5,
+          "conf_min": 47.5,
+          "words": 1,
+          "uncertain": [
+            "Example:"
+          ],
+          "box": [
+            433,
+            1816,
+            641,
+            1910
+          ],
+          "paper": 0.75,
+          "height": 94
+        },
+        {
+          "text": "OS ‘",
+          "conf_mean": 23.1,
+          "conf_min": 16,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            744,
+            1897,
+            923,
+            1967
+          ],
+          "paper": 0,
+          "height": 70,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 23.1"
+        },
+        {
+          "text": "Way '<",
+          "conf_mean": 23.7,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "Way"
+          ],
+          "box": [
+            458,
+            1897,
+            889,
+            2066
+          ],
+          "paper": 0,
+          "height": 145,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 23.7"
+        },
+        {
+          "text": "‘ he",
+          "conf_mean": 40.6,
+          "conf_min": 6.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            402,
+            1977,
+            807,
+            2125
+          ],
+          "paper": 0,
+          "height": 148,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 40.6"
+        },
+        {
+          "text": "’ hes Sie a tf “AMS 4",
+          "conf_mean": 32.1,
+          "conf_min": 15.8,
+          "words": 7,
+          "uncertain": [
+            "hes",
+            "Sie",
+            "“AMS"
+          ],
+          "box": [
+            643,
+            2525,
+            1225,
+            2621
+          ],
+          "paper": 0,
+          "height": 75,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 32.1"
+        },
+        {
+          "text": "Ri % ih. mt \"4 ‘Fie Sho hs,",
+          "conf_mean": 26.9,
+          "conf_min": 0,
+          "words": 8,
+          "uncertain": [
+            "ih.",
+            "‘Fie",
+            "Sho",
+            "hs,"
+          ],
+          "box": [
+            731,
+            2582,
+            1277,
+            2673
+          ],
+          "paper": 0,
+          "height": 68,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 26.9"
+        },
+        {
+          "text": "Picture from O. Haguenstein ©",
+          "conf_mean": 94.1,
+          "conf_min": 91.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            753,
+            2709,
+            1206,
+            2741
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "It is allowed to add a Shield boss (umbo) on a Heater Shield with a central handle, as documented by",
+          "conf_mean": 96,
+          "conf_min": 92.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            184,
+            2829,
+            2334,
+            2872
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "historical sources.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            2890,
+            541,
+            2924
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Central handles must be made of wood.",
+          "conf_mean": 96.2,
+          "conf_min": 94.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            2963,
+            985,
+            2997
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 6/19",
+          "conf_mean": 84.9,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "6.3. Examples of Approved Reproductions\n\nPictures from The Medieval Things ©\n\n6.4. Examples of Reproductions\n\nThis shape (oval) is not based on historical sources for Shield with a central handle.\n\nPicture from The Medieval Things ©\n\nshields and Bucklers V. 26.2 7/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.1,
+      "ocr_lines": [
+        {
+          "text": "6.3. Examples of Approved Reproductions",
+          "conf_mean": 96.1,
+          "conf_min": 95.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            216,
+            1260,
+            262
+          ],
+          "paper": 0.65,
+          "height": 46
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            1512,
+            1517,
+            1543
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "6.4. Examples of Reproductions",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            251,
+            1648,
+            1193,
+            1695
+          ],
+          "paper": 0.66,
+          "height": 46
+        },
+        {
+          "text": "This shape (oval) is not based on historical sources for Shield with a central handle.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            327,
+            1755,
+            2153,
+            1793
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            977,
+            2957,
+            1508,
+            2988
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 7/19",
+          "conf_mean": 85.2,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "7. Punch Shields\n\n7.1. Historical Sources and Datation\n\nPunch Shields are designed to strike with the edge. The handles and straps allow you to wear them ina\nstriking position. Their shape may vary depending on the time and place. Most common shapes are\nrectangular, trapezoid and oval.\n\nTheir ultimate evolution is the Pavese of the 15th century. This type of Shield has a rectangular shape and\na gutter in the middle.\n\nAll shapes except the Pavese are Approved for 14th century, Transitional and 15th century armors.\nPavese shape is Approved for 15th century armors.\nPavese shape is Denied for 14th century and Transitional armors.\n\nCastello di Avio - 1350 - Italy\n\nShield of Order Teutonicus Great Master -\n1320 - Germany\n\nshields and Bucklers V. 26.2 8/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.9,
+      "ocr_lines": [
+        {
+          "text": "7. Punch Shields",
+          "conf_mean": 96.1,
+          "conf_min": 95.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            779,
+            217,
+            1581,
+            288
+          ],
+          "paper": 0.64,
+          "height": 70,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "7.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 91.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            399,
+            1106,
+            437
+          ],
+          "paper": 0.6,
+          "height": 37
+        },
+        {
+          "text": "Punch Shields are designed to strike with the edge. The handles and straps allow you to wear them ina",
+          "conf_mean": 95.1,
+          "conf_min": 75.5,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            183,
+            506,
+            2334,
+            549
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "striking position. Their shape may vary depending on the time and place. Most common shapes are",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            567,
+            2336,
+            610
+          ],
+          "paper": 0.75,
+          "height": 35
+        },
+        {
+          "text": "rectangular, trapezoid and oval.",
+          "conf_mean": 95.8,
+          "conf_min": 93.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            627,
+            815,
+            670
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "Their ultimate evolution is the Pavese of the 15th century. This type of Shield has a rectangular shape and",
+          "conf_mean": 96.1,
+          "conf_min": 91.9,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            700,
+            2334,
+            743
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "a gutter in the middle.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            761,
+            616,
+            804
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "All shapes except the Pavese are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 95.7,
+          "conf_min": 93,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            179,
+            834,
+            2270,
+            877
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Pavese shape is Approved for 15th century armors.",
+          "conf_mean": 95.6,
+          "conf_min": 92.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            907,
+            1270,
+            950
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Pavese shape is Denied for 14th century and Transitional armors.",
+          "conf_mean": 95.7,
+          "conf_min": 91.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            980,
+            1568,
+            1024
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "Castello di Avio - 1350 - Italy",
+          "conf_mean": 93.4,
+          "conf_min": 91,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1492,
+            2366,
+            1915,
+            2397
+          ],
+          "paper": 0.74,
+          "height": 25
+        },
+        {
+          "text": "Shield of Order Teutonicus Great Master -",
+          "conf_mean": 94.1,
+          "conf_min": 90.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            253,
+            2604,
+            868,
+            2629
+          ],
+          "paper": 0.65,
+          "height": 25
+        },
+        {
+          "text": "1320 - Germany",
+          "conf_mean": 94.4,
+          "conf_min": 93.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            394,
+            2648,
+            632,
+            2680
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 8/19",
+          "conf_mean": 83.7,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "Pavese shape\nwith gutter in the middle\n\nDeutsches Historisches Museum (Berlin) -\n1480 - Germany Wien Museum -\n\n1480 - Austria\n\nPaduan Bible - 1400 - Italy\n\nShields and Bucklers V. 26.2 9/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.6,
+      "ocr_lines": [
+        {
+          "text": "Pavese shape",
+          "conf_mean": 94.7,
+          "conf_min": 92.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1095,
+            944,
+            1377,
+            986
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "with gutter in the middle",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            997,
+            1006,
+            1472,
+            1049
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Deutsches Historisches Museum (Berlin) -",
+          "conf_mean": 93.6,
+          "conf_min": 91.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            197,
+            1121,
+            817,
+            1152
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "1480 - Germany Wien Museum -",
+          "conf_mean": 93.9,
+          "conf_min": 91.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            348,
+            1165,
+            2098,
+            1196
+          ],
+          "paper": 0.93,
+          "height": 25
+        },
+        {
+          "text": "1480 - Austria",
+          "conf_mean": 94.4,
+          "conf_min": 93.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1864,
+            1221,
+            2065,
+            1246
+          ],
+          "paper": 0.65,
+          "height": 25
+        },
+        {
+          "text": "Paduan Bible - 1400 - Italy",
+          "conf_mean": 93.6,
+          "conf_min": 92.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1046,
+            2478,
+            1439,
+            2517
+          ],
+          "paper": 0.79,
+          "height": 24
+        },
+        {
+          "text": "Shields and Bucklers V. 26.2 9/19",
+          "conf_mean": 94.4,
+          "conf_min": 91.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "7.2. Specific Requirements\n\nPunch Shield must:\n\n● conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4\nabove),\n\n● be made of wood,\n\n● have a shape rectangular, oval or pointed:\n\n700 000\n000\n\n● becurved, not flat:\n\na C }\nA d€\n\n○ Except for Pavese shape, that can be flat if they conform to historical designs:\n\n● have a length of 55 cm to 75 cm,\n● have a width of 30 cm to 50 cm,\n● have handles made of leather (see example in 6.2. Punch Shield).\n\nshields and Bucklers V. 26.2 10/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 85.4,
+      "ocr_lines": [
+        {
+          "text": "7.2. Specific Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            251,
+            216,
+            890,
+            262
+          ],
+          "paper": 0.66,
+          "height": 46,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Punch Shield must:",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            183,
+            323,
+            570,
+            356
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "● conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4",
+          "conf_mean": 96.1,
+          "conf_min": 91.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            224,
+            396,
+            2216,
+            438
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4"
+        },
+        {
+          "text": "above),",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            296,
+            456,
+            444,
+            499
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "● be made of wood,",
+          "conf_mean": 93,
+          "conf_min": 91.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            517,
+            655,
+            556
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e be made of wood,"
+        },
+        {
+          "text": "● have a shape rectangular, oval or pointed:",
+          "conf_mean": 84.9,
+          "conf_min": 55.9,
+          "words": 8,
+          "uncertain": [
+            "shape"
+          ],
+          "box": [
+            224,
+            578,
+            1144,
+            621
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e have a shape rectangular, oval or pointed:"
+        },
+        {
+          "text": "700 000",
+          "conf_mean": 76.5,
+          "conf_min": 58.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            266,
+            677,
+            2234,
+            1244
+          ],
+          "paper": 0.6,
+          "height": 567
+        },
+        {
+          "text": "000",
+          "conf_mean": 35.2,
+          "conf_min": 35.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            685,
+            1174,
+            1860,
+            1656
+          ],
+          "paper": 0.37,
+          "height": 482,
+          "in_picture": "on a coloured or photographic background (paper 37%), confidence 35.2"
+        },
+        {
+          "text": "● becurved, not flat:",
+          "conf_mean": 84.8,
+          "conf_min": 72.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            1725,
+            667,
+            1764
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e becurved, not flat:"
+        },
+        {
+          "text": "a C }",
+          "conf_mean": 25.8,
+          "conf_min": 8.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            425,
+            1889,
+            1836,
+            1976
+          ],
+          "paper": 0.65,
+          "height": 18,
+          "in_picture": "lettering 18px tall, smaller than any printed text"
+        },
+        {
+          "text": "A d€",
+          "conf_mean": 29.7,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            689,
+            1982,
+            1569,
+            2116
+          ],
+          "paper": 0.82,
+          "height": 134,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "○ Except for Pavese shape, that can be flat if they conform to historical designs:",
+          "conf_mean": 95.2,
+          "conf_min": 89.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            342,
+            2236,
+            2016,
+            2279
+          ],
+          "paper": 0.73,
+          "height": 34,
+          "raw": "o Except for Pavese shape, that can be flat if they conform to historical designs:"
+        },
+        {
+          "text": "● have a length of 55 cm to 75 cm,",
+          "conf_mean": 76.2,
+          "conf_min": 0,
+          "words": 10,
+          "uncertain": [
+            "length"
+          ],
+          "box": [
+            224,
+            2748,
+            970,
+            2791
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e have a length of 55 cm to 75 cm,"
+        },
+        {
+          "text": "● have a width of 30 cm to 50 cm,",
+          "conf_mean": 92,
+          "conf_min": 81.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            2809,
+            953,
+            2848
+          ],
+          "paper": 0.71,
+          "height": 33,
+          "raw": "e have a width of 30 cm to 50 cm,"
+        },
+        {
+          "text": "● have handles made of leather (see example in 6.2. Punch Shield).",
+          "conf_mean": 95.5,
+          "conf_min": 92.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            224,
+            2869,
+            1630,
+            2912
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e have handles made of leather (see example in 6.2. Punch Shield)."
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 10/19",
+          "conf_mean": 84.1,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "The striking area can be rounded or flat.\nThe rounded striking area must conform to a curve of 7 cm diameter.\nFlat striking area must be 7 cm wide as a minimum.\n\nIt is not allowed to add a Shield boss (umbo) on a Punch Shield.\nIt is allowed to add a metal sheet on the Shield to increase its resilience. In this case:\n\n● Additional metal sheets must be covered by leather or fabric as another part of the outside of\nthe Shield.\n\n● Additional metal sheets must have no sharp edges nor pointy parts.\n\n● Additional metal sheets must be properly attached to the wooden core of the Shield, by rivets,\nnails or strong glue.\n\n7.3. Examples of Approved Reproductions\n\nshields and Bucklers V. 26.2 11/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.7,
+      "ocr_lines": [
+        {
+          "text": "The striking area can be rounded or flat.",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            288,
+            988,
+            331
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The rounded striking area must conform to a curve of 7 cm diameter.",
+          "conf_mean": 95.8,
+          "conf_min": 94.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            361,
+            1570,
+            404
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Flat striking area must be 7 cm wide as a minimum.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            434,
+            1224,
+            477
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is not allowed to add a Shield boss (umbo) on a Punch Shield.",
+          "conf_mean": 95.5,
+          "conf_min": 92.4,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            184,
+            1384,
+            1474,
+            1428
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is allowed to add a metal sheet on the Shield to increase its resilience. In this case:",
+          "conf_mean": 96,
+          "conf_min": 93.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            1457,
+            1894,
+            1492
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "● Additional metal sheets must be covered by leather or fabric as another part of the outside of",
+          "conf_mean": 96.1,
+          "conf_min": 92.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            224,
+            1530,
+            2220,
+            1574
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Additional metal sheets must be covered by leather or fabric as another part of the outside of"
+        },
+        {
+          "text": "the Shield.",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            295,
+            1591,
+            507,
+            1625
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "● Additional metal sheets must have no sharp edges nor pointy parts.",
+          "conf_mean": 95.1,
+          "conf_min": 85.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            224,
+            1652,
+            1658,
+            1695
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e Additional metal sheets must have no sharp edges nor pointy parts."
+        },
+        {
+          "text": "● Additional metal sheets must be properly attached to the wooden core of the Shield, by rivets,",
+          "conf_mean": 95.7,
+          "conf_min": 87.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            224,
+            1712,
+            2213,
+            1755
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Additional metal sheets must be properly attached to the wooden core of the Shield, by rivets,"
+        },
+        {
+          "text": "nails or strong glue.",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            298,
+            1773,
+            691,
+            1816
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "7.3. Examples of Approved Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            1993,
+            1260,
+            2039
+          ],
+          "paper": 0.65,
+          "height": 46
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 11/19",
+          "conf_mean": 81.3,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "Pictures from The Medieval Things ©\n\nshields and Bucklers V. 26.2 12/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 85.8,
+      "ocr_lines": [
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            2862,
+            1517,
+            2893
+          ],
+          "paper": 0.73,
+          "height": 24
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 12/19",
+          "conf_mean": 85.2,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "7.4. Examples of Denied Reproductions\n\nFlat Shield\n\nAbsence of leather or 3 layers of fabric on the edge\n\nPictures from The Medieval Things ©\n\nshields and Bucklers V. 26.2 13/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.8,
+      "ocr_lines": [
+        {
+          "text": "7.4. Examples of Denied Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            260,
+            1193,
+            306
+          ],
+          "paper": 0.65,
+          "height": 37
+        },
+        {
+          "text": "Flat Shield",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1135,
+            440,
+            1360,
+            473
+          ],
+          "paper": 0.51,
+          "height": 33
+        },
+        {
+          "text": "Absence of leather or 3 layers of fabric on the edge",
+          "conf_mean": 96,
+          "conf_min": 94.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            748,
+            1167,
+            1860,
+            1202
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            2122,
+            1517,
+            2153
+          ],
+          "paper": 0.71,
+          "height": 24
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 13/19",
+          "conf_mean": 85,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "text": "__ 8. Round Shields\n\n8.1. Historical Sources and Datation\n\nRound Shields were very common in the early 14th century, and became rare while other designs spread.\nThey are mainly made of wood. Some examples of metal round Shields exist but they are parade Shields\nand should be worn only with the proper set of armor of the late 15th century.\n\nWe hgh RY val Caw\n\nRound Shields are worn with straps made of leather.\nThey are Approved for 14th century and Transitional armors.\nThey are Denied for 15th century armors unless historical sources are provided.\n\noie We\n\nRoman de la Rose - 1350 - France\n\nCathedral of Strasbourg - 1340 - France\n\n8.2. Specific Requirements\n\nRound Shield must:\n\n● conform to the General Requirements and either the Wooden Shield Requirements or the\nMetal Shield Requirements (see Sections 3, 4 and 5 above),\n● be made of wood or metal,\n○ Any metal Round Shields must be approved by the Authenticity Committee to be allowed\nin Buhurt International events.\n● have a diameter:\n○ for Sword and Buckler (Duel): from 25 cm to 35 cm,\n○ for Buhurt and Sword and Shield (Duel): from 25 cm to 70 cm,\n● be flat or have a concave curve,\n● have handles made of leather (see example in 6.2. Punch Shield).\n\nIt is not allowed to add a Shield boss (umbo) on a Round Shield unless documented by historical sources.\n\nshields and Bucklers V. 26.2 14/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.5,
+      "ocr_lines": [
+        {
+          "text": "__ 8. Round Shields",
+          "conf_mean": 73.9,
+          "conf_min": 7.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            0,
+            114,
+            1586,
+            302
+          ],
+          "paper": 0.83,
+          "height": 71
+        },
+        {
+          "text": "8.1. Historical Sources and Datation",
+          "conf_mean": 94.5,
+          "conf_min": 92.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            399,
+            1106,
+            437
+          ],
+          "paper": 0.59,
+          "height": 37
+        },
+        {
+          "text": "Round Shields were very common in the early 14th century, and became rare while other designs spread.",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            506,
+            2332,
+            549
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "They are mainly made of wood. Some examples of metal round Shields exist but they are parade Shields",
+          "conf_mean": 96.6,
+          "conf_min": 95.9,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            566,
+            2334,
+            610
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "and should be worn only with the proper set of armor of the late 15th century.",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            627,
+            1733,
+            670
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "We hgh RY val Caw",
+          "conf_mean": 34.4,
+          "conf_min": 24.5,
+          "words": 5,
+          "uncertain": [
+            "hgh",
+            "val",
+            "Caw"
+          ],
+          "box": [
+            1929,
+            1834,
+            2103,
+            1862
+          ],
+          "paper": 0.01,
+          "height": 28,
+          "in_picture": "on a coloured or photographic background (paper 1%), confidence 34.4"
+        },
+        {
+          "text": "Round Shields are worn with straps made of leather.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            700,
+            1237,
+            743
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "They are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            773,
+            1473,
+            816
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 15th century armors unless historical sources are provided.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            847,
+            1833,
+            890
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "oie We",
+          "conf_mean": 24.4,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "oie"
+          ],
+          "box": [
+            1219,
+            1407,
+            1355,
+            1418
+          ],
+          "paper": 0.03,
+          "height": 9,
+          "in_picture": "lettering 9px tall, smaller than any printed text"
+        },
+        {
+          "text": "Roman de la Rose - 1350 - France",
+          "conf_mean": 92.5,
+          "conf_min": 82.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            1404,
+            2086,
+            1915,
+            2111
+          ],
+          "paper": 0.68,
+          "height": 24
+        },
+        {
+          "text": "Cathedral of Strasbourg - 1340 - France",
+          "conf_mean": 94.1,
+          "conf_min": 92.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            293,
+            2218,
+            880,
+            2250
+          ],
+          "paper": 0.73,
+          "height": 24
+        },
+        {
+          "text": "8.2. Specific Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            251,
+            2373,
+            890,
+            2420
+          ],
+          "paper": 0.67,
+          "height": 46
+        },
+        {
+          "text": "Round Shield must:",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            183,
+            2481,
+            575,
+            2515
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "● conform to the General Requirements and either the Wooden Shield Requirements or the",
+          "conf_mean": 96.1,
+          "conf_min": 92.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            224,
+            2554,
+            2215,
+            2597
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e conform to the General Requirements and either the Wooden Shield Requirements or the"
+        },
+        {
+          "text": "Metal Shield Requirements (see Sections 3, 4 and 5 above),",
+          "conf_mean": 96,
+          "conf_min": 94.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            298,
+            2614,
+            1513,
+            2658
+          ],
+          "paper": 0.73,
+          "height": 35
+        },
+        {
+          "text": "● be made of wood or metal,",
+          "conf_mean": 90.2,
+          "conf_min": 77.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            2675,
+            833,
+            2715
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be made of wood or metal,"
+        },
+        {
+          "text": "○ Any metal Round Shields must be approved by the Authenticity Committee to be allowed",
+          "conf_mean": 95.8,
+          "conf_min": 87.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            342,
+            2735,
+            2214,
+            2779
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "o Any metal Round Shields must be approved by the Authenticity Committee to be allowed"
+        },
+        {
+          "text": "in Buhurt International events.",
+          "conf_mean": 94.5,
+          "conf_min": 92.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            416,
+            2796,
+            1019,
+            2830
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "● have a diameter:",
+          "conf_mean": 82.9,
+          "conf_min": 72,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            2857,
+            632,
+            2891
+          ],
+          "paper": 0.7,
+          "height": 34,
+          "raw": "e have a diameter:"
+        },
+        {
+          "text": "○ for Sword and Buckler (Duel): from 25 cm to 35 cm,",
+          "conf_mean": 94.6,
+          "conf_min": 87,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            530,
+            2917,
+            1712,
+            2960
+          ],
+          "paper": 0.7,
+          "height": 34,
+          "raw": "o for Sword and Buckler (Duel): from 25 cm to 35 cm,"
+        },
+        {
+          "text": "○ for Buhurt and Sword and Shield (Duel): from 25 cm to 70 cm,",
+          "conf_mean": 94.5,
+          "conf_min": 80.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            530,
+            2978,
+            1938,
+            3021
+          ],
+          "paper": 0.69,
+          "height": 34,
+          "raw": "o for Buhurt and Sword and Shield (Duel): from 25 cm to 70 cm,"
+        },
+        {
+          "text": "● be flat or have a concave curve,",
+          "conf_mean": 92.4,
+          "conf_min": 70.3,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            224,
+            3038,
+            940,
+            3078
+          ],
+          "paper": 0.75,
+          "height": 30,
+          "raw": "e be flat or have a concave curve,"
+        },
+        {
+          "text": "● have handles made of leather (see example in 6.2. Punch Shield).",
+          "conf_mean": 95.6,
+          "conf_min": 92.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            224,
+            3099,
+            1630,
+            3142
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e have handles made of leather (see example in 6.2. Punch Shield)."
+        },
+        {
+          "text": "It is not allowed to add a Shield boss (umbo) on a Round Shield unless documented by historical sources.",
+          "conf_mean": 95.7,
+          "conf_min": 92,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            183,
+            3245,
+            2317,
+            3288
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 14/19",
+          "conf_mean": 85.3,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "text": "—-\n~—..\n\n8.3. Examples of Approved Reproductions\n\nPictures from The Medieval Things ©\n\n8.4. Examples of Reproductions\n\nRound Shield with Shield boss (umbo)\n\nshields and Bucklers V. 26.2 15/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 83.9,
+      "ocr_lines": [
+        {
+          "text": "—-",
+          "conf_mean": 19.4,
+          "conf_min": 19.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1582,
+            458,
+            2117,
+            549
+          ],
+          "paper": 0.65,
+          "height": 91,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "~—..",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1590,
+            684,
+            1943,
+            805
+          ],
+          "paper": 0.73,
+          "height": 121,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "8.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            1092,
+            1260,
+            1139
+          ],
+          "paper": 0.67,
+          "height": 46
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            1952,
+            1517,
+            1983
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "8.4. Examples of Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            251,
+            2068,
+            1193,
+            2115
+          ],
+          "paper": 0.66,
+          "height": 46
+        },
+        {
+          "text": "Round Shield with Shield boss (umbo)",
+          "conf_mean": 95.3,
+          "conf_min": 92.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            826,
+            2272,
+            1658,
+            2308
+          ],
+          "paper": 0.58,
+          "height": 34
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 15/19",
+          "conf_mean": 85.2,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 16,
+      "text": "__ 9. Bucklers\n\n9.1. Historical Sources and Datation\n\nBucklers are small round Shields made of wood or metal. They do not have straps but a rigid handle and a\nShield boss (umbo).\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nWeltchronik in Versen - 1370 - Germany\n\n9.2. Specific Requirements\n\nBucklers must:\n\n● conform to the General Requirements and either the Wooden Shield Requirements or the\nMetal Shield Requirements (see Sections 3, 4 and 5 above),\n● be made of wood or metal,\n● have a Shield boss (umbo):\n○ Shield boss must be made of metal.\n○ Shield boss can be riveted or forged.\n● have a diameter:\n○ for Buhurt: from 20 cm to 40 cm,\n○ for Duels: from 20 cm to 35 cm,\n● be flat or curved depending on historical sources.\n\nOO\n\n—— -\n\nIf the Buckler is made of wood, the handle must be made of wood.\n\nIf the Buckler is made of metal, the handle must be made of metal.\nA strap can be added to secure the Buckler in punch position. This strap must be made of leather.\n\nshields and Bucklers V. 26.2 16/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.5,
+      "ocr_lines": [
+        {
+          "text": "__ 9. Bucklers",
+          "conf_mean": 63.8,
+          "conf_min": 6.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1,
+            114,
+            1453,
+            304
+          ],
+          "paper": 0.84,
+          "height": 70
+        },
+        {
+          "text": "9.1. Historical Sources and Datation",
+          "conf_mean": 94.5,
+          "conf_min": 92.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            399,
+            1106,
+            437
+          ],
+          "paper": 0.59,
+          "height": 37
+        },
+        {
+          "text": "Bucklers are small round Shields made of wood or metal. They do not have straps but a rigid handle and a",
+          "conf_mean": 96.2,
+          "conf_min": 92.2,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            182,
+            506,
+            2334,
+            549
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Shield boss (umbo).",
+          "conf_mean": 92.8,
+          "conf_min": 88.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            566,
+            583,
+            610
+          ],
+          "paper": 0.73,
+          "height": 35
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            639,
+            1772,
+            683
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Weltchronik in Versen - 1370 - Germany",
+          "conf_mean": 92.3,
+          "conf_min": 91.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1505,
+            1441,
+            2095,
+            1472
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "9.2. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            251,
+            1558,
+            890,
+            1604
+          ],
+          "paper": 0.66,
+          "height": 46
+        },
+        {
+          "text": "Bucklers must:",
+          "conf_mean": 94.3,
+          "conf_min": 92.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1665,
+            476,
+            1699
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "● conform to the General Requirements and either the Wooden Shield Requirements or the",
+          "conf_mean": 96,
+          "conf_min": 92.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            224,
+            1737,
+            2215,
+            1780
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e conform to the General Requirements and either the Wooden Shield Requirements or the"
+        },
+        {
+          "text": "Metal Shield Requirements (see Sections 3, 4 and 5 above),",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            298,
+            1798,
+            1513,
+            1841
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● be made of wood or metal,",
+          "conf_mean": 93.8,
+          "conf_min": 91.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            1859,
+            833,
+            1899
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e be made of wood or metal,"
+        },
+        {
+          "text": "● have a Shield boss (umbo):",
+          "conf_mean": 91,
+          "conf_min": 86.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            224,
+            1919,
+            848,
+            1963
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e have a Shield boss (umbo):"
+        },
+        {
+          "text": "○ Shield boss must be made of metal.",
+          "conf_mean": 93.1,
+          "conf_min": 82.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            342,
+            1980,
+            1138,
+            2014
+          ],
+          "paper": 0.69,
+          "height": 33,
+          "raw": "o Shield boss must be made of metal."
+        },
+        {
+          "text": "○ Shield boss can be riveted or forged.",
+          "conf_mean": 92.7,
+          "conf_min": 79,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            342,
+            2040,
+            1156,
+            2084
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "o Shield boss can be riveted or forged."
+        },
+        {
+          "text": "● have a diameter:",
+          "conf_mean": 67,
+          "conf_min": 41.2,
+          "words": 4,
+          "uncertain": [
+            "diameter:"
+          ],
+          "box": [
+            224,
+            2102,
+            632,
+            2135
+          ],
+          "paper": 0.7,
+          "height": 33,
+          "raw": "e have a diameter:"
+        },
+        {
+          "text": "○ for Buhurt: from 20 cm to 40 cm,",
+          "conf_mean": 93.7,
+          "conf_min": 82,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            530,
+            2162,
+            1304,
+            2201
+          ],
+          "paper": 0.69,
+          "height": 34,
+          "raw": "o for Buhurt: from 20 cm to 40 cm,"
+        },
+        {
+          "text": "○ for Duels: from 20 cm to 35 cm,",
+          "conf_mean": 95,
+          "conf_min": 88.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            529,
+            2222,
+            1279,
+            2262
+          ],
+          "paper": 0.7,
+          "height": 34,
+          "raw": "o for Duels: from 20 cm to 35 cm,"
+        },
+        {
+          "text": "● be flat or curved depending on historical sources.",
+          "conf_mean": 85.9,
+          "conf_min": 48.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            224,
+            2283,
+            1289,
+            2326
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be flat or curved depending on historical sources."
+        },
+        {
+          "text": "OO",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            771,
+            2380,
+            2053,
+            2768
+          ],
+          "paper": 0.33,
+          "height": 388,
+          "in_picture": "on a coloured or photographic background (paper 33%), confidence 0.0"
+        },
+        {
+          "text": "—— -",
+          "conf_mean": 5.7,
+          "conf_min": 0.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            264,
+            2858,
+            2019,
+            3069
+          ],
+          "paper": 0.62,
+          "height": 211,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "If the Buckler is made of wood, the handle must be made of wood.",
+          "conf_mean": 95,
+          "conf_min": 81.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            3087,
+            1517,
+            3127
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "If the Buckler is made of metal, the handle must be made of metal.",
+          "conf_mean": 95.5,
+          "conf_min": 85.3,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            3160,
+            1522,
+            3200
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "A strap can be added to secure the Buckler in punch position. This strap must be made of leather.",
+          "conf_mean": 96.4,
+          "conf_min": 94.7,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            179,
+            3233,
+            2154,
+            3276
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 16/19",
+          "conf_mean": 84.8,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 17,
+      "text": "9.3. Examples of Reproductions\n\nForged shield boss Riveted shield boss Reinforced buckler with cross\n\nPicture from Black Dog Armoury ©\n\nWooden Buckler\nPicture from The Medieval Things © Additional leather strap\n\nPicture from Medieval Extreme ©\n\n9.4. Examples of Denied Reproductions\n\nBlack painting is not allowed as per “Armors and Weapons\n\nAesthetics and Decoration” document.\n\nPicture from The Medieval Things ©\n\nShields and Bucklers V. 26.2 17/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.9,
+      "ocr_lines": [
+        {
+          "text": "9.3. Examples of Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            251,
+            216,
+            1260,
+            262
+          ],
+          "paper": 0.65,
+          "height": 46
+        },
+        {
+          "text": "Forged shield boss Riveted shield boss Reinforced buckler with cross",
+          "conf_mean": 95.3,
+          "conf_min": 91.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            256,
+            1165,
+            2065,
+            1209
+          ],
+          "paper": 0.67,
+          "height": 35
+        },
+        {
+          "text": "Picture from Black Dog Armoury ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            988,
+            1284,
+            1497,
+            1315
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Wooden Buckler",
+          "conf_mean": 95.9,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            383,
+            2195,
+            744,
+            2229
+          ],
+          "paper": 0.55,
+          "height": 34
+        },
+        {
+          "text": "Picture from The Medieval Things © Additional leather strap",
+          "conf_mean": 96.7,
+          "conf_min": 96,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            320,
+            2268,
+            2174,
+            2311
+          ],
+          "paper": 0.87,
+          "height": 24
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1702,
+            2339,
+            2191,
+            2364
+          ],
+          "paper": 0.63,
+          "height": 25
+        },
+        {
+          "text": "9.4. Examples of Denied Reproductions",
+          "conf_mean": 96.1,
+          "conf_min": 95.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            2455,
+            1193,
+            2502
+          ],
+          "paper": 0.67,
+          "height": 37
+        },
+        {
+          "text": "Black painting is not allowed as per “Armors and Weapons",
+          "conf_mean": 95.7,
+          "conf_min": 93,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            956,
+            2855,
+            2237,
+            2897
+          ],
+          "paper": 0.61,
+          "height": 34
+        },
+        {
+          "text": "Aesthetics and Decoration” document.",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            953,
+            2928,
+            1794,
+            2962
+          ],
+          "paper": 0.57,
+          "height": 34
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            977,
+            3144,
+            1508,
+            3175
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Shields and Bucklers V. 26.2 17/19",
+          "conf_mean": 94.4,
+          "conf_min": 91.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35
+        }
+      ]
+    },
+    {
+      "page": 18,
+      "text": "10. Fastening Systems\n\n10.1. Historical Sources and Datation\n\nLeather straps were fastened with nails or rivets.\nThe following methods are Approved for 14th century, Transitional and 15th century armors:\n\n● nails,\n● rivets,\n● modern nuts and bolts.\n\nExamples:\n\nRivet with metal plate\nPictures from Black Dog Armoury ©\n\n10.2. Specific requirements\n\nNails and rivets can be left visible.\nModern nuts and bolts must be concealed by one of the following methods:\n\n● Covered by a piece of leather nailed to the Shield.\n● Painted in black or any other color to make it concealed.\n● Hexagonal unpainted bolts must be ground to a rounded shape, replicating a rivet aesthetic.\n\nBolts must not protrude from the nuts.\n\n10.3. Examples of Approved Systems\n\nRivets can be visible Modern nuts and bolts, painted black\n\nPictures from Medieval Extreme ©\n\nshields and Bucklers V. 26.2 18/19",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.3,
+      "ocr_lines": [
+        {
+          "text": "10. Fastening Systems",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            676,
+            246,
+            1687,
+            337
+          ],
+          "paper": 0.68,
+          "height": 90
+        },
+        {
+          "text": "10.1. Historical Sources and Datation",
+          "conf_mean": 94.6,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            428,
+            1106,
+            466
+          ],
+          "paper": 0.59,
+          "height": 37
+        },
+        {
+          "text": "Leather straps were fastened with nails or rivets.",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            535,
+            1158,
+            578
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The following methods are Approved for 14th century, Transitional and 15th century armors:",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            608,
+            2128,
+            651
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "● nails,",
+          "conf_mean": 76.7,
+          "conf_min": 66.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            682,
+            398,
+            721
+          ],
+          "paper": 0.77,
+          "height": 39,
+          "raw": "e nails,"
+        },
+        {
+          "text": "● rivets,",
+          "conf_mean": 87.7,
+          "conf_min": 82.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            742,
+            413,
+            782
+          ],
+          "paper": 0.77,
+          "height": 40,
+          "raw": "e rivets,"
+        },
+        {
+          "text": "● modern nuts and bolts.",
+          "conf_mean": 85.6,
+          "conf_min": 46.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            803,
+            757,
+            837
+          ],
+          "paper": 0.69,
+          "height": 33,
+          "raw": "e modern nuts and bolts."
+        },
+        {
+          "text": "Examples:",
+          "conf_mean": 94.7,
+          "conf_min": 94.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            303,
+            876,
+            514,
+            919
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "Rivet with metal plate",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1542,
+            1534,
+            1973,
+            1576
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Pictures from Black Dog Armoury ©",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            980,
+            1604,
+            1506,
+            1635
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "10.2. Specific requirements",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            1695,
+            874,
+            1742
+          ],
+          "paper": 0.68,
+          "height": 46
+        },
+        {
+          "text": "Nails and rivets can be left visible.",
+          "conf_mean": 96.1,
+          "conf_min": 93.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            183,
+            1802,
+            865,
+            1836
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "Modern nuts and bolts must be concealed by one of the following methods:",
+          "conf_mean": 96.3,
+          "conf_min": 95.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            1875,
+            1695,
+            1918
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Covered by a piece of leather nailed to the Shield.",
+          "conf_mean": 95.5,
+          "conf_min": 90.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            1949,
+            1304,
+            1992
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Covered by a piece of leather nailed to the Shield."
+        },
+        {
+          "text": "● Painted in black or any other color to make it concealed.",
+          "conf_mean": 95.9,
+          "conf_min": 93,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            224,
+            2010,
+            1429,
+            2053
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e Painted in black or any other color to make it concealed."
+        },
+        {
+          "text": "● Hexagonal unpainted bolts must be ground to a rounded shape, replicating a rivet aesthetic.",
+          "conf_mean": 95.4,
+          "conf_min": 90.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            224,
+            2070,
+            2152,
+            2113
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e Hexagonal unpainted bolts must be ground to a rounded shape, replicating a rivet aesthetic."
+        },
+        {
+          "text": "Bolts must not protrude from the nuts.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            2143,
+            942,
+            2186
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "10.3. Examples of Approved Systems",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2290,
+            1113,
+            2337
+          ],
+          "paper": 0.67,
+          "height": 46
+        },
+        {
+          "text": "Rivets can be visible Modern nuts and bolts, painted black",
+          "conf_mean": 95.9,
+          "conf_min": 95,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            453,
+            3155,
+            2134,
+            3197
+          ],
+          "paper": 0.81,
+          "height": 34
+        },
+        {
+          "text": "Pictures from Medieval Extreme ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            990,
+            3225,
+            1496,
+            3250
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 18/19",
+          "conf_mean": 83.5,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 19,
+      "text": "11. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nFebruary - 2026 (V. 26.2)\nChange:\n\n- 8.2 “Specific Requirements” of Round Shields: Maximum diameter changed from 35 to 70 cm for\nSword and Shield (Duel).\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd:\n\n- “41. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition” and “3. General Requirements”.\n- From 1.1. to “4. Wooden Shields requirements” and 1.2. to “5. Metal Shields Requirements’.\n\n- This doesn’t have an impact on the content of the rules.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\n\n- Modification of diameters for Round shields and Bucklers depending on the type of fight.\n\nMarch-2025 (V2025.02)\n- Clarification : 6.2\n- format: Grammar and Formatting\n\nDecember-2024: SAdd\nDocument has been created\n\nshields and Bucklers V. 26.2 19/19",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.6,
+      "ocr_lines": [
+        {
+          "text": "11. Changelog",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            866,
+            259,
+            1496,
+            349
+          ],
+          "paper": 0.67,
+          "height": 90
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            440,
+            2263,
+            483
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            501,
+            1870,
+            543
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "February - 2026 (V. 26.2)",
+          "conf_mean": 93.3,
+          "conf_min": 90.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            605,
+            699,
+            648
+          ],
+          "paper": 0.65,
+          "height": 42
+        },
+        {
+          "text": "Change:",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            657,
+            349,
+            700
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- 8.2 “Specific Requirements” of Round Shields: Maximum diameter changed from 35 to 70 cm for",
+          "conf_mean": 95.3,
+          "conf_min": 92.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            718,
+            2282,
+            761
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Sword and Shield (Duel).",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            778,
+            684,
+            821
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.6,
+          "conf_min": 92.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            895,
+            679,
+            939
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            947,
+            2163,
+            990
+          ],
+          "paper": 0,
+          "height": 39
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            998,
+            273,
+            1051
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- “41. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 90.9,
+          "conf_min": 50,
+          "words": 13,
+          "uncertain": [
+            "Title"
+          ],
+          "box": [
+            180,
+            1068,
+            2085,
+            1112
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1129,
+            427,
+            1163
+          ],
+          "paper": 0,
+          "height": 34
+        },
+        {
+          "text": "- Split of “1. Definition and general requirements” in “2. Definition” and “3. General Requirements”.",
+          "conf_mean": 91.9,
+          "conf_min": 71.7,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1190,
+            2275,
+            1233
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "- From 1.1. to “4. Wooden Shields requirements” and 1.2. to “5. Metal Shields Requirements’.",
+          "conf_mean": 94.2,
+          "conf_min": 79.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1250,
+            2188,
+            1293
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "- This doesn’t have an impact on the content of the rules.",
+          "conf_mean": 95.7,
+          "conf_min": 92.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1311,
+            1540,
+            1353
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 95.3,
+          "conf_min": 84.6,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            175,
+            1357,
+            2042,
+            1419
+          ],
+          "paper": 0.78,
+          "height": 34
+        },
+        {
+          "text": "- Modification of diameters for Round shields and Bucklers depending on the type of fight.",
+          "conf_mean": 95.6,
+          "conf_min": 92.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1432,
+            2110,
+            1475
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "March-2025 (V2025.02)",
+          "conf_mean": 92,
+          "conf_min": 91.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1528,
+            668,
+            1571
+          ],
+          "paper": 0.61,
+          "height": 43
+        },
+        {
+          "text": "- Clarification : 6.2",
+          "conf_mean": 92.7,
+          "conf_min": 88.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            1576,
+            536,
+            1610
+          ],
+          "paper": 0.22,
+          "height": 33
+        },
+        {
+          "text": "- format: Grammar and Formatting",
+          "conf_mean": 95.4,
+          "conf_min": 93.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1624,
+            874,
+            1667
+          ],
+          "paper": 0.57,
+          "height": 34
+        },
+        {
+          "text": "December-2024: SAdd",
+          "conf_mean": 45,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "SAdd"
+          ],
+          "box": [
+            182,
+            1714,
+            641,
+            1762
+          ],
+          "paper": 0.54,
+          "height": 48
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1768,
+            752,
+            1802
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "shields and Bucklers V. 26.2 19/19",
+          "conf_mean": 85.2,
+          "conf_min": 58.6,
+          "words": 6,
+          "uncertain": [
+            "shields"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}
