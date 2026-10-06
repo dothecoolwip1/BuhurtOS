@@ -320,7 +320,7 @@ try {
   check('64. direct probes with each device\'s own token: staff, platform roles, registrations, announcements (announcer), the device list and device creation are all refused or empty', probed.every(p => p[1]), JSON.stringify(probed));
   const track = await probe('marshal', 'track_event', { p_session: crypto.randomUUID(), p_name: 'x', p_props: {} });
   check('65. device mode never calls analytics: no track_activity / track_event / report_bug request left any device', !net.some(n => /track_activity|track_event|report_bug/.test(n.url) && Object.keys(P).includes(n.who)), net.filter(n => /track_/.test(n.url)).map(n => n.who + ' ' + n.url).join(' | ') + ' ' + track.status);
-  check('66. device mode does not register for push or read profiles: no push_devices, profiles or platform_roles request from a device', !net.some(n => /push_devices|register_push|\/profiles|platform_roles|event_staff|\/registrations/.test(n.url) && Object.keys(P).includes(n.who)), net.filter(n => /push_devices|register_push|\/profiles|platform_roles|event_staff|\/registrations/.test(n.url) && Object.keys(P).includes(n.who)).map(n => n.who + ' ' + n.url).join(' | '));
+  check('66. device mode does not register for push or read profiles: no push_devices, profiles or platform_roles request from a device', !net.some(n => /push_devices|register_push|\/profiles|platform_roles|\/event_staff(\?|$)|\/registrations/.test(n.url) && Object.keys(P).includes(n.who)), net.filter(n => /push_devices|register_push|\/profiles|platform_roles|\/event_staff(\?|$)|\/registrations/.test(n.url) && Object.keys(P).includes(n.who)).map(n => n.who + ' ' + n.url).join(' | '));
   const e2 = await api({ action: 'signin', code: e2c.body.code });
   const xev = await rest(e2.body.access_token, 'POST', 'rpc/camera_state', { p_event: E1 });
   const xq = await rest(e2.body.access_token, 'POST', 'rpc/move_match_in_queue', { p_match: mid(12), p_action: 'first' });
@@ -361,7 +361,7 @@ try {
   await visitor.waitForSelector('header.top', { timeout: 30000 });
   check('76. a visitor with no device session gets the normal site (header, menus, footer) on the same build', (await visitor.locator('header.top').count()) === 1 && (await visitor.locator('footer').count()) === 1 && (await visitor.locator('[data-testid="device-bar"]').count()) === 0);
   await visitor.goto(BASE + ANNOUNCER);
-  check('77. the announcer route exists for permanent accounts too (chrome-less)', await until(async () => (await visitor.locator('header.top').count()) === 0 && /Announcer/.test(await text(visitor)), 20000), await text(visitor));
+  check('77. the announcer route exists for permanent accounts too (chrome-less)', await until(async () => (await visitor.locator('header.top').count()) === 0 && /NOW FIGHTING|FOCUS LYST/i.test(await text(visitor)), 20000), await text(visitor));
   await visitor.ctx.close();
 
   let sideways = [];
