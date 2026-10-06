@@ -417,6 +417,12 @@ try {
   await sk.goto(BASE + CMD); await signInHere(sk, EM.scorekeeper);
   check('B22. a scorekeeper opening the address sees "for this event\'s organizers and head marshal" and no event data', await until(async () => /organizers and head marshal/.test(await text(sk)), 20000)
     && (await sk.locator('.cc-item, .cc-field, .cc-tile').count()) === 0);
+  await shot(sk, '15-command-refused-phone', false);
+  const empty = await open('phone'); pages.push(empty);
+  await empty.goto(BASE + '/account'); await signInHere(empty, EM.otherDesk); await until(async () => /Sign out/.test(await text(empty)));
+  await empty.goto(BASE + '/events/other-event/command'); await empty.locator('.cmd-centre').waitFor({ timeout: 30000 });
+  check('B22b. an event with nothing drawn yet: "All good", no fields yet, nothing invented', /All good/.test(await text(empty, '.cc-head')) && /No fights are scheduled on a field yet/.test(await text(empty, '#cc-fields')) && await noSideways(empty));
+  await shot(empty, '16-command-empty-phone');
   const snapText = JSON.stringify((await rpc('organizer', 'event_command_snapshot', { p_event: EVENT })).body);
   check('B23. the snapshot carries no notes, weights or emails', !/SECRET-NOTE|83\.4|example\.test|"note"|weight/.test(snapText));
 

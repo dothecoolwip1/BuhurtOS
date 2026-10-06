@@ -20,3 +20,5 @@ select gen_random_uuid(), u.id::text, u.id, jsonb_build_object('sub', u.id::text
 update public.fighters set display_name = 'Edric Alexander Hale-Montgomery of the Northern Reaches' where id = '00000000-0000-0000-0000-00000000f105';
 update public.teams set name = 'Iron Wolves of the Great Northern Plains Buhurt Club' where id = '00000000-0000-0000-0000-00000000a616';
 update public.registrations set team_name = 'Iron Wolves of the Great Northern Plains Buhurt Club' where team_id = '00000000-0000-0000-0000-00000000a616';
+-- d4 also organizes the other (empty) event, for the "nothing drawn yet" review of the Command Centre
+insert into public.event_staff (event_id, user_id, role) values ('00000000-0000-0000-0000-00000000ed02', '00000000-0000-0000-0000-0000000000d4', 'organizer');

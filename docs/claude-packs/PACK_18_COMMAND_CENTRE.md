@@ -75,3 +75,48 @@ results. The Command Centre is the *read-only* "what needs me now" screen. It mu
 - Authentication › Providers › Email: password sign-in enabled (it is used by the test accounts today, so it is on). "Confirm email" on or off both
   work; on is recommended. "Secure password change" on is supported (the code flow).
 - SMTP: reset and confirmation emails use the same sender as the email codes.
+
+## 4. What was built
+### Part A: sign-in (`src/auth/SignIn.tsx`, `src/auth/AuthPages.tsx`, `src/lib/authFlow.ts`, `AuthContext`)
+- **Sign in**: Email, Password (Show/Hide), Sign in, Forgot password?, Create account; then "Other ways": Google, "Email me a sign-in code"
+  (both unchanged). One request at a time (a ref guard, not just a disabled button). `/sign-in?next=…` for links from elsewhere; `next` must be a
+  path inside BuhurtOS (`safeNext`: no other sites, no `//host`, no `javascript:`).
+- **Create account**: `signUp` with `emailRedirectTo` = the page the person was on. Session returned (confirmation off) → signed in → the existing
+  `/welcome` step; no session (confirmation on) → "Check your email … if <address> can be used for a new account" + "Send the link again".
+- **Forgot password**: the same "Check your email … if <address> has an account" for every address. Supabase's per-address limit ("too soon",
+  which only happens for real accounts) is answered the same way, so it cannot be used to discover accounts.
+- **`/reset-password`**: valid link → New + Confirm + Save → "Password saved" + Continue (to `next`); leaving and coming back keeps working;
+  used / expired / invalid / replaced-by-a-newer-link / other-browser links are explained, with "Send a new link".
+- **Account › Password**: current password (checked by a fresh sign-in, and sent as `current_password` for Supabase's own check when enabled),
+  or "I have never set a password" for code / Google accounts; Supabase's `reauthentication_needed` → it emails a code → "Confirm and save".
+- Errors are words (`authErrorMessage`); a wrong password and an unknown email read identically.
+
+### Part B: Command Centre (`/events/<slug>/command`, `src/pages/CommandCentrePage.tsx`, `src/lib/commandCentre.ts`, migration `20261012000100`)
+- **Who**: organizer (incl. org admins and the platform owner by the existing rule) and the head marshal of THAT event. Enforced by
+  `event_command_snapshot` (42501 for everyone else, and for an event that does not exist). Head marshal: same picture, links go to the field
+  screens (Manage is organizer-only), no announcement form (Pack 15 is organizer-only).
+- **Header**: event name, status, the time at the event, the overall state ("All good: nothing needs you right now" / "N things need attention (k
+  now)" — a count of open items, no score), "Live · updated hh:mm:ss", or "Offline / Not updating · last updated … This may be out of date".
+- **Needs attention** (most urgent first; each item = what, who, where, a link to the existing screen):
+  result conflicts → Event day (organizer) / the field screen (head marshal); Event day's own rules reused as is (two fights active on a field, a
+  withdrawn entrant in a called fight, walkover needed, a due fight that cannot run, double booking, bracket to build); fighters called to fight
+  (on now / on deck / in the hole) but not ready, and those fighting within 90 minutes (Pack 16 reasons); armour to fix; arrived but not checked in;
+  not here yet; still to inspect; insurance / fee; registrations waiting (organizer); overrides in place (FYI); a paused Lyst clock (Pack 13);
+  a field 15+ minutes behind its scheduled time (not while its clock is running); a field with no fight on and the next one ready (organizer).
+- **Fighters**: counts from Pack 16 (one rule), each a link into the desk on that list (`/checkin?f=…`); "Fighting soon, not ready" with the slot.
+- **Fields**: per field, state in words from Pack 13 (clock running / paused / not running, round), the fight on, the next, how many are waiting,
+  minutes behind, readiness warnings, "Open Lyst Control". No clock, no score, no queue order of its own.
+- **Fights** (on now / called next / coming up, not the bracket), **Progress** (fights scored of drawn, competitions by phase; no finish-time
+  estimate: the data cannot support one honestly), **Staff** (assigned per role, names only; "BuhurtOS does not know who is physically here";
+  roles nobody holds), **Announcements** (the Pack 15 panel itself), **Broadcast** (configured or not, link to Manage › Broadcast),
+  **Quick actions** (existing screens only).
+- **Freshness**: matches over the existing realtime channels (`realtimeChannel`, PR #35) with polling fallback; Lyst state via `useLystPublic`;
+  the snapshot every 20 s, after each live change, on reconnect and on focus. Stale after 60 s without a good read, or offline.
+- **Read-only**: the page makes no write call (no planner autosave, unlike Event day). Verified: 25 s open changed no match, timer, round, check,
+  audit row, result or notification.
+
+## 5. Known limits (by design or by Supabase)
+- Reset links use Supabase's PKCE flow: the link works in the browser that asked for it, and a newer request replaces an older link. The page says so.
+- With "Confirm email" OFF on the project, Supabase answers sign-up for an existing address with an error; the app words it neutrally, but the
+  difference is Supabase's. Recommended: keep it ON.
+- Presence is not tracked: Staff shows assignments only.
