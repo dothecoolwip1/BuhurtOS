@@ -106,8 +106,8 @@ describe('accessEndsLabel', () => {
     expect(accessEndsLabel(ends, 'UTC', Date.parse('2026-10-11T12:00:00Z'))).toMatch(/^Access ends Mon 06:00/);
     expect(accessEndsLabel(ends, 'Asia/Tokyo', Date.parse('2026-10-11T12:00:00Z'))).toMatch(/^Access ends Mon 15:00/);
   });
-  it('winter time is MST', () => {
-    expect(accessEndsLabel('2026-12-07T07:00:00Z', 'America/Edmonton', Date.parse('2026-12-06T12:00:00Z'))).toMatch(/^Access ends Mon 00:00.*MST$/);
+  it('winter time is standard time (Toronto: stable rules in every time-zone database)', () => {
+    expect(accessEndsLabel('2026-12-07T05:00:00Z', 'America/Toronto', Date.parse('2026-12-06T12:00:00Z'))).toMatch(/^Access ends Mon 00:00.*EST$/);
   });
   it('adds the date when it is more than five days away', () => {
     expect(accessEndsLabel(ends, 'America/Edmonton', Date.parse('2026-10-01T12:00:00Z'))).toMatch(/^Access ends Mon Oct 12 00:00/);

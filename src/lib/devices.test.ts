@@ -44,7 +44,8 @@ describe('access end and last seen, in the event time zone', () => {
     expect(accessEndsLabel('2026-10-12T06:00:00Z', 'Europe/London')).toMatch(/^Access ends Mon 07:00/);
   });
   it('follows daylight saving: the same local midnight is a different instant in winter', () => {
-    expect(accessEndsLabel('2026-12-07T07:00:00Z', 'America/Edmonton')).toBe('Access ends Mon 00:00 MST');
+    // (Toronto, not Edmonton: a newer time-zone database than ours may keep Alberta on daylight time all year, and this test is about the label following the zone's rules)
+    expect(accessEndsLabel('2026-12-07T05:00:00Z', 'America/Toronto')).toBe('Access ends Mon 00:00 EST');
   });
   it('has nothing to say without a time, or with a bad one; a bad zone falls back instead of throwing', () => {
     expect(accessEndsLabel(null, 'America/Edmonton')).toBeNull();
