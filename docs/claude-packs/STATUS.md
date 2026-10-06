@@ -573,3 +573,16 @@ Not verified: the real domains (buhurtos.ca, the GitHub Pages club site): sign-i
 | Officers on hosted | Treasurer = dothecoolwip@gmail.com (assigned through `assign_team_officer` as the platform owner, audited). President / Secretary: no accounts exist yet |
 | Automated tests | `club_agm_gate.sql` **78 checks** + `club_membership_gate.sql` 101; `run_all.sh` DATABASE GATE PASSED; Vitest 965; typecheck |
 | Real-auth browser scenario | `scripts/e2e/club-live.sh` **61/61** (real Supabase Auth with default link-only emails; both sites on ONE origin like production; 390x844 + 1280x900) |
+
+## Pack 23R: Red Deer Rumble rehearsal and gap analysis (2026-10-06) — DISCOVERY ONLY
+
+| Level | Status |
+| --- | --- |
+| Report | `docs/claude-packs/PACK_23R_RUMBLE_REHEARSAL.md` (gap matrix, permissions, formats, paper/TV, scale, pack order, owner decisions) |
+| Added (test only) | `scripts/e2e/fixtures/pack23r.sql` (TEST, synthetic, local only), `scripts/e2e/pack23r-rehearsal.{sh,mjs}`, evidence + 13 screenshots in `docs/reviews/assets/2026-10-06-pack23r/` |
+| Production source / migrations | **none changed** |
+| Rehearsal | local Postgres 16 from all migrations + PostgREST 12.2.3 + built app + Chromium; 50 fighters, 10 categories over 2 days on 1 lyst, 99 fights built, 109 by the end; 390 / 768 / 1024 / 1280 (+1920 arena); run 3 reported, 4/4 run checks, 140 evidence items |
+| Tests | Vitest 87 files / 965 passed; typecheck clean; build clean; `run_all.sh` DATABASE GATE PASSED |
+| Hosted DB / deployment | not touched / not deployed |
+| Critical findings | no day boundary (Sunday fights called Saturday); no stable fight number; running order not durable (one move freezes the line, holds erased by Event day re-plan, filled bracket fights go to the end); `build_schedule('replace')` deletes an ACTIVE fight and its live score events; organizer table-API DELETE/PATCH on matches unaudited; secretary/head marshal have no running-order authority while any scorer can call any fight; no print view; public Now-and-next lists In the hole before On deck |
+| Recommended next pack | 24A0 Match integrity guards (new, small, server only), then 24A3 after the owner decides authored order vs live planner |
