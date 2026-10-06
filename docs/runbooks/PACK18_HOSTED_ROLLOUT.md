@@ -1,6 +1,6 @@
-# Pack 18 hosted rollout (NOT performed; for the release step)
+# Pack 18 hosted rollout
 
-Pack 18 = email + password sign-in and the Organizer Command Centre. Nothing here has been applied to the hosted project.
+Pack 18 = email + password sign-in and the Organizer Command Centre. **Performed 2026-10-06**: §2 applied and checked (see STATUS, Pack 18), app deployed by main run #113; §1 URL settings and leaked password protection confirmed by the owner; §3 is the owner's production check.
 
 ## 1. Supabase Auth settings (dashboard, project `mvbxlebznlgroptwwdsm`) — check before deploying the app
 | Setting | Where | Needed |
