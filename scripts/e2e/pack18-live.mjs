@@ -112,8 +112,8 @@ try {
   const btn = form.getByRole('button', { name: 'Sign in' });
   // two taps in the same instant (before the page can re-render) and Enter: the busy guard must let only one request out
   await btn.evaluate(el => { el.click(); el.click(); el.closest('form')?.requestSubmit(); });
-  await until(async () => (await a.locator('.cc').count()) === 1, 20000);
-  check('A6. Sign in (button and Enter pressed together) sends ONE request; the organizer lands on the page they asked for (the Command Centre)', a.tokenCalls === 1 && path(a) === CMD && (await a.locator('.cc').count()) === 1, `${a.tokenCalls} calls, at ${path(a)}`);
+  await until(async () => (await a.locator('.cmd-centre').count()) === 1, 20000);
+  check('A6. Sign in (button and Enter pressed together) sends ONE request; the organizer lands on the page they asked for (the Command Centre)', a.tokenCalls === 1 && path(a) === CMD && (await a.locator('.cmd-centre').count()) === 1, `${a.tokenCalls} calls, at ${path(a)}`);
   await signOutVia(a);
   check('A7. sign out clears the session', !(await signedIn(a)));
   await a.goto(BASE + '/account');
@@ -323,7 +323,7 @@ try {
   await org.goto(BASE + '/account'); await signInHere(org, EM.organizer); await until(async () => /Sign out/.test(await text(org)));
   await org.goto(BASE + `/events/${SLUG}`);
   await org.getByTestId('open-command').click();
-  await org.locator('.cc').waitFor({ timeout: 30000 });
+  await org.locator('.cmd-centre').waitFor({ timeout: 30000 });
   await until(async () => (await org.locator('.cc-item').count()) >= 5, 20000);
   const head = await text(org, '.cc-head');
   check('B1. organizer: the entry on the event page opens the Command Centre (event-scoped route)', path(org) === CMD);
@@ -341,17 +341,18 @@ try {
     && !/\b\d:\d\d\b/.test(fieldsText), fieldsText);   // no countdown like 0:45 (event times are hh:mm)
   const tiles = await text(org, '#cc-fighters');
   check('B7. fighters from Pack 16: 4 expected, 1 arrived not in, 3 checked in, 2 ready, 2 not ready, 1 armour issue', /4 expected/.test(tiles) && /1 arrived, not in/.test(tiles) && /3 checked in/.test(tiles) && /2 ready/.test(tiles) && /2 not ready/.test(tiles) && /1 ⚠? ?armour issues/.test(tiles), tiles);
-  check('B8. 390x844: no sideways scroll', await noSideways(org));
+  check('B8. 390x844: no sideways scroll, and the Command Centre uses the screen width (no squeezed column)', await noSideways(org)
+    && await org.evaluate(() => document.querySelector('.cmd-centre').getBoundingClientRect().width >= window.innerWidth * 0.85 && document.querySelector('.cc-item').getBoundingClientRect().width >= 300));
   await shot(org, '10-command-problems-phone');
   // deep links into the authoritative screens
   await org.locator('.cc-item', { hasText: 'armour fixed and reinspected' }).getByRole('link').click();
   check('B9. "See armour issues" opens the check-in desk on the armour-issues list, with Brann', await until(async () => path(org) === `/events/${SLUG}/checkin?f=issues` && (await org.locator('article.desk-card[aria-label="Brann Oakley"]').count()) === 1
     && (await org.getByRole('group', { name: 'Show' }).getByRole('button', { name: 'Armour issues' }).getAttribute('aria-pressed')) === 'true', 15000), path(org));
-  await org.goBack(); await org.locator('.cc').waitFor();
+  await org.goBack(); await org.locator('.cmd-centre').waitFor();
   await until(async () => (await org.locator('.cc-item').count()) >= 5);
   await org.locator('.cc-item', { hasText: 'result needs a decision' }).getByRole('link').click();
   check('B10. the result conflict opens Event day, where it is decided', await until(async () => path(org) === `/events/${SLUG}/manage?tab=eventday` && /review|disagree/i.test(await text(org)), 20000), path(org));
-  await org.goto(BASE + CMD); await org.locator('.cc').waitFor();
+  await org.goto(BASE + CMD); await org.locator('.cmd-centre').waitFor();
   await org.getByRole('link', { name: 'Open Lyst Control · Field 2' }).click();
   check('B11. "Open Lyst Control · Field 2" opens that field\'s Lyst Control screen', await until(async () => path(org) === `/events/${SLUG}/field/Field%202`), path(org));
 
@@ -362,12 +363,12 @@ try {
   const w0 = world();
   const watcher = await open('desktop'); pages.push(watcher);
   await watcher.goto(BASE + '/account'); await signInHere(watcher, EM.organizer); await until(async () => /Sign out/.test(await text(watcher)));
-  await watcher.goto(BASE + CMD); await watcher.locator('.cc').waitFor({ timeout: 30000 });
+  await watcher.goto(BASE + CMD); await watcher.locator('.cmd-centre').waitFor({ timeout: 30000 });
   await sleep(25000);   // longer than one snapshot cycle, with the live channels and Lyst polling running
   check('B12. 25 s of the Command Centre open (snapshot, live matches, Lyst state) changed NOTHING: matches, timers, rounds, checks, audit log, results, notifications', world() === w0);
 
   // the authoritative state changes; the Command Centre follows (no reload)
-  await org.goto(BASE + CMD); await org.locator('.cc').waitFor();
+  await org.goto(BASE + CMD); await org.locator('.cmd-centre').waitFor();
   await rpc('inspector', 'record_inspection', { p_reg: REG(2), p_result: 'passed', p_issues: [], p_note: null });
   await timer('Field 2', f2, 'start');
   check('B13. Brann passes reinspection and Field 2 resumes: the warnings and the paused clock leave the Command Centre by themselves (no reload)',
@@ -399,9 +400,9 @@ try {
   await hm.goto(BASE + '/account'); await signInHere(hm, EM.head); await until(async () => /Sign out/.test(await text(hm)));
   await hm.goto(BASE + `/events/${SLUG}`);
   await hm.getByTestId('open-command').click();
-  await hm.locator('.cc').waitFor({ timeout: 30000 });
+  await hm.locator('.cmd-centre').waitFor({ timeout: 30000 });
   check('B17. head marshal: own entry on the event page, the Command Centre opens; no links to organizer-only pages, no announcement form',
-    path(hm) === CMD && (await hm.locator('.cc a[href*="/manage"]').count()) === 0 && (await hm.locator('#cc-announce').count()) === 0, await text(hm, '.cc-quick'));
+    path(hm) === CMD && (await hm.locator('.cmd-centre a[href*="/manage"]').count()) === 0 && (await hm.locator('#cc-announce').count()) === 0, await text(hm, '.cc-quick'));
   // organizer sees and can use the existing announcement capability (Pack 15) from here
   check('B18. organizer: the Pack 15 announcement panel is here (reused, not rebuilt)', (await org.locator('#cc-announce').count()) === 1 && /announcement|140/i.test(await text(org, '#cc-announce')));
 
@@ -423,8 +424,8 @@ try {
   for (const [kind, name] of [['tablet', '13-command-tablet'], ['desktop', '14-command-desktop']]) {
     const p = await open(kind); pages.push(p);
     await p.goto(BASE + '/account'); await signInHere(p, EM.organizer); await until(async () => /Sign out/.test(await text(p)));
-    await p.goto(BASE + CMD); await p.locator('.cc').waitFor({ timeout: 30000 });
-    check(`B24. ${kind}: no sideways scroll`, await noSideways(p));
+    await p.goto(BASE + CMD); await p.locator('.cmd-centre').waitFor({ timeout: 30000 });
+    check(`B24. ${kind}: no sideways scroll; the page uses the width`, await noSideways(p) && await p.evaluate(() => document.querySelector('.cmd-centre').getBoundingClientRect().width >= Math.min(window.innerWidth * 0.8, 900)));
     await shot(p, name);
   }
   const errs = pages.flatMap(p => p.errors);

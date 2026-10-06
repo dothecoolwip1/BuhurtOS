@@ -131,7 +131,7 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
   const unassigned = unassignedRoles(snap.staff);
 
   return (
-    <section className="cc" aria-label="Command Centre">
+    <section className="cmd-centre" aria-label="Command Centre">
       <header className={`cc-head tone-${overall.tone}`}>
         <p className="eyebrow">Command Centre</p>
         <h1 className="cc-title">{snap.event.name}</h1>
@@ -164,11 +164,9 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
           <div className="cc-sub">
             <h3>Fighting soon, not ready</h3>
             <ul className="cc-list">
-              {[...new Map(snap.fightWarnings.map(w => [w.fighterId, w])).values()].map(w => {
-                const b = boards.find(x => [...x.now, ...x.onDeck, ...x.inTheHole, ...x.upcoming].some(m => m.id === w.matchId));
-                const slot = b ? (b.now.some(m => m.id === w.matchId) ? 'fighting now' : b.onDeck.some(m => m.id === w.matchId) ? 'on deck' : b.inTheHole.some(m => m.id === w.matchId) ? 'in the hole' : 'coming up') : 'coming up';
-                return <li key={w.fighterId}><b>{w.name}</b> <span className="src">{slot}{b ? `, ${b.name}` : ''}</span><br /><span>{w.reasons.join(' · ') || 'Not ready'}</span></li>;
-              })}
+              {soonestWarnings(snap.fightWarnings, boards).map(({ w, slot, field }) => (
+                <li key={w.fighterId}><b>{w.name}</b> <span className="src">{slot}{field ? `, ${field}` : ''}</span><br /><span>{w.reasons.join(' · ') || 'Not ready'}</span></li>
+              ))}
             </ul>
           </div>
         )}
@@ -238,6 +236,21 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
       </nav>
     </section>
   );
+}
+
+/** One line per fighter, at their most urgent fight (fighting now before on deck before in the hole before coming up). */
+function soonestWarnings(warnings: readonly FightWarning[], boards: readonly import('../lib/eventDay').FieldBoard[]) {
+  const SLOTS = ['fighting now', 'on deck', 'in the hole', 'coming up'] as const;
+  const where = (id: string) => {
+    for (const b of boards) {
+      const at = b.now.some(m => m.id === id) ? 0 : b.onDeck.some(m => m.id === id) ? 1 : b.inTheHole.some(m => m.id === id) ? 2 : b.upcoming.some(m => m.id === id) || b.waiting.some(x => x.match.id === id) ? 3 : -1;
+      if (at >= 0) return { rank: at, field: b.name };
+    }
+    return { rank: 3, field: null as string | null };
+  };
+  const best = new Map<string, { w: FightWarning; rank: number; field: string | null }>();
+  for (const w of warnings) { const p = where(w.matchId); const cur = best.get(w.fighterId); if (!cur || p.rank < cur.rank) best.set(w.fighterId, { w, ...p }); }
+  return [...best.values()].sort((a, b) => a.rank - b.rank || a.w.name.localeCompare(b.w.name)).map(x => ({ w: x.w, slot: SLOTS[x.rank], field: x.field }));
 }
 
 function Section({ id, title, count, countLabel, open, children }: { id: string; title: string; count?: number; countLabel?: string; open?: boolean; children: ReactNode }) {
