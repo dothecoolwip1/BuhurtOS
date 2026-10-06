@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { appliesLabel, RuleRow, SourceNote, VersionChip } from '../../components/rules/RuleBits';
 import { defaultVersion, isHistorical, officialLink, type RuleEntry, type RuleVersion } from '../../data/rules';
+import { useAuth } from '../../auth/AuthContext';
+import { usePlatformRole } from '../../auth/usePlatformRole';
 import { searchRules } from '../../lib/rules/search';
 import { useRules } from '../../lib/rules/useRules';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
@@ -14,6 +16,8 @@ export function RuleDocPage() {
   const { slug = '' } = useParams();
   const [params, setParams] = useSearchParams();
   const { index, loading, error, reload } = useRules();
+  const { session } = useAuth();
+  const { isOwner, loading: roleLoading } = usePlatformRole();
   const [q, setQ] = useState('');
   const doc = index?.docBySlug.get(slug) ?? null;
   useDocumentTitle(doc ? doc.name : 'Rules');
@@ -64,11 +68,24 @@ export function RuleDocPage() {
       {version && version.status === 'withdrawn' && <p className="rl-banner">Withdrawn: {version.withdrawn_reason}</p>}
       {version && !isHistorical(version) && (version.status === 'draft' || version.status === 'in_review') && <p className="rl-banner">Not published: visible to the platform owner only, for review.</p>}
 
-      {!version && (
+      {!version && !(session && roleLoading) && (
         <div className="panel rule rl-notext">
-          <h3>{earlierList.length ? 'The current text is not in BuhurtOS yet' : 'The text is not in BuhurtOS yet'}</h3>
-          {earlierList.length > 0 && <p><b>Only earlier editions are here</b> (listed above): they are not the rules in force.</p>}
-          <p>Read this document on {doc.governing_body ?? 'the governing body'}'s site. BuhurtOS will show its rules here, with their numbers and pages, once the official file has been imported and checked.</p>
+          {/* The platform owner reads versions in review too, so for the owner "nothing here" means nothing was imported. Anyone else cannot tell an
+              unimported document from one waiting for review (and must not be told), so they read "not published", never "not imported". */}
+          {isOwner ? (
+            <>
+              <h3>{earlierList.length ? 'The current text is not in BuhurtOS yet' : 'The text is not in BuhurtOS yet'}</h3>
+              {earlierList.length > 0 && <p><b>Only earlier editions are here</b> (listed above): they are not the rules in force.</p>}
+              <p>Read this document on {doc.governing_body ?? 'the governing body'}'s site. Its official file has not been imported into BuhurtOS.</p>
+            </>
+          ) : (
+            <>
+              <h3>{earlierList.length ? 'The current text is not published in BuhurtOS yet' : 'The text is not published in BuhurtOS yet'}</h3>
+              {earlierList.length > 0 && <p><b>Only earlier editions are here</b> (listed above): they are not the rules in force.</p>}
+              <p>Read this document on {doc.governing_body ?? 'the governing body'}'s site. BuhurtOS shows its rules here, with their numbers and pages, once the official text has been imported, checked and published.</p>
+              {session && <p className="src">Texts still waiting for review are shown only to the platform owner. You are signed in as {session.user.email ?? 'another account'}.</p>}
+            </>
+          )}
           {doc.previously_cited_as && <p className="src">Earlier BuhurtOS summaries quote it as “{doc.previously_cited_as}”; that may not be the version linked today.</p>}
         </div>
       )}

@@ -139,6 +139,8 @@ try {
   await own.goto(BASE + '/platform/rules');
   await waitText(own, 'Waiting to be published', 30000);
   await waitFor(own, () => document.querySelectorAll('.dd-list li').length > 10, null, 30000);
+  // the list waiting to be published and the earlier editions load separately: wait for this one's own count
+  await waitFor(own, () => Number(document.querySelector('#pr-pub .mono')?.textContent) > 0, null, 30000);
   check('15. the owner sees the 31 versions still in review, each with its reconciliation', (await own.locator('#pr-pub .mono').innerText()).trim() === '31' && await has(own, 'of the text accounted for'), (await own.locator('#pr-pub').innerText()));
   const gauntlets = own.locator('.dd-list li', { hasText: 'Gauntlets' });
   await gauntlets.getByRole('button', { name: 'Publish' }).click();

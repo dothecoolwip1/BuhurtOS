@@ -59,7 +59,7 @@ export function RulesSheet({ onClose }: { onClose: () => void }) {
           <>
             <SearchBox q={q} setQ={setQ} label="Search the rules" />
             {loading && <p className="src" role="status">Loading the rules…</p>}
-            {!loading && entries.length === 0 && <p className="src" role="status">The official rule text is not in BuhurtOS yet. Use the paper rulebook, or <Link className="lnk" to="/rules" target="_blank" rel="noopener">open Rules</Link> for the summaries and the official documents.</p>}
+            {!loading && entries.length === 0 && <p className="src" role="status">The official rule text is not published in BuhurtOS yet. Use the paper rulebook, or <Link className="lnk" to="/rules" target="_blank" rel="noopener">open Rules</Link> for the summaries and the official documents.</p>}
             {res && (res.hits.length ? (
               <div className="rl-list" aria-live="polite">
                 {res.partial && <p className="src">Closest matches:</p>}

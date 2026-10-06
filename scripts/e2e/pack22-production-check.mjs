@@ -71,15 +71,15 @@ for (const [view, opts] of VIEWS) {
 
   // direct addresses of an earlier edition and of one of its rules: never shown as current, never readable while not published
   await page.goto(`${BASE}/rules/doc/${DOC}?v=${HIST_V}`, { waitUntil: 'domcontentloaded' });
-  await until(async () => /not in BuhurtOS yet|Document not found/i.test(await text(page)), 40000);
+  await until(async () => /not (published )?in BuhurtOS yet|Document not found/i.test(await text(page)), 40000);
   const doc = await text(page);
   await shot(page, `${view}-doc-hist`);
   check(`[${view}] earlier-edition address (?v=) opens the document page without any version: nothing called current, no text`,
-    /Duel Regulations/i.test(doc) && /not in BuhurtOS yet/i.test(doc) && !/\b26\.1\b/.test(doc) && !/Earlier edition/i.test(doc) && (await page.locator('.rl-banner').count()) === 0
+    /Duel Regulations/i.test(doc) && /not published in BuhurtOS yet/i.test(doc) && !/not been imported|once the official file has been imported/i.test(doc) && !/\b26\.1\b/.test(doc) && !/Earlier edition/i.test(doc) && (await page.locator('.rl-banner').count()) === 0
     && (await page.locator('.rl-meta dt', { hasText: /Version/i }).count()) === 0, doc.slice(0, 700));
   await page.goto(`${BASE}/rules/doc/${DOC}?v=${CUR_V}`, { waitUntil: 'domcontentloaded' });
-  await until(async () => /not in BuhurtOS yet|Document not found/i.test(await text(page)), 40000);
-  check(`[${view}] current-release address (?v=) shows no version and no text while it is in review`, /not in BuhurtOS yet/i.test(await text(page)) && (await page.locator('.rl-meta dt', { hasText: /Version/i }).count()) === 0
+  await until(async () => /not (published )?in BuhurtOS yet|Document not found/i.test(await text(page)), 40000);
+  check(`[${view}] current-release address (?v=) shows no version and no text while it is in review ("not published yet", never "not imported")`, /not published in BuhurtOS yet/i.test(await text(page)) && (await page.locator('.rl-meta dt', { hasText: /Version/i }).count()) === 0
     && (await page.locator('.rl-banner').count()) === 0, (await text(page)).slice(0, 500));
   await page.goto(`${BASE}/rules/r/${HIST_P}`, { waitUntil: 'domcontentloaded' });
   await until(async () => /Rule not found/i.test(await text(page)), 40000);
