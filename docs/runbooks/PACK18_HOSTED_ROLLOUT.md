@@ -1,6 +1,6 @@
 # Pack 18 hosted rollout
 
-Pack 18 = email + password sign-in and the Organizer Command Centre. **Performed 2026-10-06**: §2 applied and checked (see STATUS, Pack 18), app deployed by main run #113; §1 URL settings and leaked password protection confirmed by the owner; §3 is the owner's production check.
+Pack 18 = email + password sign-in and the Organizer Command Centre. **Performed 2026-10-06**: §2 applied and checked (see STATUS, Pack 18), app deployed by main run #113; §1 URL settings confirmed by the owner; Leaked Password Protection is not available on the current Supabase plan (known limitation, not a blocker; owner decision 2026-10-06); §3 is the owner's production check.
 
 ## 1. Supabase Auth settings (dashboard, project `mvbxlebznlgroptwwdsm`) — check before deploying the app
 | Setting | Where | Needed |
@@ -13,6 +13,7 @@ Pack 18 = email + password sign-in and the Organizer Command Centre. **Performed
 | Redirect URLs | same page | Must allow the site's pages for the email links: `<site>/**` (sign-up confirmation returns to the page the person was on; reset returns to `<site>/reset-password`). Google sign-in already relies on this |
 | Email templates | Authentication › Emails | "Reset password" and "Confirm signup" default templates are fine (they use `{{ .ConfirmationURL }}`). The magic-link template must keep `{{ .Token }}` for the existing 6-digit codes. "Reauthentication" uses `{{ .Token }}` (default) |
 | SMTP | Authentication › SMTP | The same sender as the email codes; Supabase's per-address limit (default 60 s) applies to reset and confirmation emails |
+| Leaked password protection | Authentication › Policies | Not available on the project's current Supabase plan, so not enabled. Known limitation, not a release blocker (owner, 2026-10-06). Enable it if the plan changes |
 
 ## 2. Database
 1. Apply `supabase/migrations/20261012000100_pack18_command_centre.sql` through the established `apply_migration` process (additive: two
