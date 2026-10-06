@@ -573,3 +573,20 @@ Not verified: the real domains (buhurtos.ca, the GitHub Pages club site): sign-i
 | Officers on hosted | Treasurer = dothecoolwip@gmail.com (assigned through `assign_team_officer` as the platform owner, audited). President / Secretary: no accounts exist yet |
 | Automated tests | `club_agm_gate.sql` **78 checks** + `club_membership_gate.sql` 101; `run_all.sh` DATABASE GATE PASSED; Vitest 965; typecheck |
 | Real-auth browser scenario | `scripts/e2e/club-live.sh` **61/61** (real Supabase Auth with default link-only emails; both sites on ONE origin like production; 390x844 + 1280x900) |
+
+## Pack 22: rules, regulations, penalties and discipline (2026-10-06): IMPLEMENTED ON BRANCH, OFFICIAL RULE TEXT NOT IMPORTED, NOT MERGED, NOT DEPLOYED
+
+Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers membership) was merged in at `9d97be4`. Full record:
+`docs/claude-packs/PACK_22_RULES_DISCIPLINE.md`. Update procedure: `rules-library/README.md`. Hosted steps (not performed):
+`docs/runbooks/PACK22_HOSTED_ROLLOUT.md`.
+
+| Level | Status |
+| --- | --- |
+| Official source | **Documents NOT readable here** (network policy denies buhurtinternational.com and Google Drive). Inventory verified from the owner's saved copy of the rules page: **42 documents + 3 archive folders**, 4 committees (8/6/5/23). **No rule text imported; nothing typed from memory** |
+| Implemented in repository | rules library schema (versions, provisions, corrections, conflicts, immutability), reproducible importer with reconciliation, Buhurt International document directory, `/rules` search / document / rule pages (summaries kept and labelled), Lyst Rules sheet and rule citations on marshal's calls (outbox), staff discipline log, competition ↔ ruleset version link |
+| Discipline model | Pack 13's in-bout records unchanged; rules can be cited on them (append-only). No Buhurt International sanction vocabulary, suspensions or eligibility blocks were invented: they wait for the official documents |
+| Migrations | `20261015000100_pack22_rules_library.sql`, `20261015000200_pack22_bi_document_inventory.sql` (additive) |
+| Applied to hosted Supabase | **NO** |
+| Automated tests | typecheck clean; Vitest 1010/1010; build OK; `run_all.sh` **DATABASE GATE PASSED** (`pack22_gate.sql` 124 checks; fingerprint 2238 lines) on the merged tree |
+| Browser (real Chromium, real Postgres + PostgREST) | `scripts/e2e/pack22-live.sh` **71/71** (390x844 + desktop keyboard). Regression: field-pack03, sw-update, pack07-ux, pack08, pack12-app, pack13-live, pack16-live all pass |
+| PR / merged / deployed / production verified | no / no / no / no |
