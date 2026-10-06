@@ -586,3 +586,18 @@ Not verified: the real domains (buhurtos.ca, the GitHub Pages club site): sign-i
 | Hosted DB / deployment | not touched / not deployed |
 | Critical findings | no day boundary (Sunday fights called Saturday); no stable fight number; running order not durable (one move freezes the line, holds erased by Event day re-plan, filled bracket fights go to the end); `build_schedule('replace')` deletes an ACTIVE fight and its live score events; organizer table-API DELETE/PATCH on matches unaudited; secretary/head marshal have no running-order authority while any scorer can call any fight; no print view; public Now-and-next lists In the hole before On deck |
 | Recommended next pack | 24A0 Match integrity guards (new, small, server only), then 24A3 after the owner decides authored order vs live planner |
+
+## Pack 24A0: match safety guards (2026-10-06) — IMPLEMENTED ON BRANCH, LOCAL ONLY
+
+| Level | Status |
+| --- | --- |
+| Report | `docs/claude-packs/PACK_24A0_MATCH_SAFETY_GUARDS.md` (findings verified first, protected-history definition, grant classification, role matrix, risks, deferrals) |
+| Implemented in repository | draw rebuild refuses protected history (`private.match_history_reason`) and validates bracket shape; organizer's raw INSERT / DELETE / structural UPDATE on `matches` removed (only `scheduled_at`, `field`, `duration_minutes` remain, audited); `set_match_queue` limited to called fights for scoring staff, audited; `set_match_hold` + durable deliberate holds; public Now and Next order fixed; Run tab explains a blocked rebuild |
+| Migration created | `20261015000100_pack24a0_match_safety_guards.sql` (additive; schema fingerprint updated) |
+| Applied to hosted Supabase | **NO**. A read-only query showed hosted `matches` still has the pre-migration grants and policies and no `hold_manual` column, so the Pack 23R hazards are live there until it is applied |
+| Deployed | **NO** |
+| Automated tests | `pack24a0_gate.sql` **128 checks** (68 of 125 fail against the unmodified schema); full database gate **PASSED, 39/39**; Vitest 87 files / **1045** tests; typecheck; build |
+| Browser (local stack, real Chromium) | `scripts/e2e/pack24a0-live.sh` **41/41**: real client draws accepted, hold survives Event day (1280 and 768), public order NOW → ON DECK → IN THE HOLE (390 and 1280), blocked rebuild messages, scorekeeper field screen (768), Set time audited, raw API writes 403 |
+| Touched outside the pack's own files | six older gates and the simulation updated to the new rules; NACL seed generator + 17 regenerated seed files (matches laid out as the loader) |
+| Not verified | real Supabase Auth / realtime; Event day and Run at phone size; no hold UI exists to verify |
+| Remaining risks | Event day still saves its plan on open; no hold or bracket-fight-removal screen; `delete_event` of drafts/synthetic events ignores match history; hosted not migrated |
