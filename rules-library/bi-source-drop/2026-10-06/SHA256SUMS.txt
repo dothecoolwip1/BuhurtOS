@@ -1,3 +1,25 @@
+6d2eeed99605990d3b0a0d0a2ed2eada69235c38f5326f6e600e1cd95f730876  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Armors and weapons Aesthetics and Decoration V2024.12.pdf
+dcc5ba335e3b1a4266ba6c97cd4fb97af39f517136dc1f7aaff295b0d9c3a9de  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Aventails.docx.pdf
+7266ed5298ae1a9138f6933c0bf71052af09db16f5f82a4f0c7d259f569d2c4e  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Belt Flag V2024.12.docx.pdf
+45bda44ac3e67d68e69364b2028f0581c0e46f97dbcba1346a0767e4fb663a10  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Eyebars V2024.12.docx.pdf
+498c79e15c93619fd51fc812afccadbc777c73b43283d2065c1e87f9b40a59c4  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Greaves.pdf
+9264f54892f263c5c3824c4e3868695d8d6d0f02bb71c31b27e5a83edf7d87d4  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Helmet - Great Helms 2024.12.docx.pdf
+3fd1e811a7a114279be6116094c99ead0f647cd38f82e164f9cc25d7ea26dcb5  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Infraction classification and application.pdf
+e296e2023efc8aa32339ecd44a0f72adbf92cc8817b27d18ee5d333a01f4a852  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Infractions Classification and Application.pdf
+1b6eb01a6244c99ac28227a15dbc4a9848598cf79dd563511d99f51fa2ced30b  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Klappvisors.pdf
+09824e8d5387146c5b4b87506fea3e33dadedd3d7d47970c396018f1125fe0ad  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Nasal and Breteche.pdf
+33574884f8962d1f396bcdc437e63667cc6ce14557915838ab1bdd75f83b8c99  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Neck Protection.pdf
+691f1b945d0c2abed9d8ff593cb33e82a5276e4b8326a691516ae117b50847c2  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Perforated Visor Bascinets.pdf
+19e7d8866c748cf66bccb738191f72df4d01c632ecc9f70f98450736dc762c5d  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Sabatons V2024.12.pdf
+a38d3d82e956cbe5f92f98d688d91dd1a6ebf236f2d14fafe455ca666c43afe9  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields and Bucklers(1).pdf
+5211df463ccf6c3f90a98e6304438868f47a0f3cbb02d01fbf985dea4b963a16  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields and Bucklers.pdf
+c55557f38036e9a6e6914f88f44bc0f779272ada71cb290c6c7dd1de5fb5e3cb  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields_and_Bucklers V26.2.pdf
+daa8d22872dc427dc359e69675e4520d183054225cb0ffff2d1ef58da90eb5e4  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Side-hinged visored Bascinets V2024.12.pdf
+a83827f601b7a06bdf23d75db3c1bdc0c806ab51dd7cc1d743357432a546ab2f  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Side-hinged visored Bascinets.pdf
+9873607afbf3713917d5db4d159eb0dede126d23503147240525533314d590b4  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Tabards V2024.12.pdf
+54eddb12c8eb3af317a05c78e0a8cf6e4eec8b4484836de7f4deba5a9d8df3d3  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Technical Requirements for Weapons.pdf
+07e19e7dca46ccb66961d444a00954a3cc0c5ce0f10c706ab853ec59f2eb213e  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Textiles and Leather V2024.12.pdf
+fc959c05280842b660fe1e96ec792b23eb1893ef7b8a83731c8fd6921bdb4032  rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Wolf Ribs.pdf
 cd98ad0a074984a2ec84d4b8bf85cd4104b02ca916d57563e35d6f58eae2e089  rules-library/bi-source-drop/2026-10-06/Authenticity/Armors and Weapons Aesthetics and Decorations.pdf
 32b032c3f8e9e7a80a22d8c755514f7bc1f2fe91a5b65fc877361eafe297655d  rules-library/bi-source-drop/2026-10-06/Authenticity/Aventails.pdf
 6a3d140a13e1180d57a5209374a1c98856a8603a19c45391ba7d22f282650a56  rules-library/bi-source-drop/2026-10-06/Authenticity/Barbutes.pdf
@@ -29,12 +51,32 @@ dfd835867d0b9fb82efaecaae675aa1234e03ad40e6543df53d80580d5689fdf  rules-library/
 bceb0ba813475b67d42bd323cd0f6301c74b5fd569853490d3a33c8b270e4a67  rules-library/bi-source-drop/2026-10-06/Executive/Judiciary Committee V2024.06.pdf
 fcc8b25fe0aa7e76f66a7db2145c8571bfe3eef36391b2846213d38055b4c068  rules-library/bi-source-drop/2026-10-06/Executive/NO Agreement V26.1.pdf
 f149e0e2a7f80b77bd9d993f6a60f8e0026f722415c742f4389076f359d11965  rules-library/bi-source-drop/2026-10-06/Executive/Rules Update Policy V2024.06.pdf
+de16344f2507084e6e07216344689308e5d57a796221e047c81e0c794aab4b1a  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Buhurt Rules 2024.12.13.pdf
+418c849783cf388b07fffef4ae5acbc7aa65eccceff85fd9f5069a789005c1ed  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Buhurt Rules 2026.1.1.pdf
+bdd993c3bc48a612e55570b627f16db8db4ce84a05fb2c1be99b6ad0e8c2049e  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Duels rules 2025.03.pdf
+02e4ae60375375488be7ea792f60eae3c7a6cc5fd690862e314de2cc8da50287  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Duels rules 26.1.pdf
+abc8fef7cafc65dfb62a3d71e1de89bfb2fcf1dc7577d5c1d4b388d3390e41d5  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Outrance Rules 2025.3.pdf
+a5904a25fc5c9aaf06f38e07dfdf08370f4bfcd169ebed05d1698462263739d5  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Outrance Rules 26.1.pdf
+8876ec33e03db56eade79eb2f671845accea009f242216591ea37c74dbfa0e65  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart - Shields 2025.3.pdf
+22927e949dfc460d413de01219977c116dd586b6540c156e8d088788fab508d5  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart 2024.12.13.pdf
+44b9ec5e2e644c3c957d4d7fc3b61ede9b35cd28608e99f67ab9590b6ed1726f  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart 26.1.pdf
+6342d58e1f352c97104dcfaa3a8af740720efd35c7e3a5780449d2f2e7b5cd73  rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart V26.2.pdf
 b019f927ac23bdc57acf58e4262e6c48f450a3689c3feea4b2988f2022ec245d  rules-library/bi-source-drop/2026-10-06/Marshal/Buhurt Rules 26.4.1.pdf
 f20867141e8adf6c897cff6f1630d0cdf56fbfc6ad387d6c475a166854d6bd26  rules-library/bi-source-drop/2026-10-06/Marshal/Duels rules 26.4.pdf
 163ae6660527c5e3d9a7de5bfbc7ceb9a3a9ea3608b918426577037790e464b6  rules-library/bi-source-drop/2026-10-06/Marshal/Marshal Accreditation.pdf
 d41222754963fc7ea49626e84fd4238fe82236826fc1faadcbd9be5e4d514ee6  rules-library/bi-source-drop/2026-10-06/Marshal/Marshal Jobs Titles Uniforms and Accreditation.pdf
 a55222b0f7dacc00ddced85d23ebcb85aadbd134007630ac6a1a422cfb8fff7b  rules-library/bi-source-drop/2026-10-06/Marshal/Outrance Rules and Regulations 26.4.pdf
 392d7ecf41f75491e48341140f0718fdf9cb3d23f2f7120dc985e55cdb60edb2  rules-library/bi-source-drop/2026-10-06/Marshal/Weapons Shield Chart V26.2.1.pdf
+253663c21e363c1b1fe9cb3fa7122fcee776d1c94544ad9afef0453944e229f2  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 2025.03.pdf
+d2c9760c257657120df7d3222ce20a03f1831f6b7d5b9b2d4cf392d7cb02a3c3  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 26.1(1).pdf
+d2c9760c257657120df7d3222ce20a03f1831f6b7d5b9b2d4cf392d7cb02a3c3  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 26.1.pdf
+ec7ad0283f6cec6852db08892a8026ebb8c53f66812635cf5abe0c0dd8b8f9ca  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 2025.03.pdf
+ee8383f77f948f045406d53b0a547df2314b886b05aa9a130691dde4fd091f9f  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 26.1(1).pdf
+ee8383f77f948f045406d53b0a547df2314b886b05aa9a130691dde4fd091f9f  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 26.1.pdf
+e0089cb358f1807fe91eda47c63b8b18049806f2daff3b4a9d4150064af373b8  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations V2024.12(1).pdf
+e0089cb358f1807fe91eda47c63b8b18049806f2daff3b4a9d4150064af373b8  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations V2024.12.pdf
+ec7ad0283f6cec6852db08892a8026ebb8c53f66812635cf5abe0c0dd8b8f9ca  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations.pdf
+1dcc399d8e0b661a800c97a79284885f6ee29cde4c5181b49ed6abe8319b3c71  rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Tournament Structure V2024.06.pdf
 24f44a49019551bb29614df604daeeced70292ac05942f85808f1c12bc281adf  rules-library/bi-source-drop/2026-10-06/Tournament/Buhurt Regulations 26.4.pdf
 16078b6f655167ed3cf3923c8cbc004a8585e6548fbd1e477c806d83c39f1392  rules-library/bi-source-drop/2026-10-06/Tournament/Duels Regulations 26.4.pdf
 b88d1ee4d4a0a500aea10063433b9f1fdc92374ee623a9222f3dca744746d33c  rules-library/bi-source-drop/2026-10-06/Tournament/League Structure 26.1.pdf
