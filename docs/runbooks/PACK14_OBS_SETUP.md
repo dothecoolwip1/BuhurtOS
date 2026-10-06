@@ -38,3 +38,5 @@ Stand by · Next fight coming up · Now on the field · Get ready (clock armed) 
 - [ ] A sponsor logo with transparency looks right on the white sponsor strip; the longest real fighter and team names fit.
 - [ ] The admin Broadcast screen is usable one-handed on a phone and tablet.
 - [ ] Two overlays (Field 1, Field 2) in one OBS run side by side without interfering.
+
+**Pack 18.1 addition:** the Companion (`tools/obs-controller`) is the automated way to switch these scenes and handle Camera Off and the music; its setup is `PACK181_EVENT_LAPTOP.md`.

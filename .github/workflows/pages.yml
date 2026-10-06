@@ -33,7 +33,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund --prefix tools/obs-controller
       - run: npm run typecheck
+      - run: npx tsc -p tools/obs-controller/tsconfig.json
+      - run: npm run build --prefix tools/obs-controller
       - run: npm test
       - run: npm run build
         env:
