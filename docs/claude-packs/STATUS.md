@@ -645,3 +645,18 @@ The software is complete. Nothing in the two lists after COMPLETE is a Pack 18.1
 - Delete the banned test organizer `pack181-hosted-test@example.test` when convenient (Authentication → Users)
 - Remove `private.p181_live` when convenient (Table Editor)
 - Leave the three synthetic draft events `pack181-hosted-test-a/b/c`: their append-only camera log and audit history prevent deletion, by design
+
+## Reavers AGM concerns and executive nominations (2026-10-06)
+
+| Item | State |
+| --- | --- |
+| Code | Migration `20261017000100_club_agm_topics_nominations.sql`, gate `club_agm_topics_gate.sql` (136 checks, in `run_all.sh`), local browser suite section F (`club-live.sh` 95/95), manual production suite `reavers-production-agm-extras-smoke.mjs` (workflow input `suite = agm-extras`). Club website: BuhurtOS PR #44 (database, tests, docs), Red-deer-reavers PR #2 (screens). No BuhurtOS UI changes. |
+| Merged | BuhurtOS #44 and Red-deer-reavers #2, both merged to `main`. CI on #44 green (typecheck/unit/build, database gate, browser tests, release policy). |
+| Hosted database | **APPLIED** (`club_agm_topics_nominations`). All 14 new function bodies compared with the repository: identical md5. `anon` cannot execute any; private helpers not executable by any app role; the 5 new tables have RLS on and no grants. Security advisor: only the two by-design findings (RLS on, no policy; checked functions callable by signed-in users). |
+| Frontend | Club website Pages build succeeded; the live files were read back by the production run (members.html, config, member-portal.js with the new code, all HTTP 200). BuhurtOS was not changed. |
+| Production verification | **Run 37497774762: 39/39 on the real club website and live Supabase** with three TEST accounts (two voting, one pending): topic submit / edit / withdraw, another member refused, self-nomination for all three offices, nominate another member, nominator cannot answer, accept, decline, duplicate nomination makes one candidacy, pending member cannot nominate, officers unchanged, existing RSVP and proxy still work, 390px phone, no page errors. |
+| Executive screens | **NOT driven in a browser on production** (no executive account was used). Checked on the live database as the real Treasurer inside a rolled-back transaction (topic list, set Added to Agenda / Addressed, nomination dashboard with current officers and self / member nominations; a regular member refused all three) and in the local browser suite (section F, desktop and phone). |
+| An unexplained failure | The first production attempt (run 37496736100, ~11 minutes after the site deploy) failed before any check: the live members page did not initialise (`window.BUHURTOS` undefined, sign-in form never shown). An identical rerun minutes later loaded normally (config HTTP 200, defines `window.BUHURTOS`). The cause was not identified (suspected stale or partial CDN response right after a deploy; not proven). If a member ever sees a blank members page, reload and tell the owner. |
+| Operator steps in the test | The test mailboxes are not readable, so an operator confirmed the three test addresses and approved the two voting test memberships by SQL (status note + audit rows). |
+| Cleanup | Test candidacies withdrawn (history + audit rows) and the three test memberships marked Removed with a note; nothing deleted. No live test candidacy or topic remains. Real data untouched (officers: only the Treasurer is assigned; one real pending application exists). |
+| Not done | Video link is not set; President and Secretary not assigned; a real executive has not yet used the Concerns / Nominations tabs in a browser. |

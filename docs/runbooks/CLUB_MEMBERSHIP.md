@@ -282,6 +282,6 @@ Secretary, Treasurer) change topic status; any current executive reads. All five
 
 Tests: `supabase/tests/club_agm_topics_gate.sql` (136 checks, in `run_all.sh`; includes the rules above, the officer-unchanged check, direct
 table access refused and records that cannot be removed or rewritten); `scripts/e2e/club-live.sh` (95 checks, section F drives the screens at 390x844
-with real tokens); `scripts/e2e/reavers-production-agm-extras-smoke.mjs` (39 checks; manual workflow `reavers-production-smoke.yml` with
+with real tokens); `scripts/e2e/reavers-production-agm-extras-smoke.mjs` (39 checks, passed on production 2026-10-06; manual workflow `reavers-production-smoke.yml` with
 `suite = agm-extras`; it waits for an operator to confirm three test addresses and approve two test memberships, then drives the LIVE site).
 After a production run the operator withdraws the test topics and nominations and marks the test memberships Removed (nothing is deleted).

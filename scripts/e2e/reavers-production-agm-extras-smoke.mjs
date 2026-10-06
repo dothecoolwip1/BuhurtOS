@@ -62,6 +62,9 @@ async function open(kind = 'phone') {
   p.errors = [];
   p.on('pageerror', e => p.errors.push(String(e).slice(0, 300)));
   p.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|40[0-9]|42501|AuthApiError|posthog|\[BuhurtOS\]|WebSocket|realtime/i.test(m.text())) p.errors.push(m.text().slice(0, 300)); });
+  p.on('response', r => { if (r.status() >= 400) console.log(`HTTP ${r.status()}  ${r.url().slice(0, 160)}`); });
+  p.on('requestfailed', r => console.log(`REQUEST FAILED  ${r.url().slice(0, 160)}  ${r.failure()?.errorText ?? ''}`));
+  p.on('pageerror', e => console.log(`PAGE ERROR  ${String(e).slice(0, 200)}`));
   pages.push(p);
   return p;
 }
@@ -92,6 +95,13 @@ async function enter(w, kind = 'phone') {
 const openAgm = async (p) => { await tab(p, '2026 AGM'); await until(async () => (await p.locator('[data-testid=agm-nominations]').count()) > 0, 30000); };
 
 try {
+  // ================================================================ 00. what the live club website is serving right now
+  const base = SITE.replace(/members\.html$/, '');
+  for (const f of ['members.html', 'assets/js/buhurtos-config.js', 'assets/js/member-portal.js', 'assets/js/vendor/supabase-js-2.117.2.umd.js']) {
+    const r = await fetch(base + f, { cache: 'no-store' }).catch(e => ({ status: 0, text: async () => String(e) }));
+    const body = await r.text();
+    note(`live ${f}: HTTP ${r.status}, ${body.length} bytes${f.endsWith('member-portal.js') ? `, has the new AGM concern/nomination code: ${body.includes('club_agm_member_view')}` : ''}${f.endsWith('config.js') ? `, defines window.BUHURTOS: ${body.includes('window.BUHURTOS')}` : ''}`);
+  }
   // ================================================================ 0. three TEST accounts, confirmed by the operator
   const su = [await signUp(X), await signUp(Y), await signUp(Z)];
   note(`sign-up responses: ${su.join(', ')}`);
