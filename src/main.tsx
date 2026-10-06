@@ -11,6 +11,7 @@ import './styles/app.css';
 import './styles/arena.css';
 import './styles/lyst.css';
 import './styles/broadcast.css';
+import './styles/rules.css';
 
 initAnalytics();
 

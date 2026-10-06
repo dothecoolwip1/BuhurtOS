@@ -17,6 +17,8 @@ import { MarshalPage } from './pages/MarshalPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RulesPage } from './pages/RulesPage';
+import { RuleDocPage } from './pages/rules/RuleDocPage';
+import { RulePage } from './pages/rules/RulePage';
 import { RegisterPage } from './registration/RegisterPage';
 import { ManagePage } from './pages/ManagePage';
 import { AccountPage } from './auth/AccountPage';
@@ -37,6 +39,7 @@ import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
 import { CommandCentrePage } from './pages/CommandCentrePage';
+import { DisciplineLogPage } from './pages/DisciplineLogPage';
 
 export function App() {
   const { pathname, search } = useLocation();
@@ -75,6 +78,7 @@ export function App() {
         <Route path="events/:eventId/manage" element={<ManagePage />} />
         <Route path="events/:eventId/checkin" element={<CheckinDeskPage />} />
         <Route path="events/:eventId/command" element={<CommandCentrePage />} />
+        <Route path="events/:eventId/discipline" element={<DisciplineLogPage />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="organizations/:slug" element={<OrganizationPage />} />
         <Route path="platform" element={<PlatformHomePage />} />
@@ -93,6 +97,8 @@ export function App() {
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />
         <Route path="rules" element={<RulesPage />} />
+        <Route path="rules/doc/:slug" element={<RuleDocPage />} />
+        <Route path="rules/r/:id" element={<RulePage />} />
         <Route path="privacy" element={<PrivacyPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

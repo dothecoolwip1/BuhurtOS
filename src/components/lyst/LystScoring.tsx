@@ -7,6 +7,8 @@ import { DisciplineSheet, type DisciplineDraft } from './DisciplineSheet';
 import { CountersPanel } from './CountersPanel';
 import { LogPanel } from './LogPanel';
 import { LystSettingsDialog } from './LystSettingsDialog';
+import { RulesSheet } from '../rules/RulesSheet';
+import { fetchCitations } from '../../data/rules';
 import { assignSeat, carrySeats, createJoinCode, endSeat, finalizeFromLyst, openLyst, timerCommand } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
@@ -24,7 +26,7 @@ import { presetOf, remainingMs, timerFor } from '../../lib/lyst/timer';
 import { useLystState, useNow } from '../../lib/lyst/useLystState';
 
 type Phase = 'scoring' | 'confirming' | 'official' | 'pending' | 'review';
-type Sheet = null | 'discipline' | 'counters' | 'log' | 'settings';
+type Sheet = null | 'discipline' | 'counters' | 'log' | 'settings' | 'rules';
 const CALLED_BY_KEY = 'bos-lyst-called-by';
 const readCalledBy = () => { try { return localStorage.getItem(CALLED_BY_KEY) ?? ''; } catch { return ''; } };
 
@@ -144,6 +146,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
     try {
       try { localStorage.setItem(CALLED_BY_KEY, d.calledBy ?? ''); setCalledBy(d.calledBy ?? ''); } catch { /* ignore */ }
       const first = await record('lyst.discipline', match.id, { matchId: match.id, round, side: d.side, kind: d.kind, label: d.label, amount: d.amount, reason: d.reason, calledBy: d.calledBy, related: null });
+      if (first && d.ruleId) await record('lyst.cite_rule', match.id, { disciplineId: first, provisionId: d.ruleId });
       if (first && d.kind === 'card' && d.alsoDeduct > 0) {
         await record('lyst.discipline', match.id, { matchId: match.id, round, side: d.side, kind: 'deduction', label: null, amount: d.alsoDeduct, reason: d.reason ?? 'With the card', calledBy: d.calledBy, related: first });
       }
@@ -151,6 +154,25 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       setSheet(null);
       await send();
     } catch (e) { setError(friendlyError(e, 'Could not record that. Nothing was lost; try again.')); } finally { setBusy(false); }
+  };
+
+  /* ---------------- Pack 22: the rule a call was for ---------------- */
+  const disciplineKey = (st?.discipline ?? []).map(d => d.id).join(',');
+  const [citations, setCitations] = useState<Map<string, string | null>>(new Map());
+  const [citeTick, setCiteTick] = useState(0);
+  useEffect(() => {
+    let live = true;
+    if (!disciplineKey) { setCitations(new Map()); return; }
+    fetchCitations(disciplineKey.split(',')).then(m => { if (live) setCitations(m); }).catch(() => { /* offline: keep what is shown */ });
+    return () => { live = false; };
+  }, [disciplineKey, citeTick, sheet === 'log']);
+  const cite = async (disciplineId: string, provisionId: string | null) => {
+    setBusy(true); setError(null);
+    try {
+      await record('lyst.cite_rule', match.id, { disciplineId, provisionId });
+      setCitations(m => new Map(m).set(disciplineId, provisionId));
+      await send(); setCiteTick(n => n + 1);
+    } catch (e) { setError(friendlyError(e)); } finally { setBusy(false); }
   };
 
   const voidIt = async (id: string, reason: string) => {
@@ -388,6 +410,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('discipline')} disabled={!st || !cur}>Marshal's call{discipline.length ? ` · ${activeDiscipline(discipline).length}` : ''}</button>
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('counters')} disabled={!st}>Counters{st && st.seats.length ? ` · ${st.seats.length}` : ''}{st && st.requests.length ? ` (+${st.requests.length})` : ''}</button>
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('log')} disabled={!st}>Record</button>
+        <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('rules')}>Rules</button>
         {canResolve && <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('settings')} disabled={!st}>Lyst settings</button>}
       </nav>
       {discipline.length > 0 && (
@@ -404,7 +427,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}
       {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventSlug="" busy={busy} onClose={() => setSheet(null)}
         onNewCode={() => void seatAction(() => createJoinCode(eventId, fieldName))} onAssign={(seat, side, role) => void seatAction(() => assignSeat(seat, match.id, side, role))} onEnd={(seat, decline) => void seatAction(() => endSeat(seat, decline))} />}
-      {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, reason) => void voidIt(id, reason)} onClose={() => setSheet(null)} />}
+      {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, reason) => void voidIt(id, reason)} onClose={() => setSheet(null)} citations={citations} onCite={(id, p) => void cite(id, p)} />}
+      {sheet === 'rules' && <RulesSheet onClose={() => setSheet(null)} />}
       {sheet === 'settings' && settings && <LystSettingsDialog eventId={eventId} settings={settings} onClose={() => setSheet(null)} onSaved={() => void lyst.refresh()} />}
     </div>
   );

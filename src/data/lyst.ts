@@ -63,6 +63,9 @@ export interface DisciplineArgs { command: string; matchId: string; round: numbe
 export const disciplineArgs = (d: DisciplineArgs) => ({
   p_command: d.command, p_match: d.matchId, p_round: d.round, p_side: d.side, p_kind: d.kind, p_label: d.label ?? null, p_amount: d.amount ?? 0, p_reason: d.reason ?? null, p_called_by: d.calledBy ?? null, p_related: d.related ?? null
 });
+/** Pack 22: the rule a marshal's call was for (null removes it). Rides the same outbox; the entry id is the command id. */
+export interface CiteRuleArgs { command: string; disciplineId: string; provisionId: string | null }
+export const citeRuleArgs = (c: CiteRuleArgs) => ({ p_command: c.command, p_discipline: c.disciplineId, p_provision: c.provisionId });
 export const recordDiscipline = (d: DisciplineArgs) => rpc<{ status: 'ok' | 'duplicate' }>('lyst_record_discipline', disciplineArgs(d));
 export const voidDiscipline = (command: string, id: string, reason: string) => rpc<{ status: 'ok' | 'duplicate' }>('lyst_void_discipline', { p_command: command, p_id: id, p_reason: reason });
 

@@ -303,6 +303,12 @@ column public.match_discipline_private.reason text
 column public.match_discipline_private.recorded_by uuid not null
 column public.match_discipline_private.void_reason text
 column public.match_discipline_private.voided_by uuid
+column public.match_discipline_rules.created_at timestamp with time zone not null
+column public.match_discipline_rules.discipline_id uuid not null
+column public.match_discipline_rules.event_id uuid not null
+column public.match_discipline_rules.id uuid not null
+column public.match_discipline_rules.provision_id uuid
+column public.match_discipline_rules.set_by uuid not null
 column public.match_live_scores.competition_id uuid not null
 column public.match_live_scores.detail jsonb not null
 column public.match_live_scores.device text not null
@@ -528,19 +534,92 @@ column public.results.entry_id uuid not null
 column public.results.final_place integer
 column public.results.id uuid not null
 column public.results.points numeric
+column public.rule_conflicts.description text not null
+column public.rule_conflicts.governing_body text not null
+column public.rule_conflicts.id uuid not null
+column public.rule_conflicts.noted_at timestamp with time zone not null
+column public.rule_conflicts.noted_by uuid
+column public.rule_conflicts.provision_a uuid
+column public.rule_conflicts.provision_b uuid
+column public.rule_conflicts.resolution text
+column public.rule_conflicts.resolved_at timestamp with time zone
+column public.rule_conflicts.resolved_by uuid
+column public.rule_conflicts.status text not null
+column public.rule_conflicts.version_a uuid not null
+column public.rule_conflicts.version_b uuid
+column public.rule_provision_revisions.after jsonb not null
+column public.rule_provision_revisions.before jsonb not null
+column public.rule_provision_revisions.changed_at timestamp with time zone not null
+column public.rule_provision_revisions.changed_by uuid
+column public.rule_provision_revisions.id bigint not null
+column public.rule_provision_revisions.provision_id uuid not null
+column public.rule_provision_revisions.reason text not null
+column public.rule_provisions.body text not null
+column public.rule_provisions.content_sha256 text not null
+column public.rule_provisions.created_at timestamp with time zone not null
+column public.rule_provisions.cross_refs text[] not null
+column public.rule_provisions.depth smallint not null
+column public.rule_provisions.id uuid not null
+column public.rule_provisions.keywords text[] not null
+column public.rule_provisions.kind text not null
+column public.rule_provisions.number text
+column public.rule_provisions.ordinal integer not null
+column public.rule_provisions.page_from integer
+column public.rule_provisions.page_to integer
+column public.rule_provisions.parent_id uuid
+column public.rule_provisions.review_note text
+column public.rule_provisions.review_status text not null
+column public.rule_provisions.ruleset_version_id uuid not null
+column public.rule_provisions.stable_key text not null
+column public.rule_provisions.title text
+column public.rule_provisions.topics text[] not null
+column public.ruleset_versions.content_sha256 text
 column public.ruleset_versions.created_at timestamp with time zone not null
 column public.ruleset_versions.effective_from date
 column public.ruleset_versions.effective_to date
+column public.ruleset_versions.extractor text
 column public.ruleset_versions.id uuid not null
+column public.ruleset_versions.import_release text
+column public.ruleset_versions.imported_at timestamp with time zone
 column public.ruleset_versions.note text
+column public.ruleset_versions.page_count integer
+column public.ruleset_versions.published_at timestamp with time zone
+column public.ruleset_versions.published_by uuid
+column public.ruleset_versions.published_on date
+column public.ruleset_versions.reconciliation jsonb
 column public.ruleset_versions.ruleset_id uuid not null
 column public.ruleset_versions.source_id uuid
+column public.ruleset_versions.source_retrieved_at timestamp with time zone
+column public.ruleset_versions.source_sha256 text
+column public.ruleset_versions.source_url text
+column public.ruleset_versions.status text not null
+column public.ruleset_versions.successor_version_id uuid
+column public.ruleset_versions.synthetic boolean not null
+column public.ruleset_versions.title text
 column public.ruleset_versions.version text not null
+column public.ruleset_versions.withdrawn_reason text
+column public.rulesets.applies_to text[] not null
+column public.rulesets.classification_note text
+column public.rulesets.committee text
+column public.rulesets.committee_name text
 column public.rulesets.created_at timestamp with time zone not null
+column public.rulesets.governing_body text
+column public.rulesets.heading text
 column public.rulesets.id uuid not null
+column public.rulesets.inventory_key text
+column public.rulesets.inventory_source_id uuid
+column public.rulesets.kind text
+column public.rulesets.listed_on_page boolean not null
 column public.rulesets.name text not null
+column public.rulesets.official_url text
 column public.rulesets.organization_id uuid
+column public.rulesets.page_order integer
+column public.rulesets.previously_cited_as text
+column public.rulesets.relevance text
 column public.rulesets.slug text not null
+column public.rulesets.source_host text
+column public.rulesets.source_ref text
+column public.rulesets.synthetic boolean not null
 column public.score_events.client_at timestamp with time zone
 column public.score_events.id uuid not null
 column public.score_events.kind text not null
@@ -851,6 +930,10 @@ constraint match_discipline_private match_discipline_private_discipline_id_fkey 
 constraint match_discipline_private match_discipline_private_pkey PRIMARY KEY (discipline_id)
 constraint match_discipline_private match_discipline_private_reason_check CHECK (((reason IS NULL) OR (char_length(reason) <= 200)))
 constraint match_discipline_private match_discipline_private_void_reason_check CHECK (((void_reason IS NULL) OR (char_length(void_reason) <= 200)))
+constraint match_discipline_rules match_discipline_rules_discipline_id_fkey FOREIGN KEY (discipline_id) REFERENCES match_discipline(id) ON DELETE RESTRICT
+constraint match_discipline_rules match_discipline_rules_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint match_discipline_rules match_discipline_rules_pkey PRIMARY KEY (id)
+constraint match_discipline_rules match_discipline_rules_provision_id_fkey FOREIGN KEY (provision_id) REFERENCES rule_provisions(id) ON DELETE RESTRICT
 constraint match_live_scores match_live_scores_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
 constraint match_live_scores match_live_scores_detail_check CHECK ((pg_column_size(detail) <= 4096))
 constraint match_live_scores match_live_scores_device_check CHECK ((char_length(device) <= 64))
@@ -994,18 +1077,77 @@ constraint results results_entry_id_fkey FOREIGN KEY (entry_id) REFERENCES entri
 constraint results results_final_place_check CHECK (((final_place IS NULL) OR (final_place >= 1)))
 constraint results results_pkey PRIMARY KEY (id)
 constraint results results_points_check CHECK (((points IS NULL) OR (points >= (0)::numeric)))
+constraint rule_conflicts rule_conflicts_check CHECK (((status = 'open'::text) = (resolution IS NULL)))
+constraint rule_conflicts rule_conflicts_description_check CHECK (((char_length(description) >= 10) AND (char_length(description) <= 2000)))
+constraint rule_conflicts rule_conflicts_governing_body_check CHECK (((char_length(governing_body) >= 2) AND (char_length(governing_body) <= 120)))
+constraint rule_conflicts rule_conflicts_pkey PRIMARY KEY (id)
+constraint rule_conflicts rule_conflicts_provision_a_fkey FOREIGN KEY (provision_a) REFERENCES rule_provisions(id) ON DELETE RESTRICT
+constraint rule_conflicts rule_conflicts_provision_b_fkey FOREIGN KEY (provision_b) REFERENCES rule_provisions(id) ON DELETE RESTRICT
+constraint rule_conflicts rule_conflicts_resolution_check CHECK (((resolution IS NULL) OR ((char_length(resolution) >= 3) AND (char_length(resolution) <= 2000))))
+constraint rule_conflicts rule_conflicts_status_check CHECK ((status = ANY (ARRAY['open'::text, 'resolved_by_source'::text, 'not_a_conflict'::text])))
+constraint rule_conflicts rule_conflicts_version_a_fkey FOREIGN KEY (version_a) REFERENCES ruleset_versions(id) ON DELETE RESTRICT
+constraint rule_conflicts rule_conflicts_version_b_fkey FOREIGN KEY (version_b) REFERENCES ruleset_versions(id) ON DELETE RESTRICT
+constraint rule_provision_revisions rule_provision_revisions_pkey PRIMARY KEY (id)
+constraint rule_provision_revisions rule_provision_revisions_provision_id_fkey FOREIGN KEY (provision_id) REFERENCES rule_provisions(id) ON DELETE RESTRICT
+constraint rule_provision_revisions rule_provision_revisions_reason_check CHECK (((char_length(reason) >= 3) AND (char_length(reason) <= 500)))
+constraint rule_provisions rule_provisions_body_check CHECK ((char_length(body) <= 30000))
+constraint rule_provisions rule_provisions_check CHECK (((page_to IS NULL) OR (page_from IS NULL) OR (page_to >= page_from)))
+constraint rule_provisions rule_provisions_check1 CHECK (((number IS NOT NULL) OR (title IS NOT NULL) OR (char_length(body) > 0)))
+constraint rule_provisions rule_provisions_content_sha256_check CHECK ((content_sha256 ~ '^[0-9a-f]{64}$'::text))
+constraint rule_provisions rule_provisions_cross_refs_check CHECK ((cardinality(cross_refs) <= 40))
+constraint rule_provisions rule_provisions_depth_check CHECK (((depth >= 0) AND (depth <= 8)))
+constraint rule_provisions rule_provisions_keywords_check CHECK ((cardinality(keywords) <= 30))
+constraint rule_provisions rule_provisions_kind_check CHECK ((kind = ANY (ARRAY['part'::text, 'section'::text, 'rule'::text, 'definition'::text, 'table'::text, 'figure'::text, 'note'::text, 'appendix'::text, 'unstructured'::text])))
+constraint rule_provisions rule_provisions_number_check CHECK (((number IS NULL) OR ((char_length(number) >= 1) AND (char_length(number) <= 40))))
+constraint rule_provisions rule_provisions_ordinal_check CHECK (((ordinal >= 1) AND (ordinal <= 100000)))
+constraint rule_provisions rule_provisions_page_from_check CHECK (((page_from IS NULL) OR ((page_from >= 1) AND (page_from <= 2000))))
+constraint rule_provisions rule_provisions_page_to_check CHECK (((page_to IS NULL) OR ((page_to >= 1) AND (page_to <= 2000))))
+constraint rule_provisions rule_provisions_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES rule_provisions(id)
+constraint rule_provisions rule_provisions_pkey PRIMARY KEY (id)
+constraint rule_provisions rule_provisions_review_note_check CHECK (((review_note IS NULL) OR (char_length(review_note) <= 1000)))
+constraint rule_provisions rule_provisions_review_status_check CHECK ((review_status = ANY (ARRAY['extracted'::text, 'needs_review'::text, 'verified'::text])))
+constraint rule_provisions rule_provisions_ruleset_version_id_fkey FOREIGN KEY (ruleset_version_id) REFERENCES ruleset_versions(id) ON DELETE RESTRICT
+constraint rule_provisions rule_provisions_ruleset_version_id_ordinal_key UNIQUE (ruleset_version_id, ordinal)
+constraint rule_provisions rule_provisions_ruleset_version_id_stable_key_key UNIQUE (ruleset_version_id, stable_key)
+constraint rule_provisions rule_provisions_stable_key_check CHECK ((stable_key ~ '^[a-z0-9][a-z0-9._:-]{0,160}$'::text))
+constraint rule_provisions rule_provisions_title_check CHECK (((title IS NULL) OR (char_length(title) <= 300)))
+constraint rule_provisions rule_provisions_topics_check CHECK ((cardinality(topics) <= 12))
 constraint ruleset_versions ruleset_versions_check CHECK (((effective_to IS NULL) OR (effective_from IS NULL) OR (effective_to >= effective_from)))
+constraint ruleset_versions ruleset_versions_content_sha256_check CHECK (((content_sha256 IS NULL) OR (content_sha256 ~ '^[0-9a-f]{64}$'::text)))
+constraint ruleset_versions ruleset_versions_extractor_check CHECK (((extractor IS NULL) OR (char_length(extractor) <= 200)))
+constraint ruleset_versions ruleset_versions_import_release_check CHECK (((import_release IS NULL) OR (char_length(import_release) <= 80)))
 constraint ruleset_versions ruleset_versions_note_check CHECK (((note IS NULL) OR (char_length(note) <= 500)))
+constraint ruleset_versions ruleset_versions_page_count_check CHECK (((page_count IS NULL) OR ((page_count >= 1) AND (page_count <= 2000))))
 constraint ruleset_versions ruleset_versions_pkey PRIMARY KEY (id)
 constraint ruleset_versions ruleset_versions_ruleset_id_fkey FOREIGN KEY (ruleset_id) REFERENCES rulesets(id) ON DELETE CASCADE
 constraint ruleset_versions ruleset_versions_ruleset_id_version_key UNIQUE (ruleset_id, version)
 constraint ruleset_versions ruleset_versions_source_id_fkey FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE SET NULL
+constraint ruleset_versions ruleset_versions_source_sha256_check CHECK (((source_sha256 IS NULL) OR (source_sha256 ~ '^[0-9a-f]{64}$'::text)))
+constraint ruleset_versions ruleset_versions_source_url_check CHECK (((source_url IS NULL) OR ((char_length(source_url) <= 500) AND (source_url ~ '^https://'::text))))
+constraint ruleset_versions ruleset_versions_status_check CHECK ((status = ANY (ARRAY['draft'::text, 'in_review'::text, 'published'::text, 'superseded'::text, 'withdrawn'::text])))
+constraint ruleset_versions ruleset_versions_successor_version_id_fkey FOREIGN KEY (successor_version_id) REFERENCES ruleset_versions(id) ON DELETE RESTRICT
+constraint ruleset_versions ruleset_versions_title_check CHECK (((title IS NULL) OR (char_length(title) <= 300)))
 constraint ruleset_versions ruleset_versions_version_check CHECK (((char_length(version) >= 1) AND (char_length(version) <= 40)))
+constraint ruleset_versions ruleset_versions_withdrawn_reason_check CHECK (((withdrawn_reason IS NULL) OR ((char_length(withdrawn_reason) >= 3) AND (char_length(withdrawn_reason) <= 500))))
+constraint rulesets rulesets_applies_to_check CHECK ((applies_to <@ ARRAY['buhurt'::text, 'duels'::text, 'outrance'::text, 'hacsa'::text]))
+constraint rulesets rulesets_classification_note_check CHECK (((classification_note IS NULL) OR (char_length(classification_note) <= 500)))
+constraint rulesets rulesets_committee_check CHECK (((committee IS NULL) OR (char_length(committee) <= 60)))
+constraint rulesets rulesets_committee_name_check CHECK (((committee_name IS NULL) OR (char_length(committee_name) <= 120)))
+constraint rulesets rulesets_governing_body_check CHECK (((governing_body IS NULL) OR ((char_length(governing_body) >= 2) AND (char_length(governing_body) <= 120))))
+constraint rulesets rulesets_heading_check CHECK (((heading IS NULL) OR (char_length(heading) <= 120)))
+constraint rulesets rulesets_inventory_key_check CHECK (((inventory_key IS NULL) OR (inventory_key ~ '^[a-z0-9]+(/[a-z0-9]+(-[a-z0-9]+)*)+$'::text)))
+constraint rulesets rulesets_inventory_source_id_fkey FOREIGN KEY (inventory_source_id) REFERENCES sources(id) ON DELETE RESTRICT
+constraint rulesets rulesets_kind_check CHECK (((kind IS NULL) OR (kind = ANY (ARRAY['rules'::text, 'regulations'::text, 'tournament_structure'::text, 'equipment'::text, 'infractions'::text, 'discipline'::text, 'eligibility'::text, 'officials'::text, 'governance'::text, 'archive'::text]))))
 constraint rulesets rulesets_name_check CHECK (((char_length(name) >= 2) AND (char_length(name) <= 120)))
+constraint rulesets rulesets_official_url_check CHECK (((official_url IS NULL) OR ((char_length(official_url) <= 500) AND (official_url ~ '^https://'::text))))
 constraint rulesets rulesets_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL
 constraint rulesets rulesets_pkey PRIMARY KEY (id)
+constraint rulesets rulesets_previously_cited_as_check CHECK (((previously_cited_as IS NULL) OR (char_length(previously_cited_as) <= 120)))
+constraint rulesets rulesets_relevance_check CHECK (((relevance IS NULL) OR (relevance = ANY (ARRAY['direct'::text, 'supporting'::text, 'governance'::text, 'archive'::text]))))
 constraint rulesets rulesets_slug_check CHECK ((slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text))
 constraint rulesets rulesets_slug_key UNIQUE (slug)
+constraint rulesets rulesets_source_host_check CHECK (((source_host IS NULL) OR (source_host = ANY (ARRAY['site_file'::text, 'drive_file'::text, 'drive_folder'::text]))))
+constraint rulesets rulesets_source_ref_check CHECK (((source_ref IS NULL) OR (char_length(source_ref) <= 200)))
 constraint score_events score_events_kind_check CHECK (((char_length(kind) >= 1) AND (char_length(kind) <= 60)))
 constraint score_events score_events_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
 constraint score_events score_events_pkey PRIMARY KEY (id)
@@ -1103,6 +1245,7 @@ function private.clear_tie_decisions() secdef=true b7c59c40208031d422d138cea7492
 function private.command_schema_ok(p_schema integer) secdef=false f2865c592704878cd24bbdbfe3b8b711
 function private.competition_blockers(p_comp uuid) secdef=true 3efa6033dc97dd30f26ba8f62b7ad84d
 function private.competition_placements(p_comp uuid, p_source text) secdef=true c84795a9d79e7fbc37c0e2fc6390b95c
+function private.competition_ruleset_check() secdef=false f74178cc300646235cf4ef0e832d4222
 function private.competition_warnings(p_comp uuid) secdef=true 78592dd893b5084402d137e10d60db14
 function private.competitions_guard() secdef=true 5af75b9c20a2767a4905af813f37470d
 function private.compute_fee(p_event uuid, p_province text, p_volunteer boolean) secdef=true edc1346f935647548fd7477305ee9f03
@@ -1117,6 +1260,7 @@ function private.discard_event_row(p_event uuid) secdef=true 74c02c12d9762250298
 function private.discard_result(p_id uuid) secdef=true babb386c46765a80dfd83d0e539a76f1
 function private.discard_results(p_competition uuid) secdef=true 96b96e805281de5316cdbab933bbc53e
 function private.discard_tie_decisions(p_competition uuid, p_entries uuid[]) secdef=true cd7f53862fa4395d20b0b6ca6dd435ec
+function private.discipline_rule_guard() secdef=false 0d5e9366bc5b0de7fe0c04500d7be3dc
 function private.ensure_fighter_for_account(p_user uuid, p_name text, p_team uuid, p_source text) secdef=true 1fd619818bdde8a6ab21f3fe2f9b1f6c
 function private.entries_lock_guard() secdef=true 83b851ca9433a92887fb09c75ee78e7e
 function private.entries_represented_team() secdef=true 3dd15fad35aaeeab4dee838897471206
@@ -1206,6 +1350,14 @@ function private.result_revisions_append_only() secdef=false d795b3ab81682d26209
 function private.review_notify() secdef=true dc9403808491858fccb16246221d6975
 function private.revoke_subscription(p_id uuid) secdef=true 5cfeea7d95782ee153d5efc85d676491
 function private.round_rank(p_stage text, p_label text) secdef=false c346e2163e169752721e61a406c02a05
+function private.rule_content_sha256(p_number text, p_title text, p_body text) secdef=false b3b79ef8f11e1518f0a60a4b0fc893d6
+function private.rule_provision_guard() secdef=false 047d3331ece9a20c380e3795a3ee5953
+function private.rule_revision_guard() secdef=false 55d1ff3d96fb0ed7b899db9279cbbe57
+function private.rule_version_readable(p_version uuid) secdef=true eba08970f63ad8bb7a56fbf4813c5c93
+function private.rules_import_inventory(p jsonb) secdef=true 45c6af91ab1fa0db771338352ce60b3b
+function private.rules_import_version(p jsonb) secdef=true d930215dbb77358ccd14cba517f42bcb
+function private.ruleset_guard() secdef=false 1f130763785b35e5d76151940522871f
+function private.ruleset_version_guard() secdef=false 1218bc89d2538379fc82c049d242dd80
 function private.schedule_notify() secdef=true df1983843e9bac9a3ec276403d8c0ed0
 function private.settle_field_queue(p_event uuid, p_key text, p_start boolean) secdef=true f71c55456652d4a824fea67c2771718f
 function private.side_rounds(p_detail jsonb, p_side text, p_sf integer, p_sa integer) secdef=false 56a7f063efebbe25d570b1840e46f8d2
@@ -1249,6 +1401,7 @@ function public.close_event(p_event uuid, p_note text) secdef=true 2835279399e49
 function public.competition_finalize_preflight(p_competition uuid, p_multiplier_source text) secdef=true 194ee55ccb4232da13950f246d32a74c
 function public.complete_my_profile(p_name text, p_interests text[], p_city text, p_region text, p_country text) secdef=true 2c2692a2c5db2e6131d70458c87292bc
 function public.correct_result(p_competition uuid, p_entry uuid, p_place integer, p_points numeric, p_reason text) secdef=true 1f9d08e42466f7315e20d148cf553bf3
+function public.correct_rule_provision(p_provision uuid, p_title text, p_body text, p_reason text) secdef=true afa8a6761027d655f7c842900a66d1b9
 function public.counter_record(p_id uuid, p_seat uuid, p_round integer, p_weight integer) secdef=true 6eeecd9f722067a61dded490090aaab7
 function public.counter_state() secdef=true 873d57e30225c6f3e753f8f4295ede91
 function public.counter_submit(p_seat uuid, p_round integer) secdef=true fd206e7ab7079541d9b92fc10b31ee43
@@ -1268,6 +1421,7 @@ function public.enter_official_result(p_match uuid, p_result text, p_score_a int
 function public.event_close_preflight(p_event uuid) secdef=true fbb652344a86144b8b97bf2221949808
 function public.event_command_snapshot(p_event uuid) secdef=true 397f6a48f6a2235646a55eb33fbb8788
 function public.event_delete_check(p_event uuid) secdef=true 64d96ed05ff3325d92e77fe3c0950d8e
+function public.event_discipline_log(p_event uuid) secdef=true e037a596e1348c527bd7c94cb9205364
 function public.event_readiness(p_event uuid) secdef=true 01b7717e2334798be3f3382a5add5589
 function public.exclude_event_from_stats(p_event uuid, p_reason text) secdef=true 05ab2f6918d8d94a0513ef3f7e3b9fe9
 function public.fighter_bookings(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 42f25793e5ca9afeb59d18cb0bfe36f7
@@ -1293,6 +1447,7 @@ function public.list_fighter_identity_reviews() secdef=true 1cd64be43eb4a1a1fdb2
 function public.list_organization_staff(p_org uuid) secdef=true 3148e2f3a5cee3c9187925692ce4c868
 function public.list_result_conflicts(p_event uuid) secdef=true 09f0a3a6a2cb71382b3882c399208c91
 function public.list_team_captains(p_team uuid) secdef=true 29f36411f6e5b56c893fb49db03a2b75
+function public.lyst_cite_rule(p_command uuid, p_discipline uuid, p_provision uuid) secdef=true daef927a579fe590c2dbfbc3f6a4cdde
 function public.lyst_confirm_round(p_command uuid, p_match uuid, p_round integer, p_awarded_a integer, p_awarded_b integer, p_expected_rev integer, p_recommended_a integer, p_recommended_b integer, p_reason text) secdef=true 8e23f1488377eeea26e67a060003d17d
 function public.lyst_end_round(p_match uuid, p_round integer) secdef=true 76c3e40d91ef161a3820106fc4237407
 function public.lyst_finalize(p_command uuid, p_match uuid, p_expected_version integer, p_result text, p_basis text, p_reason text) secdef=true 33d966b648895818b64ee77fd8393c5b
@@ -1319,7 +1474,9 @@ function public.my_push_devices() secdef=true 6cf8470b7ef5a2720c468c63b10452cb
 function public.my_team_ids() secdef=true 2e515a55e5b67e1265978888534c9a3c
 function public.my_team_requests() secdef=true a6e88a25fc0a79a4fbd27621a8bc20ef
 function public.new_team_request_details(p_team uuid) secdef=true ad83db5bbcbdfdc1e5782c4d51a9fe9d
+function public.note_rule_conflict(p_version_a uuid, p_provision_a uuid, p_version_b uuid, p_provision_b uuid, p_description text) secdef=true b239f36b17ccafbbdc5c12510bd590f1
 function public.pool_standings(p_competition uuid) secdef=true b1f41fde5830d12578118986ca51733d
+function public.publish_ruleset_version(p_version uuid, p_note text) secdef=true adac54880fa3e2e1c11f7c6e4f09e947
 function public.push_claim(p_limit integer) secdef=true 46244c9df87ef5f171ccd689767ba1f5
 function public.push_dispatch_config() secdef=true 2b4de1672c2b32b651ed2522b9771be3
 function public.push_public_key() secdef=true 6bc78a898e60621001859bfc99b036df
@@ -1349,7 +1506,9 @@ function public.request_team_join(p_team uuid, p_message text) secdef=true 25d5a
 function public.resolve_fighter_claim(p_request uuid, p_decision text, p_note text) secdef=true a92d09f339db8073d1f69b00d7abaee5
 function public.resolve_fighter_identity_review(p_review uuid, p_decision text, p_note text) secdef=true abb98943110427e76ebc961453fce039
 function public.resolve_result_conflict(p_proposal uuid, p_decision text, p_note text) secdef=true e39b4f3b1be04d082bfad22dfdd40bc0
+function public.resolve_rule_conflict(p_conflict uuid, p_status text, p_resolution text) secdef=true c68f94a7f68e09479f4f5330ceabfc70
 function public.restore_event_stats(p_event uuid, p_reason text) secdef=true cb61938b6c8e5a48337573b627ba8622
+function public.review_rule_provision(p_provision uuid, p_status text, p_note text, p_topics text[], p_keywords text[]) secdef=true 7695f2b82161abbdd872df482c5e750d
 function public.save_event_sponsor(p_event uuid, p_id uuid, p_name text, p_logo_path text, p_link text, p_tier text, p_sort integer, p_on_broadcast boolean) secdef=true 9011253bc58523d376e89da176845e6e
 function public.save_queue_plan(p_event uuid, p_order uuid[], p_hold uuid[]) secdef=true b923da881b4d247709ce68ae34ce2c9b
 function public.search_fighters_for_entry(p_competition uuid, p_query text) secdef=true 38479287e0c6b86c25454cc616d337b1
@@ -1359,6 +1518,7 @@ function public.send_test_notification() secdef=true 04031894edca2f3c5d81e8d655f
 function public.set_attendance(p_reg uuid, p_state text) secdef=true baff3e65beae5aab6e20515dc8a8ecf7
 function public.set_broadcast_settings(p_event uuid, p_settings jsonb) secdef=true 1dc29791504f882c21e2eb2824d57226
 function public.set_bug_status(p_report uuid, p_status text) secdef=true 354554200e7d45f9966d402de609df50
+function public.set_competition_ruleset_version(p_competition uuid, p_version uuid) secdef=true 8477f702d39bfc687a5d755b50c77e1e
 function public.set_competition_tier(p_comp uuid, p_tier text) secdef=true 189d3ad0190176efc17f876544ab4e1f
 function public.set_entry_roster(p_entry uuid, p_fighters jsonb) secdef=true 76456d0588cd40fe128f21f59f2d8ab1
 function public.set_event_organization(p_event uuid, p_org uuid) secdef=true 5a4ffe1f50b98f8407ac15e04b629ab1
@@ -1396,6 +1556,7 @@ function public.void_result(p_competition uuid, p_entry uuid, p_reason text) sec
 function public.withdraw_entry(p_entry uuid, p_reason text, p_walkovers boolean) secdef=true cc9832e8658a563eed2f1e3ad2924cde
 function public.withdraw_my_invitation(p_invitation uuid) secdef=true 66c892ec5d5c1dba3b8cf14cad831b9d
 function public.withdraw_registration(p_reg uuid) secdef=true 40db3227077b7b16bd8d9f675c1997ea
+function public.withdraw_ruleset_version(p_version uuid, p_reason text) secdef=true e0b8f8d0f1d853e7180e92cf86e18217
 index private.push_config CREATE UNIQUE INDEX ON private.push_config USING btree (key)
 index public.activity_events CREATE INDEX ON public.activity_events USING btree (at DESC, name)
 index public.activity_events CREATE UNIQUE INDEX ON public.activity_events USING btree (id)
@@ -1410,6 +1571,7 @@ index public.audit_log CREATE UNIQUE INDEX ON public.audit_log USING btree (id)
 index public.bug_reports CREATE INDEX ON public.bug_reports USING btree (created_at DESC)
 index public.bug_reports CREATE UNIQUE INDEX ON public.bug_reports USING btree (id)
 index public.competitions CREATE INDEX ON public.competitions USING btree (event_id)
+index public.competitions CREATE INDEX ON public.competitions USING btree (ruleset_version_id) WHERE (ruleset_version_id IS NOT NULL)
 index public.competitions CREATE UNIQUE INDEX ON public.competitions USING btree (id)
 index public.entries CREATE INDEX ON public.entries USING btree (competition_id)
 index public.entries CREATE INDEX ON public.entries USING btree (represented_team_id) WHERE (represented_team_id IS NOT NULL)
@@ -1476,6 +1638,10 @@ index public.match_discipline CREATE INDEX ON public.match_discipline USING btre
 index public.match_discipline CREATE INDEX ON public.match_discipline USING btree (related_id) WHERE (related_id IS NOT NULL)
 index public.match_discipline CREATE UNIQUE INDEX ON public.match_discipline USING btree (id)
 index public.match_discipline_private CREATE UNIQUE INDEX ON public.match_discipline_private USING btree (discipline_id)
+index public.match_discipline_rules CREATE INDEX ON public.match_discipline_rules USING btree (discipline_id, created_at)
+index public.match_discipline_rules CREATE INDEX ON public.match_discipline_rules USING btree (event_id)
+index public.match_discipline_rules CREATE INDEX ON public.match_discipline_rules USING btree (provision_id) WHERE (provision_id IS NOT NULL)
+index public.match_discipline_rules CREATE UNIQUE INDEX ON public.match_discipline_rules USING btree (id)
 index public.match_live_scores CREATE INDEX ON public.match_live_scores USING btree (competition_id)
 index public.match_live_scores CREATE UNIQUE INDEX ON public.match_live_scores USING btree (match_id)
 index public.matches CREATE INDEX ON public.matches USING btree (competition_id, stage, "position")
@@ -1523,8 +1689,25 @@ index public.result_revisions CREATE UNIQUE INDEX ON public.result_revisions USI
 index public.results CREATE INDEX ON public.results USING btree (competition_id)
 index public.results CREATE UNIQUE INDEX ON public.results USING btree (competition_id, entry_id)
 index public.results CREATE UNIQUE INDEX ON public.results USING btree (id)
+index public.rule_conflicts CREATE INDEX ON public.rule_conflicts USING btree (provision_a) WHERE (provision_a IS NOT NULL)
+index public.rule_conflicts CREATE INDEX ON public.rule_conflicts USING btree (provision_b) WHERE (provision_b IS NOT NULL)
+index public.rule_conflicts CREATE INDEX ON public.rule_conflicts USING btree (version_a)
+index public.rule_conflicts CREATE INDEX ON public.rule_conflicts USING btree (version_b) WHERE (version_b IS NOT NULL)
+index public.rule_conflicts CREATE UNIQUE INDEX ON public.rule_conflicts USING btree (id)
+index public.rule_provision_revisions CREATE INDEX ON public.rule_provision_revisions USING btree (provision_id, changed_at)
+index public.rule_provision_revisions CREATE UNIQUE INDEX ON public.rule_provision_revisions USING btree (id)
+index public.rule_provisions CREATE INDEX ON public.rule_provisions USING btree (parent_id) WHERE (parent_id IS NOT NULL)
+index public.rule_provisions CREATE INDEX ON public.rule_provisions USING btree (stable_key)
+index public.rule_provisions CREATE UNIQUE INDEX ON public.rule_provisions USING btree (id)
+index public.rule_provisions CREATE UNIQUE INDEX ON public.rule_provisions USING btree (ruleset_version_id, ordinal)
+index public.rule_provisions CREATE UNIQUE INDEX ON public.rule_provisions USING btree (ruleset_version_id, stable_key)
+index public.ruleset_versions CREATE INDEX ON public.ruleset_versions USING btree (source_id) WHERE (source_id IS NOT NULL)
+index public.ruleset_versions CREATE INDEX ON public.ruleset_versions USING btree (successor_version_id) WHERE (successor_version_id IS NOT NULL)
 index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (id)
+index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (ruleset_id) WHERE (status = 'published'::text)
 index public.ruleset_versions CREATE UNIQUE INDEX ON public.ruleset_versions USING btree (ruleset_id, version)
+index public.rulesets CREATE INDEX ON public.rulesets USING btree (inventory_source_id) WHERE (inventory_source_id IS NOT NULL)
+index public.rulesets CREATE UNIQUE INDEX ON public.rulesets USING btree (governing_body, inventory_key) WHERE (inventory_key IS NOT NULL)
 index public.rulesets CREATE UNIQUE INDEX ON public.rulesets USING btree (id)
 index public.rulesets CREATE UNIQUE INDEX ON public.rulesets USING btree (slug)
 index public.score_events CREATE INDEX ON public.score_events USING btree (match_id, received_at)
@@ -1584,6 +1767,7 @@ policy public.match_discipline match_discipline_read SELECT roles=anon,authentic
 policy public.match_discipline_private match_discipline_private_read SELECT roles=authenticated using=private.can_score(( SELECT d.event_id
    FROM match_discipline d
   WHERE (d.id = match_discipline_private.discipline_id))) check=
+policy public.match_discipline_rules match_discipline_rules_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
 policy public.match_live_scores match_live_scores_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
 policy public.matches matches_organizer_delete DELETE roles=authenticated using=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state <> 'final'::text)) check=
 policy public.matches matches_organizer_insert INSERT roles=authenticated using= check=(private.is_organizer(private.event_of_competition(competition_id)) AND (queue_state = 'scheduled'::text) AND (result IS NULL))
@@ -1607,8 +1791,14 @@ policy public.registrations registrations_read SELECT roles=authenticated using=
 policy public.result_proposals result_proposals_read SELECT roles=authenticated using=((proposed_by = auth.uid()) OR private.can_resolve_results(event_id)) check=
 policy public.result_revisions result_revisions_read SELECT roles=authenticated using=private.is_organizer(private.event_of_competition(competition_id)) check=
 policy public.results results_read SELECT roles=anon,authenticated using=(private.is_event_public(private.event_of_competition(competition_id)) OR private.can_score(private.event_of_competition(competition_id))) check=
+policy public.rule_conflicts rule_conflicts_read SELECT roles=anon,authenticated using=(private.rule_version_readable(version_a) AND ((version_b IS NULL) OR private.rule_version_readable(version_b))) check=
+policy public.rule_provision_revisions rule_provision_revisions_read SELECT roles=anon,authenticated using=private.rule_version_readable(( SELECT p.ruleset_version_id
+   FROM rule_provisions p
+  WHERE (p.id = rule_provision_revisions.provision_id))) check=
+policy public.rule_provisions rule_provisions_read SELECT roles=anon,authenticated using=private.rule_version_readable(ruleset_version_id) check=
 policy public.ruleset_versions ruleset_versions_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
 policy public.ruleset_versions ruleset_versions_read SELECT roles=anon,authenticated using=true check=
+policy public.ruleset_versions ruleset_versions_read_published SELECT roles=anon,authenticated using=((status = ANY (ARRAY['published'::text, 'superseded'::text, 'withdrawn'::text])) OR ( SELECT private.is_owner() AS is_owner)) check=
 policy public.rulesets rulesets_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
 policy public.rulesets rulesets_read SELECT roles=anon,authenticated using=true check=
 policy public.score_events score_events_read SELECT roles=authenticated using=private.can_score(private.event_of_match(match_id)) check=
@@ -1662,6 +1852,7 @@ table public.lyst_rounds rls=true
 table public.lyst_timer rls=true
 table public.match_discipline rls=true
 table public.match_discipline_private rls=true
+table public.match_discipline_rules rls=true
 table public.match_live_scores rls=true
 table public.matches rls=true
 table public.notification_preferences rls=true
@@ -1686,6 +1877,9 @@ table public.registrations rls=true
 table public.result_proposals rls=true
 table public.result_revisions rls=true
 table public.results rls=true
+table public.rule_conflicts rls=true
+table public.rule_provision_revisions rls=true
+table public.rule_provisions rls=true
 table public.ruleset_versions rls=true
 table public.rulesets rls=true
 table public.score_events rls=true
@@ -1700,6 +1894,7 @@ table public.team_roles rls=true
 table public.teams rls=true
 table public.waiver_versions rls=true
 trigger public.competitions competitions_guard 3a0424e1721cc07d56bb93de4b0f33bd
+trigger public.competitions competitions_ruleset_version_check f929d288cf9779aff0d85116acf19547
 trigger public.entries entries_kind a3e6aa05107d3bd9a42e7cb20c68d43e
 trigger public.entries entries_lock_guard 3159cdcb5721a4ed4b7ec64ad3d10746
 trigger public.entries entries_represented_team 46b6e4d4e281717dd0cf2e4fe0813568
@@ -1714,6 +1909,7 @@ trigger public.fighters fighters_profile_check e7e82807a0fa9ec51263909bf9a9392c
 trigger public.lyst_counts lyst_counts_no_change e580546fd84cecba5dc4c460fe1e8858
 trigger public.lyst_round_revisions lyst_round_revisions_no_change d680c171e0bffd9bd5a4f6f18a0d1814
 trigger public.match_discipline match_discipline_guard 5d5e823503013f074fd831af9f11d373
+trigger public.match_discipline_rules match_discipline_rules_guard 4a59787a2d314c470ea5d1ba152e775e
 trigger public.matches matches_advance_queue a856fe6168a48243b58bdbc449827f61
 trigger public.matches matches_bump_version 349122f662f9df6a32cd78de47b0e4d4
 trigger public.matches matches_clear_live_score 91aa2e2a9dad90a2285e3d79208fbe6b
@@ -1739,6 +1935,10 @@ trigger public.registrations registrations_touch d51230d310f85ad30d4cb37976d0ccc
 trigger public.registrations registrations_volunteer_roles 9617f9c515e507cf6932443820038877
 trigger public.result_proposals result_proposals_notify_review 952505791ba213b73fba24a3450e9374
 trigger public.result_revisions result_revisions_no_change 6117dd6abee472b9d28bea37a8cab968
+trigger public.rule_provision_revisions rule_provision_revisions_guard dfcd381256a2038e27c7fa8e6b5fc580
+trigger public.rule_provisions rule_provisions_guard 8046e339170fcc2632970eaca119c6cd
+trigger public.ruleset_versions ruleset_versions_guard 19fbe73411108905c460a222a945d024
+trigger public.rulesets rulesets_guard 464391725b24e665ed2614ef411d60ca
 trigger public.team_join_requests team_join_requests_org_guard d71e980008a95f7149db47f7477c2f22
 trigger public.team_memberships team_memberships_notify 73724c9329c059cfeab4c844263c3e0b
 trigger public.teams teams_keep_represented 51304e1a267211ee9e953b6cf814311e

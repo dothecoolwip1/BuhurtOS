@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Dialog } from '../Dialog';
 import type { DisciplineKind, LystSettings } from '../../lib/lyst/rounds';
+import { RulePicker } from '../rules/RulesSheet';
 
-export interface DisciplineDraft { kind: DisciplineKind; side: 'a' | 'b'; label: string | null; amount: number; reason: string | null; calledBy: string | null; alsoDeduct: number }
+export interface DisciplineDraft { kind: DisciplineKind; side: 'a' | 'b'; label: string | null; amount: number; reason: string | null; calledBy: string | null; alsoDeduct: number; /** Pack 22: the official rule it was for, if the operator picked one. */ ruleId: string | null }
 
 const KINDS: { kind: DisciplineKind; word: string; hint: string }[] = [
   { kind: 'warning', word: 'Warning', hint: 'Recorded, no points taken' },
@@ -26,6 +27,7 @@ export function DisciplineSheet({ names, round, settings, calledByDefault, busy,
   const [also, setAlso] = useState(0);
   const [reason, setReason] = useState<string | null>(null);
   const [calledBy, setCalledBy] = useState(calledByDefault);
+  const [ruleId, setRuleId] = useState<string | null>(null);
   const cards = settings.cards ?? [];
   const needsLabel = kind === 'card';
   const needsAmount = kind === 'deduction';
@@ -66,10 +68,11 @@ export function DisciplineSheet({ names, round, settings, calledByDefault, busy,
           <div className="ly-sheet-step"><b>Reason (optional)</b>
             <div className="ly-chips" role="group" aria-label="Reason">{settings.reasons.map(r => <button key={r} type="button" className="ly-chip" aria-pressed={reason === r} onClick={() => setReason(reason === r ? null : r)}>{r}</button>)}</div>
             <label className="ly-reason"><span>Marshal who made the call (optional)</span><input value={calledBy} maxLength={60} onChange={e => setCalledBy(e.target.value)} /></label>
+            <RulePicker value={ruleId} onChange={setRuleId} />
           </div>
         )}
         <button type="button" className="btn btn-win fq-big" disabled={!ready}
-          onClick={() => kind && side && onRecord({ kind, side, label: needsLabel ? label : null, amount: needsAmount ? amount ?? 0 : 0, reason, calledBy: calledBy.trim() || null, alsoDeduct: kind === 'card' ? also : 0 })}>
+          onClick={() => kind && side && onRecord({ kind, side, label: needsLabel ? label : null, amount: needsAmount ? amount ?? 0 : 0, reason, calledBy: calledBy.trim() || null, alsoDeduct: kind === 'card' ? also : 0, ruleId })}>
           {busy ? 'Recording…' : kind && side ? `Record ${kind === 'card' ? (label ?? 'card') : kind === 'deduction' ? `−${amount ?? '?'} points` : kind === 'dq' ? 'disqualification' : 'warning'} · ${who}` : 'Choose what and who'}
         </button>
       </div>

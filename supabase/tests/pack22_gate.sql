@@ -1,4 +1,4 @@
--- Pack 22 gate: rules library, ruleset versions, rule citations on discipline records (migrations 20261013000100, 20261013000200).
+-- Pack 22 gate: rules library, ruleset versions, rule citations on discipline records (migrations 20261015000100, 20261015000200).
 --   * the Buhurt International document directory matches the source inventory (42 documents + 3 archive folders), and re-running it changes nothing
 --   * imports never overwrite published text; drafts and versions in review are owner-only; publishing supersedes, never deletes
 --   * published text, versions and history are immutable except through the owner's audited functions (corrections keep the old words)
@@ -43,7 +43,7 @@ grant all on t.log to anon, authenticated, service_role;
 grant usage on all sequences in schema t to anon, authenticated, service_role;
 grant execute on all functions in schema t to anon, authenticated, service_role;
 
--- ---------------------------------------------------------------- 1. the Buhurt International document directory (migration 20261013000200)
+-- ---------------------------------------------------------------- 1. the Buhurt International document directory (migration 20261015000200)
 select t.expect_eq('BI directory: 45 entries from the inventory', (select count(*) from public.rulesets where governing_body = 'Buhurt International')::int, 45);
 select t.expect_eq('BI directory: 42 documents and 3 archive folders', (select count(*) filter (where source_host <> 'drive_folder') || '+' || count(*) filter (where source_host = 'drive_folder') from public.rulesets where governing_body = 'Buhurt International'), '42+3');
 select t.expect_eq('BI directory: per committee 8 / 6 / 5 / 23 documents',
@@ -63,7 +63,7 @@ select t.as_anon();
 select t.expect_eq('BI directory: anonymous visitors can read it', (select count(*) from public.rulesets where governing_body = 'Buhurt International')::int, 45);
 select t.as_admin();
 select t.as_admin();
-\i supabase/migrations/20261013000200_pack22_bi_document_inventory.sql
+\i supabase/migrations/20261015000200_pack22_bi_document_inventory.sql
 select t.expect_eq('BI directory: importing the same inventory again changes nothing',
   (select details ->> 'unchanged' || '/' || (details ->> 'new') || '/' || (details ->> 'changed') from public.audit_log where action = 'rules.inventory_imported' and subject = 'Buhurt International' order by id desc limit 1), '45/0/0');
 select t.expect_eq('BI directory: still exactly 45 entries', (select count(*) from public.rulesets where governing_body = 'Buhurt International')::int, 45);
@@ -151,6 +151,8 @@ select t.expect_error('an organizer cannot publish', $$select t.as_user(t.u(1));
 select t.as_admin();
 select t.expect_error('a head marshal cannot publish', $$select t.as_user(t.u(2)); select public.publish_ruleset_version(t.ver('marshal/example-combat-rules','V.1.0'))$$, '42501');
 select t.as_admin();
+select t.expect_error('the owner cannot insert an already published version through the API', $$select t.as_user(t.u(5)); insert into public.ruleset_versions (ruleset_id, version, status) values ((select id from public.rulesets where inventory_key = 'marshal/example-combat-rules'), 'V.9', 'published')$$, 'P0001');
+select t.as_admin();
 select t.expect_error('direct status changes are refused even for the database owner (publish through the function)', $$update public.ruleset_versions set status = 'published' where id = t.ver('marshal/example-combat-rules','V.1.0')$$, 'P0001');
 select t.as_user(t.u(5));
 select t.expect_eq('the owner publishes V.1.0', public.publish_ruleset_version(t.ver('marshal/example-combat-rules', 'V.1.0'), 'first edition') ->> 'status', 'ok');
@@ -167,13 +169,15 @@ select t.as_admin();
 select t.as_user(t.u(5));
 select t.expect_eq('the owner publishes V.1.1, which supersedes V.1.0', public.publish_ruleset_version(t.ver('marshal/example-combat-rules', 'V.1.1')) ->> 'superseded', t.ver('marshal/example-combat-rules', 'V.1.0')::text);
 select t.as_admin();
-select t.expect_eq('V.1.0 is superseded and points to V.1.1', (select status || ' ' || (superseded_by = t.ver('marshal/example-combat-rules', 'V.1.1'))::text from public.ruleset_versions where id = t.ver('marshal/example-combat-rules', 'V.1.0')), 'superseded true');
+select t.expect_eq('V.1.0 is superseded and points to V.1.1', (select status || ' ' || (successor_version_id = t.ver('marshal/example-combat-rules', 'V.1.1'))::text from public.ruleset_versions where id = t.ver('marshal/example-combat-rules', 'V.1.0')), 'superseded true');
 select t.expect_eq('exactly one published version per document', (select count(*) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.inventory_key = 'marshal/example-combat-rules' and rv.status = 'published')::int, 1);
 select t.as_anon();
 select t.expect_eq('the superseded text stays readable to everyone (history keeps its meaning)', (select count(*) from public.rule_provisions where ruleset_version_id = t.ver('marshal/example-combat-rules', 'V.1.0'))::int, 15);
 select t.as_admin();
 select t.as_admin();
 select t.expect_eq('the old wording of 2.1 is still the old wording', (select body from public.rule_provisions where id = t.prov('marshal/example-combat-rules', 'V.1.0', '2.1')), E'Strikes to the back of the knee, the neck and the feet are prohibited.\nSee 1.2 for grounded fighters.');
+select t.expect_error('anonymous visitors never see who published a version (account id)', $$select t.as_anon(); select published_by from public.ruleset_versions$$, '42501');
+select t.as_admin();
 select t.expect_eq('publishing is audited with who and what it superseded', (select count(*) from public.audit_log where action = 'rules.version_published' and actor = t.u(5))::int, 3);
 
 -- ---------------------------------------------------------------- 5. published meaning is frozen

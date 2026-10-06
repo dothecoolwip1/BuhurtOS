@@ -136,3 +136,22 @@ describe('reconciliation catches what an import must never do', () => {
     expect(reconcileRelease({ inventory, imported: [{ key: 'nope', sha256: null, ok: true }], excluded: [] }).unknown).toEqual(['nope']);
   });
 });
+
+describe('the committed example releases are reproducible from their own files', () => {
+  it('re-running structure on the committed text and overrides gives exactly the committed provisions and checksums', async () => {
+    const { readFileSync, readdirSync } = await import('node:fs');
+    const { applyOverrides, versionContentSha } = await import('./release');
+    for (const rel of ['r1', 'r2']) {
+      const dir = `rules-library/_example-body/releases/${rel}`;
+      for (const f of readdirSync(`${dir}/structured`)) {
+        const committed = JSON.parse(readFileSync(`${dir}/structured/${f}`, 'utf8'));
+        const text = JSON.parse(readFileSync(`${dir}/text/${f}`, 'utf8'));
+        const o = JSON.parse(readFileSync(`${dir}/overrides/${f}`, 'utf8'));
+        const again = applyOverrides(structureDocument(text.pages, committed.inventory_key.split('/').pop()).provisions, o);
+        expect(again, `${rel}/${f}`).toEqual(committed.provisions);
+        expect(versionContentSha(again)).toBe(committed.version.content_sha256);
+        expect(committed.version.source_sha256).toBe(text.sha256);
+      }
+    }
+  });
+});

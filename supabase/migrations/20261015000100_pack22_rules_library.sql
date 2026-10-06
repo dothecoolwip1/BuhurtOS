@@ -58,12 +58,16 @@ alter table public.ruleset_versions
   add column if not exists imported_at timestamptz,
   add column if not exists published_at timestamptz,
   add column if not exists published_by uuid,
-  add column if not exists superseded_by uuid references public.ruleset_versions (id) on delete restrict,
+  add column if not exists successor_version_id uuid references public.ruleset_versions (id) on delete restrict,
   add column if not exists withdrawn_reason text check (withdrawn_reason is null or char_length(withdrawn_reason) between 3 and 500),
   add column if not exists synthetic boolean not null default false;
-create index if not exists ruleset_versions_superseded_by_idx on public.ruleset_versions (superseded_by) where superseded_by is not null;
+create index if not exists ruleset_versions_successor_idx on public.ruleset_versions (successor_version_id) where successor_version_id is not null;
 create index if not exists ruleset_versions_source_idx on public.ruleset_versions (source_id) where source_id is not null;
 create unique index if not exists ruleset_versions_one_published_idx on public.ruleset_versions (ruleset_id) where status = 'published';
+-- Who published a version is an account id: staff-only. The API reads every other column (Supabase grants table-wide SELECT by default).
+revoke select on public.ruleset_versions from public, anon, authenticated;
+grant select (id, ruleset_id, version, source_id, effective_from, effective_to, note, created_at, title, status, published_on, source_url, source_sha256, source_retrieved_at,
+  page_count, import_release, extractor, content_sha256, reconciliation, imported_at, published_at, successor_version_id, withdrawn_reason, synthetic) on public.ruleset_versions to anon, authenticated;
 comment on column public.ruleset_versions.status is 'Pack 22: draft → in_review → published → superseded; any published/superseded version may be withdrawn with a reason. Never deleted once published.';
 
 -- Who may read a version (and therefore its provisions): published/superseded/withdrawn for everyone, drafts and reviews for the owner only.
@@ -81,6 +85,11 @@ create policy ruleset_versions_read_published on public.ruleset_versions as rest
 -- Published meaning is frozen: content columns never change, status only moves forward, and nothing published is deleted.
 create or replace function private.ruleset_version_guard() returns trigger language plpgsql set search_path = '' as $$
 begin
+  if tg_op = 'INSERT' then
+    if new.status not in ('draft', 'in_review') or new.published_at is not null or new.successor_version_id is not null then
+      raise exception 'a new ruleset version starts as a draft or in review: it is published through publish_ruleset_version' using errcode = 'P0001'; end if;
+    return new;
+  end if;
   if tg_op = 'DELETE' then
     if old.status not in ('draft', 'in_review') then raise exception 'a published ruleset version is never deleted: withdraw or supersede it' using errcode = 'P0001'; end if;
     return old;
@@ -96,16 +105,16 @@ begin
     or (old.status = 'published' and new.status in ('superseded', 'withdrawn')) or (old.status = 'superseded' and new.status = 'withdrawn')) then
     raise exception 'a ruleset version cannot move from % to %', old.status, new.status using errcode = 'P0001';
   end if;
-  if new.status = 'superseded' and new.superseded_by is null then raise exception 'say which version supersedes this one' using errcode = 'P0001'; end if;
+  if new.status = 'superseded' and new.successor_version_id is null then raise exception 'say which version supersedes this one' using errcode = 'P0001'; end if;
   if new.status = 'withdrawn' and new.withdrawn_reason is null then raise exception 'say why this version is withdrawn' using errcode = 'P0001'; end if;
-  if old.superseded_by is not null and new.superseded_by is distinct from old.superseded_by then raise exception 'the superseding version is permanent' using errcode = 'P0001'; end if;
+  if old.successor_version_id is not null and new.successor_version_id is distinct from old.successor_version_id then raise exception 'the superseding version is permanent' using errcode = 'P0001'; end if;
   if new.status = 'published' and (new.published_at is null) then raise exception 'publish through publish_ruleset_version' using errcode = 'P0001'; end if;
   return new;
 end $$;
 revoke execute on function private.ruleset_version_guard() from public, anon, authenticated;
 do $do$ begin
   if not exists (select 1 from pg_trigger where tgname = 'ruleset_versions_guard' and tgrelid = 'public.ruleset_versions'::regclass) then
-    create trigger ruleset_versions_guard before update or delete on public.ruleset_versions for each row execute function private.ruleset_version_guard();
+    create trigger ruleset_versions_guard before insert or update or delete on public.ruleset_versions for each row execute function private.ruleset_version_guard();
   end if;
 end $do$;
 
@@ -387,7 +396,7 @@ begin
   if not exists (select 1 from public.rule_provisions where ruleset_version_id = p_version) then raise exception 'this version has no provisions' using errcode = 'P0001'; end if;
   select id into v_prev from public.ruleset_versions where ruleset_id = v.ruleset_id and status = 'published' for update;
   if v_prev is not null then
-    update public.ruleset_versions set status = 'superseded', superseded_by = p_version, effective_to = coalesce(effective_to, coalesce(v.effective_from, current_date)) where id = v_prev;
+    update public.ruleset_versions set status = 'superseded', successor_version_id = p_version, effective_to = coalesce(effective_to, coalesce(v.effective_from, current_date)) where id = v_prev;
   end if;
   update public.ruleset_versions set status = 'published', published_at = now(), published_by = auth.uid(), note = coalesce(left(nullif(btrim(p_note), ''), 500), note) where id = p_version;
   perform private.audit(null, 'rules.version_published', p_version::text, jsonb_build_object('ruleset', v.ruleset_id, 'version', v.version, 'supersedes', v_prev, 'note', nullif(btrim(coalesce(p_note, '')), '')));
@@ -486,7 +495,7 @@ end $$;
 -- ---------------------------------------------------------------- 7. competitions: the version they are fought under
 -- Organizers already write competitions under the existing policy. Whatever the path, the link must name a published (or, for a past event, a superseded)
 -- version, test rulesets only for test events, and it is frozen once the competition is finished: its results keep meaning what they meant.
-create or replace function private.competition_ruleset_guard() returns trigger language plpgsql set search_path = '' as $$
+create or replace function private.competition_ruleset_check() returns trigger language plpgsql set search_path = '' as $$
 declare v_status text; v_syn boolean;
 begin
   if new.ruleset_version_id is not distinct from (case when tg_op = 'UPDATE' then old.ruleset_version_id else null end) then return new; end if;
@@ -498,10 +507,10 @@ begin
   end if;
   return new;
 end $$;
-revoke execute on function private.competition_ruleset_guard() from public, anon, authenticated;
+revoke execute on function private.competition_ruleset_check() from public, anon, authenticated;
 do $do$ begin
-  if not exists (select 1 from pg_trigger where tgname = 'competitions_ruleset_guard' and tgrelid = 'public.competitions'::regclass) then
-    create trigger competitions_ruleset_guard before insert or update of ruleset_version_id on public.competitions for each row execute function private.competition_ruleset_guard();
+  if not exists (select 1 from pg_trigger where tgname = 'competitions_ruleset_version_check' and tgrelid = 'public.competitions'::regclass) then
+    create trigger competitions_ruleset_version_check before insert or update of ruleset_version_id on public.competitions for each row execute function private.competition_ruleset_check();
   end if;
 end $do$;
 create index if not exists competitions_ruleset_version_idx on public.competitions (ruleset_version_id) where ruleset_version_id is not null;

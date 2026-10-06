@@ -108,7 +108,7 @@ export function pageLabel(path: string): string {
     [/^\/events\/[^/]+\/register$/, 'Registering for an event'], [/^\/events\/[^/]+\/field\/[^/]+$/, 'Scoring on a field'], [/^\/events\/[^/]+$/, 'An event page'],
     [/^\/teams$/, 'Teams list'], [/^\/teams\/[^/]+\/edit$/, 'Editing a team'], [/^\/teams\/[^/]+$/, 'A team page'],
     [/^\/fighters$/, 'Fighters list'], [/^\/fighters\/[^/]+\/edit$/, 'Editing their profile'], [/^\/fighters\/[^/]+$/, 'A fighter page'],
-    [/^\/rankings$/, 'Rankings'], [/^\/formats$/, 'Formats'], [/^\/rules$/, 'Rules'], [/^\/organizations(\/.*)?$/, 'Organizations'],
+    [/^\/rankings$/, 'Rankings'], [/^\/formats$/, 'Formats'], [/^\/rules(\/.*)?$/, 'Rules'], [/^\/organizations(\/.*)?$/, 'Organizations'],
     [/^\/team-manager$/, 'Team manager'], [/^\/account$/, 'Account'], [/^\/welcome$/, 'Setting up their profile'], [/^\/test-login$/, 'Test sign-in'],
     [/^\/platform(\/.*)?$/, 'Platform (owner)'], [/^\/marshal$/, 'Marshal view']
   ];

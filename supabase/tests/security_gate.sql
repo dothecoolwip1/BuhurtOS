@@ -361,8 +361,9 @@ select t.expect_ok('the owner adds a season', $q$insert into public.seasons (slu
 
 select t.as_anon();
 select t.expect_eq('anon can read organizations', (select count(*) from public.organizations), 1::bigint);
-select t.expect_eq('anon can read sources', (select count(*) from public.sources), 1::bigint);
-select t.expect_eq('anon can read ruleset versions', (select count(*) from public.ruleset_versions), 1::bigint);
+select t.expect_eq('anon can read sources', (select count(*) from public.sources where id = '00000000-0000-0000-0000-0000000000c1'), 1::bigint);
+-- Pack 22: a ruleset version is readable by everyone once published; a new (draft) version is the owner's only until then.
+select t.expect_eq('anon cannot read an unpublished ruleset version (Pack 22)', (select count(*) from public.ruleset_versions where id = '00000000-0000-0000-0000-0000000000d2'), 0::bigint);
 select t.expect_eq('anon can read the source status of a record', (select status from public.record_sources limit 1), 'unverified'::text);
 select t.expect_eq('anon sees the affiliation of an approved team', (select count(*) from public.team_affiliations), 1::bigint);
 select t.expect_eq('anon can read seasons', (select count(*) from public.seasons), 1::bigint);
