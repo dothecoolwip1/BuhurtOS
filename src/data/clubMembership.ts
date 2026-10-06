@@ -6,10 +6,10 @@ import type { DuesChange, DuesStatus, MembershipStatus, RosterMember } from '../
  * club (migration 20261013000100); the screens only show what the database already allowed. Nothing here writes a table directly.
  */
 
-export interface ClubYear { year: number; startsOn: string; endsOn: string; duesCents: number; minVotingAge: number; applicationsOpen: boolean }
+export interface ClubYear { year: number; startsOn: string; endsOn: string; duesCents: number; minVotingAge: number; applicationsOpen: boolean; feeWaived: boolean }
 export interface MyMembership {
   id: string; year: number; status: MembershipStatus; fullName: string; discordName: string | null; dateOfBirth: string | null; adultConfirmed: boolean;
-  appliedAt: string; duesStatus: DuesStatus; duesAmountCents: number | null; duesChangedAt: string | null; eligible: boolean; reasonCodes: string[]; reasons: string[];
+  appliedAt: string; duesStatus: DuesStatus; duesAmountCents: number | null; duesChangedAt: string | null; feeWaived: boolean; eligible: boolean; reasonCodes: string[]; reasons: string[];
 }
 export interface ClubOverview {
   enabled: boolean; currentYear: number | null; years: ClubYear[]; memberships: MyMembership[]; offices: { office: string; label: string }[];
@@ -32,19 +32,19 @@ async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
 export async function fetchClubOverview(teamId: string): Promise<ClubOverview> {
   type Raw = {
     enabled: boolean; current_year: number | null; email: string | null; suggested_name: string | null; can_view_roster: boolean; can_change_dues: boolean; can_assign_officers: boolean;
-    years: { year: number; starts_on: string; ends_on: string; dues_cents: number; min_voting_age: number; applications_open: boolean }[];
+    years: { year: number; starts_on: string; ends_on: string; dues_cents: number; min_voting_age: number; applications_open: boolean; fee_waived?: boolean }[];
     memberships: { id: string; year: number; status: MembershipStatus; full_name: string; discord_name: string | null; date_of_birth: string | null; adult_confirmed: boolean;
-      applied_at: string; dues_status: DuesStatus; dues_amount_cents: number | null; dues_changed_at: string | null; eligible: boolean; reason_codes: string[]; reasons: string[] }[];
+      applied_at: string; dues_status: DuesStatus; dues_amount_cents: number | null; dues_changed_at: string | null; fee_waived?: boolean; eligible: boolean; reason_codes: string[]; reasons: string[] }[];
     offices: { office: string; label: string }[];
   };
   const r = await rpc<Raw>('club_membership_overview', { p_team: teamId });
   return {
     enabled: r.enabled, currentYear: r.current_year, email: r.email, suggestedName: r.suggested_name, offices: r.offices ?? [],
     canViewRoster: r.can_view_roster, canChangeDues: r.can_change_dues, canAssignOfficers: r.can_assign_officers,
-    years: (r.years ?? []).map(y => ({ year: y.year, startsOn: y.starts_on, endsOn: y.ends_on, duesCents: y.dues_cents, minVotingAge: y.min_voting_age, applicationsOpen: y.applications_open })),
+    years: (r.years ?? []).map(y => ({ year: y.year, startsOn: y.starts_on, endsOn: y.ends_on, duesCents: y.dues_cents, minVotingAge: y.min_voting_age, applicationsOpen: y.applications_open, feeWaived: y.fee_waived === true })),
     memberships: (r.memberships ?? []).map(m => ({
       id: m.id, year: m.year, status: m.status, fullName: m.full_name, discordName: m.discord_name, dateOfBirth: m.date_of_birth, adultConfirmed: m.adult_confirmed,
-      appliedAt: m.applied_at, duesStatus: m.dues_status, duesAmountCents: m.dues_amount_cents, duesChangedAt: m.dues_changed_at, eligible: m.eligible,
+      appliedAt: m.applied_at, duesStatus: m.dues_status, duesAmountCents: m.dues_amount_cents, duesChangedAt: m.dues_changed_at, feeWaived: m.fee_waived === true, eligible: m.eligible,
       reasonCodes: m.reason_codes ?? [], reasons: m.reasons ?? []
     }))
   };

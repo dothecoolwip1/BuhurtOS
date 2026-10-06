@@ -29,9 +29,10 @@ update public.profiles p set display_name = v.n, onboarded_at = now(), interests
 insert into public.teams (id, slug, name, status, city, region, country) values
   ('00000000-0000-0000-0000-0000000c1ea1', 'red-deer-reavers', 'Red Deer Reavers', 'approved', 'Red Deer', 'Alberta', 'Canada'),
   ('00000000-0000-0000-0000-0000000c1ea2', 'other-club', 'Other Club', 'approved', 'Calgary', 'Alberta', 'Canada');
-insert into public.club_membership_years (team_id, year, starts_on, ends_on, dues_cents) values
-  ('00000000-0000-0000-0000-0000000c1ea1', extract(year from current_date)::int, date_trunc('year', current_date)::date, (date_trunc('year', current_date) + interval '1 year - 1 day')::date, 2000),
-  ('00000000-0000-0000-0000-0000000c1ea2', extract(year from current_date)::int, date_trunc('year', current_date)::date, (date_trunc('year', current_date) + interval '1 year - 1 day')::date, 3000);
+-- the Reavers' 2026 fee is waived (as in production); the other club's is not
+insert into public.club_membership_years (team_id, year, starts_on, ends_on, dues_cents, fee_waived) values
+  ('00000000-0000-0000-0000-0000000c1ea1', extract(year from current_date)::int, date_trunc('year', current_date)::date, (date_trunc('year', current_date) + interval '1 year - 1 day')::date, 2000, true),
+  ('00000000-0000-0000-0000-0000000c1ea2', extract(year from current_date)::int, date_trunc('year', current_date)::date, (date_trunc('year', current_date) + interval '1 year - 1 day')::date, 3000, false);
 insert into public.team_officers (team_id, user_id, office, note) values
   ('00000000-0000-0000-0000-0000000c1ea1', '00000000-0000-0000-0000-0000000c1e01', 'president', 'fixture'),
   ('00000000-0000-0000-0000-0000000c1ea1', '00000000-0000-0000-0000-0000000c1e02', 'secretary', 'fixture'),
@@ -53,3 +54,8 @@ insert into public.club_dues (membership_id, status, amount_cents, changed_at) v
   ('00000000-0000-0000-0000-0000000c1eb5', 'paid', 2000, now()), ('00000000-0000-0000-0000-0000000c1eb6', 'unpaid', null, now()),
   ('00000000-0000-0000-0000-0000000c1eb7', 'paid', 2000, now()), ('00000000-0000-0000-0000-0000000c1eb8', 'paid', 2000, now()),
   ('00000000-0000-0000-0000-0000000c1eb9', 'unpaid', null, now());
+
+-- the AGM exactly as production has it: Sunday October 18, 2026, 5:30 PM Edmonton time
+insert into public.club_meetings (id, team_id, membership_year, kind, title, starts_at, timezone, location) values
+  ('00000000-0000-0000-0000-0000000c1ec1', '00000000-0000-0000-0000-0000000c1ea1', extract(year from current_date)::int, 'agm', 'Red Deer Reavers 2026 AGM',
+   timestamp '2026-10-18 17:30' at time zone 'America/Edmonton', 'America/Edmonton', 'Alister''s home');

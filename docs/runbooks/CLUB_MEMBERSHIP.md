@@ -1,6 +1,10 @@
 # Club membership, dues and AGM voting (Red Deer Reavers)
 
-Status date: 2026-10-06. Migration `supabase/migrations/20261013000100_club_membership_dues_voting.sql`.
+Status date: 2026-10-06. Migrations `20261013000100_club_membership_dues_voting.sql` and `20261014000100_club_fee_waiver_and_agm.sql`.
+
+**Update (part 2):** see section 12 for the 2026 fee waiver, account creation on the club website and the 2026 AGM. Where part 1 below says
+BuhurtOS has an AGM tab or that the two sites run on different domains, part 2 replaces it: AGM screens are on the club website only, and both
+sites are served from `https://dothecoolwip1.github.io` (one browser origin).
 
 One BuhurtOS account per person. The Red Deer Reavers website signs in to the same Supabase project as BuhurtOS. There is no second
 password database, and no token is passed between the two websites.
@@ -180,3 +184,66 @@ project. All database text is inserted with `textContent`.
 - No "renew for next year" button. Members apply again for a new year once an executive opens it.
 - Executives cannot enter a member who has no BuhurtOS account. Every member needs an account.
 - An executive can record their own dues. This is allowed and visible in the history (name and office).
+
+
+## 12. Part 2 (2026-10-06): shared account creation, 2026 fee waiver, the 2026 AGM
+
+### Production addresses (from the Supabase Auth logs)
+- BuhurtOS: `https://dothecoolwip1.github.io/BuhurtOS/`
+- Club website: `https://dothecoolwip1.github.io/Red-deer-reavers/` (members area: `members.html`)
+
+Both sites have the **same browser origin**. supabase-js keeps the session under the same storage key on both, so the browser holds one
+sign-in for both sites. Signing in on one signs you in on the other, and signing out signs you out of both. No token is put in a URL or passed
+between the sites. The *account* is the same either way: one `auth.users` row and one `profiles` row.
+
+### Accounts on the club website (`members.html`)
+| Action | How |
+| --- | --- |
+| Create account | `supabase.auth.signUp` in the BuhurtOS project. The database trigger creates the BuhurtOS `profiles` row. The confirmation email links back to `members.html`. |
+| First step after confirming | BuhurtOS's own profile step: name, how you take part, optional city and province, saved with `complete_my_profile`. BuhurtOS never asks again. |
+| Then | Join the Red Deer Reavers (`apply_for_club_membership`) → "Membership Application Pending" → approved → "Membership: Active". |
+| Sign in | Email + password, Continue with Google, or an emailed 6-digit code for existing accounts. Existing BuhurtOS users never create a second account. |
+| Existing email at Create account | No second identity is created (Supabase Auth behaviour). The page says to sign in or reset the password, without saying whether the address has an account. |
+| Forgot password | `resetPasswordForEmail`. The link returns to `members.html?reset=1`, which shows "Choose a new password". The password works on both sites. |
+
+### 2026 fee waiver
+`club_membership_years.fee_waived` (per club and year). Reavers 2026 = true; every other year defaults to false.
+- `club_vote_check`: Unpaid dues no longer stop anyone voting in a waived year. All other rules are unchanged.
+- Per-member dues records, their history, and the Paid / Waived / Gear contribution statuses are untouched and work again in 2027.
+- Both apps show "Fee waived" / "WAIVED" instead of "Unpaid".
+
+### AGM (club website only; BuhurtOS has no AGM screens)
+| Table | What it holds |
+| --- | --- |
+| `club_meetings` | Seeded: Red Deer Reavers 2026 AGM, 2026-10-18 17:30 America/Edmonton, at Alister's home. The video link is private and set by the executive. |
+| `club_meeting_rsvps` + append-only `club_meeting_rsvp_history` | One row per member and meeting: In Person / Video Call / Voting by Proxy / Not Attending. Changes are allowed until the meeting starts. |
+| `club_meeting_proxies` | Grantor, holder, authorization wording, time, status (`active` / `cancelled` / `replaced`), end time, who ended it, why. Rows can only be ended, never edited or removed (trigger). At most one active proxy per member. |
+| `club_meeting_attendance` + append-only history | Check-in: present in person / present by video / absent, who, when, and eligibility at that moment. Never touches the RSVP. |
+| `club_meeting_records` | Append-only frozen snapshots ("Save official AGM record"), so the record does not change when memberships change later. |
+
+Proxy rules: the holder must be eligible to vote on the meeting day, must not be the member themselves, must be in the same club and year, and
+must not have given away their own vote. A member who holds proxies cannot give theirs away. The member must tick the authorization.
+- A proxy is **valid** while both people are eligible and the holder has not given their own proxy.
+- Proxies are documented authority only. Nothing casts or counts votes.
+
+Permissions:
+
+| Who | May |
+| --- | --- |
+| Any member (pending, active or inactive; not removed) | RSVP and give a proxy, for their own membership only. |
+| Active and pending members, and executives | See the video link. |
+| Any current executive | See the AGM dashboard, proxy list and voting list. |
+| President, Secretary, Treasurer | Check-in, the video link, and saving the official record. |
+
+Every table: RLS on, no grants, functions only.
+
+### Tests
+- `supabase/tests/club_agm_gate.sql`: 78 checks, in `run_all.sh`.
+- `scripts/e2e/club-live.sh`: 61 checks with the real Supabase Auth server and its default link-only emails. Both sites are served from one
+  origin like production, at 390x844 and 1280x900.
+
+### Manual step that only the owner can do (Supabase dashboard)
+**Authentication › URL Configuration › Redirect URLs** must include `https://dothecoolwip1.github.io/Red-deer-reavers/**`. If
+`https://dothecoolwip1.github.io/**` is already listed, nothing is needed. Without it, Supabase sends confirmation, reset and Google sign-in links
+to the Site URL (BuhurtOS) instead of back to the club website. Because the origin is shared, the person still ends up signed in, but on the
+BuhurtOS page.

@@ -562,3 +562,14 @@ Branch `ccr-f3ffa4b5-htzvr1` (BuhurtOS and Red-deer-reavers). Full design, RLS, 
 | PR / merged / deployed / production verified | no / no / no / no |
 
 Not verified: the real domains (buhurtos.ca, the GitHub Pages club site): sign-in there, CSP with the real CDN, real phones. Cross-site session sharing is not implemented by design (same account, separate sessions).
+
+## Red Deer Reavers part 2: account creation on the club website, 2026 fee waiver, 2026 AGM (2026-10-06)
+
+| Level | Status |
+| --- | --- |
+| Implemented in repository | `club_membership_years.fee_waived` (Reavers 2026 = true; eligibility ignores unpaid dues in a waived year); `club_meetings`, RSVP (+history), proxies (end-only), attendance (+history), saved AGM records; BuhurtOS shows "Fee waived" and has NO AGM screens (part 1's AGM tab removed); club website: create account / sign in / Google / reset password / profile step / join / AGM / executive AGM tools |
+| Migration created | `20261014000100_club_fee_waiver_and_agm.sql` (additive) |
+| Applied to hosted Supabase | **YES** (2026-10-06); all 35 club function bodies md5-identical to the repository; AGM seeded Sunday 2026-10-18 17:30 America/Edmonton; no API grants on the meeting tables; nothing anon-executable |
+| Officers on hosted | Treasurer = dothecoolwip@gmail.com (assigned through `assign_team_officer` as the platform owner, audited). President / Secretary: no accounts exist yet |
+| Automated tests | `club_agm_gate.sql` **78 checks** + `club_membership_gate.sql` 101; `run_all.sh` DATABASE GATE PASSED; Vitest 965; typecheck |
+| Real-auth browser scenario | `scripts/e2e/club-live.sh` **61/61** (real Supabase Auth with default link-only emails; both sites on ONE origin like production; 390x844 + 1280x900) |

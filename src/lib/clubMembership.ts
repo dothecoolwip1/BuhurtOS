@@ -32,8 +32,14 @@ export const DUES_LABEL: Record<DuesStatus, string> = { unpaid: 'Unpaid', paid: 
 export const DUES_OPTIONS: readonly DuesStatus[] = ['paid', 'unpaid', 'waived', 'gear_contribution'];
 export const MEMBERSHIP_OPTIONS: readonly MembershipStatus[] = ['active', 'pending', 'inactive', 'removed'];
 
-/** Paid, Waived and a recorded Gear contribution meet the dues requirement; Unpaid does not. Mirrors the database rule for display only. */
-export const duesSatisfied = (s: DuesStatus): boolean => s !== 'unpaid';
+/**
+ * Paid, Waived and a recorded Gear contribution meet the dues requirement; Unpaid does not. In a membership year whose fee is waived (Red Deer
+ * Reavers 2026) nothing is owed at all. Mirrors the database rule for display only; eligibility itself always comes from the database.
+ */
+export const duesSatisfied = (s: DuesStatus, feeWaived = false): boolean => feeWaived || s !== 'unpaid';
+
+/** What to show for a member's dues: in a year whose fee is waived an unrecorded fee reads "Fee waived", never "Unpaid". */
+export const duesLabel = (s: DuesStatus, feeWaived = false): string => (feeWaived && s === 'unpaid' ? 'Fee waived' : DUES_LABEL[s]);
 
 export type RosterFilter = 'all' | 'eligible' | 'not_eligible' | 'paid' | 'unpaid' | 'pending' | 'active';
 export const ROSTER_FILTERS: readonly (readonly [RosterFilter, string])[] = [
@@ -41,7 +47,7 @@ export const ROSTER_FILTERS: readonly (readonly [RosterFilter, string])[] = [
 ];
 
 /** "Members" on the dashboard are everyone with a record this year except removed ones (removed stay visible under All for the record). */
-export function filterRoster(rows: readonly RosterMember[], filter: RosterFilter, search = ''): RosterMember[] {
+export function filterRoster(rows: readonly RosterMember[], filter: RosterFilter, search = '', feeWaived = false): RosterMember[] {
   const q = search.trim().toLowerCase();
   return rows.filter(r => {
     if (q && !`${r.fullName} ${r.discordName ?? ''} ${r.email ?? ''}`.toLowerCase().includes(q)) return false;
@@ -49,8 +55,8 @@ export function filterRoster(rows: readonly RosterMember[], filter: RosterFilter
       case 'all': return true;
       case 'eligible': return r.eligible;
       case 'not_eligible': return !r.eligible && r.status !== 'removed';
-      case 'paid': return r.status !== 'removed' && duesSatisfied(r.duesStatus);
-      case 'unpaid': return r.status !== 'removed' && !duesSatisfied(r.duesStatus);
+      case 'paid': return r.status !== 'removed' && duesSatisfied(r.duesStatus, feeWaived);
+      case 'unpaid': return r.status !== 'removed' && !duesSatisfied(r.duesStatus, feeWaived);
       case 'pending': return r.status === 'pending';
       case 'active': return r.status === 'active';
     }
@@ -63,24 +69,15 @@ export interface RosterSummary { total: number; active: number; voting: number; 
  * The six numbers at the top of the dashboard. Total = everyone not removed. Dues paid counts any dues requirement met (paid, waived, gear);
  * Dues outstanding = active or pending members whose dues are unpaid (inactive members owe nothing for voting purposes).
  */
-export function summarize(rows: readonly RosterMember[]): RosterSummary {
+export function summarize(rows: readonly RosterMember[], feeWaived = false): RosterSummary {
   const live = rows.filter(r => r.status !== 'removed');
   return {
     total: live.length,
     active: live.filter(r => r.status === 'active').length,
     voting: rows.filter(r => r.eligible).length,
-    duesPaid: live.filter(r => duesSatisfied(r.duesStatus)).length,
-    duesOutstanding: live.filter(r => (r.status === 'active' || r.status === 'pending') && !duesSatisfied(r.duesStatus)).length,
+    duesPaid: live.filter(r => duesSatisfied(r.duesStatus, feeWaived)).length,
+    duesOutstanding: live.filter(r => (r.status === 'active' || r.status === 'pending') && !duesSatisfied(r.duesStatus, feeWaived)).length,
     pending: live.filter(r => r.status === 'pending').length
-  };
-}
-
-/** The AGM snapshot: who can vote, and everyone else (removed members are not listed) with the reason. Sorted by name. */
-export function agmSnapshot(rows: readonly RosterMember[]): { voters: RosterMember[]; excluded: RosterMember[] } {
-  const byName = (a: RosterMember, b: RosterMember) => a.fullName.localeCompare(b.fullName);
-  return {
-    voters: rows.filter(r => r.eligible).sort(byName),
-    excluded: rows.filter(r => !r.eligible && r.status !== 'removed').sort(byName)
   };
 }
 

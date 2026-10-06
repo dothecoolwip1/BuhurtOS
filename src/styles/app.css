@@ -1379,12 +1379,7 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .dues-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .dues-opt{display:flex;gap:8px;align-items:center;min-height:48px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-sm);font-weight:600;cursor:pointer}
 .dues-opt.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
-.agm-head h2{margin:0;font:800 22px/1.2 var(--f-display)} .agm-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
-.agm-count{margin-top:10px;font-size:18px} .agm-count b{font:900 44px/1 var(--f-display);color:var(--win);margin-right:6px}
-.agm-list{display:grid;gap:6px;margin:8px 0 0;padding-left:24px;font-size:16px}
-.agm-list.excluded{list-style:none;padding-left:0} .agm-list.excluded span{color:var(--live);font-weight:600;font-size:14px;margin-left:6px}
 @media print{
   .top,.bottom,footer,.no-print,.mockflag,.more-sheet{display:none!important}
   body,main{background:#fff!important;color:#000!important}
-  .agm-count b,.agm-list.excluded span{color:#000!important}
 }

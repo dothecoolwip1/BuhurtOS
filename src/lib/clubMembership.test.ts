@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { agmSnapshot, filterRoster, historySentence, isAtLeast, money, parseMoney, summarize, type RosterMember } from './clubMembership';
+import { duesLabel, duesSatisfied, filterRoster, historySentence, isAtLeast, money, parseMoney, summarize, type RosterMember } from './clubMembership';
 
 const m = (over: Partial<RosterMember>): RosterMember => ({
   membershipId: over.fullName ?? 'x', fullName: 'X', email: null, discordName: null, status: 'active', appliedAt: '2026-01-01T00:00:00Z', isAdult: true,
@@ -32,10 +32,14 @@ describe('club membership dashboard', () => {
     expect(names('all')).toHaveLength(7);
     expect(filterRoster(rows, 'all', 'smith').map(r => r.fullName)).toEqual(['John Smith', 'Jane Smith']);
   });
-  it('splits the AGM snapshot into voters and excluded members with reasons, leaving removed members out', () => {
-    const s = agmSnapshot(rows);
-    expect(s.voters.map(r => r.fullName)).toEqual(['Garrett Robson', 'Gear Giver']);
-    expect(s.excluded.map(r => r.fullName)).toEqual(['Jane Smith', 'John Smith', 'Old Member', 'Young One']);
+  it('treats every dues status as satisfied in a year whose fee is waived, and says so', () => {
+    expect(summarize(rows, true)).toEqual({ total: 6, active: 4, voting: 2, duesPaid: 6, duesOutstanding: 0, pending: 1 });
+    expect(filterRoster(rows, 'unpaid', '', true)).toEqual([]);
+    expect(duesSatisfied('unpaid', true)).toBe(true);
+    expect(duesSatisfied('unpaid')).toBe(false);
+    expect(duesLabel('unpaid', true)).toBe('Fee waived');
+    expect(duesLabel('unpaid')).toBe('Unpaid');
+    expect(duesLabel('paid', true)).toBe('Paid');
   });
 });
 

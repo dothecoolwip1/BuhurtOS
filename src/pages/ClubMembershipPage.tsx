@@ -10,7 +10,7 @@ import {
 } from '../data/clubMembership';
 import { fetchTeamBySlug, type DirectoryEntry } from '../data/teamDirectory';
 import {
-  agmSnapshot, DUES_LABEL, DUES_OPTIONS, duesSatisfied, filterRoster, historySentence, isAtLeast, MEMBERSHIP_LABEL, MEMBERSHIP_OPTIONS, money, parseMoney,
+  DUES_LABEL, DUES_OPTIONS, duesLabel, duesSatisfied, filterRoster, historySentence, isAtLeast, MEMBERSHIP_LABEL, MEMBERSHIP_OPTIONS, money, parseMoney,
   ROSTER_FILTERS, summarize, type DuesStatus, type MembershipStatus, type RosterFilter, type RosterMember
 } from '../lib/clubMembership';
 import { todayIso } from '../lib/careerView';
@@ -22,8 +22,9 @@ const bad: React.CSSProperties = { color: 'var(--live)' };
 
 /**
  * /teams/:slug/membership: a club's society membership (Red Deer Reavers first). Everyone signed in sees their OWN membership, dues and
- * voting eligibility and can apply. The club's executive additionally sees the members list, the AGM snapshot and the dues history; only the
- * President, Secretary and Treasurer get the change buttons. The database checks all of it again (migration 20261013000100).
+ * voting eligibility and can apply. The club's executive additionally sees the members list and the dues history; only the President,
+ * Secretary and Treasurer get the change buttons. The database checks all of it again (migrations 20261013000100, 20261014000100).
+ * AGM registration, proxies and check-in are deliberately NOT here: they live on the club's own website (owner decision 2026-10-06).
  */
 export function ClubMembershipPage() {
   const { slug = '' } = useParams();
@@ -50,9 +51,9 @@ export function ClubMembershipPage() {
 function Club({ t, o, reload }: { t: DirectoryEntry; o: ClubOverview; reload: () => void }) {
   const [params, setParams] = useSearchParams();
   const leadership = o.canViewRoster;
-  type View = 'mine' | 'members' | 'agm' | 'history' | 'officers';
+  type View = 'mine' | 'members' | 'history' | 'officers';
   const views: (readonly [View, string])[] = [['mine', 'My membership']];
-  if (leadership) views.push(['members', 'Members'], ['agm', 'AGM'], ['history', 'Dues history']);
+  if (leadership) views.push(['members', 'Members'], ['history', 'Dues history']);
   if (leadership || o.canAssignOfficers) views.push(['officers', 'Executive']);
   const asked = params.get('view') as View | null;
   const view: View = views.some(([k]) => k === asked) ? asked as View : (leadership ? 'members' : 'mine');
@@ -74,14 +75,13 @@ function Club({ t, o, reload }: { t: DirectoryEntry; o: ClubOverview; reload: ()
       <Link className="more no-print" to={`/teams/${t.slug}`}>← {t.name}</Link>
       <PageHead eyebrow={t.name} title="Membership" />
       {views.length > 1 && <div className="no-print"><Tabs value={view} options={views} onChange={setView} /></div>}
-      {(view === 'members' || view === 'agm' || view === 'history') && years.length > 1 && (
+      {(view === 'members' || view === 'history') && years.length > 1 && (
         <label className="field-in no-print" style={{ maxWidth: 200 }}>Membership year
           <select value={year ?? ''} onChange={e => setYear(Number(e.target.value))}>{years.map(y => <option key={y} value={y}>{y}</option>)}</select>
         </label>
       )}
       {view === 'mine' && <Mine t={t} o={o} onChanged={reload} />}
-      {view === 'members' && year != null && <Members teamId={t.id} year={year} canChange={o.canChangeDues} />}
-      {view === 'agm' && year != null && <Agm t={t} year={year} />}
+      {view === 'members' && year != null && <Members teamId={t.id} year={year} canChange={o.canChangeDues} feeWaived={o.years.find(y => y.year === year)?.feeWaived ?? false} />}
       {view === 'history' && year != null && <History teamId={t.id} year={year} />}
       {view === 'officers' && <OfficersPanel teamId={t.id} canAssign={o.canAssignOfficers} />}
     </section>
@@ -112,7 +112,7 @@ function Mine({ t, o, onChanged }: { t: DirectoryEntry; o: ClubOverview; onChang
       {o.memberships.filter(m => m.year !== o.currentYear).length > 0 && (
         <section className="panel info"><h2 className="h3">Earlier years</h2>
           <ul className="club-list">{o.memberships.filter(m => m.year !== o.currentYear).map(m => (
-            <li key={m.id}><b>{m.year}</b> <Chip>{MEMBERSHIP_LABEL[m.status]}</Chip> <DuesChip s={m.duesStatus} /></li>
+            <li key={m.id}><b>{m.year}</b> <Chip>{MEMBERSHIP_LABEL[m.status]}</Chip> <DuesChip s={m.duesStatus} feeWaived={m.feeWaived} /></li>
           ))}</ul></section>
       )}
     </div>
@@ -126,13 +126,14 @@ function MyCard({ m, offices, onEdit }: { m: MyMembership; offices: string[]; on
       <dl className="club-facts">
         <dt>Member</dt><dd>{m.fullName}</dd>
         <dt>Membership</dt><dd><StatusChip s={m.status} /> {m.year}</dd>
-        <dt>{m.year} dues</dt><dd><DuesChip s={m.duesStatus} /> {m.duesAmountCents != null && money(m.duesAmountCents)}</dd>
+        <dt>{m.year} membership fee</dt><dd><DuesChip s={m.duesStatus} feeWaived={m.feeWaived} /> {m.duesAmountCents != null && money(m.duesAmountCents)}</dd>
         {offices.length > 0 && <><dt>Executive role</dt><dd>{offices.join(', ')}</dd></>}
         {m.discordName && <><dt>Discord</dt><dd>{m.discordName}</dd></>}
         <dt>Applied</dt><dd>{new Date(m.appliedAt).toLocaleDateString('en-CA', { dateStyle: 'medium' })}</dd>
       </dl>
       {m.status === 'pending' && <p className="src">Your application is waiting for the club executive. Dues are recorded by the President, Secretary or Treasurer; you cannot change them here.</p>}
-      {m.status === 'active' && !duesSatisfied(m.duesStatus) && <p className="src">Pay your dues to the Treasurer. They record it here; it is not paid online.</p>}
+      {m.feeWaived && <p className="src">The {m.year} membership fee is waived: nothing to pay this year.</p>}
+      {m.status === 'active' && !duesSatisfied(m.duesStatus, m.feeWaived) && <p className="src">Pay your dues to the Treasurer. They record it here; it is not paid online.</p>}
       {onEdit && <button type="button" className="btn btn-line btn-sm" onClick={onEdit} style={{ justifySelf: 'start' }}>Edit my application</button>}
     </section>
   );
@@ -160,7 +161,7 @@ function ApplyForm({ t, o, year, duesCents, existing, onDone, onCancel }: {
   return (
     <form className="panel info" style={{ display: 'grid', gap: 12 }} onSubmit={submit} data-testid="apply-form">
       <h2 className="h3">{existing ? 'Edit my application' : `Apply to become a ${year} member`}</h2>
-      <p className="src">Annual dues for {year}: <b>{money(duesCents)}</b>, paid to the Treasurer. Your account email: {o.email}.</p>
+      <p className="src">{o.years.find(y => y.year === year)?.feeWaived ? <>The {year} membership fee is <b>waived</b>: nothing to pay.</> : <>Annual dues for {year}: <b>{money(duesCents)}</b>, paid to the Treasurer.</>} Your account email: {o.email}.</p>
       <label className="field-in">Full name<input value={a.fullName} onChange={e => set('fullName', e.target.value)} autoComplete="name" maxLength={120} required /></label>
       <label className="field-in">Discord name (optional)<input value={a.discordName} onChange={e => set('discordName', e.target.value)} maxLength={64} /></label>
       <label className="field-in">Date of birth (optional if you confirm 18+ below)<input type="date" value={a.dateOfBirth} max={todayIso()} onChange={e => set('dateOfBirth', e.target.value)} /></label>
@@ -180,24 +181,24 @@ function ApplyForm({ t, o, year, duesCents, existing, onDone, onCancel }: {
 export function StatusChip({ s }: { s: MembershipStatus }) {
   return <Chip tone={s === 'active' ? 'win' : s === 'pending' ? 'brass' : ''}>{MEMBERSHIP_LABEL[s]}</Chip>;
 }
-export function DuesChip({ s }: { s: DuesStatus }) {
-  return <span className={`dues-chip ${s}`}>{DUES_LABEL[s]}</span>;
+export function DuesChip({ s, feeWaived = false }: { s: DuesStatus; feeWaived?: boolean }) {
+  return <span className={`dues-chip ${feeWaived && s === 'unpaid' ? 'waived' : s}`}>{duesLabel(s, feeWaived)}</span>;
 }
 function VoteChip({ r }: { r: Pick<RosterMember, 'eligible'> }) {
   return <span className={`vote-chip ${r.eligible ? 'yes' : 'no'}`}>{r.eligible ? 'Can vote' : 'Cannot vote'}</span>;
 }
 
-function Members({ teamId, year, canChange }: { teamId: string; year: number; canChange: boolean }) {
+function Members({ teamId, year, canChange, feeWaived }: { teamId: string; year: number; canChange: boolean; feeWaived: boolean }) {
   const [tick, setTick] = useState(0);
   const roster = useAsync(() => fetchRoster(teamId, year), [teamId, year], [tick]);
   const [filter, setFilter] = useState<RosterFilter>('all');
   const [search, setSearch] = useState('');
   const [dues, setDuesFor] = useState<RosterMember | null>(null);
   const [view, setViewFor] = useState<RosterMember | null>(null);
-  const rows = useMemo(() => filterRoster(roster.data ?? [], filter, search), [roster.data, filter, search]);
+  const rows = useMemo(() => filterRoster(roster.data ?? [], filter, search, feeWaived), [roster.data, filter, search, feeWaived]);
   if (roster.loading) return <p className="muted">Loading members…</p>;
   if (roster.error != null) return <p role="alert" style={bad}>{friendlyError(roster.error, 'Could not load the members list.')}</p>;
-  const s = summarize(roster.data ?? []);
+  const s = summarize(roster.data ?? [], feeWaived);
   const changed = () => setTick(n => n + 1);
   return (
     <div style={{ display: 'grid', gap: 14 }}>
@@ -205,7 +206,7 @@ function Members({ teamId, year, canChange }: { teamId: string; year: number; ca
         <Tile n={s.total} label="Total members" onClick={() => setFilter('all')} />
         <Tile n={s.active} label="Active" onClick={() => setFilter('active')} />
         <Tile n={s.voting} label="Can vote" tone="yes" onClick={() => setFilter('eligible')} />
-        <Tile n={s.duesPaid} label="Dues paid" onClick={() => setFilter('paid')} />
+        <Tile n={s.duesPaid} label={feeWaived ? 'Fee waived / paid' : 'Dues paid'} onClick={() => setFilter('paid')} />
         <Tile n={s.duesOutstanding} label="Dues outstanding" tone={s.duesOutstanding > 0 ? 'no' : ''} onClick={() => setFilter('unpaid')} />
         <Tile n={s.pending} label="Pending applications" tone={s.pending > 0 ? 'warn' : ''} onClick={() => setFilter('pending')} />
       </div>
@@ -213,12 +214,12 @@ function Members({ teamId, year, canChange }: { teamId: string; year: number; ca
       <input className="club-search" type="search" placeholder="Find a member" value={search} onChange={e => setSearch(e.target.value)} aria-label="Find a member" />
       {rows.length === 0 && <p className="muted">{(roster.data ?? []).length === 0 ? `Nobody has applied for ${year} yet.` : 'Nobody matches.'}</p>}
       <div className="club-rows" role="table" aria-label={`${year} members`}>
-        <div className="club-row head" role="row"><span role="columnheader">Member</span><span role="columnheader">Membership</span><span role="columnheader">{year} dues</span><span role="columnheader">Voting</span><span role="columnheader">Actions</span></div>
+        <div className="club-row head" role="row"><span role="columnheader">Member</span><span role="columnheader">Membership</span><span role="columnheader">{year} fee</span><span role="columnheader">Voting</span><span role="columnheader">Actions</span></div>
         {rows.map(r => (
           <div key={r.membershipId} className={`club-row${r.status === 'pending' ? ' pending' : ''}`} role="row" data-testid="member-row">
             <span role="cell" className="who"><b>{r.fullName}</b>{r.offices.length > 0 && <small>{r.offices.join(', ')}</small>}</span>
             <span role="cell"><StatusChip s={r.status} /></span>
-            <span role="cell"><DuesChip s={r.duesStatus} /></span>
+            <span role="cell"><DuesChip s={r.duesStatus} feeWaived={feeWaived} /></span>
             <span role="cell" className="vote"><VoteChip r={r} />{!r.eligible && r.reasons.length > 0 && <small>{r.reasons.join(' · ')}</small>}</span>
             <span role="cell" className="acts">
               {canChange && <button type="button" className="btn btn-line btn-sm" onClick={() => setDuesFor(r)} aria-label={`Change dues for ${r.fullName}`}>Dues</button>}
@@ -308,41 +309,6 @@ function MemberDialog({ teamId, m, canChange, onClose, onSaved, onDues }: { team
       {(history.data ?? []).length === 0 && !history.loading && <p className="muted">No dues changes recorded.</p>}
       <ul className="club-list">{(history.data ?? []).map(h => <li key={h.id}>{historySentence(h)}{h.note && <small> “{h.note}”</small>}</li>)}</ul>
     </Dialog>
-  );
-}
-
-// ---------------------------------------------------------------- AGM snapshot (read-only, printable)
-function Agm({ t, year }: { t: DirectoryEntry; year: number }) {
-  const [asOf, setAsOf] = useState(todayIso());
-  const roster = useAsync(() => fetchRoster(t.id, year, asOf), [t.id, year, asOf]);
-  const snap = useMemo(() => agmSnapshot(roster.data ?? []), [roster.data]);
-  return (
-    <div className="agm" style={{ display: 'grid', gap: 14 }} data-testid="agm">
-      <div className="evfilter no-print">
-        <label className="field-in" style={{ maxWidth: 220 }}>AGM date (ages counted on)<input type="date" value={asOf} onChange={e => setAsOf(e.target.value || todayIso())} /></label>
-        <button type="button" className="btn btn-line" onClick={() => window.print()}>Print</button>
-      </div>
-      <p className="src no-print">Read-only snapshot. Nothing on this screen changes membership or dues.</p>
-      {roster.loading && <p className="muted">Loading…</p>}
-      {roster.error != null && <p role="alert" style={bad}>{friendlyError(roster.error)}</p>}
-      {roster.data && (
-        <>
-          <header className="agm-head">
-            <h2>{t.name} · {year} eligible voters</h2>
-            <p>As of {new Date(`${asOf}T12:00:00`).toLocaleDateString('en-CA', { dateStyle: 'long' })} · printed from BuhurtOS</p>
-            <div className="agm-count"><b data-testid="agm-count">{snap.voters.length}</b> eligible voter{snap.voters.length === 1 ? '' : 's'}</div>
-          </header>
-          <section><h3 className="h3">Eligible to vote</h3>
-            {snap.voters.length === 0 ? <p className="muted">Nobody is eligible yet.</p>
-              : <ol className="agm-list">{snap.voters.map(r => <li key={r.membershipId}>{r.fullName}{r.offices.length > 0 && <small> ({r.offices.join(', ')})</small>}</li>)}</ol>}
-          </section>
-          <section><h3 className="h3">Not eligible ({snap.excluded.length})</h3>
-            {snap.excluded.length === 0 ? <p className="muted">Nobody is excluded.</p>
-              : <ul className="agm-list excluded">{snap.excluded.map(r => <li key={r.membershipId}><b>{r.fullName}</b> <span>{r.reasons.join(' · ')}</span></li>)}</ul>}
-          </section>
-        </>
-      )}
-    </div>
   );
 }
 
