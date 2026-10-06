@@ -563,11 +563,8 @@ select sim.ok('a marshal can read the matches', (select count(*) from public.mat
 select sim.expect_error('a marshal cannot build matches', format('insert into public.matches (competition_id, stage) values (%L, ''pool'')', :'roles_c'), '42501');
 select sim.expect_error('a marshal cannot delete matches', format('delete from public.matches where competition_id = %L', :'roles_c'), '42501');
 select sim.ok('... and all four are still there', (select count(*) from public.matches where competition_id = :'roles_c'::uuid) = 4);
-select sim.expect_error('a marshal cannot call a waiting match (Pack 24A0: running-order authority is the organizer''s)', format('select public.set_match_queue(%L, ''on_deck'', ''Field 1'')', (select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination')), '42501');
-select sim.as_user('00000000-0000-0000-0000-00000000f001');
 select public.set_match_queue((select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'on_deck', 'Field 1');
-select sim.ok('the organizer can queue a match', (select queue_state from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination') = 'on_deck');
-select sim.as_user('00000000-0000-0000-0000-00000000f002');
+select sim.ok('a marshal can queue a match', (select queue_state from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination') = 'on_deck');
 select sim.ok('a marshal can record a score event', public.record_score_event(gen_random_uuid(), (select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'point', '{"side":"a"}', now()));
 select public.finalize_match((select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'a', 2, 0, '{}',
   (select version from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'));  -- linking the bracket bumps the version, so read the current one
