@@ -292,6 +292,14 @@ confirmation email bounced to the owner (14 accounts that day). **Production tes
   `SMOKE_Z_*`: email, password, display name): X and Y approved voting TEST members, Z a pending TEST applicant. It refuses to run without them,
   never fills a profile or applies to join, and withdraws the candidacies it created at the end.
 - `reavers-production-smoke.mjs` (creates accounts by sign-up) refuses to run.
-- The fixed accounts must be created once, deliberately, by the owner (confirmed in the Supabase dashboard so no email is sent), and their
-  memberships approved once. Nothing in this repository creates them.
+- **Exactly three permanent identities** (prepared by `scripts/e2e/smoke-accounts.sql`, which holds no passwords and creates no auth users):
+  X `reavers-smoke-fixed-x@buhurtos.ca` (voting TEST member), Y `reavers-smoke-fixed-y@buhurtos.ca` (voting TEST member),
+  Z `reavers-smoke-fixed-z@buhurtos.ca` (pending TEST applicant, cannot vote). Display names "Smoke Test Fixed X / Y / Z".
+- **One-time setup, by the owner, by hand so no email is sent:** (1) Supabase Dashboard > Authentication > Users > Add user > Create new user, with
+  a password you choose and **Auto Confirm User** ticked, for X, Y and Z (never the public Create account page; never "Forgot password" for them);
+  (2) run SECTION 1 of `smoke-accounts.sql` once (profile finished, membership row created at Removed); (3) add the nine repository secrets
+  `SMOKE_X_EMAIL`, `SMOKE_X_PASSWORD`, `SMOKE_X_NAME`, `SMOKE_Y_*`, `SMOKE_Z_*` (names above).
+- **Why the memberships stay Removed:** an approved test member would appear in the real AGM voting list, check-in list and saved record. Run
+  SECTION 2 (arm: X and Y approved, Z pending) just before a test and SECTION 3 (disarm: withdraw leftover test candidacies, all three back to
+  Removed) right after. Every change writes an audit row; nothing is deleted. SECTION 4 shows the current state.
 - Do not point `buhurtos.ca` mail anywhere as part of this; that is the owner's decision.
