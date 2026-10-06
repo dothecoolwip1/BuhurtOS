@@ -140,9 +140,9 @@ try {
   await shot(px, 'n03a-help-closed-x');
   await px.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
   const ht = await text(px, '[data-testid=agm-help]');
-  check('3d live executive roles: President shows "Kedrixx (no currently active account)"', /President Helps lead the society and meetings\. Currently: Kedrixx \(no currently active account\)/.test(ht), ht.slice(ht.indexOf('Executive roles'), ht.indexOf('Executive roles') + 500));
+  check('3d live executive roles: President shows "Kedrixx - no active account"', /President Helps lead the society and meetings\. Currently: Kedrixx - no active account/.test(ht), ht.slice(ht.indexOf('Executive roles'), ht.indexOf('Executive roles') + 500));
   check('3e live executive roles: Secretary shows Garrett Robson (from the officer records)', /Secretary Helps keep society records, meeting information and official paperwork organized\. Currently: Garrett Robson/.test(ht));
-  check('3f live executive roles: Treasurer shows "Carmalee (no currently active account)"', /Treasurer Helps manage the society's money and financial records\. Currently: Carmalee \(no currently active account\)/.test(ht));
+  check('3f live executive roles: Treasurer shows "Carmalee - no active account"', /Treasurer Helps manage the society's money and financial records\. Currently: Carmalee - no active account/.test(ht));
   check('3g live: the 2026 fee is waived (normal $20), an account alone is not enough, same account never two', ht.includes('Membership fees are waived for 2026. You do not need to pay the normal $20 fee to vote this year.') && ht.includes('Making an account is not enough on its own.') && ht.includes('You never need two.'));
   check('3h live: the date and place come from the AGM record', ht.includes('AGM: Sunday, October 18, 2026 at 5:30 PM'), ht.slice(ht.indexOf('AGM:'), ht.indexOf('AGM:') + 120));
   const outside = live['assets/js/member-portal.js'].split('function agmHelp()')[0] + live['assets/js/member-portal.js'].split('// ---- concerns / topics')[1] + live['members.html'];

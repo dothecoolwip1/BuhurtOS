@@ -626,10 +626,10 @@ let newId = null;
   await until(async () => (await m.locator('[data-testid=help-role-president]').count()) > 0 && (await m.locator('[data-testid=office-president]').count()) > 0);
   await m.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
   const roles = await text(m, '[data-testid=help-role-president]') + ' | ' + await text(m, '[data-testid=help-role-secretary]') + ' | ' + await text(m, '[data-testid=help-role-treasurer]');
-  check('G14 President shows "Kedrixx (no currently active account)", the Secretary comes from the records, Treasurer shows "Carmalee (no currently active account)"',
-    roles.includes('Currently: Kedrixx (no currently active account)') && roles.includes('Currently: Carm Example') && roles.includes('Currently: Carmalee (no currently active account)'), roles);
+  check('G14 President shows "Kedrixx - no active account", the Secretary comes from the records, Treasurer shows "Carmalee - no active account"',
+    roles.includes('Currently: Kedrixx - no active account') && roles.includes('Currently: Carm Example') && roles.includes('Currently: Carmalee - no active account'), roles);
   const nomBoard = await text(m, '[data-testid=agm-nominations]');
-  check('G15 the Executive Nominations list shows the same names', nomBoard.includes('Current Officer: Kedrixx (no currently active account)') && nomBoard.includes('Current Officer: Carm Example') && nomBoard.includes('Current Officer: Carmalee (no currently active account)'), nomBoard);
+  check('G15 the Executive Nominations list shows the same names', nomBoard.includes('Current Officer: Kedrixx - no active account') && nomBoard.includes('Current Officer: Carm Example') && nomBoard.includes('Current Officer: Carmalee - no active account'), nomBoard);
   check('G16 the fallback grants nothing: no officer record was created, and the databases still has no President or Treasurer', sql(`select count(*) from public.team_officers where team_id = '${REAVERS}' and ended_on is null and office in ('president','treasurer')`) === '0');
   await phoneCheck(m, 'site-agm-help-fallback-phone');
   sql(`update public.team_officers set ended_on = null where team_id = '${REAVERS}' and office in ('president', 'treasurer')`);
