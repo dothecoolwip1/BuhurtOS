@@ -654,6 +654,17 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .dlg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .dlg-actions.sticky{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom,0px));margin:0 -20px -20px;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:var(--surface,var(--raised));border-top:1px solid var(--line)}
 .dlg-actions .btn{flex:1 1 140px}
+.ndlg-list{border:0;margin:0;padding:0;min-width:0;display:grid;gap:4px}
+.ndlg-row{width:100%;justify-content:space-between;min-height:52px}
+.ndlg-text{display:grid;min-width:0;flex:1 1 auto}
+.ndlg-text .src{font-weight:400}
+.ndlg-state{font-size:13px;font-weight:700;color:var(--faint);min-width:24px;text-align:right}
+.ndlg-row:has(input:checked) .ndlg-state{color:var(--win)}
+.dlg-actions.ndlg-actions{flex-wrap:nowrap}
+.ndlg-actions .btn{flex:1 1 auto;padding-inline:12px;white-space:nowrap}
+.ndlg-actions .btn-line{flex:0 1 auto;min-width:96px}
+.ndlg-manage{justify-self:start;min-height:44px;padding:0}
+button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-align:left;cursor:pointer}
 .dlg-bg.drawer{place-items:end center;padding:0}
 .dlg-bg.drawer .dlg{width:100%;max-height:88dvh;border-radius:var(--r) var(--r) 0 0}
 @media (min-width:700px){

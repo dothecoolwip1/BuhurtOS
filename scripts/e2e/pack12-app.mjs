@@ -97,39 +97,49 @@ const PUSH_STUB = () => {
   const bar = await page.locator('nav.bottom').innerText();
   check('A11. signed in, the phone bar has My events (and keeps Home, Events, Teams, More)', /My events/.test(bar) && /Home/.test(bar) && /Teams/.test(bar) && /More/.test(bar), bar);
 
-  // ---- notification settings: ask first, then permission, then register, then toggles, devices, test, turn off
+  // ---- notification popup: first-time ask (small popup, choices first), then permission, register; later the same popup with Save; devices one step away
   await go('/account');
-  await page.getByRole('heading', { name: 'Notifications' }).waitFor();
-  check('A12. Account explains the value before asking: "Want BuhurtOS to tell you when you\'re coming up to fight?"', await has('Want BuhurtOS to tell you when you\'re coming up to fight?'));
+  const dlg = page.getByRole('dialog');
+  await dlg.getByRole('heading', { name: 'Notifications' }).waitFor();
+  check('A12. the first-time popup asks over the page, with four simple groups and Not now / Enable Notifications', await dlg.getByRole('switch').count() === 4 && await dlg.getByRole('button', { name: 'Enable Notifications' }).count() === 1 && await dlg.getByRole('button', { name: 'Not now' }).count() === 1);
   check('A13. the browser permission was NOT requested just by opening the page', await page.evaluate(() => !window.__push.calls.includes('requestPermission')));
-  await page.getByRole('button', { name: 'Turn on alerts on this device' }).click();
-  await page.getByText('Alerts are on for this device.', { exact: false }).first().waitFor();
-  check('A14. pressing the button asked permission once and subscribed with the server\'s public key', await page.evaluate(() => window.__push.calls.join(',')) === 'requestPermission,subscribe');
+  await dlg.getByRole('switch', { name: 'Events' }).click();
+  await dlg.getByRole('button', { name: 'Enable Notifications' }).click();
+  await dlg.waitFor({ state: 'detached' });
+  check('A14. Enable Notifications asked permission once and subscribed with the server\'s public key', await page.evaluate(() => window.__push.calls.join(',')) === 'requestPermission,subscribe');
+  check('A17. the choices made in the popup were saved for the person', mock.db.notif_settings[IDS.fighter]?.events === false && mock.db.notif_settings[IDS.fighter]?.fights === true, JSON.stringify(mock.db.notif_settings));
   const reg1 = mock.db.push_devices[0];
   check('A15. the device was registered with the database (endpoint + both keys), labelled generically', !!reg1 && reg1.endpoint === 'https://push.example.com/wpush/abc123' && reg1.keys.p256dh.length > 60 && reg1.keys.auth.length >= 16 && reg1.label !== undefined, JSON.stringify(reg1));
-  check('A16. the device shows in the list as This device', await has('This device'));
-  await page.getByRole('switch', { name: 'Team alerts' }).click();
-  await sleep(300);
-  check('A17. switching a group off is saved for the person', mock.db.notif_settings[IDS.fighter]?.team === false && mock.db.notif_settings[IDS.fighter]?.fights === true, JSON.stringify(mock.db.notif_settings));
-  check('A18. there are exactly four simple groups, not dozens of switches', (await page.getByRole('switch').count()) === 4);
-  await page.getByRole('button', { name: 'Send me a test' }).click();
+  await page.getByRole('button', { name: 'Notification Settings' }).click();
+  await dlg.getByRole('button', { name: 'Save' }).waitFor();
+  await dlg.getByRole('switch', { name: 'Team' }).click();
+  await dlg.getByRole('button', { name: 'Save' }).click();
+  await dlg.waitFor({ state: 'detached' });
+  check('A18. later, Notification Settings opens the same popup (four groups); Save stores the change and closes it', mock.db.notif_settings[IDS.fighter]?.team === false && mock.db.notif_settings[IDS.fighter]?.events === false);
+  await page.getByRole('button', { name: 'Notification Settings' }).click();
+  await dlg.getByRole('button', { name: 'Manage devices' }).click();
+  await dlg.getByRole('heading', { name: 'Manage devices' }).waitFor();
+  check('A16. Manage devices lists this device', await dlg.getByText('This device').count() > 0);
+  await dlg.getByRole('button', { name: 'Send me a test' }).click();
   await page.getByText('Test sent.', { exact: false }).waitFor();
   check('A19. "Send me a test" asks the database to send a notification to this person', mock.db.notifications.some(n => n.kind === 'test_push' && n.user_id === IDS.fighter));
-  await noSideways('Account with notification settings'); await shot('p12-account-notifications');
-  await page.getByRole('button', { name: 'Turn off on this device' }).click();
-  await page.getByRole('button', { name: 'Turn on alerts on this device' }).waitFor();
+  await noSideways('Account with the notification popup'); await shot('p12-account-notifications');
+  await dlg.getByRole('button', { name: 'Turn off on this device' }).click();
+  await dlg.getByRole('button', { name: 'Turn on alerts on this device' }).waitFor();
   check('A20. turning off unsubscribes the browser and removes the device from the database', mock.db.push_devices.every(d => d.revoked) && await page.evaluate(() => window.__push.calls.includes('unsubscribe')));
 
   // ---- denied: no nagging, clear instructions
   await page.evaluate(() => { window.__grant = false; window.__push.permission = 'default'; });
-  await page.getByRole('button', { name: 'Turn on alerts on this device' }).click();
-  await page.getByText('Alerts are blocked for BuhurtOS in this browser.').waitFor();
+  await dlg.getByRole('button', { name: 'Turn on alerts on this device' }).click();
+  await dlg.getByText('Alerts are blocked for BuhurtOS in this browser.').waitFor();
   check('A21. a "no" from the browser leaves the app working and explains how to allow it later', await has('Notifications → Allow'));
 
   // ---- the bell shows the same words a push carries
   mock.db.notifications.push({ id: 'n-x', user_id: IDS.fighter, kind: 'event_invited', payload: { event_name: 'Red Deer Rumble', event_slug: 'red-deer-rumble' }, created_at: new Date().toISOString(), read_at: null });
   await go('/');
-  await page.getByRole('button', { name: /Notifications/ }).click();
+  await sleep(800);
+  if (await page.getByRole('button', { name: 'Not now' }).count()) await page.getByRole('button', { name: 'Not now' }).click();   // the first-time popup is asked again (it was blocked, not declined)
+  await page.locator('button[aria-controls="notif-panel"]').click();
   await page.locator('.notif-title').first().waitFor();
   check('A22. the bell lists a title and a sentence from the database and links to the right page', await has('You\'ve been added to an event') && (await page.locator('a.notif-item').first().getAttribute('href')) === '/events/red-deer-rumble');
 
@@ -177,8 +187,11 @@ for (const [label, w, h] of [['phone 390', 390, 844], ['narrow phone 320', 320, 
     const sw = await page.evaluate(() => [document.scrollingElement.scrollWidth, innerWidth]);
     check(`${label}: ${path} has no sideways scroll`, sw[0] <= sw[1], JSON.stringify(sw));
   }
-  await page.goto(`${BASE}/account`); await page.waitForLoadState('networkidle'); await page.getByRole('heading', { name: 'Notifications' }).waitFor();
-  const small = await page.evaluate(() => [...document.querySelectorAll('#notifications button, #notifications [role=switch], #notifications label.switch')].map(e => { const r = e.getBoundingClientRect(); return [e.textContent?.trim().slice(0, 30) || e.getAttribute('aria-label'), Math.round(r.height)]; }).filter(([, hgt]) => hgt > 0 && hgt < 40));
+  await page.goto(`${BASE}/account`); await page.waitForLoadState('networkidle');
+  const pop = page.getByRole('dialog'); await pop.waitFor();
+  const fit = await pop.evaluate(e => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), innerWidth, innerHeight, e.querySelector('.dlg-body').scrollHeight > e.querySelector('.dlg-body').clientHeight]; });
+  check(`${label}: the notification popup fits the screen without scrolling`, fit[0] <= fit[2] && fit[1] <= fit[3] && fit[4] === false, JSON.stringify(fit));
+  const small = await pop.evaluate(d => [...d.querySelectorAll('button, [role=switch], label.switch')].map(e => { const r = e.getBoundingClientRect(); return [e.textContent?.trim().slice(0, 30) || e.getAttribute('aria-label'), Math.round(r.height)]; }).filter(([, hgt]) => hgt > 0 && hgt < 40));
   check(`${label}: notification controls are at least 40px tall`, small.length === 0, JSON.stringify(small));
   await ctx.close();
 }
@@ -196,9 +209,11 @@ for (const [label, w, h] of [['phone 390', 390, 844], ['narrow phone 320', 320, 
   check('A25. iPhone: the install card gives Share → Add to Home Screen steps', /Add BuhurtOS to your Home Screen/.test(t) && /Share/.test(t) && /Add to Home Screen/.test(t), t.slice(0, 300));
   await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [storageKey, sessionFor(IDS.fighter, 'garrett@example.test')]);
   await page.goto(`${BASE}/account`); await page.waitForLoadState('networkidle');
-  await page.getByRole('heading', { name: 'Notifications' }).waitFor();
+  await page.getByRole('button', { name: 'Notification Settings' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Manage devices' }).click();
+  await page.getByRole('dialog').getByRole('heading', { name: 'Manage devices' }).waitFor();
   const t2 = (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ');
-  check('A26. iPhone not installed: Account says alerts need the Home Screen app first, and offers no permission button', /add BuhurtOS to your Home Screen first/i.test(t2) && !/Turn on alerts on this device/.test(t2), t2.slice(0, 400));
+  check('A26. iPhone not installed: Manage devices says alerts need the Home Screen app first, and offers no permission button', /add BuhurtOS to your Home Screen first/i.test(t2) && !/Turn on alerts on this device/.test(t2), t2.slice(0, 400));
   await ctx.close();
 }
 
