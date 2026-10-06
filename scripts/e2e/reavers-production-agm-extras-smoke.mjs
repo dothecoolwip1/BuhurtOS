@@ -1,11 +1,10 @@
 // PRODUCTION smoke test for the Red Deer Reavers AGM concerns / topics and executive nominations, driven in real Chromium against the LIVE club
 // website and the LIVE Supabase project. Run only by hand (.github/workflows/reavers-production-smoke.yml with suite = agm-extras).
 //
-// It creates three clearly labelled TEST accounts on the owner's test domain (reavers-smoke-<tag>-x / -y / -z @buhurtos.ca):
-//   X and Y become voting members (an operator, the Treasurer, approves their TEST memberships); Z stays a pending applicant (cannot vote).
-// The test mailboxes are not readable from here, so the script WAITS (up to WAIT_MINUTES) for an operator to confirm the three test addresses and
-// to approve X and Y, and says so in its output. Afterwards the operator withdraws the test topics / nominations and marks the three test
-// memberships Removed (records are never deleted). It never touches any real person's data and never changes an officer.
+// FIXED, PRE-CONFIRMED TEST ACCOUNTS ONLY. This script never signs anyone up and never triggers an email. It signs in with three accounts that
+// already exist (SMOKE_X_*, SMOKE_Y_*, SMOKE_Z_* environment variables, set from repository secrets): X and Y are approved voting TEST members,
+// Z is a pending TEST applicant (cannot vote). If any is missing it refuses to run. It never touches any real person's data and never changes an
+// officer. At the end it withdraws the test candidacies it created (the records stay as history; nothing is deleted).
 // The executive screens are NOT driven here (no executive account is used); they are checked separately and by the local browser suite.
 import { createRequire } from 'node:module';
 import { mkdirSync } from 'node:fs';
@@ -19,8 +18,12 @@ const WAIT = Number(process.env.WAIT_MINUTES ?? 20) * 60_000;
 const SHOTS = process.env.SHOTS ?? '/tmp/smoke-shots';
 mkdirSync(SHOTS, { recursive: true });
 
-const who = (k) => ({ email: `reavers-smoke-${TAG}-${k}@buhurtos.ca`, password: `Smoke-${TAG}-${k.toUpperCase()}-pw`, name: `Smoke Test ${TAG} ${k.toUpperCase()}` });
+const who = (k) => { const K = k.toUpperCase(); return { email: process.env[`SMOKE_${K}_EMAIL`], password: process.env[`SMOKE_${K}_PASSWORD`], name: process.env[`SMOKE_${K}_NAME`] ?? `Smoke Test ${K}` }; };
 const X = who('x'), Y = who('y'), Z = who('z');
+if (![X, Y, Z].every(w => w.email && w.password)) {
+  console.error('REFUSING TO RUN: no fixed pre-confirmed test accounts are configured (SMOKE_X_EMAIL/PASSWORD, SMOKE_Y_*, SMOKE_Z_*). This suite never creates accounts and never sends email.');
+  process.exit(2);
+}
 const results = [];
 const check = (name, ok, detail = '') => { results.push({ name, ok }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  <-- ' + String(detail).slice(0, 700)}`); };
 const note = (s) => console.log(`NOTE  ${s}`);
@@ -41,18 +44,6 @@ async function table(tok, method, path, body) {
   const r = await fetch(`${API}/rest/v1/${path}`, { method, headers: { 'content-type': 'application/json', apikey: KEY, authorization: `Bearer ${tok}` }, body: body ? JSON.stringify(body) : undefined });
   return { status: r.status, body: await r.json().catch(() => null) };
 }
-async function signUp(w) {
-  const r = await fetch(`${API}/auth/v1/signup`, { method: 'POST', headers: { 'content-type': 'application/json', apikey: KEY }, body: JSON.stringify({ email: w.email, password: w.password, data: { full_name: w.name } }) });
-  return r.status;
-}
-async function waitForSignIn(w) {
-  const first = await token(w.email, w.password);
-  if (first.ok) return first;
-  console.log(`WAITING  operator to confirm the test address ${w.email} (${first.code ?? first.msg}); polling for ${WAIT / 60000} min`);
-  let t; await until(async () => (t = await token(w.email, w.password)).ok, WAIT, 10000);
-  return t;
-}
-
 const browser = await chromium.launch({ executablePath: process.env.CHROME || undefined });
 const pages = [];
 async function open(kind = 'phone') {
@@ -77,28 +68,19 @@ async function siteSignIn(p, w) {
   await p.locator('#email').fill(w.email); await p.locator('#password').fill(w.password); await p.locator('#password-btn').click();
   await until(async () => !(await p.locator('#signed-in').isHidden()) && (await text(p, '#view')).length > 20, 30000);
 }
-// sign in on the club website; first time: the profile step, then "Apply to join". Strict: if a step does not happen, say so and stop (never skip silently).
+// Sign in on the club website with a FIXED test account that is already a member (or an applicant). It never fills the profile step and never
+// applies to join: if the account is not already in that state the run stops and says so.
 async function enter(w, kind = 'phone') {
   const p = await open(kind);
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    await siteSignIn(p, w);
-    const seen = await until(async () => (await p.locator('[data-testid=profile-setup], [data-testid=apply-form], [data-testid=my-membership]').count()) > 0, 30000);
-    if ((await p.locator('[data-testid=profile-setup]').count()) > 0) {
-      await p.locator('#pf-name').fill(w.name); await p.getByRole('button', { name: 'Continue' }).click();
-      await until(async () => (await p.locator('[data-testid=apply-form], [data-testid=my-membership]').count()) > 0, 30000);
-    }
-    if ((await p.locator('[data-testid=apply-form]').count()) > 0) {
-      const link = p.locator('[data-testid=bylaws-link-join]');
-      p.joinBylawsHref = (await link.count()) ? await link.getAttribute('href') : null;
-      await p.locator('label.check', { hasText: '18 or older' }).click(); await p.locator('label.check', { hasText: 'bylaws' }).click();
-      await p.getByRole('button', { name: 'Apply to join' }).click();
-      await until(async () => (await text(p, '#view')).includes('Membership Application Pending'), 30000);
-    }
-    if ((await text(p, '#view')).includes('Membership Application Pending') || (await p.locator('[data-testid=my-membership]').count()) > 0) return p;
-    note(`enter(${w.email}) attempt ${attempt}: neither the join form nor a membership appeared (profile/seen=${seen}); page says: ${(await text(p, '#view')).slice(0, 200)} | status: ${await text(p, '#status')}`);
-    await shot(p, `enter-${w.email.split('@')[0]}-${attempt}`);
+  await siteSignIn(p, w);
+  const ready = await until(async () => (await p.locator('[data-testid=my-membership]').count()) > 0, 30000);
+  if (!ready) {
+    await shot(p, `enter-${w.email.split('@')[0]}`);
+    throw new Error(`fixed test account ${w.email} is not already a member/applicant on the live site; page says: ${(await text(p, '#view')).slice(0, 200)} | ${await text(p, '#status')}`);
   }
-  throw new Error(`could not get ${w.email} to the membership step on the live site`);
+  const jl = p.locator('[data-testid=bylaws-link-join]');
+  p.joinBylawsHref = (await jl.count()) ? await jl.getAttribute('href') : null;
+  return p;
 }
 const openAgm = async (p) => { await tab(p, '2026 AGM'); await until(async () => (await p.locator('[data-testid=agm-nominations]').count()) > 0, 30000); };
 
@@ -111,20 +93,16 @@ try {
     live[f] = body;
     note(`live ${f}: HTTP ${r.status}, ${body.length} bytes${f.endsWith('member-portal.js') ? `, has the new AGM concern/nomination code: ${body.includes('club_agm_member_view')}` : ''}${f.endsWith('config.js') ? `, defines window.BUHURTOS: ${body.includes('window.BUHURTOS')}` : ''}`);
   }
-  // ================================================================ 0. three TEST accounts, confirmed by the operator
-  const su = [await signUp(X), await signUp(Y), await signUp(Z)];
-  note(`sign-up responses: ${su.join(', ')}`);
-  const tx = await waitForSignIn(X), ty = await waitForSignIn(Y), tz = await waitForSignIn(Z);
-  check('0 the three test accounts exist on the live Supabase Auth and can sign in', tx.ok && ty.ok && tz.ok, `${tx.code} ${ty.code} ${tz.code}`);
-  if (!(tx.ok && ty.ok && tz.ok)) throw new Error('test accounts could not sign in');
+  // ================================================================ 0. the three fixed TEST accounts sign in (no sign-up, no email)
+  const tx = await token(X.email, X.password), ty = await token(Y.email, Y.password), tz = await token(Z.email, Z.password);
+  check('0 the three fixed test accounts can sign in on the live Supabase Auth', tx.ok && ty.ok && tz.ok, `${tx.code} ${ty.code} ${tz.code}`);
+  if (!(tx.ok && ty.ok && tz.ok)) throw new Error('fixed test accounts could not sign in');
   const team = (await (await fetch(`${API}/rest/v1/teams?slug=eq.red-deer-reavers&select=id`, { headers: { apikey: KEY } })).json())[0].id;
 
   // ================================================================ 1. join (the existing flow), then wait for the operator to approve X and Y
   const px = await enter(X), py = await enter(Y), pz = await enter(Z);
   const mine = async (t) => (await rpc(t, 'club_membership_overview', { p_team: team })).body?.memberships?.find(m => m.year === 2026);
-  check('1 all three test accounts applied on the live club website and are pending or already approved', ['pending', 'active'].includes((await mine(tx.token))?.status) && ['pending', 'active'].includes((await mine(ty.token))?.status) && (await mine(tz.token))?.status === 'pending');
-  console.log(`WAITING  operator (Treasurer) to approve the TEST memberships of X and Y (Z stays pending); polling for ${WAIT / 60000} min`);
-  await until(async () => (await mine(tx.token))?.status === 'active' && (await mine(ty.token))?.status === 'active', WAIT, 10000);
+  check('1 the fixed test accounts are in the expected state (X and Y approved members, Z a pending applicant)', (await mine(tx.token))?.status === 'active' && (await mine(ty.token))?.status === 'active' && (await mine(tz.token))?.status === 'pending');
   const mx = await mine(tx.token), my = await mine(ty.token), mz = await mine(tz.token);
   check('2 X and Y are Active and ELIGIBLE TO VOTE (2026 fee waived); Z is pending and cannot vote', mx?.eligible === true && my?.eligible === true && mz?.eligible === false, JSON.stringify([mx?.status, my?.status, mz?.status]));
 
@@ -166,7 +144,7 @@ try {
   await shot(pd, 'n03c-help-open-desktop');
   // ---- bylaws link, footer buttons and Admin Sign In on the live site
   const BYLAWS = 'https://drive.google.com/file/d/1R9EDu7BpUZ1KM790BDNN0iIaXZYtUtCE/view?usp=drivesdk';
-  check('3l live: the Join form links to the bylaws PDF', py.joinBylawsHref === BYLAWS && px.joinBylawsHref === BYLAWS, `${px.joinBylawsHref} | ${py.joinBylawsHref}`);
+  check('3l live: the Join form is built with the bylaws link (the fixed accounts are already members, so the form is checked in the live code and config)', live['assets/js/member-portal.js'].includes("'bylaws-link-join'") && live['assets/js/buhurtos-config.js'].includes(BYLAWS));
   const so = await open('phone');
   await so.goto(SITE);
   await so.locator('[data-auth-tab=signup]').click();
@@ -301,6 +279,14 @@ try {
   check('32 cancelling the proxy still works', await until(async () => (await text(px, '[data-testid=agm-member]')).includes('How will you participate?'), 20000));
   check('33 the member AGM page fits a 390px phone', await noSideways(px));
   await shot(px, 'n33-agm-page-x-end');
+  // ---- leave nothing live: the test accounts withdraw the accepted candidacies this run created (the records stay as history; nothing is deleted)
+  let withdrawn = 0;
+  for (const t of [tx, ty]) {
+    const cands = ((await rpc(t.token, 'club_agm_member_view', { p_meeting: meeting })).body.my_candidacies ?? []).filter(c => c.status === 'accepted');
+    for (const c of cands) { if ((await rpc(t.token, 'respond_to_club_nomination', { p_nomination: c.id, p_response: 'withdraw' })).status < 300) withdrawn++; }
+  }
+  const live2 = ((await rpc(tx.token, 'club_agm_member_view', { p_meeting: meeting })).body.board ?? []).flatMap(b => b.candidates).filter(c => [X.name, Y.name].includes(c.name));
+  check(`35 cleanup: the test candidacies were withdrawn (${withdrawn}) and none of the fixed test accounts is still shown as a candidate`, live2.length === 0, JSON.stringify(live2));
 } catch (e) {
   check('no unexpected error', false, e?.stack ?? String(e));
 }
