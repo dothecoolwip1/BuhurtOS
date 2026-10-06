@@ -11,6 +11,7 @@ import { NotificationBell } from './NotificationBell';
 import { UpdateBanner } from './UpdateBanner';
 import { OfflineBanner } from './OfflineBanner';
 import { PushWiring } from './PushWiring';
+import { NotificationDialog, NotificationOnboarding } from './NotificationSettings';
 import { ErrorBoundary } from './ErrorBoundary';
 
 const NAV = [
@@ -47,6 +48,7 @@ export function Layout() {
   const { isOwner } = usePlatformRole();
   const sample = useSampleMode();
   const [more, setMore] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   useEffect(() => { window.scrollTo({ top: 0 }); setMore(false); }, [pathname]);
   // Usage for the platform owner only: the page on each change, then a heartbeat every minute while the tab is visible. Never blocks anything.
   const userId = session?.user.id;
@@ -88,7 +90,7 @@ export function Layout() {
           </button>
         </div>
       </header>
-      <main className="wrap"><PushWiring /><OfflineBanner /><UpdateBanner /><ProfileGate /><ErrorBoundary resetKey={pathname + search}><Outlet /></ErrorBoundary></main>
+      <main className="wrap"><PushWiring />{session && <NotificationOnboarding pathname={pathname} />}<OfflineBanner /><UpdateBanner /><ProfileGate /><ErrorBoundary resetKey={pathname + search}><Outlet /></ErrorBoundary></main>
       <footer><div className="wrap"><span>BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.</span><NavLink className="footlink" to="/privacy">Privacy</NavLink>{sample && <span className="mono">Sample mode</span>}<span className="mono" data-testid="app-version">{__APP_VERSION__}</span></div></footer>
       <nav className="bottom" aria-label="Main">
         {PHONE.map(n => (
@@ -102,6 +104,7 @@ export function Layout() {
           More
         </button>
       </nav>
+      {notifOpen && session && <NotificationDialog mode="settings" onClose={() => setNotifOpen(false)} />}
       {more && (
         <Dialog title="More" variant="drawer" onClose={() => setMore(false)}>
           <nav className="more-list" aria-label="More">
@@ -110,10 +113,10 @@ export function Layout() {
               Calendar
             </NavLink>
             {session && (
-              <NavLink to="/account#notifications">
+              <button type="button" onClick={() => { setMore(false); setNotifOpen(true); }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
-                Alerts and notifications
-              </NavLink>
+                Notification Settings
+              </button>
             )}
             {EXTRA.map(n => (
               <NavLink key={n.to} to={n.to} end={n.end}>

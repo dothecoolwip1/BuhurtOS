@@ -29,3 +29,10 @@ export function timeAgo(iso: string, now = Date.now()): string {
   const h = Math.round(m / 60); if (h < 24) return `${h} hour${h === 1 ? '' : 's'} ago`;
   const d = Math.round(h / 24); return `${d} day${d === 1 ? '' : 's'} ago`;
 }
+
+/** Which of the four groups to offer this person. Only fight alerts are role-dependent: someone with no fighter profile and no event they fight in has none to get.
+ *  When the roles could not be looked up everything is offered, so a failed lookup never hides a choice. A hidden group keeps whatever it is set to. */
+export function visibleCategories(roles: { known: boolean; fighter: boolean; fightsInEvent: boolean }): Array<'fights' | 'team' | 'events' | 'system'> {
+  const all: Array<'fights' | 'team' | 'events' | 'system'> = ['fights', 'team', 'events', 'system'];
+  return !roles.known || roles.fighter || roles.fightsInEvent ? all : all.filter(k => k !== 'fights');
+}
