@@ -1328,3 +1328,13 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .cc-quick .btn{min-height:48px;justify-content:center;text-align:center;white-space:normal}
 @media (min-width:720px){.cc-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}.cc-item{grid-template-columns:auto minmax(0,1fr) auto}.cc-act{grid-column:auto;justify-self:end}}
 @media (min-width:1100px){.cmd-centre{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}.cc-head,.cc-quick,#cc-attention{grid-column:1 / -1}}
+
+/* Pack 18.1: Camera Off (a safety control: loud, large, one-handed) */
+.camoff { display: grid; gap: 8px; }
+.camoff-btn { appearance: none; border: 2px solid #7a0e1c; background: #c8102e; color: #fff; font: inherit; font-weight: 800; letter-spacing: .06em; min-height: 56px; padding: 12px 20px; border-radius: 12px; cursor: pointer; }
+.camoff-btn.compact { min-height: 44px; padding: 8px 14px; }
+.camoff-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 5px #7a0e1c; }
+.camoff-banner { display: grid; gap: 4px; background: #c8102e; color: #fff; border: 2px solid #7a0e1c; border-radius: 12px; padding: 12px 14px; }
+.camoff-title { font-size: 1.4rem; letter-spacing: .08em; }
+.camoff-on { justify-self: start; margin-top: 6px; background: #fff; color: #7a0e1c; }
+.camoff-stale { font-size: .85rem; color: var(--faint, #666); }
