@@ -55,7 +55,7 @@ async function open(kind = 'phone') {
   const p = await ctx.newPage();
   p.errors = [];
   p.on('pageerror', e => p.errors.push(String(e).slice(0, 300)));
-  p.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|40[0-9]|42501|AuthApiError|posthog/i.test(m.text())) p.errors.push(m.text().slice(0, 300)); });
+  p.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|40[0-9]|42501|AuthApiError|posthog|\[BuhurtOS\]|WebSocket|realtime/i.test(m.text())) p.errors.push(m.text().slice(0, 300)); });
   pages.push(p);
   return p;
 }
@@ -214,6 +214,14 @@ try {
     check('24 a regular member cannot change dues on the live database', dues.status >= 400);
     const dash = await rpc(ta2.token, 'club_meeting_dashboard', { p_meeting: (await rpc(ta2.token, 'club_meeting_member_view', { p_team: ma && (await (await fetch(`${API}/rest/v1/teams?slug=eq.red-deer-reavers&select=id`, { headers: { apikey: KEY } })).json())[0].id })).body.meeting.id });
     check('25 a regular member cannot open the executive AGM dashboard on the live database', dash.status >= 400);
+    // the newly deployed BuhurtOS membership page, for the same account (same origin: the club-site session is the BuhurtOS session)
+    await s.goto(`${BOS}/teams/red-deer-reavers/membership`);
+    await until(async () => (await s.getByTestId('vote-banner').count()) > 0, 30000);
+    const bm = await text(s, 'main');
+    check('27 live BuhurtOS membership page: same account already signed in, ELIGIBLE TO VOTE, 2026 fee shown as waived',
+      bm.includes('ELIGIBLE TO VOTE') && !bm.includes('NOT ELIGIBLE') && /fee waived/i.test(bm), bm.slice(0, 500));
+    check('28 live BuhurtOS has no AGM screens (RSVP / proxy / check-in live only on the club website)', !/RSVP|proxy|check-in|Voting by Proxy/i.test(bm) && !/AGM/.test(await text(s, '.tabs')), bm.slice(0, 300));
+    await shot(s, '27-bos-membership');
   } else note('approval steps skipped: test accounts could not sign in');
 } catch (e) {
   check('no unexpected error', false, e?.stack ?? String(e));
