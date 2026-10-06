@@ -603,3 +603,45 @@ Branch `pack18-1-event-ops` from `main` `e880e09` (Pack 18 merged, PR #38). Ever
 | Hardening note (not Pack 18.1) | `anon` / `authenticated` hold SELECT on `net._http_response` (pg_net default). Not reachable from outside: the Data API exposes only `public` and `graphql_public` (checked: `Accept-Profile: net` → 406) |
 | Production deployment and browser verification | deployment: verified (row above). Browser at phone/tablet sizes (device sign-in, persistence through refresh, sign-out, Command Centre, Announcer view, Secretary permissions, Camera Off activate/release, broadcast controls, event isolation, device-mode navigation, bottom navigation, dialogs): **NOT VERIFIED on production**; covered locally by device-live, device-reliability-live, cc181-live, announcer-live and pack181-live (Chromium, phone/tablet viewports, real Postgres/PostgREST). Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md` on real phones/tablets |
 | Physical / hardware | **NOT VERIFIED**: real OBS, cameras, microphone, PA, ducking, venue network, laptop firewall, physical phones/tablets, iPhone home-screen app (Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md`) |
+
+### Pack 18.1 final status (2026-10-06)
+
+The software is complete. Nothing in the two lists after COMPLETE is a Pack 18.1 software blocker: they are manual / physical checks and owner housekeeping.
+
+**COMPLETE** (evidence in the table above)
+- Hosted migrations: `pack181_event_sessions`, `pack181_roles_camera`, `pack181_broadcast_control` applied; Pack 18.1 functions match the repository
+- Security / search_path fix: `20261016000100_pack181_camera_log_search_path` applied; advisor finding cleared
+- Signing key setup: imported ES256 key `de2891ff…` is the current key; `DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS` set
+- Edge Function: `device-session` deployed with the committed code
+- 336 hosted permission checks (sessions 119, roles 113, broadcast 104), rolled back
+- Real hosted device sign-in (Supabase Auth organizer, codes minted by the function, devices signed in)
+- Data API authorization with device tokens (role, allow-list, table access, forged signature refused)
+- Refresh
+- Sign-out
+- Revoke
+- Expiry (server-side, event end + 24 h; ended event refused)
+- Rate limiting (per-address lockout; global breaker in the gate)
+- Cross-event isolation
+- Camera Off (activate by marshal/announcer roles, release only by head marshal / organizer / Temporary Organizer)
+- Production merge: PR #42 → `8b25e67`
+- GitHub Pages deployment: run #130 success
+- Production build verification: live bundle reports `v0.1.0 · build 130 · 8b25e67`
+
+**REMAINING MANUAL / PHYSICAL VERIFICATION** (Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md`)
+- Realtime using a real device token
+- Phone browser check
+- Tablet browser check
+- Installed iPhone / PWA check
+- Real OBS
+- Real cameras
+- Microphone
+- PA
+- Music ducking
+- Venue network
+
+**OWNER CLEANUP**
+- Inspect Dashboard → JWT Keys and document what `027f29ee…` is
+- Confirm `bfe4ac4e…` is "Previously used" rather than revoked, if possible
+- Delete the banned test organizer `pack181-hosted-test@example.test` when convenient (Authentication → Users)
+- Remove `private.p181_live` when convenient (Table Editor)
+- Leave the three synthetic draft events `pack181-hosted-test-a/b/c`: their append-only camera log and audit history prevent deletion, by design
