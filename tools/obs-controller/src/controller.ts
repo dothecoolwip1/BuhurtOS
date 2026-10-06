@@ -314,7 +314,7 @@ export class Controller {
     const ec = this.effectiveControl();
     const problems = dec?.problems ?? [];
     return {
-      version: COMPANION_VERSION, now,
+      version: COMPANION_VERSION, now, pid: process.pid,
       obs: { state: this.obs.state, connected: this.obs.connected, version: this.obs.version?.obsVersion ?? null, problem: this.obs.lastProblem, scenes: this.scenes ?? [], programScene: this.programScene, studioMode: this.studioMode, streaming: this.streaming },
       bos: {
         session: s.status, sessionProblem: s.lastProblem, label: s.whoami?.label ?? null, hasToken: s.hasToken, dataAgeSeconds: dataAge, dataError: r.status.dataError, controllerError: r.status.controllerError,

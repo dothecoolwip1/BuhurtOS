@@ -55,7 +55,7 @@ export function startUi(deps: UiDeps, port: number): Promise<{ server: http.Serv
   const { controller, session, store, logger } = deps;
   const server = http.createServer((req, res) => { void handle(req, res).catch(e => { logger.warn('screen request failed', { message: (e as Error).message }); if (!res.headersSent) send(res, 500, { error: 'something went wrong' }); else res.end(); }); });
   const send = (res: http.ServerResponse, status: number, body: unknown, type = 'application/json; charset=utf-8') => {
-    res.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'", 'referrer-policy': 'no-referrer' });
+    res.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src data:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'", 'referrer-policy': 'no-referrer' });
     res.end(typeof body === 'string' ? body : JSON.stringify(body));
   };
   const str = (v: unknown, max = 300): string | null => (typeof v === 'string' && v.length <= max ? v : null);

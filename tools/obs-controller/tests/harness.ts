@@ -1,3 +1,8 @@
+import { vi } from 'vitest';
+
+// the root vitest config allows 5 s a test; these scenarios (real sockets, a spawned build) need more, whichever config runs them
+vi.setConfig({ testTimeout: 30_000, hookTimeout: 30_000 });
+
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';

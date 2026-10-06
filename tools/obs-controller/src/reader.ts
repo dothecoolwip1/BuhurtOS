@@ -9,7 +9,7 @@ import { buildFields, fightsNeedingFirstLive, newFieldMemory, type BuiltField, t
 
 /**
  * Reads BuhurtOS: the same public data the Pack 14 overlay uses, plus controller_state() when this laptop has a controller session.
- * Polling, never overlapping, with backoff (2.5 s normally, doubling to 30 s while failing). A failed read keeps the last good data:
+ * Polling, never overlapping, with backoff (2.5 s normally, doubling to at most 10 s while failing). A failed read keeps the last good data:
  * the Companion never changes scene because it could not reach BuhurtOS.
  */
 export const STALE_AFTER_MS = 20_000;
@@ -73,7 +73,7 @@ export class StateReader {
   private async loop(): Promise<void> {
     while (this.running) {
       await this.poll();
-      const delay = Math.min(this.pollMs * 2 ** Math.min(this.fails, 4), 30_000);
+      const delay = Math.min(this.pollMs * 2 ** Math.min(this.fails, 4), 10_000);          // 2.5, 5, 10 s ... never more than 10 s, so recovery is quick
       await new Promise<void>(res => { this.timer = setTimeout(res, delay); });
     }
   }

@@ -7,11 +7,13 @@ export const PAGE_HTML = String.raw`<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 <title>BuhurtOS Broadcast Companion</title>
 <style>
 :root { --bg:#10151d; --card:#19212c; --ink:#eef2f7; --mute:#9aa7b8; --line:#2b3645; --ok:#2ecc71; --warn:#f5b301; --bad:#ff4d5e; --accent:#4c8dff; color-scheme: dark; }
 @media (prefers-color-scheme: light) { :root { --bg:#f3f5f8; --card:#fff; --ink:#111a26; --mute:#556376; --line:#d5dbe3; --ok:#0f9d58; --warn:#b07900; --bad:#c62828; --accent:#1f5fd6; color-scheme: light; } }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
 header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); }
 header h1 { font-size:18px; margin:0 8px 0 0; }
