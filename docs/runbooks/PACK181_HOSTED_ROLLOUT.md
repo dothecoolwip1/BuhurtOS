@@ -12,9 +12,9 @@ Do not apply migrations, deploy the function or change Auth settings until each 
 | 1a. Follow-up `20261016000100_pack181_camera_log_search_path` | **APPLIED** (`20261006082002`): fixes the advisor's `function_search_path_mutable` on `private.camera_log_append_only` | nothing |
 | 2. Role grants allowed on hosted | **done** (the first migration's `grant anon to ...` and `grant ... to authenticator` succeeded) | nothing |
 | 3. Deploy Edge Function `device-session` (`verify_jwt` off) | **DEPLOYED** (version 1, ACTIVE); answers `503 not configured` until step 4 | nothing |
-| 4. Function secrets (`DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS`) and the trusted signing key | **NOT done.** JWKS shows only the project's own Supabase-managed ES256 key | **the owner**: no connector tool can set function secrets or import a JWT signing key (Option A or B below) |
-| 4a. Hosted permission tests (the three Pack 18.1 gates, each one rolled-back transaction) | prepared and passing locally (119 / 113 / 104); **not run on hosted**: the Supabase tool holds SQL containing `delete`/`drop` for the owner's confirmation and timed out | the owner approves the confirmation prompt while the session runs them |
-| 5. Hosted proof (sign a device in, Data API with the custom role, Realtime, CORS, refresh, revoke) | not done | step 4 **and** network access from the session to `*.supabase.co` (refused by the session's network policy) |
+| 4. Function secrets (`DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS`) and the trusted signing key | **DONE by the owner**: imported ES256 key `de2891ff…` is the current signing key; the three secrets are set | confirm the earlier key `bfe4ac4e…` is "previously used", not revoked (it is no longer in the JWKS) |
+| 4a. Hosted permission tests (the three Pack 18.1 gates, each one rolled-back transaction) | **PASSED on hosted: 119 + 113 + 104 = 336 checks** | nothing |
+| 5. Hosted proof (sign a device in, Data API with the custom role, Realtime, CORS, refresh, revoke) | **PASSED** except Realtime (end-to-end through Supabase Auth, the deployed function and the Data API, driven with pg_net; evidence in STATUS.md) | Realtime: check on a phone after the release |
 | 6. Production check | not done | the merge, and network access to `dothecoolwip1.github.io` |
 
 Leaked Password Protection stays **disabled**: it is only available on Supabase Pro plans and is not available on the current BuhurtOS plan (a known, accepted plan
