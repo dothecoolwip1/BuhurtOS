@@ -409,6 +409,167 @@ let newId = null;
   check('E10 anonymous callers read nothing', refused(await api(null, 'GET', 'club_meetings?select=id')) && refused(await rpc(null, 'club_meeting_member_view', { p_team: REAVERS })));
 }
 
+// ================================================================ F. AGM concerns and executive nominations (club website only)
+{
+  const officersBefore = sql(`select string_agg(office || ':' || user_id || ':' || coalesce(ended_on::text, '-'), ',' order by office, user_id) from public.team_officers where team_id = '${REAVERS}'`);
+  const m = await open('phone');
+  await siteSignIn(m, 'member@example.test');
+  await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=agm-topics]').count()) > 0);
+  const pageText = await text(m, '#view');
+  check('F1 the AGM page keeps the RSVP and adds "Something you want discussed?" and Executive Nominations',
+    pageText.includes('Not Attending') && pageText.includes('Change how you will participate') && pageText.includes('Voting by Proxy'), pageText.slice(0, 200));
+  check('F2 the concern wording is the friendly one from the club', pageText.includes('Something you want discussed?') && pageText.includes('If there is a concern, question, idea or topic you would like brought up at the AGM, submit it here.') && pageText.includes('Executive Nominations'));
+  await phoneCheck(m, 'site-agm-extras-phone');
+  await m.getByRole('button', { name: 'Submit AGM Concern / Topic' }).click();
+  await m.locator('#topic-subject').fill('Hall rental costs');
+  await m.locator('#topic-details').fill('The hall costs more next year.\nCan we talk about a second location?');
+  await m.getByRole('button', { name: 'Submit for AGM' }).click();
+  await until(async () => (await m.locator('[data-testid=topic-received]').count()) > 0);
+  check('F3 submitting a topic confirms it was received and lists it with its date and status Submitted',
+    (await text(m, '[data-testid=topic-received]')).includes('Received') && (await text(m, '[data-testid=my-topic]')).includes('Hall rental costs') && (await text(m, '[data-testid=my-topic]')).includes('Submitted'), await text(m, '#agm-topics'));
+  check('F4 the topic is stored against the member\'s own membership', sql(`select m.full_name || '|' || t.status from public.club_meeting_topics t join public.club_memberships m on m.id = t.membership_id where t.subject = 'Hall rental costs'`) === 'Morgan Member|submitted');
+  await m.getByRole('button', { name: 'Edit', exact: true }).click();
+  await m.locator('#topic-subject').fill('Hall rental costs and a second location');
+  await m.getByRole('button', { name: 'Save changes' }).click();
+  await until(async () => (await text(m, '[data-testid=my-topic]')).includes('second location'));
+  check('F5 the member can edit their own topic (the history keeps both versions)', sql(`select count(*) from public.club_meeting_topic_history h join public.club_meeting_topics t on t.id = h.topic_id where t.subject like 'Hall rental costs and%'`) === '2');
+  // another member cannot touch it
+  const topicId = sql(`select id from public.club_meeting_topics where subject like 'Hall rental costs%'`);
+  check('F6 another member cannot edit or withdraw it, and cannot read the table', refused(await rpc('john@example.test', 'update_club_agm_topic', { p_topic: topicId, p_subject: 'Changed by John', p_details: 'x' }).catch(() => ({ status: 400 })))
+    && refused(await rpc('john@example.test', 'withdraw_club_agm_topic', { p_topic: topicId })) && refused(await api('john@example.test', 'GET', 'club_meeting_topics?select=id')));
+  // the executive sees it and updates its status
+  const tr = await open('phone');
+  await siteSignIn(tr, 'treas@example.test');
+  await tab(tr, 'AGM admin');
+  await until(async () => (await tr.locator('[data-testid=agm-row]').count()) > 0);
+  await tr.getByRole('button', { name: 'Concerns', exact: true }).click();
+  await until(async () => (await tr.locator('[data-testid=topic-row]').count()) > 0);
+  const row = await text(tr, '[data-testid=topic-row]');
+  check('F7 the Treasurer sees the concern with the member, subject, details, time and status',
+    row.includes('Hall rental costs and a second location') && row.includes('Morgan Member') && row.includes('Can we talk about a second location?') && row.includes('Submitted') && row.includes('edited'), row);
+  await phoneCheck(tr, 'site-concerns-admin-phone');
+  await tr.getByRole('button', { name: 'Add to agenda' }).click();
+  await until(async () => sql(`select status from public.club_meeting_topics where id = '${topicId}'`) === 'on_agenda');
+  await m.reload(); await until(async () => !(await m.locator('#signed-in').isHidden())); await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=my-topic]').count()) > 0);
+  check('F8 the member sees "Added to Agenda" and can still edit it', (await text(m, '[data-testid=my-topic]')).includes('Added to Agenda') && (await m.getByRole('button', { name: 'Edit', exact: true }).count()) === 1);
+  const vp = await open('desktop');
+  await siteSignIn(vp, 'vp@example.test'); await tab(vp, 'AGM admin'); await until(async () => (await vp.locator('[data-testid=agm-row]').count()) > 0);
+  await vp.getByRole('button', { name: 'Concerns', exact: true }).click();
+  await until(async () => (await vp.locator('[data-testid=topic-row]').count()) > 0);
+  check('F9 the Vice President can read the concerns but has no status buttons', (await vp.getByRole('button', { name: 'Add to agenda' }).count()) === 0 && refused(await rpc('vp@example.test', 'set_club_agm_topic_status', { p_topic: topicId, p_status: 'addressed' })));
+  check('F10 a regular member cannot open the executive concerns list or set a status', refused(await rpc('member@example.test', 'club_agm_topics_admin', { p_meeting: MEETING })) && refused(await rpc('member@example.test', 'set_club_agm_topic_status', { p_topic: topicId, p_status: 'addressed' })));
+  m.once('dialog', d => d.accept());
+  await m.getByRole('button', { name: 'Withdraw', exact: true }).click();
+  await until(async () => (await text(m, '[data-testid=my-topic]')).includes('Withdrawn'));
+  check('F11 the member can withdraw their topic: it stays (status Withdrawn), no longer editable; the executive sees it withdrawn', sql(`select status from public.club_meeting_topics where id = '${topicId}'`) === 'withdrawn'
+    && (await m.getByRole('button', { name: 'Edit', exact: true }).count()) === 0);
+  await tr.getByRole('button', { name: 'Nominations', exact: true }).click(); await tr.getByRole('button', { name: 'Concerns', exact: true }).click();
+  await until(async () => (await text(tr, '#view')).includes('Withdrawn'));
+  check('F12 the executive list shows the withdrawn topic and says the member withdrew it', (await text(tr, '[data-testid=topic-row]')).includes('The member withdrew this topic.'));
+
+  // ---- nominations: yourself, three offices
+  const nom = m.locator('[data-testid=nominate-form]');
+  const rolePick = (page, r) => page.locator('[data-testid=nominate-form]').getByRole('button', { name: r, exact: true }).click();
+  await nom.getByRole('button', { name: 'Nominate Myself' }).click();
+  await rolePick(m, 'President');
+  const conf = await text(m, '[data-testid=nomination-confirm]');
+  check('F13 nominating yourself asks to confirm: "You are nominating yourself for President at the 2026 Red Deer Reavers AGM."', conf.includes('You are nominating yourself for President at the 2026 Red Deer Reavers AGM.'), conf);
+  await phoneCheck(m, 'site-nominate-phone');
+  await m.getByRole('button', { name: 'Confirm Nomination' }).click();
+  await until(async () => (await text(m, '[data-testid=office-president]')).includes('Morgan Member'));
+  check('F14 a self-nomination is accepted at once and shows as an accepted candidate', sql(`select o.office || ':' || n.status from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id join (select 'president' as office) o on true where c.full_name = 'Morgan Member' and n.office = 'president'`) === 'president:accepted'
+    && (await text(m, '[data-testid=office-president]')).includes('Accepted Candidates: Morgan Member'));
+  for (const r of ['Secretary', 'Treasurer']) {
+    await m.locator('[data-testid=nominate-form]').getByRole('button', { name: 'Nominate Myself' }).click();
+    await rolePick(m, r);
+    await m.getByRole('button', { name: 'Confirm Nomination' }).click();
+    await until(async () => (await text(m, `[data-testid=office-${r.toLowerCase()}]`)).includes('Morgan Member'));
+  }
+  check('F15 the same member can stand for Secretary and Treasurer too', sql(`select count(*) from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'Morgan Member' and n.status = 'accepted'`) === '3');
+  const board = await text(m, '[data-testid=agm-nominations]');
+  check('F16 the candidate section shows the current officer for each role (from the officer records) and no e-mail addresses',
+    board.includes('Current Officer: Kedrixx Streit') && board.includes('Current Officer: Garrett Robson') && board.includes('2026 Executive Nominations') && !/@/.test(board), board.slice(0, 500));
+  check('F17 Secretary has no officer with a membership name yet it still names the current officer from the officer record', /Secretary Current Officer: (Carm Example|not assigned)/.test(board), board);
+
+  // ---- nominate another member; the nominee answers
+  await m.locator('[data-testid=nominate-form]').getByRole('button', { name: 'Nominate Another Member' }).click();
+  await m.locator('#nominee').selectOption({ label: 'John Smith' });
+  await rolePick(m, 'Secretary');
+  const conf2 = await text(m, '[data-testid=nomination-confirm]');
+  check('F18 nominating another member shows who and for what, and that they must accept', conf2.includes('You are nominating John Smith for Secretary') && conf2.includes('must accept'), conf2);
+  const offered = await m.locator('#nominee option').allInnerTexts();
+  check('F19 only members who can currently vote are offered (not pending Jane, not under-18 Kit, not yourself)', offered.includes('John Smith') && offered.includes('Kedrixx Streit') && !offered.includes('Jane Smith') && !offered.includes('Kit Young') && !offered.includes('Morgan Member'), offered.join(','));
+  await m.getByRole('button', { name: 'Confirm Nomination' }).click();
+  await until(async () => (await text(m, '[data-testid=nomination-notice]')).includes('Nomination sent'));
+  check('F20 the nominee is "awaiting acceptance" and NOT yet a confirmed candidate', sql(`select n.status from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'John Smith' and n.office = 'secretary'`) === 'awaiting_acceptance'
+    && /awaiting acceptance: John Smith/.test(await text(m, '[data-testid=office-secretary]')) && !/Accepted Candidates:[^A-Z]*John/.test((await text(m, '[data-testid=office-secretary]')).replace(/Morgan Member/, '')));
+  const nomId = sql(`select n.id from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'John Smith' and n.office = 'secretary'`);
+  check('F21 the nominator cannot accept or decline on the nominee\'s behalf', refused(await rpc('member@example.test', 'respond_to_club_nomination', { p_nomination: nomId, p_response: 'accept' })) && refused(await rpc('member@example.test', 'respond_to_club_nomination', { p_nomination: nomId, p_response: 'decline' })));
+  // a second nominator of the same person and office: still ONE candidacy
+  const dup = await rpc('pres@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'secretary', p_nominee: MEM(6) });
+  check('F22 five people nominating the same member for the same office still make ONE candidacy (both nominators are kept)',
+    dup.status < 300 && String(dup.body).replaceAll('"', '') === nomId && sql(`select count(*) from public.club_meeting_nominations where id = '${nomId}'`) === '1' && sql(`select count(*) from public.club_meeting_nominators where nomination_id = '${nomId}'`) === '2'
+    && sql(`select count(*) from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'John Smith' and n.office = 'secretary' and n.status in ('awaiting_acceptance','accepted')`) === '1', JSON.stringify(dup.body));
+  const jo = await open('phone');
+  await siteSignIn(jo, 'john@example.test', 'John-new-pass-26');
+  await until(async () => (await jo.locator('[data-testid=nominated-banner]').count()) > 0);
+  check('F23 signing in, the nominee sees "You\'ve Been Nominated" straight away', (await text(jo, '[data-testid=nominated-banner]')).includes('You\'ve Been Nominated') && (await text(jo, '[data-testid=nominated-banner]')).includes('You have been nominated for Secretary for the 2026 Red Deer Reavers AGM.'));
+  await shot(jo, 'site-nominated-banner-phone');
+  await tab(jo, '2026 AGM');
+  await until(async () => (await jo.locator('[data-testid=nominated-card]').count()) > 0);
+  const card = await text(jo, '[data-testid=nominated-card]');
+  check('F24 the nomination shows who nominated, the role and the date, with Accept and Decline', card.includes('Nominated by') && card.includes('Morgan Member') && card.includes('Kedrixx Streit') && card.includes('Role Secretary') && /Date \w+ \d+, \d{4}/.test(card)
+    && (await jo.getByRole('button', { name: 'Accept Nomination' }).count()) === 1 && (await jo.getByRole('button', { name: 'Decline Nomination' }).count()) === 1, card);
+  await phoneCheck(jo, 'site-nominated-card-phone');
+  await jo.getByRole('button', { name: 'Accept Nomination' }).click();
+  await until(async () => sql(`select status from public.club_meeting_nominations where id = '${nomId}'`) === 'accepted');
+  await until(async () => (await text(jo, '[data-testid=office-secretary]')).includes('Accepted Candidates: John Smith'));
+  check('F25 accepting makes them an accepted candidate; the original nomination and nominators are kept', (await text(jo, '[data-testid=office-secretary]')).includes('John Smith')
+    && sql(`select count(*) from public.club_meeting_nominators where nomination_id = '${nomId}'`) === '2' && sql(`select string_agg(action, ',' order by id) from public.club_meeting_nomination_history where nomination_id = '${nomId}'`) === 'nominated,also_nominated,accepted');
+  // decline
+  const nd = await rpc('member@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'treasurer', p_nominee: MEM(1) });
+  const pr = await open('phone');
+  await siteSignIn(pr, 'pres@example.test');
+  await until(async () => (await pr.locator('[data-testid=nominated-banner]').count()) > 0);
+  await tab(pr, '2026 AGM');
+  await until(async () => (await pr.locator('[data-testid=nominated-card]').count()) > 0);
+  pr.once('dialog', d => d.accept());
+  await pr.getByRole('button', { name: 'Decline Nomination' }).click();
+  await until(async () => sql(`select status from public.club_meeting_nominations where id = '${String(nd.body).replaceAll('"', '')}'`) === 'declined');
+  await until(async () => (await pr.locator('[data-testid=nominated-card]').count()) === 0);
+  check('F26 declining records the nomination as declined (kept, not deleted) and removes it from the member board', nd.status < 300 && sql(`select count(*) from public.club_meeting_nominations where status = 'declined'`) === '1'
+    && !(await text(pr, '[data-testid=office-treasurer]')).includes('Kedrixx Streit Accepted') && !/awaiting acceptance: Kedrixx/.test(await text(pr, '[data-testid=office-treasurer]')));
+  // who may nominate
+  const jn = await open('phone');
+  await siteSignIn(jn, 'jane@example.test');
+  await tab(jn, '2026 AGM');
+  await until(async () => (await jn.locator('[data-testid=agm-nominations]').count()) > 0);
+  check('F27 a member who cannot vote can read the nominations but cannot nominate, and is told why', (await jn.locator('[data-testid=nominate-form]').count()) === 0
+    && (await text(jn, '[data-testid=nominate-blocked]')).includes('Only members who can currently vote can nominate') && (await text(jn, '[data-testid=nominate-blocked]')).includes('Membership pending approval'), await text(jn, '[data-testid=agm-nominations]'));
+  check('F28 the database refuses a non-voting member (pending Jane, under-18 Kit)', refused(await rpc('jane@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president' }))
+    && refused(await rpc('kid@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president' })) && refused(await rpc('newbie@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president' })));
+  check('F29 nobody can read or write nominations directly, or nominate for another office, or an ineligible member',
+    refused(await api('member@example.test', 'GET', 'club_meeting_nominations?select=id')) && refused(await api('member@example.test', 'POST', 'club_meeting_nominations', { meeting_id: MEETING, office: 'president', nominee_membership_id: MEM(6), status: 'accepted' }))
+    && refused(await rpc('member@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'director' })) && refused(await rpc('member@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president', p_nominee: MEM(7) })));
+  check('F30 nominations never change the officers', sql(`select string_agg(office || ':' || user_id || ':' || coalesce(ended_on::text, '-'), ',' order by office, user_id) from public.team_officers where team_id = '${REAVERS}'`) === officersBefore);
+  // executive nomination dashboard
+  await tr.getByRole('button', { name: 'Nominations', exact: true }).click();
+  await until(async () => (await tr.locator('[data-testid=nomination-row]').count()) > 0);
+  const adm = await text(tr, '#view');
+  check('F31 the executive nomination dashboard shows each role, its current officer, every nominee with status, who nominated them and self / member nomination',
+    adm.includes('Current Officer: Kedrixx Streit') && /President[\s\S]*Morgan Member[\s\S]*Accepted[\s\S]*Self nomination/.test(adm) && /John Smith[\s\S]*Accepted[\s\S]*Member nomination[\s\S]*Nominated by Kedrixx Streit, Morgan Member|John Smith[\s\S]*Accepted[\s\S]*Member nomination[\s\S]*Nominated by Morgan Member, Kedrixx Streit/.test(adm)
+    && /Kedrixx Streit[\s\S]*Declined[\s\S]*Member nomination[\s\S]*Nominated by Morgan Member/.test(adm) && /Accepted 1 · Awaiting acceptance 0 · Declined 1 · Withdrawn 0/.test(adm), adm);
+  await phoneCheck(tr, 'site-nominations-admin-phone');
+  check('F32 a regular member and another club\'s Treasurer cannot open the executive nomination dashboard', refused(await rpc('member@example.test', 'club_agm_nominations_admin', { p_meeting: MEETING })) && refused(await rpc('other@example.test', 'club_agm_nominations_admin', { p_meeting: MEETING })));
+  check('F33 the original AGM RSVP is untouched: Morgan is still "Not Attending" and the existing executive People view still works',
+    sql(`select response from public.club_meeting_rsvps where membership_id = '${MEM(5)}'`) === 'not_attending' && (await text(m, '[data-testid=agm-member]')).includes('Not Attending'));
+  await tr.getByRole('button', { name: 'People and check-in', exact: true }).click();
+  await until(async () => (await tr.locator('[data-testid=agm-summary]').count()) > 0);
+  check('F34 the executive AGM dashboard still shows its counts and check-in buttons', (await text(tr, '[data-testid=agm-summary]')).includes('Total members') && (await tr.locator('.checkin').count()) > 0);
+}
+
 check('P1 every club-website screen fits a 390px phone without sideways scrolling', phoneOk, phoneBad.join(', '));
 check('P2 no page errors on either website', pages.every(x => x.errors.length === 0), pages.flatMap(x => x.errors).join(' | '));
 await browser.close();
