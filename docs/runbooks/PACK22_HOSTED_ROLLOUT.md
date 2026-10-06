@@ -1,6 +1,36 @@
-# Pack 22 hosted rollout (NOT performed)
+# Pack 22 hosted rollout
 
-Project `mvbxlebznlgroptwwdsm`. Nothing below has been done. Apply only when the owner asks, after the branch is merged.
+Project `mvbxlebznlgroptwwdsm`. **Applied on 2026-10-06, before the merge** (the app reads the new columns, so the database goes first). Record below.
+
+## Rollout record (2026-10-06)
+
+- **Before:** hosted had none of the ten migrations. Hosted function bodies matched the repository apart from SQL comments (the earlier apply path strips
+  them) and the hosted-only `20261006170132 show_reavers_officers_without_accounts`. Both anchors that migration 500 patches in
+  `private.readiness_rows` were present. A row-hash snapshot of the sporting tables was taken.
+- **Renumbered first:** main's Pack 18.1 migrations already used `20261015000100`–`300`, so the ten Pack 22 files (never applied anywhere) became
+  `20261018000100`…`001000`, with contents unchanged.
+- **How:** the two data files are about 950 KB each, too large to send through the migration tool as text. So the database fetched each file from the
+  pushed commit `ae77063` on raw.githubusercontent.com with `pg_net`. Its MD5 was compared with the local file (all ten equal). Each migration was then
+  applied with `apply_migration`, as a block that re-checks the MD5 and `EXECUTE`s the exact file text. The SQL that ran is byte-identical to the repository
+  files (comments included). Hosted records them as `20261006181442 pack22_rules_library` … `pack22_historical_qa_fixes`, in order. The same method was
+  first proven locally: schema fingerprint, data and audit rows equal to a normal build.
+- **After each stage:** the checks below, plus 400: fingerprint `2ee64069…`, 42 `in_review`, 1281 provisions, all hashes valid; 900: 37 / 25 / 1357 / 44.
+- **Whole-database comparison with the gated local build:** every Pack 22 function is byte-identical (`readiness_rows` equal once comments are ignored,
+  because it was patched from hosted's comment-less body). Grants, column grants, function execute rights, RLS policies, triggers, constraints, columns
+  and indexes are all identical. The sporting row hashes equal the snapshot.
+- **QA probes (one transaction, rolled back; nothing committed):**
+  - direct writes cannot make an earlier edition published, superseded or non-historical;
+  - a signed-in non-owner changes 0 rows even with the importer flag set, and cannot call either publish function or the importer;
+  - the owner's `publish_ruleset_version` refuses an earlier edition;
+  - an edition with open review items cannot be published;
+  - once readable (inside the transaction), an earlier edition is refused as a competition ruleset, as a competition document, as a citation, and as
+    the version in force;
+  - a visitor then sees only that edition, labelled historical;
+  - a platform suspension blocks readiness ("Suspended from all events"). Lifting it restores readiness, keeps the row and its history (issued,
+    lifted), and the row cannot be deleted.
+- **Advisors:** no anon-executable Pack 22 function. Its SECURITY DEFINER functions are the accepted authenticated class. `discipline_history` has RLS
+  with no policies (read through functions only).
+- **Not done:** nothing was published. The 44 review items stay open. Owner-view live checks are still to do (below).
 
 ## Order
 
@@ -77,6 +107,9 @@ Platform › Rules (`/platform/rules`) lists the 42 versions with their reconcil
 publish one at a time), and confirm. Published text is frozen; a later official file becomes a new version.
 
 ## Live checks (a phone)
+
+Visitor view, automated (read-only, no secrets): `node scripts/e2e/pack22-production-check.mjs` with `EXPECT_BUILD` / `EXPECT_COMMIT`
+(26/26 on build 142, 2026-10-06, from GitHub Actions; this environment cannot reach the live site). The checks below need the owner's session.
 
 - `/rules`:
   - lists the four committees (8 / 6 / 5 / 23);
