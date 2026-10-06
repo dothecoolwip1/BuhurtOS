@@ -574,19 +574,23 @@ Not verified: the real domains (buhurtos.ca, the GitHub Pages club site): sign-i
 | Automated tests | `club_agm_gate.sql` **78 checks** + `club_membership_gate.sql` 101; `run_all.sh` DATABASE GATE PASSED; Vitest 965; typecheck |
 | Real-auth browser scenario | `scripts/e2e/club-live.sh` **61/61** (real Supabase Auth with default link-only emails; both sites on ONE origin like production; 390x844 + 1280x900) |
 
-## Pack 22: rules, regulations, penalties and discipline (2026-10-06): IMPLEMENTED ON BRANCH, OFFICIAL RULE TEXT NOT IMPORTED, NOT MERGED, NOT DEPLOYED
+## Pack 22: rules, regulations, penalties and discipline (2026-10-06): IMPLEMENTED AND VERIFIED LOCALLY ON BRANCH, PUSHED, NOT MERGED, NOT DEPLOYED
 
-Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers membership) was merged in at `9d97be4`. Full record:
-`docs/claude-packs/PACK_22_RULES_DISCIPLINE.md`. Update procedure: `rules-library/README.md`. Hosted steps (not performed):
-`docs/runbooks/PACK22_HOSTED_ROLLOUT.md`.
+Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers membership) was merged in at `9d97be4`.
+- Full record: `docs/claude-packs/PACK_22_RULES_DISCIPLINE.md`.
+- Per-document QA: `docs/claude-packs/PACK_22_SOURCE_QA.md`.
+- Update procedure: `rules-library/README.md`.
+- Hosted steps (not performed): `docs/runbooks/PACK22_HOSTED_ROLLOUT.md`.
 
 | Level | Status |
 | --- | --- |
-| Official source | **Documents NOT readable here** (network policy denies buhurtinternational.com and Google Drive). Inventory verified from the owner's saved copy of the rules page: **42 documents + 3 archive folders**, 4 committees (8/6/5/23). **No rule text imported; nothing typed from memory** |
-| Implemented in repository | rules library schema (versions, provisions, corrections, conflicts, immutability), reproducible importer with reconciliation, Buhurt International document directory, `/rules` search / document / rule pages (summaries kept and labelled), Lyst Rules sheet and rule citations on marshal's calls (outbox), staff discipline log, competition ↔ ruleset version link |
-| Discipline model | Pack 13's in-bout records unchanged; rules can be cited on them (append-only). No Buhurt International sanction vocabulary, suspensions or eligibility blocks were invented: they wait for the official documents |
-| Migrations | `20261015000100_pack22_rules_library.sql`, `20261015000200_pack22_bi_document_inventory.sql` (additive) |
-| Applied to hosted Supabase | **NO** |
-| Automated tests | typecheck clean; Vitest 1010/1010; build OK; `run_all.sh` **DATABASE GATE PASSED** (`pack22_gate.sql` 124 checks; fingerprint 2238 lines) on the merged tree |
-| Browser (real Chromium, real Postgres + PostgREST) | `scripts/e2e/pack22-live.sh` **71/71** (390x844 + desktop keyboard). Regression: field-pack03, sw-update, pack07-ux, pack08, pack12-app, pack13-live, pack16-live all pass |
-| PR / merged / deployed / production verified | no / no / no / no |
+| Official source | All **42** Buhurt International PDFs, from the official links (one-shot workflow, branch `pack22-bi-sources`, `SHA256SUMS.txt`) |
+| Import (repository) | Release `2026-10-06`: 42 imported, 3 archive folders excluded with reason, 0 missing; reconciliation **PASSED**. 1281 provisions in official numbering; 15 tables transcribed (merged cells kept); 24 picture-only pages; 210 OCR pages; 37 OCR corrections checked against the page image; 0 provisions left to review. Version labels were read from each document. Reviews were made by Claude Code against page images; publishing is the owner's act |
+| Implemented in repository | Rules library (search, document and rule pages, tables, picture/OCR notices, quick questions, Lyst Rules sheet, rule citations) · competition documents chosen from the classification (not hardcoded to BI) · BI card vocabulary with sources (green ≠ yellow) · match records carry the card concept and ruleset version · event-level sanctions · authenticity infractions and green cards · appeals and Judiciary reviews with official windows and outcomes · suspensions (event / organization / platform authority, scope, supersede, lift) · eligibility blocks at acceptance, check-in, entry, roster and readiness (no override) · discipline desk, organization/platform suspension admin, fighter's own record, Platform › Rules publishing · recorded document conflicts (tier points) · notifications reuse Pack 15 |
+| Migrations | `20261015000100` … `20261015000700` (seven, additive; `000400` is the 950 KB data load) |
+| Skeptical QA | Independent agent: 12 confirmed + 3 plausible findings. All fixed (migration `000700` + UI) and covered by `pack22_qa_fixes_gate.sql` (43 checks, fails without the fix) |
+| Automated tests | typecheck clean; Vitest **1031/1031**; build OK; `run_all.sh` **DATABASE GATE PASSED** (`pack22_gate` 139, `pack22_discipline_gate` 119, `pack22_qa_fixes_gate` 43; fingerprint 2552 lines) |
+| Browser (real Chromium, built app, real Postgres + PostgREST; 390×844 and desktop) | `pack22-live` **71/71**; `pack22-discipline-live` **56/56**; with the real Supabase Auth server (REAL_AUTH) **57/57**. Regression after the fixes: `pack16-live` 66/66, `pack13-live` 88/88, `pack18-live` 67/67 (real Auth) |
+| Applied to hosted Supabase | **NO** (hosted database not touched) |
+| Published BI versions | **None** (all 42 wait in review for the owner) |
+| PR / merged / deployed / production verified | no / no / no / **NOT VERIFIED** |

@@ -3,29 +3,36 @@
 Branch `ccr-321cc545-1coq4p`, started from `main` `532fbab`. `main` was merged in at `9d97be4`, after PR #40 and #41 (Red Deer Reavers membership) landed during the work.
 The authoritative source is https://www.buhurtinternational.com/rules.
 
-## 0. The one thing to know first
+## 0. Summary
 
-**The official rule documents could not be read in this environment.** The cloud environment's network policy denies
-`www.buhurtinternational.com`, `drive.google.com` and every mirror, both from the shell and from the web-fetch tool. Only GitHub and package
-registries are reachable. Web search returned titles only.
+**All 42 official Buhurt International documents are imported, reconciled and stored as versions waiting for the owner to publish.**
 
-The owner supplied a **saved copy of the rules page** (HTML). From it, BuhurtOS now has the complete, verified **inventory** of the official
-material: 42 documents and 3 archive folders, with their committees, headings and official links. The text inside those documents (rule
-numbers, wording, pages, versions, disciplinary provisions) was **not retrieved**, so **no Buhurt International rule text is imported**.
-Nothing was typed in from memory.
-
-Everything that turns those documents into searchable, versioned, traceable rules is built and tested end to end: schema, importer,
-reconciliation, search, pages, officiating, discipline log and permissions. The tests use invented example documents, clearly labelled as such.
-To import the real rules, either allow the hosts above in the environment's network settings or provide the PDFs, then follow
-`rules-library/README.md`.
-
-Completion criteria 1, 2, 4 and 7 of the pack brief are therefore **not met for the rule text itself**:
-- 1: investigating the official material;
-- 2: accounting for all rules;
-- 4: every rule traceable to its source;
-- 7: official penalty concepts represented accurately.
-
-They are met for the document inventory only. This record says so wherever it matters.
+- The official files were fetched from the links on the rules page by a one-shot GitHub Actions workflow on branch `pack22-bi-sources`
+  (`rules-library/bi-source-drop/2026-10-06/`, `SHA256SUMS.txt`). The workflow was removed afterwards (`975152e`). This environment still cannot
+  reach the hosts directly. Provenance per file is in `rules-library/buhurt-international/releases/2026-10-06/fetch-log.json`.
+- Release `2026-10-06`:
+  - **45** inventory entries: **42 imported**, **3 excluded** (the three archive folders, which are links to earlier editions, not documents);
+    **0 missing**.
+  - **1281 provisions** in official numbering. No number was invented: unnumbered printed headings (weapon chart) keep their printed title.
+  - **15 tables** transcribed as rows and cells, with merged cells kept.
+  - **24 picture-only pages**, stored as figures with no words of BuhurtOS's own.
+  - **210 pages** read by OCR, because they have no text layer. **37** OCR corrections were checked against the page image.
+  - **111 lines of lettering inside pictures** (labels on drawings, photo captions) were set aside, not presented as rules.
+  - Reconciliation **PASSED** (`reconciliation.md`): every source line is accounted for once, character coverage is at least 98 % per document,
+    and every version label was read from the document itself.
+  - The per-document table is in `docs/claude-packs/PACK_22_SOURCE_QA.md`.
+- **Nothing is published yet.** Publishing is the platform owner's act, through Platform › Rules (`/platform/rules`): one version, or "Publish all N
+  ready", each with a confirm step. Every version is ready: reconciled, with no provision left to check.
+- The discipline domain is built **from the official text**, every concept traced to its provision. It is in section 4:
+  - BI card vocabulary;
+  - sanctions outside a fight;
+  - authenticity infractions and green cards;
+  - appeals and Judiciary reviews with their official windows;
+  - suspensions with authority and scope;
+  - eligibility blocks on every event-day desk.
+- **Conflicts found are recorded, not decided** (section 6). Example: the tier points in League Structure 2.3.4/2.3.5 versus 3.3.2 and Tournament
+  Structure 4.2.
+- **Hosted database: not changed.** Nothing merged, nothing deployed, no PR.
 
 ## 1. Official documents available from the rules page
 
@@ -46,7 +53,7 @@ Per committee:
 - Authenticity: 23 documents + 1 archive folder
 
 "BuhurtOS kind / formats" is BuhurtOS's reading of the title, for filtering (`classification.json`), not official. "Earlier BuhurtOS citation" is
-the version an earlier pack quoted from files the owner supplied then. It is **not** verified to be the version linked today.
+the version an earlier pack quoted from files the owner supplied then. Each matches the version linked today (section 2).
 
 | # | Committee | Heading on page | Document (label as linked) | Hosted on | BuhurtOS kind / formats | Earlier BuhurtOS citation |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -96,50 +103,79 @@ the version an earlier pack quoted from files the owner supplied then. It is **n
 | 44 | Authenticity Committee | Armor Requirements | [Greaves](https://drive.google.com/file/d/1f9RnYIO90XcFlZyoKKVo6HjoM_3WH8xE/view?usp=sharing) | Google Drive file | equipment |  |
 | 45 | Authenticity Committee | Armor Requirements | [Neck Protection](https://drive.google.com/file/d/1bo8-eNr_pTawNLNGod5mN64-d4EkkLS-/view?usp=sharing) | Google Drive file | equipment |  |
 
-## 2. Versions and dates
+## 2. Versions and dates (read from each document)
 
-None are printed on the page. Versions are only known indirectly, from what earlier packs quoted (`src/content/rules.ts`, `src/lib/tournament.ts`,
-`ref_categories.source`):
-- Buhurt Rules V.26.4.1
-- Buhurt Regulations V.26.4
-- Duels rules / Duels Regulations V.26.4
-- Outrance Rules (and Regulations) V.26.4
-- League Structure V2026.1
-- Tournament Structure and Formats (Jan 2026)
+The rules page prints no versions. Every version label below was read from the official PDF itself: the cover, page footers and change log. Each
+was recorded with `version_confirmed_by` "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog" and
+`confirmed_on` 2026-10-06 in `overrides/<doc>.json`. The note stored with each version says where the label was printed.
 
-Whether those are the files linked today is unknown. The importer detects the printed version and date from each PDF's first pages, and a person
-must confirm them (`overrides/*.json`) before a version can be stored as reviewable.
+| Version | Documents |
+| --- | --- |
+| 26.4.1 | Buhurt Rules |
+| 26.4 | Duels Rules, Outrance Rules and Regulations, Buhurt Regulations, Duel Regulations, Infractions, Weapon requirements, Shields & Bucklers, Perforated Visor Bascinets |
+| 26.2.1 | Weapon/Shield Chart |
+| 26.1 | Code of Conduct, League Structure, and the remaining Authenticity documents |
+| January 2026 | NO Agreement, Tournament Structure (as printed: a date, not a number) |
+| 2025.03 | Marshal Accreditation |
+| 2025.02 | Marshal Jobs, Titles, Uniforms and Accreditation |
+| December 2024 | Committees Internal Regulations, Committees Decision Process, Committees Structure, Accreditation and Titles |
+| 2024.06 | Judiciary Committee, Rule Update Policy, Secretary Accreditation |
+| 2024.03 | Gender policies. The file name says "V2024.06" but the document prints 2024.03; the printed label is used and the mismatch is noted on the version |
 
-## 3. Structure
+The earlier BuhurtOS citations (Buhurt Rules V.26.4.1, Regulations V.26.4, Duels V.26.4, Outrance V.26.4, League Structure V2026.1, Tournament
+Structure January 2026) match the documents linked today.
 
-Four committee sections. Most rulebooks are Google Drive files; governance documents are files on the site itself. Each committee has an
-"Archives" Drive folder of earlier editions. These are excluded from a current import automatically, but they are the place to find historical
-versions if past events need them later.
+## 3. Structure and extraction
 
-The internal structure of the documents (sections, numbering, appendices) could not be inspected. The importer handles the shapes rulebooks usually
-have: numbered sections such as 1, 1.1 and 1.1.1, sub-numbers without a printed parent, appendices, bullets, tables, headers and footers, and
-image-only pages. Anything it cannot read with confidence is flagged for a person rather than guessed.
+- **Text layer first.** `pdftotext -layout`. Pages without a text layer were rendered at 300 dpi and read with tesseract 5.3.4 (`psm 4`).
+  `scripts/rules/ocr_page.py` then uses the page image to decide:
+  - bullets (a small filled or hollow square → ● / ○);
+  - coloured page-edge bands (dropped);
+  - lettering inside a picture: a very small line, faint words on a non-paper background, or no readable word. These lines are set aside as page
+    furniture with the reason, and are never shown as rule text.
+- **Official numbering only.** Provisions are keyed `<series>:<number>`. A printed heading without a number keeps its printed title (the weapon
+  chart's ten headings). A page that is only pictures becomes a `figure` with an empty body (`has_figures`). Each provision records its
+  `extraction` (text, OCR or mixed). The rule page says when text was read from an image and when the page also has pictures that BuhurtOS does
+  not reproduce.
+- **Tables are not flattened.** The 15 tables are transcribed in `overrides/<doc>.json` (`layout.tables`) as rows and cells:
+  - `^` marks a cell merged with the one above, `<` a cell merged with the one to the left, and `<br>` a paragraph break inside a cell;
+  - a word-multiset check proves the transcription neither adds nor drops a word of the extracted text;
+  - the app renders them as real tables with merged cells, scrolling inside their own box on a phone.
+- **Reviewed decisions are data.** `overrides/<doc>.json` holds `ocr.fix` / `ocr.insert` (37 corrections, each checked against the page image),
+  `noise` (form labels on the Outrance scoring sheet, a decorative line), `layout.headings` / `layout.tables`, and `review` notes.
+  - Each review is bound to the provision's `content_sha256`, so a later change to the text re-opens it as `needs_review`.
+  - Review was not ceremonial. 26 provisions carry a note, where something real needed checking: a table, a heading read from an image, a picture
+    caption. Clear text was not flagged.
+- **Reproducible.** Re-structuring the committed `text/` with the committed `overrides/` gives the committed `structured/` files exactly (unit test,
+  every document of the release). Re-running `reconcile` and `sql` from them gives the committed migration byte for byte (checked 2026-10-06 with
+  `cmp`). OCR depends on the tesseract version, so the OCR text is committed.
 
-## 4. Disciplinary concepts
+## 4. Disciplinary concepts (from the official text) and how BuhurtOS represents them
 
-**Not determinable from official text here.** What is known, and how reliable it is:
-- Paraphrases committed by earlier packs, from owner-supplied files (secondary, unverified against today's documents):
-  - "verbal warning, yellow card or red card" for thrusting (Buhurt Rules §4.2);
-  - disqualification on "2 yellow cards or 1 red" leading to a technical win (Duels rules §2.3);
-  - "a yellow card … costs one point" in the 10-point must system (Outrance §15.3);
-  - "fewest penalties" as a tiebreak (Tournament Structure §3).
-- Documents whose titles indicate disciplinary or eligibility content, not read: Code of Conduct, Judiciary Committee, Infractions (Classification and
-  Application), Gender policies, and the Committees' internal regulations and decision process (likely appeals).
+Every concept below carries the provision stable keys that define it. BuhurtOS records decisions made by officials. It never judges a fight and
+never computes a consequence the documents leave to people (no AI referee, no automatic score changes).
 
-**Decision.** BuhurtOS does not invent a Buhurt International sanction vocabulary, suspension model or eligibility rule:
-- Officials keep using the Pack 13 model on the field: warning, card from the **event's own card list**, deduction, DQ. These records are structured,
-  void-only, audited, and keep reasons private.
-- Pack 22 adds the ability to **cite the exact rule** on any of these records, plus an event-wide **discipline log**.
-- Suspensions and bans (eligibility restrictions) were **not built**. Whether, how and by whom Buhurt International imposes them (presumably the
-  Judiciary Committee and Code of Conduct) must be read first. Nothing blocks anyone automatically.
+| Concept | Official source | BuhurtOS |
+| --- | --- | --- |
+| Verbal warning, reprimand, yellow card, red card, green card | Buhurt Regulations 6.1–6.4, Duel Regulations 4.1–4.5, Outrance 13, Tournament Structure 2, Infractions 3 | `discipline_card_types` (BI preset): each card is its own concept with its sources. A **green card is never a yellow card** (Buhurt Regulations 6.5.2: green cards do not count toward team disqualification). The event's tablet list can be set from the preset ("Buhurt International cards"), keys kept |
+| Cards in a fight | Buhurt / Duel Regulations 6 / 4 | Pack 13 `match_discipline` now records the `card_key` and the **ruleset version in force for the competition**, filled by the database. Void-only, as before |
+| Score effects | Duel Regulations 4.2 (a reprimand adds points to the opponent), Outrance 15.3 | **Not applied automatically.** The card is recorded; the official changes the score through the existing scoring path. A finalized result is never rewritten: voiding a card from a final match is refused until the result is reopened |
+| Yellow and red cards stay in their tournament; green cards follow the competitor | Tournament Structure 2 (January 2026) | Cards outside a fight are `event_sanctions` with a competition when one applies. Infractions 3 gives one green card per tournament, and Tournament Structure 2 says it follows the competitor into every tournament. Read together, **one green card is in force per competitor at the event** until it is removed, counting green cards given on the field tablet too. This is BuhurtOS's reading of the two provisions, cited in the refusal message |
+| Authenticity infractions: minor, moderate, major | Infractions (classification and application) | `authenticity_findings`, recorded by the Authenticity Officer (inspector), the head marshal or an organizer of the event. Kept separate from cards. A finding closes once (corrected or voided) and is never deleted |
+| Appeal at the event: to the Secretary within 15 minutes, decided by the Knight Marshal | Buhurt Regulations 7.2/7.4, Duel Regulations 5.2/5.4, Outrance 16.3/16.4 | `discipline_reviews` kind `event_appeal`, deadline computed from the end of the fight. The Secretary (scorekeeper) lodges it; the Knight Marshal (head marshal) or an organizer decides. Outrance 16.3 sends it to the Knight Marshal instead; the note says so. Outcomes as printed: rematch round, restart, cards imposed or withdrawn, point deduction imposed or withdrawn (Outrance 16.4), and "kept" (not approved: 7.1 / 5.1 "If an appeal is approved"). The deadline always runs from the end of the fight and cannot be set by hand. Only the Secretary or a decider records a withdrawal, with a reason, and it is audited. Applying a decision uses the record's own path (void, withdraw or lift), never a silent edit |
+| Judiciary Committee: red card review (14 days), application (30 days) | Judiciary Committee 3.1.1, 3.2, 3.4, 4.4 | Kinds `judiciary_red_card` / `judiciary_application`, decided by the platform owner or the event's organization admin. Outcomes kept, revoked, increased, reduced |
+| Suspensions and bans | Code of Conduct, Judiciary Committee | `discipline_suspensions`. **Authority**: the event (organizer or head marshal), an organization (its admins) or the platform (owner). **Scope**: rest of the event, one competition, the organization's events, all events. Changing one creates a new row that supersedes the old; lifting keeps it with the reason. Full history in `discipline_history` (append-only) |
+| Eligibility | (follows from the above) | One database answer, `discipline_block_reason(fighter, event, team)`, enforced by triggers on registration acceptance, check-in, entries (including a withdrawn entry being put back) and roster. A team suspension counts at every one of these steps. Entries that existed before a suspension are not removed or rewritten: readiness shows the person NOT READY, and the organizer withdraws the entry. It is shown as a **clear block** on Manage › review, the check-in desk and readiness. A readiness override is refused while a block applies. A warning that is not a block (for example an open finding) is shown as a warning |
+| Marshal roles | Marshal Accreditation, Jobs/Titles/Uniforms/Accreditation, Committees Structure/Accreditation/Titles | The documents are imported and searchable ("marshal accreditation"). BuhurtOS keeps the distinct event roles it already has (head marshal, marshal, scorekeeper, inspector). It does **not** build a global accreditation registry or merge roles |
 
-The schema allows adding them later: a sanction vocabulary per ruleset version, citing provisions, and an eligibility-restriction table that points
-at a cited provision and a disciplinary record.
+**Privacy.**
+- Reasons, notes and who recorded a decision live in `_private` tables, readable only by event staff and the deciding authority. Suspension reasons
+  are readable only by the issuing authority. Account ids (`issued_by`, `recorded_by` and similar) are not readable through direct table reads.
+- A fighter reads their own record; a captain reads their team's. Their history shows what happened and when, but never the reason or who decided.
+- Another event's staff learn only that a fighter is blocked from *their* event, never the reason.
+- No function returns account ids.
+
+**Notifications** reuse Pack 15: `suspension_changed`, `review_decided` and `green_card_changed`, deduplicated.
 
 ## 5. Existing BuhurtOS code that already touched rules, penalties, eligibility or discipline (all kept)
 
@@ -149,21 +185,29 @@ at a cited provision and a disciplinary record.
 | `public.sources`, `record_sources` | provenance | the page snapshot is a `sources` row (kind official) that every inventoried document points at |
 | `public.ref_categories.source`, `src/lib/quickSetup.ts`, `competitions.ruleset` text | free-text ruleset labels citing V.26.4 | unchanged |
 | `src/content/rules.ts` + `src/pages/RulesPage.tsx` | 23 hardcoded paraphrased summaries, simple substring search | summaries **kept** and labelled "BuhurtOS summaries, not the official wording", linked to their official documents; the page now searches official text first |
-| `public.match_discipline(+_private)`, `lyst_record_discipline`, `lyst_void_discipline`, event card list in `event_lyst_settings` (Pack 13) | in-bout warnings/cards/deductions/DQ | **unchanged**; rule citations are a separate append-only table referencing these records |
+| `public.match_discipline(+_private)`, `lyst_record_discipline`, `lyst_void_discipline`, event card list in `event_lyst_settings` (Pack 13) | in-bout warnings/cards/deductions/DQ | **extended, not replaced**: rule citations are a separate append-only table; each record now also carries the card concept (`card_key`) and the ruleset version in force, filled by the database; the void path is reused by appeal decisions |
 | `entries.status = 'disqualified'` | competition-level DQ | unchanged |
-| Pack 16 readiness, Pack 18 Command Centre | event-day authority (organizer, head marshal) | reused: discipline log uses `private.can_score`; Command Centre gains links to it and to Rules |
+| Pack 16 readiness, Pack 18 Command Centre | event-day authority (organizer, head marshal) | reused: discipline log uses `private.can_score`; `private.readiness_rows` patched in place (asserted anchors) so a discipline block makes a fighter NOT READY with the reason; Command Centre gains links to the discipline desk and to Rules |
+| Pack 15 notifications | kinds, categories, routes, dedupe | reused: three new kinds added by rebuilding the kind constraint and patching the category / route / text functions in place |
+| `registrations`, `registration_checks`, `entries`, `entry_fighters`, `registration_overrides` | event-day writes | guarded by eligibility triggers (a block refuses acceptance, check-in, entry, roster and overrides) |
 
 ## 6. Contradictions and uncertainties found
 
-1. **Source access**: see section 0.
-2. **Versions** linked today vs. versions BuhurtOS quoted earlier: unknown (section 2).
-3. **Known document disagreement** (pre-existing, kept): League Structure V2026.1 and Tournament Structure (Jan 2026) give different tier multipliers.
-   `ref_tiers` keeps both. Once imported, this belongs in `rule_conflicts`.
-4. `FormatsPage` notes that Buhurt Regulations §4 (round and match structure) "was not readable" in the earlier files: expect a table or image there.
-5. "NO Agreement" is read as "National Organization agreement" from the site's navigation (OUR MEMBERS → /nationalorganization). Confirm on reading.
-6. The Weapon/Shield Chart is probably a table or image: likely `needs_review` or excluded with a link.
-7. Google Drive files download automatically only if shared publicly; otherwise the owner supplies them (`register`).
-8. **Hosted database** contains migrations not in BuhurtOS `main` at the start (`club_membership_dues_voting`, `club_fee_waiver_and_agm`). They
+1. **Tier points, recorded as open conflicts** (migration `20261015000600`, visible on the rule page once both documents are published):
+   - League Structure 26.1 2.3.4 / 2.3.5 tables: Regional "Points given 150 %", Conference "Points given 200 %";
+   - League Structure 26.1 3.3.2: "x1.25 for Regional", "x1.5 for Conference";
+   - Tournament Structure (January 2026) 4.2: "1.25x" and "1.5x".
+
+   BuhurtOS does not decide between them. `ref_tiers` keeps both readings, as it already did.
+2. **Gender policies version**: the file name says V2024.06 and the document prints 2024.03. The printed label is used; the mismatch is noted on the
+   version.
+3. **Score effects of cards** (Duel Regulations 4.2: a reprimand adds points to the opponent; Outrance 15.3: a yellow card costs a point): these
+   are deterministic in the text, but they depend on the format's scoring, which the officials control. BuhurtOS records the card and does not
+   change the score automatically. That is a deliberate choice, not a gap in the import.
+4. **Document precedence** is not stated across documents (for example Rules versus Regulations). BuhurtOS never assumes it. Each concept cites every
+   provision that defines it.
+5. "NO Agreement" is the National Organization agreement (confirmed by the document's text).
+6. **Hosted database** contains migrations not in BuhurtOS `main` at the start (`club_membership_dues_voting`, `club_fee_waiver_and_agm`). They
    arrived in `main` through PR #40/#41 during this work. Pack 22's migrations were renumbered to `20261015…` to follow them.
 
 ## 7. Schema and integration (implemented)
@@ -215,7 +259,7 @@ Generated by `scripts/rules/release.ts inventory-sql`. It loads the 45 directory
   - Search box (sticky), format filter, "include older versions".
   - Official rule results first; BuhurtOS summaries after, labelled.
   - With no search: official documents by committee, in the page's own order, with the bout-rules committee open first.
-  - States the text is not imported yet.
+  - Quick questions (chips) once official text is published; change logs, covers and empty figures are never offered as rules.
 - `/rules/doc/:slug`: issuer, formats, official file, versions, contents in reading order, search within the document; or "text not in BuhurtOS yet"
   with the official link.
 - `/rules/r/:id`
@@ -242,26 +286,122 @@ Generated by `scripts/rules/release.ts inventory-sql`. It loads the 45 directory
 - **Manage › Competitions**: optional "Official ruleset in BuhurtOS" per competition. It appears only when a published version exists for the
   format, and is shown read-only once the competition is finished.
 
-## 8. Evidence
+### `20261015000300_pack22_provision_layout.sql`
+
+- `rule_provisions.has_figures` and `extraction` (text / ocr / mixed).
+- The content check now allows a picture-only figure (`rule_provisions_has_content`).
+- The frozen-content guard covers the new columns; the importer stores them.
+
+### `20261015000400_rules_bi_2026_10_06.sql` (generated, about 950 KB)
+
+Generated by `scripts/rules/release.ts sql` from the reconciled release. It loads 42 versions **in review** with their 1281 provisions, file
+checksums, reconciliation summaries and confirmed version labels. It is idempotent: a re-load reports "unchanged". It refuses to touch a
+published version.
+
+### `20261015000500_pack22_discipline.sql`
+
+- **Competition documents**: `competition_rulesets` (several documents per competition, frozen once it is finished; published versions only).
+  - `set_competition_rulesets`.
+  - `apply_current_documents(competition, governing_body)` picks from the classification: documents for this format plus documents for every
+    format. The primary rulebook is the format's `rules` document.
+  - Not hardcoded to Buhurt International: the governing body is a parameter, and the organizer can pick any published version.
+- **Vocabulary**: `discipline_card_types`, `discipline_review_rules` (BI presets with sources); `apply_card_preset`.
+- **Records**:
+  - `match_discipline.card_key` / `ruleset_version_id`, set by a trigger;
+  - `event_sanctions` (+ `_private`): `issue_event_sanction`, `end_event_sanction`;
+  - `authenticity_findings`: `record_authenticity_finding`, `close_authenticity_finding`;
+  - `discipline_suspensions` (+ `_private`): `issue_suspension`, `change_suspension` (supersedes), `lift_suspension`;
+  - `discipline_reviews`: `lodge_review`, `withdraw_review`, `decide_review` (optionally applying the decision through the record's own path).
+- **History**: `discipline_history`, append-only, no client read. It is reached through `discipline_record_history`, for people who may read the
+  record. Every write is also audited through `private.audit`.
+- **Eligibility**:
+  - `discipline_block_reason`, plus triggers on registrations, check-in, entries, entry fighters and readiness overrides;
+  - the readiness patch;
+  - `discipline_eligibility` (blocks and warnings, for one fighter at one event).
+- **Reads**: `event_discipline_overview`, `fighter_discipline`, `managed_suspensions`.
+- **Notifications**: three kinds, with producers.
+- **Permissions**: the existing helpers (`can_score`, `can_resolve_results`, `can_inspect`, `can_see_readiness_detail`, `is_org_admin`,
+  `is_owner`, `is_team_captain`, `fighter_accounts`). No new super-admin.
+
+### `20261015000600_pack22_bi_rule_conflicts.sql`
+
+The three tier-points conflicts in section 6, recorded open and audited. Data only, and idempotent.
+
+### `20261015000700_pack22_discipline_fixes.sql`
+
+The fixes from the skeptical QA pass (section 8). Functions are replaced, triggers and column grants added, and the BI appeal rule row corrected to
+the official text. `supabase/tests/pack22_qa_fixes_gate.sql` has one block per finding, and it fails on the schema without this migration.
+
+### App (Pack 22 completion)
+
+- `/rules`:
+  - quick questions;
+  - tables with merged cells;
+  - picture and OCR notices;
+  - a "Read from" row, the version note and review notes;
+  - change log banner;
+  - search aids: fighter/competitor, strike/hit, accreditation, infraction.
+- `/events/:slug/discipline`: the discipline desk, with tabs Cards, Sanctions, Authenticity, Appeals and Suspensions.
+  - Every dangerous action asks twice: the first press shows exactly what will happen, inside the sticky action bar.
+  - The person picker uses the event's registrations.
+  - A desk the caller cannot use is not shown, and the database refuses it anyway.
+- Check-in desk, Manage › review and readiness: a discipline block is shown in plain words, and the check-in and override buttons are hidden.
+- Organization page and Platform › Rules: suspensions for the organization or the platform, with change, lift and history.
+- Platform › Rules: publishing the imported versions.
+- Fighter page: the fighter's own discipline record, for the fighter, their captains and authorities.
+- Manage › Competitions: "Use the current Buhurt International documents" and the list of attached documents.
+- Lyst settings: "Buhurt International cards".
+
+## 8. Skeptical QA pass and what it changed
+
+An independent review agent probed the discipline domain, importer and UI against a local database, with impersonated roles. It reported
+12 confirmed and 3 plausible findings. Each one was checked, fixed in migration `20261015000700` and the UI, and covered by a test that fails
+without the fix.
+
+| # | Finding | Fix |
+| --- | --- | --- |
+| 1 | The fighter and their captain could read private reasons (lift, change, withdrawal) through the record history | The history strips reasons and names unless the caller is the authority or event staff |
+| 2 | A suspended fighter could be put back into a competition by re-adding a withdrawn entry | The entry check also runs when an entry goes from withdrawn or disqualified back to registered |
+| 3 | A team suspension was ignored at check-in, on rosters and for team-only registrations | The team is checked at every step. The roster check reads the entry itself, because triggers run in name order and the competition was not filled in yet |
+| 4 | The Secretary could move the start of an appeal's 15-minute window | Refused for event appeals; the window always runs from the end of the fight |
+| 5 | Any marshal could withdraw an appeal, with no reason and no audit | Only the Secretary (scorekeeper) or a decider; a reason is required, the withdrawal is audited, and the desk asks twice |
+| 6 | Event suspensions could target people not at the event | Refused unless the person or team takes part in the event |
+| 7 | Eligibility could be probed for other teams, or for people not at the event | Each subject is authorised separately; staff only for their event's participants |
+| 8 | Merging away a team with disciplinary records failed obscurely | A clear refusal ("keep this team when merging"); merging the other way works and the records stay |
+| 9 | Organization and platform end dates moved by a day in North America, and further on every edit | Whole days in UTC, like the database (unit test across time zones, and a browser check in America/Edmonton) |
+| 10 | An appeal about a fight where nothing was recorded could not be lodged | The desk lists the event's started and finished fights |
+| 11 | Event suspension reasons were visible to all desk staff | Visible only to the head marshal and organizers (the issuers) |
+| 12 | Account ids were readable through direct table reads | Column grants exclude every `*_by` column |
+| 13 | Green card limit and appeal note did not match the cited text | Green card reworded and cited (Infractions 3 + Tournament Structure 2), field green cards counted; appeal note and outcomes corrected to the official text (Outrance 16.3 / 16.4) |
+| 14 | A review without a content hash could never go stale | A `verified` review must record `content_sha256`, otherwise it counts as not reviewed (unit test). The example fixtures were bound to their hashes; the BI release already was |
+| 15 | Organization suspensions ignored events whose organization comes from their season | They now use `private.event_org`, like every other organization check. **No dedicated test** (fixture shape) |
+
+Finding 14 also notes that the 26 BI reviews and the 42 version confirmations were made by Claude Code during the import, not by a person. That is
+how they are attributed in the files, and publishing (Platform › Rules) is the owner's act of acceptance.
+
+## 9. Evidence
 
 | Level | Result |
 | --- | --- |
-| Starting commit | `532fbab` (main). Baseline: DATABASE GATE PASSED, typecheck clean, Vitest 959/959, build OK |
-| Repository | migrations `20261015000100`, `20261015000200`; `scripts/rules/*`; `rules-library/*`; `src/lib/rules/*`, `src/data/rules.ts`, `src/pages/rules/*`, `src/pages/RulesPage.tsx`, `src/pages/DisciplineLogPage.tsx`, `src/components/rules/*`, Lyst sheet/log wiring, `scoreSender` kind; gate `pack22_gate.sql`; browser `scripts/e2e/pack22-live.{sh,mjs}` + fixture |
-| Unit tests | Vitest 1010/1010 on the merged tree. New: inventory 4 (includes byte-exact rebuild from the snapshot and the 42/3/per-committee counts), structuring and reconciliation 11 (lost, added and duplicated text, unconfirmed version, release accounting, reproducibility of the committed fixture), search 26 (every example query in the brief, numbers, partial and no results, 4000-rule speed), discipline log 4, sender 2 |
-| Database gate | `run_all.sh` **DATABASE GATE PASSED** on the merged tree; `pack22_gate.sql` **124 checks**; schema fingerprint 2238 lines. Two earlier gates' data assumptions were updated to Pack 22's rules (`security_gate`: exactly one `sources` row; a new draft version readable by anon). The real problems these gates caught were fixed: `published_by` was anon-readable; the column `superseded_by` was renamed `successor_version_id` |
-| Importer end to end | invented example PDFs generated with Chromium → `register` → `extract` (pdftotext 24.02) → `structure` → `reconcile` PASSED (r1: 2 imported / 2 excluded with reasons; r2: 1 / 3) → SQL → loaded; re-load is "unchanged"; a changed file for a published version is refused |
-| Browser (real Chromium, built app, real Postgres + PostgREST 12.2.3) | `scripts/e2e/pack22-live.sh` **71/71** at 390×844 (and desktop for the keyboard). Covers: the real BI directory (4 committees, 8/6/5/23, official Drive link opens in a new tab, "not imported yet" notice); test rules hidden outside sample mode; summaries labelled; searches back of knee, two handed weapon, helmet, yellow card, grounded fighter, grappling, protest, shield, `3.2`, `4`, zebra (no results), partial match; older versions and format filter; rule detail source, version, page and official link; older version banner and link to current; correction with earlier text; a 9-paragraph rule; document contents and both versions; keyboard (type, Enter, Tab to result with focus ring, Enter opens, clear); no sideways scroll on every screen; Lyst Rules sheet without changing the match; rule cited on a warning through the outbox, audited, changed append-only, shown in the record; head marshal's discipline log; stranger refused; API refusals (anon/stranger cite, anon log, `set_by` hidden, organizer cannot publish or correct, nobody inserts rule text); Manage › Competitions link audited; no page errors |
-| Regression browser suites | field-pack03 28/28, sw-update 28/28, pack07-ux 89/89, pack08-entrants 54/54, pack12-app 78/78, pack13-live 88/88, pack16-live passed (before the merge with main; main's changes did not touch these screens); pack22-live re-run on the merged tree 71/71 |
-| Not run | `pack18-live` (needs a Supabase Auth server binary that is not available here; Pack 22 only added two links to the Command Centre), the remaining live suites |
-| Hosted database | **NOT changed.** Read-only check only: 0 rulesets, 0 versions, 0 linked competitions, 2 `match_discipline` rows; latest migration `20261006042421 club_fee_waiver_and_agm` |
-| Deployment / production | **NOT deployed, NOT merged, no PR.** |
+| Source drop | 42 PDFs, `SHA256SUMS.txt` verified; provenance in `release.json` / `fetch-log.json` |
+| Import | `reconcile` **PASSED**: 45 inventory, 42 imported, 3 excluded, 0 missing; 1281 provisions; 0 left to review. Re-running `reconcile` + `sql` reproduces migration `20261015000400` byte for byte (`cmp`) |
+| Unit tests | Vitest **1031/1031**: importer 22, including reproducibility of the BI release and review binding; rules body/search; readiness; suspension dates across time zones. Typecheck clean. Production build OK |
+| Database gate | `run_all.sh` **DATABASE GATE PASSED** (every gate, simulation, league verifier, concurrency, vectors). `pack22_gate` **139**, `pack22_discipline_gate` **119**, `pack22_qa_fixes_gate` **43** checks. Schema fingerprint 2552 lines |
+| Browser (real Chromium, built app, real Postgres + PostgREST, 390×844 phone and desktop) | `pack22-live` **71/71**; `pack22-discipline-live` **56/56** |
+| Browser with the real Supabase Auth server (REAL_AUTH, every role signs in by password) | `pack22-discipline-live` **57/57**. Auth built locally from `supabase/auth` master `ce9a8ee`, with upstream `godotenv` v1.5.1 in place of the fork, which was not in the module archive |
+| Regression browser suites re-run after the fixes | `pack16-live` **66/66**, `pack13-live` **88/88**, `pack18-live` (real Supabase Auth) **67/67** |
+| Not re-run in this session | field-pack03, sw-update, pack07-ux, pack08, pack12-app and the other live suites (they passed earlier on this branch, before the import and discipline work) |
+| Hosted database | **NOT changed.** None of the seven Pack 22 migrations is applied |
+| Deployment / production | **NOT deployed, NOT merged, no PR** |
 
-## 9. What remains (owner / next run)
+## 10. What remains (owner / next run)
 
-1. Give the environment access to `www.buhurtinternational.com`, `drive.google.com`, `drive.usercontent.google.com` and `*.googleusercontent.com`, or
-   supply the 42 PDFs. Then run the import (`rules-library/README.md`), including the human review of every `needs_review` item and version label.
-2. Read the Code of Conduct, Judiciary Committee and Infractions documents. Then decide, with the owner, whether to add a per-ruleset sanction
-   vocabulary and eligibility restrictions (suspensions or bans), as warnings, not automatic blocks.
-3. Record known document conflicts (for example the tier multipliers) in `rule_conflicts` once both documents are imported.
-4. Apply the two migrations to the hosted database (`docs/runbooks/PACK22_HOSTED_ROLLOUT.md`), then verify live.
+1. Merge decision and hosted rollout: `docs/runbooks/PACK22_HOSTED_ROLLOUT.md` (seven migrations in order; the 950 KB data migration may need the SQL
+   Editor or `psql`).
+2. Publish the 42 versions from Platform › Rules after reading them. Nothing is public until then.
+3. Owner decisions the documents leave open:
+   - whether BuhurtOS should ever apply deterministic score effects of cards (Duel Regulations 4.2, Outrance 15.3); today the officials do;
+   - the tier points conflict (section 6), which BuhurtOS does not decide;
+   - how an existing entry should be handled when a suspension arrives mid-event; today readiness flags it and the organizer withdraws it.
+4. Live verification on a phone after the hosted rollout. NOT VERIFIED.
+
