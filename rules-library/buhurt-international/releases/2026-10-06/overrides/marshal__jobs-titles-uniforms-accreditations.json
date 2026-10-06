@@ -1,0 +1,18 @@
+{
+  "version": "2025.02",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "jobs-titles-uniforms-accreditations:5.5": {
+      "status": "verified",
+      "note": "Not a table: the captions \"Knight Marshal\", \"Marshal\" and \"Trainee\" above three photos of suggested uniforms.",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "2cd1aa3f125021ca55c86698a528284db19fef30e99d24422e9b15a90af2b220"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Changelog: latest entry \"February 2025 (Version update from 2024.12 to 2025.02)\".",
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

@@ -11,7 +11,7 @@ import {
 import { friendlyError } from '../lib/friendlyError';
 import { timeAgo } from '../lib/notificationView';
 import {
-  ATTENDANCE_LABEL, FILTER_LABEL, INSPECTION_LABEL, ISSUES, deskCounts, filterDesk, filterOptions, issueLabel, sortDesk,
+  ATTENDANCE_LABEL, FILTER_LABEL, disciplineBlock, INSPECTION_LABEL, ISSUES, deskCounts, filterDesk, filterOptions, issueLabel, sortDesk,
   type InspectionIssue, type ReadinessFilter, type ReadinessRow
 } from '../lib/readiness';
 import { useAsync } from '../lib/useAsync';
@@ -110,7 +110,7 @@ export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId:
       <div style={{ display: 'grid', gap: 10 }}>
         {shown.map(r => <DeskCard key={r.registrationId} row={r} roles={roles} pinned={r.registrationId === pinned} onSaved={async () => { setTouched(t => new Set(t).add(r.registrationId)); await load(); }} />)}
       </div>
-      <p className="src">Readiness is a warning for the lists and the Lyst screen. It never stops or reorders a fight. <Link to={`/events/${slug}`}>Back to the event</Link></p>
+      <p className="src">Readiness is a warning for the lists and the Lyst screen. It never stops or reorders a fight. A suspension is different: it blocks check-in until it is lifted. <Link to={`/events/${slug}/discipline?tab=authenticity`}>Authenticity and discipline</Link> · <Link to={`/events/${slug}`}>Back to the event</Link></p>
     </section>
   );
 }
@@ -125,6 +125,7 @@ function DeskCard({ row: r, roles, pinned, onSaved }: { row: ReadinessRow; roles
   const [reason, setReason] = useState('');
   const [history, setHistory] = useState<InspectionRecord[] | null>(null);
   const accepted = r.status === 'accepted';
+  const blocked = disciplineBlock(r.reasons);
 
   // Nothing is shown as done until the server says so; a failure says so plainly and the button can be pressed again.
   const run = async (label: string, fn: () => Promise<unknown>) => {
@@ -142,14 +143,15 @@ function DeskCard({ row: r, roles, pinned, onSaved }: { row: ReadinessRow; roles
         <span className={`desk-badge ${r.ready ? 'ok' : 'no'}`} role="status">{r.ready ? '✓ READY' : '✕ NOT READY'}</span>
       </div>
       <p className="src" style={{ margin: 0 }}>{[r.teamName ?? (r.isVolunteer ? 'Volunteer' : 'No team'), ...r.competitions].join(' · ')}{r.status === 'pending' ? ' · registration not accepted yet' : ''}</p>
-      {r.reasons.length > 0 && <ul className="desk-reasons">{r.reasons.map(x => <li key={x}>{x}</li>)}</ul>}
+      {blocked && <p className="desk-block" role="alert"><b>Blocked:</b> {blocked}. No check-in and no entry until it is lifted; a readiness override does not clear it. Ask the head marshal.</p>}
+      {r.reasons.length > 0 && <ul className="desk-reasons">{r.reasons.filter(x => x !== blocked).map(x => <li key={x}>{x}</li>)}</ul>}
       {r.overrideActive && <p className="desk-override"><b>Override:</b> {r.overrideReason ?? 'set by the head marshal or an organizer'}</p>}
 
       {roles.checkIn && accepted && (
         <div className="desk-row">
           <span className="desk-state">{ATTENDANCE_LABEL[r.attendance]}</span>
           {r.attendance === 'expected' && <button type="button" className="btn btn-line" disabled={!!busy} onClick={() => run('arrived', () => setAttendance(r.registrationId, 'arrived'))}>{busy === 'arrived' ? 'Saving…' : 'Arrived'}</button>}
-          {r.attendance !== 'checked_in' && <button type="button" className="btn btn-ink" disabled={!!busy} onClick={() => run('in', () => setAttendance(r.registrationId, 'checked_in'))}>{busy === 'in' ? 'Saving…' : 'Check in'}</button>}
+          {r.attendance !== 'checked_in' && !blocked && <button type="button" className="btn btn-ink" disabled={!!busy} onClick={() => run('in', () => setAttendance(r.registrationId, 'checked_in'))}>{busy === 'in' ? 'Saving…' : 'Check in'}</button>}
           {r.attendance !== 'expected' && <button type="button" className="btn btn-line" disabled={!!busy} onClick={() => run('undo', () => setAttendance(r.registrationId, r.attendance === 'checked_in' ? 'arrived' : 'expected'))}>{busy === 'undo' ? 'Saving…' : 'Undo'}</button>}
         </div>
       )}
@@ -192,7 +194,7 @@ function DeskCard({ row: r, roles, pinned, onSaved }: { row: ReadinessRow; roles
         </div>
       )}
 
-      {roles.override && accepted && (r.overrideActive || !r.ready) && (
+      {roles.override && accepted && !blocked && (r.overrideActive || !r.ready) && (
         <details className="desk-more">
           <summary>{r.overrideActive ? 'Override in place' : 'Override (exception only)'}</summary>
           {r.overrideActive

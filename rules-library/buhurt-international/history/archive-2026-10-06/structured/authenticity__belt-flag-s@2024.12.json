@@ -1,0 +1,303 @@
+{
+  "edition": "authenticity/belt-flag-s@2024.12",
+  "inventory_key": "authenticity/belt-flag-s",
+  "seq": 1,
+  "version": {
+    "version": "2024.12",
+    "title": "Belt flag 2024.12",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Title \"Belt flag\"; cover \"VER. 2024.12\"; change log only \"11-Nov-2024: document has been created\". Older than the current 26.1.",
+    "source_url": "https://drive.google.com/file/d/1ckuVX59mfTEpT0qs3NfPmAXGCKvKXUVP/view",
+    "source_sha256": "7266ed5298ae1a9138f6933c0bf71052af09db16f5f82a4f0c7d259f569d2c4e",
+    "retrieved_at": null,
+    "page_count": 4,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+    "content_sha256": "b6a97e4b37e58ed4fec97b477abe7ab6d186599222928310b7c21ba80bddc3be",
+    "detected": {
+      "version": "2024.12",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 historical import), read from the archived PDF: cover (OCR of the page image), footers and change log",
+    "historical": true,
+    "edition_seq": 1,
+    "edition_evidence": "Title \"Belt flag\"; cover \"VER. 2024.12\"; change log only \"11-Nov-2024: document has been created\". Older than the current 26.1.",
+    "source_files": [
+      {
+        "file": "Authenticity/Archive/Belt Flag V2024.12.docx.pdf",
+        "archive": "Authenticity",
+        "sha256": "7266ed5298ae1a9138f6933c0bf71052af09db16f5f82a4f0c7d259f569d2c4e",
+        "drive_file_id": "1ckuVX59mfTEpT0qs3NfPmAXGCKvKXUVP"
+      }
+    ],
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "pages": 4,
+      "source_lines": 45,
+      "assigned_lines": 63,
+      "furniture_lines": 10,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99724,
+      "provisions": 5,
+      "numbered": 4,
+      "needs_review": 0,
+      "verified": 0,
+      "empty_pages": [],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 4,
+      "picture_text_lines": 2,
+      "ocr_corrections": 0
+    }
+  },
+  "file_contents": [],
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "note",
+      "number": null,
+      "title": null,
+      "body": "VER. 2024.12\n\nAuthenticity",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "belt-flag-s:p0001",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "introduction"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "91cc874cc0c2306e0ce50ffd6d96f3b0ed6424411ad0724ce818c906154971d9",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "1:1",
+        "1:3",
+        "1:4",
+        "1:5",
+        "1:6",
+        "2:5",
+        "2:6",
+        "2:7",
+        "2:8",
+        "2:10"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Authenticity rules Belt Flag",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "belt-flag-s:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "2c7c584fc7e378efd75408f677c62b5ef09e016c2fa2d2f290de933958682580",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:0",
+        "3:1"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.1",
+      "title": "Definition and general requirements",
+      "body": "● A competitor must have a belt flag with your number on it that identifies you\n● A competitor may have a second belt flag that is decorative symbols and decorations used for this must be based on historical sources. Any clearly modern symbol or decoration is denied.\n● No more than two belt flags may be worn by a competitor Examples: Warhammer logo, movies or TV show imagery, modern slogan etc\n● Belt flag is an element hung on a belt designed to show your belt number in the list.\n● Belt flag must be made of fabric or leather.\n● Belt flag must conform with the Textiles and Leather rules document.\n● Belt flag consists of a base and a number.\n● Base must respect the following requirements:\n○ Base shape can be square, rectangular or triangular.\n○ Base must have a trim to be worn with a belt.\n○ Base must be made of one main color.\n○ Some decoration can be added on the edges of the base.\n○ Such decoration must not interfere with the readability of the belt flag.\n● Number must respect the following requirements:\n○ Individual figures must be from 0 to 9.\n○ Numbers must be from 01 to 99.\n○ Number must be written in Arabic numerals.\n○ Number must be 13 cm tall as a minimum.\n○ Number can be of any color, contrasting with the base main color.\n● All Belt flags must respect the following dimensions:\n○ Length: from 26 cm to 36 cm.\n○ Width: from 14 cm to 18 cm.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "belt-flag-s:1.1",
+      "parent_key": "belt-flag-s:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d86d32a751ed1312e0257cb70613f6b5a961c7f0bfa6143c7269f4c521ec4d98",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:2",
+        "3:3",
+        "3:4",
+        "3:5",
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.2",
+      "title": "Examples of Approved reproductions",
+      "body": "Picture by Zoom en Lice Pictures by The Medieval Things",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "belt-flag-s:1.2",
+      "parent_key": "belt-flag-s:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "cac327ad98913f3a6daea0073423a9b87160c200806f09d30f01f1e42e47e248",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:28",
+        "3:29",
+        "3:30",
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36",
+        "3:37",
+        "3:39"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 0,
+      "kind": "note",
+      "number": "2",
+      "title": "Change log",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\n11-Nov-2024: -add Document has been created",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "belt-flag-s:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "bbda7e20ee58611ccadf1a49dca6b30610f6378523fe799641a9387bda1d0d1c",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "4:0",
+        "4:1",
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10",
+        "4:11",
+        "4:12",
+        "4:14"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "1:0",
+      "page": 1,
+      "text": "\\i) BOHURT (7",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 51.1)"
+    },
+    {
+      "id": "1:2",
+      "page": 1,
+      "text": "as aa",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 6%), confidence 39.3)"
+    },
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "   Table of content",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:1",
+      "page": 2,
+      "text": "   1. Authenticity rules Belt Flag                     3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "       1.1. Definition and general requirements        3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "       1.2. Examples of Approved reproductions         4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "   2. Change log                                       5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "Belt flag                                          2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "3:38",
+      "page": 3,
+      "text": "Belt flag                                                                                     3",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "4:13",
+      "page": 4,
+      "text": "Belt flag                                                                                4",
+      "reason": "repeated on most pages (header or footer)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": []
+}

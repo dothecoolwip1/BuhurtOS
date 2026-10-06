@@ -1,0 +1,5459 @@
+{
+  "inventory_key": "authenticity/gauntlets",
+  "sha256": "013dcddd2f2fb0033cbab5f06ce06fca2d8cc3b1a56eb3a2e26cf1923f797b6f",
+  "source_file": "Authenticity/Gauntlets.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 20 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 21,
+    "title": "Gauntlets - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:20:22 2026 UTC",
+    "modified": "Wed Jan 28 14:20:22 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. Implementation\n2. Definition\n3. General Requirements\n4. Scales Gauntlets\n5. Hourglass Gauntlets\n6. Segmented Mittens\n7. 3/4 Gauntlets\n8. Milanese Gauntlets\n9. Late 15th century Gauntlets\n10. Plate Articulated Mittens\n11. Under-shield Gauntlets\n12. Buhurt-optimization locking systems\n13. Other Denied Items\n14. Changelog\n\nGauntlets V. 26.1\n\n2/21",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.6,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            349,
+            621,
+            389
+          ],
+          "paper": 0.58,
+          "height": 39
+        },
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            421,
+            512,
+            463
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.8,
+          "conf_min": 96.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            486,
+            389,
+            520
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            552,
+            661,
+            594
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "4. Scales Gauntlets",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            617,
+            546,
+            651
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "5. Hourglass Gauntlets",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            682,
+            615,
+            725
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "6. Segmented Mittens",
+          "conf_mean": 96,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            747,
+            595,
+            790
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "7. 3/4 Gauntlets",
+          "conf_mean": 96,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            812,
+            473,
+            846
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "8. Milanese Gauntlets",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            877,
+            592,
+            911
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "9. Late 15th century Gauntlets",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            942,
+            763,
+            985
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "10. Plate Articulated Mittens",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            156,
+            1008,
+            719,
+            1041
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "11. Under-shield Gauntlets",
+          "conf_mean": 93.9,
+          "conf_min": 92.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            1073,
+            691,
+            1107
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "12. Buhurt-optimization locking systems",
+          "conf_mean": 94.3,
+          "conf_min": 91.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            156,
+            1139,
+            956,
+            1181
+          ],
+          "paper": 0.7,
+          "height": 42
+        },
+        {
+          "text": "13. Other Denied Items",
+          "conf_mean": 95,
+          "conf_min": 90.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            156,
+            1203,
+            623,
+            1237
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "14. Changelog",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            1269,
+            446,
+            1312
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "Gauntlets V. 26.1",
+          "conf_mean": 89.8,
+          "conf_min": 84.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            598,
+            3428
+          ],
+          "paper": 0.76,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "2/21",
+          "conf_mean": 87.5,
+          "conf_min": 87.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2177,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.79,
+          "height": 47
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\n“Gauntlets (a pair of)” is the term used to describe all hand protections.\nType of Gauntlets:\n\n● Scales gauntlets\nGauntlets made of multiple metal scales.\n\n● Hourglass gauntlets\nNamed after an hourglass due to its shape. They are the main Gauntlets used during the 14th to\nthe 16th century. Historically they have separated fingers.\n\n● Segmented mittens\nGauntlets that appeared in the late 14th century. They are made of articulated plates. Historical\nsources are quite few and controversial.\n\n● 3/4 gauntlets\nGauntlets that appeared in the early 15th century. They combine strength and flexibility due to\nseparated fingers.\n\n● Milaneses gauntlets\nGauntlets that appeared in the middle of the 15th century. They are articulated and provide very\ngood protection.\n\n● Late 15th century gauntlets\nBifurcated mittens from the late 15th century. They follow the same shape as milanese or\ngothic-style mittens, but the fingers are separated in the middle.\n\n● Plate articulated mittens\nGauntlets that appeared in the late 15th century. They are made of articulated plates.\n\n● Under-shield gauntlets\nMetal plates riveted to a fabric base. They are allowed as buhurt-optimization. They must be worn\nonly with a shield.\n\n● Eastern gauntlets\nDue to very few historical sources, it is allowed to use eastern stylization of European Gauntlets.\nAllowed designs are displayed in the “Eastern Armors” document.\n\ncountiets v. 26.1 3/21",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96,
+          "conf_min": 95.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            809,
+            190,
+            1614,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1714,
+            473
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            937,
+            596,
+            1481,
+            667
+          ],
+          "paper": 0.59,
+          "height": 71
+        },
+        {
+          "text": "“Gauntlets (a pair of)” is the term used to describe all hand protections.",
+          "conf_mean": 95.7,
+          "conf_min": 87.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            777,
+            1636,
+            820
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Type of Gauntlets:",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            888,
+            547,
+            931
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "● Scales gauntlets",
+          "conf_mean": 92.1,
+          "conf_min": 90.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            998,
+            660,
+            1041
+          ],
+          "paper": 0.68,
+          "height": 42,
+          "raw": "e Scales gauntlets"
+        },
+        {
+          "text": "Gauntlets made of multiple metal scales.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            303,
+            1059,
+            1122,
+            1102
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● Hourglass gauntlets",
+          "conf_mean": 90.4,
+          "conf_min": 86.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1161,
+            739,
+            1204
+          ],
+          "paper": 0.68,
+          "height": 43,
+          "raw": "e Hourglass gauntlets"
+        },
+        {
+          "text": "Named after an hourglass due to its shape. They are the main Gauntlets used during the 14th to",
+          "conf_mean": 96.1,
+          "conf_min": 94.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            304,
+            1222,
+            2291,
+            1265
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "the 16th century. Historically they have separated fingers.",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            302,
+            1282,
+            1460,
+            1325
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "● Segmented mittens",
+          "conf_mean": 95.1,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1385,
+            721,
+            1428
+          ],
+          "paper": 0.68,
+          "height": 43,
+          "raw": "e Segmented mittens"
+        },
+        {
+          "text": "Gauntlets that appeared in the late 14th century. They are made of articulated plates. Historical",
+          "conf_mean": 96.1,
+          "conf_min": 95,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            303,
+            1445,
+            2292,
+            1488
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "sources are quite few and controversial.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            303,
+            1506,
+            1107,
+            1548
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● 3/4 gauntlets",
+          "conf_mean": 91,
+          "conf_min": 90.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1608,
+            579,
+            1651
+          ],
+          "paper": 0.7,
+          "height": 43,
+          "raw": "e 3/4 gauntlets"
+        },
+        {
+          "text": "Gauntlets that appeared in the early 15th century. They combine strength and flexibility due to",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            303,
+            1669,
+            2292,
+            1712
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "separated fingers.",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            303,
+            1729,
+            664,
+            1772
+          ],
+          "paper": 0.71,
+          "height": 43
+        },
+        {
+          "text": "● Milaneses gauntlets",
+          "conf_mean": 91.5,
+          "conf_min": 90.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1832,
+            734,
+            1874
+          ],
+          "paper": 0.66,
+          "height": 42,
+          "raw": "e Milaneses gauntlets"
+        },
+        {
+          "text": "Gauntlets that appeared in the middle of the 15th century. They are articulated and provide very",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            303,
+            1892,
+            2294,
+            1935
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "good protection.",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            302,
+            1953,
+            626,
+            1996
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "● Late 15th century gauntlets",
+          "conf_mean": 89.3,
+          "conf_min": 73.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            2055,
+            894,
+            2098
+          ],
+          "paper": 0.69,
+          "height": 42,
+          "raw": "e Late 15th century gauntlets"
+        },
+        {
+          "text": "Bifurcated mittens from the late 15th century. They follow the same shape as milanese or",
+          "conf_mean": 95.8,
+          "conf_min": 90.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            304,
+            2115,
+            2294,
+            2158
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "gothic-style mittens, but the fingers are separated in the middle.",
+          "conf_mean": 96.1,
+          "conf_min": 92,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            302,
+            2176,
+            1585,
+            2219
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● Plate articulated mittens",
+          "conf_mean": 95,
+          "conf_min": 92.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2278,
+            828,
+            2312
+          ],
+          "paper": 0.6,
+          "height": 34,
+          "raw": "e Plate articulated mittens"
+        },
+        {
+          "text": "Gauntlets that appeared in the late 15th century. They are made of articulated plates.",
+          "conf_mean": 96.2,
+          "conf_min": 94.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            303,
+            2339,
+            2017,
+            2382
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "● Under-shield gauntlets",
+          "conf_mean": 91.3,
+          "conf_min": 90.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2442,
+            795,
+            2484
+          ],
+          "paper": 0.66,
+          "height": 42,
+          "raw": "e Under-shield gauntlets"
+        },
+        {
+          "text": "Metal plates riveted to a fabric base. They are allowed as buhurt-optimization. They must be worn",
+          "conf_mean": 95.6,
+          "conf_min": 89.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            304,
+            2502,
+            2289,
+            2545
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "only with a shield.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            302,
+            2563,
+            659,
+            2605
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● Eastern gauntlets",
+          "conf_mean": 91.6,
+          "conf_min": 91.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2665,
+            683,
+            2707
+          ],
+          "paper": 0.66,
+          "height": 42,
+          "raw": "e Eastern gauntlets"
+        },
+        {
+          "text": "Due to very few historical sources, it is allowed to use eastern stylization of European Gauntlets.",
+          "conf_mean": 95.8,
+          "conf_min": 91,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            304,
+            2725,
+            2289,
+            2768
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Allowed designs are displayed in the “Eastern Armors” document.",
+          "conf_mean": 92.7,
+          "conf_min": 69.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            301,
+            2786,
+            1626,
+            2829
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "countiets v. 26.1 3/21",
+          "conf_mean": 78.9,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. General Requirements\n\n3.1. Historical Basis\n\nAll Gauntlets must be based on historical sources.\n\n3.2. Proportional Accuracy\n\nThe proportions of the Gauntlets must replicate those found in historical sources.\n\n3.3. Aesthetic Consistency\n\nThe overall aesthetic of the Gauntlets must imitate that of historical sources.\nIt is allowed to adapt the historical designs to allow a better grip. Such adapted design must conform\nwith the historical design and proportions.\n\nExample of approved adapted design for better grip:\n\n3.4. Component Proportions\n\nComponents must not be out of proportion in terms of length, size, or curve.\nComponents must fit harmoniously with one another, and the gauntlet must function properly.\n\n3.5. Comprehensive Protection\n\nGauntlets must protect the entire hand, including the wrist, fingers, and nails.\n\n3.6. Metal Components\n\nAny metal parts of the Gauntlet must conform to the standards outlined in the “Armors and Weapons\nAesthetics and Decorations” document.\n\n3.7. Textile and Leather Components\n\nAny textile or leather parts of the Gauntlet must adhere to the standards outlined in the “Textiles and\nLeather” document.\n\n3.8. Decorative Elements\n\nGauntlets may be decorated in medieval styles, such as etching, engraving, plating, or gilding.\nDecoration must be consistent with historical sources and the overall armor style.\n\n3.9. Prohibited Imagery\n\nThe use of modern and/or offensive imagery and slogans is strictly prohibited.\n\ncountiets v. 26.1 4/21",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95,
+      "ocr_lines": [
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            648,
+            189,
+            1773,
+            278
+          ],
+          "paper": 0.68,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "3.1. Historical Basis",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            757,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "All Gauntlets must be based on historical sources.",
+          "conf_mean": 95.6,
+          "conf_min": 94.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            179,
+            483,
+            1191,
+            517
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "3.2. Proportional Accuracy",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            607,
+            933,
+            657
+          ],
+          "paper": 0.68,
+          "height": 50
+        },
+        {
+          "text": "The proportions of the Gauntlets must replicate those found in historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            718,
+            1810,
+            760
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "3.3. Aesthetic Consistency",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            841,
+            933,
+            892
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "The overall aesthetic of the Gauntlets must imitate that of historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            952,
+            1714,
+            986
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "It is allowed to adapt the historical designs to allow a better grip. Such adapted design must conform",
+          "conf_mean": 96,
+          "conf_min": 94.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            184,
+            1013,
+            2205,
+            1056
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "with the historical design and proportions.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            179,
+            1074,
+            1019,
+            1117
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Example of approved adapted design for better grip:",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1195,
+            1232,
+            1238
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "3.4. Component Proportions",
+          "conf_mean": 95.4,
+          "conf_min": 94.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1710,
+            974,
+            1760
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Components must not be out of proportion in terms of length, size, or curve.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            1821,
+            1708,
+            1864
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "Components must fit harmoniously with one another, and the gauntlet must function properly.",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            1882,
+            2056,
+            1925
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "3.5. Comprehensive Protection",
+          "conf_mean": 95.5,
+          "conf_min": 95,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2005,
+            1039,
+            2055
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Gauntlets must protect the entire hand, including the wrist, fingers, and nails.",
+          "conf_mean": 96.2,
+          "conf_min": 94.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            2116,
+            1728,
+            2159
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "3.6. Metal Components",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2239,
+            836,
+            2289
+          ],
+          "paper": 0.66,
+          "height": 39
+        },
+        {
+          "text": "Any metal parts of the Gauntlet must conform to the standards outlined in the “Armors and Weapons",
+          "conf_mean": 95.9,
+          "conf_min": 91.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            2351,
+            2210,
+            2394
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Aesthetics and Decorations” document.",
+          "conf_mean": 96,
+          "conf_min": 95.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            179,
+            2412,
+            975,
+            2445
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "3.7. Textile and Leather Components",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2534,
+            1187,
+            2584
+          ],
+          "paper": 0.68,
+          "height": 39
+        },
+        {
+          "text": "Any textile or leather parts of the Gauntlet must adhere to the standards outlined in the “Textiles and",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            2645,
+            2203,
+            2688
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Leather” document.",
+          "conf_mean": 91.3,
+          "conf_min": 86.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            2707,
+            573,
+            2740
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "3.8. Decorative Elements",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2829,
+            884,
+            2869
+          ],
+          "paper": 0.59,
+          "height": 39
+        },
+        {
+          "text": "Gauntlets may be decorated in medieval styles, such as etching, engraving, plating, or gilding.",
+          "conf_mean": 96.3,
+          "conf_min": 95.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            2941,
+            2080,
+            2984
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Decoration must be consistent with historical sources and the overall armor style.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            3002,
+            1817,
+            3044
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "3.9. Prohibited Imagery",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            3124,
+            843,
+            3175
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "The use of modern and/or offensive imagery and slogans is strictly prohibited.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            3235,
+            1748,
+            3279
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "countiets v. 26.1 4/21",
+          "conf_mean": 74.9,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4. Scales Gauntlets\n\n4.1. Historical Sources and Datation\n\nScales Gauntlets are made of several scales sewn or riveted to a base, made of fabric or leather.\nThey are based on historical sources of the first half of the 14th century.\n\nThey are Approved for 14th century and Transitional armors.\n\nThey are Denied for 15th century armors.\n\nBNF Frangais 2091 Vita et Passio Beati Dionysii - 1317 - France Bodley 264 Romance of Alexander - 1338/1344 - England\n\n4.2. Specific Requirements\nScales Gauntlets must:\n\n● conform to the General Requirements (see Section 3 above),\n● be made of square or rectangular metal plates,\n● be made of:\n○ 5 rows of scales to protect the hand and the fingers,\n○ 3 rows of scales to protect the sleeve and the wrist,\n● have a pronounced curve at the wrist.\n\n4.3. Examples of Approved Reproductions\n\nPictures from Ficelle ©\n\ncountiets v. 26.1 5/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.2,
+      "ocr_lines": [
+        {
+          "text": "4. Scales Gauntlets",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            771,
+            189,
+            1648,
+            260
+          ],
+          "paper": 0.6,
+          "height": 71,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "4.1. Historical Sources and Datation",
+          "conf_mean": 94.3,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "Scales Gauntlets are made of several scales sewn or riveted to a base, made of fabric or leather.",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            483,
+            2139,
+            523
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "They are based on historical sources of the first half of the 14th century.",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            556,
+            1650,
+            600
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            629,
+            1473,
+            673
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 15th century armors.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            702,
+            1053,
+            746
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "BNF Frangais 2091 Vita et Passio Beati Dionysii - 1317 - France Bodley 264 Romance of Alexander - 1338/1344 - England",
+          "conf_mean": 94.1,
+          "conf_min": 90.1,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            181,
+            1433,
+            2148,
+            1465
+          ],
+          "paper": 0.75,
+          "height": 25
+        },
+        {
+          "text": "4.2. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1542,
+            935,
+            1593
+          ],
+          "paper": 0.68,
+          "height": 50
+        },
+        {
+          "text": "Scales Gauntlets must:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1662,
+            646,
+            1697
+          ],
+          "paper": 0.67,
+          "height": 35
+        },
+        {
+          "text": "● conform to the General Requirements (see Section 3 above),",
+          "conf_mean": 95.6,
+          "conf_min": 93.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            230,
+            1773,
+            1534,
+            1816
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e conform to the General Requirements (see Section 3 above),"
+        },
+        {
+          "text": "● be made of square or rectangular metal plates,",
+          "conf_mean": 93.6,
+          "conf_min": 87,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            1833,
+            1247,
+            1877
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be made of square or rectangular metal plates,"
+        },
+        {
+          "text": "● be made of:",
+          "conf_mean": 73.4,
+          "conf_min": 53.4,
+          "words": 4,
+          "uncertain": [
+            "made"
+          ],
+          "box": [
+            230,
+            1894,
+            539,
+            1928
+          ],
+          "paper": 0.71,
+          "height": 34,
+          "raw": "e be made of:"
+        },
+        {
+          "text": "○ 5 rows of scales to protect the hand and the fingers,",
+          "conf_mean": 90.6,
+          "conf_min": 44.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            342,
+            1955,
+            1461,
+            1998
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "© 5 rows of scales to protect the hand and the fingers,"
+        },
+        {
+          "text": "○ 3 rows of scales to protect the sleeve and the wrist,",
+          "conf_mean": 77.6,
+          "conf_min": 2.3,
+          "words": 12,
+          "uncertain": [
+            "rows"
+          ],
+          "box": [
+            342,
+            2015,
+            1448,
+            2058
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "o 3 rows of scales to protect the sleeve and the wrist,"
+        },
+        {
+          "text": "● have a pronounced curve at the wrist.",
+          "conf_mean": 82.5,
+          "conf_min": 43.1,
+          "words": 8,
+          "uncertain": [
+            "pronounced"
+          ],
+          "box": [
+            230,
+            2076,
+            1061,
+            2119
+          ],
+          "paper": 0.77,
+          "height": 34,
+          "raw": "e have a pronounced curve at the wrist."
+        },
+        {
+          "text": "4.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            2224,
+            1335,
+            2274
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "Pictures from Ficelle ©",
+          "conf_mean": 94.8,
+          "conf_min": 92.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1071,
+            3218,
+            1406,
+            3243
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 5/21",
+          "conf_mean": 75.7,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "4.4. Examples of Denied Reproductions\n\nNot enough scales (1 row on the wrist)\n\nPictures from The Medieval Things ©\n\ncountiets v. 26.1 6/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 86.8,
+      "ocr_lines": [
+        {
+          "text": "4.4. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            189,
+            1263,
+            239
+          ],
+          "paper": 0.66,
+          "height": 40,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Not enough scales (1 row on the wrist)",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            836,
+            359,
+            1640,
+            401
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            964,
+            1120,
+            1512,
+            1152
+          ],
+          "paper": 0.7,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 6/21",
+          "conf_mean": 79,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "5. Hourglass Gauntlets\n\n5.1. Historical Sources and Datation\n\nHourglass Gauntlets appeared around the middle of the 14th century. They were still in use during the\n15th century under different designs. They are made of a solid cuff, designed as an hourglass, and\nseparated finger plates.\n\nFor safety reasons, it is allowed to use a buhurt-optimization version of hourglass Gauntlets, with\nnon-separated finger plates (also called “Hourglass mittens”). This type of Gauntlet must respect the\nstyle of historical hourglass gauntlets and be properly articulated.\n\nThe historical Gauntlets with separated fingers lack safety. They are no longer allowed in Buhurt\nInternational.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nGauntlets of Ripon Cathedral - 1380/1410 - England\n\n5.2. Specific Requirements\n\nHourglass Gauntlets must conform to the General Requirements (see Section 3 above).\nThe design of the cuff must clearly present the correct hourglass shape.\nThumb protection must:\n\n● have anatomical shape,\n● be articulated with at least 2 segments, or\n● imitate the appearance of 2 segments-articulated thumb.\n\nDespite being 100% historical, separated-fingers Gauntlets are not allowed due to lack of safety.\n\ncountiets v. 26.1 7/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.4,
+      "ocr_lines": [
+        {
+          "text": "5. Hourglass Gauntlets",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            691,
+            189,
+            1730,
+            279
+          ],
+          "paper": 0.67,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "5.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 91.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "Hourglass Gauntlets appeared around the middle of the 14th century. They were still in use during the",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            483,
+            2292,
+            527
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "15th century under different designs. They are made of a solid cuff, designed as an hourglass, and",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            184,
+            544,
+            2289,
+            587
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "separated finger plates.",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            605,
+            654,
+            648
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "For safety reasons, it is allowed to use a buhurt-optimization version of hourglass Gauntlets, with",
+          "conf_mean": 96,
+          "conf_min": 92.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            707,
+            2290,
+            750
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "non-separated finger plates (also called “Hourglass mittens”). This type of Gauntlet must respect the",
+          "conf_mean": 95.8,
+          "conf_min": 92.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            768,
+            2291,
+            811
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "style of historical hourglass gauntlets and be properly articulated.",
+          "conf_mean": 95.1,
+          "conf_min": 91.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            828,
+            1491,
+            871
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The historical Gauntlets with separated fingers lack safety. They are no longer allowed in Buhurt",
+          "conf_mean": 95.4,
+          "conf_min": 90.6,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            930,
+            2293,
+            973
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "International.",
+          "conf_mean": 95.4,
+          "conf_min": 95.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            184,
+            991,
+            440,
+            1025
+          ],
+          "paper": 0.63,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1093,
+            1772,
+            1136
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Gauntlets of Ripon Cathedral - 1380/1410 - England",
+          "conf_mean": 94.9,
+          "conf_min": 93.3,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            856,
+            2344,
+            1623,
+            2375
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2514,
+            935,
+            2564
+          ],
+          "paper": 0.65,
+          "height": 50
+        },
+        {
+          "text": "Hourglass Gauntlets must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 96,
+          "conf_min": 93.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            2625,
+            1952,
+            2668
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The design of the cuff must clearly present the correct hourglass shape.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2698,
+            1628,
+            2741
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Thumb protection must:",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            2772,
+            656,
+            2814
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● have anatomical shape,",
+          "conf_mean": 95.4,
+          "conf_min": 91.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2844,
+            781,
+            2887
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e have anatomical shape,"
+        },
+        {
+          "text": "● be articulated with at least 2 segments, or",
+          "conf_mean": 94.6,
+          "conf_min": 90,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            2905,
+            1147,
+            2948
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e be articulated with at least 2 segments, or"
+        },
+        {
+          "text": "● imitate the appearance of 2 segments-articulated thumb.",
+          "conf_mean": 94.6,
+          "conf_min": 90.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2966,
+            1443,
+            3008
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e imitate the appearance of 2 segments-articulated thumb."
+        },
+        {
+          "text": "Despite being 100% historical, separated-fingers Gauntlets are not allowed due to lack of safety.",
+          "conf_mean": 95.9,
+          "conf_min": 91.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            3039,
+            2142,
+            3081
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "countiets v. 26.1 7/21",
+          "conf_mean": 75.1,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "5.3. Examples of Approved Reproductions\n\nPicture from Medieval Extreme © Picture from Master Uley ©\n\n5.4. Examples of Denied Reproductions\n\nFully articulated fingers\n\nPicture from Age of Craft ©\n○ >\n\n/}\n\nPlate Gauntlets with brigandine cuffs\nHistorical sources do not support this construction. Brigandine gauntlets were built with small plates of\nmetal riveted to a leather base, which makes them not safe enough for our sport.\n\nPicture from The Medieval Things ©\n\ncountiets v. 26.1 8/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.5,
+      "ocr_lines": [
+        {
+          "text": "5.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            1335,
+            239
+          ],
+          "paper": 0.65,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Picture from Medieval Extreme © Picture from Master Uley ©",
+          "conf_mean": 95.5,
+          "conf_min": 91.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            245,
+            1386,
+            1902,
+            1417
+          ],
+          "paper": 0.84,
+          "height": 25
+        },
+        {
+          "text": "5.4. Examples of Denied Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1554,
+            1263,
+            1604
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "Fully articulated fingers",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            982,
+            1724,
+            1493,
+            1762
+          ],
+          "paper": 0.6,
+          "height": 38
+        },
+        {
+          "text": "Picture from Age of Craft ©",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1630,
+            2096,
+            2030,
+            2127
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "○ >",
+          "conf_mean": 10.6,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1321,
+            2222,
+            1458,
+            2236
+          ],
+          "paper": 0,
+          "height": 13,
+          "raw": "m >",
+          "in_picture": "lettering 13px tall, smaller than any printed text"
+        },
+        {
+          "text": "/}",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            542,
+            2302,
+            678,
+            2460
+          ],
+          "paper": 0.11,
+          "height": 158,
+          "in_picture": "on a coloured or photographic background (paper 11%), confidence 0.0"
+        },
+        {
+          "text": "Plate Gauntlets with brigandine cuffs",
+          "conf_mean": 94.7,
+          "conf_min": 91.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            837,
+            2693,
+            1638,
+            2736
+          ],
+          "paper": 0.56,
+          "height": 34
+        },
+        {
+          "text": "Historical sources do not support this construction. Brigandine gauntlets were built with small plates of",
+          "conf_mean": 95.5,
+          "conf_min": 91.7,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            209,
+            2754,
+            2270,
+            2797
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "metal riveted to a leather base, which makes them not safe enough for our sport.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            423,
+            2815,
+            2050,
+            2858
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1259,
+            3247,
+            1790,
+            3279
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "countiets v. 26.1 8/21",
+          "conf_mean": 77.8,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "6. Segmented Mittens\n\n6.1. Historical Sources and Datation\n\nSegmented mittens are based on controversial historical sources. One of them in a wooden statue\ndecorating a fountain in Nuremberg (Germany). The actual statue is a reproduction of the original one.\nOne of its hands is incomplete so it’s not possible to evaluate the accuracy of this source.\n\nFor safety reasons, it is allowed to use buhurt-optimized segmented mittens with alternative design. This\ntype of Gauntlets must respect the style of historical segmented mittens and be properly articulated.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nFountain of Nuremberg (Germany), the original is from the 14th century (left) and the reproduction is from the 20th century (right).\n\n6.2. Specific Requirements\n\nSegmented mittens must conform to the General Requirements (see Section 3 above).\nThe design of the cuff must clearly present the correct hourglass shape.\nThumb protection must:\n\n● have anatomical shape,\n● be articulated with at least 2 segments, or\n● imitate the appearance of 2 segments-articulated thumb.\n\ncountiets v. 26.1 9/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.2,
+      "ocr_lines": [
+        {
+          "text": "6. Segmented Mittens",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            720,
+            291,
+            1701,
+            381
+          ],
+          "paper": 0.65,
+          "height": 70
+        },
+        {
+          "text": "6.1. Historical Sources and Datation",
+          "conf_mean": 94.6,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            474,
+            1169,
+            514
+          ],
+          "paper": 0.59,
+          "height": 39
+        },
+        {
+          "text": "Segmented mittens are based on controversial historical sources. One of them in a wooden statue",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            586,
+            2290,
+            629
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "decorating a fountain in Nuremberg (Germany). The actual statue is a reproduction of the original one.",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            646,
+            2290,
+            689
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "One of its hands is incomplete so it’s not possible to evaluate the accuracy of this source.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            707,
+            1982,
+            750
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "For safety reasons, it is allowed to use buhurt-optimized segmented mittens with alternative design. This",
+          "conf_mean": 95.8,
+          "conf_min": 92.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            809,
+            2291,
+            852
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "type of Gauntlets must respect the style of historical segmented mittens and be properly articulated.",
+          "conf_mean": 96.2,
+          "conf_min": 94.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            870,
+            2192,
+            913
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            972,
+            1772,
+            1015
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Fountain of Nuremberg (Germany), the original is from the 14th century (left) and the reproduction is from the 20th century (right).",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            287,
+            2174,
+            2185,
+            2205
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "6.2. Specific Requirements",
+          "conf_mean": 95.6,
+          "conf_min": 95,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2286,
+            935,
+            2336
+          ],
+          "paper": 0.65,
+          "height": 49
+        },
+        {
+          "text": "Segmented mittens must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            2397,
+            1932,
+            2440
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The design of the cuff must clearly present the correct hourglass shape.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2470,
+            1628,
+            2513
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Thumb protection must:",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            2544,
+            656,
+            2586
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● have anatomical shape,",
+          "conf_mean": 95,
+          "conf_min": 92.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2617,
+            781,
+            2659
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e have anatomical shape,"
+        },
+        {
+          "text": "● be articulated with at least 2 segments, or",
+          "conf_mean": 94.5,
+          "conf_min": 90,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            2677,
+            1147,
+            2720
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be articulated with at least 2 segments, or"
+        },
+        {
+          "text": "● imitate the appearance of 2 segments-articulated thumb.",
+          "conf_mean": 94.9,
+          "conf_min": 91.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2738,
+            1443,
+            2781
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e imitate the appearance of 2 segments-articulated thumb."
+        },
+        {
+          "text": "countiets v. 26.1 9/21",
+          "conf_mean": 78.8,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "6.3. Examples of Approved Reproductions\n\nPicture from Age of Craft ©\n\ncountiets v. 26.1 10/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 82.2,
+      "ocr_lines": [
+        {
+          "text": "6.3. Examples of Approved Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            188,
+            1335,
+            239
+          ],
+          "paper": 0.67,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Picture from Age of Craft ©",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            962,
+            1364,
+            1362,
+            1396
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 10/21",
+          "conf_mean": 78.4,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "7. 3/4 Gauntlets\n\n7.1. Historical Sources and Datation\n\n3/4 gauntlets tend to appear in the early 15th century. They are made of a solid cuff with a metacarpal\nplate. This plate can be riveted or articulated. Fingers are protected by separated plates or chainmail.\n\nThey are Approved for Transitional and 15th century armors.\nThey are Denied for 14th century armors.\n\nFor safety reasons, 3/4 gauntlets must use faux-finger mittens rather than individual finger\nplates. In other words, separate, fully articulated finger gauntlets are not permitted. These mitten-style\n3/4 gauntlets must still respect the overall historical shape and proper articulation of 15th-century\nexamples.\n\nChurchburg- 1410/1430 - Italy Sion Castle Museum - 1420/1440 - Switzerland\n\n7.2. Specific Requirements\n\n3/4 Gauntlets must conform to the General Requirements(see Section 3 above).\nThe design of the cuff must clearly present the correct hourglass shape.\nMetacarpal plate can be either riveted or historically accurate articulation\nThumb protection must:\n\n● have anatomical shape,\n● be articulated with at least 2 segments, or\n● imitate the appearance of 2 segments-articulated thumb.\n\n7.3. Examples of Denied Reproductions\n\nFully articulated fingers\n\nPicture from Age of Craft ©\n\ncountiets v. 26.1 11/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.6,
+      "ocr_lines": [
+        {
+          "text": "7. 3/4 Gauntlets",
+          "conf_mean": 95.8,
+          "conf_min": 95.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            859,
+            189,
+            1563,
+            260
+          ],
+          "paper": 0.61,
+          "height": 71,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "7.1. Historical Sources and Datation",
+          "conf_mean": 94.6,
+          "conf_min": 92.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.6,
+          "height": 39
+        },
+        {
+          "text": "3/4 gauntlets tend to appear in the early 15th century. They are made of a solid cuff with a metacarpal",
+          "conf_mean": 95.7,
+          "conf_min": 90.8,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            181,
+            483,
+            2291,
+            527
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "plate. This plate can be riveted or articulated. Fingers are protected by separated plates or chainmail.",
+          "conf_mean": 96.2,
+          "conf_min": 94.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            544,
+            2223,
+            587
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for Transitional and 15th century armors.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            646,
+            1473,
+            689
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "They are Denied for 14th century armors.",
+          "conf_mean": 96.1,
+          "conf_min": 95.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            749,
+            1053,
+            792
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "For safety reasons, 3/4 gauntlets must use faux-finger mittens rather than individual finger",
+          "conf_mean": 95.1,
+          "conf_min": 91.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            182,
+            851,
+            2294,
+            894
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "plates. In other words, separate, fully articulated finger gauntlets are not permitted. These mitten-style",
+          "conf_mean": 95.3,
+          "conf_min": 91.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            911,
+            2293,
+            954
+          ],
+          "paper": 0.71,
+          "height": 41
+        },
+        {
+          "text": "3/4 gauntlets must still respect the overall historical shape and proper articulation of 15th-century",
+          "conf_mean": 95.4,
+          "conf_min": 92,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            972,
+            2293,
+            1015
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "examples.",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1033,
+            384,
+            1075
+          ],
+          "paper": 0.69,
+          "height": 42
+        },
+        {
+          "text": "Churchburg- 1410/1430 - Italy Sion Castle Museum - 1420/1440 - Switzerland",
+          "conf_mean": 94.2,
+          "conf_min": 92,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            367,
+            1617,
+            2028,
+            1648
+          ],
+          "paper": 0.82,
+          "height": 24
+        },
+        {
+          "text": "7.2. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            297,
+            1726,
+            995,
+            1776
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "3/4 Gauntlets must conform to the General Requirements(see Section 3 above).",
+          "conf_mean": 95.6,
+          "conf_min": 91.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            1837,
+            1798,
+            1880
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The design of the cuff must clearly present the correct hourglass shape.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1911,
+            1628,
+            1953
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Metacarpal plate can be either riveted or historically accurate articulation",
+          "conf_mean": 96,
+          "conf_min": 92.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            1984,
+            1645,
+            2026
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "Thumb protection must:",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            2057,
+            656,
+            2099
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● have anatomical shape,",
+          "conf_mean": 94.8,
+          "conf_min": 91.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2130,
+            781,
+            2172
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e have anatomical shape,"
+        },
+        {
+          "text": "● be articulated with at least 2 segments, or",
+          "conf_mean": 95.3,
+          "conf_min": 92.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            2191,
+            1147,
+            2234
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e be articulated with at least 2 segments, or"
+        },
+        {
+          "text": "● imitate the appearance of 2 segments-articulated thumb.",
+          "conf_mean": 94.6,
+          "conf_min": 91.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2251,
+            1443,
+            2294
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e imitate the appearance of 2 segments-articulated thumb."
+        },
+        {
+          "text": "7.3. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2386,
+            1263,
+            2436
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Fully articulated fingers",
+          "conf_mean": 96.1,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            2558,
+            693,
+            2596
+          ],
+          "paper": 0.61,
+          "height": 37
+        },
+        {
+          "text": "Picture from Age of Craft ©",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            394,
+            3222,
+            794,
+            3253
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 11/21",
+          "conf_mean": 75,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "8. Milanese Gauntlets\n\n8.1. Historical Sources and Datation\n\n“Milanese gauntlets” term regroups several 15th century mitten shapes, with different designs. Common\nfeatures are articulated plates (including metacarpal plate, such as 3/4 gauntlets), profiled wrist plate\nand a full protection of the fingers.\n\nThey are Approved for 15th century armors.\n\nThey are for 14th century and Transitional armors.\n\nGlasgow - 1438/1440 - Scotland Metropolitan Museum of Art - 1450/1470\n\n8.2. Specific Requirements\n\nMilanese Gauntlets must conform to the General Requirements (see Section 3 above).\nThe design of the cuff must clearly present the correct profiled shape.\n\nThe cuff must match the historical proportion in matter of length and width.\n\nCuff and metacarpal plate can be either riveted or historically accurate articulation\nThumb protection must:\n\n● have anatomical shape,\n● be articulated with at least 2 segments, or\n● imitate the appearance of 2 segments-articulated thumb.\n\n8.3. Examples of Approved Reproductions\n= ~e ae\n\nPictures from Black Dog Armoury ©\n\ncountiets v. 26.1 12/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.7,
+      "ocr_lines": [
+        {
+          "text": "8. Milanese Gauntlets",
+          "conf_mean": 95.6,
+          "conf_min": 95.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            723,
+            189,
+            1699,
+            260
+          ],
+          "paper": 0.58,
+          "height": 70,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "8.1. Historical Sources and Datation",
+          "conf_mean": 94.5,
+          "conf_min": 91.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "“Milanese gauntlets” term regroups several 15th century mitten shapes, with different designs. Common",
+          "conf_mean": 95.2,
+          "conf_min": 91.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            483,
+            2291,
+            527
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "features are articulated plates (including metacarpal plate, such as 3/4 gauntlets), profiled wrist plate",
+          "conf_mean": 95.9,
+          "conf_min": 92.4,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            544,
+            2290,
+            587
+          ],
+          "paper": 0.74,
+          "height": 43
+        },
+        {
+          "text": "and a full protection of the fingers.",
+          "conf_mean": 96.8,
+          "conf_min": 96.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            600,
+            865,
+            653
+          ],
+          "paper": 0.78,
+          "height": 35
+        },
+        {
+          "text": "They are Approved for 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            707,
+            1115,
+            750
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "They are for 14th century and Transitional armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            809,
+            1413,
+            852
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Glasgow - 1438/1440 - Scotland Metropolitan Museum of Art - 1450/1470",
+          "conf_mean": 94.1,
+          "conf_min": 91.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            349,
+            1466,
+            1934,
+            1497
+          ],
+          "paper": 0.82,
+          "height": 25
+        },
+        {
+          "text": "8.2. Specific Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1579,
+            935,
+            1630
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Milanese Gauntlets must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            1691,
+            1930,
+            1734
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The design of the cuff must clearly present the correct profiled shape.",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1764,
+            1580,
+            1807
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The cuff must match the historical proportion in matter of length and width.",
+          "conf_mean": 96.1,
+          "conf_min": 94.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            1837,
+            1679,
+            1880
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Cuff and metacarpal plate can be either riveted or historically accurate articulation",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            1910,
+            1830,
+            1953
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Thumb protection must:",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            1984,
+            657,
+            2026
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● have anatomical shape,",
+          "conf_mean": 95.3,
+          "conf_min": 91.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2057,
+            781,
+            2099
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e have anatomical shape,"
+        },
+        {
+          "text": "● be articulated with at least 2 segments, or",
+          "conf_mean": 95.5,
+          "conf_min": 92.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            2117,
+            1147,
+            2160
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be articulated with at least 2 segments, or"
+        },
+        {
+          "text": "● imitate the appearance of 2 segments-articulated thumb.",
+          "conf_mean": 94.8,
+          "conf_min": 91.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2177,
+            1443,
+            2221
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e imitate the appearance of 2 segments-articulated thumb."
+        },
+        {
+          "text": "8.3. Examples of Approved Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2284,
+            1335,
+            2334
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "= ~e ae",
+          "conf_mean": 40.2,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            336,
+            2362,
+            1223,
+            2406
+          ],
+          "paper": 0.03,
+          "height": 37,
+          "in_picture": "on a coloured or photographic background (paper 3%), confidence 40.2"
+        },
+        {
+          "text": "Pictures from Black Dog Armoury ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            975,
+            3181,
+            1502,
+            3212
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 12/21",
+          "conf_mean": 78.4,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "9. Late 15th century Gauntlets\n\n9.1. Historical Sources and Datation\n\nThe term “Late 15th century Gauntlets” regroups 2 different types of Gauntlets: bifurcated mittens and\nlocked Gauntlets.\n\nThey are Approved for 15th century armors.\nThey are Denied for 14th century and Transitional armors.\n\n9.2. Bifurcated Mittens\n\nThey follow the same shape as milanese mittens, but the fingers are protected by 2 plates instead of 1,\nincreasing the handling of the weapon. They appeared in the late 15th century.\n\n9.3. Locked Gauntlets\n\nThey follow the same shape as milanese mittens, but the whole Gauntlet can be locked to prevent any\nweapon loss.\n\ncountiets v. 26.1 13/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.7,
+      "ocr_lines": [
+        {
+          "text": "9. Late 15th century Gauntlets",
+          "conf_mean": 95.3,
+          "conf_min": 94.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            527,
+            189,
+            1893,
+            279
+          ],
+          "paper": 0.69,
+          "height": 70,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "9.1. Historical Sources and Datation",
+          "conf_mean": 94.2,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "The term “Late 15th century Gauntlets” regroups 2 different types of Gauntlets: bifurcated mittens and",
+          "conf_mean": 95.9,
+          "conf_min": 91.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            483,
+            2292,
+            527
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "locked Gauntlets.",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            544,
+            529,
+            578
+          ],
+          "paper": 0.63,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            646,
+            1115,
+            689
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 14th century and Transitional armors.",
+          "conf_mean": 96.2,
+          "conf_min": 94.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            748,
+            1413,
+            792
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "9.2. Bifurcated Mittens",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            853,
+            824,
+            893
+          ],
+          "paper": 0.55,
+          "height": 40
+        },
+        {
+          "text": "They follow the same shape as milanese mittens, but the fingers are protected by 2 plates instead of 1,",
+          "conf_mean": 96.1,
+          "conf_min": 92,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            964,
+            2289,
+            1007
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "increasing the handling of the weapon. They appeared in the late 15th century.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            182,
+            1024,
+            1766,
+            1068
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "9.3. Locked Gauntlets",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1996,
+            806,
+            2036
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "They follow the same shape as milanese mittens, but the whole Gauntlet can be locked to prevent any",
+          "conf_mean": 96.1,
+          "conf_min": 92.1,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            2107,
+            2293,
+            2151
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "weapon loss.",
+          "conf_mean": 95.2,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            179,
+            2168,
+            443,
+            2211
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "countiets v. 26.1 13/21",
+          "conf_mean": 78.5,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "text": "9.4. Specific Requirements\n\nLate 15th Century Gauntlets must conform to the General Requirements (see Section 3 above).\nThe design of the cuff must clearly present the correct profiled shape.\n\nThe cuff must match the historical proportion in matter of length and width.\n\nCuff and metacarpal plate can be either riveted or historically accurate articulation\n\nThumb protection must:\n\n● have anatomical shape,\n● be articulated with at least 2 segments, or\n● imitate the appearance of 2 segments-articulated thumb.\n\ncountiets v. 26.1 14/21",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.1,
+      "ocr_lines": [
+        {
+          "text": "9.4. Specific Requirements",
+          "conf_mean": 95.8,
+          "conf_min": 94.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            189,
+            935,
+            239
+          ],
+          "paper": 0.65,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Late 15th Century Gauntlets must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 96.3,
+          "conf_min": 94.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            300,
+            2110,
+            343
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "The design of the cuff must clearly present the correct profiled shape.",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            373,
+            1580,
+            416
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The cuff must match the historical proportion in matter of length and width.",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            446,
+            1679,
+            489
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Cuff and metacarpal plate can be either riveted or historically accurate articulation",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            519,
+            1830,
+            562
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Thumb protection must:",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            593,
+            656,
+            635
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● have anatomical shape,",
+          "conf_mean": 95,
+          "conf_min": 92.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            666,
+            781,
+            708
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e have anatomical shape,"
+        },
+        {
+          "text": "● be articulated with at least 2 segments, or",
+          "conf_mean": 94.7,
+          "conf_min": 90.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            726,
+            1147,
+            769
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be articulated with at least 2 segments, or"
+        },
+        {
+          "text": "● imitate the appearance of 2 segments-articulated thumb.",
+          "conf_mean": 94.9,
+          "conf_min": 92,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            787,
+            1443,
+            830
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e imitate the appearance of 2 segments-articulated thumb."
+        },
+        {
+          "text": "countiets v. 26.1 14/21",
+          "conf_mean": 78.3,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "text": "10. Plate Articulated Mittens\n\n10.1. Historical Sources and Datation\n\nThere are no historical sources for such Gauntlets. They are buhurt-optimization Gauntlets designed to\nprovide sufficient protection for full contact fights.\n\nThe global design takes inspiration from the photo below (1510 gauntlet).\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nWallace Collection - Germany\n\n10.2. Specific Requirements\n\nPlate articulated mittens must conform to the General Requirements (see section 3 above).\nThe design of the cuff must clearly present the correct profiled shape.\n\nThe cuff must match the historical proportion in matter of length and width.\n\nCuff and metacarpal plate can be either riveted or historically accurate articulation\n\nThumb protection must:\n\n● have anatomical shape,\n● be articulated with at least 2 segments, or\n● imitate the appearance of 2 segments-articulated thumb.\n\ncountiets v. 26.1 15/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "10. Plate Articulated Mittens",
+          "conf_mean": 95.8,
+          "conf_min": 95.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            550,
+            190,
+            1821,
+            260
+          ],
+          "paper": 0.57,
+          "height": 70,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "10.1. Historical Sources and Datation",
+          "conf_mean": 94.3,
+          "conf_min": 91.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            210,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "There are no historical sources for such Gauntlets. They are buhurt-optimization Gauntlets designed to",
+          "conf_mean": 95.6,
+          "conf_min": 91.8,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            483,
+            2292,
+            527
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "provide sufficient protection for full contact fights.",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            544,
+            1165,
+            587
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The global design takes inspiration from the photo below (1510 gauntlet).",
+          "conf_mean": 96,
+          "conf_min": 94.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            646,
+            1655,
+            689
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            748,
+            1768,
+            792
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Wallace Collection - Germany",
+          "conf_mean": 93.6,
+          "conf_min": 90.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1021,
+            1780,
+            1459,
+            1812
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "10.2. Specific Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            210,
+            1950,
+            935,
+            2001
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Plate articulated mittens must conform to the General Requirements (see section 3 above).",
+          "conf_mean": 96.1,
+          "conf_min": 94.3,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            2061,
+            2018,
+            2105
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The design of the cuff must clearly present the correct profiled shape.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2134,
+            1580,
+            2178
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "The cuff must match the historical proportion in matter of length and width.",
+          "conf_mean": 96.5,
+          "conf_min": 95,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            2207,
+            1679,
+            2251
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Cuff and metacarpal plate can be either riveted or historically accurate articulation",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            2280,
+            1830,
+            2324
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Thumb protection must:",
+          "conf_mean": 95.9,
+          "conf_min": 95.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            2354,
+            657,
+            2396
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● have anatomical shape,",
+          "conf_mean": 95.1,
+          "conf_min": 92.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            2427,
+            781,
+            2470
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e have anatomical shape,"
+        },
+        {
+          "text": "● be articulated with at least 2 segments, or",
+          "conf_mean": 95.7,
+          "conf_min": 92.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            2488,
+            1147,
+            2531
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be articulated with at least 2 segments, or"
+        },
+        {
+          "text": "● imitate the appearance of 2 segments-articulated thumb.",
+          "conf_mean": 94.6,
+          "conf_min": 90.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2548,
+            1443,
+            2592
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e imitate the appearance of 2 segments-articulated thumb."
+        },
+        {
+          "text": "countiets v. 26.1 15/21",
+          "conf_mean": 77.2,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 16,
+      "text": "Examples of Approved Reproductions\n\nVEE £088 WINE\n‘ = &re.aven\n\nPictures from Medieval Extreme ©\n\ncountiets v. 26.1 16/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 72.2,
+      "ocr_lines": [
+        {
+          "text": "Examples of Approved Reproductions",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            358,
+            188,
+            1335,
+            239
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "VEE £088 WINE",
+          "conf_mean": 37.5,
+          "conf_min": 16.7,
+          "words": 3,
+          "uncertain": [
+            "VEE",
+            "WINE"
+          ],
+          "box": [
+            446,
+            1102,
+            823,
+            1122
+          ],
+          "paper": 0.07,
+          "height": 19,
+          "in_picture": "lettering 19px tall, smaller than any printed text"
+        },
+        {
+          "text": "‘ = &re.aven",
+          "conf_mean": 44,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [
+            "&re.aven"
+          ],
+          "box": [
+            468,
+            1143,
+            797,
+            1160
+          ],
+          "paper": 0.06,
+          "height": 17,
+          "in_picture": "lettering 17px tall, smaller than any printed text"
+        },
+        {
+          "text": "Pictures from Medieval Extreme ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            985,
+            1327,
+            1492,
+            1352
+          ],
+          "paper": 0.63,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 16/21",
+          "conf_mean": 78.1,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 17,
+      "text": "11. Under-shield Gauntlets\n\n11.1. Historical sources and datation\n\nThere are no historical sources for such Gauntlets. They are buhurt-optimized Gauntlets designed to\nprovide sufficient protection for the shield-wearer, thus being lighter and cheaper. However, it is not\nrecommended to use such under-shield Gauntlets for buhurt categories.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n11.2. Specific Requirements\n\nUnder-shield Gauntlets must:\n● conform to the general requirements (see section 3 above),\n● be made of metal plates riveted or sewn to a fabric or leather base.\n\nThe plates:\n● Must cover at least the fingers, including the thumb and the exposed-part of the wrist.\n● Must be firmly-riveted to a fabric or leather base\n\nThe base must conform to the “Textiles and Leather” document.\n\n11.3. Examples of Approved Reproductions\n\nPictures from Medieval Extreme\n\n11.4. Examples of Denied Reproductions\n\nNo metal plate to protect the fingers\n\nPictures from The Medieval Things ©\n\ncountiets v. 26.1 17/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94,
+      "ocr_lines": [
+        {
+          "text": "11. Under-shield Gauntlets",
+          "conf_mean": 93.3,
+          "conf_min": 91.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            588,
+            189,
+            1789,
+            260
+          ],
+          "paper": 0.61,
+          "height": 70,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "11.1. Historical sources and datation",
+          "conf_mean": 94.4,
+          "conf_min": 90.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            213,
+            372,
+            1157,
+            412
+          ],
+          "paper": 0.61,
+          "height": 39
+        },
+        {
+          "text": "There are no historical sources for such Gauntlets. They are buhurt-optimized Gauntlets designed to",
+          "conf_mean": 95.4,
+          "conf_min": 91.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            483,
+            2291,
+            527
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "provide sufficient protection for the shield-wearer, thus being lighter and cheaper. However, it is not",
+          "conf_mean": 95.7,
+          "conf_min": 91.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            544,
+            2292,
+            587
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "recommended to use such under-shield Gauntlets for buhurt categories.",
+          "conf_mean": 94.8,
+          "conf_min": 92.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            182,
+            605,
+            1634,
+            648
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            707,
+            1772,
+            750
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "11.2. Specific Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            213,
+            811,
+            935,
+            861
+          ],
+          "paper": 0.67,
+          "height": 49
+        },
+        {
+          "text": "Under-shield Gauntlets must:",
+          "conf_mean": 95.2,
+          "conf_min": 92.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            183,
+            922,
+            769,
+            956
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "● conform to the general requirements (see section 3 above),",
+          "conf_mean": 95.4,
+          "conf_min": 92.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            230,
+            983,
+            1498,
+            1026
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e conform to the general requirements (see section 3 above),"
+        },
+        {
+          "text": "● be made of metal plates riveted or sewn to a fabric or leather base.",
+          "conf_mean": 93.6,
+          "conf_min": 81.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            230,
+            1043,
+            1654,
+            1086
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be made of metal plates riveted or sewn to a fabric or leather base."
+        },
+        {
+          "text": "The plates:",
+          "conf_mean": 96.8,
+          "conf_min": 96.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            180,
+            1120,
+            402,
+            1162
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "● Must cover at least the fingers, including the thumb and the exposed-part of the wrist.",
+          "conf_mean": 94.8,
+          "conf_min": 89.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            230,
+            1181,
+            2024,
+            1224
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e Must cover at least the fingers, including the thumb and the exposed-part of the wrist."
+        },
+        {
+          "text": "● Must be firmly-riveted to a fabric or leather base",
+          "conf_mean": 94.3,
+          "conf_min": 84.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            230,
+            1241,
+            1269,
+            1284
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e Must be firmly-riveted to a fabric or leather base"
+        },
+        {
+          "text": "The base must conform to the “Textiles and Leather” document.",
+          "conf_mean": 94.6,
+          "conf_min": 80.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1314,
+            1465,
+            1348
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "11.3. Examples of Approved Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            213,
+            1437,
+            1335,
+            1487
+          ],
+          "paper": 0.67,
+          "height": 49
+        },
+        {
+          "text": "Pictures from Medieval Extreme",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1002,
+            2213,
+            1472,
+            2237
+          ],
+          "paper": 0.62,
+          "height": 24
+        },
+        {
+          "text": "11.4. Examples of Denied Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            213,
+            2322,
+            1263,
+            2372
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "No metal plate to protect the fingers",
+          "conf_mean": 96.1,
+          "conf_min": 94.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            849,
+            2493,
+            1627,
+            2530
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            964,
+            3157,
+            1512,
+            3188
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 17/21",
+          "conf_mean": 77.5,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 18,
+      "text": "12. Buhurt-optimization locking systems\n\n12.1. Historical Sources and Datation\n\nThere are no historical sources for locking systems. However, it is likely plausible that knights of the\nmiddle ages used different techniques to prevent any loss of weapon during the battle. One of them\nconsists of chains attached to the coat of plate. If the weapon should slip from the hand, it will not touch\nthe ground, and therefore can be grabbed back.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\nBuhurt-optimization system can be:\n\n● Asystem to attach the weapon to the Gauntlet, preventing any loss of weapon,\n● Asystem to lock the Gauntlet in “close” position, preventing any loss of weapon,\n● Asystem to attach the Gauntlet to the forearm, preventing the Gauntlet to be removed.\n\n12.2. Specific Requirements\nBuhurt-optimization locking system can be allowed under certain conditions.\n\n● Weapon lock\nIt is allowed to lock a weapon to the Gauntlet with an additional leather thread, leather strap, or\nany discrete and historically plausible system.\n\nAdditional leather elements must conform to the “Textiles and Leather” document.\n\n● Locked gauntlets\n\nIt is allowed to lock a Gauntlet in “close” position with an additional leather strap, or any discrete\nand historically plausible system.\n\nAdditional leather elements must conform to the “Textiles and Leather” document.\n\n● Gauntlet’s safeguard\n\nIt is allowed to attach a Gauntlet to another armor element (I.E forearm, gambeson) with an\nadditional leather thread, leather strap, or any discrete and historically plausible system.\n\nAdditional leather elements must conform to the “Textiles and Leather” document.\n\ncountiets v. 26.1 18/21",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "12. Buhurt-optimization locking systems",
+          "conf_mean": 94.2,
+          "conf_min": 91.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            269,
+            190,
+            2103,
+            279
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "12.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 91.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            210,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 39
+        },
+        {
+          "text": "There are no historical sources for locking systems. However, it is likely plausible that knights of the",
+          "conf_mean": 96.5,
+          "conf_min": 95.2,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            483,
+            2292,
+            526
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "middle ages used different techniques to prevent any loss of weapon during the battle. One of them",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            182,
+            544,
+            2290,
+            587
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "consists of chains attached to the coat of plate. If the weapon should slip from the hand, it will not touch",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            181,
+            605,
+            2292,
+            647
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "the ground, and therefore can be grabbed back.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            665,
+            1145,
+            708
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96,
+          "conf_min": 95.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            768,
+            1772,
+            811
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "Buhurt-optimization system can be:",
+          "conf_mean": 95,
+          "conf_min": 91.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            870,
+            891,
+            913
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "● Asystem to attach the weapon to the Gauntlet, preventing any loss of weapon,",
+          "conf_mean": 94.5,
+          "conf_min": 80.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            230,
+            972,
+            1893,
+            1015
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Asystem to attach the weapon to the Gauntlet, preventing any loss of weapon,"
+        },
+        {
+          "text": "● Asystem to lock the Gauntlet in “close” position, preventing any loss of weapon,",
+          "conf_mean": 95,
+          "conf_min": 88.4,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            230,
+            1032,
+            1919,
+            1075
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Asystem to lock the Gauntlet in “close” position, preventing any loss of weapon,"
+        },
+        {
+          "text": "● Asystem to attach the Gauntlet to the forearm, preventing the Gauntlet to be removed.",
+          "conf_mean": 95.1,
+          "conf_min": 80.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            230,
+            1093,
+            2054,
+            1136
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Asystem to attach the Gauntlet to the forearm, preventing the Gauntlet to be removed."
+        },
+        {
+          "text": "12.2. Specific Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            210,
+            1229,
+            935,
+            1279
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "Buhurt-optimization locking system can be allowed under certain conditions.",
+          "conf_mean": 95.7,
+          "conf_min": 91.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            182,
+            1340,
+            1714,
+            1383
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● Weapon lock",
+          "conf_mean": 94.2,
+          "conf_min": 92.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1443,
+            582,
+            1485
+          ],
+          "paper": 0.68,
+          "height": 42,
+          "raw": "e Weapon lock"
+        },
+        {
+          "text": "It is allowed to lock a weapon to the Gauntlet with an additional leather thread, leather strap, or",
+          "conf_mean": 96.4,
+          "conf_min": 95.1,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            305,
+            1503,
+            2294,
+            1545
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "any discrete and historically plausible system.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            302,
+            1564,
+            1224,
+            1606
+          ],
+          "paper": 0.71,
+          "height": 41
+        },
+        {
+          "text": "Additional leather elements must conform to the “Textiles and Leather” document.",
+          "conf_mean": 94.9,
+          "conf_min": 87.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            301,
+            1633,
+            1948,
+            1680
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "● Locked gauntlets",
+          "conf_mean": 81.7,
+          "conf_min": 61.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1770,
+            675,
+            1813
+          ],
+          "paper": 0.69,
+          "height": 43,
+          "raw": "e Locked gauntlets"
+        },
+        {
+          "text": "It is allowed to lock a Gauntlet in “close” position with an additional leather strap, or any discrete",
+          "conf_mean": 95.2,
+          "conf_min": 79.1,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            305,
+            1843,
+            2293,
+            1886
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "and historically plausible system.",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            302,
+            1904,
+            965,
+            1947
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "Additional leather elements must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.4,
+          "conf_min": 88.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            301,
+            1973,
+            1948,
+            2020
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "● Gauntlet’s safeguard",
+          "conf_mean": 91.9,
+          "conf_min": 87.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2111,
+            752,
+            2153
+          ],
+          "paper": 0.66,
+          "height": 42,
+          "raw": "e Gauntlet’s safeguard"
+        },
+        {
+          "text": "It is allowed to attach a Gauntlet to another armor element (I.E forearm, gambeson) with an",
+          "conf_mean": 94.9,
+          "conf_min": 81.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            305,
+            2184,
+            2291,
+            2227
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "additional leather thread, leather strap, or any discrete and historically plausible system.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            302,
+            2245,
+            2074,
+            2288
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Additional leather elements must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.1,
+          "conf_min": 86.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            301,
+            2314,
+            1948,
+            2361
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "countiets v. 26.1 18/21",
+          "conf_mean": 76.2,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 19,
+      "text": "my... Examples of Approved Reproductions\n\nLace or strap to secure the Gauntlet in close position\n\nC4\n\n‘\n\nPicture from Medieval Extreme ©\n\nPicture from F. Guts ©\n\n12.4. Examples of Denied Reproductions\n\nStrap is too visible\n\ncountiets v. 26.1 19/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87.5,
+      "ocr_lines": [
+        {
+          "text": "my... Examples of Approved Reproductions",
+          "conf_mean": 87.1,
+          "conf_min": 52.8,
+          "words": 5,
+          "uncertain": [
+            "my..."
+          ],
+          "box": [
+            0,
+            114,
+            1335,
+            266
+          ],
+          "paper": 0.76,
+          "height": 50
+        },
+        {
+          "text": "Lace or strap to secure the Gauntlet in close position",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            661,
+            359,
+            1813,
+            397
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "C4",
+          "conf_mean": 32.3,
+          "conf_min": 32.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1318,
+            621,
+            1384,
+            672
+          ],
+          "paper": 0,
+          "height": 51,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 32.3"
+        },
+        {
+          "text": "‘",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1319,
+            775,
+            1328,
+            793
+          ],
+          "paper": 0,
+          "height": 18,
+          "in_picture": "lettering 18px tall, smaller than any printed text"
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 95.8,
+          "conf_min": 95.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            994,
+            839,
+            1483,
+            863
+          ],
+          "paper": 0.62,
+          "height": 24
+        },
+        {
+          "text": "Picture from F. Guts ©",
+          "conf_mean": 94.7,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1075,
+            1940,
+            1402,
+            1965
+          ],
+          "paper": 0.66,
+          "height": 25
+        },
+        {
+          "text": "12.4. Examples of Denied Reproductions",
+          "conf_mean": 96.1,
+          "conf_min": 95.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            210,
+            2047,
+            1263,
+            2097
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Strap is too visible",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1035,
+            2159,
+            1439,
+            2196
+          ],
+          "paper": 0.61,
+          "height": 34
+        },
+        {
+          "text": "countiets v. 26.1 19/21",
+          "conf_mean": 78.9,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 20,
+      "text": "13. Other Denied Items\n\nChainmail Gauntlet, not safe enough Brigant Gauntlets are not safe enough\n\nGauntlets not based on historical sources\n\nPictures from The Medieval Things ©\n\ncountiets v. 26.1 20/21",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.7,
+      "ocr_lines": [
+        {
+          "text": "13. Other Denied Items",
+          "conf_mean": 88.9,
+          "conf_min": 68.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            671,
+            189,
+            1701,
+            260
+          ],
+          "paper": 0.61,
+          "height": 70,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "Chainmail Gauntlet, not safe enough Brigant Gauntlets are not safe enough",
+          "conf_mean": 96,
+          "conf_min": 92.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            491,
+            2136,
+            534
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Gauntlets not based on historical sources",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            784,
+            1461,
+            1692,
+            1495
+          ],
+          "paper": 0.58,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            964,
+            2312,
+            1512,
+            2343
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "countiets v. 26.1 20/21",
+          "conf_mean": 79,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 21,
+      "text": "14. Changelog\n\nThis will be the change log of this document. It will be updated regularly and we will\ndisplay what has been removed/added/reworded/formatted. This way we keep\ntransparent communication and clarity about the rules\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd? “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Modification of “1. Definition and general requirements” to “1. Definition”\n\nReplace:\n\n- “2.1 Definition” by “Type of gauntlets:”\n\nAdd:\n\n- In 3.3 Aesthetic Consistency: “It is allowed to adapt the historical designs to allow a better grip.\nSuch adapted design must conform with the historical design and proportions.” and a picture as an\nexample\n\n- In 4.4 Examples of denied reproductions (scales gauntlets): “(1 row on the wrist)”\n\n- In 5.4 Examples of denied reproductions (hourglass gauntlets): “Fully articulated fingers”\nReplace:\n\n- In 5.4 Examples of denied reproductions (hourglass gauntlets): “The leather part is not based on\nhistorical sources.” by “Plate gauntlets with brigandine cuffs are not based on historical sources”\n\n- In 7. % gauntlets: paragraph “For safety reasons, [...]” entirely rewritten\n\nAdd:\n\n- In 7.4 Examples of denied reproductions (% gauntlets): “Fully articulated fingers”\n\nReplace:\n\n- In 8.1 Historical sources and datation (Milanese gauntlets):\n\n- “They are approved for Transitional and 15th century armors.” by “They are approved for 15th\ncentury armors.”\n\n- “They are denied for 14th century armors.” by “They are denied for 14th century and Transitional\narmors.”\n\nAdd:\n\n- In 13.4 Examples of approved reproductions (Buhurt-optimization locking systems): new picture\nfrom F. Guts ©\n\n05-Dec-2024: add\nDocument has been created (Version 2024.12)\n\ncountiets v. 26.1 21/21",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94,
+      "ocr_lines": [
+        {
+          "text": "14. Changelog",
+          "conf_mean": 95.9,
+          "conf_min": 95.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            862,
+            189,
+            1508,
+            279
+          ],
+          "paper": 0.67,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "This will be the change log of this document. It will be updated regularly and we will",
+          "conf_mean": 96.2,
+          "conf_min": 92.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            397,
+            370,
+            2075,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "display what has been removed/added/reworded/formatted. This way we keep",
+          "conf_mean": 95.3,
+          "conf_min": 91,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            447,
+            443,
+            2027,
+            486
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "transparent communication and clarity about the rules",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            693,
+            517,
+            1780,
+            559
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.6,
+          "conf_min": 91.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            661,
+            679,
+            704
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            713,
+            2163,
+            756
+          ],
+          "paper": 0,
+          "height": 39
+        },
+        {
+          "text": "Add? “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 95.3,
+          "conf_min": 85.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            764,
+            2042,
+            817
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            834,
+            427,
+            868
+          ],
+          "paper": 0,
+          "height": 34
+        },
+        {
+          "text": "- Modification of “1. Definition and general requirements” to “1. Definition”",
+          "conf_mean": 94,
+          "conf_min": 75.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            894,
+            1778,
+            937
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            956,
+            356,
+            998
+          ],
+          "paper": 0,
+          "height": 42
+        },
+        {
+          "text": "- “2.1 Definition” by “Type of gauntlets:”",
+          "conf_mean": 94.2,
+          "conf_min": 92,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            1015,
+            1091,
+            1058
+          ],
+          "paper": 0.79,
+          "height": 34
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1066,
+            273,
+            1119
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- In 3.3 Aesthetic Consistency: “It is allowed to adapt the historical designs to allow a better grip.",
+          "conf_mean": 95.8,
+          "conf_min": 92.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            1137,
+            2240,
+            1180
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Such adapted design must conform with the historical design and proportions.” and a picture as an",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            1198,
+            2170,
+            1241
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "example",
+          "conf_mean": 96.8,
+          "conf_min": 96.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1258,
+            350,
+            1301
+          ],
+          "paper": 0.69,
+          "height": 43
+        },
+        {
+          "text": "- In 4.4 Examples of denied reproductions (scales gauntlets): “(1 row on the wrist)”",
+          "conf_mean": 94.8,
+          "conf_min": 90.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            1319,
+            1964,
+            1362
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "- In 5.4 Examples of denied reproductions (hourglass gauntlets): “Fully articulated fingers”",
+          "conf_mean": 93.1,
+          "conf_min": 69.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1379,
+            2114,
+            1422
+          ],
+          "paper": 0.75,
+          "height": 42
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1440,
+            356,
+            1483
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 5.4 Examples of denied reproductions (hourglass gauntlets): “The leather part is not based on",
+          "conf_mean": 95.5,
+          "conf_min": 91.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1500,
+            2274,
+            1543
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "historical sources.” by “Plate gauntlets with brigandine cuffs are not based on historical sources”",
+          "conf_mean": 95.1,
+          "conf_min": 92.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            1561,
+            2119,
+            1604
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "- In 7. % gauntlets: paragraph “For safety reasons, [...]” entirely rewritten",
+          "conf_mean": 92.2,
+          "conf_min": 65.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1621,
+            1759,
+            1665
+          ],
+          "paper": 0.77,
+          "height": 35
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1673,
+            273,
+            1725
+          ],
+          "paper": 0,
+          "height": 52
+        },
+        {
+          "text": "- In 7.4 Examples of denied reproductions (% gauntlets): “Fully articulated fingers”",
+          "conf_mean": 91.1,
+          "conf_min": 46.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1743,
+            1954,
+            1786
+          ],
+          "paper": 0.76,
+          "height": 42
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1803,
+            356,
+            1846
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 8.1 Historical sources and datation (Milanese gauntlets):",
+          "conf_mean": 94.3,
+          "conf_min": 92,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1864,
+            1517,
+            1907
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "- “They are approved for Transitional and 15th century armors.” by “They are approved for 15th",
+          "conf_mean": 96.2,
+          "conf_min": 92.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1924,
+            2290,
+            1967
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "century armors.”",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            1985,
+            511,
+            2028
+          ],
+          "paper": 0.76,
+          "height": 42
+        },
+        {
+          "text": "- “They are denied for 14th century armors.” by “They are denied for 14th century and Transitional",
+          "conf_mean": 96.2,
+          "conf_min": 92.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            2046,
+            2290,
+            2088
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "armors.”",
+          "conf_mean": 94.3,
+          "conf_min": 94.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            2106,
+            347,
+            2140
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            2157,
+            273,
+            2210
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- In 13.4 Examples of approved reproductions (Buhurt-optimization locking systems): new picture",
+          "conf_mean": 95.4,
+          "conf_min": 91.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2228,
+            2259,
+            2271
+          ],
+          "paper": 0.75,
+          "height": 42
+        },
+        {
+          "text": "from F. Guts ©",
+          "conf_mean": 94.6,
+          "conf_min": 92.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            2288,
+            475,
+            2322
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "05-Dec-2024: add",
+          "conf_mean": 50.3,
+          "conf_min": 4.2,
+          "words": 2,
+          "uncertain": [
+            "add"
+          ],
+          "box": [
+            181,
+            2467,
+            564,
+            2515
+          ],
+          "paper": 0.51,
+          "height": 48
+        },
+        {
+          "text": "Document has been created (Version 2024.12)",
+          "conf_mean": 96.3,
+          "conf_min": 95.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            183,
+            2520,
+            1127,
+            2563
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "countiets v. 26.1 21/21",
+          "conf_mean": 78.4,
+          "conf_min": 39.3,
+          "words": 4,
+          "uncertain": [
+            "countiets"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}

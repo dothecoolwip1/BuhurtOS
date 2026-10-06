@@ -1,0 +1,747 @@
+{
+  "inventory_key": "marshal/outrance-rules",
+  "sha256": "a55222b0f7dacc00ddced85d23ebcb85aadbd134007630ac6a1a422cfb8fff7b",
+  "source_file": "Marshal/Outrance Rules and Regulations 26.4.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 2 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 28,
+    "title": "Outrance Rules and Regulations 26.4",
+    "creator": null,
+    "producer": "Skia/PDF m148 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "VER. 26.4\n\nRules and\nRegulations",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 96,
+      "ocr_lines": [
+        {
+          "text": "VER. 26.4",
+          "conf_mean": 95.3,
+          "conf_min": 94,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            605,
+            1264,
+            1021,
+            1325
+          ],
+          "paper": 0,
+          "height": 61
+        },
+        {
+          "text": "Rules and",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            617,
+            1427,
+            1472,
+            1554
+          ],
+          "paper": 0,
+          "height": 127
+        },
+        {
+          "text": "Regulations",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            617,
+            1618,
+            1668,
+            1788
+          ],
+          "paper": 0,
+          "height": 170
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": " Table of contents\n1. General Provisions​                            3\n2. Marshals Committee​                            5\n3. General Commands​                              7\n4. Fight Procedures​                              8\n5. Competitors​                                   9\n6. Corner Support​                               10\n7. List Requirements​                            11\n8. Authorized Equipment​                         12\n9. Authorized Fighting Techniques​               13\n10. Prohibited Fighting Techniques​              14\n11. Other Prohibited Actions​                    16\n12. Prohibited Strike Zones​                     17\n13. Penalties​                                   19\n14. Special Situations​                          20\n15. Scoring the fight​                           23\n16. Appeal​                                      26\n17. League Ranking Scoring​                      27\n18. Changelog​                                   28\n ​\n\n\n\n\n     Outrance Rules and Regulations V. 26.4   2/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                                1.​ General Provisions\n  1.1.​ Types of fights\nOutrance fights may be held in two ways:\n  ●​ Matched fights: one single fight between 2 competitors.\n  ●​ Tournament: a series of fights between multiple competitors.\n\n  1.2.​ Weight categories\nOutrance fights are held in different categories based on the weight of participants.\n\n    1.2.1.​     For men\n  ●​ Lightweight: Up to a maximum of 75 kg.\n  ●​ Middleweight: Over 75 kg up to a maximum of 85 kg.\n  ●​ Light Heavyweight: Over 85 kg up to a maximum of 95 kg.\n  ●​ Heavyweight: Over 95 kg up to a maximum of 105 kg.\n  ●​ Super Heavyweight: Over 105 kg up to a maximum of 115 kg.\n  ●​ Ultra Heavyweight: Over 115 kg.\n\n    1.2.2.​     For women\n  ●​ Featherweight: Up to a maximum of 60 kg.\n  ●​ Lightweight: Over 60 kg up to a maximum of 70 kg.\n  ●​ Middleweight: Over 70 kg up to a maximum of 80 kg.\n  ●​ Light Heavyweight: over 80 kg up to a maximum of 90 kg.\n  ●​ Heavyweight: over 90 kg.\n\n\n\n                                                  Men                            Women\n\n                Featherweight                                                  < 60 kg\n\n                 Lightweight                  < 75 kg                          60 - 70 kg\n\n                Middleweight                  75 - 85 kg                       70 - 80 kg\n\n              Light Heavyweight               85 - 95 kg                       80 - 90 kg\n\n                Heavyweight                   95 -105 kg                       > 90 kg\n\n              Super Heavyweight               105 -115 kg\n\n              Ultra Heavyweight               > 115 kg\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                    3/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "    1.2.3.​   Open weight category\nShould both participants agree, there may be a difference in the weight of competitors not based on\nthe previously mentioned weight categories. This will not generate a Weight Modifier if agreed upon in\nadvance.\n\n    1.2.4.​   Weigh-in procedure\nThe weigh-in may be done up to 24 before the event starts up until the day of competition to assign\ncompetitors to the proper category. If a competitor misses the weigh-in, they may have to forfeit their\nfight or the tournament. They may attempt a second weigh in before the competition begins.\n\n\n  1.3.​ Divisions\nDivision 1 is for more experienced competitors and will be rewarded more League points for this format\n(Defined as fighters with over 2 years competitive experience or fighters with demonstrable international\nexperience).\n\nDivision 2 is for less experienced competitors, structured to be more forgiving to newcomers to the\nruleset. (Defined as fighters with under 2 years competitive experience and no or minimal international\ncompetitive experience).\n\nDivision 2 fighters can elect to fight in Division 1 should they choose to.\n\n\n  1.4.​ Criteria for participation\n\n    1.4.1.​   Legal age\nCompetitors must be of legal age according to the laws of both their country and the country in which the\ncompetition is held.\n\n    1.4.2.​   Medical fitness\nCompetitors must declare themselves medically fit to fight before the competition.\n\n    1.4.3.​   Medical support\nEach competition should have professional medical support provided by the organizer of the event.\nIn case of an injury, members of the medical support team may decide to withdraw the injured competitor\nfrom competition.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                          4/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "                          2.​ Marshals Committee\nDuring an event, it is allowed to combine some of the marshals’ duties, for example the duties of the\ntimekeeper may be combined with the secretary, and technical marshal with any other duties (knight\nmarshal, line marshal, etc.).\nA marshals committee should consist of:\n\n  2.1.​ One Head Marshal\nThe head marshal:\n ●​ is responsible for the work of the marshals committee during the competition,\n ●​ takes the lead in the consideration by the Marshals Committee of any appeal submitted by\n    competitors,\n ●​ has the final say in all matters related to the consideration of said appeals, and in the interpretation\n    of the rules,\n ●​ Is responsible for reviewing circumstances related to competitor stoppage, cornerman stoppage\n    and TKO stoppage,\n ●​ Where only one knight marshal is present, they can perform the senior knight marshal duties.\n\n  2.2.​ One Knight Marshal\nThe knight marshal:\n ●​ is responsible for checking the readiness of competitors, marshals, and timekeeper before the\n    fight,\n ●​ gives the command to start, suspend and stop the fight,\n ●​ controls the course of the fight by:\n      ○​ counting time of clinches,\n      ○​ reacting to breakages of armor and weapon, losses of weapon, use of unauthorized\n          techniques,\n      ○​ assessing knockout (KO) and technical knockout (TKO) of competitors,\n ●​ has the right to give verbal warnings, yellow and red cards (disqualification), and to expel corner\n    men,\n ●​ checks the condition of the list between the rounds of a fight,\n ●​ announces the winner according to the result of points counted by the line marshals.\n\n  2.3.​ Three or five Line Marshals\nThe line marshals:\n ●​ review objectively all the actions made by both competitors during the fight,\n ●​ take note of loss of weapons and armor failure,\n ●​ each keep scores independently. They are not allowed to contact other line marshals during the\n    round and should be located on different sides of the list.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                             5/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 6,
+      "text": "  2.4.​ One Timekeeper\nThe timekeeper:\n ●​ counts down the time of each round of the fight and of each break between rounds,\n ●​ counts down the time allotted for repairment/replacement of broken equipment,\n ●​ announces the end of the round and the end of the break between rounds with the command\n    ”Time” and the sound of a gong or similar device.\n\n  2.5.​ One Secretary\nThe secretary:\n ●​ records the results of each round of the fight based on points counted by the line marshals,\n ●​ makes notes in the fight protocol. All yellow and red cards should be marked in the protocol for\n    further calculations,\n ●​ takes notes if any medical conditions forbids a competitor to continue fighting,\n ●​ calls competitors to the list according to the order of the fights, in case there's no announcer/herald\n    of the event.\n\n  2.6.​ One Technical Marshal\nThe technical marshal:\n ●​ checks the safety of the offensive and defensive equipment of each competitor,\n ●​ inspects the general appearance and historical accuracy of armor and weapon,\n ●​ have the right to demand the replacement of a selected element of equipment if it does not meet\n    requirements of safety, appearance, or historical accuracy,\n ●​ checks the equipment before each fight, and after a fight if a competitor requests it.\n\n  2.7.​ One Video Supervisor\nThe video supervisor:\n ●​ checks and reviews all appeals given to the knight marshal,\n ●​ discusses and makes decisions on all appeals with the knight/head marshal.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                            6/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 7,
+      "text": "                            3.​ General Commands\n                              Commands reserved for the knight marshal\n\n  3.1.​ “Fight”\nPurpose: Initializes the fight at the beginning of the round or after any suspension of the fight.\nUsage: Start or resume the fight.\n\n  3.2.​ “Stop fight”\nPurpose: Stops the fight at the end of the round or when the fight is finished due to KO (Knockout) or\nTKO (Technical Knockout).\nUsage: Concludes the fight.\n\n  3.3.​ “Break”\nPurpose: Pauses the fight and separates both competitors.\nUsage: Temporarily stops the fight, creating a break between the competitors.\n\n  3.4.​ “Hold”\nPurpose: Pauses the fight but holds competitors' positions for a re-arm of the weapon or to move both\ncompetitors to the middle of the list when needed.\nUsage: Temporarily halts the action, keeping the competitors in their current positions for specific\nadjustments.\n\n  3.5.​ “Breakdown of weapon/armor”\nPurpose: Announces the breakdown of part of the equipment.\nUsage: After the “Break” command has been given, indicates a specific issue with a competitor's\nweapon or armor that requires attention.\n\n  3.6.​ “Loss of weapon”\nPurpose: Used when one of the competitors loses their weapon.\nUsage: After the “Hold” command has been given, indicates that a competitor has lost their weapon\nduring the paused state.\n\n  3.7.​ “Knockout”\nPurpose: Used when one of the competitors is subject to a KO or TKO and after the “Stop fight”\ncommand has been given.\nUsage: Declares the end of the fight due to a knockout or technical knockout.\n\n  3.8.​ “Time”\nPurpose: Announces the flow of time during the fight.\nUsage:\n  ●​ To signify the end of a round or the end of a break between rounds.\n  ●​ If there was a breakdown of equipment, and the competitor has been granted time to repair it.\n  ●​ This command keeps track of the time progression during the fight.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                             7/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 8,
+      "text": "                              4.​ Fight Procedures\n A fight against an opponent consists of multiple rounds. The time duration of rounds and breaks and the\n number of rounds in a fight depends on the tournament type and Division. Below are the number of\n rounds and the round time durations.\n\n    4.1.​ Matched fights\nMatched fights are competitive “Matches” where opponents are paired based on factors like skill, weight,\nexperience, or age to ensure fairness and balance in the contest.\n\n Division 1:\n   ●​ 3 rounds of 2 minutes (120 seconds)\n   ●​ 2 breaks of 1 minute (60 seconds)\n Division 2:\n   ●​ 3 rounds of 1 minute and 30 seconds (90 seconds)\n   ●​ 2 breaks of 1 minute (60 seconds)\n\n\n    4.2.​ Tournament fights\n Division 1:\n   ●​ 2 rounds of 2 minutes (120 seconds)\n   ●​ 1 break of 45 seconds\n Division 2:\n   ●​ 2 rounds of 1 minute and 30 seconds (90 seconds)\n   ●​ 1 break of 45 seconds\n   ●​ If a tiebreaker round is needed. Use the same time as above\n\n\n                              Matched fights                            Tournament fights\n\n               3 rounds of 2 minutes (120 seconds)        2 rounds of 2 minutes (120 seconds)\nDivision 1\n               2 breaks of 1 minute (60 seconds)          1 break of 45 seconds\n\n               3 rounds of 1m30s (90 seconds)             2 rounds of 1m30s (90 seconds)\nDivision 2\n               2 breaks of 1 minute (60 seconds)          1 break of 45 seconds\n\n\n                                               Important!\n  For tournament fights, if after two rounds the fight is a draw, a 3rd round will be fought.\n\n\n\n\n   Outrance Rules and Regulations V. 26.4                                                        8/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 9,
+      "text": "                                     5.​ Competitors\n  5.1.​ Knowledge and respect of the rules\nAll competitors are obligated to know the rules and regulations and to strictly obey them.\nThey shall obey commands given by the knight marshal.\nThey shall defend themselves at all times unless under the direct instruction of the knight marshal to\n“Stop Fight”, “Break” or “Hold”.\nThey shall be polite to other participants, marshals, and spectators.\nSwearing, rudeness, and other impolite actions may be penalized by the knight marshal with a verbal\nwarning, yellow card, or even disqualification if they are persistent.\nIn the case above, actions taken outside the list, the knight marshal may demand penalizing them by the\nevent organizer and/or League.\nAll competitors shall use a set of armor, weapon, and clothes that fulfill all technical safety requirements.\nThey shall come to the list within one (1) minute after being called by the herald/secretary/announcer of\nthe event.\nThey should have a set of spare weapons and elements of armor, along with the necessary repair kit that\nallows making urgent repairs.\nEach competitor should have at least one (1) corner man. A competitor has a maximum of two (2) corner\nmen.\n\n  5.2.​ Competitor stoppage\nA competitor may stop the fight to yield during a round. They signal the knight marshal by throwing their\nweapon to the surface of the list and/or shouting “Stop fighting”.\nA competitor may forfeit before the fight has started because of:\n  ●​ Disqualification armor/weapon failure: The competitor is unable to continue the fight because of\n     their damaged armor/weapon.\n  ●​ Medical retirement: The competitor is unable to continue the fight for a medical reason (e.g.,\n     injury).\n\n\n                                                Important!\n    A competitor that yields or forfeits will need to be assessed to verify their ability to\n       continue. This may include medical review and senior knight marshal review.\n\n\n  5.3.​ Appeal submission\nThe competitor may submit an appeal to the marshals committee if, in their opinion, an action or actions\ntaken by the opponent or any marshal contradicts the rules.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                              9/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 10,
+      "text": "                                 6.​ Corner Support\n  6.1.​ Knowledge and respect of rules\nAll corner men are obligated to know the rules and regulations and to strictly obey them.\nThey shall obey commands given by the knight marshal.\nThey shall help their competitor to the limits of the list and aid them in preparations before the fight.\nThey shall be ready during the fight to make repairs/exchanges of damaged equipment or weapons\naccording to the Marshal's demands.\nThey shall only enter the list in the time between rounds or at the demand of the knight marshal to aid\nthe competitor in repairing/exchanging damaged equipment.\nThey shall be polite to other participants, marshals, and spectators.\n\n  6.2.​ Right to demand stoppage\nA corner man has the right to demand to stop the fight. They signal the above demand by throwing a\nwhite towel/flag onto the surface of the list.\nThey have the right to demand to stop the fight in the following cases:\n  ●​ They recognize and accept the defeat of their competitor (TKO).\n  ●​ Their competitor is unable to continue fighting caused by the breakdown or loss of the element of\n     their equipment (TKO armor/weapons failure).\n  ●​ The competitor is unable to continue the fight due to an injury or other medical causes (Medical\n     Retirement).\n\n\n                                                 Important!\n   If one of their corner men demand to stop the fight, the competitor will need to be\n assessed to verify their ability to continue. This may include medical review and senior\n                      knight marshal review of corner men stoppage.\n\n\n  6.3.​ Appeal submission\nThe corner man has the right to submit an appeal in the name of their competitor (if they cannot do it by\nthemselves) if, in their opinion, an action or actions taken by the opponent or any marshal contradicts the\nrules. See Section 16\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                               10/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 11,
+      "text": "                              7.​ List Requirements\n   7.1.​ Size\nThe list can be made of any suitable rigid structure.\nWidth and Length:\n  ●​ Minimum: 5 meters\n  ●​ Maximum: 10 meters\n\n\n   7.2.​ List fence\nHeight:\n  ●​ Minimum: between 0.9 meter\n  ●​ Maximum: 1.3 meters\nIt should prevent competitors from coming out of the list’s limits.\nIt should be visible.\n\n\n   7.3.​ List boundaries\nBoundaries of the lists should be properly seated on the ground.\n\n\n   7.4.​ Surface quality\nThe surface of lists should be dense and plain.\nIt should prevent competitors from slipping.\n\n\n   7.5.​ Lighting\nThe light source should be located above the list.\nPositioned at a height that prevents competitors from being blinded by it.\n\n\n   7.6.​ Signalization tools\nIt is recommended to place a white towel in the competitors’ corners for the corner men to use if they\nwant to demand the stoppage of the fight.\nIt is recommended to make a clear and visible mark for the starting corner of each competitor.\n\n\n   7.7.​ Safety zone\nThe organizer must provide a 2m-wide safety zone by placing a barrier around every side of the list.\nOnly the marshals committee, the corner men, and accredited photo/videographers are permitted into\nthe safety zone.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                         11/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 12,
+      "text": "                        8.​ Authorized Equipment\n  8.1.​ General requirements\nTechnical and Authentic Compliance: all equipment must meet Buhurt International technical and\nauthentic requirements.\n\n\n  8.2.​ Specifics on weapons and shields\nAll Buhurt International weapons and shields are permitted.\nAny combination of these weapons is allowed.\n\n\n  8.3.​ Changes of equipment\nParticipants are allowed to change elements of their equipment (armor or weapon) during intervals or\ndue to breakage.\nThe supervision of the technical marshal is required for any change of equipment.\n\n\n  8.4.​ Marshal authority\nThe knight marshal and the technical marshal have the authority to demand changes to any element of\narmor or weapon for safety, aesthetic, or historical accuracy reasons.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                    12/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 13,
+      "text": "             9.​ Authorized Fighting Techniques\nThese rules aim to define a set of permitted and prohibited actions to ensure the safety of participants\nwhile engaging in combat. The guidelines cover striking, grabbing, and various techniques to maintain a\nfair and controlled environment during the event.\n\n  9.1.​ Permitted strikes\nStrikes are permitted with any part of the weapon, the shield, and with various body parts (arms, legs\nand head), whether standing or on the ground.\n\n  9.2.​ Permitted strike zones\nStrikes are allowed to any area not mentioned as a prohibited strike zone (See section 12 below).\n\n  9.3.​ Weapon-grabbing\nCompetitors are allowed to grab their own weapon and weapon blade with their hands.\nCompetitors are allowed to grab their opponent’s weapon (except by the blade) and shield with a free\nhand.\n\n  9.4.​ Techniques and moves\nBack heels, wrestling throws, and clinches are allowed.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                        13/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 14,
+      "text": "              10.​Prohibited Fighting Techniques\nThese rules aim to ensure the safety, fairness, and adherence to a set of standards during the combat\nactivities in the specified event.\n\n 10.1.​ Unlisted techniques\nAny actions not listed in section 9 of the rules are prohibited. Only authorized techniques are permitted.\n\n 10.2.​ Thrusting actions\nAny thrusting actions with a weapon are prohibited. Threats of a thrusting action are also prohibited.\n\n 10.3.​ Offensive actions at prohibited strike zones\nAny offensive actions aimed at any prohibited strike zones (See section 12 below) are prohibited.\n\n 10.4.​ Actions with foot or shin at the knee\nActions with the foot or shin aimed at the knee are prohibited. This includes actions that may cause the\nknee to hyperextend, such as push kicks to the thigh.\n\n 10.5.​ Grappling and holding\nGrappling and holding with the hand on specific armor elements (aventail, edge of pauldrons, edge of\nthe helmet), pushes on the bottom edge of the helmet, neck cranks, and subsequent neck twists are\nprohibited.\n\n 10.6.​ Suffocation techniques\nGrips, clamps, suffocation techniques with direct pressure on the neck using any part of the body,\nequipment, or weapon are prohibited. A poorly fitted helmet does not count as a suffocating technique.\n\n 10.7.​ Joint locks and hyperextension\nArm lock techniques, leg lock techniques and any actions that may cause a limb to hyperextend are\nprohibited.\n\n 10.8.​ Specific strikes\nStrikes with the head of a one-handed axe are prohibited if the grip of the hand on the shaft is less than\n30cm away from the axe’s head.\n\n 10.9.​ Armor tampering\nDeliberate attempts to remove any elements of the armor are prohibited.\n\n10.10.​ Strikes to a disarmed opponent\nStrikes to an opponent who has lost their weapon are prohibited.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                            14/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 15,
+      "text": "10.11.​ Strikes to a grounded opponent\nFoot and shin strikes to a grounded opponent are prohibited.\nKnee strikes to a grounded opponent’s legs or head are prohibited.\n\n10.12.​ Dangerous take downs\nAny takedown that forces an opponent to land on their head/neck and suplex (arch throws) variations are\nprohibited.\n\n10.13.​ Out-of-bounds actions\nIntentional pushing or throwing an opponent out of the designated fighting area (list) is prohibited.\n\n10.14.​ Fence interaction\nGrabbing the fence and resting with hands/elbows above the fence is prohibited.\n\n10.15.​ Eye protection\nAttacks that may penetrate the eye slits of the opponent's helmet are prohibited.\n\n10.16.​ Intentional passivity\nIntentional passivity and stalling of the action are prohibited.\n\n10.17.​ Assistance after a break\nA competitor cannot purposefully push on their opponent to get up off the ground after a \"Break\" or \"Stop\nfight\" command.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                                15/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 16,
+      "text": "                      11.​Other Prohibited Actions\nThese rules contribute to maintaining the integrity, safety, and orderliness of the event. They cover\naspects such as participants behavior, substance use, adherence to commands, and respect for officials\nand other attendees. The role of the knight marshal is highlighted in several instances, emphasizing their\nauthority and responsibility in ensuring the proper conduct of the event.\n\n 11.1.​ Leaving the list\nIntentional leaving of the list after the command “Start fight” and before the announcement of the results\nof the fight is prohibited. Permission to leave must be granted by the knight marshal.\n\n 11.2.​ Equipment and weapon approval\nCompetitors are not allowed to use any part of the equipment or any weapon that hasn't been allowed by\nthe technical marshal.\n\n 11.3.​ Substance use\nCompetitors are not allowed to be under the influence of alcohol or any psychoactive substances.\n\n 11.4.​ Stalling after commands\nIntentionally stalling for time after a “Break” or “Hold” command has been given is prohibited.\nThe knight marshal will issue a warning, and if the competitor is not ready after the warning, a 5-second\ncount will be initiated. If the count reaches 5 seconds, the fight will be stopped, and a TKO win will be\nawarded to the opposing competitor.\n\n 11.5.​ Offensive actions against others participants\nAny offensive actions against marshals, corner men, spectators, or anyone else other than the current\nopponent are prohibited.\n\n 11.6.​ Event interference\nAny actions made by a competitor or their corner men that may impede the course of the event are\nprohibited.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                          16/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 17,
+      "text": "                        12.​Prohibited Strike Zones\nThese rules are designed to prioritize the safety of the participants by prohibiting strikes to vulnerable\nand potentially dangerous areas. Their overall intention is to prevent serious injuries and ensure a fair\nand safe competition.\n\n 12.1.​ Back and front of the neck\nStrikes to the back and front of the neck are prohibited.\n\n 12.2.​ Base of the skull\nStrikes to the base of the skull are prohibited.\nThe base of the skull is defined as the bottom third of the back of the helmet.\n\n 12.3.​ Back of the knee\nStrikes to the back of the knee are prohibited.\nPlacing pressure to the back of the knee is prohibited.\n\n 12.4.​ Groin and crotch\nStrikes to the groin and crotch are prohibited.\n\n 12.5.​ Foot and ankle\nStrikes to the feet and ankles are prohibited. However, striking the foot is not considered a prohibited\nstrike if the competitor raises their foot while the strike is already occurring.\n\n 12.6.​ Unprotected body parts\nAny part of the opponent’s body that has lost its protection is considered a prohibited strike zone.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                               17/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 18,
+      "text": "12.7.​ Illustration of prohibited strikes zones\n\n\n\n\nOutrance Rules and Regulations V. 26.4            18/28\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 19,
+      "text": "                                         13.​Penalties\nThese penalties are designed to maintain the integrity of the event, enforce the rules, and ensure a fair\nand safe competition. The progression from verbal warnings to yellow cards and potential disqualification\nemphasizes the seriousness of rule violations. Only the Knight Marshal may issue these.\n\n\n 13.1.​ Verbal warning\nA verbal warning is given to a competitor or a corner man for a minor rule violation that does not\nsignificantly impact the course of the fight.\nIt serves as an alert that more serious actions will be taken if the violation is repeated.\nVerbal warnings do not have to be recorded in the protocol.\n3 verbal warnings will result in escalation to a yellow card.\n\n\n 13.2.​ Yellow card\nGiven by the knight marshal to a competitor or a corner man for systematic violations of the rules or for a\nviolation that had a serious impact on the fight.\nYellow cards are recorded in the protocol and considered in the final score of the fight.\nThe knight marshal should point their hand in the direction of the competitor while announcing \"Yellow\ncard”.\n\n\n 13.3.​ Expulsion of a corner man\nThe knight marshal has the authority to expel a corner man for systematic violations of the rules or for a\nviolation that had a serious impact on the fight.\nThe decision is noted in the protocol but does not affect the score of the fight.\nIf a competitor had only one (1) corner man, another person should be appointed immediately to take\ntheir position.\n\n\n 13.4.​ Red card (disqualification)\nA red card equals a disqualification and is automatically given to a competitor who receives a second\nyellow card.\nIt may also be given if action(s) by the competitor or their corner man disrupt the course of the fight to\nthe extent that it cannot continue or properly start.\nRed cards are recorded in the protocol.\nThe marshal should point their hand in the direction of the competitor while announcing “Red card” or\n“Disqualification”.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                           19/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 20,
+      "text": "                            14.​Special Situations\n 14.1.​ Weapon loss\nProcedure:\n ●​ The knight marshal stops the fight with the “Hold” command.\n ●​ Both competitors cease fighting, remain in position.\n ●​ The knight marshal rearms the competitor and resets both competitors.\n ●​ The knight marshal gives the “Fight” command.\n\n\nImportant note:\nWhen a fighter loses a weapon 3 or more times in a single round, this will result in a 1 point deduction\nto the fighter's round (see section 15.3.2. below).\n\n\n 14.2.​ Weapon breakage\nProcedure:\n ●​ The knight marshal stops the fight with the “Break” command.\n ●​ The competitor must replace the weapon with a new one that was accepted by the technical\n    marshal during the preparation of the fight.\n ●​ If a replacement is impossible, victory is given to the opponent by TKO armor/weapon failure.\n ●​ If a replacement is done, the fight continues with no penalty.\n\n\n 14.3.​ Shield Breakage\nIn case of a shield breakage, the competitor can either:\n ●​ Remove it, provided their armor cover their arm efficiently,\n ●​ Replace it with a new one that was accepted by the technical marshal during the preparation of the\n    fight.\nNo penalty is imposed.\n\n\n 14.4.​ Armor failure\nProcedure:\n ●​ The knight marshal stops the fight with the “Break” command.\n ●​ If the competitor, with the help of their corner men, can fix their armor in 90 seconds or less, they\n    are deducted 1 point off their round score (see section 15.3.2 below).\n ●​ If they are unable to fix their armor in 90 seconds or less, they may be granted 90 additional\n    seconds. They are deducted 1 additional point off their round score (see section 15.3.2 below).\n ●​ If they are still unable to fix the armor within the additional 90 seconds, their opponent is awarded\n    the victory by TKO armor/weapon failure.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                        20/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 21,
+      "text": " 14.5.​ Clinch\nA clinch is a standing position where fighters lock their upper bodies together with their arms between\ncompetitors during the fight.\nProcedure:\n ●​ If the clinch is inactive for 10 seconds, the knight marshal stops the fight with the “Break”\n    command.\n ●​ Both competitors separate, and after the \"Fight\" command, they continue the fight.\n\n 14.6.​ Unintentional fall outside or under the list\nProcedure:\n ●​ The knight marshal stops the fight with a \"Hold\" command.\n ●​ Both competitors return to the middle of the list in the same position as when the \"Hold\" command\n    was given.\n ●​ \"Fight\" command is given to resume the fight.\n\n 14.7.​ Grounded position\nA grounded position is a situation when a competitor has more than just the soles of their feet touching\nthe ground. This includes hands, knees, back or their buttocks. One or both competitors can be in a\ngrounded position simultaneously. The action is permitted to continue for 30 seconds providing that the\naction is consistent.\nProcedure:\n ●​ The knight marshal stops the fight after 10 seconds of inactivity with the \"Break\" command.\n ●​ Both competitors take a standing position about 3 meters apart and wait for the knight marshal's\n    command to resume the fight.\n ●​ A fallen competitor may take any actions to protect themselves (excluding prohibited actions).\n\n 14.8.​ Technical knockout (TKO)\nProcedure:​\n ●​ Determination by the knight marshal: The knight marshal, as the official overseeing the fight, is\n    responsible for determining if a fighter is no longer able to intelligently defend themselves.\n\n ●​ Verbal warning: If the knight marshal observes that a fighter is unable to intelligently defend\n    themselves, they will issue a verbal warning to the fighter.\n\n ●​ 5-Second count: Following the verbal warning, the knight marshal will initiate a 5-second count,\n    during which the fighter must demonstrate the ability to intelligently defend themselves.\n\n ●​ Continuous lack of defense: If, after the 5-second count, the fighter continues to be unable to\n    intelligently defend themselves, the knight marshal will intervene.\n\n ●​ “Stop fight” announcement: At this point, the knight marshal will call for the fight to be stopped.\n\n ●​ Declaration of TKO: Following the stoppage of the fight, the knight marshal will officially declare a\n    Technical Knockout (TKO) by announcing \"Knockout.\"\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                          21/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 22,
+      "text": "  ●​ TKO: If a competitor receives a TKO due to a lack of defense, they will lose the Match in Division 1\n     or the Round in Division 2. All TKO’s must be checked by Medic to verify they can continue to\n     fight.\n\n 14.9.​ Intelligent defending\n\n  14.9.1.​    Movement and positioning\n  ●​ Employing footwork to maintain distance from the opponent.\n  ●​ Utilizing angles and lateral movement to create advantageous positions.\n  ●​ Controlling the center of the fighting space to dictate the pace and direction of the engagement.\n\n  14.9.2.​    Technique\n  ●​ Blocking or parrying strikes with proper technique to minimize impact.\n  ●​ Executing defensive maneuvers such as slips, rolls, and evasions to avoid incoming attacks.\n  ●​ Understanding defensive principles specific to different martial arts or combat sports.\n\n  14.9.3.​    Counterattacking opportunities\n  ●​ Identifying openings in the opponent's defense to launch effective counterattacks.\n  ●​ Capitalizing on the opponent's mistakes or vulnerabilities to turn the tide of the fight.\n  ●​ Using feints and baiting techniques to provoke reactions and create offensive opportunities.\n\n  14.9.4.​    Composure and adaptability\n  ●​ Staying calm and focused under pressure to make sound defensive decisions.\n  ●​ Analyzing the opponent's movements and adjusting defensive strategies accordingly.\n  ●​ Being adaptable to changing circumstances and adjusting tactics as the fight progresses.\n\n14.10.​ Disqualification\nDisqualification occurs when a competitor is unable to continue fighting due to:\n  ●​ No available weapon or armor breakage that can not be repaired in the given time.\n  ●​ Disqualification also includes a fighter that has received a red card.\n\n                                                Important!\n  Should a fighter be subject to a disqualification due to no available weapon or armor\n    breakage, they will have until their next match to fix the issue or be completely\n                           disqualified from the Tournament.\n\n\n14.11.​ Knockout (KO)\nknockout occurs when a fighter is rendered unconscious and unable to continue fighting.\nThe knight marshal will announce “Stop Fight” then “Knockout”.\n\n                                                Important!\n Should a fighter lose a fight by KO, they will not be allowed to participate further in the\n                                        tournament.\n\n\n  Outrance Rules and Regulations V. 26.4                                                         22/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 23,
+      "text": "                                15.​Scoring the fight\n 15.1.​ Scoring system overview\n\n  15.1.1.​    Number of line marshals\n3 or 5 line marshals evaluate each bout from different locations around the list/fighting area.\n\n  15.1.2.​    Scoring system\nThe “10-Point Must System” is the standard for scoring bouts.\n\n\n 15.2.​ Evaluation criteria (in order of priority)\n\n  15.2.1.​    Effective striking\nClear, strong, and well-placed legal strikes to permitted zones.\nAll legal strikes with weapons, legs, arms, and shields account for one (1) strike point per clean landed\nblow.\nStrikes with the head do not award any strike point.\n\n  15.2.2.​    Effective grappling\nSuccessful legal takedowns, position reversals, and clinch control.\nConsideration for takedowns from standing position to dominant position, reversal of position, and\npositional clinch work.\nTakedowns with no subsequent strikes/ground action are recorded for posterity.\n\n  15.2.3.​    Effective list control\nDominating the opponent by dictating pace, location, and position.\n\n  15.2.4.​    Effective aggression\nPushing forward with attacks, landing legal strikes, and making attempts to finish the fight.\nNo credit for chasing without effective results or impact.\n\n  15.2.5.​    Effective defense\nAvoiding being struck, taken down, or reversed while countering with offensive attacks.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                          23/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 24,
+      "text": " 15.3.​ Scoring breakdown\n\n  15.3.1.​   Round scores\n\nEach marshal reports the score for each round to the secretary. The secretary adds these scores\ntogether and divides the total by the number of marshals to calculate the Round Score.\n ●​ 10-10: A round with a strike point difference of 5 or less, and a winner cannot be determined by\n    using the other evaluation criteria (noted as “Even”).\n ●​ 10-9: A round with a strike point difference of 5 or less, and a winner can be determined by using\n    the other evaluation criteria (noted as “Even”).\n ●​ 10-9: Competitor out-strikes opponent by 6 to 10 strike points (noted as 'Slight').\n ●​ 10-8: Competitor out-strikes opponent by 11 to 15 strike points (noted as 'Moderate').\n ●​ 10-7: Competitor out-strikes opponent by 16 or more strike points (noted as 'Dominant').KO and\n    TKO both result in this score\n\n  15.3.2.​   Point deductions\nYellow cards, armor malfunction penalties and weapon loss penalties result in a single point deduction\nfor each instance.\n\n  15.3.3.​   Example scenario\nIf competitor A and competitor B have an evenly fought round until competitor B incurs an armor failure\n(fixed within the required time), competitor A would be awarded 10 points, and competitor B would be\nawarded 9 points due to the armor failure.\n\n 15.4.​ Fight outcome\n\n  15.4.1.​   Total Fight Score\nThe Total Fight Score is determined by adding up all the Round Scores to declare the winner of the\nmatch.\n ●​ Tournaments: The Total Fight Score is ranging between 14 and 20.\n ●​ Matched Fights: The Total Fight Score is ranging between 21 and 30.\n\n  15.4.2.​   Win types\n ●​ Unanimous decision: All line marshals scored the win for the same competitor.\n ●​ Unanimous draw: All line marshals score the fight as a draw.\n ●​ Majority decision: The majority of line marshals scored the win for one competitor, and the other\n    line marshal(s) scored the fight as a draw.\n ●​ Majority draw: The majority of line marshals scored the fight as a draw.\n ●​ Split decision: The majority of line marshals scored the win for one competitor, and the other line\n    marshal(s) scored the win for the other competitor.\n ●​ Split draw: All line marshals score the fight differently but the score totals all result in a draw.\n ●​ Technical Knockout (TKO)\n ●​ Knockout (KO)\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                              24/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 25,
+      "text": "15.5. Example scoresheet\n\n[Line Marshal | Blue Corner\n\n| ROUND 1 | | ROUND 2 | | ROUND 3\n\nRound Counting and\nObservations\n\nTotal Effective Strikes\nTotal Effective Takedowns\nTotal Loss of Weapon\nTotal Armour Failures\nTotal Point Deduction\n\nCriteria by Priority\nRed [EEE Blue Red [EEE Blue Red\n}(1) Effective Striking Moderate Moderate Moderate Dominant\n(6-10) (11-15) (16>) (6-10) (11-15) (16>) (6-10) (11-15) (16>)\n|(2) Effective Grappling Red [Eo Blue Red [Blue [/[\n(3) Effective List Control Red [RE Blue Red [RE Blue Red [a\n|(4) Effective Aggression Red [EE Blue Red (Blue\n(5) Effective Defence Red [EE = Blue Red [EE Blue Red [a\n\na | |\n\nWin Criteria Effective strike total > Effective Grappling > Effective List Control> Effective Aggression > Effective Defence\n\nEven Difference in Effective Strikes is 5 or less. Follow Criteria by Priority until a Winner can be determined.\n(10-9) If a Winner can be determined, Round to be Scored, Winner 10, Opponent 9.\n(10-10) If no Winner can be determined, Round is a Draw. A Drawn Round is Scored 10 for both Fighters.\n{Slight (10-9) Difference in Effective Strikes from 6 to 10. Round to be Scored, Winner 10, Opponent 9.\n{Moderate (10-8) Difference in Effective Strikes from 11 to 15. Round to be Scored, Winner 10, Opponent 8.\nDominant (10-7) Difference in Effective Strikes from 16 or more. Round to be Scored, Winner 10, Opponent 7.\n\nPoint Deductions\nYellow Card Any yellow card given to a fighter will result in a 1 Point Deduction to that fighters Round.\n|Loss of weapon When a fighter loses a weapon 3 or more times in a single round, this will result in a 1 Point Deduction to that fighters Round.\n{Armour Failure For each 90 seconds granted for Armour Failure Repair, 1 Point will be Deduction to that fighters Round.\n\nOutrance Rules and Regulations V. 26.4 25/28",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87.1,
+      "ocr_lines": [
+        {
+          "text": "15.5. Example scoresheet",
+          "conf_mean": 93.8,
+          "conf_min": 92.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            208,
+            233,
+            875,
+            283
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "[Line Marshal | Blue Corner",
+          "conf_mean": 84.5,
+          "conf_min": 69.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            23,
+            805,
+            1771,
+            880
+          ],
+          "paper": 0.67,
+          "height": 75
+        },
+        {
+          "text": "| ROUND 1 | | ROUND 2 | | ROUND 3",
+          "conf_mean": 90.5,
+          "conf_min": 71.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            514,
+            905,
+            2212,
+            995
+          ],
+          "paper": 0.42,
+          "height": 23
+        },
+        {
+          "text": "Round Counting and",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            105,
+            1002,
+            396,
+            1031
+          ],
+          "paper": 0.45,
+          "height": 23
+        },
+        {
+          "text": "Observations",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            157,
+            1048,
+            346,
+            1071
+          ],
+          "paper": 0.31,
+          "height": 23
+        },
+        {
+          "text": "Total Effective Strikes",
+          "conf_mean": 92.3,
+          "conf_min": 83.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            36,
+            1227,
+            336,
+            1251
+          ],
+          "paper": 0.4,
+          "height": 24
+        },
+        {
+          "text": "Total Effective Takedowns",
+          "conf_mean": 89.5,
+          "conf_min": 83.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            36,
+            1271,
+            400,
+            1295
+          ],
+          "paper": 0.4,
+          "height": 24
+        },
+        {
+          "text": "Total Loss of Weapon",
+          "conf_mean": 93.3,
+          "conf_min": 83.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            36,
+            1317,
+            334,
+            1348
+          ],
+          "paper": 0.5,
+          "height": 24
+        },
+        {
+          "text": "Total Armour Failures",
+          "conf_mean": 88.1,
+          "conf_min": 71.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            36,
+            1361,
+            338,
+            1385
+          ],
+          "paper": 0.43,
+          "height": 24
+        },
+        {
+          "text": "Total Point Deduction",
+          "conf_mean": 93.7,
+          "conf_min": 88,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            36,
+            1405,
+            338,
+            1429
+          ],
+          "paper": 0.42,
+          "height": 24
+        },
+        {
+          "text": "Criteria by Priority",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            121,
+            1495,
+            381,
+            1525
+          ],
+          "paper": 0.45,
+          "height": 30
+        },
+        {
+          "text": "Red [EEE Blue Red [EEE Blue Red",
+          "conf_mean": 48.6,
+          "conf_min": 29.6,
+          "words": 7,
+          "uncertain": [
+            "[EEE",
+            "Blue",
+            "[EEE",
+            "Blue",
+            "Red"
+          ],
+          "box": [
+            592,
+            1532,
+            1962,
+            1573
+          ],
+          "paper": 0.12,
+          "height": 23,
+          "in_picture": "on a coloured or photographic background (paper 12%), confidence 48.6"
+        },
+        {
+          "text": "}(1) Effective Striking Moderate Moderate Moderate Dominant",
+          "conf_mean": 84.1,
+          "conf_min": 9.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            27,
+            1582,
+            2418,
+            1620
+          ],
+          "paper": 0.7,
+          "height": 30
+        },
+        {
+          "text": "(6-10) (11-15) (16>) (6-10) (11-15) (16>) (6-10) (11-15) (16>)",
+          "conf_mean": 96.5,
+          "conf_min": 94.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            577,
+            1621,
+            2382,
+            1668
+          ],
+          "paper": 0.77,
+          "height": 31
+        },
+        {
+          "text": "|(2) Effective Grappling Red [Eo Blue Red [Blue [/[",
+          "conf_mean": 57.6,
+          "conf_min": 6.7,
+          "words": 9,
+          "uncertain": [
+            "[Eo",
+            "Blue",
+            "[Blue"
+          ],
+          "box": [
+            27,
+            1671,
+            2240,
+            1711
+          ],
+          "paper": 0.22,
+          "height": 30,
+          "dropped": [
+            "Red"
+          ],
+          "in_picture": "on a coloured or photographic background (paper 22%), confidence 57.6"
+        },
+        {
+          "text": "(3) Effective List Control Red [RE Blue Red [RE Blue Red [a",
+          "conf_mean": 57.8,
+          "conf_min": 0,
+          "words": 12,
+          "uncertain": [
+            "[RE",
+            "Blue",
+            "[RE"
+          ],
+          "box": [
+            27,
+            1715,
+            2240,
+            1757
+          ],
+          "paper": 0.22,
+          "height": 24,
+          "in_picture": "on a coloured or photographic background (paper 22%), confidence 57.8"
+        },
+        {
+          "text": "|(4) Effective Aggression Red [EE Blue Red (Blue",
+          "conf_mean": 62.3,
+          "conf_min": 10.3,
+          "words": 8,
+          "uncertain": [
+            "[EE",
+            "(Blue"
+          ],
+          "box": [
+            27,
+            1761,
+            1718,
+            1801
+          ],
+          "paper": 0.25,
+          "height": 29,
+          "dropped": [
+            "Red"
+          ],
+          "in_picture": "on a coloured or photographic background (paper 25%), confidence 62.3"
+        },
+        {
+          "text": "(5) Effective Defence Red [EE = Blue Red [EE Blue Red [a",
+          "conf_mean": 59.1,
+          "conf_min": 10.3,
+          "words": 12,
+          "uncertain": [
+            "[EE",
+            "Blue",
+            "[EE",
+            "Blue"
+          ],
+          "box": [
+            27,
+            1801,
+            2240,
+            1852
+          ],
+          "paper": 0.23,
+          "height": 24,
+          "in_picture": "on a coloured or photographic background (paper 23%), confidence 59.1"
+        },
+        {
+          "text": "a | |",
+          "conf_mean": 50,
+          "conf_min": 30.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            169,
+            1985,
+            1792,
+            2026
+          ],
+          "paper": 0.57,
+          "height": 41,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "Win Criteria Effective strike total > Effective Grappling > Effective List Control> Effective Aggression > Effective Defence",
+          "conf_mean": 96.1,
+          "conf_min": 91.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            166,
+            2083,
+            1954,
+            2113
+          ],
+          "paper": 0.53,
+          "height": 24
+        },
+        {
+          "text": "Even Difference in Effective Strikes is 5 or less. Follow Criteria by Priority until a Winner can be determined.",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            38,
+            2131,
+            1893,
+            2161
+          ],
+          "paper": 0.62,
+          "height": 23
+        },
+        {
+          "text": "(10-9) If a Winner can be determined, Round to be Scored, Winner 10, Opponent 9.",
+          "conf_mean": 95.5,
+          "conf_min": 85.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            38,
+            2177,
+            1539,
+            2207
+          ],
+          "paper": 0.64,
+          "height": 23
+        },
+        {
+          "text": "(10-10) If no Winner can be determined, Round is a Draw. A Drawn Round is Scored 10 for both Fighters.",
+          "conf_mean": 95.8,
+          "conf_min": 88.4,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            38,
+            2221,
+            1816,
+            2251
+          ],
+          "paper": 0.62,
+          "height": 23
+        },
+        {
+          "text": "{Slight (10-9) Difference in Effective Strikes from 6 to 10. Round to be Scored, Winner 10, Opponent 9.",
+          "conf_mean": 95.1,
+          "conf_min": 70.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            27,
+            2258,
+            1702,
+            2301
+          ],
+          "paper": 0.63,
+          "height": 24
+        },
+        {
+          "text": "{Moderate (10-8) Difference in Effective Strikes from 11 to 15. Round to be Scored, Winner 10, Opponent 8.",
+          "conf_mean": 91.6,
+          "conf_min": 10.5,
+          "words": 18,
+          "uncertain": [
+            "{Moderate"
+          ],
+          "box": [
+            27,
+            2300,
+            1720,
+            2348
+          ],
+          "paper": 0.54,
+          "height": 24
+        },
+        {
+          "text": "Dominant (10-7) Difference in Effective Strikes from 16 or more. Round to be Scored, Winner 10, Opponent 7.",
+          "conf_mean": 91.2,
+          "conf_min": 0,
+          "words": 18,
+          "uncertain": [
+            "Dominant"
+          ],
+          "box": [
+            27,
+            2348,
+            1761,
+            2385
+          ],
+          "paper": 0.68,
+          "height": 24
+        },
+        {
+          "text": "Point Deductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            130,
+            2403,
+            374,
+            2427
+          ],
+          "paper": 0.31,
+          "height": 24
+        },
+        {
+          "text": "Yellow Card Any yellow card given to a fighter will result in a 1 Point Deduction to that fighters Round.",
+          "conf_mean": 95.5,
+          "conf_min": 85.8,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            37,
+            2450,
+            1721,
+            2481
+          ],
+          "paper": 0.62,
+          "height": 24
+        },
+        {
+          "text": "|Loss of weapon When a fighter loses a weapon 3 or more times in a single round, this will result in a 1 Point Deduction to that fighters Round.",
+          "conf_mean": 92.8,
+          "conf_min": 21.8,
+          "words": 29,
+          "uncertain": [
+            "|Loss"
+          ],
+          "box": [
+            27,
+            2490,
+            2219,
+            2529
+          ],
+          "paper": 0.63,
+          "height": 23
+        },
+        {
+          "text": "{Armour Failure For each 90 seconds granted for Armour Failure Repair, 1 Point will be Deduction to that fighters Round.",
+          "conf_mean": 93.9,
+          "conf_min": 46.1,
+          "words": 20,
+          "uncertain": [
+            "{Armour"
+          ],
+          "box": [
+            27,
+            2527,
+            1930,
+            2577
+          ],
+          "paper": 0.55,
+          "height": 23
+        },
+        {
+          "text": "Outrance Rules and Regulations V. 26.4 25/28",
+          "conf_mean": 94.5,
+          "conf_min": 91.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            229,
+            3394,
+            2265,
+            3441
+          ],
+          "paper": 0.91,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 26,
+      "text": "                                          16.​Appeal\n 16.1.​ Submission of an appeal\nThe competitor or their corner men can appeal a decision made by the marshals committee or the knight\nmarshal.\nThe appeal is submitted in written form The number of appeals are determined by the organizers.\n\n\n 16.2.​ Grounds for appeal\nAn appeal can be filed for various reasons, including:\n  ●​ False implementation of point deduction, warning, card, or disqualification.\n  ●​ Unregistered clean blows to legal strike zones affecting the fight.\n  ●​ Unregistered rule violations by the opponent warranting point deduction.\n  ●​ Unregistered rule violations warranting yellow or red cards or severe rule violations.\n\n\n 16.3.​ Submission timing\nThe competitor can appeal directly at the end of the fight when the knight marshal requests objections,\nbefore the competitor has left the list.\nThe competitor’s corner men observing the fight must announce the intention to appeal to the knight\nmarshal in person no later than 15 minutes after the fight.\n\n\n 16.4.​ Possible results of the appeal\n  ●​ A general rematch of the round.\n  ●​ Imposing or withdrawal of cards.\n  ●​ Imposing or withdrawal of point deduction.\n\n\n 16.5.​ Further appeal\nIf the competitor or their corner men are dissatisfied with the knight marshal's decision, they can appeal\nto the Buhurt International Control and Disciplinary Committee, or the Head of the Buhurt International\nMarshals’ Committee.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                         26/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 27,
+      "text": "                      17.​League Ranking Scoring\nAll competitors will be tracked via win/loss record.\n\nCompetitors will be compared via their win/loss within their active weight category.\n\nIf a competitor does not compete for 1 year their ranking will be shifted to “retired” status. If they do not\ncompete for 2 years their ranking and record will be deleted from the standings.\n\n\n\n\n  Outrance Rules and Regulations V. 26.4                                                             27/28\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 28,
+      "text": "                                                18.​Changelog\nThis will be the change log of this document. It will be updated regularly and we will display what has\nbeen removed/added/reworded/formatted. This way we keep transparent communication and clarity\nabout the rules.\n\nApril - 2026 (V. 26.4)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\nGrammatical corrections were also made.\nSuppression:\n  -​ 14.1. Weapon loss: “If a competitor loses their weapon more than twice during a round, they are deducted one (1) point\n      off their round score (see section 15.3.2 below).”\nAdd:\n  -​ New section 14.3. Shield breakage has been added for clarification.\n\nJanuary 2026 (2025.03 to 2026.1)\nReplaced: 1.2.4 The weigh-in may be done up to 24 before the event starts up until the day of competition to assign\ncompetitors to the proper category. If a competitor misses the weigh-in, they may have to forfeit their fight or the tournament.\nThey may attempt a second weigh in before the competition begins.\nAdd: 4.2 If a tiebreaker round is needed. Use the same time as above\nAdd: 14.6 30 seconds\nRemove: 14.6 indefinitely\nRemove: 17\nAdd: 17\n\n\nMarch 2025 (2024.06 to 2025.03)\nClarification: 2.1 Senior knight marshal​\nClarification: 2.2 Knight marshal\nReplaced: 5.2 will not be allowed to participate further in the tournament || will need to be assessed to verify their ability to\ncontinue. This may include medical review and senior knight marshal review\nReplaced: 6.2 will not be allowed to participate further in the tournament || will need to be assessed to verify their ability to\ncontinue. This may include medical review and senior knight marshal review\nClarification: 1.3 (explaining the tier 1, 2 method)\nReplaced: 15.3.2 that round at the discretion of the knight marshal || each instance\n\n\nTo see older changelogs, please refer to the archived documents.\n\n\n\n\n   Outrance Rules and Regulations V. 26.4                                                                                    28/28\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

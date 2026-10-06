@@ -247,6 +247,8 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'review')}>Registrations</Link>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'people')}>People and roles</Link>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'broadcast')}>Broadcast</Link>}
+          <Link className="btn btn-line" to={`/events/${event.slug}/discipline`}>Cards and penalties</Link>
+          <Link className="btn btn-line" to="/rules">Rules</Link>
           <Link className="btn btn-line" to={`/events/${event.slug}/arena`}>Live display</Link>
           <Link className="btn btn-line" to={`/events/${event.slug}`}>Public event page</Link>
         </div>

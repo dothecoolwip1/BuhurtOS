@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import { COMMAND_SCHEMA, type OutboxEntry, type SendOutcome, type SendResult, type Sender } from './outbox';
-import { confirmRoundArgs, disciplineArgs, type ConfirmRoundArgs, type DisciplineArgs } from '../data/lyst';
+import { citeRuleArgs, confirmRoundArgs, disciplineArgs, type CiteRuleArgs, type ConfirmRoundArgs, type DisciplineArgs } from '../data/lyst';
 
 interface RpcErrorLike { message?: string; code?: string; status?: number }
 
@@ -43,12 +43,13 @@ export const scoreEventArgs = (e: Pick<OutboxEntry, 'id' | 'subject' | 'kind' | 
  * Lyst Control rides the SAME outbox (no second offline system): the marshal's confirmed round, a recorded warning/card/deduction/DQ and a void are saved on
  * the device first, given the entry id as their command id, and sent in order per match. The timer is NOT here: it is server state and cannot be changed offline.
  */
-export type LystPayload = Omit<ConfirmRoundArgs, 'command'> | Omit<DisciplineArgs, 'command'> | { id: string; reason: string };
-export const LYST_KINDS = ['lyst.confirm_round', 'lyst.discipline', 'lyst.void'] as const;
+export type LystPayload = Omit<ConfirmRoundArgs, 'command'> | Omit<DisciplineArgs, 'command'> | { id: string; reason: string } | Omit<CiteRuleArgs, 'command'>;
+export const LYST_KINDS = ['lyst.confirm_round', 'lyst.discipline', 'lyst.void', 'lyst.cite_rule'] as const;
 export const isLystKind = (kind: string): boolean => (LYST_KINDS as readonly string[]).includes(kind);
 export function lystCall(entry: Pick<OutboxEntry, 'id' | 'kind' | 'payload'>): { fn: string; args: Record<string, unknown> } | null {
   if (entry.kind === 'lyst.confirm_round') return { fn: 'lyst_confirm_round', args: confirmRoundArgs({ ...(entry.payload as Omit<ConfirmRoundArgs, 'command'>), command: entry.id }) };
   if (entry.kind === 'lyst.discipline') return { fn: 'lyst_record_discipline', args: disciplineArgs({ ...(entry.payload as Omit<DisciplineArgs, 'command'>), command: entry.id }) };
+  if (entry.kind === 'lyst.cite_rule') return { fn: 'lyst_cite_rule', args: citeRuleArgs({ ...(entry.payload as Omit<CiteRuleArgs, 'command'>), command: entry.id }) };
   if (entry.kind === 'lyst.void') { const p = entry.payload as { id: string; reason: string }; return { fn: 'lyst_void_discipline', args: { p_command: entry.id, p_id: p.id, p_reason: p.reason } }; }
   return null;
 }

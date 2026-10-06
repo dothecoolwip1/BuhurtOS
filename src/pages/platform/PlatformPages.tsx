@@ -48,6 +48,7 @@ export function PlatformHomePage() {
           <li><Link className="panel plat-link" to="/platform/analytics"><b>Analytics</b><span className="muted">Visitors, who is on right now, how long people stay, what they use, sign-ups and searches.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/bugs"><b>Bug reports</b><span className="muted">Problems people reported with the button in the header.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/fighters"><b>Fighter identities</b><span className="muted">Fighter records that may be the same person. Nothing is merged without you.</span></Link></li>
+          <li><Link className="panel plat-link" to="/platform/rules"><b>Rules and suspensions</b><span className="muted">Publish imported official documents after their review; record suspensions that apply to every event.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/organizations"><b>Organizations</b><span className="muted">Switch organizations on or off and manage their admins.</span></Link></li>
         </ul>
         <SampleModeSwitch />

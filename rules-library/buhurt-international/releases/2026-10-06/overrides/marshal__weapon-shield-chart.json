@@ -1,0 +1,246 @@
+{
+  "version": "26.2.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {},
+  "keywords": {},
+  "topics": {},
+  "note": "Every page \"VER. 26.2.1\"; the chart's own history lists VER 26.2.1, VER 26.2 and VER 26.1.",
+  "layout": {
+    "headings": {
+      "1:0": {
+        "title": "TECHNICAL REQUIREMENTS FOR PERMITTED WEAPONS"
+      },
+      "1:5": {
+        "title": "Bladed Weapons (Sword, Saber, Falchion, etc)"
+      },
+      "1:14": {
+        "title": "Hafted Weapons (Polearm, Poleaxe, 2-handed axe, etc)"
+      },
+      "1:27": {
+        "title": "Outrance Bladed Weapons (Sword, Saber, Falchion, etc)"
+      },
+      "1:35": {
+        "title": "Other Restrictions for all Weapon Types"
+      },
+      "2:0": {
+        "title": "TECHNICAL REQUIREMENTS FOR PERMITTED SHIELDS"
+      },
+      "2:5": {
+        "title": "Heather and Punch Shields"
+      },
+      "2:11": {
+        "title": "Round Shields and Bucklers"
+      },
+      "2:23": {
+        "title": "Other Restrictions for all Shield and Buckler Types"
+      },
+      "3:0": {
+        "title": "Changelog"
+      }
+    },
+    "tables": [
+      {
+        "replaces": [
+          "1:5",
+          "1:7",
+          "1:9",
+          "1:11"
+        ],
+        "rows": [
+          [
+            "",
+            "Weight",
+            "Length",
+            "Length of the Blade",
+            "Length of the Handle",
+            "Special Restrictions"
+          ],
+          [
+            "Type 1 Bladed (Arming sword, Falchion, Saber)",
+            "1.1 - 1.7",
+            "72 - 100",
+            "60 - 80",
+            "12 - 20",
+            "The Hilt should not extend more then 35mm over the Bearer's hand."
+          ],
+          [
+            "Type 2 Bladed (Longsword)",
+            "1.7 - 2.3",
+            "100 - 140",
+            "70 - 100",
+            "20 - 50",
+            "^"
+          ],
+          [
+            "Type 3 Bladed",
+            "2.3 - 3.0",
+            "120 - 160",
+            "90 - 130",
+            "30 - 50",
+            "^"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "1:14",
+          "1:16",
+          "1:18",
+          "1:19",
+          "1:20",
+          "1:21",
+          "1:23"
+        ],
+        "rows": [
+          [
+            "",
+            "Weight",
+            "Length",
+            "Length of Striking Edge",
+            "Special Restrictions"
+          ],
+          [
+            "Type 1 Hafted (Mace)",
+            "0.7 -1.3",
+            "50-70",
+            ">5",
+            "Type 1 Hafted (Maces) must have 6 or more flanges or be a ball. All Hafted weapons with sharp corners (Less than 90 degrees) and corners that can be considered dangerous are not permitted. Any point on the Striking Edge of the weapon Must have an angle more than 90 degrees."
+          ],
+          [
+            "Type 2 Hafted (Axe)",
+            "0.7 - 1.3",
+            "50 - 90",
+            ">7",
+            "^"
+          ],
+          [
+            "Type 3 Hafted (Longaxe)",
+            "1.3 - 2.5",
+            "90 - 130",
+            ">9",
+            "^"
+          ],
+          [
+            "Type 4 Hafted (Polearm)",
+            "2.2 - 3.2",
+            "130 - 220",
+            "> 12",
+            "^"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "1:27",
+          "1:29",
+          "1:30",
+          "1:31",
+          "1:32"
+        ],
+        "rows": [
+          [
+            "",
+            "Calculation",
+            "Special Restrictions"
+          ],
+          [
+            "Men",
+            "Balance Point of 15cm or more",
+            "Outrance swords must also meet the Bladed Weapons Technical Requirements. Balance points are measured from the edge of the grip zone and includes the crossguard."
+          ],
+          [
+            "Women",
+            "Balance Point of 10cm or more",
+            "^"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "2:5",
+          "2:7",
+          "2:8",
+          "2:9"
+        ],
+        "rows": [
+          [
+            "",
+            "Lenght",
+            "Width",
+            "Weight"
+          ],
+          [
+            "Heater Shields",
+            "55 - 75",
+            "30 - 65",
+            "≤5"
+          ],
+          [
+            "Punch Shields",
+            "55 - 75",
+            "30 - 50",
+            "^"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "2:11",
+          "2:12",
+          "2:13",
+          "2:14",
+          "2:15",
+          "2:16",
+          "2:19",
+          "2:20",
+          "2:21"
+        ],
+        "rows": [
+          [
+            "",
+            "<",
+            "Diameter",
+            "Weight"
+          ],
+          [
+            "Round Shields",
+            "Sword and Shield (Duel), Buhurt",
+            "25 - 70",
+            "≤5"
+          ],
+          [
+            "^",
+            "Sword and Buckler (Duel)",
+            "25 - 35",
+            "^"
+          ],
+          [
+            "Bucklers",
+            "Buhurt",
+            "20 - 40",
+            "≤5"
+          ],
+          [
+            "^",
+            "Duels",
+            "20 - 35",
+            "^"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      }
+    ]
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

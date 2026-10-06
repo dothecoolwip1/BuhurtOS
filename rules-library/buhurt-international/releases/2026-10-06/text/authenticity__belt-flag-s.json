@@ -1,0 +1,1179 @@
+{
+  "inventory_key": "authenticity/belt-flag-s",
+  "sha256": "857bb42b4d04ee8c5bc582aaa6e65651ca3f175d7afc37ccea32a7dcd4729c33",
+  "source_file": "Authenticity/Belt Flags.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 6 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 6,
+    "title": "Belt Flag - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:18:07 2026 UTC",
+    "modified": "Wed Jan 28 14:18:07 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")\\) BUHURT(Z\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 79.6,
+      "ocr_lines": [
+        {
+          "text": ")\\) BUHURT(Z",
+          "conf_mean": 54.9,
+          "conf_min": 53.8,
+          "words": 2,
+          "uncertain": [
+            "BUHURT(Z"
+          ],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 116,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 54.9"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1275,
+            990,
+            1346
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1452,
+            1724,
+            1646
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. Implementation\n2. Definition and Rules\n3. General Requirements\n4. Examples of Approved Reproductions\n5. Changelog\n\n36! Flags v. 26.1 2/6",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.2,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            338,
+            621,
+            378
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.6,
+          "conf_min": 95.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            410,
+            512,
+            452
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "2. Definition and Rules",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            152,
+            475,
+            610,
+            509
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            540,
+            661,
+            583
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "4. Examples of Approved Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            151,
+            605,
+            969,
+            648
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "5. Changelog",
+          "conf_mean": 94.8,
+          "conf_min": 94.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            153,
+            670,
+            421,
+            713
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "36! Flags v. 26.1 2/6",
+          "conf_mean": 74.9,
+          "conf_min": 8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition and Rules\n\nA Belt flag is an element hung on a belt designed to show your belt number in the list.\nA Belt flag must be made of fabric or leather.\nA Belt flag must conform with the “Textiles and Leather’ document.\n\nAs a competitor, it is required to wear a Belt flag with your belt number during buhurt fights.t is not required\nfor duel and outrance fights.\n\nA competitor may have a second Belt flag that is decorative. No more than two Belt flags may be worn by\na competitor.\n\n3. General Requirements\n\nBelts flags consist of a base and a number.\n\nBase must:\n● have a shape that can be square, rectangular or triangular,\n● have atrim to be worn with a belt,\n● be made of one main color.\n\nSome decoration can be added on the edges of the base.\nSuch decoration must not interfere with the readability of the Belt flag.\n\nNumbers must:\n● have individual figures from 0 to 9,\n● be from 01 to 99,\n● be written in Arabic numerals,\n● be 13cm tall as a minimum.\n\nNumbers can be of any color, contrasting with the base main color.\nAll Belt flags must respect the following dimensions:\n\n● Length: from 26 cm to 36 cm.\n● Width: from 14 cm to 18 cm.\n\n36! Flags v. 26.1 3/6",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.4,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 94.8,
+          "conf_min": 94.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            819,
+            190,
+            1663,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.2,
+          "conf_min": 95,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1714,
+            473
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2. Definition and Rules",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            705,
+            596,
+            1774,
+            667
+          ],
+          "paper": 0.62,
+          "height": 70
+        },
+        {
+          "text": "A Belt flag is an element hung on a belt designed to show your belt number in the list.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            777,
+            1904,
+            820
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "A Belt flag must be made of fabric or leather.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            838,
+            1079,
+            881
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "A Belt flag must conform with the “Textiles and Leather’ document.",
+          "conf_mean": 94.6,
+          "conf_min": 81.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            179,
+            898,
+            1526,
+            941
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "As a competitor, it is required to wear a Belt flag with your belt number during buhurt fights.t is not required",
+          "conf_mean": 92.5,
+          "conf_min": 61.7,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            179,
+            1019,
+            2333,
+            1062
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "for duel and outrance fights.",
+          "conf_mean": 94.9,
+          "conf_min": 92.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1080,
+            743,
+            1123
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "A competitor may have a second Belt flag that is decorative. No more than two Belt flags may be worn by",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            180,
+            1202,
+            2339,
+            1244
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "a competitor.",
+          "conf_mean": 94.5,
+          "conf_min": 94.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            1263,
+            438,
+            1304
+          ],
+          "paper": 0.72,
+          "height": 41
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 95.8,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            658,
+            1367,
+            1822,
+            1455
+          ],
+          "paper": 0.68,
+          "height": 70
+        },
+        {
+          "text": "Belts flags consist of a base and a number.",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            182,
+            1548,
+            1049,
+            1591
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Base must:",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1670,
+            410,
+            1703
+          ],
+          "paper": 0.58,
+          "height": 33
+        },
+        {
+          "text": "● have a shape that can be square, rectangular or triangular,",
+          "conf_mean": 88.5,
+          "conf_min": 57,
+          "words": 11,
+          "uncertain": [
+            "shape"
+          ],
+          "box": [
+            224,
+            1730,
+            1480,
+            1773
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e have a shape that can be square, rectangular or triangular,"
+        },
+        {
+          "text": "● have atrim to be worn with a belt,",
+          "conf_mean": 94.6,
+          "conf_min": 90.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            224,
+            1791,
+            975,
+            1829
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e have atrim to be worn with a belt,"
+        },
+        {
+          "text": "● be made of one main color.",
+          "conf_mean": 89.5,
+          "conf_min": 77.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            1851,
+            844,
+            1885
+          ],
+          "paper": 0.69,
+          "height": 34,
+          "raw": "e be made of one main color."
+        },
+        {
+          "text": "Some decoration can be added on the edges of the base.",
+          "conf_mean": 95.8,
+          "conf_min": 95,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            1924,
+            1342,
+            1967
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Such decoration must not interfere with the readability of the Belt flag.",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            1984,
+            1586,
+            2027
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Numbers must:",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            183,
+            2106,
+            498,
+            2139
+          ],
+          "paper": 0.58,
+          "height": 33
+        },
+        {
+          "text": "● have individual figures from 0 to 9,",
+          "conf_mean": 94.9,
+          "conf_min": 88.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            224,
+            2166,
+            988,
+            2209
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e have individual figures from 0 to 9,"
+        },
+        {
+          "text": "● be from 01 to 99,",
+          "conf_mean": 91.6,
+          "conf_min": 87.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            224,
+            2227,
+            637,
+            2266
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e be from 01 to 99,"
+        },
+        {
+          "text": "● be written in Arabic numerals,",
+          "conf_mean": 89.5,
+          "conf_min": 79,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            224,
+            2287,
+            894,
+            2327
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e be written in Arabic numerals,"
+        },
+        {
+          "text": "● be 13cm tall as a minimum.",
+          "conf_mean": 80.8,
+          "conf_min": 50.4,
+          "words": 7,
+          "uncertain": [
+            "13cm"
+          ],
+          "box": [
+            224,
+            2348,
+            861,
+            2382
+          ],
+          "paper": 0.72,
+          "height": 33,
+          "raw": "e be 13cm tall as a minimum."
+        },
+        {
+          "text": "Numbers can be of any color, contrasting with the base main color.",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            2494,
+            1524,
+            2537
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "All Belt flags must respect the following dimensions:",
+          "conf_mean": 96.6,
+          "conf_min": 95.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            2615,
+            1249,
+            2658
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "● Length: from 26 cm to 36 cm.",
+          "conf_mean": 95.4,
+          "conf_min": 92.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            224,
+            2676,
+            886,
+            2719
+          ],
+          "paper": 0.77,
+          "height": 33,
+          "raw": "e Length: from 26 cm to 36 cm."
+        },
+        {
+          "text": "● Width: from 14 cm to 18 cm.",
+          "conf_mean": 93.7,
+          "conf_min": 91.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            224,
+            2737,
+            864,
+            2770
+          ],
+          "paper": 0.72,
+          "height": 33,
+          "raw": "e Width: from 14 cm to 18 cm."
+        },
+        {
+          "text": "36! Flags v. 26.1 3/6",
+          "conf_mean": 74.9,
+          "conf_min": 8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "Symbols and decorations used for belt flags must be based on historical sources. Any clearly modern\nsymbol or decoration is denied.\n\nExamples: Warhammer logos, movies or TV show imagery, modern slogans, etc...\nException: It is allowed to wear a belt flag with the global medical imagery stating you are hearing\nimpaired or deaf:\n\n36! Flags v. 26.1 4/6",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.2,
+      "ocr_lines": [
+        {
+          "text": "Symbols and decorations used for belt flags must be based on historical sources. Any clearly modern",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            308,
+            2335,
+            351
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "symbol or decoration is denied.",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            369,
+            809,
+            411
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "Examples: Warhammer logos, movies or TV show imagery, modern slogans, etc...",
+          "conf_mean": 96.3,
+          "conf_min": 95.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            490,
+            1838,
+            533
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Exception: It is allowed to wear a belt flag with the global medical imagery stating you are hearing",
+          "conf_mean": 96.1,
+          "conf_min": 94.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            550,
+            2297,
+            593
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "impaired or deaf:",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            611,
+            519,
+            653
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "36! Flags v. 26.1 4/6",
+          "conf_mean": 74.9,
+          "conf_min": 8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4. Examples of Approved Reproductions\n\nPicture by Zoom en Lice\n\n(a\n\nPictures by The Medieval Things\n\n36! Flags v. 26.1 5/6",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 80.9,
+      "ocr_lines": [
+        {
+          "text": "4. Examples of Approved Reproductions",
+          "conf_mean": 95.7,
+          "conf_min": 94.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            297,
+            189,
+            2181,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Picture by Zoom en Lice",
+          "conf_mean": 96,
+          "conf_min": 95.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            936,
+            966,
+            1293,
+            997
+          ],
+          "paper": 0.74,
+          "height": 24
+        },
+        {
+          "text": "(a",
+          "conf_mean": 19.1,
+          "conf_min": 19.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            726,
+            1180,
+            1711,
+            1756
+          ],
+          "paper": 0.1,
+          "height": 576,
+          "in_picture": "on a coloured or photographic background (paper 10%), confidence 19.1"
+        },
+        {
+          "text": "Pictures by The Medieval Things",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1000,
+            1812,
+            1482,
+            1843
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "36! Flags v. 26.1 5/6",
+          "conf_mean": 74.8,
+          "conf_min": 8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "5. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd? “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and Rules” and “3. General\nRequirements”. This split doesn’t have an impact on the content of the rules.\n\n- “Examples of Approved Reproductions” is now “4.” instead of “1.2”\n\nAdd:\n\n- In 3. General Requirements: “Exception: it is allowed to wear a belt flag with the global medical\nimagery stating you are hearing impaired or deaf’ + picture\n\n- In 4. Examples of Approved Reproductions: New picture to illustrate a belt flag for\nhearing-impaired people\n\nReplace:\n\n- In “2. Definition and rules”: “As a competitor, you must have a belt flag with your number [...]” by\n“As a competitor, it is required to wear a belt flag with your belt number [...]”\n\n11-Nov-2024: “add\nDocument has been created\n\n36! Flags v. 26.1 6/6",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.6,
+      "ocr_lines": [
+        {
+          "text": "5. Changelog",
+          "conf_mean": 95.9,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            922,
+            346,
+            1557,
+            435
+          ],
+          "paper": 0.68,
+          "height": 89
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            222,
+            527,
+            2263,
+            570
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            588,
+            1869,
+            631
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.6,
+          "conf_min": 91.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            732,
+            679,
+            775
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            784,
+            2163,
+            827
+          ],
+          "paper": 0,
+          "height": 39
+        },
+        {
+          "text": "Add? “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 94.8,
+          "conf_min": 81.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            835,
+            2042,
+            888
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            905,
+            427,
+            939
+          ],
+          "paper": 0,
+          "height": 34
+        },
+        {
+          "text": "- Split of “1. Definition and general requirements” in “2. Definition and Rules” and “3. General",
+          "conf_mean": 94.8,
+          "conf_min": 79.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            965,
+            2169,
+            1008
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Requirements”. This split doesn’t have an impact on the content of the rules.",
+          "conf_mean": 94.8,
+          "conf_min": 76.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            1026,
+            1823,
+            1068
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "- “Examples of Approved Reproductions” is now “4.” instead of “1.2”",
+          "conf_mean": 95.3,
+          "conf_min": 90.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1087,
+            1669,
+            1129
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1137,
+            273,
+            1190
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- In 3. General Requirements: “Exception: it is allowed to wear a belt flag with the global medical",
+          "conf_mean": 96.1,
+          "conf_min": 92.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            1204,
+            2243,
+            1255
+          ],
+          "paper": 0.79,
+          "height": 34
+        },
+        {
+          "text": "imagery stating you are hearing impaired or deaf’ + picture",
+          "conf_mean": 95.4,
+          "conf_min": 85.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            182,
+            1269,
+            1367,
+            1311
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "- In 4. Examples of Approved Reproductions: New picture to illustrate a belt flag for",
+          "conf_mean": 96.2,
+          "conf_min": 92.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1329,
+            1980,
+            1372
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "hearing-impaired people",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1390,
+            671,
+            1433
+          ],
+          "paper": 0.7,
+          "height": 43
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1451,
+            356,
+            1493
+          ],
+          "paper": 0,
+          "height": 42
+        },
+        {
+          "text": "- In “2. Definition and rules”: “As a competitor, you must have a belt flag with your number [...]” by",
+          "conf_mean": 95.5,
+          "conf_min": 89.1,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            180,
+            1507,
+            2261,
+            1559
+          ],
+          "paper": 0.81,
+          "height": 34
+        },
+        {
+          "text": "“As a competitor, it is required to wear a belt flag with your belt number [...]”",
+          "conf_mean": 95.3,
+          "conf_min": 81.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            1571,
+            1699,
+            1615
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "11-Nov-2024: “add",
+          "conf_mean": 79.3,
+          "conf_min": 62.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            183,
+            1798,
+            564,
+            1846
+          ],
+          "paper": 0.54,
+          "height": 48
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1852,
+            752,
+            1885
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "36! Flags v. 26.1 6/6",
+          "conf_mean": 74.7,
+          "conf_min": 8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}

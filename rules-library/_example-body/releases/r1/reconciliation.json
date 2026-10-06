@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "errors": [],
+  "inventory_documents": 4,
+  "imported": [
+    "marshal/example-combat-rules",
+    "tournament/example-event-regulations"
+  ],
+  "excluded": [
+    {
+      "key": "tournament/example-chart",
+      "reason": "image-only chart: kept as a link to the official file, not transcribed"
+    },
+    {
+      "key": "marshal/example-archives",
+      "reason": "archive folder of earlier versions, not a current document"
+    }
+  ],
+  "missing": [],
+  "unknown": [],
+  "same_file_twice": [],
+  "documents_ok": 2,
+  "documents_with_errors": []
+}

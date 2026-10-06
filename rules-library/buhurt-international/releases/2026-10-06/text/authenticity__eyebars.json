@@ -1,0 +1,2112 @@
+{
+  "inventory_key": "authenticity/eyebars",
+  "sha256": "2c34b05ad8173bfa08dd964246946174d4039b3c08dcb9fd4e7543b13d474e74",
+  "source_file": "Authenticity/Eye Bars.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 8 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 9,
+    "title": "Eyebars - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:18:54 2026 UTC",
+    "modified": "Wed Jan 28 14:18:54 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition and Description 3\n2.1. Definition 3\n2.2. Eye bars Description 3\n3. General Requirements 4\n4. Externally Riveted Eye bars 4\n4.1. Historical Sources and Dating 4\n4.2. Specific Requirements 5\n4.3. Examples of Approved Reproductions 5\n5. Integrated Eye bars 6\n5.1. Historical Sources and Datation 6\n5.2. Specific Requirements 7\n5.3. Examples of Approved Reproductions 7\n6. Safety Eye bars 8\n6.1. Historical Sources and Dating 8\n6.2. Specific Requirements 8\n6.3. Examples of Approved Reproductions 8\n6.4. Examples of Denied Reproductions 8\n7. Changelog 9\n\nEye bars V. 26.1 2/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.1,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            338,
+            621,
+            378
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            410,
+            2301,
+            452
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2. Definition and Description 3",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            152,
+            475,
+            2301,
+            517
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "2.1. Definition 3",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            227,
+            540,
+            2301,
+            574
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "2.2. Eye bars Description 3",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            606,
+            2300,
+            648
+          ],
+          "paper": 0.93,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements 4",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            670,
+            2301,
+            713
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4. Externally Riveted Eye bars 4",
+          "conf_mean": 95.4,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            152,
+            736,
+            2301,
+            779
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "4.1. Historical Sources and Dating 4",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            226,
+            801,
+            2301,
+            844
+          ],
+          "paper": 0.91,
+          "height": 34
+        },
+        {
+          "text": "4.2. Specific Requirements 5",
+          "conf_mean": 96,
+          "conf_min": 94.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            866,
+            2301,
+            908
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "4.3. Examples of Approved Reproductions 5",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            226,
+            931,
+            2301,
+            973
+          ],
+          "paper": 0.88,
+          "height": 41
+        },
+        {
+          "text": "5. Integrated Eye bars 6",
+          "conf_mean": 96.7,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            997,
+            2301,
+            1039
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "5.1. Historical Sources and Datation 6",
+          "conf_mean": 95.3,
+          "conf_min": 92.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1061,
+            2301,
+            1096
+          ],
+          "paper": 0.88,
+          "height": 33
+        },
+        {
+          "text": "5.2. Specific Requirements 7",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1127,
+            2301,
+            1169
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "5.3. Examples of Approved Reproductions 7",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1192,
+            2301,
+            1234
+          ],
+          "paper": 0.88,
+          "height": 41
+        },
+        {
+          "text": "6. Safety Eye bars 8",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1257,
+            2301,
+            1300
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "6.1. Historical Sources and Dating 8",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1322,
+            2301,
+            1365
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "6.2. Specific Requirements 8",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1387,
+            2301,
+            1430
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "6.3. Examples of Approved Reproductions 8",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1452,
+            2301,
+            1495
+          ],
+          "paper": 0.89,
+          "height": 42
+        },
+        {
+          "text": "6.4. Examples of Denied Reproductions 8",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1518,
+            2301,
+            1560
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "7. Changelog 9",
+          "conf_mean": 93.3,
+          "conf_min": 88.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1583,
+            2301,
+            1626
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "Eye bars V. 26.1 2/9",
+          "conf_mean": 94.5,
+          "conf_min": 91.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2354,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition and Description\n\n2.1. Definition\n\n“Eye bars” are the term used to describe additional protection for the eye slots of a helmet.\nRare historical sources display some additional eye protection, mainly for great helms.\n\nHowever, it is permitted to add Eye bars that do not rely on historical sources to increase the safety of\nhelmets. The number and type of permitted Eye bars are displayed in each helmet rules document.\n\n2.2. Eye bars Description\n\nEye bars can be:\n\n● Externally Riveted Eye bars\nThis type of Eye bars is documented by historical sources for specific helmets. Therefore, they are\nonly allowed on helmet models that can be historically referenced to have externally riveted Eye\nbars. If there is no supporting evidence for a particular helmet style, externally riveted Eye bars are\nnot permitted on that helmet.\n\n● Integrated Eye bars\nThis type of Eye bars is documented by historical sources for certain helmets as part of the visor or\nfaceplate itself. They are only permitted on helmet models that can be shown to have used\nintegrated Eye bars historically. If no suitable source exists, integrated Eye bars are not allowed.\nThey must closely replicate the shape, placement, and size seen in surviving artifacts or credible\nperiod art.\n\n● Safety Eye bars\nThis type of Eye bar is not documented by historical sources. These concealed Eye bars are\nallowed solely to increase safety in modern buhurt combat. They typically consist of metal bars\nriveted or welded to the inside of a helmet, thus remaining concealed from the outside.\n\nNumber and Placement of Safety Eye bars:\n\n○ For helmets with two separate Eye slots, you may install up to two (2) vertical\nEye bars per Eye slot.\n\n○ For helmets with one continuous Eye slot, you may install up to five (5) Eye bars\nacross the slot.\n\nEye bars V. 26.1 3/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.3,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 94.9,
+          "conf_min": 93.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            813,
+            190,
+            1618,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1714,
+            473
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2. Definition and Description",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            553,
+            596,
+            1873,
+            685
+          ],
+          "paper": 0.69,
+          "height": 71
+        },
+        {
+          "text": "2.1. Definition",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            779,
+            600,
+            819
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "“Eye bars” are the term used to describe additional protection for the eye slots of a helmet.",
+          "conf_mean": 93.5,
+          "conf_min": 47.5,
+          "words": 17,
+          "uncertain": [
+            "bars”"
+          ],
+          "box": [
+            181,
+            890,
+            2016,
+            933
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Rare historical sources display some additional eye protection, mainly for great helms.",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            963,
+            1919,
+            1006
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "However, it is permitted to add Eye bars that do not rely on historical sources to increase the safety of",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            183,
+            1036,
+            2304,
+            1079
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "helmets. The number and type of permitted Eye bars are displayed in each helmet rules document.",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            1097,
+            2179,
+            1140
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "2.2. Eye bars Description",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            1233,
+            889,
+            1284
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Eye bars can be:",
+          "conf_mean": 96.1,
+          "conf_min": 94,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1345,
+            519,
+            1387
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● Externally Riveted Eye bars",
+          "conf_mean": 93.7,
+          "conf_min": 90.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            1418,
+            893,
+            1460
+          ],
+          "paper": 0.65,
+          "height": 42,
+          "raw": "e Externally Riveted Eye bars"
+        },
+        {
+          "text": "This type of Eye bars is documented by historical sources for specific helmets. Therefore, they are",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            296,
+            1478,
+            2300,
+            1521
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "only allowed on helmet models that can be historically referenced to have externally riveted Eye",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            296,
+            1538,
+            2299,
+            1581
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "bars. If there is no supporting evidence for a particular helmet style, externally riveted Eye bars are",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            298,
+            1599,
+            2298,
+            1642
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "not permitted on that helmet.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            298,
+            1660,
+            874,
+            1702
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "● Integrated Eye bars",
+          "conf_mean": 95.2,
+          "conf_min": 92.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            1781,
+            717,
+            1824
+          ],
+          "paper": 0.68,
+          "height": 43,
+          "raw": "e Integrated Eye bars"
+        },
+        {
+          "text": "This type of Eye bars is documented by historical sources for certain helmets as part of the visor or",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            296,
+            1841,
+            2302,
+            1884
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "faceplate itself. They are only permitted on helmet models that can be shown to have used",
+          "conf_mean": 96.2,
+          "conf_min": 94.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            295,
+            1902,
+            2297,
+            1945
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "integrated Eye bars historically. If no suitable source exists, integrated Eye bars are not allowed.",
+          "conf_mean": 96.2,
+          "conf_min": 94,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            298,
+            1963,
+            2298,
+            2005
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "They must closely replicate the shape, placement, and size seen in surviving artifacts or credible",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            296,
+            2023,
+            2299,
+            2066
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "period art.",
+          "conf_mean": 93.9,
+          "conf_min": 91.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            298,
+            2084,
+            497,
+            2126
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "● Safety Eye bars",
+          "conf_mean": 95.2,
+          "conf_min": 91.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            2205,
+            634,
+            2248
+          ],
+          "paper": 0.69,
+          "height": 42,
+          "raw": "e Safety Eye bars"
+        },
+        {
+          "text": "This type of Eye bar is not documented by historical sources. These concealed Eye bars are",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            296,
+            2266,
+            2298,
+            2309
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "allowed solely to increase safety in modern buhurt combat. They typically consist of metal bars",
+          "conf_mean": 95.7,
+          "conf_min": 90.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            296,
+            2326,
+            2298,
+            2369
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "riveted or welded to the inside of a helmet, thus remaining concealed from the outside.",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            298,
+            2387,
+            2052,
+            2430
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Number and Placement of Safety Eye bars:",
+          "conf_mean": 96.1,
+          "conf_min": 94.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            454,
+            2460,
+            1381,
+            2503
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "○ For helmets with two separate Eye slots, you may install up to two (2) vertical",
+          "conf_mean": 96,
+          "conf_min": 89.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            530,
+            2533,
+            2299,
+            2576
+          ],
+          "paper": 0.73,
+          "height": 34,
+          "raw": "o For helmets with two separate Eye slots, you may install up to two (2) vertical"
+        },
+        {
+          "text": "Eye bars per Eye slot.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            604,
+            2594,
+            1073,
+            2636
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "○ For helmets with one continuous Eye slot, you may install up to five (5) Eye bars",
+          "conf_mean": 95.9,
+          "conf_min": 89.4,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            530,
+            2654,
+            2300,
+            2697
+          ],
+          "paper": 0.72,
+          "height": 34,
+          "raw": "o For helmets with one continuous Eye slot, you may install up to five (5) Eye bars"
+        },
+        {
+          "text": "across the slot.",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            603,
+            2715,
+            905,
+            2749
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "Eye bars V. 26.1 3/9",
+          "conf_mean": 85.5,
+          "conf_min": 52.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3382,
+            2354,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. General Requirements\n\nAll types of Eye bars must respect the following requirements:\n● Be firmly attached to prevent any breakage and maintain a high level of protection in any situation.\n\n● Protect the whole Eye slot from top to bottom.\n\nRecommended: Eye slots should not exceed an opening of 25 mm\n\n<< 25mm tall maximum |\n\n4. Externally Riveted Eye bars\n\n4.1. Historical Sources and Datation\n\nA few historical sources display this type of Eye bar.\nThe main source is the Great Helm from Nuremberg (1350).\n\nDespite its rarity, it is Approved for 14th century, Transitional and 15th century armors.\n\nEye bars V. 26.1 4/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.8,
+      "ocr_lines": [
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            652,
+            189,
+            1777,
+            278
+          ],
+          "paper": 0.68,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "All types of Eye bars must respect the following requirements:",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            370,
+            1428,
+            413
+          ],
+          "paper": 0.74,
+          "height": 41
+        },
+        {
+          "text": "● Be firmly attached to prevent any breakage and maintain a high level of protection in any situation.",
+          "conf_mean": 88.1,
+          "conf_min": 22.9,
+          "words": 18,
+          "uncertain": [
+            "firmly"
+          ],
+          "box": [
+            224,
+            423,
+            2280,
+            466
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e Be firmly attached to prevent any breakage and maintain a high level of protection in any situation."
+        },
+        {
+          "text": "● Protect the whole Eye slot from top to bottom.",
+          "conf_mean": 95.6,
+          "conf_min": 93,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            483,
+            1218,
+            526
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e Protect the whole Eye slot from top to bottom."
+        },
+        {
+          "text": "Recommended: Eye slots should not exceed an opening of 25 mm",
+          "conf_mean": 95.9,
+          "conf_min": 91.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            559,
+            594,
+            1923,
+            637
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "<< 25mm tall maximum |",
+          "conf_mean": 74.8,
+          "conf_min": 0,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            299,
+            822,
+            1580,
+            1166
+          ],
+          "paper": 0.71,
+          "height": 53
+        },
+        {
+          "text": "4. Externally Riveted Eye bars",
+          "conf_mean": 95,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            533,
+            1344,
+            1895,
+            1433
+          ],
+          "paper": 0.67,
+          "height": 70
+        },
+        {
+          "text": "4.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 92.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            1526,
+            1169,
+            1566
+          ],
+          "paper": 0.6,
+          "height": 39
+        },
+        {
+          "text": "A few historical sources display this type of Eye bar.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            1638,
+            1227,
+            1681
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The main source is the Great Helm from Nuremberg (1350).",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1699,
+            1390,
+            1742
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Despite its rarity, it is Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 95.5,
+          "conf_min": 90.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            2836,
+            2009,
+            2879
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Eye bars V. 26.1 4/9",
+          "conf_mean": 94.9,
+          "conf_min": 92.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3377,
+            2355,
+            3432
+          ],
+          "paper": 0.97,
+          "height": 41,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4.2. Specific Requirements\n\nExternally riveted Eye bars must:\n● conform with the General Requirements (see Section 3 above),\n● be firmly riveted to the outside of the Eye slot,\n● resemble the historical sources and not exceed a width of 30mm,\n● be made of metal.\n\n4.3. Examples of Approved Reproductions\n\nPicture by Zoom en Lice ©\n\nEye bars V. 26.1 5/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.5,
+      "ocr_lines": [
+        {
+          "text": "4.2. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            188,
+            935,
+            239
+          ],
+          "paper": 0.67,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Externally riveted Eye bars must:",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            183,
+            300,
+            845,
+            343
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● conform with the General Requirements (see Section 3 above),",
+          "conf_mean": 95.9,
+          "conf_min": 92.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            360,
+            1571,
+            404
+          ],
+          "paper": 0.75,
+          "height": 35,
+          "raw": "e conform with the General Requirements (see Section 3 above),"
+        },
+        {
+          "text": "● be firmly riveted to the outside of the Eye slot,",
+          "conf_mean": 86.5,
+          "conf_min": 43.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            421,
+            1218,
+            464
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e be firmly riveted to the outside of the Eye slot,"
+        },
+        {
+          "text": "● resemble the historical sources and not exceed a width of 30mm,",
+          "conf_mean": 95.8,
+          "conf_min": 92,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            224,
+            482,
+            1610,
+            521
+          ],
+          "paper": 0.72,
+          "height": 34,
+          "raw": "e resemble the historical sources and not exceed a width of 30mm,"
+        },
+        {
+          "text": "● be made of metal.",
+          "conf_mean": 91.5,
+          "conf_min": 87.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            542,
+            658,
+            576
+          ],
+          "paper": 0.71,
+          "height": 33,
+          "raw": "e be made of metal."
+        },
+        {
+          "text": "4.3. Examples of Approved Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            678,
+            1335,
+            728
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "Picture by Zoom en Lice ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1046,
+            2424,
+            1439,
+            2455
+          ],
+          "paper": 0.74,
+          "height": 24
+        },
+        {
+          "text": "Eye bars V. 26.1 5/9",
+          "conf_mean": 76.6,
+          "conf_min": 31.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3376,
+            2355,
+            3432
+          ],
+          "paper": 0.97,
+          "height": 41,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "5. Integrated Eye bars\n\n5.1. Historical Sources and Datation\n\nA few historical sources display this type of Eye bar. One artifact from the Churburg castle shows a nice\nexample. .\n\n1380 BNF Nouvelle acquisition frangaise Paris France\nIntegrated eyebar for side-pivoting visored bascinet\n\n1390-1410 - Churburg - Italy\n\nEye bars V. 26.1 6/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.2,
+      "ocr_lines": [
+        {
+          "text": "5. Integrated Eye bars",
+          "conf_mean": 96.7,
+          "conf_min": 96.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            719,
+            190,
+            1711,
+            279
+          ],
+          "paper": 0.67,
+          "height": 89,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "5.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 92.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "A few historical sources display this type of Eye bar. One artifact from the Churburg castle shows a nice",
+          "conf_mean": 95.9,
+          "conf_min": 92.1,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            179,
+            483,
+            2273,
+            527
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "example. .",
+          "conf_mean": 93.2,
+          "conf_min": 93,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            544,
+            387,
+            587
+          ],
+          "paper": 0.74,
+          "height": 43
+        },
+        {
+          "text": "1380 BNF Nouvelle acquisition frangaise Paris France",
+          "conf_mean": 94.7,
+          "conf_min": 88.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            699,
+            2011,
+            1789,
+            2054
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Integrated eyebar for side-pivoting visored bascinet",
+          "conf_mean": 92.1,
+          "conf_min": 90.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            724,
+            2071,
+            1762,
+            2108
+          ],
+          "paper": 0.69,
+          "height": 36
+        },
+        {
+          "text": "1390-1410 - Churburg - Italy",
+          "conf_mean": 93.1,
+          "conf_min": 92,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1008,
+            3155,
+            1423,
+            3195
+          ],
+          "paper": 0.79,
+          "height": 31
+        },
+        {
+          "text": "Eye bars V. 26.1 6/9",
+          "conf_mean": 82.1,
+          "conf_min": 31.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2355,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "5.2. Specific Requirements\n\nIntegrated Eye bars must:\n● conform with the general requirements (see Section 3 above),\n● be sturdy made and able to endure full-contact fights,\n● resemble the historical sources and not exceed a width of 20mm.\n\n5.3. Examples of Approved Reproductions\n\nPicture from Master Uley ©\n\n22 bars v. 26.1 7/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 88,
+      "ocr_lines": [
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 94.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            188,
+            935,
+            239
+          ],
+          "paper": 0.67,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Integrated Eye bars must:",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            184,
+            300,
+            700,
+            343
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "● conform with the general requirements (see Section 3 above),",
+          "conf_mean": 95.7,
+          "conf_min": 92.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            360,
+            1544,
+            404
+          ],
+          "paper": 0.75,
+          "height": 35,
+          "raw": "e conform with the general requirements (see Section 3 above),"
+        },
+        {
+          "text": "● be sturdy made and able to endure full-contact fights,",
+          "conf_mean": 86.4,
+          "conf_min": 52.8,
+          "words": 10,
+          "uncertain": [
+            "sturdy"
+          ],
+          "box": [
+            224,
+            421,
+            1371,
+            464
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e be sturdy made and able to endure full-contact fights,"
+        },
+        {
+          "text": "● resemble the historical sources and not exceed a width of 20mm.",
+          "conf_mean": 95.6,
+          "conf_min": 91.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            224,
+            482,
+            1609,
+            516
+          ],
+          "paper": 0.68,
+          "height": 34,
+          "raw": "e resemble the historical sources and not exceed a width of 20mm."
+        },
+        {
+          "text": "5.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            644,
+            1335,
+            695
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Picture from Master Uley ©",
+          "conf_mean": 94.5,
+          "conf_min": 90,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1031,
+            1767,
+            1432,
+            1798
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "22 bars v. 26.1 7/9",
+          "conf_mean": 60.6,
+          "conf_min": 0,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2355,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "6. Safety Eye bars\n\n6.1. Historical Sources and Datation\n\nThere are no historical sources for Eye bars welded onto Eye slots.\n\nNevertheless, for safety reasons, they are Approved for 14th century, Transitional and 15th century\narmors.\n\n6.2. Specific Requirements\n\nSafety Eye bars must:\n\n● conform with the General Requirements (see Section 3 above),\n● be welded or riveted from the inside of the helm,\n\n● be sturdy made and able to endure full-contact fights,\n\n● be painted black.\n\n6.3. Examples of Approved Reproductions\n\nPictures from The Medieval Things ©\n\n6.4. Examples of Denied Reproductions\n\nToo many eyebars\n\nPicture from The Medieval Things ©\n\nEye bars V. 26.1 8/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.6,
+      "ocr_lines": [
+        {
+          "text": "6. Safety Eye bars",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            798,
+            191,
+            1632,
+            283
+          ],
+          "paper": 0.68,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "6.1. Historical Sources and Datation",
+          "conf_mean": 94.9,
+          "conf_min": 92.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            376,
+            1169,
+            416
+          ],
+          "paper": 0.59,
+          "height": 39
+        },
+        {
+          "text": "There are no historical sources for Eye bars welded onto Eye slots.",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            488,
+            1535,
+            531
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Nevertheless, for safety reasons, they are Approved for 14th century, Transitional and 15th century",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            561,
+            2301,
+            604
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "armors.",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            631,
+            343,
+            656
+          ],
+          "paper": 0.43,
+          "height": 25
+        },
+        {
+          "text": "6.2. Specific Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            745,
+            935,
+            795
+          ],
+          "paper": 0.65,
+          "height": 50
+        },
+        {
+          "text": "Safety Eye bars must:",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            856,
+            623,
+            899
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "● conform with the General Requirements (see Section 3 above),",
+          "conf_mean": 95.6,
+          "conf_min": 92.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            929,
+            1571,
+            972
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e conform with the General Requirements (see Section 3 above),"
+        },
+        {
+          "text": "● be welded or riveted from the inside of the helm,",
+          "conf_mean": 94.4,
+          "conf_min": 87.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            990,
+            1268,
+            1029
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e be welded or riveted from the inside of the helm,"
+        },
+        {
+          "text": "● be sturdy made and able to endure full-contact fights,",
+          "conf_mean": 87.5,
+          "conf_min": 58.5,
+          "words": 10,
+          "uncertain": [
+            "sturdy"
+          ],
+          "box": [
+            224,
+            1050,
+            1370,
+            1093
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e be sturdy made and able to endure full-contact fights,"
+        },
+        {
+          "text": "● be painted black.",
+          "conf_mean": 94.4,
+          "conf_min": 92.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            1111,
+            638,
+            1153
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e be painted black."
+        },
+        {
+          "text": "6.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1246,
+            1335,
+            1296
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.1,
+          "conf_min": 94.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            2264,
+            1516,
+            2295
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "6.4. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2357,
+            1263,
+            2407
+          ],
+          "paper": 0.65,
+          "height": 40
+        },
+        {
+          "text": "Too many eyebars",
+          "conf_mean": 93.2,
+          "conf_min": 90,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1042,
+            2469,
+            1438,
+            2505
+          ],
+          "paper": 0.59,
+          "height": 33
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1772,
+            3228,
+            2304,
+            3259
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Eye bars V. 26.1 8/9",
+          "conf_mean": 82,
+          "conf_min": 31.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3376,
+            2355,
+            3432
+          ],
+          "paper": 0.97,
+          "height": 41,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and legibility. Except points listed below, no content changes.\n\nReplace:\nThroughout the document “Buhurt “Optimized” Eye bars” by “Safety Eye bars”\n\nAdd? “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and description” and “3. General\nRequirements”. This split doesn’t have an impact on the content of the rules.\n\nAdd:\n\n- 2.2 Eye bars description: whole paragraph on Integrated Eye bars and multiple precisions on\nExternally riveted Eye bars and Safety Eye bars\n\nAdd: “5. Integrated Eye bars” (and subsequent modification of all Title numbers in the document)\nReplace:\n\n- In 5.1 Historical Sources and Datation: “The main source is the Great Helm from Nuremberg\n(1350).” by “One artifact from the Churburg castle shows a nice example.”\n\n- In 6.4 Examples of Denied Reproductions: “Too much eyebars’” by “too many Eye bars”\n\nDecember-2024: Sadd\nDocument has been created\n\nEye bars V. 26.1 9/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.8,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            916,
+            189,
+            1512,
+            279
+          ],
+          "paper": 0.67,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.3,
+          "conf_min": 95.1,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            370,
+            2263,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            431,
+            1870,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.6,
+          "conf_min": 92.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            576,
+            679,
+            619
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and legibility. Except points listed below, no content changes.",
+          "conf_mean": 96.2,
+          "conf_min": 94.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            627,
+            2117,
+            670
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            688,
+            366,
+            730
+          ],
+          "paper": 0,
+          "height": 42
+        },
+        {
+          "text": "Throughout the document “Buhurt “Optimized” Eye bars” by “Safety Eye bars”",
+          "conf_mean": 95.7,
+          "conf_min": 92.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            748,
+            1904,
+            791
+          ],
+          "paper": 0.67,
+          "height": 42
+        },
+        {
+          "text": "Add? “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 95.1,
+          "conf_min": 83.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            860,
+            2042,
+            913
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            930,
+            427,
+            964
+          ],
+          "paper": 0,
+          "height": 34
+        },
+        {
+          "text": "- Split of “1. Definition and general requirements” in “2. Definition and description” and “3. General",
+          "conf_mean": 94,
+          "conf_min": 67.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            991,
+            2274,
+            1033
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Requirements”. This split doesn’t have an impact on the content of the rules.",
+          "conf_mean": 95.1,
+          "conf_min": 82.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            1051,
+            1823,
+            1094
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 95.9,
+          "conf_min": 95.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1102,
+            273,
+            1155
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- 2.2 Eye bars description: whole paragraph on Integrated Eye bars and multiple precisions on",
+          "conf_mean": 95.6,
+          "conf_min": 91.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1173,
+            2202,
+            1216
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Externally riveted Eye bars and Safety Eye bars",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1233,
+            1147,
+            1276
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "Add: “5. Integrated Eye bars” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 96.1,
+          "conf_min": 93.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            179,
+            1284,
+            2129,
+            1337
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1354,
+            356,
+            1397
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 5.1 Historical Sources and Datation: “The main source is the Great Helm from Nuremberg",
+          "conf_mean": 95.3,
+          "conf_min": 91.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1415,
+            2192,
+            1458
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "(1350).” by “One artifact from the Churburg castle shows a nice example.”",
+          "conf_mean": 95,
+          "conf_min": 91.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            1475,
+            1671,
+            1518
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "- In 6.4 Examples of Denied Reproductions: “Too much eyebars’” by “too many Eye bars”",
+          "conf_mean": 92.1,
+          "conf_min": 51.9,
+          "words": 15,
+          "uncertain": [
+            "eyebars’”"
+          ],
+          "box": [
+            180,
+            1596,
+            2089,
+            1640
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "December-2024: Sadd",
+          "conf_mean": 63.1,
+          "conf_min": 33.8,
+          "words": 2,
+          "uncertain": [
+            "Sadd"
+          ],
+          "box": [
+            182,
+            1823,
+            636,
+            1871
+          ],
+          "paper": 0.55,
+          "height": 48
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1877,
+            752,
+            1911
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "Eye bars V. 26.1 9/9",
+          "conf_mean": 85.5,
+          "conf_min": 52.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3382,
+            2354,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    }
+  ]
+}

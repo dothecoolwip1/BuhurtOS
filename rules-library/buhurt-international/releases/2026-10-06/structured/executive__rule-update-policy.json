@@ -1,0 +1,457 @@
+{
+  "inventory_key": "executive/rule-update-policy",
+  "version": {
+    "version": "2024.06",
+    "title": "Rules Update Policy V2024.06",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Changelog: \"(Version update from 2024.03 to 2024.06)\", latest entry \"Update date: June-2024\".",
+    "source_url": "https://www.buhurtinternational.com/_files/ugd/d219c5_0fec8c7da3bb4ab4a6f507e1ea724410.pdf",
+    "source_sha256": "f149e0e2a7f80b77bd9d993f6a60f8e0026f722415c742f4389076f359d11965",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 4,
+    "extractor": "pdftotext unknown -layout -enc UTF-8",
+    "content_sha256": "39f1cd878eb1d3445640c21300281f6e4dedd45f711375319826aca8bd262754",
+    "detected": {
+      "version": null,
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1"
+      ],
+      "pages": 4,
+      "source_lines": 59,
+      "assigned_lines": 76,
+      "furniture_lines": 13,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99896,
+      "provisions": 11,
+      "numbered": 9,
+      "needs_review": 0,
+      "verified": 0,
+      "empty_pages": [
+        1
+      ],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 0,
+      "picture_text_lines": 0,
+      "ocr_corrections": 0
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "rule-update-policy:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "note",
+      "number": null,
+      "title": null,
+      "body": "Rules Update",
+      "page_from": 2,
+      "page_to": 2,
+      "stable_key": "rule-update-policy:p0001",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "introduction"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "e6fa516e4d88ddfcf3650b3a09fd6124574d2dc42889573c0bf8eca6c9f50822",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:0",
+        "2:0",
+        "2:1",
+        "2:3",
+        "2:4",
+        "2:13",
+        "2:14",
+        "2:16",
+        "2:17",
+        "2:18",
+        "2:19",
+        "2:21"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Procedure",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "80fe4a348ffda1a68aa603c83704833166f5576300fbdc4c44207daeca24a8d9",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:0",
+        "3:1"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.1",
+      "title": "Date of updates",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1.1",
+      "parent_key": "rule-update-policy:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "83ec34a74df59c435257cd2dbbf56bee56831d9470fa5a89bfe755dd51f5338e",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:2"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.1.1",
+      "title": "Season start",
+      "body": "● Each Season will start with the most up-to-date rules all documents will hold a change log and version number the version is equal to the year and the month the version was created\n● Over the course of that season, the Documents/ FAQ will be updated.\n● This may be due to spelling mistakes, rules not being written the best they can be, or new rules that have not been foreseen.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1.1.1",
+      "parent_key": "rule-update-policy:1.1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "390ddaf6b5a85f45fa8af51f23a4018664f7b9bc7afa658a747f112a460e0375",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:3",
+        "3:4",
+        "3:5",
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.1.2",
+      "title": "Season end",
+      "body": "At the end of the current season, the Errata/FAQ will be merged into the current rules for the upcoming season.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1.1.2",
+      "parent_key": "rule-update-policy:1.1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a3d019cadd5c4f79b954addb137553efa0d336c325f65263e34073cab8a311db",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.2",
+      "title": "Rule changes",
+      "body": "The Buhurt International committees and board with the NO's will oversee the Errata/FAQ process as follows:",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1.2",
+      "parent_key": "rule-update-policy:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "e89617d7e1c2d1ee74708dcf544c455e5c226f1d3f5079265f562094929c5425",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.2.1",
+      "title": "Minor Change",
+      "body": "A minor change involves rewording parts of the rules to make them clearer without changing how they are applied. The Committees will discuss and rewrite any rules.\nThese will be updated in the document on the website, including the date of publication and the document version. The updated documents will be sent to every registered member on our website. These changes are intended to clarify the rules, not to make major alterations.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1.2.1",
+      "parent_key": "rule-update-policy:1.2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "977c37efaad2f2fccce9d02e0099c6a1d9b964e4f399e36c2a3639532678ba33",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.2.2",
+      "title": "Major Change",
+      "body": "For major changes, the Committees will draft the rules and present them to the Buhurt International Board, which will then discuss them with the National Organizations (NO).\nThese changes will be voted on by the NO.\n\nExamples of major changes include any modification with a direct impact on:\n● Allowed or prohibited techniques.\n● Points counting.\n● Technical requirements for armor and weapons (length, weight, etc.).\n● Any changes that have a financial impact on our members.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1.2.2",
+      "parent_key": "rule-update-policy:1.2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "001222bf9b3b02166b12277d383d8f739594b8d5298e81f96dad6e2495933f5b",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:26",
+        "3:27",
+        "3:28",
+        "3:29",
+        "3:30",
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.3",
+      "title": "Feedback",
+      "body": "Rules feedback can be done by all Buhurt International Members on our Website. This is the best way to let us know of any concerns. These will then be given to the Marshal Committee to look at.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "rule-update-policy:1.3",
+      "parent_key": "rule-update-policy:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "59486abdef5ee220cf8588ee1af331252195f07493b7f284614330d7ca58f9d9",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:37",
+        "3:38",
+        "3:39",
+        "3:40",
+        "3:41",
+        "3:42",
+        "3:43",
+        "3:44",
+        "3:46"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 0,
+      "kind": "note",
+      "number": "2",
+      "title": "Change log",
+      "body": "This will be the change log of this document. It will be updated regularly and we will display what has been removed/added/reworded/formatted. This way we keep transparent communication and clarity about the rules\n\nMarch 2024 (Version update from 2024.03 to 2024.06)\n\nUpdate date: June-2024\n- clearification: 1.2.1 Minor change\n- clearification: 1.2.2 Major change Update date: March-2024\n- format: new design format, document will be used from now on.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "rule-update-policy:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "2fe981e323a2daf47009fb9497abad0a375d3648946a809325cde06094e57b71",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "4:0",
+        "4:1",
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10",
+        "4:11",
+        "4:12",
+        "4:13",
+        "4:14",
+        "4:15",
+        "4:16",
+        "4:18"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "        Table of Contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "        1. Procedure (page 2)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "               1.1 Date of updates",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "                      1.1.1 At the start of the season",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "                      1.1.2 At the end of the season",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "               1.2 Errata/FAQ",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "                      1.2.1 Small changes",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "                      1.2.2 Large changes",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "               1.3 Feedback",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "        2. Change Loge (page 3)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:20",
+      "page": 2,
+      "text": "Rules Update                                               1",
+      "reason": "table of contents"
+    },
+    {
+      "id": "3:45",
+      "page": 3,
+      "text": "Rules Update                                                                          2",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "4:17",
+      "page": 4,
+      "text": "Rules Update                                                                              3",
+      "reason": "repeated on most pages (header or footer)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": []
+}

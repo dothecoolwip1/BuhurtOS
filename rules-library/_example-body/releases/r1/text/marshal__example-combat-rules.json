@@ -1,0 +1,27 @@
+{
+  "inventory_key": "marshal/example-combat-rules",
+  "sha256": "bdd09abe34577efdba910eb142ac7d853b7bd299127db11e1dd8f34c3b6f880f",
+  "extractor": "pdftotext unknown -layout -enc UTF-8",
+  "pdfinfo": {
+    "pages": 3,
+    "title": "about:blank",
+    "creator": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36",
+    "producer": "Skia/PDF m141",
+    "created": "Tue Oct  6 04:36:50 2026 UTC",
+    "modified": "Tue Oct  6 04:36:50 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "             EXAMPLE BODY · TEST DOCUMENT · NOT REAL RULES\n\n\n\n\nExample Combat Rules\nV.1.0 · 01.03.2026\nInvented for software testing only.\n\n1. General\n1.1 Scope\nThese invented rules apply to every example bout held under the\nExample Body.\n1.2 Grounded fighter\nA fighter is grounded when any part of the body other than the feet\ntouches the ground. A grounded fighter takes no further part in the\nround.\n\n2. Prohibited actions\n2.1 Prohibited targets\nStrikes to the back of the knee, the neck and the feet are prohibited.\nSee 1.2 for grounded fighters.\n2.2 Grappling\nGrappling is allowed only while both fighters stand. Throws onto the\nhead are prohibited.\n2.3 Two-handed weapons\nA two-handed weapon must be held with both hands when striking. A\nshield may not be used to strike with its edge.\n\n3. Penalties\n\n\n                               Page 1 of 3\n"
+    },
+    {
+      "page": 2,
+      "text": "             EXAMPLE BODY · TEST DOCUMENT · NOT REAL RULES\n\n\n\n3.1 Warnings\nThe marshal may give a verbal warning for a minor breach.\n3.2 Cards\nA yellow card is shown for a repeated breach; a red card removes the\nfighter from the bout (see 3.1).\n3.3 Order of bouts\nParagraph 1 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\nParagraph 2 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\nParagraph 3 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\nParagraph 4 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\nParagraph 5 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\nParagraph 6 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\n\n\n\n                              Page 2 of 3\n"
+    },
+    {
+      "page": 3,
+      "text": "              EXAMPLE BODY · TEST DOCUMENT · NOT REAL RULES\n\n\n\nParagraph 7 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\nParagraph 8 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\nParagraph 9 of this long provision exists so the rule page can be\ntested with a lot of text on a phone. It repeats the same invented\nwording about list conduct, the marshal's signals and the order of\nbouts, and it means nothing outside this test.\n\n4. Equipment\n4.1 Helmet\nEvery fighter wears a helmet that covers the whole head.\n4.2 Shield sizes\nShield sizes are listed in this table.\nShield Maximum            Note\nRound      60 cm        Diameter\nKite      90 cm       Height\n\n\n\n\n                                 Page 3 of 3\n"
+    }
+  ]
+}

@@ -1,0 +1,2228 @@
+{
+  "inventory_key": "authenticity/textile-and-leather",
+  "sha256": "555cc6f566137da3f8f7de1251e866b4d9eaed6806412871412147c4b1a53546",
+  "source_file": "Authenticity/Textiles and Leather.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 9 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 9,
+    "title": "Textiles and Leather - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:29:35 2026 UTC",
+    "modified": "Wed Jan 28 14:29:35 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)}\\) BUHURT (7\n\n—\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 64.3,
+      "ocr_lines": [
+        {
+          "text": "\\)}\\) BUHURT (7",
+          "conf_mean": 54.4,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            885,
+            181,
+            1598,
+            300
+          ],
+          "paper": 0,
+          "height": 40,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 54.4"
+        },
+        {
+          "text": "—",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1174,
+            311,
+            1296,
+            354
+          ],
+          "paper": 0.01,
+          "height": 43,
+          "in_picture": "on a coloured or photographic background (paper 1%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.2,
+          "conf_min": 93.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1272,
+            991,
+            1343
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            606,
+            1449,
+            1724,
+            1643
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n2.1. Importance of Aesthetics 3\n2.2. Textiles and leather 3\n3. General Requirements 3\n4. Textiles 4\n4.1. Historical Sources and Datation 4\n4.2. Specific Requirements 4\n4.3. Examples of Approved Reproductions 5\n4.4. Examples of Denied Reproductions 5\n5. Leather 6\n5.1. Historical Sources and Datation 6\n5.2. Specific Requirements 7\n5.3. Examples of Approved Reproductions 7\n5.4. Examples of Approved Rubber Soles 8\n5.5. Examples of Denied Rubber Soles 8\n6. Changelog 9\n\nTextiles and Leather V. 26.1 2/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.9,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            314,
+            621,
+            354
+          ],
+          "paper": 0.58,
+          "height": 39
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            386,
+            2217,
+            428
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 95.9,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            451,
+            2217,
+            485
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2.1. Importance of Aesthetics 3",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            516,
+            2217,
+            559
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "2.2. Textiles and leather 3",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            582,
+            2217,
+            616
+          ],
+          "paper": 0.91,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements 3",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            647,
+            2217,
+            689
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4. Textiles 4",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            712,
+            2217,
+            746
+          ],
+          "paper": 0.96,
+          "height": 32
+        },
+        {
+          "text": "4.1. Historical Sources and Datation 4",
+          "conf_mean": 95.4,
+          "conf_min": 92.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            226,
+            777,
+            2217,
+            811
+          ],
+          "paper": 0.87,
+          "height": 33
+        },
+        {
+          "text": "4.2. Specific Requirements 4",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            842,
+            2217,
+            885
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "4.3. Examples of Approved Reproductions 5",
+          "conf_mean": 96.7,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            226,
+            907,
+            2217,
+            950
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "4.4. Examples of Denied Reproductions 5",
+          "conf_mean": 96.1,
+          "conf_min": 94.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            226,
+            973,
+            2217,
+            1015
+          ],
+          "paper": 0.88,
+          "height": 33
+        },
+        {
+          "text": "5. Leather 6",
+          "conf_mean": 96.8,
+          "conf_min": 96.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1038,
+            2217,
+            1072
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "5.1. Historical Sources and Datation 6",
+          "conf_mean": 95.2,
+          "conf_min": 91.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1103,
+            2217,
+            1137
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "5.2. Specific Requirements 7",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1168,
+            2217,
+            1211
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "5.3. Examples of Approved Reproductions 7",
+          "conf_mean": 95.8,
+          "conf_min": 92.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1234,
+            2217,
+            1276
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "5.4. Examples of Approved Rubber Soles 8",
+          "conf_mean": 95.6,
+          "conf_min": 91.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            228,
+            1299,
+            2217,
+            1341
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "5.5. Examples of Denied Rubber Soles 8",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            228,
+            1364,
+            2217,
+            1406
+          ],
+          "paper": 0.88,
+          "height": 34
+        },
+        {
+          "text": "6. Changelog 9",
+          "conf_mean": 94.6,
+          "conf_min": 91.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1429,
+            2217,
+            1472
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "Textiles and Leather V. 26.1 2/9",
+          "conf_mean": 95.3,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\n2.1. Importance of Aesthetics\n\nArmors and weapons aesthetics are very important for the fighters' appearance and _ sports\nrepresentation. The development of our sport will be easier with well-maintained and properly finished\narmor and weapons.\n\n2.2. Textiles and leather\n\nTextiles and leather are part of a knightly appearance. Tabards are made of fabric (linen, wool, silk...),\ncoats of plates are covered with fabric, leather is mainly used for armor (helmet suspension, belts,\npouches, straps), etc.\n\nAll skin of a competitor must be covered.\n\n3. General Requirements\n\nTextiles and Leather must:\n\n● be based on historical sources,\n\n● not be of a clearly modern color (I.E neon or fluorescent),\n\n● be maintained in a good shape prior to any Buhurt International Event,\n● not be decorated with modern images, offensive logos, etc.\n\nTextiles and Leather V. 26.1 3/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.5,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            753,
+            218,
+            1558,
+            306
+          ],
+          "paper": 0.67,
+          "height": 88,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            398,
+            1955,
+            441
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.2,
+          "conf_min": 94.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            459,
+            1714,
+            501
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            880,
+            624,
+            1424,
+            695
+          ],
+          "paper": 0.59,
+          "height": 71
+        },
+        {
+          "text": "2.1. Importance of Aesthetics",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            807,
+            998,
+            857
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Armors and weapons aesthetics are very important for the fighters' appearance and _ sports",
+          "conf_mean": 90.6,
+          "conf_min": 63.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            915,
+            2300,
+            965
+          ],
+          "paper": 0.8,
+          "height": 33
+        },
+        {
+          "text": "representation. The development of our sport will be easier with well-maintained and properly finished",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            979,
+            2299,
+            1022
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "armor and weapons.",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1040,
+            593,
+            1082
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "2.2. Textiles and leather",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            1163,
+            856,
+            1203
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Textiles and leather are part of a knightly appearance. Tabards are made of fabric (linen, wool, silk...),",
+          "conf_mean": 95.4,
+          "conf_min": 92.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1274,
+            2298,
+            1317
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "coats of plates are covered with fabric, leather is mainly used for armor (helmet suspension, belts,",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            1335,
+            2297,
+            1378
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "pouches, straps), etc.",
+          "conf_mean": 95.7,
+          "conf_min": 94.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            1395,
+            614,
+            1438
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "All skin of a competitor must be covered.",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            179,
+            1456,
+            1001,
+            1498
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            591,
+            1621,
+            1716,
+            1710
+          ],
+          "paper": 0.68,
+          "height": 71
+        },
+        {
+          "text": "Textiles and Leather must:",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            1802,
+            710,
+            1836
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "● be based on historical sources,",
+          "conf_mean": 89.7,
+          "conf_min": 78.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            1875,
+            928,
+            1915
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e be based on historical sources,"
+        },
+        {
+          "text": "● not be of a clearly modern color (I.E neon or fluorescent),",
+          "conf_mean": 88,
+          "conf_min": 67.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            1936,
+            1455,
+            1979
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e not be of a clearly modern color (I.E neon or fluorescent),"
+        },
+        {
+          "text": "● be maintained in a good shape prior to any Buhurt International Event,",
+          "conf_mean": 93.7,
+          "conf_min": 88.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            230,
+            1997,
+            1720,
+            2039
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e be maintained in a good shape prior to any Buhurt International Event,"
+        },
+        {
+          "text": "● not be decorated with modern images, offensive logos, etc.",
+          "conf_mean": 87.9,
+          "conf_min": 58.1,
+          "words": 10,
+          "uncertain": [
+            "not"
+          ],
+          "box": [
+            230,
+            2057,
+            1493,
+            2100
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e not be decorated with modern images, offensive logos, etc."
+        },
+        {
+          "text": "Textiles and Leather V. 26.1 3/9",
+          "conf_mean": 94.9,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "4. Textiles\n\n4.1. Historical Sources and Datation\n\nThe sources provide the following available materials during the Middle Ages:\n\n● linen,\n● wool,\n● silk,\n\n● coton.\n\nThose materials are Approved for 14th century, Transitional and 15th century armors.\n\nDepending on the area and time-period, other textiles fibers may be available. Any other material based\non historical sources can be accepted.\n\nTextiles were used in many applications, such as:\n\n● tabard,\n\n● covering a coat of plates, corazzina or brigandine,\n● gambesons,\n\n● chausses,\n\n● helmet decoration (burlet, torse, orle, crest etc.).\n\n4.2. Specific Requirements\nAny material listed in 4.1 is Approved.\nAny material based on historical sources thus not listed in 4.1 is Approved.\nIt is Approved to use a modern material under the following conditions:\n\n● the modern material replicates the aesthetic of an approved material listed in 4.1,\n● the modern material is strong enough to endure full contact fights and to not be damaged too\neasily.\nWe recommend asking for approval of the Authenticity Committee regarding modern materials before\nplacing an order for an item made of such material.\n\nAny clearly modern cloth element, such as underpants, sport legging, knee pad etc., must not be visible\nfrom any position.\n\nTextiles and Leather V. 26.1 4/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.3,
+      "ocr_lines": [
+        {
+          "text": "4. Textiles",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            926,
+            218,
+            1380,
+            288
+          ],
+          "paper": 0.6,
+          "height": 70,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "4.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 91.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            400,
+            1169,
+            440
+          ],
+          "paper": 0.6,
+          "height": 39
+        },
+        {
+          "text": "The sources provide the following available materials during the Middle Ages:",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            511,
+            1743,
+            554
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● linen,",
+          "conf_mean": 90.4,
+          "conf_min": 88.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            585,
+            407,
+            624
+          ],
+          "paper": 0.78,
+          "height": 39,
+          "raw": "e linen,"
+        },
+        {
+          "text": "● wool,",
+          "conf_mean": 92.8,
+          "conf_min": 90.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            645,
+            404,
+            685
+          ],
+          "paper": 0.79,
+          "height": 40,
+          "raw": "e wool,"
+        },
+        {
+          "text": "● silk,",
+          "conf_mean": 85.9,
+          "conf_min": 79.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            706,
+            376,
+            746
+          ],
+          "paper": 0.79,
+          "height": 40,
+          "raw": "e silk,"
+        },
+        {
+          "text": "● coton.",
+          "conf_mean": 60.1,
+          "conf_min": 60.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            768,
+            422,
+            800
+          ],
+          "paper": 0.74,
+          "height": 32,
+          "raw": "e coton."
+        },
+        {
+          "text": "Those materials are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            840,
+            1995,
+            882
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "Depending on the area and time-period, other textiles fibers may be available. Any other material based",
+          "conf_mean": 96.2,
+          "conf_min": 95,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            183,
+            942,
+            2299,
+            985
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "on historical sources can be accepted.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            181,
+            1003,
+            955,
+            1045
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Textiles were used in many applications, such as:",
+          "conf_mean": 96,
+          "conf_min": 95.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            1105,
+            1176,
+            1148
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "● tabard,",
+          "conf_mean": 94.2,
+          "conf_min": 92.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1178,
+            440,
+            1217
+          ],
+          "paper": 0.75,
+          "height": 39,
+          "raw": "e tabard,"
+        },
+        {
+          "text": "● covering a coat of plates, corazzina or brigandine,",
+          "conf_mean": 93.9,
+          "conf_min": 89.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            1238,
+            1308,
+            1281
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e covering a coat of plates, corazzina or brigandine,"
+        },
+        {
+          "text": "● gambesons,",
+          "conf_mean": 76.7,
+          "conf_min": 62.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1300,
+            546,
+            1342
+          ],
+          "paper": 0.74,
+          "height": 42,
+          "raw": "@ gambesons,"
+        },
+        {
+          "text": "● chausses,",
+          "conf_mean": 80.6,
+          "conf_min": 80.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1360,
+            503,
+            1399
+          ],
+          "paper": 0.74,
+          "height": 39,
+          "raw": "e chausses,"
+        },
+        {
+          "text": "● helmet decoration (burlet, torse, orle, crest etc.).",
+          "conf_mean": 92,
+          "conf_min": 87,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            1420,
+            1272,
+            1463
+          ],
+          "paper": 0.76,
+          "height": 38,
+          "raw": "e helmet decoration (burlet, torse, orle, crest etc.)."
+        },
+        {
+          "text": "4.2. Specific Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1568,
+            935,
+            1618
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "Any material listed in 4.1 is Approved.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            179,
+            1680,
+            960,
+            1723
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Any material based on historical sources thus not listed in 4.1 is Approved.",
+          "conf_mean": 96.3,
+          "conf_min": 95,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            1782,
+            1703,
+            1825
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "It is Approved to use a modern material under the following conditions:",
+          "conf_mean": 95.8,
+          "conf_min": 92.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            184,
+            1884,
+            1621,
+            1927
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● the modern material replicates the aesthetic of an approved material listed in 4.1,",
+          "conf_mean": 96.2,
+          "conf_min": 92.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            230,
+            1986,
+            1937,
+            2029
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e the modern material replicates the aesthetic of an approved material listed in 4.1,"
+        },
+        {
+          "text": "● the modern material is strong enough to endure full contact fights and to not be damaged too",
+          "conf_mean": 95.6,
+          "conf_min": 87.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            230,
+            2047,
+            2178,
+            2090
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e the modern material is strong enough to endure full contact fights and to not be damaged too"
+        },
+        {
+          "text": "easily.",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            302,
+            2108,
+            424,
+            2150
+          ],
+          "paper": 0.7,
+          "height": 42
+        },
+        {
+          "text": "We recommend asking for approval of the Authenticity Committee regarding modern materials before",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            2181,
+            2301,
+            2224
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "placing an order for an item made of such material.",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            182,
+            2241,
+            1209,
+            2284
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Any clearly modern cloth element, such as underpants, sport legging, knee pad etc., must not be visible",
+          "conf_mean": 96.1,
+          "conf_min": 92.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            2343,
+            2301,
+            2386
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "from any position.",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            2404,
+            536,
+            2447
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Textiles and Leather V. 26.1 4/9",
+          "conf_mean": 95.3,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4.3. Examples of Approved Reproductions\n\nPictures from The Medieval Things ©\n\n4.4. Examples of Reproductions\n\nVisible modern clothes / butt protection\n\nModern legging\n\nPictures from The Medieval Things ©\n\nTextiles and Leather V. 26.1 5/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.5,
+      "ocr_lines": [
+        {
+          "text": "4.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            217,
+            1335,
+            267
+          ],
+          "paper": 0.65,
+          "height": 50,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            1044,
+            1517,
+            1075
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "4.4. Examples of Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            1178,
+            1263,
+            1228
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "Visible modern clothes / butt protection",
+          "conf_mean": 95.2,
+          "conf_min": 92.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            810,
+            1289,
+            1669,
+            1327
+          ],
+          "paper": 0.62,
+          "height": 33
+        },
+        {
+          "text": "Modern legging",
+          "conf_mean": 93.8,
+          "conf_min": 92.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1074,
+            2093,
+            1409,
+            2130
+          ],
+          "paper": 0.57,
+          "height": 37
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            3153,
+            1517,
+            3184
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Textiles and Leather V. 26.1 5/9",
+          "conf_mean": 94.2,
+          "conf_min": 92.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "5. Leather\n\n5.1. Historical Sources and Datation\n\nThe sources provide a numerous amount of information about the use of leather. Leather can be\ndecorated or not.\n\nThe use of leather is Approved for 14th century, Transitional and 15th century armors.\nLeather was used in many applications, such as:\n\n● covering a coat of plates, corazzina or brigandine,\n● gambesons,\n\n● helmet element (suspension system, straps etc.),\n● belts,\n\n● pouches,\n\n● shoes,\n\n● etc.\n\nReproduction of a medieval shoes - 1300/1350 -\nArcheologisch Museum Haarlem\n\nLeather glove - 1450/1470 -\nMetropolitan Museum of Art\n\nTextiles and Leather V. 26.1 6/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.9,
+      "ocr_lines": [
+        {
+          "text": "5. Leather",
+          "conf_mean": 94.8,
+          "conf_min": 94.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            930,
+            218,
+            1384,
+            288
+          ],
+          "paper": 0.61,
+          "height": 70,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "5.1. Historical Sources and Datation",
+          "conf_mean": 94.5,
+          "conf_min": 91.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            400,
+            1169,
+            441
+          ],
+          "paper": 0.61,
+          "height": 40
+        },
+        {
+          "text": "The sources provide a numerous amount of information about the use of leather. Leather can be",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            511,
+            2300,
+            554
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "decorated or not.",
+          "conf_mean": 96.7,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            573,
+            522,
+            606
+          ],
+          "paper": 0.66,
+          "height": 32
+        },
+        {
+          "text": "The use of leather is Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            674,
+            2006,
+            718
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "Leather was used in many applications, such as:",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            777,
+            1161,
+            820
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "● covering a coat of plates, corazzina or brigandine,",
+          "conf_mean": 93.6,
+          "conf_min": 87.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            879,
+            1308,
+            922
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e covering a coat of plates, corazzina or brigandine,"
+        },
+        {
+          "text": "● gambesons,",
+          "conf_mean": 77.1,
+          "conf_min": 62.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            940,
+            546,
+            983
+          ],
+          "paper": 0.75,
+          "height": 43,
+          "raw": "@ gambesons,"
+        },
+        {
+          "text": "● helmet element (suspension system, straps etc.),",
+          "conf_mean": 91.6,
+          "conf_min": 73.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            1000,
+            1292,
+            1043
+          ],
+          "paper": 0.75,
+          "height": 42,
+          "raw": "e helmet element (suspension system, straps etc.),"
+        },
+        {
+          "text": "● belts,",
+          "conf_mean": 93,
+          "conf_min": 92.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1061,
+            407,
+            1100
+          ],
+          "paper": 0.76,
+          "height": 39,
+          "raw": "e belts,"
+        },
+        {
+          "text": "● pouches,",
+          "conf_mean": 57.8,
+          "conf_min": 20.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1122,
+            483,
+            1164
+          ],
+          "paper": 0.77,
+          "height": 42,
+          "raw": "e pouches,"
+        },
+        {
+          "text": "● shoes,",
+          "conf_mean": 94,
+          "conf_min": 92.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1182,
+            432,
+            1222
+          ],
+          "paper": 0.76,
+          "height": 40,
+          "raw": "e shoes,"
+        },
+        {
+          "text": "● etc.",
+          "conf_mean": 93.1,
+          "conf_min": 90.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            230,
+            1244,
+            371,
+            1276
+          ],
+          "paper": 0.76,
+          "height": 32,
+          "raw": "e etc."
+        },
+        {
+          "text": "Reproduction of a medieval shoes - 1300/1350 -",
+          "conf_mean": 94.8,
+          "conf_min": 92.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            367,
+            2336,
+            1077,
+            2367
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Archeologisch Museum Haarlem",
+          "conf_mean": 94.9,
+          "conf_min": 92,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            439,
+            2380,
+            920,
+            2411
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Leather glove - 1450/1470 -",
+          "conf_mean": 93.7,
+          "conf_min": 93,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1004,
+            2820,
+            1412,
+            2852
+          ],
+          "paper": 0.74,
+          "height": 25
+        },
+        {
+          "text": "Metropolitan Museum of Art",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            995,
+            2876,
+            1404,
+            2908
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Textiles and Leather V. 26.1 6/9",
+          "conf_mean": 94.9,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "5.2. Specific Requirements\n\nAny natural leather is Approved.\nIt is Approved to use a modern material under the following conditions:\n\n● the modern material replicates the aesthetic of an approved material listed in 4.1,\n● the modern material is strong enough to endure full contact fights and to not be damaged too\neasily.\nWe recommend asking for approval of the Authenticity Committee regarding modern materials before\nplacing an order for an item made of such material.\n\nSpecific Requirements for boots and shoes\nBoots and shoes must:\n\n● be based on historical sources,\n● be fastened by leather laces, fabric laces or any historically plausible mechanism,\n● have a flat sole made of leather, or modern material.\n\nModern rubber soles must be flat or with very low texture.\nIt is Denied to use rubber sole to mimic hiking boots sole\nModern soles must be black or brown, with no modern flashing color.\n\n5.3. Examples of Approved Reproductions\n\nAgeCralt\n\nMEDIEVAL HAND-MADE ARMOR\n\nPicture from Age of Craft © Picture from GoHurt ©\n\nTextiles and Leather V. 26.7 7/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            216,
+            935,
+            267
+          ],
+          "paper": 0.66,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Any natural leather is Approved.",
+          "conf_mean": 96.1,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            179,
+            328,
+            845,
+            371
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "It is Approved to use a modern material under the following conditions:",
+          "conf_mean": 95.7,
+          "conf_min": 92.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            430,
+            1621,
+            474
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● the modern material replicates the aesthetic of an approved material listed in 4.1,",
+          "conf_mean": 95.3,
+          "conf_min": 82.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            230,
+            532,
+            1937,
+            575
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e the modern material replicates the aesthetic of an approved material listed in 4.1,"
+        },
+        {
+          "text": "● the modern material is strong enough to endure full contact fights and to not be damaged too",
+          "conf_mean": 96.3,
+          "conf_min": 92.9,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            230,
+            593,
+            2179,
+            636
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e the modern material is strong enough to endure full contact fights and to not be damaged too"
+        },
+        {
+          "text": "easily.",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            302,
+            654,
+            424,
+            697
+          ],
+          "paper": 0.71,
+          "height": 43
+        },
+        {
+          "text": "We recommend asking for approval of the Authenticity Committee regarding modern materials before",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            726,
+            2301,
+            770
+          ],
+          "paper": 0.73,
+          "height": 35
+        },
+        {
+          "text": "placing an order for an item made of such material.",
+          "conf_mean": 96.6,
+          "conf_min": 95.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            182,
+            787,
+            1209,
+            830
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Specific Requirements for boots and shoes",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            181,
+            890,
+            1121,
+            932
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "Boots and shoes must:",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            992,
+            641,
+            1026
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "● be based on historical sources,",
+          "conf_mean": 91.6,
+          "conf_min": 84,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            1094,
+            928,
+            1134
+          ],
+          "paper": 0.73,
+          "height": 34,
+          "raw": "e be based on historical sources,"
+        },
+        {
+          "text": "● be fastened by leather laces, fabric laces or any historically plausible mechanism,",
+          "conf_mean": 94.9,
+          "conf_min": 80,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            230,
+            1154,
+            1947,
+            1198
+          ],
+          "paper": 0.74,
+          "height": 35,
+          "raw": "e be fastened by leather laces, fabric laces or any historically plausible mechanism,"
+        },
+        {
+          "text": "● have a flat sole made of leather, or modern material.",
+          "conf_mean": 95.3,
+          "conf_min": 91.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            230,
+            1215,
+            1357,
+            1255
+          ],
+          "paper": 0.73,
+          "height": 34,
+          "raw": "e have a flat sole made of leather, or modern material."
+        },
+        {
+          "text": "Modern rubber soles must be flat or with very low texture.",
+          "conf_mean": 96.4,
+          "conf_min": 95,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1288,
+            1339,
+            1331
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is Denied to use rubber sole to mimic hiking boots sole",
+          "conf_mean": 95.9,
+          "conf_min": 92.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            1362,
+            1330,
+            1404
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Modern soles must be black or brown, with no modern flashing color.",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            1434,
+            1568,
+            1478
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "5.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1582,
+            1335,
+            1633
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "AgeCralt",
+          "conf_mean": 37,
+          "conf_min": 37,
+          "words": 1,
+          "uncertain": [
+            "AgeCralt"
+          ],
+          "box": [
+            417,
+            2776,
+            769,
+            2865
+          ],
+          "paper": 0.41,
+          "height": 89,
+          "in_picture": "on a coloured or photographic background (paper 41%), confidence 37.0"
+        },
+        {
+          "text": "MEDIEVAL HAND-MADE ARMOR",
+          "conf_mean": 91.2,
+          "conf_min": 85.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            458,
+            2913,
+            740,
+            2923
+          ],
+          "paper": 0.39,
+          "height": 10,
+          "in_picture": "lettering 10px tall, smaller than any printed text"
+        },
+        {
+          "text": "Picture from Age of Craft © Picture from GoHurt ©",
+          "conf_mean": 95.7,
+          "conf_min": 90.6,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            453,
+            3007,
+            1832,
+            3038
+          ],
+          "paper": 0.85,
+          "height": 25
+        },
+        {
+          "text": "Textiles and Leather V. 26.7 7/9",
+          "conf_mean": 89.4,
+          "conf_min": 62.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "5.4. Examples of Approved Rubber Soles\n\n5.5. Examples of Rubber Soles\n\nTextiles and Leather V. 26.1 8/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 85.7,
+      "ocr_lines": [
+        {
+          "text": "5.4. Examples of Approved Rubber Soles",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            238,
+            217,
+            1302,
+            267
+          ],
+          "paper": 0.65,
+          "height": 40,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "5.5. Examples of Rubber Soles",
+          "conf_mean": 96.4,
+          "conf_min": 95,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1001,
+            1230,
+            1051
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "Textiles and Leather V. 26.1 8/9",
+          "conf_mean": 94.9,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "6. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and description” and “3. General\nRequirements”. This split doesn’t have an impact on the content of the rules.\n\n- In “2.2. Textiles and leather” : “All skin of a competitor must be covered.“\n\nMarch-2025 (V2025.03)\n- Add: 3.2: Boots and shoes must have a flat sole made of leather, or modern material\n- Add: 3.3: examples of Denied and Approved shoe soles\n\nDecember-2024: -Add\nDocument has been created\n\nTextiles and Leather V. 26.1 9/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.3,
+      "ocr_lines": [
+        {
+          "text": "6. Changelog",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            856,
+            217,
+            1451,
+            307
+          ],
+          "paper": 0.66,
+          "height": 90,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            398,
+            2263,
+            441
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            459,
+            1870,
+            502
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.8,
+          "conf_min": 92.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            604,
+            679,
+            647
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            655,
+            2163,
+            698
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 93.8,
+          "conf_min": 69,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            706,
+            2042,
+            759
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            776,
+            427,
+            810
+          ],
+          "paper": 0,
+          "height": 34
+        },
+        {
+          "text": "- Split of “1. Definition and general requirements” in “2. Definition and description” and “3. General",
+          "conf_mean": 94.7,
+          "conf_min": 77,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            837,
+            2274,
+            880
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Requirements”. This split doesn’t have an impact on the content of the rules.",
+          "conf_mean": 94.5,
+          "conf_min": 76.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            898,
+            1823,
+            940
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "- In “2.2. Textiles and leather” : “All skin of a competitor must be covered.“",
+          "conf_mean": 91.6,
+          "conf_min": 39.7,
+          "words": 15,
+          "uncertain": [
+            "leather”"
+          ],
+          "box": [
+            180,
+            1019,
+            1809,
+            1061
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "March-2025 (V2025.03)",
+          "conf_mean": 92.1,
+          "conf_min": 91.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1176,
+            668,
+            1219
+          ],
+          "paper": 0.62,
+          "height": 43
+        },
+        {
+          "text": "- Add: 3.2: Boots and shoes must have a flat sole made of leather, or modern material",
+          "conf_mean": 96.1,
+          "conf_min": 93.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1220,
+            1913,
+            1268
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "- Add: 3.3: examples of Denied and Approved shoe soles",
+          "conf_mean": 96,
+          "conf_min": 93.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1272,
+            1336,
+            1314
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "December-2024: -Add",
+          "conf_mean": 91.9,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1408,
+            637,
+            1441
+          ],
+          "paper": 0.43,
+          "height": 33
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1456,
+            752,
+            1489
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Textiles and Leather V. 26.1 9/9",
+          "conf_mean": 95,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    }
+  ]
+}

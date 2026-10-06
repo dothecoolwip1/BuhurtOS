@@ -1,0 +1,26 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {},
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\" (the footer names the document \"Side-hinged visored Bascinets\"); changelog entry \"January - 2026 (V. 26.1)\".",
+  "ocr": {
+    "fix": {
+      "7:6": {
+        "from": "Musée de I’Armée, Paris - 1400/1420 - France Musées des Beaux Arts, Dijon - 1400/1420 - France",
+        "to": "Musée de l’Armée, Paris - 1400/1420 - France Musées des Beaux Arts, Dijon - 1400/1420 - France",
+        "reason": "page image shows \"l’Armée\""
+      },
+      "15:39": {
+        "from": "December-2024: SAdd",
+        "to": "December-2024: -Add",
+        "reason": "page image shows \"-Add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

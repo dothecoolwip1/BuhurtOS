@@ -1,0 +1,18 @@
+{
+  "marshal/example-combat-rules": {
+    "url": "https://example.invalid/files/example-combat-rules.pdf",
+    "retrieved_at": "2026-10-06T04:37:17.132Z",
+    "sha256": "bdd09abe34577efdba910eb142ac7d853b7bd299127db11e1dd8f34c3b6f880f",
+    "bytes": 49778,
+    "content_type": "application/pdf",
+    "supplied_by": "Pack 22 fixture generator (invented documents)"
+  },
+  "tournament/example-event-regulations": {
+    "url": "https://example.invalid/files/example-event-regulations.pdf",
+    "retrieved_at": "2026-10-06T04:37:17.254Z",
+    "sha256": "6db368fa513a21d1d2a042d93a1ecf5bd08c4de929293e8ddd9536ff54e411c7",
+    "bytes": 39315,
+    "content_type": "application/pdf",
+    "supplied_by": "Pack 22 fixture generator (invented documents)"
+  }
+}

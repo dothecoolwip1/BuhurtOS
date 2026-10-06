@@ -1,0 +1,2235 @@
+{
+  "inventory_key": "authenticity/klappvisors",
+  "sha256": "e47d380dc11050342382e9fce90485b2f0f8a7c072c282f03afa4d716f406411",
+  "source_file": "Authenticity/Klappvisors.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 13 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 13,
+    "title": "Klappvisors - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:22:31 2026 UTC",
+    "modified": "Wed Jan 28 14:22:31 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)}\\) BUHURT (7\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 75.1,
+      "ocr_lines": [
+        {
+          "text": "\\)}\\) BUHURT (7",
+          "conf_mean": 54.4,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            885,
+            86,
+            1598,
+            205
+          ],
+          "paper": 0,
+          "height": 40,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 54.4"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.5,
+          "conf_min": 94.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            606,
+            1293,
+            990,
+            1363
+          ],
+          "paper": 0,
+          "height": 70
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1469,
+            1724,
+            1664
+          ],
+          "paper": 0,
+          "height": 195
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n3. Historical Sources and Datation 4\n3.1. German-Style Klappvisors 4\n3.2. Italian style Klappvisor 6\n3.3. Other style Klappvisor 7\n4. Requirements 8\n4.1. General Requirements 8\n4.2. Visor 8\n4.3. Eye Slots 8\n4.4. Aventail 8\n4.5. Others 9\n5. Examples of Approved Reproductions 10\n6. Examples of Denied Reproductions 12\n7. Changelog 13\n\nKlappvisors V. 26.1 2/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.8,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            308,
+            621,
+            348
+          ],
+          "paper": 0.59,
+          "height": 39
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            381,
+            2301,
+            423
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 95.8,
+          "conf_min": 95.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            445,
+            2301,
+            479
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "3. Historical Sources and Datation 4",
+          "conf_mean": 95.1,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            511,
+            2301,
+            544
+          ],
+          "paper": 0.88,
+          "height": 33
+        },
+        {
+          "text": "3.1. German-Style Klappvisors 4",
+          "conf_mean": 93.2,
+          "conf_min": 90.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            576,
+            2301,
+            619
+          ],
+          "paper": 0.92,
+          "height": 43
+        },
+        {
+          "text": "3.2. Italian style Klappvisor 6",
+          "conf_mean": 88.9,
+          "conf_min": 68.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            641,
+            2301,
+            684
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "3.3. Other style Klappvisor 7",
+          "conf_mean": 94.9,
+          "conf_min": 92,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            706,
+            2301,
+            749
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4. Requirements 8",
+          "conf_mean": 90.2,
+          "conf_min": 78,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            772,
+            2301,
+            814
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "4.1. General Requirements 8",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            837,
+            2301,
+            879
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor 8",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            902,
+            2301,
+            936
+          ],
+          "paper": 0.97,
+          "height": 34
+        },
+        {
+          "text": "4.3. Eye Slots 8",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            967,
+            2301,
+            1010
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "4.4. Aventail 8",
+          "conf_mean": 93.5,
+          "conf_min": 91.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            1032,
+            2301,
+            1066
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "4.5. Others 9",
+          "conf_mean": 95.8,
+          "conf_min": 95,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            1098,
+            2301,
+            1132
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "5. Examples of Approved Reproductions 10",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1163,
+            2301,
+            1205
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "6. Examples of Denied Reproductions 12",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1228,
+            2301,
+            1270
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "7. Changelog 13",
+          "conf_mean": 95.1,
+          "conf_min": 93.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1293,
+            2301,
+            1336
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "Klappvisors V. 26.1 2/13",
+          "conf_mean": 90.8,
+          "conf_min": 83.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            234,
+            3391,
+            2354,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "__ 1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\nKlappvisor Bascinet is a medieval helmet that originated in the 14th century.\n\"Klappvisor\" is German and translates to \"folding visor.\"\nThe single brow-mounted hinge is a distinctive feature of early bascinet visor designs.\n\nThese bascinet visors were often low profile to fit underneath a great helm, but would also serve as a\nprimary defense on their own.\n\nKlappvisor uses a solid metal visor to protect the face, attached on the forehead by a piece of metal, the\n“spoon”.\nKlappvisor was used from 1340 to 1400, mainly in Germany and Italy.\n\nKlappvisor is Approved for 14th century and Transitional armors.\n\nKlappvisor is Denied for 15th century armors.\n\nSpoon\n\n(\n\nKlappvisors V. 26.1 3/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.6,
+      "ocr_lines": [
+        {
+          "text": "__ 1. Implementation",
+          "conf_mean": 66,
+          "conf_min": 6.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            0,
+            114,
+            1618,
+            310
+          ],
+          "paper": 0.83,
+          "height": 88
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.3,
+          "conf_min": 95,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            398,
+            1955,
+            442
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            459,
+            1714,
+            502
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            941,
+            624,
+            1485,
+            695
+          ],
+          "paper": 0.58,
+          "height": 71
+        },
+        {
+          "text": "Klappvisor Bascinet is a medieval helmet that originated in the 14th century.",
+          "conf_mean": 95.5,
+          "conf_min": 90.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            805,
+            1710,
+            848
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "\"Klappvisor\" is German and translates to \"folding visor.\"",
+          "conf_mean": 93.2,
+          "conf_min": 78,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            878,
+            1299,
+            922
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The single brow-mounted hinge is a distinctive feature of early bascinet visor designs.",
+          "conf_mean": 95.4,
+          "conf_min": 92.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            951,
+            1909,
+            995
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "These bascinet visors were often low profile to fit underneath a great helm, but would also serve as a",
+          "conf_mean": 96,
+          "conf_min": 92.3,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            1024,
+            2301,
+            1068
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "primary defense on their own.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            1085,
+            778,
+            1128
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Klappvisor uses a solid metal visor to protect the face, attached on the forehead by a piece of metal, the",
+          "conf_mean": 96.2,
+          "conf_min": 91.4,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            182,
+            1158,
+            2299,
+            1201
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "“spoon”.",
+          "conf_mean": 72.1,
+          "conf_min": 72.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            180,
+            1219,
+            343,
+            1261
+          ],
+          "paper": 0.75,
+          "height": 42
+        },
+        {
+          "text": "Klappvisor was used from 1340 to 1400, mainly in Germany and Italy.",
+          "conf_mean": 95.3,
+          "conf_min": 88.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            1291,
+            1582,
+            1335
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "Klappvisor is Approved for 14th century and Transitional armors.",
+          "conf_mean": 96,
+          "conf_min": 92,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            182,
+            1438,
+            1552,
+            1481
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Klappvisor is Denied for 15th century armors.",
+          "conf_mean": 95.6,
+          "conf_min": 91.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            1584,
+            1132,
+            1628
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Spoon",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            722,
+            1741,
+            865,
+            1790
+          ],
+          "paper": 0.72,
+          "height": 49
+        },
+        {
+          "text": "(",
+          "conf_mean": 5.4,
+          "conf_min": 5.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            835,
+            2657,
+            857,
+            2668
+          ],
+          "paper": 0.27,
+          "height": 11,
+          "in_picture": "lettering 11px tall, smaller than any printed text"
+        },
+        {
+          "text": "Klappvisors V. 26.1 3/13",
+          "conf_mean": 82.8,
+          "conf_min": 47.3,
+          "words": 4,
+          "uncertain": [
+            "Klappvisors"
+          ],
+          "box": [
+            233,
+            3391,
+            2355,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. Historical Sources and Datation\n\n3.1. German-Style Klappvisors\n\n○ 1\n“Sitten Klappvisor” - 1390 - Switzerland “Bavarian Klappvisor” - unknown datation, probably late 14th cent.\nPicture from Musées cantonaux du Valais, - Bavarian Army Museum, Munich, Germany\n\ntonee®\n\nSion (Jean-Yves Glassey, Martigny) ©\n\neprrit S Conary. Kunttammiungen dor Verte\n\nNuremberg Museum - 1370/1380 - Germany Coburg helmet - 1380/1390 - Germany\n\nKlappvisors V. 26.1 4/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 83.5,
+      "ocr_lines": [
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.5,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            439,
+            217,
+            1988,
+            288
+          ],
+          "paper": 0.61,
+          "height": 70
+        },
+        {
+          "text": "3.1. German-Style Klappvisors",
+          "conf_mean": 92.3,
+          "conf_min": 91.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            400,
+            1029,
+            451
+          ],
+          "paper": 0.69,
+          "height": 50
+        },
+        {
+          "text": "○ 1",
+          "conf_mean": 33.1,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            406,
+            1422,
+            647,
+            1438
+          ],
+          "paper": 0,
+          "height": 16,
+          "raw": ": 1",
+          "in_picture": "lettering 16px tall, smaller than any printed text"
+        },
+        {
+          "text": "“Sitten Klappvisor” - 1390 - Switzerland “Bavarian Klappvisor” - unknown datation, probably late 14th cent.",
+          "conf_mean": 91.7,
+          "conf_min": 76.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            257,
+            1443,
+            2264,
+            1483
+          ],
+          "paper": 0.83,
+          "height": 25
+        },
+        {
+          "text": "Picture from Musées cantonaux du Valais, - Bavarian Army Museum, Munich, Germany",
+          "conf_mean": 95,
+          "conf_min": 91.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            245,
+            1485,
+            2090,
+            1516
+          ],
+          "paper": 0.8,
+          "height": 25
+        },
+        {
+          "text": "tonee®",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            "tonee®"
+          ],
+          "box": [
+            1491,
+            2398,
+            1577,
+            2409
+          ],
+          "paper": 0,
+          "height": 11,
+          "in_picture": "lettering 11px tall, smaller than any printed text"
+        },
+        {
+          "text": "Sion (Jean-Yves Glassey, Martigny) ©",
+          "conf_mean": 94,
+          "conf_min": 91.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            274,
+            1535,
+            834,
+            1567
+          ],
+          "paper": 0.71,
+          "height": 32
+        },
+        {
+          "text": "eprrit S Conary. Kunttammiungen dor Verte",
+          "conf_mean": 35.3,
+          "conf_min": 0,
+          "words": 6,
+          "uncertain": [
+            "eprrit",
+            "Kunttammiungen",
+            "Verte"
+          ],
+          "box": [
+            1317,
+            2473,
+            1558,
+            2501
+          ],
+          "paper": 0.07,
+          "height": 14,
+          "in_picture": "lettering 14px tall, smaller than any printed text"
+        },
+        {
+          "text": "Nuremberg Museum - 1370/1380 - Germany Coburg helmet - 1380/1390 - Germany",
+          "conf_mean": 94,
+          "conf_min": 91.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            252,
+            2510,
+            2019,
+            2558
+          ],
+          "paper": 0.79,
+          "height": 25
+        },
+        {
+          "text": "Klappvisors V. 26.1 4/13",
+          "conf_mean": 82.8,
+          "conf_min": 47.3,
+          "words": 4,
+          "uncertain": [
+            "Klappvisors"
+          ],
+          "box": [
+            233,
+            3391,
+            2355,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "Berlin Museum - 1350 - Germany\n\nKlappvisors V. 26.1 5/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 83.2,
+      "ocr_lines": [
+        {
+          "text": "Berlin Museum - 1350 - Germany",
+          "conf_mean": 94.1,
+          "conf_min": 92.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            907,
+            1686,
+            1400,
+            1717
+          ],
+          "paper": 0.73,
+          "height": 24
+        },
+        {
+          "text": "Klappvisors V. 26.1 5/13",
+          "conf_mean": 78.1,
+          "conf_min": 47.3,
+          "words": 4,
+          "uncertain": [
+            "Klappvisors"
+          ],
+          "box": [
+            233,
+            3391,
+            2355,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "3.2. Italian style Klappvisor\n\n14th century (datation unknown) - Italy 1350 - Italy\n\nMilan Klappvisor, Museo Stibbert, 1390/1400 - Italy\n\nKlappvisors V. 26.1 6/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.4,
+      "ocr_lines": [
+        {
+          "text": "3.2. Italian style Klappvisor",
+          "conf_mean": 94,
+          "conf_min": 92.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            217,
+            945,
+            267
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "14th century (datation unknown) - Italy 1350 - Italy",
+          "conf_mean": 94.1,
+          "conf_min": 91.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            306,
+            1568,
+            1821,
+            1599
+          ],
+          "paper": 0.87,
+          "height": 30
+        },
+        {
+          "text": "Milan Klappvisor, Museo Stibbert, 1390/1400 - Italy",
+          "conf_mean": 92.7,
+          "conf_min": 91.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            773,
+            3004,
+            1516,
+            3044
+          ],
+          "paper": 0.69,
+          "height": 29
+        },
+        {
+          "text": "Klappvisors V. 26.1 6/13",
+          "conf_mean": 93.3,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            234,
+            3391,
+            2354,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "● Other style Klappvisor\n\n1375 - Netherlands\n\nLeeds Armouries - 1350/1380 - England\n\nKlappvisors V. 26.1 7/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 88.1,
+      "ocr_lines": [
+        {
+          "text": "● Other style Klappvisor",
+          "conf_mean": 93.3,
+          "conf_min": 91.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            315,
+            216,
+            933,
+            267
+          ],
+          "paper": 0.68,
+          "height": 50,
+          "raw": ". Other style Klappvisor"
+        },
+        {
+          "text": "1375 - Netherlands",
+          "conf_mean": 93.9,
+          "conf_min": 92.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            424,
+            1641,
+            703,
+            1666
+          ],
+          "paper": 0.65,
+          "height": 25
+        },
+        {
+          "text": "Leeds Armouries - 1350/1380 - England",
+          "conf_mean": 93.6,
+          "conf_min": 92.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1352,
+            1928,
+            1943,
+            1960
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Klappvisors V. 26.1 7/13",
+          "conf_mean": 82.7,
+          "conf_min": 47.3,
+          "words": 4,
+          "uncertain": [
+            "Klappvisors"
+          ],
+          "box": [
+            233,
+            3391,
+            2355,
+            3437
+          ],
+          "paper": 0.96,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "__ 4. Requirements\n\n4.1. General Requirements\n\nReproductions must closely resemble the appearance and proportions of a Klappvisor source.\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”\ndocument.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nVisors must not be too long or too short, it must respect the proportions of historical sources.\nThe hinge must be reproduced as per historical sources.\n\nIt is Allowed to weld the hinge. Welded hinges must resemble a functional hinge.\n\nIt is Allowed to weld the visor down. Welded visors must resemble a functional removable visor.\n\nIt is Allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full\ncontact fight and must be concealed under the Aventail.\n\nA leather strap can be used to secure the visor down.\n\nBreath holes should be round and must not exceed a diameter of 10mm. Breath holes must not be so\nnumerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to\nboth sides.\n\nBreath holes of another shape must be documented by historical sources to be allowed.\n\n4.3. Eye Slots\n\nEye slots should resemble sources for the visor.\nEye slots should not exceed 25mm tall to prevent any injury.\nKlappvisor with 2 Eye slots are allowed to add up to two (2) safety Eye bars per Eye slot.\n\nKlappvisor may have integrated Eye bars. Such Eye bars must be made accordingly with historical\nsources, in terms of proportion, numbers and aesthetic.\n\nExternally riveted Eye bars are not allowed.\nEye bars must conform to the “Eye bars” document.\n\n4.4. Aventail\n\nKlappvisors must be worn with chainmail Aventails, fabric Aventails, or scales Aventails.\nAventails must conform to the “Aventails” document.\nAventails must be attached to the bascinet by a system of leather and vervelles.\n\nChainmail Aventail must be fastened down to the edge of a padded pelerine, attached to the helmet\nliner.\n\nScales and Fabric Aventails are recommended to be fastened down to the edge of a padded pelerine,\nattached to the helmet liner.\n\nAny additional protective plates covering the cervical spine must be hidden under the Aventail.\n\nKlappvisors V. 26.1 8/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.3,
+      "ocr_lines": [
+        {
+          "text": "__ 4. Requirements",
+          "conf_mean": 68,
+          "conf_min": 12.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            0,
+            114,
+            1586,
+            309
+          ],
+          "paper": 0.83,
+          "height": 88
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 94.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            400,
+            929,
+            450
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of a Klappvisor source.",
+          "conf_mean": 95.8,
+          "conf_min": 91.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            511,
+            2077,
+            554
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”",
+          "conf_mean": 95.8,
+          "conf_min": 90.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            585,
+            2298,
+            628
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "document.",
+          "conf_mean": 91,
+          "conf_min": 91,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            646,
+            389,
+            679
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 94.3,
+          "conf_min": 73.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            714,
+            2067,
+            765
+          ],
+          "paper": 0.79,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            867,
+            489,
+            906
+          ],
+          "paper": 0.63,
+          "height": 39
+        },
+        {
+          "text": "Visors must not be too long or too short, it must respect the proportions of historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            978,
+            2045,
+            1021
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "The hinge must be reproduced as per historical sources.",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1051,
+            1319,
+            1094
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "It is Allowed to weld the hinge. Welded hinges must resemble a functional hinge.",
+          "conf_mean": 96.1,
+          "conf_min": 94.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            184,
+            1120,
+            1819,
+            1171
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "It is Allowed to weld the visor down. Welded visors must resemble a functional removable visor.",
+          "conf_mean": 96.2,
+          "conf_min": 94.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            1197,
+            2119,
+            1231
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "It is Allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full",
+          "conf_mean": 96.1,
+          "conf_min": 94.3,
+          "words": 22,
+          "uncertain": [],
+          "box": [
+            184,
+            1270,
+            2300,
+            1313
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "contact fight and must be concealed under the Aventail.",
+          "conf_mean": 95,
+          "conf_min": 89.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1331,
+            1302,
+            1374
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "A leather strap can be used to secure the visor down.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            179,
+            1404,
+            1257,
+            1446
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Breath holes should be round and must not exceed a diameter of 10mm. Breath holes must not be so",
+          "conf_mean": 96.2,
+          "conf_min": 95,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            1477,
+            2299,
+            1511
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "numerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to",
+          "conf_mean": 95.8,
+          "conf_min": 92.5,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            1538,
+            2300,
+            1580
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "both sides.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1598,
+            397,
+            1632
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Breath holes of another shape must be documented by historical sources to be allowed.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            1671,
+            1952,
+            1714
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "4.3. Eye Slots",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1819,
+            595,
+            1870
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "Eye slots should resemble sources for the visor.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1931,
+            1145,
+            1973
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Eye slots should not exceed 25mm tall to prevent any injury.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            2004,
+            1391,
+            2047
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Klappvisor with 2 Eye slots are allowed to add up to two (2) safety Eye bars per Eye slot.",
+          "conf_mean": 96.2,
+          "conf_min": 91.3,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            2077,
+            1970,
+            2120
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Klappvisor may have integrated Eye bars. Such Eye bars must be made accordingly with historical",
+          "conf_mean": 96,
+          "conf_min": 90.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            2150,
+            2298,
+            2193
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "sources, in terms of proportion, numbers and aesthetic.",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            2211,
+            1295,
+            2253
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Externally riveted Eye bars are not allowed.",
+          "conf_mean": 95.8,
+          "conf_min": 95.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            183,
+            2284,
+            1056,
+            2327
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Eye bars must conform to the “Eye bars” document.",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            2357,
+            1231,
+            2400
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "4.4. Aventail",
+          "conf_mean": 92.5,
+          "conf_min": 92.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            2505,
+            559,
+            2544
+          ],
+          "paper": 0.59,
+          "height": 39
+        },
+        {
+          "text": "Klappvisors must be worn with chainmail Aventails, fabric Aventails, or scales Aventails.",
+          "conf_mean": 93.9,
+          "conf_min": 90.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            2616,
+            1952,
+            2658
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Aventails must conform to the “Aventails” document.",
+          "conf_mean": 92,
+          "conf_min": 81.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            2689,
+            1232,
+            2723
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "Aventails must be attached to the bascinet by a system of leather and vervelles.",
+          "conf_mean": 95.2,
+          "conf_min": 92.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            2762,
+            1792,
+            2805
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Chainmail Aventail must be fastened down to the edge of a padded pelerine, attached to the helmet",
+          "conf_mean": 95.4,
+          "conf_min": 91.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            2835,
+            2301,
+            2878
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "liner.",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            2896,
+            272,
+            2930
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "Scales and Fabric Aventails are recommended to be fastened down to the edge of a padded pelerine,",
+          "conf_mean": 95.5,
+          "conf_min": 91.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            2969,
+            2297,
+            3012
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "attached to the helmet liner.",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            3030,
+            738,
+            3063
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Any additional protective plates covering the cervical spine must be hidden under the Aventail.",
+          "conf_mean": 95.8,
+          "conf_min": 92.3,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            3103,
+            2082,
+            3145
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Klappvisors V. 26.1 8/13",
+          "conf_mean": 92.9,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            234,
+            3391,
+            2354,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "4.5. Others\n\nKlappvisors may be decorated in the spirit of medieval styles, such as orle, torse, decorated Aventails\n(with copper/brass chainmail rings), vervelle covers and coat of arms badges etc.\n\nSuch decoration must be made in coherence with historical sources.\nUsing modern and/or offensive imagery and slogans is prohibited.\n\nKlappvisors V. 26.1 9/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.3,
+      "ocr_lines": [
+        {
+          "text": "4.5. Others",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            290,
+            526,
+            330
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Klappvisors may be decorated in the spirit of medieval styles, such as orle, torse, decorated Aventails",
+          "conf_mean": 94.8,
+          "conf_min": 91.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            401,
+            2300,
+            444
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "(with copper/brass chainmail rings), vervelle covers and coat of arms badges etc.",
+          "conf_mean": 95.2,
+          "conf_min": 91.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            462,
+            1817,
+            505
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 94.6,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            535,
+            1558,
+            569
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            608,
+            1506,
+            651
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Klappvisors V. 26.1 9/13",
+          "conf_mean": 93.4,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            234,
+            3391,
+            2354,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "__ 5. Examples of Approved Reproductions\n\nPictures from The Medieval Things ©\n\nKlappvisors V. 26.1 10/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 84.4,
+      "ocr_lines": [
+        {
+          "text": "__ 5. Examples of Approved Reproductions",
+          "conf_mean": 81.2,
+          "conf_min": 6.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            0,
+            114,
+            2136,
+            310
+          ],
+          "paper": 0.8,
+          "height": 88
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            949,
+            2653,
+            1498,
+            2684
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "Klappvisors V. 26.1 10/13",
+          "conf_mean": 82.7,
+          "conf_min": 47.3,
+          "words": 4,
+          "uncertain": [
+            "Klappvisors"
+          ],
+          "box": [
+            233,
+            3391,
+            2355,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": ";\n\nNEELDD EL Wat\nboNeew bet a\n\nPictures from Medieval Extreme ©\n\nKlappvisors V. 26.1 11/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 64.9,
+      "ocr_lines": [
+        {
+          "text": ";",
+          "conf_mean": 43.2,
+          "conf_min": 43.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            958,
+            2359,
+            964,
+            2369
+          ],
+          "paper": 0,
+          "height": 10,
+          "in_picture": "lettering 10px tall, smaller than any printed text"
+        },
+        {
+          "text": "NEELDD EL Wat",
+          "conf_mean": 34.1,
+          "conf_min": 25.4,
+          "words": 3,
+          "uncertain": [
+            "NEELDD",
+            "Wat"
+          ],
+          "box": [
+            707,
+            2398,
+            1013,
+            2426
+          ],
+          "paper": 0.02,
+          "height": 24,
+          "in_picture": "on a coloured or photographic background (paper 2%), confidence 34.1"
+        },
+        {
+          "text": "boNeew bet a",
+          "conf_mean": 35.6,
+          "conf_min": 15.4,
+          "words": 3,
+          "uncertain": [
+            "boNeew",
+            "bet"
+          ],
+          "box": [
+            724,
+            2440,
+            994,
+            2462
+          ],
+          "paper": 0,
+          "height": 17,
+          "in_picture": "lettering 17px tall, smaller than any printed text"
+        },
+        {
+          "text": "Pictures from Medieval Extreme ©",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            901,
+            2619,
+            1407,
+            2644
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "Klappvisors V. 26.1 11/13",
+          "conf_mean": 82.4,
+          "conf_min": 47.3,
+          "words": 4,
+          "uncertain": [
+            "Klappvisors"
+          ],
+          "box": [
+            233,
+            3391,
+            2355,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "__ 6. Examples of Denied Reproductions\n\nIntegrated Eye bars out of historical proportions\n\nPictures from The Medieval Things ©\n\nKlappvisors V. 26.1 12/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87.6,
+      "ocr_lines": [
+        {
+          "text": "__ 6. Examples of Denied Reproductions",
+          "conf_mean": 80.2,
+          "conf_min": 0,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            0,
+            114,
+            2072,
+            311
+          ],
+          "paper": 0.8,
+          "height": 88
+        },
+        {
+          "text": "Integrated Eye bars out of historical proportions",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            581,
+            482,
+            1627,
+            525
+          ],
+          "paper": 0.58,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            810,
+            2563,
+            1358,
+            2595
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Klappvisors V. 26.1 12/13",
+          "conf_mean": 82.6,
+          "conf_min": 47.3,
+          "words": 4,
+          "uncertain": [
+            "Klappvisors"
+          ],
+          "box": [
+            233,
+            3391,
+            2355,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\n- In 4.4 Aventails: “The aventail” by “Chainmail aventail”\n\nAdd:\n\n- In 4.3 Eye slots: “Externally riveted eye bars are not allowed.“\n\nReplace:\n\n- In 4.4 Aventails: “The aventail” by “Chainmail aventail”\n\nAdd:\n\n- In 4.4 Aventails: “Scales and Fabric aventails are recommended to be fastened down to the edge\nof a padded pelerine, attached to the helmet liner.”\n\nSuppression:\n\nIn 5. Denied reproductions: “+”\n\nMarch-2025:\nFormatting: Grammar and Formatting\n\nAdd: 3.3 Klappvisor may have integrated Eye bars. Such eye bars must be made accordingly with\nhistorical sources, in terms of proportion, numbers and aesthetic.\n\n11-Nov-2024: (Add\nDocument has been created\n\nKlappvisors V. 26.1 13/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            916,
+            217,
+            1512,
+            307
+          ],
+          "paper": 0.67,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.1,
+          "conf_min": 95.2,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            398,
+            2263,
+            441
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.2,
+          "conf_min": 94.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            459,
+            1870,
+            502
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.5,
+          "conf_min": 92.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            601,
+            679,
+            644
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            653,
+            2163,
+            696
+          ],
+          "paper": 0,
+          "height": 39
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 95.1,
+          "conf_min": 83.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            704,
+            2042,
+            757
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "- In 4.4 Aventails: “The aventail” by “Chainmail aventail”",
+          "conf_mean": 91.5,
+          "conf_min": 76.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            774,
+            1423,
+            817
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            825,
+            273,
+            878
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- In 4.3 Eye slots: “Externally riveted eye bars are not allowed.“",
+          "conf_mean": 92.7,
+          "conf_min": 58.1,
+          "words": 12,
+          "uncertain": [
+            "allowed.“"
+          ],
+          "box": [
+            180,
+            895,
+            1572,
+            938
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            956,
+            356,
+            999
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 4.4 Aventails: “The aventail” by “Chainmail aventail”",
+          "conf_mean": 92.7,
+          "conf_min": 86,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1016,
+            1423,
+            1059
+          ],
+          "paper": 0.78,
+          "height": 33
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1068,
+            273,
+            1120
+          ],
+          "paper": 0,
+          "height": 52
+        },
+        {
+          "text": "- In 4.4 Aventails: “Scales and Fabric aventails are recommended to be fastened down to the edge",
+          "conf_mean": 95.2,
+          "conf_min": 91.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1138,
+            2292,
+            1181
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "of a padded pelerine, attached to the helmet liner.”",
+          "conf_mean": 95.7,
+          "conf_min": 91.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1198,
+            1198,
+            1241
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Suppression:",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1258,
+            443,
+            1301
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "In 5. Denied reproductions: “+”",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            184,
+            1319,
+            797,
+            1362
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "March-2025:",
+          "conf_mean": 87,
+          "conf_min": 87,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            1453,
+            440,
+            1487
+          ],
+          "paper": 0.52,
+          "height": 34
+        },
+        {
+          "text": "Formatting: Grammar and Formatting",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1526,
+            935,
+            1569
+          ],
+          "paper": 0.51,
+          "height": 42
+        },
+        {
+          "text": "Add: 3.3 Klappvisor may have integrated Eye bars. Such eye bars must be made accordingly with",
+          "conf_mean": 95.6,
+          "conf_min": 89.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            1599,
+            2298,
+            1642
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "historical sources, in terms of proportion, numbers and aesthetic.",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            182,
+            1660,
+            1489,
+            1703
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "11-Nov-2024: (Add",
+          "conf_mean": 68.7,
+          "conf_min": 40.8,
+          "words": 2,
+          "uncertain": [
+            "(Add"
+          ],
+          "box": [
+            183,
+            1783,
+            569,
+            1836
+          ],
+          "paper": 0.56,
+          "height": 53
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1855,
+            752,
+            1888
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Klappvisors V. 26.1 13/13",
+          "conf_mean": 90.5,
+          "conf_min": 83.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            234,
+            3391,
+            2354,
+            3437
+          ],
+          "paper": 0.95,
+          "height": 43,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    }
+  ]
+}

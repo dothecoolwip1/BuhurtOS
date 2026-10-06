@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Dialog } from '../Dialog';
 import { saveLystSettings } from '../../data/lyst';
+import { fetchCardTypes } from '../../data/discipline';
+import { useAsync } from '../../lib/useAsync';
 import { friendlyError } from '../../lib/friendlyError';
 import type { LystSettings } from '../../lib/lyst/rounds';
 
@@ -17,6 +19,10 @@ export function LystSettingsDialog({ eventId, settings, onClose, onSaved }: { ev
   const [autoBreak, setAutoBreak] = useState(settings.auto_break);
   const [input, setInput] = useState(settings.counter_input);
   const [cards, setCards] = useState(settings.cards.map(c => c.label).join('\n'));
+  // Governing bodies' card concepts (Pack 22): a card keeps its concept key (yellow_card, green_card ...) so a green card is never counted as yellow.
+  const vocab = useAsync(fetchCardTypes, []);
+  const biCards = (vocab.data ?? []).filter(c => c.governing_body === 'Buhurt International' && c.on_tablet);
+  const keyFor = (label: string) => settings.cards.find(c => c.label === label)?.key ?? (vocab.data ?? []).find(c => c.label.toLowerCase() === label.toLowerCase())?.key ?? keyOf(label);
   const [amounts, setAmounts] = useState(settings.deduction_amounts.join(', '));
   const [reasons, setReasons] = useState(settings.reasons.join('\n'));
   const [busy, setBusy] = useState(false);
@@ -41,7 +47,7 @@ export function LystSettingsDialog({ eventId, settings, onClose, onSaved }: { ev
     if (reasonList.length > 12 || reasonList.some(c => c.length > 40)) { setError('Reasons: at most 12, each up to 40 characters.'); return; }
     setBusy(true);
     try {
-      await saveLystSettings(eventId, { presets, regular_rounds: r, extra_round_seconds: x, auto_break: autoBreak, counter_input: input, deduction_amounts: nums, cards: cardList.map(label => ({ key: keyOf(label), label })), reasons: reasonList });
+      await saveLystSettings(eventId, { presets, regular_rounds: r, extra_round_seconds: x, auto_break: autoBreak, counter_input: input, deduction_amounts: nums, cards: cardList.map(label => ({ key: keyFor(label), label })), reasons: reasonList });
       onSaved(); onClose();
     } catch (e) { setError(friendlyError(e, 'Could not save the settings.')); } finally { setBusy(false); }
   };
@@ -67,6 +73,7 @@ export function LystSettingsDialog({ eventId, settings, onClose, onSaved }: { ev
         </fieldset>
         <fieldset><legend>Cards (one per line; leave empty if your ruleset has none)</legend>
           <textarea rows={3} value={cards} onChange={e => setCards(e.target.value)} placeholder="Type the card names your ruleset uses" />
+          {biCards.length > 0 && <button type="button" className="btn btn-line btn-sm" onClick={() => setCards(biCards.map(c => c.label).join('\n'))}>Use the Buhurt International cards ({biCards.map(c => c.label).join(', ')})</button>}
         </fieldset>
         <label><span>Point deductions the marshal may choose</span><input value={amounts} onChange={e => setAmounts(e.target.value)} /></label>
         <fieldset><legend>Reasons offered (one per line)</legend><textarea rows={4} value={reasons} onChange={e => setReasons(e.target.value)} /></fieldset>

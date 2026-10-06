@@ -1,0 +1,9 @@
+{
+  "_about": "Test fixture classification (invented).",
+  "documents": {
+    "marshal/example-combat-rules": { "kind": "rules", "applies_to": ["duels"], "relevance": "direct", "previously_cited_as": null, "note": null },
+    "marshal/example-archives": { "kind": "archive", "applies_to": [], "relevance": "archive", "previously_cited_as": null, "note": null },
+    "tournament/example-event-regulations": { "kind": "regulations", "applies_to": [], "relevance": "direct", "previously_cited_as": null, "note": null },
+    "tournament/example-chart": { "kind": "equipment", "applies_to": [], "relevance": "direct", "previously_cited_as": null, "note": "image-only chart in the test inventory" }
+  }
+}

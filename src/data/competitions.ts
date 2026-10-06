@@ -22,6 +22,8 @@ export const LEAGUE_LABEL: Record<LeagueKey, string> = { buhurt: 'Group fights',
 export interface SetupCompetition {
   id: string; name: string; category: string; league: LeagueKey; gender: Division; ruleset: string | null; structure: Structure; roundsToWin: number | null;
   status: string; sort: number; tier: string;
+  /** Pack 22: the official ruleset version (rules library) the competition is fought under, when linked. */
+  rulesetVersionId?: string | null;
   /** Dependent rows: once any exist the competition can no longer be removed, and with matches its category and division are fixed. */
   entries: number; matches: number; registrations: number;
 }
@@ -41,9 +43,9 @@ export async function fetchTierNames(): Promise<string[]> {
 
 /** Everything the Competitions tab shows, in three requests: the competitions, then counts of what depends on each. */
 export async function fetchSetupCompetitions(eventId: string): Promise<SetupCompetition[]> {
-  const { data, error } = await supabase.from('competitions').select('id,name,category,gender,ruleset,structure,rounds_to_win,status,sort,tier,ref_categories(league)').eq('event_id', eventId).order('sort');
+  const { data, error } = await supabase.from('competitions').select('id,name,category,gender,ruleset,ruleset_version_id,structure,rounds_to_win,status,sort,tier,ref_categories(league)').eq('event_id', eventId).order('sort');
   if (error) throw error;
-  type Row = { id: string; name: string; category: string; gender: Division; ruleset: string | null; structure: Structure; rounds_to_win: number | null; status: string; sort: number; tier: string | null; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
+  type Row = { id: string; name: string; category: string; gender: Division; ruleset: string | null; ruleset_version_id: string | null; structure: Structure; rounds_to_win: number | null; status: string; sort: number; tier: string | null; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
   const rows = data as unknown as Row[];
   if (rows.length === 0) return [];
   const ids = rows.map(r => r.id);
@@ -57,7 +59,7 @@ export async function fetchSetupCompetitions(eventId: string): Promise<SetupComp
   if (regs.error) throw regs.error;
   const count = (list: Array<{ competition_id: string }> | null, id: string) => (list ?? []).filter(x => x.competition_id === id).length;
   return rows.map(r => ({
-    id: r.id, name: r.name, category: r.category, gender: r.gender, ruleset: r.ruleset, structure: r.structure, roundsToWin: r.rounds_to_win, status: r.status, sort: r.sort, tier: r.tier ?? DEFAULT_TIER,
+    id: r.id, name: r.name, category: r.category, gender: r.gender, ruleset: r.ruleset, structure: r.structure, roundsToWin: r.rounds_to_win, status: r.status, sort: r.sort, tier: r.tier ?? DEFAULT_TIER, rulesetVersionId: r.ruleset_version_id ?? null,
     league: (Array.isArray(r.ref_categories) ? r.ref_categories[0]?.league : r.ref_categories?.league) ?? 'duels',
     entries: count(ents.data as Array<{ competition_id: string }>, r.id), matches: count(mats.data as Array<{ competition_id: string }>, r.id), registrations: count(regs.data as Array<{ competition_id: string }>, r.id)
   }));

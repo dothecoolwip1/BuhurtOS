@@ -1,0 +1,18 @@
+{
+  "version": "2025.03",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "accreditation:3.1": {
+      "status": "verified",
+      "note": "The official document numbers stages 4 to 8 as 3.1 to 3.5 without printing a section 3 heading (its table of contents lists them as 2.1 to 2.5; the next printed section is \"4. Marshal accreditation checklist\"). Kept as printed. The heading wraps: its last word \"Marshal\" begins the text.",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "f47fd0a63feef3a85c7bcb090f316195a01f84b5b38767a0bf62133d8f0f1703"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Changelog: latest entry \"March-2025 (Version update from 2024.06 to 2025.03)\".",
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

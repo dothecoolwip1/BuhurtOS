@@ -1,0 +1,210 @@
+{
+  "version": "26.4",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "outrance-rules:15.5": {
+      "status": "verified",
+      "note": "The example scoresheet is printed as a picture. Its legend (win criteria and point deductions) is transcribed as a table from the page image; the labels of the blank form are set aside as picture text.",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "cf4def353134199b810801d33a9b793e725328bea2da34e1c1fadc4fec3f45c2"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.4\" and every page footer \"V. 26.4\".",
+  "ocr": {
+    "fix": {
+      "25:31": {
+        "from": "{Slight (10-9) Difference in Effective Strikes from 6 to 10. Round to be Scored, Winner 10, Opponent 9.",
+        "to": "Slight (10-9) Difference in Effective Strikes from 6 to 10. Round to be Scored, Winner 10, Opponent 9.",
+        "reason": "the \"{\" was the table border"
+      },
+      "25:32": {
+        "from": "{Moderate (10-8) Difference in Effective Strikes from 11 to 15. Round to be Scored, Winner 10, Opponent 8.",
+        "to": "Moderate (10-8) Difference in Effective Strikes from 11 to 15. Round to be Scored, Winner 10, Opponent 8.",
+        "reason": "the \"{\" was the table border"
+      },
+      "25:37": {
+        "from": "|Loss of weapon When a fighter loses a weapon 3 or more times in a single round, this will result in a 1 Point Deduction to that fighters Round.",
+        "to": "Loss of weapon When a fighter loses a weapon 3 or more times in a single round, this will result in a 1 Point Deduction to that fighters Round.",
+        "reason": "the \"|\" was the table border"
+      },
+      "25:38": {
+        "from": "{Armour Failure For each 90 seconds granted for Armour Failure Repair, 1 Point will be Deduction to that fighters Round.",
+        "to": "Armour Failure For each 90 seconds granted for Armour Failure Repair, 1 Point will be Deduction to that fighters Round.",
+        "reason": "the \"{\" was the table border"
+      }
+    },
+    "insert": []
+  },
+  "noise": {
+    "25:2": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:4": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:6": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:7": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:9": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:10": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:11": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:12": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:13": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:15": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:17": "labels of the blank scoresheet form, which is printed as a picture",
+    "25:18": "labels of the blank scoresheet form, which is printed as a picture"
+  },
+  "layout": {
+    "tables": [
+      {
+        "replaces": [
+          "3:26",
+          "3:28",
+          "3:30",
+          "3:32",
+          "3:34",
+          "3:36",
+          "3:38",
+          "3:40"
+        ],
+        "rows": [
+          [
+            "",
+            "Men",
+            "Women"
+          ],
+          [
+            "Featherweight",
+            "",
+            "< 60 kg"
+          ],
+          [
+            "Lightweight",
+            "< 75 kg",
+            "60 - 70 kg"
+          ],
+          [
+            "Middleweight",
+            "75 - 85 kg",
+            "70 - 80 kg"
+          ],
+          [
+            "Light Heavyweight",
+            "85 - 95 kg",
+            "80 - 90 kg"
+          ],
+          [
+            "Heavyweight",
+            "95 -105 kg",
+            "> 90 kg"
+          ],
+          [
+            "Super Heavyweight",
+            "105 -115 kg",
+            ""
+          ],
+          [
+            "Ultra Heavyweight",
+            "> 115 kg",
+            ""
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "8:27",
+          "8:29",
+          "8:30",
+          "8:31",
+          "8:33",
+          "8:34",
+          "8:35"
+        ],
+        "rows": [
+          [
+            "",
+            "Matched fights",
+            "Tournament fights"
+          ],
+          [
+            "Division 1",
+            "3 rounds of 2 minutes (120 seconds)<br>2 breaks of 1 minute (60 seconds)",
+            "2 rounds of 2 minutes (120 seconds)<br>1 break of 45 seconds"
+          ],
+          [
+            "Division 2",
+            "3 rounds of 1m30s (90 seconds)<br>2 breaks of 1 minute (60 seconds)",
+            "2 rounds of 1m30s (90 seconds)<br>1 break of 45 seconds"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "25:26",
+          "25:28",
+          "25:29",
+          "25:30",
+          "25:31",
+          "25:32",
+          "25:33",
+          "25:35",
+          "25:36",
+          "25:37",
+          "25:38"
+        ],
+        "rows": [
+          [
+            "Win Criteria",
+            "Effective strike total > Effective Grappling > Effective List Control> Effective Aggression > Effective Defence"
+          ],
+          [
+            "Even",
+            "Difference in Effective Strikes is 5 or less. Follow Criteria by Priority until a Winner can be determined."
+          ],
+          [
+            "(10-9)",
+            "If a Winner can be determined, Round to be Scored, Winner 10, Opponent 9."
+          ],
+          [
+            "(10-10)",
+            "If no Winner can be determined, Round is a Draw. A Drawn Round is Scored 10 for both Fighters."
+          ],
+          [
+            "Slight (10-9)",
+            "Difference in Effective Strikes from 6 to 10. Round to be Scored, Winner 10, Opponent 9."
+          ],
+          [
+            "Moderate (10-8)",
+            "Difference in Effective Strikes from 11 to 15. Round to be Scored, Winner 10, Opponent 8."
+          ],
+          [
+            "Dominant (10-7)",
+            "Difference in Effective Strikes from 16 or more. Round to be Scored, Winner 10, Opponent 7."
+          ],
+          [
+            "Point Deductions",
+            ""
+          ],
+          [
+            "Yellow Card",
+            "Any yellow card given to a fighter will result in a 1 Point Deduction to that fighters Round."
+          ],
+          [
+            "Loss of weapon",
+            "When a fighter loses a weapon 3 or more times in a single round, this will result in a 1 Point Deduction to that fighters Round."
+          ],
+          [
+            "Armour Failure",
+            "For each 90 seconds granted for Armour Failure Repair, 1 Point will be Deduction to that fighters Round."
+          ]
+        ],
+        "header_rows": 0,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      }
+    ]
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

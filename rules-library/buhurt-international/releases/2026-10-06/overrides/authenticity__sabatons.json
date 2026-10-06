@@ -1,0 +1,33 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "sabatons:2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "48069f2516e02127c625e9e327475e612a5a15cf99b6304c502733c2b2e51131"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+  "ocr": {
+    "fix": {
+      "4:10": {
+        "from": "K6In - 1375 - Germany E. of Woodstock - 1376 - England",
+        "to": "Köln - 1375 - Germany E. of Woodstock - 1376 - England",
+        "reason": "page image shows \"Köln\""
+      },
+      "10:14": {
+        "from": "December-2024: SAdd",
+        "to": "December-2024: -Add",
+        "reason": "page image shows \"-Add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

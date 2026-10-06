@@ -1,0 +1,1627 @@
+{
+  "inventory_key": "authenticity/greaves",
+  "version": {
+    "version": "26.1",
+    "title": "Greaves - GoogleÂ€Docs",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+    "source_url": "https://drive.google.com/file/d/1f9RnYIO90XcFlZyoKKVo6HjoM_3WH8xE/view?usp=sharing",
+    "source_sha256": "2f663fe24c935172f731eb2f4d42a3ee8227dfbde0f710e3415e0bc5da9d0cb4",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 17,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 16 page(s) without a text layer",
+    "content_sha256": "2c8284d2cbda54b94328904b7009fbf95b6e70199b12ab809e6e0765f60cae98",
+    "detected": {
+      "version": null,
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1",
+        "2 line(s) looked like a numbered heading but did not fit the sequence"
+      ],
+      "pages": 17,
+      "source_lines": 224,
+      "assigned_lines": 287,
+      "furniture_lines": 60,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.9943,
+      "provisions": 40,
+      "numbered": 39,
+      "needs_review": 0,
+      "verified": 1,
+      "empty_pages": [
+        1
+      ],
+      "rejected_numbers": 2,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 223,
+      "picture_text_lines": 1,
+      "ocr_corrections": 2
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "greaves:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Implementation",
+      "body": "The document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "greaves:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "7e35b5946ae02907f8e065d2e3656f914639f40e08c6eb5efd4d1160c27157d4",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:0",
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Definition",
+      "body": "“Greaves” is the term used to describe all lower leg protections.\nTypes of Greaves:\n\n● 1-Panel Greaves (Half-Greaves)\n\nMade of 1 plate of metal forged to the shape of the lower leg.\nAttached by a leather strap at the back of the calf.\n\n● 2-Panel Greaves (Cased Greaves)\n\nMade of 2 plates of metal built to protect the lower leg at 360°.\nThe plates are built with hinges and attached by a leather strap at the inner side of the lower leg.\n\n● 3-Panel Greaves Made of 3 plates of metal attached with leather.\n\n● 3/4 Greaves\n\nThe front side of the lower leg is protected by a metal plate.\nThe outside of the lower leg is protected by a half-plate of metal, leaving the inner side of the lower leg unprotected.\n\n● Splinted Greaves\n\nMetal plates riveted to a leather base.\nThe plates are alternately outside and inside the leather.\n\n● Brigand Greaves\n\nMetal plates riveted to a fabric base.\nThe plates are covered by the fabric.\n\n● Eastern Greaves\n\nDue to very few historical sources, it is allowed to use eastern stylization of European Greaves.\nAllowed designs are displayed in the document “Eastern Armors.”",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "greaves:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "21a7abbe85e60b49e2116e8a892ca1e3fd41c8100dfbb27b2112c41b04be68df",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:5",
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27",
+        "3:28",
+        "3:29",
+        "3:30",
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36",
+        "3:37",
+        "3:38",
+        "3:39",
+        "3:40",
+        "3:41",
+        "3:42",
+        "3:43"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "General Requirements",
+      "body": "Historical Basis: Must be based on historical sources.\nAnatomical Shape: Must have the anatomical shape of the lower leg.\nProportions: Must reproduce the proportions based on historical sources.\n\nMalleolus Protection: Must protect the malleolus bone.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "greaves:3",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "becaaad6f367baf87be50de7552f52e88f0a55a502ef7c2cf5fa0c1fdf542ea1",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:0",
+        "4:1",
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 0,
+      "kind": "section",
+      "number": "4",
+      "title": "One Panel Greaves (Half-Greaves)",
+      "body": "",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "greaves:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "492841f2f135e817a61f985be10def5acdba41ffa9ff929438e1b4c3546055cf",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:8",
+        "4:9"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.1",
+      "title": "Historical Sources and Datation",
+      "body": "The 1-panel greave is the earliest form of lower leg protection available for knights, originating in the early 14th century.\n\nThey are Approved for 14th century and Transitional armors.\n\nThey are Denied for 15th century armors.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "greaves:4.1",
+      "parent_key": "greaves:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "c831a8e35e51765aa0470ac9c95b47ec1efee7b3d14d538414e9506800ce4e35",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:10",
+        "4:11",
+        "4:12",
+        "4:13",
+        "4:14",
+        "4:15",
+        "4:16",
+        "4:17",
+        "4:18"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.2",
+      "title": "Historical References",
+      "body": "Crucifixion, Niederhaslach — 1360, France J. von Falkenstein — 1365, Germany",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "greaves:4.2",
+      "parent_key": "greaves:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "159a5a4af5b8bf286cf21eec750c804e85e6c7c487d5106b637853e1d34ba452",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:19",
+        "4:20",
+        "4:21",
+        "4:22"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.3",
+      "title": "Specific Requirements for One Panel Greaves (Half-Greaves)",
+      "body": "They must follow the General Requirements (see Section 3 above).\nThe entire front of the lower leg must be covered by the greaves.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "greaves:4.3",
+      "parent_key": "greaves:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "2d862116cc5ad56d4a2eb1817d17696c47fbc409dcbd952e13988c37c5f6f15d",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:23",
+        "4:24",
+        "4:25",
+        "4:26",
+        "4:27"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.4",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Forge of Svan © Picture from Age of Craft ©",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "greaves:4.4",
+      "parent_key": "greaves:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "81ab3536c085228f2870a52dd6acfdc933556fe7d13d47e512b3e6f71095560b",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.5",
+      "title": "Examples of Denied Reproductions",
+      "body": "Non-anatomic shape\n\nPictures from The Medieval Things ©",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "greaves:4.5",
+      "parent_key": "greaves:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "48363f128240e49d75bbaecc7fe0ceb0b05513e651d3a05af95218cbe21b6efc",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:4",
+        "5:5",
+        "5:6",
+        "5:7",
+        "5:8",
+        "5:9"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 0,
+      "kind": "section",
+      "number": "5",
+      "title": "Two Panels Greaves (cased greaves)",
+      "body": "",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "greaves:5",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "27d5d17a6559219d96eeb53ed27a7383499571e563e1b40b7fc9e5bd103e0ff4",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:0",
+        "6:1"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.1",
+      "title": "Historical Sources and Datation",
+      "body": "2-panel greaves, also known as cased greaves, were the most common form of lower leg protection from 1370 to 1600 and later. They provided superior protection for competitors by covering the entire lower leg from all sides.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nMetropolitan Museum of Arts - 1450 Brescia - 1470/1480 - Italy",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "greaves:5.1",
+      "parent_key": "greaves:5",
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "c748b8d9cdd972b9c297e0427f334047efdf15284c6baea9533e469d3a886873",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:2",
+        "6:3",
+        "6:4",
+        "6:5",
+        "6:6",
+        "6:7",
+        "6:8",
+        "6:9",
+        "6:10",
+        "6:11"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.2",
+      "title": "Specific Requirements",
+      "body": "They must follow the General Requirements (see Section 3 above).\n2-panel greaves are Approved if worn with the adequate armor style from the 15th century.\n2-panel greaves at the bottom or top of the greaves are Denied for 15th century armor.",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "greaves:5.2",
+      "parent_key": "greaves:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "39da784801ddf3bb9861fb854a3089db6f6b9f411fd6eb004a76a15fcbca2472",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:12",
+        "6:13",
+        "6:14",
+        "6:15",
+        "6:16",
+        "6:17"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.3",
+      "title": "Examples of Articulation",
+      "body": "Fully enclosed Greaves (with heel-protection) appear in the late 15th century only.\n\nThey are Denied for 14th century and Transitional armors.\n\nExample of fully enclosed Greaves:",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "greaves:5.3",
+      "parent_key": "greaves:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "cc34691884418457901742d2e5faf8b30050dd995c0a351b706e339116bc81bd",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:0",
+        "7:1",
+        "7:2",
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.4",
+      "title": "Examples of Approved Reproductions",
+      "body": "",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "greaves:5.4",
+      "parent_key": "greaves:5",
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "ba7378d469ed770eb6c2c9d7b6064ebce60a0fce73a503738d01e0eab030fcdc",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:6+1",
+        "7:7"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.5",
+      "title": "Examples of Denied reproductions",
+      "body": "Non-anatomic design Greaves with riveted ankle part (not based on historical sources)\n\nPictures from The Medieval Things ©",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "greaves:5.5",
+      "parent_key": "greaves:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "ae8c013ae3deee42d317e3ac5290ae6070f33ca27ef126c441b8adb81bfd54f4",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:8",
+        "7:9",
+        "7:10",
+        "7:11",
+        "7:12",
+        "7:13"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "depth": 0,
+      "kind": "section",
+      "number": "6",
+      "title": "Three Panels Greaves",
+      "body": "",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "greaves:6",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "4b563c3f281d0ee44230d60cfead1cb919305caca3705d5767cd74bbaacf27d9",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:0",
+        "8:1"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.1",
+      "title": "Historical Sources and Datation",
+      "body": "3-panel Greaves are mainly represented in Germany from 1360 to 1380. They consist of one front panel and two side panels, articulated by leather straps.\n\nThey are Approved for 14th century and Transitional armors.\n\nThey are Denied for 15th century armors.",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "greaves:6.1",
+      "parent_key": "greaves:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a9a48fbe423acccd83896a002524b3e87cd3241b69ebcb7f51812c0e724f56de",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:2",
+        "8:3",
+        "8:4",
+        "8:5",
+        "8:6",
+        "8:7",
+        "8:8",
+        "8:9",
+        "8:10"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.2",
+      "title": "Historical Example",
+      "body": "Sir Burchard von Steinberg — 1376, Germany",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "greaves:6.2",
+      "parent_key": "greaves:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "04df5c050bad62c33affaa267e725fde43b2100fc97aae219e0e1092d17671dd",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:11",
+        "8:12",
+        "8:13",
+        "8:14"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.3",
+      "title": "Specific Requirements",
+      "body": "They must conform to the General Requirements (see Section 3 above).\nThe side panels must protect both sides of the lower leg, including the malleolus bone.\nThe panels can be articulated with leather straps or a piece of leather between each panel.\n\nIt is Allowed to extend the width of the side panels to cover the back of the calf, despite this not being based on historical proportions.\n\nIt is Allowed to use hinges instead of leather despite it not being documented by historical sources.",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "greaves:6.3",
+      "parent_key": "greaves:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "cc9efe8fe488aab220c4fcb67ff8453a23baa6ce3835e31c51da5b54f207d513",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:15",
+        "8:16",
+        "8:17",
+        "8:18",
+        "8:19",
+        "8:20",
+        "8:21",
+        "8:22",
+        "8:23",
+        "8:24",
+        "8:25"
+      ]
+    },
+    {
+      "ordinal": 21,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.4",
+      "title": "Examples of Approved Reproductions",
+      "body": "Side panels that are based on historical proportion\n\nPictures from Age of Craft ©\n\nPicture from The Medieval Things ©\n\nWider size panels for safety\n\nPicture from Medieval Extreme ©",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "greaves:6.4",
+      "parent_key": "greaves:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "9d93e314aa9fff031d8d3d2cb186c3a706aa31b2acceaba67c752a741ecae769",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:0",
+        "9:1",
+        "9:2",
+        "9:3",
+        "9:4",
+        "9:5",
+        "9:6",
+        "9:7",
+        "9:8",
+        "9:9",
+        "9:10",
+        "9:11"
+      ]
+    },
+    {
+      "ordinal": 22,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.5",
+      "title": "Examples of Denied Reproductions",
+      "body": "Side panels lack of shaping\n\nDoes not adequately protect the malleolus bone, rule 1.2.4\n\nPictures from The Medieval Things ©",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "greaves:6.5",
+      "parent_key": "greaves:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "1.2.4"
+      ],
+      "content_sha256": "7a3a728f4380d021b4813da0fad8a479e8004dc01f31caf521c1ead7dfdf04d2",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "10:0",
+        "10:1",
+        "10:2",
+        "10:3",
+        "10:4",
+        "10:5",
+        "10:6",
+        "10:7"
+      ]
+    },
+    {
+      "ordinal": 23,
+      "depth": 0,
+      "kind": "section",
+      "number": "7",
+      "title": "Three Quarters Greaves",
+      "body": "",
+      "page_from": 11,
+      "page_to": 11,
+      "stable_key": "greaves:7",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "0a9251a3bca05600975416881345bfba6a01ca65d9830c322ef2a4d52a131d96",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "11:0",
+        "11:1"
+      ]
+    },
+    {
+      "ordinal": 24,
+      "depth": 1,
+      "kind": "rule",
+      "number": "7.1",
+      "title": "Historical Sources and Datation",
+      "body": "3/4 Greaves first appeared in the 15th century.\nThey are Approved for Transitional and 15th century armors.\n\nThey are Denied for 14th century armors.",
+      "page_from": 11,
+      "page_to": 11,
+      "stable_key": "greaves:7.1",
+      "parent_key": "greaves:7",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "aa62bd7e48f043d8ba5fa9f599886f4e04c1c371b2256210f4858ab5bf5832ff",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "11:2",
+        "11:3",
+        "11:4",
+        "11:5",
+        "11:6",
+        "11:7"
+      ]
+    },
+    {
+      "ordinal": 25,
+      "depth": 1,
+      "kind": "rule",
+      "number": "7.2",
+      "title": "Historical Example",
+      "body": "Metropolitan Museum of Art — 1550, Italy\n\n1.1. Specific Requirements\n\nThey must conform to the General Requirements (see Section 3 above).\nThe side panels must cover at least half of the back of the calf.\n\n1.2. Examples of Approved Reproductions\n\nPicture from Age of Craft © Picture from The Medieval Things ©",
+      "page_from": 11,
+      "page_to": 11,
+      "stable_key": "greaves:7.2",
+      "parent_key": "greaves:7",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "4ad6fb672e5330ea76e22508839ad134a898e04faf94812ddaa2063519cc5a22",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "11:8",
+        "11:9",
+        "11:10",
+        "11:11",
+        "11:12",
+        "11:13",
+        "11:14",
+        "11:15",
+        "11:16",
+        "11:17",
+        "11:18",
+        "11:19",
+        "11:20"
+      ]
+    },
+    {
+      "ordinal": 26,
+      "depth": 0,
+      "kind": "section",
+      "number": "8",
+      "title": "Splinted Greaves",
+      "body": "",
+      "page_from": 12,
+      "page_to": 12,
+      "stable_key": "greaves:8",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "e6fbcc74aba8362d7a043853cc767f92e42c4c966613dd12a8a24d66032a9303",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "12:0",
+        "12:1"
+      ]
+    },
+    {
+      "ordinal": 27,
+      "depth": 1,
+      "kind": "rule",
+      "number": "8.1",
+      "title": "Historical Sources and Datation",
+      "body": "Splinted Greaves are represented in Europe from 1350 to 1380. They consist of metal plates riveted to a leather base.\n\nThey are Approved for 14th century and Transitional armor.\nThey are Denied for 15th century armor.",
+      "page_from": 12,
+      "page_to": 12,
+      "stable_key": "greaves:8.1",
+      "parent_key": "greaves:8",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "c24e82263f65686143ce48ac4392cb13301d8d45dfed9cabe9d048c3dedb5af8",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "12:2",
+        "12:3",
+        "12:4",
+        "12:5",
+        "12:6",
+        "12:7",
+        "12:8",
+        "12:9"
+      ]
+    },
+    {
+      "ordinal": 28,
+      "depth": 1,
+      "kind": "rule",
+      "number": "8.2",
+      "title": "Historical Examples",
+      "body": "Louis Thys — 1365, Belgium G. von Schwarzburg — 1349, Germany",
+      "page_from": 12,
+      "page_to": 12,
+      "stable_key": "greaves:8.2",
+      "parent_key": "greaves:8",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "164b36db47cf2cee2bdc7beb12f637be8f011590be7ed7717b9c881f29af1ff5",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "12:10",
+        "12:11",
+        "12:13",
+        "12:14",
+        "12:15"
+      ]
+    },
+    {
+      "ordinal": 29,
+      "depth": 1,
+      "kind": "rule",
+      "number": "8.3",
+      "title": "Specific Requirements for Splinted Greaves",
+      "body": "They must conform to the General Requirements (see Section 3 above).\n\nThey must be made of metal plates with the following features:\n● rectangular shape,\n● firmly riveted to a leather base,\n● plates must be riveted alternatively inside and outside the leather base,\n● plates must conform to the anatomical shape of the lower leg.",
+      "page_from": 12,
+      "page_to": 12,
+      "stable_key": "greaves:8.3",
+      "parent_key": "greaves:8",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "064d1b435edd50f1fd33cce01ea4854d6e4b1db2e62b775ab8f2bd7de9c2c8e4",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "12:16",
+        "12:17",
+        "12:18",
+        "12:19",
+        "12:20",
+        "12:21",
+        "12:22",
+        "12:23",
+        "12:24",
+        "12:25"
+      ]
+    },
+    {
+      "ordinal": 30,
+      "depth": 1,
+      "kind": "rule",
+      "number": "8.4",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Medieval Extreme ©",
+      "page_from": 13,
+      "page_to": 13,
+      "stable_key": "greaves:8.4",
+      "parent_key": "greaves:8",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "5990fa8e41906355c78cf5fe6fa0edf6f9ded63c19d1fdb1517463c510802d99",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "13:0",
+        "13:1",
+        "13:2",
+        "13:3"
+      ]
+    },
+    {
+      "ordinal": 31,
+      "depth": 1,
+      "kind": "rule",
+      "number": "8.5",
+      "title": "Examples of Denied Reproductions",
+      "body": "Fantasy designs and Non-anatomical shape",
+      "page_from": 13,
+      "page_to": 13,
+      "stable_key": "greaves:8.5",
+      "parent_key": "greaves:8",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "dd64acf2904a937fe58df4e61c7960b9f22faadad82ea112b2a97d7e8573c23b",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "13:4",
+        "13:5",
+        "13:6",
+        "13:7"
+      ]
+    },
+    {
+      "ordinal": 32,
+      "depth": 0,
+      "kind": "section",
+      "number": "9",
+      "title": "Brigand Greaves",
+      "body": "",
+      "page_from": 14,
+      "page_to": 14,
+      "stable_key": "greaves:9",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "c8f1186ddffae03a64efe665d5663818e02787bd7698aa836135bd3746057237",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "14:0",
+        "14:1"
+      ]
+    },
+    {
+      "ordinal": 33,
+      "depth": 1,
+      "kind": "rule",
+      "number": "9.1",
+      "title": "Historical Sources and Datation",
+      "body": "Brigand Greaves are represented in Europe from 1350 to 1380. They consist of metal plates riveted to a fabric base.\n\nThey are Approved for 14th century and Transitional armors.\n\nThey are Denied for 15th century armors.",
+      "page_from": 14,
+      "page_to": 14,
+      "stable_key": "greaves:9.1",
+      "parent_key": "greaves:9",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b8f2a45809235653160cf64e0fabb6c4190b0a251e1d42d1bfb264b7e4f6f528",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "14:2",
+        "14:3",
+        "14:4",
+        "14:5",
+        "14:6",
+        "14:7",
+        "14:8",
+        "14:9",
+        "14:10"
+      ]
+    },
+    {
+      "ordinal": 34,
+      "depth": 1,
+      "kind": "rule",
+      "number": "9.2",
+      "title": "Specific Requirements for Brigand Greaves",
+      "body": "They must conform to the General Requirements (see Section 3 above).\nThey must be made of metal plates with the following features:\n\n● rectangular shape,\n\n● firmly riveted to a leather base,\n\n● plates must be riveted inside the fabric, not outside,\n\n● plates must conform to the anatomical shape of the lower leg.",
+      "page_from": 14,
+      "page_to": 14,
+      "stable_key": "greaves:9.2",
+      "parent_key": "greaves:9",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "82c2f81c64152d85003d76fa8265e667be3743091fb567f31f7ce3d2ffe07ae5",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "14:11",
+        "14:12",
+        "14:13",
+        "14:14",
+        "14:15",
+        "14:16",
+        "14:17",
+        "14:18",
+        "14:19",
+        "14:20",
+        "14:21",
+        "14:22",
+        "14:23"
+      ]
+    },
+    {
+      "ordinal": 35,
+      "depth": 1,
+      "kind": "rule",
+      "number": "9.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Forge of Svan ©",
+      "page_from": 14,
+      "page_to": 14,
+      "stable_key": "greaves:9.3",
+      "parent_key": "greaves:9",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "522b2739ab8c4f7d35e84d85559bddb5ea55400afac03652fbeaa29eb5165847",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "14:24",
+        "14:25",
+        "14:26",
+        "14:27"
+      ]
+    },
+    {
+      "ordinal": 36,
+      "depth": 1,
+      "kind": "rule",
+      "number": "9.4",
+      "title": "Examples of Denied reproductions",
+      "body": "Non-anatomical shape\n\nPicture from The Medieval Things ©",
+      "page_from": 15,
+      "page_to": 15,
+      "stable_key": "greaves:9.4",
+      "parent_key": "greaves:9",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "465e52b1cdb2df9818c2f5cdc9a1215ffa70f5b3df9d3b840e1db00997ff3dce",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "15:0",
+        "15:1",
+        "15:2",
+        "15:3",
+        "15:4",
+        "15:5"
+      ]
+    },
+    {
+      "ordinal": 37,
+      "depth": 0,
+      "kind": "section",
+      "number": "10",
+      "title": "Other Denied Items",
+      "body": "",
+      "page_from": 16,
+      "page_to": 16,
+      "stable_key": "greaves:10",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "c7117c77dfe54c279f1cb934977e8127ec3845d71e4886bc513349de2405ffa6",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "16:0",
+        "16:1"
+      ]
+    },
+    {
+      "ordinal": 38,
+      "depth": 1,
+      "kind": "rule",
+      "number": "10.1",
+      "title": "Four or five Panels Greaves",
+      "body": "Those types of Greaves are not based on historical sources.\n\nTo get an approved piece, the 4th plate can be removed. The closest alternative would be the 3-panels greaves.",
+      "page_from": 16,
+      "page_to": 16,
+      "stable_key": "greaves:10.1",
+      "parent_key": "greaves:10",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "6e367a63c67b26fb465f039135ef2a3f3f8c89402448ee4d20c5b2ca76d4eef7",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "16:2",
+        "16:3",
+        "16:4",
+        "16:5",
+        "16:6",
+        "16:7"
+      ]
+    },
+    {
+      "ordinal": 39,
+      "depth": 1,
+      "kind": "rule",
+      "number": "10.2",
+      "title": "Examples of Denied Reproductions",
+      "body": "Picture from The Medieval Things ©",
+      "page_from": 16,
+      "page_to": 16,
+      "stable_key": "greaves:10.2",
+      "parent_key": "greaves:10",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "2c6f857090f0431f2250a005612eb9df11326396a87a77d3a60996db9293b7bc",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "16:8",
+        "16:9",
+        "16:10",
+        "16:11"
+      ]
+    },
+    {
+      "ordinal": 40,
+      "depth": 0,
+      "kind": "note",
+      "number": "11",
+      "title": "Changelog",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1) Formatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document) Clarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition” and “3. General Requirements”.\nThis split doesn’t have an impact on the content of the rules.\n\nMarch-2025 (V2025.03)\n\n- Formatting: Overall grammar and formatting\n\n- add: 8.1: the 4th plate can be removed\n\n- add: 4.5: Side panels lack shaping, Does not adequately protect the malleolus bone, rule 1.2.\n- add: 3.5: Greaves with riveted ankle part (not based on historical sources)\n\nDecember-2024: -add Document has been created",
+      "page_from": 17,
+      "page_to": 17,
+      "stable_key": "greaves:11",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [
+        "1.2"
+      ],
+      "content_sha256": "448d909d67111ac66a9828d4d7d11b9dc1287e5fa51113196e9157e61115b8c4",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "17:0",
+        "17:1",
+        "17:2",
+        "17:3",
+        "17:4",
+        "17:5",
+        "17:6",
+        "17:7",
+        "17:8",
+        "17:9",
+        "17:10",
+        "17:11",
+        "17:12",
+        "17:13",
+        "17:14",
+        "17:15",
+        "17:16",
+        "17:17",
+        "17:18",
+        "17:19",
+        "17:20",
+        "17:21",
+        "17:22",
+        "17:23",
+        "17:24",
+        "17:25"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "Table of contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:1",
+      "page": 2,
+      "text": "1. Implementation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "2. Definition",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "3. General Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "4. One Panel Greaves (Half-Greaves)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "4.1. Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "4.2. Historical References",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "4.3. Specific Requirements for One Panel Greaves (Half-Greaves)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "4.4. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "4.5. Examples of Denied Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "5. Two Panels Greaves (cased greaves)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "5.1. Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "5.2. Specific Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "5.3. Examples of Articulation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:14",
+      "page": 2,
+      "text": "5.4. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "5.5. Examples of Denied reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:16",
+      "page": 2,
+      "text": "6. Three Panels Greaves",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:17",
+      "page": 2,
+      "text": "6.1. Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "6.2. Historical Example",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:19",
+      "page": 2,
+      "text": "6.3. Specific Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:20",
+      "page": 2,
+      "text": "6.4. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:21",
+      "page": 2,
+      "text": "6.5. Examples of Denied Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:22",
+      "page": 2,
+      "text": "7. Three Quarters Greaves",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:23",
+      "page": 2,
+      "text": "7.1, Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:24",
+      "page": 2,
+      "text": "7.2. Historical Example",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:25",
+      "page": 2,
+      "text": "1.1. Specific Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:26",
+      "page": 2,
+      "text": "1.2. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:27",
+      "page": 2,
+      "text": "8. Splinted Greaves",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:28",
+      "page": 2,
+      "text": "8.1. Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:29",
+      "page": 2,
+      "text": "8.2. Historical Examples",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:30",
+      "page": 2,
+      "text": "8.3. Specific Requirements for Splinted Greaves",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:31",
+      "page": 2,
+      "text": "8.4. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:32",
+      "page": 2,
+      "text": "8.5. Examples of Denied Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:33",
+      "page": 2,
+      "text": "9. Brigand Greaves",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:34",
+      "page": 2,
+      "text": "9.1. Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:35",
+      "page": 2,
+      "text": "9.2. Specific Requirements for Brigand Greaves",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:36",
+      "page": 2,
+      "text": "9.3. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:37",
+      "page": 2,
+      "text": "9.4. Examples of Denied reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:38",
+      "page": 2,
+      "text": "10. Other Denied Items",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:39",
+      "page": 2,
+      "text": "10.1. Four or five Panels Greaves",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:40",
+      "page": 2,
+      "text": "10.2. Examples of Denied Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:41",
+      "page": 2,
+      "text": "11. Changelog",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:43",
+      "page": 2,
+      "text": "Greaves V. 26.]",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:45",
+      "page": 2,
+      "text": "2/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "3:44",
+      "page": 3,
+      "text": "Greaves V. 26.] 3/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "4:28",
+      "page": 4,
+      "text": "Greaves V. 26.] 4/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "5:10",
+      "page": 5,
+      "text": "Greaves V. 26.] 5/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "6:18",
+      "page": 6,
+      "text": "Greaves V. 26.] 6/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "7:14",
+      "page": 7,
+      "text": "Greaves v. 26.1 7/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "8:26",
+      "page": 8,
+      "text": "Greaves V. 26.1 8/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "9:12",
+      "page": 9,
+      "text": "Greaves V. 26.] 9/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "10:8",
+      "page": 10,
+      "text": "Greaves V. 26.] 10/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "11:21",
+      "page": 11,
+      "text": "Greaves V. 26.] 11/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "12:12",
+      "page": 12,
+      "text": "IIS A\\\\iEP",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 6.1)"
+    },
+    {
+      "id": "12:26",
+      "page": 12,
+      "text": "Greaves V. 26.] 12/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "13:8",
+      "page": 13,
+      "text": "Greaves V. 26.] 13/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "14:28",
+      "page": 14,
+      "text": "Greaves V. 26.] 14/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "15:6",
+      "page": 15,
+      "text": "Greaves V. 26.] 15/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "16:12",
+      "page": 16,
+      "text": "Greaves V. 26.] 16/17",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "17:26",
+      "page": 17,
+      "text": "Greaves v. 26.1 17/17",
+      "reason": "page footer (page N/M)"
+    }
+  ],
+  "rejected_numbers": [
+    {
+      "id": "11:12",
+      "text": "1.1. Specific Requirements",
+      "expected": "7.1"
+    },
+    {
+      "id": "11:17",
+      "text": "1.2. Examples of Approved Reproductions",
+      "expected": "7.1"
+    }
+  ],
+  "ocr_corrections": [
+    {
+      "id": "17:23",
+      "from": "December-2024: “add",
+      "to": "December-2024: -add",
+      "reason": "page image shows \"-add\" (highlighted)"
+    },
+    {
+      "id": "7:6+1",
+      "from": null,
+      "to": "5.4. Examples of Approved Reproductions",
+      "reason": "page image shows the heading \"5.4. Examples of Approved Reproductions\" between \"Example of fully enclosed Greaves:\" and 5.5; OCR did not read it"
+    }
+  ]
+}

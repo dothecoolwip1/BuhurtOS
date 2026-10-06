@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "errors": [],
+  "inventory_documents": 45,
+  "imported": [
+    "authenticity/aesthetics-and-decorations",
+    "authenticity/armor-requirements",
+    "authenticity/aventails",
+    "authenticity/barbutes",
+    "authenticity/belt-flag-s",
+    "authenticity/eyebars",
+    "authenticity/falchions",
+    "authenticity/gauntlets",
+    "authenticity/great-helms",
+    "authenticity/greaves",
+    "authenticity/infractions",
+    "authenticity/klappvisors",
+    "authenticity/nasals-and-breteches",
+    "authenticity/neck-protection",
+    "authenticity/perforated-visor-bascinets",
+    "authenticity/sabatons",
+    "authenticity/sallets",
+    "authenticity/shields-and-bucklers",
+    "authenticity/side-pivoting-visored-bascinets",
+    "authenticity/tabards",
+    "authenticity/textile-and-leather",
+    "authenticity/weapon-requirements",
+    "authenticity/wolfribs",
+    "executive/code-of-conduct",
+    "executive/committees-decision-process",
+    "executive/committees-internal-regulations",
+    "executive/gender-policies",
+    "executive/judiciary-committee",
+    "executive/no-agreement",
+    "executive/rule-update-policy",
+    "executive/structure-accreditation-titles",
+    "marshal/accreditation",
+    "marshal/buhurt-rules",
+    "marshal/duels-rules",
+    "marshal/jobs-titles-uniforms-accreditations",
+    "marshal/outrance-rules",
+    "marshal/weapon-shield-chart",
+    "tournament/buhurt-regulations",
+    "tournament/duel-regulations",
+    "tournament/league-structure",
+    "tournament/secretary-accreditation",
+    "tournament/tournament-structure"
+  ],
+  "excluded": [
+    {
+      "key": "marshal/marshal-archives",
+      "reason": "archive folder of earlier versions, not a current document"
+    },
+    {
+      "key": "tournament/tournament-archives",
+      "reason": "archive folder of earlier versions, not a current document"
+    },
+    {
+      "key": "authenticity/authenticity-archives",
+      "reason": "archive folder of earlier versions, not a current document"
+    }
+  ],
+  "missing": [],
+  "unknown": [],
+  "same_file_twice": [],
+  "documents_ok": 42,
+  "documents_with_errors": []
+}

@@ -679,3 +679,42 @@ The software is complete. Nothing in the two lists after COMPLETE is a Pack 18.1
 | Fixed test identities | Prepared, **not created**: `scripts/e2e/smoke-accounts.sql` + the runbook section. The owner creates the three users in the Supabase dashboard (so the passwords are the owner's and no email is sent), runs section 1, and adds the nine repository secrets. Nothing was created in production and no secret was set or read by this session. |
 | Old test accounts | The 3 never-confirmed p1018c accounts were **deleted** after checking: never confirmed or signed in, no membership, no audit rows, no references except their blank auto-created profiles (removed with them). The 11 other test accounts remain (memberships and audit history). |
 | Checks | Local browser suite 125/125 (new wording, plus a test that rewrites the database's own label), the SQL helper run on a scratch database (idempotent; real member untouched; arm / disarm behave). No production smoke test was run. |
+
+## Pack 22: rules, regulations, penalties and discipline (2026-10-06): IMPLEMENTED AND VERIFIED LOCALLY ON BRANCH, PUSHED, NOT MERGED, NOT DEPLOYED
+
+Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers membership) was merged in at `9d97be4`.
+- Full record: `docs/claude-packs/PACK_22_RULES_DISCIPLINE.md`.
+- Per-document QA: `docs/claude-packs/PACK_22_SOURCE_QA.md`.
+- Update procedure: `rules-library/README.md`.
+- Hosted steps (not performed): `docs/runbooks/PACK22_HOSTED_ROLLOUT.md`.
+
+| Level | Status |
+| --- | --- |
+| Official source | All **42** Buhurt International PDFs, from the official links (one-shot workflow, branch `pack22-bi-sources`, `SHA256SUMS.txt`) |
+| Import (repository) | Release `2026-10-06`: 42 imported, 3 archive folders excluded with reason, 0 missing; reconciliation **PASSED**. 1281 provisions in official numbering; 15 tables transcribed (merged cells kept); 24 picture-only pages; 210 OCR pages; 37 OCR corrections checked against the page image; 0 provisions left to review. Version labels were read from each document. Reviews were made by Claude Code against page images; publishing is the owner's act |
+| Implemented in repository | Rules library (search, document and rule pages, tables, picture/OCR notices, quick questions, Lyst Rules sheet, rule citations) · competition documents chosen from the classification (not hardcoded to BI) · BI card vocabulary with sources (green ≠ yellow) · match records carry the card concept and ruleset version · event-level sanctions · authenticity infractions and green cards · appeals and Judiciary reviews with official windows and outcomes · suspensions (event / organization / platform authority, scope, supersede, lift) · eligibility blocks at acceptance, check-in, entry, roster and readiness (no override) · discipline desk, organization/platform suspension admin, fighter's own record, Platform › Rules publishing · recorded document conflicts (tier points) · notifications reuse Pack 15 |
+| Migrations | `20261018000100` … `20261018000700` (seven, additive; `000400` is the 950 KB data load) |
+| Skeptical QA | Independent agent: 12 confirmed + 3 plausible findings. All fixed (migration `000700` + UI) and covered by `pack22_qa_fixes_gate.sql` (43 checks, fails without the fix) |
+| Automated tests | typecheck clean; Vitest **1031/1031**; build OK; `run_all.sh` **DATABASE GATE PASSED** (`pack22_gate` 139, `pack22_discipline_gate` 119, `pack22_qa_fixes_gate` 43; fingerprint 2552 lines) |
+| Browser (real Chromium, built app, real Postgres + PostgREST; 390×844 and desktop) | `pack22-live` **71/71**; `pack22-discipline-live` **56/56**; with the real Supabase Auth server (REAL_AUTH) **57/57**. Regression after the fixes: `pack16-live` 66/66, `pack13-live` 88/88, `pack18-live` 67/67 (real Auth) |
+| Applied to hosted Supabase | **NO** (hosted database not touched) |
+| Published BI versions | **None** (all 42 wait in review for the owner) |
+| PR / merged / deployed / production verified | no / no / no / **NOT VERIFIED** |
+
+### Pack 22 historical editions (earlier versions from the archive) — 2026-10-06, after skeptical QA
+
+| Level | Status |
+| --- | --- |
+| Source files collected | **YES**: 42 archive PDFs (Tournament 10, Marshal 10, Authenticity 22) on `pack22-bi-sources` (`06b671d`), checksummed; merged into the Pack 22 branch (`db87dd3`) |
+| Implemented | **YES**: `scripts/rules/history.ts`; migrations `20261018000800` (model, guard, importer, historical publishing), `20261018000900` (data, generated), `20261018001000` (QA fixes) |
+| Mapped and reconciled | **YES**: 37 historical editions of 25 documents; 4 byte-identical pairs imported once (both file names kept); 0 semantic duplicates; 1 file held back (the one-sheet "Shields 2025.3" export, word for word page 2 of chart 2024.12.13); reconciliation PASSED; **44 provisions still need human review** |
+| Skeptical QA | **DONE**: 11 confirmed findings (3 medium, 1 medium-low, 2 low-medium, 4 low, 1 medium from my own pass), all fixed with regression tests; 4 interpretation points recorded as accepted or owner decisions |
+| Locally verified | **YES**: DATABASE GATE PASSED (history gate 64 checks); Vitest 1057/1057; typecheck clean; build OK; importer 32/32; browser history 32/32, rules 71/71, discipline 56/56, Pack 13 88/88; both generated migrations deterministic |
+| Current 2026-10-06 release changed | **NO** (42-version fingerprint `2ee64069…` unchanged; migration `20261018000400` byte-identical; migrations 100–800 untouched) |
+| Committed / pushed | **YES** / **YES**, branch `ccr-321cc545-1coq4p` (see the final handoff for the commit) |
+| Merged to main | **NO** |
+| Hosted database applied | **NO** |
+| Deployed | **NO** |
+| Current rules published | **NO** (42 versions in review) |
+| Historical rules published | **NO** (37 editions in review) |
+| Production verified | **NOT VERIFIED** |

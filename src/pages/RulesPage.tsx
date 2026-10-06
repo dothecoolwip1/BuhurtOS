@@ -1,52 +1,197 @@
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Seg } from '../components/ui';
-import { RULES, type RuleGroup } from '../content/rules';
+import { Highlight, RuleRow, SourceNote } from '../components/rules/RuleBits';
+import { currentVersion, inSearchScope, isHistorical, isRuleText, summaryEntries, type RuleDocument, type RulesIndex } from '../data/rules';
+import { searchRules } from '../lib/rules/search';
+import { useRules } from '../lib/rules/useRules';
+import { useSampleMode } from '../data/mode';
 import { useTrackSearch } from '../lib/useTrackSearch';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 
-type G = 'all' | RuleGroup;
-const GROUPS: readonly (readonly [G, string])[] = [['all', 'All'], ['buhurt', 'Group fight'], ['duels', 'Duels'], ['outrance', 'Profight'], ['tournaments', 'Tournaments'], ['safety', 'Safety']];
+type F = 'all' | 'buhurt' | 'duels' | 'outrance';
+const FORMATS: readonly (readonly [F, string])[] = [['all', 'All'], ['buhurt', 'Group fight'], ['duels', 'Duels'], ['outrance', 'Profight']];
+/** Shortcuts for questions asked at the side of the list: each just runs a search (BuhurtOS shortcuts, not official categories). */
+const QUICK: readonly (readonly [string, string])[] = [
+  ['Cards and penalties', 'card'], ['Green card', 'green card'], ['Grounded fighter', 'striking grounded fighter'], ['Strike zones', 'strike zones'],
+  ['Back of the knee', 'back of knee'], ['Appeals', 'appeal'], ['Authenticity infractions', 'infraction'], ['Weapon weights', 'weight length blade'],
+  ['Marshal accreditation', 'marshal accreditation']
+];
+const SUMMARY_WORD: Record<Exclude<F, 'all'>, string> = { buhurt: 'Group fight', duels: 'Duels', outrance: 'Profight' };
 
-function Highlight({ text, q }: { text: string; q: string }) {
-  if (!q) return <>{text}</>;
-  const parts = text.split(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig'));
-  return <>{parts.map((p, i) => (i % 2 ? <mark key={i}>{p}</mark> : <span key={i}>{p}</span>))}</>;
-}
+/** A document applies to a format when it names it, or names none (general documents apply to every format). */
+const docFits = (d: RuleDocument, f: F) => f === 'all' || d.applies_to.length === 0 || d.applies_to.includes(f);
 
+/**
+ * Rules: one search box for the side of the list. Official rule text (imported from the governing body's documents, with document, version and
+ * page) comes first; BuhurtOS's own short summaries come after and are labelled as summaries. With no search, the official documents are listed
+ * by committee, each opening its text in BuhurtOS when imported and always linking to the official file.
+ */
 export function RulesPage() {
   useDocumentTitle('Rules');
   const [params, setParams] = useSearchParams();
-  const q = params.get('q') ?? '';
+  // What is typed and ticked lives here first (so fast typing never waits for the address bar), and is mirrored into the address for sharing / back.
+  const [q, setQ] = useState(() => params.get('q') ?? '');
+  const [older, setOlder] = useState(() => params.get('old') === '1');
   useTrackSearch('rules', q);
-  const rawG = params.get('g');
-  const group: G = GROUPS.some(([k]) => k === rawG) ? (rawG as G) : 'all';
-  const needle = q.trim().toLowerCase();
-  const hits = RULES.filter(r => (group === 'all' || r.group === group) && (!needle || `${r.title} ${r.kind} ${r.body} ${r.keywords ?? ''}`.toLowerCase().includes(needle)));
-  const set = (next: { q?: string; g?: G }) => {
-    const p = new URLSearchParams(params);
+  const rawF = params.get('f') ?? params.get('g');
+  const [f, setF] = useState<F>(() => (FORMATS.some(([k]) => k === rawF) ? (rawF as F) : 'all'));
+  // Back / forward are followed (the address is the only thing that changed then); typing never reads the address back, so no keystroke is lost.
+  useEffect(() => {
+    const follow = () => {
+      const u = new URLSearchParams(window.location.search);
+      setQ(u.get('q') ?? ''); setOlder(u.get('old') === '1');
+      const uf = u.get('f') ?? u.get('g'); setF(FORMATS.some(([k]) => k === uf) ? (uf as F) : 'all');
+    };
+    window.addEventListener('popstate', follow);
+    return () => window.removeEventListener('popstate', follow);
+  }, []);
+  const sample = useSampleMode();
+  const { index, loading, error, stale, reload } = useRules();
+  const set = (next: { q?: string; f?: F; old?: boolean }) => {
+    if (next.q !== undefined) setQ(next.q);
+    if (next.old !== undefined) setOlder(next.old);
+    if (next.f !== undefined) setF(next.f);
+    const p = new URLSearchParams(window.location.search);
+    p.delete('g');
     if (next.q !== undefined) { if (next.q) p.set('q', next.q); else p.delete('q'); }
-    if (next.g !== undefined) { if (next.g !== 'all') p.set('g', next.g); else p.delete('g'); }
+    if (next.f !== undefined) { if (next.f !== 'all') p.set('f', next.f); else p.delete('f'); }
+    if (next.old !== undefined) { if (next.old) p.set('old', '1'); else p.delete('old'); }
     setParams(p, { replace: true });
   };
+  // Test rulesets show only in sample mode, like other test data.
+  const docs = useMemo(() => (index?.data.documents ?? []).filter(d => (sample || !d.synthetic) && docFits(d, f)), [index, sample, f]);
+  const official = useMemo(() => (index?.entries ?? []).filter(e => isRuleText(e.provision) && (sample || !e.doc.synthetic) && docFits(e.doc, f) && inSearchScope(e.version, older)), [index, sample, f, older]);
+  const summaries = useMemo(() => summaryEntries(index?.data.documents ?? []).filter(s => f === 'all' || s.summary.kind.includes(SUMMARY_WORD[f]) || /All formats|Tournaments/.test(s.summary.kind)), [index, f]);
+  const needle = q.trim();
+  const res = useMemo(() => (needle ? searchRules(official, needle, 80) : null), [official, needle]);
+  const sres = useMemo(() => (needle ? searchRules(summaries, needle, 20) : null), [summaries, needle]);
+  const textCount = useMemo(() => new Set(official.map(e => e.version.id)).size, [official]);
+  const anyOlder = (index?.data.versions ?? []).some(v => v.status === 'superseded' || v.status === 'withdrawn' || isHistorical(v));
+
   return (
-    <section className="fade-in" style={{ display: 'grid', gap: 22, maxWidth: 860, margin: '0 auto' }}>
-      <div><p className="eyebrow">Rules lookup</p><h1 style={{ fontSize: 'clamp(46px,7vw,88px)', marginTop: 10 }}>Find a rule fast</h1>
-        <p style={{ color: 'var(--muted)', marginTop: 12, fontSize: 17 }}>Built for the side of the list: type a few words, get the answer with its document, section and version.</p></div>
-      <label className="rulesearch">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--faint)' }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-        <input value={q} onChange={e => set({ q: e.target.value })} placeholder="Try “grounded”, “longsword”, “10-point”, “tiebreak”" aria-label="Search rules" />
-      </label>
-      <Seg label="Format" value={group} options={GROUPS} onChange={g => set({ g })} />
-      <div style={{ display: 'grid', gap: 12 }}>
-        {hits.length ? hits.map(r => (
-          <article className="panel rule" key={r.title}>
-            <div className="rt"><span className="eyebrow">{r.kind}</span><span className="chip steel">{r.doc} · {r.section}</span></div>
-            <h3><Highlight text={r.title} q={needle} /></h3>
-            <p><Highlight text={r.body} q={needle} /></p>
-          </article>
-        )) : <div className="panel rule"><h3>No rule matches “{q}”</h3><p>Try a shorter word, or switch the format filter.</p></div>}
+    <section className="fade-in rl-page">
+      <div className="rl-head">
+        <p className="eyebrow">Rules</p>
+        <h1>Find a rule</h1>
       </div>
-      <p className="src">Summaries paraphrase Buhurt International documents (versions shown on each result). They are not the official text; check the source document before relying on one, and a ruleset may be changed by the event's regulations.</p>
+      <form className="rl-search" role="search" onSubmit={e => { e.preventDefault(); (document.activeElement as HTMLElement | null)?.blur(); }}>
+        <label className="rulesearch">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" style={{ color: 'var(--faint)', flex: 'none' }}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <input type="search" enterKeyHint="search" value={q} onChange={e => set({ q: e.target.value })} placeholder="Words or a rule number, e.g. “helmet”, “4.2”" aria-label="Search rules" autoComplete="off" autoCorrect="off" spellCheck={false} />
+          {q && <button type="button" className="rl-clear" onClick={() => set({ q: '' })} aria-label="Clear search">×</button>}
+        </label>
+      </form>
+      <div className="rl-filters">
+        <Seg label="Format" value={f} options={FORMATS} onChange={x => set({ f: x })} scroll />
+        {anyOlder && <label className="rl-check"><input type="checkbox" checked={older} onChange={e => set({ old: e.target.checked })} /> Include older versions and earlier editions</label>}
+      </div>
+      {!needle && textCount > 0 && (
+        <div className="rl-quick" role="group" aria-label="Common questions">
+          {QUICK.map(([label, query]) => <button key={label} type="button" className="chip rl-qchip" onClick={() => set({ q: query })}>{label}</button>)}
+        </div>
+      )}
+      {stale && <p className="src" role="status">Showing the rules saved on this device; they could not be refreshed just now.</p>}
+      {error != null && !index && <div className="panel rule"><h3>The rules could not be loaded</h3><p>Check the connection and try again.</p><button type="button" className="btn btn-line" onClick={reload}>Try again</button></div>}
+      {loading && <p className="src" role="status">Loading the rules…</p>}
+
+      {res && (
+        <div className="rl-results" aria-live="polite">
+          {textCount > 0 && (
+            <section className="rl-block" aria-labelledby="rl-official">
+              <h2 id="rl-official" className="rl-h2">Official rules <span className="mono">{res.hits.length}{res.hits.length === 80 ? '+' : ''}</span></h2>
+              {res.partial && <p className="src">No rule has every word you typed. These are the closest.</p>}
+              {res.hits.length ? <div className="rl-list">{res.hits.map(h => <RuleRow key={h.item.id} e={h.item} matched={h.matched} snippet={h.snippet} />)}</div>
+                : <p className="rl-none">No official rule matches “{needle}”.</p>}
+            </section>
+          )}
+          <section className="rl-block" aria-labelledby="rl-sum">
+            <h2 id="rl-sum" className="rl-h2">BuhurtOS summaries <span className="mono">{sres?.hits.length ?? 0}</span></h2>
+            <p className="src">Short paraphrases written by BuhurtOS, not the official wording. Check the source shown on each.</p>
+            {sres && sres.hits.length > 0 && <div className="rl-list">{sres.hits.map(h => (
+              <article className="panel rule rl-summary" key={h.item.id}>
+                <div className="rt"><span className="eyebrow">{h.item.summary.kind} · summary</span><span className="chip steel">{h.item.summary.doc} · {h.item.summary.section}</span></div>
+                <h3><Highlight text={h.item.title ?? ''} matched={h.matched} /></h3>
+                <p><Highlight text={h.item.body} matched={h.matched} /></p>
+                {h.item.docs.length > 0 && <p className="src">Official document: {h.item.docs.map((d, i) => <span key={d.id}>{i ? ' · ' : ''}<Link className="lnk" to={`/rules/doc/${d.slug}`}>{d.name}</Link></span>)}</p>}
+              </article>))}</div>}
+          </section>
+          {!res.hits.length && !sres?.hits.length && (
+            <div className="panel rule" role="status">
+              <h3>Nothing matches “{needle}”</h3>
+              <p>Try one word, a different word for the same thing, or a rule number. {f !== 'all' && <>The format filter is on: <button type="button" className="lnk" onClick={() => set({ f: 'all' })}>search all formats</button>.</>}</p>
+              <p>The official documents are always listed below the search when it is empty.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {!needle && index && <Browse idx={index} docs={docs} textCount={textCount} />}
+      {!needle && <Summaries list={summaries} />}
+      <SourceNote />
+    </section>
+  );
+}
+
+function Browse({ idx, docs, textCount }: { idx: RulesIndex; docs: RuleDocument[]; textCount: number }) {
+  const byKey = new Map<string, { name: string; docs: RuleDocument[]; first: number; bout: boolean }>();
+  for (const d of docs) {
+    const k = `${d.governing_body ?? 'Other'}|${d.committee ?? ''}`;
+    if (!byKey.has(k)) byKey.set(k, { name: [d.governing_body, d.committee_name].filter(Boolean).join(' · ') || 'Other documents', docs: [], first: Infinity, bout: false });
+    const g = byKey.get(k)!;
+    g.docs.push(d); g.first = Math.min(g.first, d.page_order ?? Infinity); g.bout ||= d.kind === 'rules';
+  }
+  // The order of the governing body's own page; the committee that publishes the bout rules opens first (what is needed at the list).
+  const sorted = [...byKey.values()].sort((a, b) => a.first - b.first || a.name.localeCompare(b.name));
+  sorted.forEach(g => g.docs.sort((a, b) => (a.page_order ?? 0) - (b.page_order ?? 0)));
+  const groups = new Map(sorted.map(g => [g.name, g]));
+  const openFirst = sorted.find(g => g.bout)?.name ?? sorted[0]?.name;
+  return (
+    <section className="rl-block" aria-labelledby="rl-docs">
+      <h2 id="rl-docs" className="rl-h2">Official documents</h2>
+      {textCount === 0 && <p className="src rl-notice">The official rule text is not in BuhurtOS yet, so search covers the BuhurtOS summaries only. Every official document is listed here and opens on the governing body's own site.</p>}
+      <div className="rl-groups">
+        {[...groups.values()].map(g => (
+          <details key={g.name} className="rl-group" open={g.name === openFirst || groups.size <= 2}>
+            <summary><span>{g.name}</span><span className="mono rl-count">{g.docs.filter(d => d.source_host !== 'drive_folder').length}</span></summary>
+            <ul className="rl-doclist">
+              {g.docs.map(d => {
+                const v = currentVersion(idx, d.id);
+                const earlier = (idx.versionsByDoc.get(d.id) ?? []).filter(isHistorical).length;
+                const folder = d.source_host === 'drive_folder';
+                return (
+                  <li key={d.id}>
+                    {folder
+                      ? <a className="rl-docrow" href={d.official_url ?? '#'} target="_blank" rel="noopener noreferrer"><span><b>{d.name}</b>{d.heading && <span className="rl-sub">{d.heading}</span>}</span><span className="chip">Earlier versions ↗</span></a>
+                      : <Link className="rl-docrow" to={`/rules/doc/${d.slug}`}><span><b>{d.name}</b>{d.heading && <span className="rl-sub">{d.heading}</span>}</span><span className="rl-docchips">{v ? <span className="chip win">Text · {v.version}</span> : <span className="chip">Official file</span>}{earlier > 0 && <span className="chip old">{earlier} earlier edition{earlier === 1 ? '' : 's'}</span>}</span></Link>}
+                  </li>
+                );
+              })}
+            </ul>
+          </details>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Summaries({ list }: { list: ReturnType<typeof summaryEntries> }) {
+  if (!list.length) return null;
+  return (
+    <section className="rl-block" aria-labelledby="rl-quick">
+      <h2 id="rl-quick" className="rl-h2">Quick summaries</h2>
+      <p className="src">Short paraphrases written by BuhurtOS, not the official wording. Each names the document and section it summarizes.</p>
+      <div className="rl-groups">
+        {list.map(s => (
+          <details key={s.id} className="rl-group rl-sumitem">
+            <summary><span>{s.title}</span><span className="rl-sub">{s.summary.kind}</span></summary>
+            <div className="rl-sumbody">
+              <p>{s.body}</p>
+              <p className="src">{s.summary.doc} · {s.summary.section}{s.docs.length > 0 && <> · {s.docs.map((d, i) => <span key={d.id}>{i ? ', ' : ''}<Link className="lnk" to={`/rules/doc/${d.slug}`}>{d.name}</Link></span>)}</>}</p>
+            </div>
+          </details>
+        ))}
+      </div>
     </section>
   );
 }

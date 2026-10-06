@@ -107,3 +107,7 @@ export function teamSummary(rows: readonly { isVolunteer: boolean; attendance: A
 export function matchWarnings(sides: readonly { name: string; tracked: boolean; ready: boolean; reasons: readonly string[] }[]): string[] {
   return sides.filter(s => s.tracked && !s.ready).map(s => `${s.name}: ${s.reasons.length ? s.reasons.join(', ').replace(/^./, c => c.toLowerCase()) : 'not ready'}`);
 }
+
+/** Pack 22: a readiness reason that is a suspension. It BLOCKS check-in and entry; no readiness override clears it (lifting the suspension does). */
+export const isDisciplineBlock = (reason: string) => /^Suspended\b/.test(reason);
+export const disciplineBlock = (reasons: readonly string[]) => reasons.find(isDisciplineBlock) ?? null;

@@ -1,0 +1,696 @@
+{
+  "inventory_key": "authenticity/sallets",
+  "version": {
+    "version": "26.1",
+    "title": "Sallets - GoogleÂ€Docs",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+    "source_url": "https://drive.google.com/file/d/1wQX1hGzV4fkjc8R5cmV_HsLYMDlmfEw6/view?usp=drive_link",
+    "source_sha256": "a4902a342148d9d03f8142d614a8f9119768635de3aa85996ab18389b7a84850",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 13,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 11 page(s) without a text layer",
+    "content_sha256": "ef99d5356ddd08fe1b97d62a63fc9a117b9016a8c5a34c883546bab1913b8db4",
+    "detected": {
+      "version": "26.1",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1, 4"
+      ],
+      "pages": 13,
+      "source_lines": 119,
+      "assigned_lines": 145,
+      "furniture_lines": 34,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99761,
+      "provisions": 13,
+      "numbered": 11,
+      "needs_review": 0,
+      "verified": 1,
+      "empty_pages": [
+        1,
+        4
+      ],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 119,
+      "picture_text_lines": 2,
+      "ocr_corrections": 0
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "sallets:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Implementation",
+      "body": "The document has been created and approved by the General Assembly of 29.11.2025.\nThe document and its rules will be implemented from the 2029 season (01/01/2029).\nCompetitors will have 3 seasons to align their equipment with this document and its rules.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "sallets:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "1e215a7d2edf407991399a96ef4f69da15cc1358d2842fc3bb9fc959292569ef",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "3:0",
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4",
+        "3:5"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Definition",
+      "body": "Sallets are the evolution of bascinets as the main combat helmet.\n\nEarliest examples are dated from 1430, and sallets were in use until 1540. The designs have widely evolved throughout the years.\n\nSallets are widely used in western Europe and can be made with integral face protection or open-faced helmets.\n\nSallets are worn alone or with an addition of a bevor, of plate or mail.\nBevor is a plate or chainmail element of armor designed to protect the neck and the mouth.\nSallets are Denied for 14th century and Transitional armors.\n\nDue to the extraordinary range of variety in 15th century armors, it is not possible to give a single approved status.\n\nSallets are Approved if matching the rest of armor for mid-15th century, Transitional 15-16th and first part of 16th century armor.\n\nChainmail bevor Plate bevor",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "sallets:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "496a2b0b887468d3d6ff8062d0d8a1105c54f1b2274474e8a82ae664747edb9d",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27",
+        "4:0"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "sallets:page-4",
+      "parent_key": null,
+      "review_status": "verified",
+      "review_note": "Picture page: drawings of sallets with aventails, no text.",
+      "topics": [
+        "pictures"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 5,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "Historical Sources and Datation",
+      "body": "DISCLAIMER\n\nWe do not intend to give a classification of Sallet per time period. We strongly recommend ordering a Sallet as a part of a whole set of armor, based on sufficient historical evidence. We strongly recommend sending an email to authenticity@buhurtinternational.com before placing an order for such armor.\n\nSallet and Bevor, Museum of Royal Armouries, Leeds. Sallet - Milan Workshop Missalia (Milan), Museum of Army in Paris - 1430/1440 - France 1480/1490 - Southern Germany Army in Paris - Around 1475 - Italy\n\nSallet with visor - Around 1475 - France or Flanders German sallet, Innsbruck - 1495 - Austria\n\nCombined salad with bevor, Historical Museum in Vienna - 1495 - Austria\n\nAugsburg Master: Lorenz Helmschmid Inv. A 205 Kunsthistorisches Museum Vienna - 1510 - Austria\n\nKept in St Michael's Church, Kerhais, England. (Stolen in the 1950s.) Dated by Capwell to 1480/90 - England\n\nHelmet of Philip the Handsome Flanders - 1496/1500 - Netherlands Stibbert Museum (Inv. 3599), Italy - 1490/1510 - Italy\n\nHalf-armor \"alla tedesca\", Milanese work, Inv. number G 9 Army Museum, Paris 1510/1515 - Italy\n\nBargello Museum (inv. 1635 C). Inv. 29.150.4a (sallet) Metropolitan Wallace Collection late sallet - 1500 Dating by Leiking 1500.Dating by Boccia 1500-1505. Museum of Art - 1500/1510 Museum dating 1515.\n\nPhiladelphia Museum of Art late sallet - 1500/1510\n\nThun sketchbook\n\nItalian sallet, Royal armouries, Leeds - 1440/1450 - England",
+      "page_from": 5,
+      "page_to": 9,
+      "stable_key": "sallets:3",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "9f0900fcc779a57ff398f5bd0080def955767f094f5fa4851d4f524d6ab157a7",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3",
+        "5:4",
+        "5:5",
+        "5:6",
+        "5:7",
+        "5:8",
+        "5:9",
+        "5:10",
+        "5:11",
+        "5:12",
+        "6:0",
+        "6:1",
+        "6:2",
+        "6:3",
+        "7:0",
+        "7:1",
+        "7:2",
+        "7:3",
+        "8:1",
+        "8:2",
+        "8:3",
+        "9:0",
+        "9:1",
+        "9:2",
+        "9:3",
+        "9:4",
+        "9:5",
+        "9:6",
+        "9:7",
+        "9:8",
+        "9:9"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 0,
+      "kind": "section",
+      "number": "4",
+      "title": "Requirements",
+      "body": "",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "sallets:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3d29162d60c0bc9bb8627f4598539b543cc6f853f7106b801fe7a3673a60cc4b",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "10:0",
+        "10:1"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.1",
+      "title": "General Requirements",
+      "body": "Reproductions must closely resemble the appearance and proportions of historical sources.\nA particular attention must be paid to the crest on top of the sallet, often forgotten by modern armorers.\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations document.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "sallets:4.1",
+      "parent_key": "sallets:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "2d1cf89074b0892a3c1c3c7b9a0e223312ae54b78c17fac86828e46dfb26fb24",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "10:2",
+        "10:3",
+        "10:4",
+        "10:5",
+        "10:6",
+        "10:8",
+        "10:9",
+        "10:10",
+        "10:11",
+        "10:12",
+        "10:13"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.2",
+      "title": "Visor",
+      "body": "Visors must not be too long or too short, it must respect the proportions of historical sources.\n\nVisors locking systems must be reproduced as per historical sources. It must be hidden in helmet construction if it is not based on historical sources.\n\nIt is Allowed to weld the visor down. Welded visors must resemble a functional removable visor.\nBreath holes should be round, square or rectangular.\n\nRound breath holes must not exceed a diameter of 10 mm.\n\nSquare or rectangular breath holes must replicate historical sources.\n\nBreath holes must not be so numerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to both sides.\n\nBreath holes of another shape must be documented by historical sources to be Allowed.",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "sallets:4.2",
+      "parent_key": "sallets:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "529e6430ca9406749305a84caef4f761327b3b53aaf6d0d0ae99abd83e3f8a5c",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "10:14",
+        "10:15",
+        "10:16",
+        "10:17",
+        "10:18",
+        "10:19",
+        "10:20",
+        "10:21",
+        "10:22",
+        "10:23",
+        "10:24",
+        "10:25",
+        "10:26",
+        "10:27",
+        "10:28",
+        "10:29",
+        "10:30",
+        "10:31",
+        "10:32"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.3",
+      "title": "Eyes and Mouth slot",
+      "body": "Eye slots must resemble sources for the visor.\n\nEye slots should not exceed 25mm tall to prevent any injury.\nIt is Allowed to add up to five (5) safety eyebars.\n\nEye bars must be welded internally or riveted internally.\n\nEye bars must conform to the “Eye bars” document.",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "sallets:4.3",
+      "parent_key": "sallets:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "0a3ffab67b5907529f5d8177ffafc905ebd332ea27cc1373ece2de1ce61d29bc",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "10:33",
+        "10:34",
+        "10:35",
+        "10:36",
+        "10:37",
+        "10:38",
+        "10:39",
+        "10:40",
+        "10:41",
+        "10:42",
+        "10:43"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.4",
+      "title": "Bevor",
+      "body": "Sallets are not designed to be worn with an aventail, unlike bascinets. Sallets are worn with bevor.\n\nSallet must be worn with a plate bevor, or a safe construction simulating a mail bevor as best as possible.\n\nBevor must be constructed in such a way as to protect its wearer. Mail bevor must integrate a grill of protection or additional plates.\n\nChainmail bevor must conform to Chainmail Aventails requirements listed in the “Aventails” document.\nAdditional neck protection can be worn according to historical sources.\nAdditional neck protection not based on historical sources can be worn if concealed.",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "sallets:4.4",
+      "parent_key": "sallets:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "61afde4311abecd95e7f8030cd095e8f54f8f9d712de0146e0baefe26a61ccef",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "10:44",
+        "10:45",
+        "10:46",
+        "10:47",
+        "10:48",
+        "10:49",
+        "10:50",
+        "10:51",
+        "10:52",
+        "10:53",
+        "10:54",
+        "10:55",
+        "10:56",
+        "10:57"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.5",
+      "title": "Others",
+      "body": "Sallets may be decorated in the spirit of medieval styles, such as orle, torse, vervelle covers and coat of arms badges etc.\n\nSuch decoration must be made in coherence with historical sources.\n\nSallets can be covered with silk or velvet, as per historical sources. These decorations require a lot of maintenance to maintain a high level of aesthetic. Any Sallet with silk or velvet cover that is too much damaged can be denied during Authenticity Check.\n\nUsing modern and/or offensive imagery and slogans is prohibited.",
+      "page_from": 11,
+      "page_to": 11,
+      "stable_key": "sallets:4.5",
+      "parent_key": "sallets:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "07a8e5eb5fade37e38f11f993ad5d94ab1529e4dc8525769cd1e86a4da8600ec",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "11:0",
+        "11:1",
+        "11:2",
+        "11:3",
+        "11:4",
+        "11:5",
+        "11:6",
+        "11:7",
+        "11:8",
+        "11:9",
+        "11:10",
+        "11:11",
+        "11:12"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 0,
+      "kind": "section",
+      "number": "5",
+      "title": "Examples of Approved Reproductions",
+      "body": "Pictures from The Medieval Things ©",
+      "page_from": 12,
+      "page_to": 12,
+      "stable_key": "sallets:5",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "1224f9c071bc04c751e872ce74a9712541a97269efe09bf62af4c75077148c22",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "12:0",
+        "12:1",
+        "12:2",
+        "12:3"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 0,
+      "kind": "note",
+      "number": "6",
+      "title": "Changelog",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1) Document has been created",
+      "page_from": 13,
+      "page_to": 13,
+      "stable_key": "sallets:6",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "ff29586f66c756612b879fe382552c6d47ab86c56e509100938b8443b89e4689",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "13:0",
+        "13:1",
+        "13:2",
+        "13:3",
+        "13:4",
+        "13:5",
+        "13:6",
+        "13:7"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "Table of contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:1",
+      "page": 2,
+      "text": "1. Implementation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "2. Definition",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "3. Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "4. Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "4.1. General Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "4.2. Visor",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "4.3. Eyes and Mouth slot",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "4.4. Bevor",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "4.5. Others",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "5. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "6. Changelog",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "Sallets V. 26.1",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "2/13",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:17",
+      "page": 2,
+      "text": "10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:19",
+      "page": 2,
+      "text": "10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:20",
+      "page": 2,
+      "text": "10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:21",
+      "page": 2,
+      "text": "10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:22",
+      "page": 2,
+      "text": "11",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:23",
+      "page": 2,
+      "text": "12",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:24",
+      "page": 2,
+      "text": "13",
+      "reason": "table of contents"
+    },
+    {
+      "id": "3:28",
+      "page": 3,
+      "text": "solets v.26: 3/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "5:13",
+      "page": 5,
+      "text": "solets v.26: 5/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "6:4",
+      "page": 6,
+      "text": "solets v.26: 6/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "7:4",
+      "page": 7,
+      "text": "solets v.26: 7/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "8:0",
+      "page": 8,
+      "text": "a",
+      "reason": "OCR: text inside a picture (lettering 8px tall, smaller than any printed text)"
+    },
+    {
+      "id": "8:4",
+      "page": 8,
+      "text": "Sallets V. 26.1 8/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "9:10",
+      "page": 9,
+      "text": "solets v.26: 9/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "10:7",
+      "page": 10,
+      "text": "y",
+      "reason": "OCR: text inside a picture (lettering 11px tall, smaller than any printed text)"
+    },
+    {
+      "id": "10:58",
+      "page": 10,
+      "text": "solets v.26: 10/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "11:13",
+      "page": 11,
+      "text": "solets v.26: 11/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "12:4",
+      "page": 12,
+      "text": "solets v.26: 12/13",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "13:8",
+      "page": 13,
+      "text": "solets v.26: 13/13",
+      "reason": "page footer (page N/M)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": []
+}

@@ -1,0 +1,1600 @@
+{
+  "inventory_key": "authenticity/great-helms",
+  "sha256": "87fd76fb602b2955dca88a47a4b7c968b4b5120a56ee946b28c8d01848309f52",
+  "source_file": "Authenticity/Great Helms.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 7 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 7,
+    "title": "Great Helms - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:21:01 2026 UTC",
+    "modified": "Wed Jan 28 14:21:01 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")\\) BUHURT(Z\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 79.6,
+      "ocr_lines": [
+        {
+          "text": ")\\) BUHURT(Z",
+          "conf_mean": 54.9,
+          "conf_min": 53.8,
+          "words": 2,
+          "uncertain": [
+            "BUHURT(Z"
+          ],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 116,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 54.9"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1275,
+            990,
+            1346
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1452,
+            1724,
+            1646
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. Implementation\n2. Definition\n3. Historical Sources and Datation\n4. Requirements\n4.1. General Requirements\n4.2. Visor\n4.3. Eye slots\n4.4. Aventails\n4.5. Others\n5. Examples of Approved Reproductions\n6. Examples of Denied Reproductions\n7. Changelog\n\nGreot Helms v. 261 2/7",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.8,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            377,
+            621,
+            417
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            449,
+            512,
+            491
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            514,
+            389,
+            548
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.4,
+          "conf_min": 90.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            579,
+            840,
+            613
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "4. Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            645,
+            485,
+            687
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            710,
+            774,
+            752
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 95.9,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            775,
+            419,
+            809
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "4.3. Eye slots",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            840,
+            499,
+            883
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "4.4. Aventails",
+          "conf_mean": 93,
+          "conf_min": 92.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            906,
+            498,
+            939
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "4.5. Others",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            970,
+            451,
+            1004
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96,
+          "conf_min": 94.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1035,
+            969,
+            1078
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "6. Examples of Denied Reproductions",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1101,
+            918,
+            1143
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            153,
+            1166,
+            421,
+            1209
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "Greot Helms v. 261 2/7",
+          "conf_mean": 66.4,
+          "conf_min": 0.5,
+          "words": 5,
+          "uncertain": [
+            "Greot"
+          ],
+          "box": [
+            230,
+            3394,
+            2269,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\nGreat helms are a popular head defense formerly known as “Chapel de fer” from the 12th to the 14th\ncenturies. Characterized by its cylindrical design and large size, it provided maximum protection for the\nface and neck. Often used as a secondary defense, it was worn over a maille coif, cervelliere, or\nbascinet.\n\nDuring the 14th century, Great helms were used as a primary defense during battle. It was designed to\nbe removed after the early engagements.\n\nIn the late 14th and during the 15th century, Great helms evolved to be suitable for tournaments only.\nTheir latest version is called “Frogmouth” and is designed for jousting.\n\nGreat helms are Approved for 14th century, Transitional and 15th century armors.\n\n3. Historical Sources and Datation\n\nSchweizerisches Landesmuseum - Germanisches National Museum - Pembridge Helm, National Museum of Scotland -\n1325/1350 - Switzerland 1350 - Germany 1350/1375 - Scotland\n\nO\nGerhard von Rieneck, Ederbach - Sir Nicholas Hawkberk Helm - “Frogmouth” helmet, The Art Institute of Chicago -\n1382 - Germany 1407 - England 1490\n\nGreat Helms V. 26.1 3/7",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.6,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 94.8,
+          "conf_min": 94.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            819,
+            190,
+            1663,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1714,
+            473
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            947,
+            596,
+            1530,
+            667
+          ],
+          "paper": 0.62,
+          "height": 71
+        },
+        {
+          "text": "Great helms are a popular head defense formerly known as “Chapel de fer” from the 12th to the 14th",
+          "conf_mean": 96.1,
+          "conf_min": 94.5,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            777,
+            2297,
+            820
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "centuries. Characterized by its cylindrical design and large size, it provided maximum protection for the",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            838,
+            2298,
+            881
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "face and neck. Often used as a secondary defense, it was worn over a maille coif, cervelliere, or",
+          "conf_mean": 95.4,
+          "conf_min": 90.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            898,
+            2300,
+            941
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "bascinet.",
+          "conf_mean": 92,
+          "conf_min": 92,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            959,
+            359,
+            993
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "During the 14th century, Great helms were used as a primary defense during battle. It was designed to",
+          "conf_mean": 96.2,
+          "conf_min": 93.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            1080,
+            2299,
+            1123
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "be removed after the early engagements.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            182,
+            1141,
+            1013,
+            1184
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "In the late 14th and during the 15th century, Great helms evolved to be suitable for tournaments only.",
+          "conf_mean": 95.8,
+          "conf_min": 87.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            184,
+            1262,
+            2297,
+            1305
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Their latest version is called “Frogmouth” and is designed for jousting.",
+          "conf_mean": 91.7,
+          "conf_min": 60.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1319,
+            1588,
+            1370
+          ],
+          "paper": 0.78,
+          "height": 33
+        },
+        {
+          "text": "Great helms are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            1444,
+            1919,
+            1487
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.3,
+          "conf_min": 92.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            445,
+            1609,
+            2033,
+            1680
+          ],
+          "paper": 0.62,
+          "height": 70
+        },
+        {
+          "text": "Schweizerisches Landesmuseum - Germanisches National Museum - Pembridge Helm, National Museum of Scotland -",
+          "conf_mean": 93.9,
+          "conf_min": 91.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            2437,
+            2298,
+            2469
+          ],
+          "paper": 0.76,
+          "height": 24
+        },
+        {
+          "text": "1325/1350 - Switzerland 1350 - Germany 1350/1375 - Scotland",
+          "conf_mean": 93.8,
+          "conf_min": 90.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            230,
+            2481,
+            2087,
+            2513
+          ],
+          "paper": 0.87,
+          "height": 25
+        },
+        {
+          "text": "O",
+          "conf_mean": 72.2,
+          "conf_min": 72.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1145,
+            3067,
+            1193,
+            3118
+          ],
+          "paper": 0.54,
+          "height": 51,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "Gerhard von Rieneck, Ederbach - Sir Nicholas Hawkberk Helm - “Frogmouth” helmet, The Art Institute of Chicago -",
+          "conf_mean": 93.9,
+          "conf_min": 90,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            210,
+            3175,
+            2250,
+            3206
+          ],
+          "paper": 0.77,
+          "height": 24
+        },
+        {
+          "text": "1382 - Germany 1407 - England 1490",
+          "conf_mean": 93.9,
+          "conf_min": 90.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            313,
+            3219,
+            1904,
+            3251
+          ],
+          "paper": 0.91,
+          "height": 24
+        },
+        {
+          "text": "Great Helms V. 26.1 3/7",
+          "conf_mean": 92.7,
+          "conf_min": 84.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2269,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "4. Requirements\n\n4.1. General Requirements\n\nReproductions must closely resemble the appearance and proportions of the sources.\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”\ndocument.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nThe visor must not be too long or too short, it must respect the proportions of historical sources.\nBreath holes should be round and consistently sized unless documented by an historical source.\n\nBreath holes must not be so numerous that they compromise the helm’s structural integrity. It is\nacceptable to mirror breath holes to both sides.\n\n4.3. Eye slots\n\nEye slots should resemble sources for the visor.\nEye slots should not exceed 25mm tall to prevent any injury.\nExternally riveted Eye bars must be based on documented historical examples.\n\nGreat helms with two (2) Eye slots are permitted to add up to two (2) externally riveted Eye bars or\nsafety Eye bars per Eye slot.\n\nGreat helms with a single Eye slot are allowed to add up to five (5) safety Eye bars: one (1) in the middle\nand two (2) on each side.\n\nIt is not possible to mix externally riveted Eye bars and safety Eye bars on the same helmet. Only one\ntype of Eye bar is allowed. Integrated Eye bars are not allowed.\n\nEye bars must conform to the “Eye bars” document.\n\nGreot Helms v. 261 4/7",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95,
+      "ocr_lines": [
+        {
+          "text": "4. Requirements",
+          "conf_mean": 95.5,
+          "conf_min": 95.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            848,
+            190,
+            1630,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            929,
+            422
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of the sources.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            483,
+            1912,
+            526
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”",
+          "conf_mean": 95.9,
+          "conf_min": 91.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            557,
+            2304,
+            600
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "document.",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            618,
+            389,
+            651
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 96,
+          "conf_min": 91,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            690,
+            2060,
+            733
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            826,
+            489,
+            866
+          ],
+          "paper": 0.63,
+          "height": 40
+        },
+        {
+          "text": "The visor must not be too long or too short, it must respect the proportions of historical sources.",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            937,
+            2108,
+            980
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Breath holes should be round and consistently sized unless documented by an historical source.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            1011,
+            2126,
+            1053
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Breath holes must not be so numerous that they compromise the helm’s structural integrity. It is",
+          "conf_mean": 95.9,
+          "conf_min": 91.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            1084,
+            2300,
+            1127
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "acceptable to mirror breath holes to both sides.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            1144,
+            1130,
+            1187
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "4.3. Eye slots",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1279,
+            589,
+            1330
+          ],
+          "paper": 0.7,
+          "height": 40
+        },
+        {
+          "text": "Eye slots should resemble sources for the visor.",
+          "conf_mean": 96.3,
+          "conf_min": 94.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1391,
+            1145,
+            1434
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Eye slots should not exceed 25mm tall to prevent any injury.",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1464,
+            1391,
+            1507
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Externally riveted Eye bars must be based on documented historical examples.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1537,
+            1777,
+            1580
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Great helms with two (2) Eye slots are permitted to add up to two (2) externally riveted Eye bars or",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            182,
+            1610,
+            2301,
+            1653
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "safety Eye bars per Eye slot.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            181,
+            1671,
+            759,
+            1714
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "Great helms with a single Eye slot are allowed to add up to five (5) safety Eye bars: one (1) in the middle",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 23,
+          "uncertain": [],
+          "box": [
+            182,
+            1744,
+            2299,
+            1787
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "and two (2) on each side.",
+          "conf_mean": 95.8,
+          "conf_min": 94.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            181,
+            1804,
+            690,
+            1847
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is not possible to mix externally riveted Eye bars and safety Eye bars on the same helmet. Only one",
+          "conf_mean": 96.2,
+          "conf_min": 94.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            184,
+            1877,
+            2297,
+            1920
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "type of Eye bar is allowed. Integrated Eye bars are not allowed.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1938,
+            1459,
+            1981
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Eye bars must conform to the “Eye bars” document.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            2011,
+            1224,
+            2054
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Greot Helms v. 261 4/7",
+          "conf_mean": 66.1,
+          "conf_min": 0.5,
+          "words": 5,
+          "uncertain": [
+            "Greot"
+          ],
+          "box": [
+            230,
+            3394,
+            2269,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4.4. Aventails\n\nGreat helms must be worn with chainmail Aventail or scale Aventail. Fabric Aventails are not allowed.\nAventails must conform to the “Aventails” document.\n\nGreat helms can not have a suspension system made of vervelles and leather. Chainmail should be\naffixed to the interior of the helmet.\n\nAny additional protective plates covering the cervical spine must be hidden under the Aventail.\n\n4.5. Others\n\nGreat helms may be decorated in the spirit of medieval styles, such as an orle, torse, decorated\nAventails (with copper/brass chainmail rings) coat of arms badges, etc.\n\nSuch decoration must be made in coherence with historical sources.\nUsing modern and/or offensive imagery and slogans is prohibited.\n\n5. Examples of Approved Reproductions\n\nPicture from J. Gries © Picture from The Medieval Things ©\n\nGreat Helms V. 26.1 3/7",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.9,
+      "ocr_lines": [
+        {
+          "text": "4.4. Aventails",
+          "conf_mean": 92.5,
+          "conf_min": 92,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            189,
+            590,
+            229
+          ],
+          "paper": 0.6,
+          "height": 40,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Great helms must be worn with chainmail Aventail or scale Aventail. Fabric Aventails are not allowed.",
+          "conf_mean": 94.8,
+          "conf_min": 90.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            300,
+            2223,
+            334
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "Aventails must conform to the “Aventails” document.",
+          "conf_mean": 93.7,
+          "conf_min": 86.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            179,
+            373,
+            1232,
+            407
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Great helms can not have a suspension system made of vervelles and leather. Chainmail should be",
+          "conf_mean": 95.8,
+          "conf_min": 91.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            446,
+            2297,
+            489
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "affixed to the interior of the helmet.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            507,
+            880,
+            541
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Any additional protective plates covering the cervical spine must be hidden under the Aventail.",
+          "conf_mean": 95.8,
+          "conf_min": 91.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            580,
+            2082,
+            623
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "4.5. Others",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            715,
+            526,
+            755
+          ],
+          "paper": 0.61,
+          "height": 40
+        },
+        {
+          "text": "Great helms may be decorated in the spirit of medieval styles, such as an orle, torse, decorated",
+          "conf_mean": 95.7,
+          "conf_min": 91.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            182,
+            827,
+            2296,
+            870
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Aventails (with copper/brass chainmail rings) coat of arms badges, etc.",
+          "conf_mean": 95.3,
+          "conf_min": 92.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            887,
+            1608,
+            931
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 95.9,
+          "conf_min": 94.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            960,
+            1558,
+            995
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited.",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            1033,
+            1506,
+            1077
+          ],
+          "paper": 0.73,
+          "height": 35
+        },
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            299,
+            1382,
+            2181,
+            1471
+          ],
+          "paper": 0.68,
+          "height": 87
+        },
+        {
+          "text": "Picture from J. Gries © Picture from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            402,
+            2419,
+            1930,
+            2450
+          ],
+          "paper": 0.84,
+          "height": 25
+        },
+        {
+          "text": "Great Helms V. 26.1 3/7",
+          "conf_mean": 84.3,
+          "conf_min": 54.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2269,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "6. Examples of Denied Reproductions\n\nDesign of the bottom of the visor does not reproduce historical sources.\n\nDesign of the top of the helmet does not reproduce historical sources.\n\nPictures from The Medieval Things ©\n\nGreat Helms V. 26.1 6/7",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.3,
+      "ocr_lines": [
+        {
+          "text": "6. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            363,
+            189,
+            2117,
+            278
+          ],
+          "paper": 0.68,
+          "height": 71,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "Design of the bottom of the visor does not reproduce historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            456,
+            527,
+            2025,
+            565
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "Design of the top of the helmet does not reproduce historical sources.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            479,
+            1757,
+            2002,
+            1791
+          ],
+          "paper": 0.59,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            912,
+            2860,
+            1460,
+            2892
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Great Helms V. 26.1 6/7",
+          "conf_mean": 92.8,
+          "conf_min": 84.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2269,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- In 4.2 Visor Requirements: “Breath holes should be round and consistently sized unless\ndocumented by an historical source.”\n\nAdd:\n\n- In 4.3 Eye slots:\n\n- “Externally riveted eye bars must be based on documented historical examples.”\n\n- “Integrated eye bars are not allowed.”\n\nReplace:\n\n- In 4.3 Eye slots: “buhurt-optimized internal Eye bars” and “buhurt-optimized internal” by “safety\nEye bars”\n\nDecember-2024: “add\nDocument has been created\n\nGreot Helms v. 261 1/7",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.4,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            922,
+            189,
+            1557,
+            279
+          ],
+          "paper": 0.69,
+          "height": 90,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            222,
+            408,
+            2263,
+            451
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96,
+          "conf_min": 94.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            470,
+            1869,
+            512
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.7,
+          "conf_min": 92.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            702,
+            679,
+            745
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            753,
+            2163,
+            796
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Add: “1. implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 93.8,
+          "conf_min": 74.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            804,
+            2042,
+            857
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            874,
+            427,
+            909
+          ],
+          "paper": 0,
+          "height": 35
+        },
+        {
+          "text": "- In 4.2 Visor Requirements: “Breath holes should be round and consistently sized unless",
+          "conf_mean": 96.1,
+          "conf_min": 92.8,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            935,
+            2101,
+            978
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "documented by an historical source.”",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            996,
+            926,
+            1038
+          ],
+          "paper": 0.34,
+          "height": 34
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 95.5,
+          "conf_min": 95.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1046,
+            273,
+            1099
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- In 4.3 Eye slots:",
+          "conf_mean": 95.8,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1117,
+            651,
+            1160
+          ],
+          "paper": 0.83,
+          "height": 34
+        },
+        {
+          "text": "- “Externally riveted eye bars must be based on documented historical examples.”",
+          "conf_mean": 96,
+          "conf_min": 92.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1178,
+            1954,
+            1221
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "- “Integrated eye bars are not allowed.”",
+          "conf_mean": 95.7,
+          "conf_min": 92.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            1238,
+            1088,
+            1281
+          ],
+          "paper": 0.78,
+          "height": 33
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1299,
+            356,
+            1342
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 4.3 Eye slots: “buhurt-optimized internal Eye bars” and “buhurt-optimized internal” by “safety",
+          "conf_mean": 91.5,
+          "conf_min": 55.5,
+          "words": 14,
+          "uncertain": [
+            "internal”"
+          ],
+          "box": [
+            180,
+            1359,
+            2243,
+            1402
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Eye bars”",
+          "conf_mean": 93.7,
+          "conf_min": 93.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            183,
+            1420,
+            373,
+            1463
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "December-2024: “add",
+          "conf_mean": 66,
+          "conf_min": 39.9,
+          "words": 2,
+          "uncertain": [
+            "“add"
+          ],
+          "box": [
+            182,
+            1571,
+            636,
+            1619
+          ],
+          "paper": 0.55,
+          "height": 48
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1626,
+            752,
+            1659
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Greot Helms v. 261 1/7",
+          "conf_mean": 61.4,
+          "conf_min": 0.5,
+          "words": 5,
+          "uncertain": [
+            "Greot"
+          ],
+          "box": [
+            230,
+            3394,
+            2269,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}

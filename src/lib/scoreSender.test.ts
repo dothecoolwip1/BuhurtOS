@@ -65,6 +65,9 @@ describe('lyst actions ride the same outbox', () => {
     expect(lystCall({ id: 'd1', kind: 'lyst.discipline', payload: { matchId: 'm1', round: 1, side: 'a', kind: 'deduction', amount: 1, reason: 'Illegal strike', calledBy: 'Lee' } })?.args)
       .toMatchObject({ p_command: 'd1', p_kind: 'deduction', p_amount: 1, p_side: 'a', p_called_by: 'Lee' });
     expect(lystCall({ id: 'v1', kind: 'lyst.void', payload: { id: 'd1', reason: 'wrong fighter' } })).toEqual({ fn: 'lyst_void_discipline', args: { p_command: 'v1', p_id: 'd1', p_reason: 'wrong fighter' } });
+    // Pack 22: citing the rule a call was for rides the same outbox, with the entry id as the command id; null removes the citation
+    expect(lystCall({ id: 'c1', kind: 'lyst.cite_rule', payload: { disciplineId: 'd1', provisionId: 'p9' } })).toEqual({ fn: 'lyst_cite_rule', args: { p_command: 'c1', p_discipline: 'd1', p_provision: 'p9' } });
+    expect(lystCall({ id: 'c2', kind: 'lyst.cite_rule', payload: { disciplineId: 'd1', provisionId: null } })?.args).toEqual({ p_command: 'c2', p_discipline: 'd1', p_provision: null });
   });
   it('the timer is not an outbox kind: it cannot be changed offline', () => {
     expect(isLystKind('lyst.timer')).toBe(false);

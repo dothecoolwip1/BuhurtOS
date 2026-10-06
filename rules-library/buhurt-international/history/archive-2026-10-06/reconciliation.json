@@ -1,0 +1,55 @@
+{
+  "ok": true,
+  "errors": [],
+  "archive_files": 42,
+  "unique_files": 38,
+  "editions": 37,
+  "same_as_current": 0,
+  "held": 1,
+  "documents": [
+    "authenticity/aesthetics-and-decorations",
+    "authenticity/aventails",
+    "authenticity/belt-flag-s",
+    "authenticity/eyebars",
+    "authenticity/great-helms",
+    "authenticity/greaves",
+    "authenticity/infractions",
+    "authenticity/klappvisors",
+    "authenticity/nasals-and-breteches",
+    "authenticity/neck-protection",
+    "authenticity/perforated-visor-bascinets",
+    "authenticity/sabatons",
+    "authenticity/shields-and-bucklers",
+    "authenticity/side-pivoting-visored-bascinets",
+    "authenticity/tabards",
+    "authenticity/textile-and-leather",
+    "authenticity/weapon-requirements",
+    "authenticity/wolfribs",
+    "marshal/buhurt-rules",
+    "marshal/duels-rules",
+    "marshal/outrance-rules",
+    "marshal/weapon-shield-chart",
+    "tournament/buhurt-regulations",
+    "tournament/duel-regulations",
+    "tournament/tournament-structure"
+  ],
+  "byte_identical_collapsed": [
+    {
+      "file": "Tournament/Archive/Buhurt Regulations 26.1(1).pdf",
+      "edition": "tournament/buhurt-regulations@26.1"
+    },
+    {
+      "file": "Tournament/Archive/Duels Regulations V2024.12(1).pdf",
+      "edition": "tournament/duel-regulations@2024.12"
+    },
+    {
+      "file": "Tournament/Archive/Duels Regulations.pdf",
+      "edition": "tournament/duel-regulations@2025.03"
+    },
+    {
+      "file": "Tournament/Archive/Duels Regulations 26.1(1).pdf",
+      "edition": "tournament/duel-regulations@26.1"
+    }
+  ],
+  "same_text_collapsed": []
+}

@@ -1,0 +1,3 @@
+{ "release": "r2", "governing_body": "Example Body (test)", "synthetic": true,
+  "excluded": [ { "key": "tournament/example-chart", "reason": "image-only chart: kept as a link to the official file, not transcribed" },
+                { "key": "tournament/example-event-regulations", "reason": "not changed since release r1: V.2.0 from r1 stays current" } ] }

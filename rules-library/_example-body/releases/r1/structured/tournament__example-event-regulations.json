@@ -1,0 +1,220 @@
+{
+  "inventory_key": "tournament/example-event-regulations",
+  "version": {
+    "version": "V.2.0",
+    "title": "about:blank",
+    "published_on": "2026-02-15",
+    "effective_from": null,
+    "note": null,
+    "source_url": "https://example.invalid/files/example-event-regulations.pdf",
+    "source_sha256": "6db368fa513a21d1d2a042d93a1ecf5bd08c4de929293e8ddd9536ff54e411c7",
+    "retrieved_at": "2026-10-06T04:37:17.254Z",
+    "page_count": 1,
+    "extractor": "pdftotext unknown -layout -enc UTF-8",
+    "content_sha256": "5c9be1f33f9f8a889a0ea58dca689d3ecbeb02418b818ab2ad0e5f0b4809e785",
+    "detected": {
+      "version": "2.0",
+      "date": "2026-02-15"
+    },
+    "confirmed_by": "Pack 22 fixture (invented document)",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "pages": 1,
+      "source_lines": 14,
+      "assigned_lines": 25,
+      "furniture_lines": 1,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99401,
+      "provisions": 6,
+      "numbered": 5,
+      "needs_review": 0,
+      "verified": 1,
+      "empty_pages": [],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 0,
+      "picture_text_lines": 0,
+      "ocr_corrections": 0
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "note",
+      "number": null,
+      "title": null,
+      "body": "EXAMPLE BODY · TEST DOCUMENT · NOT REAL RULES\n\nExample Event Regulations V.2.0 · 15.02.2026 Invented for software testing only.",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "example-event-regulations:p0001",
+      "parent_key": null,
+      "review_status": "verified",
+      "review_note": "title page",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "5c8dd190f23ce9d9d25cd01a7ec560b1aa6ba2cd0bfd98f56a9559064c7b248a",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:0",
+        "1:1",
+        "1:2",
+        "1:3",
+        "1:4",
+        "1:5",
+        "1:6",
+        "1:7",
+        "1:8"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Registration",
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "example-event-regulations:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3a7eb3c9f81bf3121fc0f5c55bc866ab2457176f27762a4f910e343e8eae19bb",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:9"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.1",
+      "title": "Deadline",
+      "body": "Teams register at least ten days before the example event.",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "example-event-regulations:1.1",
+      "parent_key": "example-event-regulations:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "db3d12de6132fc01dbecd0db07a94fabf05537b4fc11003eae1a35ba1143dc46",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:10",
+        "1:11",
+        "1:12"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.2",
+      "title": "Fighters",
+      "body": "Each fighter is registered by name before the first bout.",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "example-event-regulations:1.2",
+      "parent_key": "example-event-regulations:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "7c8e67d12713b52be689825be60ab8af877edec333c06c4a3c1251aa46082d5b",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:13",
+        "1:14",
+        "1:15"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Results",
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "example-event-regulations:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a5c868c191bfbf6b0e57a11acf14c79af6e5a6f4e11a7237241a52e01fe5a726",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:16"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.1",
+      "title": "Protests",
+      "body": "A captain may raise a protest with the head marshal within ten minutes of the bout ending.",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "example-event-regulations:2.1",
+      "parent_key": "example-event-regulations:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [
+        "appeal",
+        "complaint"
+      ],
+      "cross_refs": [],
+      "content_sha256": "b4ee723b7191cdb9349c33f07a8f6edb73b643e28c601c4e80d6a3f87706579c",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:17",
+        "1:18",
+        "1:19",
+        "1:20",
+        "1:21",
+        "1:22",
+        "1:23",
+        "1:25"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "1:24",
+      "page": 1,
+      "text": "                               Page 1 of 1",
+      "reason": "page number"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": []
+}

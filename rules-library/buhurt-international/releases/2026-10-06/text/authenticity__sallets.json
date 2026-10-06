@@ -1,0 +1,1997 @@
+{
+  "inventory_key": "authenticity/sallets",
+  "sha256": "a4902a342148d9d03f8142d614a8f9119768635de3aa85996ab18389b7a84850",
+  "source_file": "Authenticity/Sallets.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 11 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 13,
+    "title": "Sallets - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:25:21 2026 UTC",
+    "modified": "Wed Jan 28 14:25:21 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. Implementation\n2. Definition\n3. Historical Sources and Datation\n4. Requirements\n4.1. General Requirements\n4.2. Visor\n4.3. Eyes and Mouth slot\n4.4. Bevor\n4.5. Others\n5. Examples of Approved Reproductions\n6. Changelog\n\nSallets V. 26.1\n\n2/13\n\n10\n10\n10\n10\n10\n11\n12\n13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.4,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            377,
+            621,
+            417
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            449,
+            512,
+            491
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            514,
+            389,
+            548
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.4,
+          "conf_min": 90.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            579,
+            840,
+            613
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "4. Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            645,
+            485,
+            687
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            710,
+            774,
+            752
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 95.9,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            775,
+            419,
+            809
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "4.3. Eyes and Mouth slot",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            226,
+            840,
+            730,
+            883
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "4.4. Bevor",
+          "conf_mean": 92.6,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            906,
+            436,
+            939
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "4.5. Others",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            970,
+            451,
+            1004
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96,
+          "conf_min": 94.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1035,
+            969,
+            1078
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "6. Changelog",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            153,
+            1100,
+            421,
+            1144
+          ],
+          "paper": 0.71,
+          "height": 44
+        },
+        {
+          "text": "Sallets V. 26.1",
+          "conf_mean": 85.8,
+          "conf_min": 79.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            534,
+            3428
+          ],
+          "paper": 0.76,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "2/13",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2176,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.79,
+          "height": 47
+        },
+        {
+          "text": "10",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2294,
+            645,
+            2337,
+            678
+          ],
+          "paper": 0.62,
+          "height": 33
+        },
+        {
+          "text": "10",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2294,
+            710,
+            2337,
+            744
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "10",
+          "conf_mean": 96.8,
+          "conf_min": 96.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2294,
+            775,
+            2337,
+            809
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "10",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2294,
+            840,
+            2337,
+            874
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "10",
+          "conf_mean": 96.8,
+          "conf_min": 96.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2294,
+            905,
+            2337,
+            939
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "11",
+          "conf_mean": 97,
+          "conf_min": 97,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2297,
+            971,
+            2331,
+            1003
+          ],
+          "paper": 0.68,
+          "height": 32
+        },
+        {
+          "text": "12",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2294,
+            1036,
+            2337,
+            1069
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "13",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2294,
+            1101,
+            2337,
+            1135
+          ],
+          "paper": 0.65,
+          "height": 34
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 29.11.2025.\nThe document and its rules will be implemented from the 2029 season (01/01/2029).\nCompetitors will have 3 seasons to align their equipment with this document and its rules.\n\n2. Definition\n\nSallets are the evolution of bascinets as the main combat helmet.\n\nEarliest examples are dated from 1430, and sallets were in use until 1540. The designs have widely\nevolved throughout the years.\n\nSallets are widely used in western Europe and can be made with integral face protection or open-faced\nhelmets.\n\nSallets are worn alone or with an addition of a bevor, of plate or mail.\nBevor is a plate or chainmail element of armor designed to protect the neck and the mouth.\nSallets are Denied for 14th century and Transitional armors.\n\nDue to the extraordinary range of variety in 15th century armors, it is not possible to give a single\napproved status.\n\nSallets are Approved if matching the rest of armor for mid-15th century, Transitional 15-16th and\nfirst part of 16th century armor.\n\nChainmail bevor Plate bevor\n\nsolets v.26: 3/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.2,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 94.1,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            819,
+            190,
+            1663,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 29.11.2025.",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules will be implemented from the 2029 season (01/01/2029).",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1884,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Competitors will have 3 seasons to align their equipment with this document and its rules.",
+          "conf_mean": 96.2,
+          "conf_min": 95,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            491,
+            1985,
+            534
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            947,
+            717,
+            1530,
+            788
+          ],
+          "paper": 0.61,
+          "height": 71
+        },
+        {
+          "text": "Sallets are the evolution of bascinets as the main combat helmet.",
+          "conf_mean": 95.1,
+          "conf_min": 90.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            898,
+            1497,
+            932
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Earliest examples are dated from 1430, and sallets were in use until 1540. The designs have widely",
+          "conf_mean": 96.1,
+          "conf_min": 92.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            1000,
+            2298,
+            1043
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "evolved throughout the years.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            1061,
+            779,
+            1104
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Sallets are widely used in western Europe and can be made with integral face protection or open-faced",
+          "conf_mean": 95.4,
+          "conf_min": 91.5,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            1164,
+            2297,
+            1207
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "helmets.",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            1224,
+            348,
+            1258
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Sallets are worn alone or with an addition of a bevor, of plate or mail.",
+          "conf_mean": 95.4,
+          "conf_min": 91.7,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            1326,
+            1565,
+            1369
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Bevor is a plate or chainmail element of armor designed to protect the neck and the mouth.",
+          "conf_mean": 96.3,
+          "conf_min": 91.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            182,
+            1428,
+            2016,
+            1471
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Sallets are Denied for 14th century and Transitional armors.",
+          "conf_mean": 95.8,
+          "conf_min": 91.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1531,
+            1448,
+            1574
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "Due to the extraordinary range of variety in 15th century armors, it is not possible to give a single",
+          "conf_mean": 96.3,
+          "conf_min": 95,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            183,
+            1633,
+            2298,
+            1676
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "approved status.",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            1694,
+            514,
+            1736
+          ],
+          "paper": 0.7,
+          "height": 42
+        },
+        {
+          "text": "Sallets are Approved if matching the rest of armor for mid-15th century, Transitional 15-16th and",
+          "conf_mean": 95.2,
+          "conf_min": 91.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            1796,
+            2299,
+            1839
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "first part of 16th century armor.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            180,
+            1856,
+            857,
+            1899
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Chainmail bevor Plate bevor",
+          "conf_mean": 92.7,
+          "conf_min": 91.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            558,
+            2061,
+            1786,
+            2095
+          ],
+          "paper": 0.79,
+          "height": 34
+        },
+        {
+          "text": "solets v.26: 3/13",
+          "conf_mean": 50.6,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "3. Historical Sources and Datation\n\nDISCLAIMER\n\nWe do not intend to give a classification of Sallet per time period. We strongly recommend ordering a\nSallet as a part of a whole set of armor, based on sufficient historical evidence. We strongly recommend\nsending an email to authenticity@buhurtinternational.com before placing an order for such armor.\n\nSallet and Bevor, Museum of Royal Armouries, Leeds. Sallet - Milan Workshop Missalia (Milan), Museum of\nArmy in Paris - 1430/1440 - France 1480/1490 - Southern Germany Army in Paris - Around 1475 - Italy\n\nSallet with visor - Around 1475 - France or Flanders German sallet, Innsbruck - 1495 - Austria\n\nsolets v.26: 5/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93,
+      "ocr_lines": [
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 93.9,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            445,
+            189,
+            2033,
+            260
+          ],
+          "paper": 0.62,
+          "height": 70
+        },
+        {
+          "text": "DISCLAIMER",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1120,
+            370,
+            1401,
+            404
+          ],
+          "paper": 0.45,
+          "height": 34
+        },
+        {
+          "text": "We do not intend to give a classification of Sallet per time period. We strongly recommend ordering a",
+          "conf_mean": 95.9,
+          "conf_min": 91.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            475,
+            2336,
+            518
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "Sallet as a part of a whole set of armor, based on sufficient historical evidence. We strongly recommend",
+          "conf_mean": 96.2,
+          "conf_min": 93,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            528,
+            2334,
+            572
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "sending an email to authenticity@buhurtinternational.com before placing an order for such armor.",
+          "conf_mean": 95.5,
+          "conf_min": 91.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            581,
+            2144,
+            624
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Sallet and Bevor, Museum of Royal Armouries, Leeds. Sallet - Milan Workshop Missalia (Milan), Museum of",
+          "conf_mean": 93.4,
+          "conf_min": 87.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            218,
+            1500,
+            2269,
+            1531
+          ],
+          "paper": 0.78,
+          "height": 25
+        },
+        {
+          "text": "Army in Paris - 1430/1440 - France 1480/1490 - Southern Germany Army in Paris - Around 1475 - Italy",
+          "conf_mean": 94.6,
+          "conf_min": 91.2,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            179,
+            1540,
+            2189,
+            1580
+          ],
+          "paper": 0.84,
+          "height": 25
+        },
+        {
+          "text": "Sallet with visor - Around 1475 - France or Flanders German sallet, Innsbruck - 1495 - Austria",
+          "conf_mean": 93.9,
+          "conf_min": 91.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            303,
+            2602,
+            1985,
+            2631
+          ],
+          "paper": 0.78,
+          "height": 24
+        },
+        {
+          "text": "solets v.26: 5/13",
+          "conf_mean": 50.3,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "Combined salad with bevor, Historical Museum in Vienna - 1495 - Austria\n\nAugsburg Master: Lorenz Helmschmid Inv. A 205 Kunsthistorisches Museum Vienna - 1510 - Austria\n\nsolets v.26: 6/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87.5,
+      "ocr_lines": [
+        {
+          "text": "Combined salad with bevor, Historical Museum in Vienna - 1495 - Austria",
+          "conf_mean": 94.3,
+          "conf_min": 91.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            705,
+            1418,
+            1778,
+            1447
+          ],
+          "paper": 0.7,
+          "height": 25
+        },
+        {
+          "text": "Augsburg Master: Lorenz Helmschmid Inv. A 205 Kunsthistorisches Museum Vienna - 1510 - Austria",
+          "conf_mean": 94.3,
+          "conf_min": 91.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            500,
+            2784,
+            1979,
+            2815
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "solets v.26: 6/13",
+          "conf_mean": 50.6,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "Kept in St Michael's Church, Kerhais, England. (Stolen in the 1950s.) Dated by Capwell to 1480/90 - England\n\nHelmet of Philip the Handsome Flanders - 1496/1500 - Netherlands Stibbert Museum (Inv. 3599), Italy - 1490/1510 - Italy\n\nsolets v.26: 7/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.2,
+      "ocr_lines": [
+        {
+          "text": "Kept in St Michael's Church, Kerhais, England. (Stolen in the 1950s.) Dated by Capwell to 1480/90 - England",
+          "conf_mean": 93.8,
+          "conf_min": 72.3,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            440,
+            2167,
+            2044,
+            2198
+          ],
+          "paper": 0.71,
+          "height": 29
+        },
+        {
+          "text": "Helmet of Philip the Handsome Flanders - 1496/1500 - Netherlands Stibbert Museum (Inv. 3599), Italy - 1490/1510 - Italy",
+          "conf_mean": 94.5,
+          "conf_min": 90.2,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            181,
+            3048,
+            2193,
+            3080
+          ],
+          "paper": 0.75,
+          "height": 24
+        },
+        {
+          "text": "solets v.26: 7/13",
+          "conf_mean": 50.2,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.97,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "a\n\nHalf-armor \"alla tedesca\", Milanese work, Inv. number G 9 Army Museum, Paris 1510/1515 - Italy\n\nSallets V. 26.1 8/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.8,
+      "ocr_lines": [
+        {
+          "text": "a",
+          "conf_mean": 24.5,
+          "conf_min": 24.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            594,
+            3219,
+            633,
+            3227
+          ],
+          "paper": 0.01,
+          "height": 8,
+          "in_picture": "lettering 8px tall, smaller than any printed text"
+        },
+        {
+          "text": "Half-armor \"alla tedesca\", Milanese work, Inv. number G 9 Army Museum, Paris 1510/1515 - Italy",
+          "conf_mean": 93.5,
+          "conf_min": 83.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            522,
+            3247,
+            1962,
+            3286
+          ],
+          "paper": 0.79,
+          "height": 25
+        },
+        {
+          "text": "Sallets V. 26.1 8/13",
+          "conf_mean": 92,
+          "conf_min": 89,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "Bargello Museum (inv. 1635 C). Inv. 29.150.4a (sallet) Metropolitan Wallace Collection late sallet - 1500\nDating by Leiking 1500.Dating by Boccia 1500-1505. Museum of Art - 1500/1510\nMuseum dating 1515.\n\nPhiladelphia Museum of Art late sallet - 1500/1510\n\nThun sketchbook\n\nItalian sallet, Royal armouries, Leeds - 1440/1450 - England\n\nsolets v.26: 9/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.6,
+      "ocr_lines": [
+        {
+          "text": "Bargello Museum (inv. 1635 C). Inv. 29.150.4a (sallet) Metropolitan Wallace Collection late sallet - 1500",
+          "conf_mean": 94.1,
+          "conf_min": 89.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            301,
+            977,
+            2262,
+            1009
+          ],
+          "paper": 0.78,
+          "height": 25
+        },
+        {
+          "text": "Dating by Leiking 1500.Dating by Boccia 1500-1505. Museum of Art - 1500/1510",
+          "conf_mean": 94.6,
+          "conf_min": 88.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            1021,
+            1483,
+            1053
+          ],
+          "paper": 0.74,
+          "height": 25
+        },
+        {
+          "text": "Museum dating 1515.",
+          "conf_mean": 96,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            377,
+            1065,
+            692,
+            1097
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Philadelphia Museum of Art late sallet - 1500/1510",
+          "conf_mean": 94.8,
+          "conf_min": 90.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            1473,
+            1991,
+            2216,
+            2022
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Thun sketchbook",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            539,
+            2740,
+            790,
+            2765
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "Italian sallet, Royal armouries, Leeds - 1440/1450 - England",
+          "conf_mean": 93.3,
+          "conf_min": 92,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            1371,
+            3180,
+            2256,
+            3212
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "solets v.26: 9/13",
+          "conf_mean": 50.7,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "4. Requirements\n\n4.1. General Requirements\n\nReproductions must closely resemble the appearance and proportions of historical sources.\nA particular attention must be paid to the crest on top of the sallet, often forgotten by modern armorers.\n\ny\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations\ndocument.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nVisors must not be too long or too short, it must respect the proportions of historical sources.\n\nVisors locking systems must be reproduced as per historical sources. It must be hidden in helmet\nconstruction if it is not based on historical sources.\n\nIt is Allowed to weld the visor down. Welded visors must resemble a functional removable visor.\nBreath holes should be round, square or rectangular.\n\nRound breath holes must not exceed a diameter of 10 mm.\n\nSquare or rectangular breath holes must replicate historical sources.\n\nBreath holes must not be so numerous that they compromise the helm’s structural integrity. It is\nacceptable to mirror breath holes to both sides.\n\nBreath holes of another shape must be documented by historical sources to be Allowed.\n\n4.3. Eyes and Mouth slot\n\nEye slots must resemble sources for the visor.\n\nEye slots should not exceed 25mm tall to prevent any injury.\nIt is Allowed to add up to five (5) safety eyebars.\n\nEye bars must be welded internally or riveted internally.\n\nEye bars must conform to the “Eye bars” document.\n\n4.4. Bevor\n\nSallets are not designed to be worn with an aventail, unlike bascinets. Sallets are worn with bevor.\n\nSallet must be worn with a plate bevor, or a safe construction simulating a mail bevor as best as\npossible.\n\nBevor must be constructed in such a way as to protect its wearer. Mail bevor must integrate a grill of\nprotection or additional plates.\n\nChainmail bevor must conform to Chainmail Aventails requirements listed in the “Aventails” document.\nAdditional neck protection can be worn according to historical sources.\nAdditional neck protection not based on historical sources can be worn if concealed.\n\nsolets v.26: 10/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.8,
+      "ocr_lines": [
+        {
+          "text": "4. Requirements",
+          "conf_mean": 95.5,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            848,
+            190,
+            1630,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            243,
+            371,
+            885,
+            417
+          ],
+          "paper": 0.67,
+          "height": 37
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of historical sources.",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            478,
+            2028,
+            521
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "A particular attention must be paid to the crest on top of the sallet, often forgotten by modern armorers.",
+          "conf_mean": 95.4,
+          "conf_min": 89.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            551,
+            2256,
+            594
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "y",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2290,
+            625,
+            2304,
+            636
+          ],
+          "paper": 0.43,
+          "height": 11,
+          "in_picture": "lettering 11px tall, smaller than any printed text"
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations",
+          "conf_mean": 95.9,
+          "conf_min": 92.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            624,
+            2285,
+            667
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "document.",
+          "conf_mean": 94.2,
+          "conf_min": 94.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            685,
+            389,
+            719
+          ],
+          "paper": 0.63,
+          "height": 34
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.5,
+          "conf_min": 83.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            758,
+            2060,
+            801
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            243,
+            893,
+            478,
+            929
+          ],
+          "paper": 0.64,
+          "height": 36
+        },
+        {
+          "text": "Visors must not be too long or too short, it must respect the proportions of historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            999,
+            2045,
+            1042
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Visors locking systems must be reproduced as per historical sources. It must be hidden in helmet",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            1073,
+            2299,
+            1116
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "construction if it is not based on historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 95.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1133,
+            1196,
+            1167
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "It is Allowed to weld the visor down. Welded visors must resemble a functional removable visor.",
+          "conf_mean": 96,
+          "conf_min": 93,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            1206,
+            2119,
+            1240
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "Breath holes should be round, square or rectangular.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            1279,
+            1244,
+            1322
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Round breath holes must not exceed a diameter of 10 mm.",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1352,
+            1369,
+            1386
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "Square or rectangular breath holes must replicate historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1425,
+            1560,
+            1468
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Breath holes must not be so numerous that they compromise the helm’s structural integrity. It is",
+          "conf_mean": 95.7,
+          "conf_min": 91.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            1498,
+            2299,
+            1541
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "acceptable to mirror breath holes to both sides.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            1559,
+            1130,
+            1601
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "Breath holes of another shape must be documented by historical sources to be Allowed.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            1632,
+            1973,
+            1675
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "4.3. Eyes and Mouth slot",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            243,
+            1840,
+            839,
+            1887
+          ],
+          "paper": 0.68,
+          "height": 37
+        },
+        {
+          "text": "Eye slots must resemble sources for the visor.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1947,
+            1110,
+            1989
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Eye slots should not exceed 25mm tall to prevent any injury.",
+          "conf_mean": 96.4,
+          "conf_min": 94.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            2020,
+            1391,
+            2062
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "It is Allowed to add up to five (5) safety eyebars.",
+          "conf_mean": 95.5,
+          "conf_min": 92.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            2093,
+            1165,
+            2135
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Eye bars must be welded internally or riveted internally.",
+          "conf_mean": 95.9,
+          "conf_min": 94.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            2166,
+            1294,
+            2209
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Eye bars must conform to the “Eye bars” document.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            2239,
+            1224,
+            2282
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "4.4. Bevor",
+          "conf_mean": 92.2,
+          "conf_min": 91.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            243,
+            2374,
+            496,
+            2410
+          ],
+          "paper": 0.61,
+          "height": 36
+        },
+        {
+          "text": "Sallets are not designed to be worn with an aventail, unlike bascinets. Sallets are worn with bevor.",
+          "conf_mean": 94.4,
+          "conf_min": 89.4,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            2480,
+            2159,
+            2523
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Sallet must be worn with a plate bevor, or a safe construction simulating a mail bevor as best as",
+          "conf_mean": 95.2,
+          "conf_min": 89.8,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            181,
+            2553,
+            2299,
+            2596
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "possible.",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            2614,
+            356,
+            2656
+          ],
+          "paper": 0.68,
+          "height": 42
+        },
+        {
+          "text": "Bevor must be constructed in such a way as to protect its wearer. Mail bevor must integrate a grill of",
+          "conf_mean": 95.7,
+          "conf_min": 92.2,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            182,
+            2683,
+            2302,
+            2735
+          ],
+          "paper": 0.79,
+          "height": 34
+        },
+        {
+          "text": "protection or additional plates.",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2748,
+            786,
+            2790
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "Chainmail bevor must conform to Chainmail Aventails requirements listed in the “Aventails” document.",
+          "conf_mean": 94.1,
+          "conf_min": 88.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            2821,
+            2241,
+            2863
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "Additional neck protection can be worn according to historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 95.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            2894,
+            1603,
+            2937
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Additional neck protection not based on historical sources can be worn if concealed.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            2967,
+            1876,
+            3009
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "solets v.26: 10/13",
+          "conf_mean": 50.6,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "4.5. Others\n\nSallets may be decorated in the spirit of medieval styles, such as orle, torse, vervelle covers and coat of\narms badges etc.\n\nSuch decoration must be made in coherence with historical sources.\n\nSallets can be covered with silk or velvet, as per historical sources. These decorations require a lot of\nmaintenance to maintain a high level of aesthetic. Any Sallet with silk or velvet cover that is too much\ndamaged can be denied during Authenticity Check.\n\nUsing modern and/or offensive imagery and slogans is prohibited.\n\nsolets v.26: 11/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.9,
+      "ocr_lines": [
+        {
+          "text": "4.5. Others",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            243,
+            188,
+            513,
+            225
+          ],
+          "paper": 0.61,
+          "height": 37,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Sallets may be decorated in the spirit of medieval styles, such as orle, torse, vervelle covers and coat of",
+          "conf_mean": 95.3,
+          "conf_min": 91.7,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            181,
+            294,
+            2300,
+            337
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "arms badges etc.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            356,
+            526,
+            398
+          ],
+          "paper": 0.72,
+          "height": 32
+        },
+        {
+          "text": "Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 96,
+          "conf_min": 95.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            428,
+            1558,
+            462
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Sallets can be covered with silk or velvet, as per historical sources. These decorations require a lot of",
+          "conf_mean": 96.2,
+          "conf_min": 90.7,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            501,
+            2302,
+            543
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "maintenance to maintain a high level of aesthetic. Any Sallet with silk or velvet cover that is too much",
+          "conf_mean": 95.9,
+          "conf_min": 92.3,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            562,
+            2296,
+            605
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "damaged can be denied during Authenticity Check.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            623,
+            1211,
+            666
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited.",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            696,
+            1506,
+            739
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "solets v.26: 11/13",
+          "conf_mean": 47.9,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "5. Examples of Approved Reproductions\n\nPictures from The Medieval Things ©\n\nsolets v.26: 12/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 78.6,
+      "ocr_lines": [
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96,
+          "conf_min": 95.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            299,
+            189,
+            2181,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            972,
+            2835,
+            1521,
+            2866
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "solets v.26: 12/13",
+          "conf_mean": 50.3,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "6. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nDocument has been created\n\nsolets v.26: 13/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.9,
+      "ocr_lines": [
+        {
+          "text": "6. Changelog",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            922,
+            189,
+            1557,
+            279
+          ],
+          "paper": 0.68,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            222,
+            408,
+            2263,
+            451
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            470,
+            1869,
+            512
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.8,
+          "conf_min": 92.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            662,
+            679,
+            705
+          ],
+          "paper": 0.68,
+          "height": 43
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            289,
+            714,
+            858,
+            747
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "solets v.26: 13/13",
+          "conf_mean": 50.6,
+          "conf_min": 3.6,
+          "words": 3,
+          "uncertain": [
+            "solets",
+            "v.26:"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "armor-requirements:2.4.4": {
+      "status": "verified",
+      "note": "Not a table: justified prose (wide word spacing). Checked against the official page.",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "22027dd3a2bbd5f18b1c6f280c274987188f9bcdbb075ebd0e7b099d35da600c"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\".",
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

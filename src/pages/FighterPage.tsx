@@ -21,6 +21,7 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { SocialLinksRow } from '../components/SocialLinks';
 import { FighterGallery } from '../components/FighterGallery';
 import { ClaimRequest } from '../components/ClaimRequest';
+import { FighterDisciplineRecord } from '../components/discipline/FighterDisciplineRecord';
 import { fetchClaimStates } from '../data/entrants';
 import { Block, DisciplineList, FightRow, FilterBar, FormStrip, HighlightList, MedalChip, RankingLines, SummaryTiles } from '../components/CareerBlocks';
 
@@ -157,6 +158,8 @@ function Career({ p }: { p: FighterProfile }) {
           <Link className="more" to={`/claim-profile?q=${encodeURIComponent(p.displayName)}`}>Find a different profile</Link>
         </div>
       )}
+
+      {session && <FighterDisciplineRecord fighterId={id} isMine={isMine} />}
 
       {nothingYet && (
         <section className="panel info" data-testid="career-empty">

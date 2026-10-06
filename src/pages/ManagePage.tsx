@@ -9,6 +9,7 @@ import {
   type Insurance, type ManagedRegistration
 } from '../data/manage';
 import { friendlyError } from '../lib/friendlyError';
+import { fetchDisciplineOverview } from '../data/discipline';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { formatMoney } from '../registration/model';
@@ -73,7 +74,7 @@ function Contact({ r }: { r: ManagedRegistration }) {
   );
 }
 
-function ReviewCard({ r, act }: { r: ManagedRegistration; act: ReturnType<typeof useAction> }) {
+function ReviewCard({ r, act, block }: { r: ManagedRegistration; act: ReturnType<typeof useAction>; block?: string | null }) {
   const [showHealth, setShowHealth] = useState(false);
   const disabled = act.busy === r.id;
   const todo = blockers(r);
@@ -92,9 +93,10 @@ function ReviewCard({ r, act }: { r: ManagedRegistration; act: ReturnType<typeof
       {r.categories.length > 0 && <p><b>{r.categories.map(c => c.name + (c.details.weight ? ` (${c.details.weight} kg)` : '') + (c.details.teammate ? ` with ${c.details.teammate}` : '')).join(', ')}</b></p>}
       {r.isVolunteer && r.volunteerRoles.length > 0 && <p>Volunteer roles: {r.volunteerRoles.join(', ')}</p>}
       {todo.length > 0 && <p className="src">Outstanding: {todo.join(' · ')}</p>}
+      {block && <p className="desk-block" role="status"><b>Blocked:</b> {block}. They cannot be accepted, checked in or entered until it is lifted.</p>}
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-        {r.status !== 'accepted' && <button type="button" className="btn btn-ink" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'accepted'))}>Accept</button>}
+        {r.status !== 'accepted' && <button type="button" className="btn btn-ink" disabled={disabled || !!block} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'accepted'))}>{block ? 'Blocked' : 'Accept'}</button>}
         {r.status !== 'declined' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'declined'))}>Decline</button>}
         {r.status === 'accepted' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'pending'))}>Back to pending</button>}
         {(r.status === 'accepted' || r.status === 'pending') && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => { if (window.confirm(`Withdraw ${r.fullName} from this event? They can register again later.`)) void act.run(r.id, () => withdrawRegistration(r.id)); }}>Withdraw</button>}
@@ -155,6 +157,8 @@ export function ManagePage() {
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   const isOrganizer = mine.data?.isOrganizer === true;
   const regs = useAsync(() => (eventId && isOrganizer ? fetchRegistrations(eventId) : Promise.resolve([] as ManagedRegistration[])), [eventId, isOrganizer], [reloadKey]);
+  // Pack 22: who is blocked by a suspension (the label only), so the organizer sees it before pressing Accept. The database refuses anyway.
+  const blocks = useAsync(() => (eventId && isOrganizer && (tab === 'review') ? fetchDisciplineOverview(eventId).then(o => new Map(o.blocks.map(b => [b.registration_id, b.message]))).catch(() => new Map<string, string>()) : Promise.resolve(new Map<string, string>())), [eventId, isOrganizer, tab], [reloadKey]);
   const clashes = useAsync(() => (eventId && isOrganizer ? fetchScheduleConflicts(eventId) : Promise.resolve([])), [eventId, isOrganizer], [reloadKey, tab]);
   useDocumentTitle(loaded.data ? `Manage ${loaded.data.event.name}` : 'Manage');
 
@@ -234,7 +238,7 @@ export function ManagePage() {
       {regs.loading && <p className="muted">Loading registrations…</p>}
       {!regs.loading && list.length === 0 && <div className="panel info"><h3>{all.length === 0 ? 'No registrations yet' : 'Nothing here'}</h3></div>}
       <div style={{ display: 'grid', gap: 12 }}>
-        {list.map(r => <ReviewCard key={r.id} r={r} act={act} />)}
+        {list.map(r => <ReviewCard key={r.id} r={r} act={act} block={blocks.data?.get(r.id) ?? null} />)}
       </div>
       </>)}
     </section>

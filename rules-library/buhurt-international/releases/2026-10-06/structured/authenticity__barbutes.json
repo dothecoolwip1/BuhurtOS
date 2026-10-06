@@ -1,0 +1,749 @@
+{
+  "inventory_key": "authenticity/barbutes",
+  "version": {
+    "version": "26.1",
+    "title": "Barbutes - GoogleÂ€Docs",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+    "source_url": "https://drive.google.com/file/d/1zllcOqunbMXrrV1K1PPtahGEjncrol3V/view?usp=drive_link",
+    "source_sha256": "6a3d140a13e1180d57a5209374a1c98856a8603a19c45391ba7d22f282650a56",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 11,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 10 page(s) without a text layer",
+    "content_sha256": "6f7e3e8d993a0bdd9784951f06b1dc1b531eddfd1d13e65b848e5c5ce4fd92f7",
+    "detected": {
+      "version": "26.1",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1"
+      ],
+      "pages": 11,
+      "source_lines": 115,
+      "assigned_lines": 138,
+      "furniture_lines": 37,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99618,
+      "provisions": 15,
+      "numbered": 14,
+      "needs_review": 0,
+      "verified": 1,
+      "empty_pages": [
+        1
+      ],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 115,
+      "picture_text_lines": 12,
+      "ocr_corrections": 0
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "barbutes:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Implementation",
+      "body": "The document has been created and approved by the General Assembly of 29.11.2025.\nThe document and its rules will be implemented from the 2029 season (01/01/2029).\nCompetitors will have 3 seasons to align their equipment with this document and its rules.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "barbutes:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "1e215a7d2edf407991399a96ef4f69da15cc1358d2842fc3bb9fc959292569ef",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "3:0",
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4",
+        "3:5"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Definition",
+      "body": "Barbutes are a design of helmet growing extremely popular during the 15th century. They see an extensive use and evolution between approximately 1430 to 1500.\n\nBarbutes tend to be locally used in Italy.\nBarbutes are worn alone or with an addition of a gorget of plate or mail.\n\nBarbutes can be of different designs: T shape or Y shape. The term “shape” refers to the opening for the eyes and mouth.\n\nBarbutes type helmets are Approved for 15th century armors of matching design.\n\nBarbutes type helmets are Denied for 14th century and Transitional armors.\n\nT-shaped Barbute\n\nY-shaped Barbute",
+      "page_from": 3,
+      "page_to": 4,
+      "stable_key": "barbutes:2",
+      "parent_key": null,
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3abd8fbe56b369a57a9214176fab91be1a2fb63b3cb3421e2513be3f6d390716",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:25",
+        "4:0",
+        "4:1",
+        "4:5",
+        "4:9"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "Historical Sources and Datation",
+      "body": "",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "barbutes:3",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "04e42d373a22b64d239d42d339423dfe562a290d68219f938a8fe993f807be48",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:0",
+        "5:1"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.1",
+      "title": "T-shaped Barbutes",
+      "body": "Metropolitan Museum of Art - 1460 - Italy\n\nCastello Sforzesco, Milano - 1460/1470 - Italy\n\nCastello Sforzesco, Milano - 1475/1500 - Italy",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "barbutes:3.1",
+      "parent_key": "barbutes:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "467e3b6afe5645cc8aba2693bf2d56e52a121045a47f99606a864924297ba2d3",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:2",
+        "5:3",
+        "5:4",
+        "5:5",
+        "5:6",
+        "5:7",
+        "5:8",
+        "5:9"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.2",
+      "title": "Y-shaped Barbutes",
+      "body": "The Wallace Collection - 1470 - Italy\n\nMaster Christoforo, Detroit institute of art - 1450/1460 - Italy Philadelphia Museum of Art -1450/1470 - Italy\n\nBrescia, Metropolitan Museum of Art - 1470/80- Italy Bernardino da Carnago, Metropolitan Museum of Art - 1475 - Italy",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "barbutes:3.2",
+      "parent_key": "barbutes:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a3cf640b411e87a8e03f66397794a7cc055c2dda0a579c53bac7058186e45233",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:0",
+        "6:1",
+        "6:2",
+        "6:3",
+        "6:4",
+        "6:5",
+        "6:7",
+        "6:8",
+        "6:9"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 0,
+      "kind": "section",
+      "number": "4",
+      "title": "Requirements",
+      "body": "",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "barbutes:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3d29162d60c0bc9bb8627f4598539b543cc6f853f7106b801fe7a3673a60cc4b",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "7:0",
+        "7:1"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.1",
+      "title": "General Requirements",
+      "body": "Reproductions must closely resemble the appearance and proportions of historical sources.\n\nA particular attention must be paid to the crest on top of the Barbute, often forgotten by modern armorers.\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations document.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "barbutes:4.1",
+      "parent_key": "barbutes:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "25e425ee27fb09506da52e4418cdd4a5fdbc5be8e35ae9414deec9953b7520bc",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "7:2",
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6",
+        "7:7",
+        "7:8",
+        "7:10",
+        "7:11",
+        "7:12",
+        "7:13",
+        "7:14",
+        "7:15"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.2",
+      "title": "Visor",
+      "body": "Visors must not be too long or too short, it must respect the proportions of historical sources.\n\nIt is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full contact fight and must be concealed under the aventail.",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "barbutes:4.2",
+      "parent_key": "barbutes:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b196653870d315abb8b88eb05ac8a8e567815b48d44d66f86df8e70dd8af8f57",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "7:16",
+        "7:17",
+        "7:18",
+        "7:19",
+        "7:20",
+        "7:21",
+        "7:22"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.3",
+      "title": "Eyes and Mouth slot",
+      "body": "Eyes and Mouth slots must resemble sources for the visor (T shape or Y shape).\nEyes and Mouth slots should not exceed 25 mm tall to prevent any injury, as a safety recommendation.\nIt is Allowed to add:\n\n● Up to five (5) safety Eye bars: one (1) in the middle and two (2) on each side of the Eye slots,\n● Up to five (5) safety Eye bars on the mouth slot, It is allowed to use a T shaped-Eye bar at the junction of the Eye slots and the Mouth slot.\n\nIt is allowed to use slanted safety Eye bars for barbute with Y shape only.\nEye bars must be welded internally or riveted internally.\nEye bars must conform to the “Eye bars” document.",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "barbutes:4.3",
+      "parent_key": "barbutes:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "1751327b8d14c9ef8d69cb9a3cfbfae1883254fef53cd63694c58ea573343273",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "7:23",
+        "7:24",
+        "7:25",
+        "7:26",
+        "7:27",
+        "7:28",
+        "7:29",
+        "7:30",
+        "7:31",
+        "7:32",
+        "7:33",
+        "7:34",
+        "7:35",
+        "7:36"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.4",
+      "title": "Gorget",
+      "body": "Barbutes are not designed to be worn with an aventail, unlike bascinets. Barbutes are worn with a gorget.\n\nBarbutes must be worn with a plate gorget, or a safe construction simulating a mail gorget as best as possible.\n\nGorget must be constructed in such a way as to protect its wearer. Mail gorget must integrate a grill of protection or additional plates.\n\nChainmail gorget must conform to Chainmail Aventails requirements listed in the “Aventails” document.\nAdditional neck protection can be worn according to historical sources.\nAdditional neck protection not based on historical sources can be worn if concealed.",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "barbutes:4.4",
+      "parent_key": "barbutes:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3f6d51a24a8f4dbb7131d74336c9e0384598ba86df33b64a237ad7c2f12b3c1e",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "7:37",
+        "7:38",
+        "7:39",
+        "7:40",
+        "7:41",
+        "7:42",
+        "7:43",
+        "7:44",
+        "7:45",
+        "7:46",
+        "7:47",
+        "7:48",
+        "7:49",
+        "7:50",
+        "7:51"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.5",
+      "title": "Others",
+      "body": "Barbutes may be decorated in the spirit of medieval styles, such as orle, torse, decorated collar, coat of arms badges etc.\n\nSuch decoration must be made in coherence with historical sources.\n\nBarbutes can be covered with silk or velvet, as per historical sources. These decorations require a lot of maintenance to maintain a high level of aesthetic. Any Barbute with silk or velvet cover that is too much damaged can be denied during Authenticity Check.\n\nUsing modern and/or offensive imagery and slogans is prohibited.",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "barbutes:4.5",
+      "parent_key": "barbutes:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "cb79d0170155860b62510e879b388addec669f8e87b5d8787fa277b7652a90d8",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "8:0",
+        "8:1",
+        "8:2",
+        "8:3",
+        "8:4",
+        "8:5",
+        "8:6",
+        "8:7",
+        "8:8",
+        "8:9",
+        "8:10",
+        "8:11",
+        "8:12"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 0,
+      "kind": "section",
+      "number": "5",
+      "title": "Examples of Approved Reproductions",
+      "body": "We recommend the addition of safety bars\n\nPictures from The Medieval Things ©\n\nWe recommend a smaller opening for safety\n\nPicture from Medieval Extreme ©\n\nPicture from Zoom en lice ©",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "barbutes:5",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "1e34b6028b45face42ba6806f47af7c324db39de02f0984041802aa24219c75e",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:0",
+        "9:1",
+        "9:2",
+        "9:3",
+        "9:4",
+        "9:5",
+        "9:7",
+        "9:8",
+        "9:9",
+        "9:10",
+        "9:11",
+        "9:12",
+        "9:13"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 0,
+      "kind": "section",
+      "number": "6",
+      "title": "Examples of Denied Reproductions",
+      "body": "Fabric aventail\n\nPicture from The Medieval Things ©",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "barbutes:6",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "51a993dee0717d86a8b7bb35a56e00d0393efdfdd3193f51119ec29b4fcc276d",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "10:0",
+        "10:1",
+        "10:2",
+        "10:3",
+        "10:4",
+        "10:5"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 0,
+      "kind": "note",
+      "number": "7",
+      "title": "Changelog",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1) Document has been created",
+      "page_from": 11,
+      "page_to": 11,
+      "stable_key": "barbutes:7",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "fc2fa3307e16c0384a9b98ebb44a708756a26d706adfaee6c3daf9247418b1a1",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "11:0",
+        "11:1",
+        "11:2",
+        "11:3",
+        "11:4",
+        "11:5",
+        "11:6",
+        "11:7"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "Table of contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:1",
+      "page": 2,
+      "text": "1. Implementation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "2. Definition",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "3. Historical Sources and Datation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "3.1. T-shaped Barbutes",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "3.2. Y-shaped Barbutes",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "4. Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "4.1. General Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "4.2. Visor",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "4.3. Eyes and Mouth slot",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "4.4. Gorget",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "4.5. Others",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "5. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "6. Examples of Denied Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:14",
+      "page": 2,
+      "text": "7. Changelog",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:16",
+      "page": 2,
+      "text": "Barbutes V. 26.1]",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "2/11",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "3:23",
+      "page": 3,
+      "text": "SJ » i",
+      "reason": "OCR: text inside a picture (lettering 12px tall, smaller than any printed text)"
+    },
+    {
+      "id": "3:24",
+      "page": 3,
+      "text": "J",
+      "reason": "OCR: text inside a picture (lettering 12px tall, smaller than any printed text)"
+    },
+    {
+      "id": "3:26",
+      "page": 3,
+      "text": "Bcrbutes v. 26.1 3/11",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "4:2",
+      "page": 4,
+      "text": "a",
+      "reason": "OCR: text inside a picture (lettering 10px tall, smaller than any printed text)"
+    },
+    {
+      "id": "4:3",
+      "page": 4,
+      "text": "=",
+      "reason": "OCR: text inside a picture (lettering 8px tall, smaller than any printed text)"
+    },
+    {
+      "id": "4:4",
+      "page": 4,
+      "text": "—",
+      "reason": "OCR: text inside a picture (lettering 14px tall, smaller than any printed text)"
+    },
+    {
+      "id": "4:6",
+      "page": 4,
+      "text": "~",
+      "reason": "OCR: text inside a picture (lettering 9px tall, smaller than any printed text)"
+    },
+    {
+      "id": "4:7",
+      "page": 4,
+      "text": "<<",
+      "reason": "OCR: text inside a picture (lettering 9px tall, smaller than any printed text)"
+    },
+    {
+      "id": "4:8",
+      "page": 4,
+      "text": "~ [co",
+      "reason": "OCR: text inside a picture (lettering 15px tall, smaller than any printed text)"
+    },
+    {
+      "id": "4:10",
+      "page": 4,
+      "text": "Bcrbutes v. 26.1 4/11",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "5:10",
+      "page": 5,
+      "text": "Bcrbutes v. 26.1 5/1",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "6:6",
+      "page": 6,
+      "text": "Se",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 1%), confidence 21.8)"
+    },
+    {
+      "id": "6:10",
+      "page": 6,
+      "text": "Bcrbutes v. 26.1 6/11",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "7:9",
+      "page": 7,
+      "text": "yw",
+      "reason": "OCR: text inside a picture (lettering 11px tall, smaller than any printed text)"
+    },
+    {
+      "id": "7:52",
+      "page": 7,
+      "text": "Bcrbutes v. 26.1 7/1",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "8:13",
+      "page": 8,
+      "text": "Bcrbutes v. 26.1 8/11",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "9:6",
+      "page": 9,
+      "text": "«\\",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 5%), confidence 27.9)"
+    },
+    {
+      "id": "9:14",
+      "page": 9,
+      "text": "Bcrbutes v. 26.1 9/11",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "10:6",
+      "page": 10,
+      "text": "Bcrbutes v. 26.1 10/11",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "11:8",
+      "page": 11,
+      "text": "Bcrbutes v. 26.1 n/t",
+      "reason": "OCR: text inside a picture (nothing read with confidence (best word 32): marks of a picture)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": []
+}

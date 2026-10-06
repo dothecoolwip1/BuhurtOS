@@ -1,0 +1,2301 @@
+{
+  "sha256": "691f1b945d0c2abed9d8ff593cb33e82a5276e4b8326a691516ae117b50847c2",
+  "files": [
+    "Authenticity/Archive/Perforated Visor Bascinets.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 11 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 11,
+    "title": "Perforated Visor Bascinets - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:24:09 2026 UTC",
+    "modified": "Wed Jan 28 14:24:09 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)}\\) BUHURT (7\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 75.3,
+      "ocr_lines": [
+        {
+          "text": "\\)}\\) BUHURT (7",
+          "conf_mean": 54.4,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            885,
+            181,
+            1598,
+            300
+          ],
+          "paper": 0,
+          "height": 40,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 54.4"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1275,
+            990,
+            1346
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1452,
+            1724,
+            1646
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation\n\n2. Definition\n\n3. Historical Sources and Datation\n3.1. Bascinets with perforated and forehead attached visor\n3.2. Bascinets with perforated side-hinged attached visor\n3.3. Great Bascinets with perforated visor\n3.4. Bicoques with perforated visor\n\n4. Requirements\n4.1. General Requirements\n4.2. Visor\n4.3. Aventails\n4.4. Others\n\n5. Examples of Approved Reproductions\n\n6. Examples of Denied Reproductions\n\n7. Changelog\n\nPerforated Visor Bascinets V. 26.1\n\n2/11",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.3,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            377,
+            621,
+            417
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            449,
+            512,
+            491
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            514,
+            389,
+            548
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.4,
+          "conf_min": 90.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            579,
+            840,
+            613
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "3.1. Bascinets with perforated and forehead attached visor",
+          "conf_mean": 95.5,
+          "conf_min": 92.3,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            228,
+            645,
+            1411,
+            687
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "3.2. Bascinets with perforated side-hinged attached visor",
+          "conf_mean": 94.3,
+          "conf_min": 91.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            228,
+            710,
+            1378,
+            753
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "3.3. Great Bascinets with perforated visor",
+          "conf_mean": 95.1,
+          "conf_min": 91.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            775,
+            1067,
+            817
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "3.4. Bicoques with perforated visor",
+          "conf_mean": 95,
+          "conf_min": 92.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            840,
+            929,
+            882
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "4. Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            906,
+            485,
+            947
+          ],
+          "paper": 0.71,
+          "height": 41
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            970,
+            774,
+            1013
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            1036,
+            419,
+            1069
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "4.3. Aventails",
+          "conf_mean": 92.9,
+          "conf_min": 92.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            1101,
+            498,
+            1135
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "4.4. Others",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            1166,
+            451,
+            1200
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1231,
+            969,
+            1274
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "6. Examples of Denied Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1296,
+            918,
+            1339
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            153,
+            1361,
+            421,
+            1404
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1",
+          "conf_mean": 89.5,
+          "conf_min": 78,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            992,
+            3428
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "2/11",
+          "conf_mean": 73.7,
+          "conf_min": 73.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2185,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.79,
+          "height": 47
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 29.11.2025.\nThe document and its rules will be implemented from the 2029 season (01/01/2029).\nCompetitors will have 3 seasons to align their equipment with this document and its rules.\n\n2. Definition\n\nBascinets with perforated visors are helmets with movable perforated visors. Such visors do not include\nEye slots.\nThis type of visor is depicted in some rare manuscripts in Western Europe from the late 14th century and\nearly 15th century. A handful of later designs showing this kind of visor still survive through the 15th\ncentury.\nThere is no consensus among armor experts where such manuscripts depict actual perforated visors or\nbadly drawn regular helmets (hundskulls for example).\nThose helmets use a solid metal visor to protect the face, attached by 2 different system:\n\n● Attached on the forehead by a movable piece of metal, similar to the “spoon” from Klappvisor,\n\n● Attached to the dome with hinges at the temples, similar to Pivoting visored Bascinets.\n\nSpoon\n\n[>>\n\nPerforated Visor Bascinets V. 26.1 3/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 94.1,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            819,
+            190,
+            1663,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 29.11.2025.",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            414
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The document and its rules will be implemented from the 2029 season (01/01/2029).",
+          "conf_mean": 96.1,
+          "conf_min": 93.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1884,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Competitors will have 3 seasons to align their equipment with this document and its rules.",
+          "conf_mean": 96.5,
+          "conf_min": 95.6,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            491,
+            1985,
+            535
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            947,
+            717,
+            1530,
+            788
+          ],
+          "paper": 0.61,
+          "height": 71
+        },
+        {
+          "text": "Bascinets with perforated visors are helmets with movable perforated visors. Such visors do not include",
+          "conf_mean": 96,
+          "conf_min": 90.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            898,
+            2298,
+            941
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Eye slots.",
+          "conf_mean": 95.3,
+          "conf_min": 94.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            183,
+            959,
+            374,
+            1002
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "This type of visor is depicted in some rare manuscripts in Western Europe from the late 14th century and",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            1019,
+            2296,
+            1063
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "early 15th century. A handful of later designs showing this kind of visor still survive through the 15th",
+          "conf_mean": 96.3,
+          "conf_min": 95.1,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            1080,
+            2297,
+            1123
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "century.",
+          "conf_mean": 94.6,
+          "conf_min": 94.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1142,
+            335,
+            1184
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "There is no consensus among armor experts where such manuscripts depict actual perforated visors or",
+          "conf_mean": 96.1,
+          "conf_min": 95.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1201,
+            2300,
+            1244
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "badly drawn regular helmets (hundskulls for example).",
+          "conf_mean": 95.3,
+          "conf_min": 91.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            1262,
+            1275,
+            1305
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "Those helmets use a solid metal visor to protect the face, attached by 2 different system:",
+          "conf_mean": 96.6,
+          "conf_min": 95.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1322,
+            1969,
+            1366
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "● Attached on the forehead by a movable piece of metal, similar to the “spoon” from Klappvisor,",
+          "conf_mean": 94.2,
+          "conf_min": 78.5,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            230,
+            1383,
+            2189,
+            1426
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Attached on the forehead by a movable piece of metal, similar to the “spoon” from Klappvisor,"
+        },
+        {
+          "text": "● Attached to the dome with hinges at the temples, similar to Pivoting visored Bascinets.",
+          "conf_mean": 94.6,
+          "conf_min": 91,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            230,
+            1444,
+            2043,
+            1487
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e Attached to the dome with hinges at the temples, similar to Pivoting visored Bascinets."
+        },
+        {
+          "text": "Spoon",
+          "conf_mean": 96.9,
+          "conf_min": 96.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1153,
+            1650,
+            1294,
+            1698
+          ],
+          "paper": 0.62,
+          "height": 48
+        },
+        {
+          "text": "[>>",
+          "conf_mean": 45.4,
+          "conf_min": 45.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            222,
+            2488,
+            247,
+            2498
+          ],
+          "paper": 0.15,
+          "height": 10,
+          "in_picture": "lettering 10px tall, smaller than any printed text"
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1 3/11",
+          "conf_mean": 83.1,
+          "conf_min": 30.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. Historical Sources and Datation\n\n3.1. Bascinets with perforated and forehead attached visor\n\nThe term “Bascinets with perforated and forehead attached visor” will be abbreviated to “Perforated\nKlappvisor Bascinets’ for the remainder of the document.\n\nPerforated Klappvisor Bascinets can be seen in a couple of manuscripts, from 1389 to 1420/1430.\n\nPerforated Klappvisor Bascinets can have a visor with a rounded profile or a sharp profile. The shape of\nthe profile does not change the approved and denied time periods.\n\nPerforated Klappvisor Bascinets are Approved for Transitional armors.\nPerforated Klappvisor Bascinets are Denied for 14th century armors.\n\nPerforated Klappvisor Bascinets can be Approved for 15th century armors with a coherent project.\nWe strongly recommend sending an email to authenticity@buhurtinternational.com before placing an\norder for such armor.\n\n» af |\na 4as\npe : y =\na [=e\nyt) /\n○ X (\nVindobonensis 2762, Wenzel Bible - 1389 - Austria Pal.lat.1888 - 1430 - Germany\n\nGéttinger MS Philos. 63 Bellifortis - 1405 - Germany\n\nPerforated Visor Bascinets V. 26.1 4/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87.2,
+      "ocr_lines": [
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.4,
+          "conf_min": 91.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            445,
+            291,
+            2033,
+            363
+          ],
+          "paper": 0.61,
+          "height": 71
+        },
+        {
+          "text": "3.1. Bascinets with perforated and forehead attached visor",
+          "conf_mean": 94.1,
+          "conf_min": 88.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            244,
+            473,
+            1645,
+            520
+          ],
+          "paper": 0.67,
+          "height": 37
+        },
+        {
+          "text": "The term “Bascinets with perforated and forehead attached visor” will be abbreviated to “Perforated",
+          "conf_mean": 95.5,
+          "conf_min": 91.3,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            580,
+            2298,
+            623
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Klappvisor Bascinets’ for the remainder of the document.",
+          "conf_mean": 90.5,
+          "conf_min": 55.2,
+          "words": 8,
+          "uncertain": [
+            "Bascinets’"
+          ],
+          "box": [
+            183,
+            641,
+            1372,
+            683
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Perforated Klappvisor Bascinets can be seen in a couple of manuscripts, from 1389 to 1420/1430.",
+          "conf_mean": 95,
+          "conf_min": 90.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            743,
+            2159,
+            786
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Perforated Klappvisor Bascinets can have a visor with a rounded profile or a sharp profile. The shape of",
+          "conf_mean": 95.5,
+          "conf_min": 91.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            845,
+            2301,
+            888
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "the profile does not change the approved and denied time periods.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            906,
+            1523,
+            949
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Perforated Klappvisor Bascinets are Approved for Transitional armors.",
+          "conf_mean": 94.8,
+          "conf_min": 91.2,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1008,
+            1649,
+            1051
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Perforated Klappvisor Bascinets are Denied for 14th century armors.",
+          "conf_mean": 95,
+          "conf_min": 90.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            1110,
+            1603,
+            1154
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Perforated Klappvisor Bascinets can be Approved for 15th century armors with a coherent project.",
+          "conf_mean": 95.6,
+          "conf_min": 91,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            1212,
+            2297,
+            1256
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "We strongly recommend sending an email to authenticity@buhurtinternational.com before placing an",
+          "conf_mean": 95.6,
+          "conf_min": 92,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1273,
+            2297,
+            1316
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "order for such armor.",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            1334,
+            601,
+            1368
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "» af |",
+          "conf_mean": 20.9,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1281,
+            1875,
+            2099,
+            1933
+          ],
+          "paper": 0,
+          "height": 45,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 20.9"
+        },
+        {
+          "text": "a 4as",
+          "conf_mean": 14.4,
+          "conf_min": 12.5,
+          "words": 2,
+          "uncertain": [
+            "4as"
+          ],
+          "box": [
+            1281,
+            1930,
+            1651,
+            1964
+          ],
+          "paper": 0,
+          "height": 32,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 14.4"
+        },
+        {
+          "text": "pe : y =",
+          "conf_mean": 41.3,
+          "conf_min": 17.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1277,
+            1959,
+            2097,
+            2018
+          ],
+          "paper": 0,
+          "height": 24,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 41.3"
+        },
+        {
+          "text": "a [=e",
+          "conf_mean": 26.6,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "[=e"
+          ],
+          "box": [
+            1805,
+            2006,
+            2097,
+            2042
+          ],
+          "paper": 0,
+          "height": 28,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 26.6"
+        },
+        {
+          "text": "yt) /",
+          "conf_mean": 26.5,
+          "conf_min": 8.2,
+          "words": 2,
+          "uncertain": [
+            "yt)"
+          ],
+          "box": [
+            1342,
+            2148,
+            1881,
+            2270
+          ],
+          "paper": 0,
+          "height": 115,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 26.5"
+        },
+        {
+          "text": "○ X (",
+          "conf_mean": 39,
+          "conf_min": 31.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1591,
+            2235,
+            1854,
+            2270
+          ],
+          "paper": 0,
+          "height": 35,
+          "raw": ": X (",
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 39.0"
+        },
+        {
+          "text": "Vindobonensis 2762, Wenzel Bible - 1389 - Austria Pal.lat.1888 - 1430 - Germany",
+          "conf_mean": 93.2,
+          "conf_min": 90.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            305,
+            2342,
+            1949,
+            2374
+          ],
+          "paper": 0.8,
+          "height": 25
+        },
+        {
+          "text": "Géttinger MS Philos. 63 Bellifortis - 1405 - Germany",
+          "conf_mean": 83.3,
+          "conf_min": 0,
+          "words": 9,
+          "uncertain": [
+            "Géttinger"
+          ],
+          "box": [
+            772,
+            3198,
+            1538,
+            3230
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1 4/11",
+          "conf_mean": 83.2,
+          "conf_min": 30.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "3.2. Bascinets with perforated side-hinged attached visor\n\nThe term “Bascinets with perforated side-hinged attached visor” will be abbreviated to “Side-hinged\nPerforated Bascinets’” for the remainder of the document.\n\nSide-hinged Perforated Bascinets must have a visor with a rounded profile\nSide-hinged Perforated Bascinets are Approved for Transitional armors.\n\nSide-hinged Perforated Bascinets are Denied for 14th century and 15th century armors.\n\nVindobonensis 2762, Wenzel Bible - 1389 - Austria\n\nWenceslas Bible - 1390/1400 - Germany\n\nPerforated Visor Bascinets V. 26.1 5/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.1,
+      "ocr_lines": [
+        {
+          "text": "3.2. Bascinets with perforated side-hinged attached visor",
+          "conf_mean": 94.3,
+          "conf_min": 92.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            244,
+            248,
+            1612,
+            295
+          ],
+          "paper": 0.66,
+          "height": 38,
+          "dropped": [
+            "a"
+          ]
+        },
+        {
+          "text": "The term “Bascinets with perforated side-hinged attached visor” will be abbreviated to “Side-hinged",
+          "conf_mean": 93.7,
+          "conf_min": 86,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            355,
+            2298,
+            398
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Perforated Bascinets’” for the remainder of the document.",
+          "conf_mean": 92.1,
+          "conf_min": 66,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            416,
+            1365,
+            450
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "Side-hinged Perforated Bascinets must have a visor with a rounded profile",
+          "conf_mean": 95,
+          "conf_min": 91.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            514,
+            1682,
+            566
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "Side-hinged Perforated Bascinets are Approved for Transitional armors.",
+          "conf_mean": 94.6,
+          "conf_min": 91.3,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            620,
+            1680,
+            663
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Side-hinged Perforated Bascinets are Denied for 14th century and 15th century armors.",
+          "conf_mean": 95.1,
+          "conf_min": 91,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            722,
+            2008,
+            765
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Vindobonensis 2762, Wenzel Bible - 1389 - Austria",
+          "conf_mean": 94.3,
+          "conf_min": 91.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            755,
+            1610,
+            1501,
+            1639
+          ],
+          "paper": 0.7,
+          "height": 25
+        },
+        {
+          "text": "Wenceslas Bible - 1390/1400 - Germany",
+          "conf_mean": 94.1,
+          "conf_min": 92.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            838,
+            2575,
+            1436,
+            2607
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1 5/11",
+          "conf_mean": 79.5,
+          "conf_min": 30.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "3.3. Great Bascinets with perforated visor\n\nLater during the 15th-century, a handful of contemporary designs show the use of perforated visors,\ndespite a great lack of representation in art.\n\nGreat Bascinets with perforated visors must have a visor with a rounded profile.\nGreat Bascinets with perforated visors are Approved for 15th century armors.\n\nGreat Bascinets with perforated visors are Denied for 14th century and Transitional armors.\n\nGerman Great Bascinet, MET\n\nGrand Bacinet private collection - 1450/1475- southern Germany or Austria\n\nPerforated Visor Bascinets V. 26.1 6/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.5,
+      "ocr_lines": [
+        {
+          "text": "3.3. Great Bascinets with perforated visor",
+          "conf_mean": 95,
+          "conf_min": 92.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            244,
+            248,
+            1243,
+            295
+          ],
+          "paper": 0.67,
+          "height": 37
+        },
+        {
+          "text": "Later during the 15th-century, a handful of contemporary designs show the use of perforated visors,",
+          "conf_mean": 95.8,
+          "conf_min": 91.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            355,
+            2298,
+            398
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "despite a great lack of representation in art.",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            416,
+            1056,
+            459
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Great Bascinets with perforated visors must have a visor with a rounded profile.",
+          "conf_mean": 95.6,
+          "conf_min": 91,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            182,
+            514,
+            1784,
+            566
+          ],
+          "paper": 0.78,
+          "height": 34
+        },
+        {
+          "text": "Great Bascinets with perforated visors are Approved for 15th century armors.",
+          "conf_mean": 95.7,
+          "conf_min": 92.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            182,
+            620,
+            1787,
+            663
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "Great Bascinets with perforated visors are Denied for 14th century and Transitional armors.",
+          "conf_mean": 95.5,
+          "conf_min": 92,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            182,
+            722,
+            2085,
+            765
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "German Great Bascinet, MET",
+          "conf_mean": 94.3,
+          "conf_min": 91.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            954,
+            1947,
+            1393,
+            1976
+          ],
+          "paper": 0.7,
+          "height": 25
+        },
+        {
+          "text": "Grand Bacinet private collection - 1450/1475- southern Germany or Austria",
+          "conf_mean": 94.6,
+          "conf_min": 92,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            621,
+            3026,
+            1722,
+            3057
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1 6/11",
+          "conf_mean": 83,
+          "conf_min": 30.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "3.4. Bicoques with perforated visor\n\nLater during the 15th century, a handful of contemporary designs show the use of perforated visor,\ndespite a great lack of representation in art.\n\nBicoques with perforated visors must have a visor with a rounded profile.\nBicoques with perforated visors Approved for 15th century armors.\n\nBicoques with perforated visors are Denied for 14th century and Transitional armors.\n\nBicoque ref_arm_1929_015 W1012 Goll - 1440-50\n\nPerforated Visor Bascinets V. 26.1 7/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.2,
+      "ocr_lines": [
+        {
+          "text": "3.4. Bicoques with perforated visor",
+          "conf_mean": 94.9,
+          "conf_min": 92.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            244,
+            187,
+            1087,
+            234
+          ],
+          "paper": 0.68,
+          "height": 37,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Later during the 15th century, a handful of contemporary designs show the use of perforated visor,",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            294,
+            2295,
+            337
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "despite a great lack of representation in art.",
+          "conf_mean": 96.6,
+          "conf_min": 95.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            355,
+            1056,
+            398
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Bicoques with perforated visors must have a visor with a rounded profile.",
+          "conf_mean": 95.6,
+          "conf_min": 92.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            457,
+            1647,
+            500
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Bicoques with perforated visors Approved for 15th century armors.",
+          "conf_mean": 96,
+          "conf_min": 92.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            182,
+            559,
+            1570,
+            603
+          ],
+          "paper": 0.69,
+          "height": 35
+        },
+        {
+          "text": "Bicoques with perforated visors are Denied for 14th century and Transitional armors.",
+          "conf_mean": 95.9,
+          "conf_min": 92.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            661,
+            1947,
+            705
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Bicoque ref_arm_1929_015 W1012 Goll - 1440-50",
+          "conf_mean": 91.4,
+          "conf_min": 86,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            798,
+            1913,
+            1544,
+            1944
+          ],
+          "paper": 0.74,
+          "height": 24
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1 7/11",
+          "conf_mean": 80.4,
+          "conf_min": 30.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "4. Requirements\n\n4.1. General Requirements\n\nReproductions must closely resemble the appearance and proportions of either bascinets, great\nbascinets or bicoque respective sources.\n\ny\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations\ndocument.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nThe visor must not be too long or too short, it must respect the proportions of historical sources.\n\nIt is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full\ncontact fight and must be concealed under the aventail.\n\nA leather strap can be used to secure the visor down.\nIt is permitted to weld the visor down. Welded visors must resemble a functional removable visor.\nThe hinge must be reproduced as per historical sources.\n\nBreath holes should be round and must not exceed a diameter of 10mm. Breath holes must not be so\nnumerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to\nboth sides.\n\nBreath holes of another shape must be documented by historical sources to be allowed.\n\nProfile of visors:\n\n● Sharp-profile visors\nVisors with a sharp profile must clearly present a pointy profile.\n\n● Rounded-profile visors\nVisors with a rounded profile must clearly present a globose profile.\n\n4.3. Aventails\n\nBascinets with perforated visors must be worn with chainmail aventails, fabric aventails, or scales\naventails.\n\nGreat Bascinets and Bicoques can not be worn with chainmail aventails, fabric aventails or scales\naventails.\n\nAventails must conform to the “Aventails” document.\n\nAventails must be attached to the bascinet by a system of leather and vervelles.\n\nThe aventail must be fastened down to the edge of a padded pelerine attached to the helmet liner.\nAny additional protective plates covering the cervical spine must be hidden under the aventail.\n\n4.4. Others\n\nAll helmets with perforated visors may be decorated in the spirit of medieval styles, such as orle, torse,\ndecorated aventails (with copper/brass chainmail rings), vervelle covers and coat of arms badges etc.\n\nSuch decoration must be made in coherence with historical sources.\nUsing modern and/or offensive imagery and slogans is prohibited.\n\nPerforated Visor Bascinets V. 26.] 8/11",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.9,
+      "ocr_lines": [
+        {
+          "text": "4. Requirements",
+          "conf_mean": 95.5,
+          "conf_min": 95.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            848,
+            190,
+            1630,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            243,
+            371,
+            885,
+            417
+          ],
+          "paper": 0.67,
+          "height": 37
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of either bascinets, great",
+          "conf_mean": 96,
+          "conf_min": 93.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            478,
+            2300,
+            521
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "bascinets or bicoque respective sources.",
+          "conf_mean": 94.2,
+          "conf_min": 92.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            539,
+            1003,
+            581
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "y",
+          "conf_mean": 2.1,
+          "conf_min": 2.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2290,
+            613,
+            2304,
+            623
+          ],
+          "paper": 0.34,
+          "height": 10,
+          "in_picture": "lettering 10px tall, smaller than any printed text"
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations",
+          "conf_mean": 95.5,
+          "conf_min": 89.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            612,
+            2285,
+            655
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "document.",
+          "conf_mean": 95.4,
+          "conf_min": 95.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            673,
+            389,
+            706
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.8,
+          "conf_min": 87.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            745,
+            2060,
+            788
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            243,
+            880,
+            479,
+            917
+          ],
+          "paper": 0.65,
+          "height": 37
+        },
+        {
+          "text": "The visor must not be too long or too short, it must respect the proportions of historical sources.",
+          "conf_mean": 96.3,
+          "conf_min": 93.7,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            987,
+            2108,
+            1030
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full",
+          "conf_mean": 96.2,
+          "conf_min": 94.2,
+          "words": 22,
+          "uncertain": [],
+          "box": [
+            184,
+            1060,
+            2298,
+            1103
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "contact fight and must be concealed under the aventail.",
+          "conf_mean": 95,
+          "conf_min": 90.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1121,
+            1298,
+            1164
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "A leather strap can be used to secure the visor down.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            179,
+            1194,
+            1257,
+            1236
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "It is permitted to weld the visor down. Welded visors must resemble a functional removable visor.",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            1267,
+            2135,
+            1309
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "The hinge must be reproduced as per historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1340,
+            1319,
+            1383
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Breath holes should be round and must not exceed a diameter of 10mm. Breath holes must not be so",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            1413,
+            2299,
+            1447
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "numerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to",
+          "conf_mean": 95.8,
+          "conf_min": 92.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            1473,
+            2300,
+            1516
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "both sides.",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1534,
+            397,
+            1568
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "Breath holes of another shape must be documented by historical sources to be allowed.",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            1607,
+            1952,
+            1650
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Profile of visors:",
+          "conf_mean": 96.7,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            183,
+            1753,
+            501,
+            1787
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "● Sharp-profile visors",
+          "conf_mean": 93.2,
+          "conf_min": 91.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1826,
+            731,
+            1869
+          ],
+          "paper": 0.69,
+          "height": 43,
+          "raw": "e Sharp-profile visors"
+        },
+        {
+          "text": "Visors with a sharp profile must clearly present a pointy profile.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            301,
+            1887,
+            1566,
+            1930
+          ],
+          "paper": 0.74,
+          "height": 40
+        },
+        {
+          "text": "● Rounded-profile visors",
+          "conf_mean": 90.4,
+          "conf_min": 87.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1989,
+            800,
+            2031
+          ],
+          "paper": 0.67,
+          "height": 42,
+          "raw": "e Rounded-profile visors"
+        },
+        {
+          "text": "Visors with a rounded profile must clearly present a globose profile.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            302,
+            2050,
+            1658,
+            2093
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "4.3. Aventails",
+          "conf_mean": 91.8,
+          "conf_min": 91.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            243,
+            2172,
+            572,
+            2209
+          ],
+          "paper": 0.61,
+          "height": 37
+        },
+        {
+          "text": "Bascinets with perforated visors must be worn with chainmail aventails, fabric aventails, or scales",
+          "conf_mean": 95.1,
+          "conf_min": 91.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            2279,
+            2299,
+            2321
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "aventails.",
+          "conf_mean": 87.9,
+          "conf_min": 87.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            2340,
+            369,
+            2373
+          ],
+          "paper": 0.62,
+          "height": 33
+        },
+        {
+          "text": "Great Bascinets and Bicoques can not be worn with chainmail aventails, fabric aventails or scales",
+          "conf_mean": 94.3,
+          "conf_min": 90.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            2412,
+            2300,
+            2455
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "aventails.",
+          "conf_mean": 88.2,
+          "conf_min": 88.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            2473,
+            369,
+            2507
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "Aventails must conform to the “Aventails” document.",
+          "conf_mean": 91.5,
+          "conf_min": 75,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            179,
+            2546,
+            1232,
+            2580
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "Aventails must be attached to the bascinet by a system of leather and vervelles.",
+          "conf_mean": 95.1,
+          "conf_min": 92.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            2619,
+            1792,
+            2662
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The aventail must be fastened down to the edge of a padded pelerine attached to the helmet liner.",
+          "conf_mean": 95.4,
+          "conf_min": 91,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            2692,
+            2159,
+            2735
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Any additional protective plates covering the cervical spine must be hidden under the aventail.",
+          "conf_mean": 95.8,
+          "conf_min": 90.8,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            2766,
+            2077,
+            2808
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "4.4. Others",
+          "conf_mean": 94.7,
+          "conf_min": 92.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            243,
+            2900,
+            513,
+            2937
+          ],
+          "paper": 0.61,
+          "height": 37
+        },
+        {
+          "text": "All helmets with perforated visors may be decorated in the spirit of medieval styles, such as orle, torse,",
+          "conf_mean": 95.6,
+          "conf_min": 91.9,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            3007,
+            2297,
+            3050
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "decorated aventails (with copper/brass chainmail rings), vervelle covers and coat of arms badges etc.",
+          "conf_mean": 95.1,
+          "conf_min": 92.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            3067,
+            2227,
+            3110
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            3140,
+            1558,
+            3174
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            3213,
+            1506,
+            3257
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.] 8/11",
+          "conf_mean": 91.7,
+          "conf_min": 85,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3390,
+            2267,
+            3446
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "5. Examples of Approved Reproductions\n\nPictures from The Medieval Things ©\n\nPerforated Visor Bascinets V. 26.1 9/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 83.5,
+      "ocr_lines": [
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            299,
+            189,
+            2181,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            3253,
+            1516,
+            3285
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1 9/11",
+          "conf_mean": 83.3,
+          "conf_min": 30.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "6. Examples of Reproductions\n\nVisor lack of pointiness\nVisor lack of curvature and leaf instead of a spoon\n\nEyes holes do not match approved pattern\n\nPictures from The Medieval Things ©\n\n2 ¢rforated Visor Bascinets V. 26.1 10/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.5,
+      "ocr_lines": [
+        {
+          "text": "6. Examples of Reproductions",
+          "conf_mean": 95.5,
+          "conf_min": 95,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            363,
+            189,
+            2117,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88
+        },
+        {
+          "text": "Visor lack of pointiness",
+          "conf_mean": 94.3,
+          "conf_min": 92,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1491,
+            425,
+            2002,
+            462
+          ],
+          "paper": 0.63,
+          "height": 34
+        },
+        {
+          "text": "Visor lack of curvature and leaf instead of a spoon",
+          "conf_mean": 95.1,
+          "conf_min": 90.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            386,
+            473,
+            2040,
+            509
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Eyes holes do not match approved pattern",
+          "conf_mean": 95.7,
+          "conf_min": 93.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            780,
+            1676,
+            1701,
+            1712
+          ],
+          "paper": 0.59,
+          "height": 33
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            972,
+            2817,
+            1521,
+            2848
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "2 ¢rforated Visor Bascinets V. 26.1 10/11",
+          "conf_mean": 71.4,
+          "conf_min": 24.2,
+          "words": 7,
+          "uncertain": [
+            "¢rforated"
+          ],
+          "box": [
+            235,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nDocument has been created\n\nPerforated Visor Bascinets V. 26.1 11/11",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.5,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            922,
+            189,
+            1557,
+            279
+          ],
+          "paper": 0.69,
+          "height": 90,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            222,
+            408,
+            2263,
+            451
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            470,
+            1869,
+            512
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.9,
+          "conf_min": 92.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            662,
+            679,
+            705
+          ],
+          "paper": 0.68,
+          "height": 43
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            289,
+            714,
+            858,
+            747
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Perforated Visor Bascinets V. 26.1 11/11",
+          "conf_mean": 83.1,
+          "conf_min": 30.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            3390,
+            2267,
+            3445
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    }
+  ]
+}

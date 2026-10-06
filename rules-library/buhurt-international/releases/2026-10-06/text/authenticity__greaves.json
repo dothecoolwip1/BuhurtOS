@@ -1,0 +1,3644 @@
+{
+  "inventory_key": "authenticity/greaves",
+  "sha256": "2f663fe24c935172f731eb2f4d42a3ee8227dfbde0f710e3415e0bc5da9d0cb4",
+  "source_file": "Authenticity/Greaves.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 16 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 17,
+    "title": "Greaves - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:21:34 2026 UTC",
+    "modified": "Wed Jan 28 14:21:34 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. Implementation\n2. Definition\n3. General Requirements\n4. One Panel Greaves (Half-Greaves)\n4.1. Historical Sources and Datation\n4.2. Historical References\n4.3. Specific Requirements for One Panel Greaves (Half-Greaves)\n4.4. Examples of Approved Reproductions\n4.5. Examples of Denied Reproductions\n5. Two Panels Greaves (cased greaves)\n5.1. Historical Sources and Datation\n5.2. Specific Requirements\n5.3. Examples of Articulation\n5.4. Examples of Approved Reproductions\n5.5. Examples of Denied reproductions\n6. Three Panels Greaves\n6.1. Historical Sources and Datation\n6.2. Historical Example\n6.3. Specific Requirements\n6.4. Examples of Approved Reproductions\n6.5. Examples of Denied Reproductions\n7. Three Quarters Greaves\n7.1, Historical Sources and Datation\n7.2. Historical Example\n1.1. Specific Requirements\n1.2. Examples of Approved Reproductions\n8. Splinted Greaves\n8.1. Historical Sources and Datation\n8.2. Historical Examples\n8.3. Specific Requirements for Splinted Greaves\n8.4. Examples of Approved Reproductions\n8.5. Examples of Denied Reproductions\n9. Brigand Greaves\n9.1. Historical Sources and Datation\n9.2. Specific Requirements for Brigand Greaves\n9.3. Examples of Approved Reproductions\n9.4. Examples of Denied reproductions\n10. Other Denied Items\n10.1. Four or five Panels Greaves\n10.2. Examples of Denied Reproductions\n11. Changelog\n\nGreaves V. 26.]\n\n2/17",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            349,
+            621,
+            389
+          ],
+          "paper": 0.58,
+          "height": 39
+        },
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            421,
+            512,
+            463
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            486,
+            389,
+            520
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            552,
+            661,
+            594
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "4. One Panel Greaves (Half-Greaves)",
+          "conf_mean": 94.7,
+          "conf_min": 91,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            152,
+            617,
+            916,
+            660
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "4.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 92.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            226,
+            682,
+            954,
+            716
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "4.2. Historical References",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            747,
+            748,
+            781
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "4.3. Specific Requirements for One Panel Greaves (Half-Greaves)",
+          "conf_mean": 95.3,
+          "conf_min": 92.5,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            227,
+            812,
+            1566,
+            855
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "4.4. Examples of Approved Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            877,
+            1082,
+            920
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "4.5. Examples of Denied Reproductions",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            226,
+            942,
+            1031,
+            985
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "5. Two Panels Greaves (cased greaves)",
+          "conf_mean": 95.4,
+          "conf_min": 92.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1008,
+            964,
+            1051
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "5.1. Historical Sources and Datation",
+          "conf_mean": 94.4,
+          "conf_min": 91.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1073,
+            954,
+            1107
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            1138,
+            771,
+            1181
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "5.3. Examples of Articulation",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1203,
+            803,
+            1246
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "5.4. Examples of Approved Reproductions",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1269,
+            1082,
+            1311
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "5.5. Examples of Denied reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1334,
+            1013,
+            1376
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "6. Three Panels Greaves",
+          "conf_mean": 95.8,
+          "conf_min": 95.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1399,
+            658,
+            1433
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "6.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 92.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1464,
+            954,
+            1498
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "6.2. Historical Example",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            1529,
+            692,
+            1571
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "6.3. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            1594,
+            771,
+            1637
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "6.4. Examples of Approved Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1660,
+            1082,
+            1702
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "6.5. Examples of Denied Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1725,
+            1031,
+            1767
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "7. Three Quarters Greaves",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1790,
+            696,
+            1826
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "7.1, Historical Sources and Datation",
+          "conf_mean": 90.5,
+          "conf_min": 75,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1855,
+            954,
+            1889
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "7.2. Historical Example",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            1921,
+            692,
+            1963
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "1.1. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            231,
+            1985,
+            771,
+            2028
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "1.2. Examples of Approved Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            231,
+            2051,
+            1082,
+            2093
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "8. Splinted Greaves",
+          "conf_mean": 93.8,
+          "conf_min": 91.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            2116,
+            552,
+            2158
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "8.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 92.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2181,
+            954,
+            2215
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "8.2. Historical Examples",
+          "conf_mean": 95.8,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            2246,
+            715,
+            2289
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "8.3. Specific Requirements for Splinted Greaves",
+          "conf_mean": 94.9,
+          "conf_min": 92.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            2311,
+            1202,
+            2354
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "8.4. Examples of Approved Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2377,
+            1082,
+            2419
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "8.5. Examples of Denied Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2442,
+            1031,
+            2484
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "9. Brigand Greaves",
+          "conf_mean": 93.8,
+          "conf_min": 91.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            2507,
+            544,
+            2550
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "9.1. Historical Sources and Datation",
+          "conf_mean": 94.9,
+          "conf_min": 92.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2572,
+            954,
+            2606
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "9.2. Specific Requirements for Brigand Greaves",
+          "conf_mean": 95.1,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            2637,
+            1194,
+            2680
+          ],
+          "paper": 0.73,
+          "height": 41
+        },
+        {
+          "text": "9.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2703,
+            1082,
+            2745
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "9.4. Examples of Denied reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2768,
+            1013,
+            2810
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "10. Other Denied Items",
+          "conf_mean": 95.6,
+          "conf_min": 92.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            156,
+            2833,
+            623,
+            2867
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "10.1. Four or five Panels Greaves",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            231,
+            2898,
+            909,
+            2932
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "10.2. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            231,
+            2963,
+            1057,
+            3006
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "11. Changelog",
+          "conf_mean": 94.8,
+          "conf_min": 94.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            3028,
+            443,
+            3071
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "Greaves V. 26.]",
+          "conf_mean": 90.3,
+          "conf_min": 88.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            3384,
+            555,
+            3416
+          ],
+          "paper": 0.74,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "2/17",
+          "conf_mean": 92.7,
+          "conf_min": 92.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2180,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.82,
+          "height": 47
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\n“Greaves” is the term used to describe all lower leg protections.\nTypes of Greaves:\n\n● 1-Panel Greaves (Half-Greaves)\n\nMade of 1 plate of metal forged to the shape of the lower leg.\nAttached by a leather strap at the back of the calf.\n\n● 2-Panel Greaves (Cased Greaves)\n\nMade of 2 plates of metal built to protect the lower leg at 360°.\nThe plates are built with hinges and attached by a leather strap at the inner side of the lower leg.\n\n● 3-Panel Greaves\nMade of 3 plates of metal attached with leather.\n\n● 3/4 Greaves\n\nThe front side of the lower leg is protected by a metal plate.\nThe outside of the lower leg is protected by a half-plate of metal, leaving the inner side of the lower\nleg unprotected.\n\n● Splinted Greaves\n\nMetal plates riveted to a leather base.\nThe plates are alternately outside and inside the leather.\n\n● Brigand Greaves\n\nMetal plates riveted to a fabric base.\nThe plates are covered by the fabric.\n\n● Eastern Greaves\n\nDue to very few historical sources, it is allowed to use eastern stylization of European Greaves.\nAllowed designs are displayed in the document “Eastern Armors.”\n\nGreaves V. 26.] 3/17",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            816,
+            190,
+            1651,
+            282
+          ],
+          "paper": 0.67,
+          "height": 92,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            375,
+            1955,
+            417
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            436,
+            1714,
+            477
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            950,
+            541,
+            1512,
+            615
+          ],
+          "paper": 0.58,
+          "height": 74
+        },
+        {
+          "text": "“Greaves” is the term used to describe all lower leg protections.",
+          "conf_mean": 95.8,
+          "conf_min": 89.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            182,
+            725,
+            1481,
+            768
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Types of Greaves:",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            836,
+            547,
+            879
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● 1-Panel Greaves (Half-Greaves)",
+          "conf_mean": 91.3,
+          "conf_min": 89.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            941,
+            981,
+            984
+          ],
+          "paper": 0.69,
+          "height": 34,
+          "raw": "e 1-Panel Greaves (Half-Greaves)"
+        },
+        {
+          "text": "Made of 1 plate of metal forged to the shape of the lower leg.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            304,
+            1014,
+            1532,
+            1057
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Attached by a leather strap at the back of the calf.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            301,
+            1075,
+            1306,
+            1118
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● 2-Panel Greaves (Cased Greaves)",
+          "conf_mean": 94.3,
+          "conf_min": 91.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            1196,
+            1029,
+            1239
+          ],
+          "paper": 0.69,
+          "height": 43,
+          "raw": "e 2-Panel Greaves (Cased Greaves)"
+        },
+        {
+          "text": "Made of 2 plates of metal built to protect the lower leg at 360°.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            304,
+            1269,
+            1556,
+            1312
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The plates are built with hinges and attached by a leather strap at the inner side of the lower leg.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            302,
+            1330,
+            2248,
+            1373
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● 3-Panel Greaves",
+          "conf_mean": 89.5,
+          "conf_min": 86.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1451,
+            655,
+            1485
+          ],
+          "paper": 0.62,
+          "height": 34,
+          "raw": "e 3-Panel Greaves"
+        },
+        {
+          "text": "Made of 3 plates of metal attached with leather.",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            304,
+            1524,
+            1257,
+            1566
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "● 3/4 Greaves",
+          "conf_mean": 95.1,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1645,
+            556,
+            1679
+          ],
+          "paper": 0.63,
+          "height": 34,
+          "raw": "e 3/4 Greaves"
+        },
+        {
+          "text": "The front side of the lower leg is protected by a metal plate.",
+          "conf_mean": 96,
+          "conf_min": 94.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            302,
+            1718,
+            1499,
+            1761
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The outside of the lower leg is protected by a half-plate of metal, leaving the inner side of the lower",
+          "conf_mean": 96.1,
+          "conf_min": 92.3,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            302,
+            1779,
+            2301,
+            1822
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "leg unprotected.",
+          "conf_mean": 96.8,
+          "conf_min": 96.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            304,
+            1840,
+            626,
+            1883
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "● Splinted Greaves",
+          "conf_mean": 93.3,
+          "conf_min": 91.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1961,
+            673,
+            2003
+          ],
+          "paper": 0.67,
+          "height": 42,
+          "raw": "e Splinted Greaves"
+        },
+        {
+          "text": "Metal plates riveted to a leather base.",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            304,
+            2034,
+            1061,
+            2076
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "The plates are alternately outside and inside the leather.",
+          "conf_mean": 96,
+          "conf_min": 94.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            302,
+            2095,
+            1435,
+            2137
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● Brigand Greaves",
+          "conf_mean": 93.4,
+          "conf_min": 91.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2216,
+            665,
+            2259
+          ],
+          "paper": 0.68,
+          "height": 43,
+          "raw": "e Brigand Greaves"
+        },
+        {
+          "text": "Metal plates riveted to a fabric base.",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            304,
+            2289,
+            1033,
+            2331
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "The plates are covered by the fabric.",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            302,
+            2349,
+            1041,
+            2392
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Eastern Greaves",
+          "conf_mean": 94,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2470,
+            660,
+            2504
+          ],
+          "paper": 0.61,
+          "height": 34,
+          "raw": "e Eastern Greaves"
+        },
+        {
+          "text": "Due to very few historical sources, it is allowed to use eastern stylization of European Greaves.",
+          "conf_mean": 95.7,
+          "conf_min": 92.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            304,
+            2543,
+            2222,
+            2586
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Allowed designs are displayed in the document “Eastern Armors.”",
+          "conf_mean": 95.1,
+          "conf_min": 86.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            301,
+            2604,
+            1628,
+            2647
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Greaves V. 26.] 3/17",
+          "conf_mean": 92.1,
+          "conf_min": 88.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. General Requirements\n\nHistorical Basis: Must be based on historical sources.\nAnatomical Shape: Must have the anatomical shape of the lower leg.\nProportions: Must reproduce the proportions based on historical sources.\n\nMalleolus Protection: Must protect the malleolus bone.\n\n4. One Panel Greaves (Half-Greaves)\n\n4.1. Historical Sources and Datation\n\nThe 1-panel greave is the earliest form of lower leg protection available for knights, originating in the\nearly 14th century.\n\nThey are Approved for 14th century and Transitional armors.\n\nThey are Denied for 15th century armors.\n\n4.2. Historical References\n\nCrucifixion, Niederhaslach — 1360, France J. von Falkenstein — 1365, Germany\n\n4.3. Specific Requirements for One Panel Greaves (Half-Greaves)\n\nThey must follow the General Requirements (see Section 3 above).\nThe entire front of the lower leg must be covered by the greaves.\n\nGreaves V. 26.] 4/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            648,
+            190,
+            1816,
+            282
+          ],
+          "paper": 0.67,
+          "height": 74,
+          "dropped": [
+            "z="
+          ]
+        },
+        {
+          "text": "Historical Basis: Must be based on historical sources.",
+          "conf_mean": 95.9,
+          "conf_min": 94.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            375,
+            1290,
+            408
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "Anatomical Shape: Must have the anatomical shape of the lower leg.",
+          "conf_mean": 96,
+          "conf_min": 94.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            477,
+            1596,
+            520
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Proportions: Must reproduce the proportions based on historical sources.",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            182,
+            579,
+            1680,
+            622
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Malleolus Protection: Must protect the malleolus bone.",
+          "conf_mean": 95.8,
+          "conf_min": 92.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            681,
+            1313,
+            724
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "4. One Panel Greaves (Half-Greaves)",
+          "conf_mean": 94.6,
+          "conf_min": 92,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            394,
+            889,
+            2070,
+            982
+          ],
+          "paper": 0.69,
+          "height": 71
+        },
+        {
+          "text": "4.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 91.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            1076,
+            1169,
+            1116
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "The 1-panel greave is the earliest form of lower leg protection available for knights, originating in the",
+          "conf_mean": 95.7,
+          "conf_min": 90.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1187,
+            2298,
+            1230
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "early 14th century.",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1248,
+            549,
+            1291
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "They are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1358,
+            1473,
+            1401
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "They are Denied for 15th century armors.",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            1469,
+            1053,
+            1512
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "4.2. Historical References",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1642,
+            905,
+            1682
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "Crucifixion, Niederhaslach — 1360, France J. von Falkenstein — 1365, Germany",
+          "conf_mean": 93.5,
+          "conf_min": 86.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            258,
+            2719,
+            2032,
+            2750
+          ],
+          "paper": 0.82,
+          "height": 25
+        },
+        {
+          "text": "4.3. Specific Requirements for One Panel Greaves (Half-Greaves)",
+          "conf_mean": 95.3,
+          "conf_min": 91.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            237,
+            2883,
+            1916,
+            2933
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "They must follow the General Requirements (see Section 3 above).",
+          "conf_mean": 96.1,
+          "conf_min": 95.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            2994,
+            1540,
+            3037
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The entire front of the lower leg must be covered by the greaves.",
+          "conf_mean": 95.9,
+          "conf_min": 91.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            3067,
+            1486,
+            3110
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Greaves V. 26.] 4/17",
+          "conf_mean": 92,
+          "conf_min": 88.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4.4. Examples of Approved Reproductions\n\nPicture from Forge of Svan © Picture from Age of Craft ©\n\n4.5. Examples of Denied Reproductions\n\nNon-anatomic shape\n\nPictures from The Medieval Things ©\n\nGreaves V. 26.] 5/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.7,
+      "ocr_lines": [
+        {
+          "text": "4.4. Examples of Approved Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            189,
+            1335,
+            239
+          ],
+          "paper": 0.66,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Picture from Forge of Svan © Picture from Age of Craft ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            386,
+            895,
+            1818,
+            927
+          ],
+          "paper": 0.84,
+          "height": 25
+        },
+        {
+          "text": "4.5. Examples of Denied Reproductions",
+          "conf_mean": 96,
+          "conf_min": 94.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            1120,
+            1263,
+            1170
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "Non-anatomic shape",
+          "conf_mean": 93.9,
+          "conf_min": 91.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1018,
+            1292,
+            1464,
+            1335
+          ],
+          "paper": 0.57,
+          "height": 43
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            2259,
+            1516,
+            2290
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Greaves V. 26.] 5/17",
+          "conf_mean": 86.3,
+          "conf_min": 78.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "5. Two Panels Greaves (cased greaves)\n\n5.1. Historical Sources and Datation\n\n2-panel greaves, also known as cased greaves, were the most common form of lower leg protection\nfrom 1370 to 1600 and later. They provided superior protection for competitors by covering the entire\nlower leg from all sides.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nMetropolitan Museum of Arts - 1450 Brescia - 1470/1480 - Italy\n\n5.2. Specific Requirements\n\nThey must follow the General Requirements (see Section 3 above).\n2-panel greaves are Approved if worn with the adequate armor style from the 15th century.\n2-panel greaves at the bottom or top of the greaves are Denied for 15th century armor.\n\nGreaves V. 26.] 6/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.9,
+      "ocr_lines": [
+        {
+          "text": "5. Two Panels Greaves (cased greaves)",
+          "conf_mean": 95.1,
+          "conf_min": 93,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            344,
+            189,
+            2122,
+            279
+          ],
+          "paper": 0.69,
+          "height": 71,
+          "dropped": [
+            "z="
+          ]
+        },
+        {
+          "text": "5.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 91.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            425,
+            1169,
+            465
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "2-panel greaves, also known as cased greaves, were the most common form of lower leg protection",
+          "conf_mean": 92.8,
+          "conf_min": 58.3,
+          "words": 16,
+          "uncertain": [
+            "known"
+          ],
+          "box": [
+            180,
+            536,
+            2297,
+            579
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "from 1370 to 1600 and later. They provided superior protection for competitors by covering the entire",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            597,
+            2299,
+            640
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "lower leg from all sides.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            657,
+            654,
+            700
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            768,
+            1772,
+            811
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Metropolitan Museum of Arts - 1450 Brescia - 1470/1480 - Italy",
+          "conf_mean": 94.5,
+          "conf_min": 93.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            602,
+            2099,
+            2003,
+            2131
+          ],
+          "paper": 0.82,
+          "height": 24
+        },
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2257,
+            935,
+            2307
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "They must follow the General Requirements (see Section 3 above).",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            2368,
+            1540,
+            2412
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2-panel greaves are Approved if worn with the adequate armor style from the 15th century.",
+          "conf_mean": 95.7,
+          "conf_min": 92.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            2442,
+            2095,
+            2485
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "2-panel greaves at the bottom or top of the greaves are Denied for 15th century armor.",
+          "conf_mean": 95.4,
+          "conf_min": 92.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            2515,
+            1958,
+            2558
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Greaves V. 26.] 6/17",
+          "conf_mean": 90.9,
+          "conf_min": 84.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "5.3. Examples of Articulation\n\nFully enclosed Greaves (with heel-protection) appear in the late 15th century only.\n\nThey are Denied for 14th century and Transitional armors.\n\nExample of fully enclosed Greaves:\n\n5.5. Examples of Denied reproductions\n\nNon-anatomic design Greaves with riveted ankle part (not based on historical sources)\n\nPictures from The Medieval Things ©\n\nGreaves v. 26.1 7/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.2,
+      "ocr_lines": [
+        {
+          "text": "5.3. Examples of Articulation",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            188,
+            986,
+            239
+          ],
+          "paper": 0.68,
+          "height": 41,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Fully enclosed Greaves (with heel-protection) appear in the late 15th century only.",
+          "conf_mean": 95.7,
+          "conf_min": 91,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            300,
+            1871,
+            343
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 14th century and Transitional armors.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            402,
+            1413,
+            446
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "Example of fully enclosed Greaves:",
+          "conf_mean": 95.8,
+          "conf_min": 94.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            826,
+            897,
+            869
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "5.5. Examples of Denied reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2318,
+            1245,
+            2368
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Non-anatomic design Greaves with riveted ankle part (not based on historical sources)",
+          "conf_mean": 95.6,
+          "conf_min": 92.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            299,
+            2429,
+            2183,
+            2473
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1052,
+            3218,
+            1601,
+            3250
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Greaves v. 26.1 7/17",
+          "conf_mean": 66.6,
+          "conf_min": 6.5,
+          "words": 4,
+          "uncertain": [
+            "Greaves"
+          ],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.97,
+          "height": 32,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "6. Three Panels Greaves\n\n6.1. Historical Sources and Datation\n\n3-panel Greaves are mainly represented in Germany from 1360 to 1380. They consist of one front panel\nand two side panels, articulated by leather straps.\n\nThey are Approved for 14th century and Transitional armors.\n\nThey are Denied for 15th century armors.\n\n6.2. Historical Example\n\nSir Burchard von Steinberg — 1376, Germany\n\n6.3. Specific Requirements\n\nThey must conform to the General Requirements (see Section 3 above).\nThe side panels must protect both sides of the lower leg, including the malleolus bone.\nThe panels can be articulated with leather straps or a piece of leather between each panel.\n\nIt is Allowed to extend the width of the side panels to cover the back of the calf, despite this not being\nbased on historical proportions.\n\nIt is Allowed to use hinges instead of leather despite it not being documented by historical sources.\n\nGreaves V. 26.1 8/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.2,
+      "ocr_lines": [
+        {
+          "text": "6. Three Panels Greaves",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            681,
+            189,
+            1785,
+            260
+          ],
+          "paper": 0.62,
+          "height": 70,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "6.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 92,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            432,
+            1169,
+            473
+          ],
+          "paper": 0.61,
+          "height": 40
+        },
+        {
+          "text": "3-panel Greaves are mainly represented in Germany from 1360 to 1380. They consist of one front panel",
+          "conf_mean": 96.1,
+          "conf_min": 92.5,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            552,
+            2298,
+            596
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "and two side panels, articulated by leather straps.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            613,
+            1181,
+            656
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            723,
+            1473,
+            767
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 15th century armors.",
+          "conf_mean": 96.7,
+          "conf_min": 96.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            834,
+            1053,
+            878
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "6.2. Historical Example",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1007,
+            837,
+            1057
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Sir Burchard von Steinberg — 1376, Germany",
+          "conf_mean": 94.7,
+          "conf_min": 87,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            820,
+            2193,
+            1486,
+            2225
+          ],
+          "paper": 0.73,
+          "height": 26
+        },
+        {
+          "text": "6.3. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2352,
+            935,
+            2403
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "They must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 96.4,
+          "conf_min": 95.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            2464,
+            1639,
+            2508
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "The side panels must protect both sides of the lower leg, including the malleolus bone.",
+          "conf_mean": 96.4,
+          "conf_min": 95.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            2537,
+            1925,
+            2581
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The panels can be articulated with leather straps or a piece of leather between each panel.",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            2610,
+            2014,
+            2653
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "It is Allowed to extend the width of the side panels to cover the back of the calf, despite this not being",
+          "conf_mean": 96.6,
+          "conf_min": 95.1,
+          "words": 22,
+          "uncertain": [],
+          "box": [
+            183,
+            2683,
+            2299,
+            2727
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "based on historical proportions.",
+          "conf_mean": 95.6,
+          "conf_min": 94.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2744,
+            812,
+            2787
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "It is Allowed to use hinges instead of leather despite it not being documented by historical sources.",
+          "conf_mean": 95.8,
+          "conf_min": 90,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            2817,
+            2187,
+            2860
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Greaves V. 26.1 8/17",
+          "conf_mean": 92.9,
+          "conf_min": 90.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "6.4. Examples of Approved Reproductions\n\nSide panels that are based on historical proportion\n\nPictures from Age of Craft ©\n\nPicture from The Medieval Things ©\n\nWider size panels for safety\n\nPicture from Medieval Extreme ©\n\nGreaves V. 26.] 9/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.1,
+      "ocr_lines": [
+        {
+          "text": "6.4. Examples of Approved Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            1335,
+            239
+          ],
+          "paper": 0.65,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Side panels that are based on historical proportion",
+          "conf_mean": 95.7,
+          "conf_min": 94.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            581,
+            360,
+            1684,
+            397
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "Pictures from Age of Craft ©",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1033,
+            1243,
+            1451,
+            1275
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            976,
+            2073,
+            1508,
+            2105
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Wider size panels for safety",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            945,
+            2174,
+            1548,
+            2211
+          ],
+          "paper": 0.61,
+          "height": 35
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            997,
+            3057,
+            1487,
+            3082
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "Greaves V. 26.] 9/17",
+          "conf_mean": 90.9,
+          "conf_min": 84.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "6.5. Examples of Denied Reproductions\n\nSide panels lack of shaping\n\nDoes not adequately protect the malleolus bone, rule 1.2.4\n\nPictures from The Medieval Things ©\n\nGreaves V. 26.] 10/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.4,
+      "ocr_lines": [
+        {
+          "text": "6.5. Examples of Denied Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            1263,
+            239
+          ],
+          "paper": 0.65,
+          "height": 40
+        },
+        {
+          "text": "Side panels lack of shaping",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            942,
+            353,
+            1538,
+            390
+          ],
+          "paper": 0.61,
+          "height": 33
+        },
+        {
+          "text": "Does not adequately protect the malleolus bone, rule 1.2.4",
+          "conf_mean": 96.2,
+          "conf_min": 95.2,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            651,
+            474,
+            1831,
+            517
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            2192,
+            1516,
+            2223
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "Greaves V. 26.] 10/17",
+          "conf_mean": 90.5,
+          "conf_min": 84.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "7. Three Quarters Greaves\n\n7.1. Historical Sources and Datation\n3/4 Greaves first appeared in the 15th century.\nThey are Approved for Transitional and 15th century armors.\n\nThey are Denied for 14th century armors.\n\n7.2. Historical Example\n\nMetropolitan Museum of Art — 1550, Italy\n\n1.1. Specific Requirements\n\nThey must conform to the General Requirements (see Section 3 above).\nThe side panels must cover at least half of the back of the calf.\n\n1.2. Examples of Approved Reproductions\n\nPicture from Age of Craft © Picture from The Medieval Things ©\n\nGreaves V. 26.] 11/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.3,
+      "ocr_lines": [
+        {
+          "text": "7. Three Quarters Greaves",
+          "conf_mean": 95.7,
+          "conf_min": 94.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            636,
+            189,
+            1830,
+            266
+          ],
+          "paper": 0.65,
+          "height": 71,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "7.1. Historical Sources and Datation",
+          "conf_mean": 95,
+          "conf_min": 91.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "3/4 Greaves first appeared in the 15th century.",
+          "conf_mean": 96.1,
+          "conf_min": 94.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            492,
+            1116,
+            535
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for Transitional and 15th century armors.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            152,
+            602,
+            1445,
+            646
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 14th century armors.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            152,
+            713,
+            1026,
+            756
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "7.2. Historical Example",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            825,
+            837,
+            876
+          ],
+          "paper": 0.69,
+          "height": 40
+        },
+        {
+          "text": "Metropolitan Museum of Art — 1550, Italy",
+          "conf_mean": 86.9,
+          "conf_min": 40.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            847,
+            1858,
+            1447,
+            1889
+          ],
+          "paper": 0.73,
+          "height": 24
+        },
+        {
+          "text": "1.1. Specific Requirements",
+          "conf_mean": 84.7,
+          "conf_min": 78.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            330,
+            1956,
+            1057,
+            2007
+          ],
+          "paper": 0.7,
+          "height": 50
+        },
+        {
+          "text": "They must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 96,
+          "conf_min": 95.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            2068,
+            1639,
+            2111
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The side panels must cover at least half of the back of the calf.",
+          "conf_mean": 96,
+          "conf_min": 91.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            2141,
+            1444,
+            2183
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "1.2. Examples of Approved Reproductions",
+          "conf_mean": 93.8,
+          "conf_min": 89.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            330,
+            2268,
+            1457,
+            2318
+          ],
+          "paper": 0.68,
+          "height": 49
+        },
+        {
+          "text": "Picture from Age of Craft © Picture from The Medieval Things ©",
+          "conf_mean": 96.5,
+          "conf_min": 95.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            453,
+            3237,
+            2034,
+            3268
+          ],
+          "paper": 0.83,
+          "height": 25
+        },
+        {
+          "text": "Greaves V. 26.] 11/17",
+          "conf_mean": 91.2,
+          "conf_min": 86.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "8. Splinted Greaves\n\n8.1. Historical Sources and Datation\n\nSplinted Greaves are represented in Europe from 1350 to 1380. They consist of metal plates riveted to a\nleather base.\n\nThey are Approved for 14th century and Transitional armor.\nThey are Denied for 15th century armor.\n\n8.2. Historical Examples\n\nIIS A\\\\iEP\n\nLouis Thys — 1365, Belgium G. von Schwarzburg — 1349, Germany\n\n8.3. Specific Requirements for Splinted Greaves\n\nThey must conform to the General Requirements (see Section 3 above).\n\nThey must be made of metal plates with the following features:\n● rectangular shape,\n● firmly riveted to a leather base,\n● plates must be riveted alternatively inside and outside the leather base,\n● plates must conform to the anatomical shape of the lower leg.\n\nGreaves V. 26.] 12/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.2,
+      "ocr_lines": [
+        {
+          "text": "8. Splinted Greaves",
+          "conf_mean": 93.7,
+          "conf_min": 91.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            790,
+            189,
+            1676,
+            278
+          ],
+          "paper": 0.67,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "8.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 91.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "Splinted Greaves are represented in Europe from 1350 to 1380. They consist of metal plates riveted to a",
+          "conf_mean": 96.1,
+          "conf_min": 93.1,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            492,
+            2296,
+            535
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "leather base.",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            553,
+            440,
+            587
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century and Transitional armor.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            663,
+            1448,
+            706
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "They are Denied for 15th century armor.",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            774,
+            1028,
+            817
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "8.2. Historical Examples",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            878,
+            866,
+            928
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "IIS A\\\\iEP",
+          "conf_mean": 6.1,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "IIS",
+            "A\\\\iEP"
+          ],
+          "box": [
+            1348,
+            1834,
+            1911,
+            1924
+          ],
+          "paper": 0,
+          "height": 90,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 6.1"
+        },
+        {
+          "text": "Louis Thys — 1365, Belgium G. von Schwarzburg — 1349, Germany",
+          "conf_mean": 90.5,
+          "conf_min": 74.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            495,
+            2006,
+            2039,
+            2037
+          ],
+          "paper": 0.84,
+          "height": 28
+        },
+        {
+          "text": "8.3. Specific Requirements for Splinted Greaves",
+          "conf_mean": 95.1,
+          "conf_min": 91.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            238,
+            2165,
+            1480,
+            2215
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "They must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 95.4,
+          "conf_min": 90.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            2276,
+            1639,
+            2319
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "They must be made of metal plates with the following features:",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            2350,
+            1443,
+            2392
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● rectangular shape,",
+          "conf_mean": 95.1,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2410,
+            676,
+            2453
+          ],
+          "paper": 0.75,
+          "height": 43,
+          "raw": "e rectangular shape,"
+        },
+        {
+          "text": "● firmly riveted to a leather base,",
+          "conf_mean": 92.2,
+          "conf_min": 72.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            2471,
+            923,
+            2514
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e firmly riveted to a leather base,"
+        },
+        {
+          "text": "● plates must be riveted alternatively inside and outside the leather base,",
+          "conf_mean": 95.9,
+          "conf_min": 92.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            2532,
+            1738,
+            2574
+          ],
+          "paper": 0.72,
+          "height": 33,
+          "raw": "e plates must be riveted alternatively inside and outside the leather base,"
+        },
+        {
+          "text": "● plates must conform to the anatomical shape of the lower leg.",
+          "conf_mean": 96,
+          "conf_min": 92.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            2592,
+            1544,
+            2635
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e plates must conform to the anatomical shape of the lower leg."
+        },
+        {
+          "text": "Greaves V. 26.] 12/17",
+          "conf_mean": 91.3,
+          "conf_min": 86.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "8.4. Examples of Approved Reproductions\n\nPicture from Medieval Extreme ©\n\n8.5. Examples of Denied Reproductions\n\nFantasy designs and Non-anatomical shape\n\nGreaves V. 26.] 13/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87.6,
+      "ocr_lines": [
+        {
+          "text": "8.4. Examples of Approved Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            1335,
+            239
+          ],
+          "paper": 0.65,
+          "height": 50,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 95.5,
+          "conf_min": 94.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            997,
+            1478,
+            1486,
+            1502
+          ],
+          "paper": 0.63,
+          "height": 24
+        },
+        {
+          "text": "8.5. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1641,
+            1263,
+            1691
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "Fantasy designs and Non-anatomical shape",
+          "conf_mean": 95,
+          "conf_min": 92,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            766,
+            1806,
+            1716,
+            1848
+          ],
+          "paper": 0.59,
+          "height": 37
+        },
+        {
+          "text": "Greaves V. 26.] 13/17",
+          "conf_mean": 90.2,
+          "conf_min": 84.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "text": "9. Brigand Greaves\n\n9.1. Historical Sources and Datation\n\nBrigand Greaves are represented in Europe from 1350 to 1380. They consist of metal plates riveted to a\nfabric base.\n\nThey are Approved for 14th century and Transitional armors.\n\nThey are Denied for 15th century armors.\n\n9.2. Specific Requirements for Brigand Greaves\n\nThey must conform to the General Requirements (see Section 3 above).\nThey must be made of metal plates with the following features:\n\n● rectangular shape,\n\n● firmly riveted to a leather base,\n\n● plates must be riveted inside the fabric, not outside,\n\n● plates must conform to the anatomical shape of the lower leg.\n\n9.3. Examples of Approved Reproductions\n\nPicture from Forge of Svan ©\n\nGreaves V. 26.] 14/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94,
+      "ocr_lines": [
+        {
+          "text": "9. Brigand Greaves",
+          "conf_mean": 93.4,
+          "conf_min": 91.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            798,
+            189,
+            1668,
+            279
+          ],
+          "paper": 0.67,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "9.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 92.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            1169,
+            412
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "Brigand Greaves are represented in Europe from 1350 to 1380. They consist of metal plates riveted to a",
+          "conf_mean": 96.2,
+          "conf_min": 92.6,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            182,
+            492,
+            2298,
+            535
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "fabric base.",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            180,
+            552,
+            412,
+            587
+          ],
+          "paper": 0.65,
+          "height": 35
+        },
+        {
+          "text": "They are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            663,
+            1473,
+            706
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "They are Denied for 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            774,
+            1053,
+            817
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "9.2. Specific Requirements for Brigand Greaves",
+          "conf_mean": 95.1,
+          "conf_min": 92.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            237,
+            886,
+            1471,
+            937
+          ],
+          "paper": 0.67,
+          "height": 49
+        },
+        {
+          "text": "They must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 95.8,
+          "conf_min": 92.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            997,
+            1639,
+            1040
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They must be made of metal plates with the following features:",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1071,
+            1443,
+            1114
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● rectangular shape,",
+          "conf_mean": 95,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1144,
+            676,
+            1187
+          ],
+          "paper": 0.74,
+          "height": 43,
+          "raw": "e rectangular shape,"
+        },
+        {
+          "text": "● firmly riveted to a leather base,",
+          "conf_mean": 91.9,
+          "conf_min": 72.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            1204,
+            923,
+            1247
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e firmly riveted to a leather base,"
+        },
+        {
+          "text": "● plates must be riveted inside the fabric, not outside,",
+          "conf_mean": 96,
+          "conf_min": 91.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            230,
+            1265,
+            1341,
+            1307
+          ],
+          "paper": 0.74,
+          "height": 34,
+          "raw": "e plates must be riveted inside the fabric, not outside,"
+        },
+        {
+          "text": "● plates must conform to the anatomical shape of the lower leg.",
+          "conf_mean": 95.8,
+          "conf_min": 92.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            1325,
+            1544,
+            1368
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e plates must conform to the anatomical shape of the lower leg."
+        },
+        {
+          "text": "9.3. Examples of Approved Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            1448,
+            1335,
+            1498
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "Picture from Forge of Svan ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1086,
+            2557,
+            1518,
+            2589
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Greaves V. 26.] 14/17",
+          "conf_mean": 92,
+          "conf_min": 88.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "text": "9.4. Examples of Denied reproductions\n\nNon-anatomical shape\n\nPicture from The Medieval Things ©\n\nGreaves V. 26.] 15/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 85.6,
+      "ocr_lines": [
+        {
+          "text": "9.4. Examples of Denied reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            233,
+            1245,
+            283
+          ],
+          "paper": 0.66,
+          "height": 40,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "Non-anatomical shape",
+          "conf_mean": 94.7,
+          "conf_min": 92.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            999,
+            344,
+            1483,
+            387
+          ],
+          "paper": 0.57,
+          "height": 42
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            976,
+            1250,
+            1508,
+            1281
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Greaves V. 26.] 15/17",
+          "conf_mean": 90.8,
+          "conf_min": 84.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 16,
+      "text": "10. Other Denied Items\n\n10.1. Four or five Panels Greaves\nThose types of Greaves are not based on historical sources.\n\nTo get an approved piece, the 4th plate can be removed. The closest alternative would be the 3-panels\ngreaves.\n\n10.2. Examples of Denied Reproductions\n\nPicture from The Medieval Things ©\n\nGreaves V. 26.] 16/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.9,
+      "ocr_lines": [
+        {
+          "text": "10. Other Denied Items",
+          "conf_mean": 92.2,
+          "conf_min": 81.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            693,
+            189,
+            1723,
+            260
+          ],
+          "paper": 0.6,
+          "height": 70,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "10.1. Four or five Panels Greaves",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            210,
+            372,
+            1068,
+            412
+          ],
+          "paper": 0.62,
+          "height": 40
+        },
+        {
+          "text": "Those types of Greaves are not based on historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            492,
+            1398,
+            535
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "To get an approved piece, the 4th plate can be removed. The closest alternative would be the 3-panels",
+          "conf_mean": 95.8,
+          "conf_min": 91.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            603,
+            2255,
+            646
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "greaves.",
+          "conf_mean": 92.2,
+          "conf_min": 92.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            672,
+            351,
+            706
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "10.2. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            210,
+            775,
+            1263,
+            825
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            976,
+            1597,
+            1507,
+            1628
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Greaves V. 26.] 16/17",
+          "conf_mean": 90.6,
+          "conf_min": 84.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 17,
+      "text": "11. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition” and “3. General Requirements”.\nThis split doesn’t have an impact on the content of the rules.\n\nMarch-2025 (V2025.03)\n\n- Formatting: Overall grammar and formatting\n\n- add: 8.1: the 4th plate can be removed\n\n- add: 4.5: Side panels lack shaping, Does not adequately protect the malleolus bone, rule 1.2.\n- add: 3.5: Greaves with riveted ankle part (not based on historical sources)\n\nDecember-2024: “add\nDocument has been created\n\nGreaves v. 26.1 17/17",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.9,
+      "ocr_lines": [
+        {
+          "text": "11. Changelog",
+          "conf_mean": 95.5,
+          "conf_min": 95.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            890,
+            189,
+            1530,
+            279
+          ],
+          "paper": 0.68,
+          "height": 90,
+          "dropped": [
+            "z="
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            222,
+            370,
+            2263,
+            413
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            431,
+            1869,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.5,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            663,
+            679,
+            706
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            715,
+            2163,
+            758
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 94.1,
+          "conf_min": 76.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            766,
+            2042,
+            819
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            836,
+            427,
+            871
+          ],
+          "paper": 0,
+          "height": 35
+        },
+        {
+          "text": "- Split of “1. Definition and general requirements” in “2. Definition” and “3. General Requirements”.",
+          "conf_mean": 93.3,
+          "conf_min": 75,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            897,
+            2275,
+            940
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "This split doesn’t have an impact on the content of the rules.",
+          "conf_mean": 96.2,
+          "conf_min": 94.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            957,
+            1497,
+            1000
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "March-2025 (V2025.03)",
+          "conf_mean": 92.5,
+          "conf_min": 92.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1054,
+            668,
+            1097
+          ],
+          "paper": 0.6,
+          "height": 43
+        },
+        {
+          "text": "- Formatting: Overall grammar and formatting",
+          "conf_mean": 95.7,
+          "conf_min": 93.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            180,
+            1102,
+            1095,
+            1145
+          ],
+          "paper": 0.57,
+          "height": 34
+        },
+        {
+          "text": "- add: 8.1: the 4th plate can be removed",
+          "conf_mean": 95.9,
+          "conf_min": 93.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1150,
+            1001,
+            1192
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "- add: 4.5: Side panels lack shaping, Does not adequately protect the malleolus bone, rule 1.2.",
+          "conf_mean": 96,
+          "conf_min": 93.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1198,
+            2088,
+            1241
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "- add: 3.5: Greaves with riveted ankle part (not based on historical sources)",
+          "conf_mean": 96.1,
+          "conf_min": 93.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            1245,
+            1702,
+            1288
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "December-2024: “add",
+          "conf_mean": 67.5,
+          "conf_min": 43.7,
+          "words": 2,
+          "uncertain": [
+            "“add"
+          ],
+          "box": [
+            182,
+            1335,
+            636,
+            1383
+          ],
+          "paper": 0.55,
+          "height": 48
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1390,
+            752,
+            1423
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Greaves v. 26.1 17/17",
+          "conf_mean": 78.9,
+          "conf_min": 49.9,
+          "words": 4,
+          "uncertain": [
+            "Greaves"
+          ],
+          "box": [
+            230,
+            3381,
+            2269,
+            3428
+          ],
+          "paper": 0.96,
+          "height": 32,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}

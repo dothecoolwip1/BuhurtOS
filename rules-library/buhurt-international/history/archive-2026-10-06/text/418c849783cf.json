@@ -1,0 +1,189 @@
+{
+  "sha256": "418c849783cf388b07fffef4ae5acbc7aa65eccceff85fd9f5069a789005c1ed",
+  "files": [
+    "Marshal/Archive/Buhurt Rules 2026.1.1.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 18,
+    "title": "Buhurt Rules 2026.1.1",
+    "creator": null,
+    "producer": "Skia/PDF m145 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "BUHURT\n\nVER. 2026.1.1\n\nBuhurt\nRules",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93,
+      "ocr_lines": [
+        {
+          "text": "BUHURT",
+          "conf_mean": 92.5,
+          "conf_min": 92.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            993,
+            89,
+            1538,
+            224
+          ],
+          "paper": 0.28,
+          "height": 135
+        },
+        {
+          "text": "VER. 2026.1.1",
+          "conf_mean": 92.1,
+          "conf_min": 91.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            748,
+            1342,
+            1228,
+            1396
+          ],
+          "paper": 0,
+          "height": 54
+        },
+        {
+          "text": "Buhurt",
+          "conf_mean": 91.7,
+          "conf_min": 91.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            758,
+            1483,
+            1297,
+            1594
+          ],
+          "paper": 0,
+          "height": 111
+        },
+        {
+          "text": "Rules",
+          "conf_mean": 96.8,
+          "conf_min": 96.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            758,
+            1688,
+            1176,
+            1799
+          ],
+          "paper": 0,
+          "height": 111
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "                                                Buhurt Rules\n               The following rules are regulating group battle categories of Buhurt International.​\n\n        Table of Contents\n\n\n        1. General Provisions (page 4)\n               1.1 Criteria for participation\n               1.2 Scoring System Overview\n               1.3 Grounded Competitor\n                       1.3.1 Case for grounding\n                       1.3.2 Case for not grounding\n\n\n        2. Marshals Committee (page 6)\n               2.1 The Knight Marshall (Chief Official)\n               2.2 Line Marshals\n               2.3 Field Marshals\n               2.4 One (1) Secretary\n               2.5 One (1) Authenticity Committee Representative (AC rep)\n               2.6 Number of Marshals\n\n\n        3. Authorized Equipment (page 7)\n               3.1 General Requirements\n                       3.1.1 Technical and Authentic Compliance\n                       3.1.2 Competitor Eligibility\n                       3.1.3 Weapon Requirements\n                       3.1.4 Footwear\n                       3.1.5 Materials\n                       3.1.6 Decorations\n               3.2 Specifics on Weapons and Shields\n               3.3 Equipment Changes\n               3.4 Marshal Authority\n\n\n        4. Authorized Fighting Techniques (page 9)\n               4.1 Permitted Strikes\n               4.2 Strike Zones\n               4.3 Weapon-Grabbing\n\n\n\n\nBuhurt Rules                                                                             1\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "               4.4 Techniques and Moves\n               4.5 Weapon loss\n               4.6 Reserve Weapons\n                      4.6.1 Wide top bar list\n                      4.6.2 No top bar list\n\n\n        5. Prohibited Fighting Techniques (page 11)\n               5.1 Unlisted Techniques\n               5.2 Thrusting Actions\n               5.3 Offensive Actions at Prohibited Strike Zones\n               5.4 Actions with Foot or Shin at the Knee\n               5.5 Grappling and Holds\n               5.6 Armor Tampering\n               5.7 Suffocation Techniques\n               5.8 Specific Strikes\n               5.9 Dangerous Takedowns\n               5.10 Intentional Passivity\n               5.11 Joint Locks and Hyperextension\n               5.12 Striking Grounded competitors\n               5.13 Injuring competitor\n               5.14 Uncontrolled Strikes\n               5.15 Weapon Loss\n\n\n        6. Other Prohibited Actions (page 13)\n               6.1 Leaving Lists\n               6.2 Interference from grounded competitors\n               6.3 Equipment and Weapon Approval\n               6.4 Substance Use\n               6.5 Offensive Actions Against Others\n               6.6 Event Interference\n\n\n        7. Prohibited Strike Zones (page 15)\n               7.1 Back and Front of the Neck\n               7.2 Base of Skull\n               7.3 Back of Knee\n               7.4 Groin and Crotch\n               7.5 Feet and Ankle\n\n\n\n\nBuhurt Rules                                                      2\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "               7.6 Unprotected Body Parts\n\n\n        8. Management of the Fights (page 16)\n               8.1 Verbal warning\n               8.2 Warning (Yellow card)\n               8.3 Disqualification (red card)\n\n\n        9. Change log (page 17)\n\n\n\n\nBuhurt Rules                                     3\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "                                1. General Provisions\n\n        1.1 Criteria for participation\n               1.1.1 Competitors must be of legal age in their country and the tournament hosting\n               country.\n               1.1.2 Declare they are medically fit to fight prior to participation in the fight.\n               1.1.3 A competitor must sign the disclaimer document (which states that the fighter is\n               aware of the risks associated with participation and acknowledges that the organizer\n               provides no warranties, that they have read the rules and agree to comply).\n\n        1.2 Scoring System Overview\n        The grounded position of all the opposing team fighters is the main victory criteria in group\n        battles.\n\n        1.3 Grounded Competitor\n               1.3.1 The competitor is grounded in the following cases:\n                   ●​ Touches the ground with torso, hip, arm, hand, knee,shield except with their two\n                      feet.\n                   ●​ Touches a grounded fighter for support with downward pressure.\n                   ●​ If the list has no bottom rail touching the ground, and the fighter fell or stepped\n                      with both feet completely out/under the list. Marshals visually determine the\n                      boundary of the list.\n                   ●​ Armour failure: if an element of the equipment cannot perform its protective\n                      function or is lost, the fighter shall be grounded by marshals. This includes\n                      helmet, neck protection (gorget), torso protection (a brigandine, a breastplate,\n                      etc), shoulder, elbow, forearm defense, gauntlet, groin protection, shin, thigh, a\n                      sabaton, knee-cop, upper arm defense.\n                   ●​ While not carrying a weapon in your hand you're not allowed to engage in\n                      offensive actions like striking, pushing, grappling, or tripping, directed at an\n                      opponent. Holding a shield is not considered holding a weapon.\n                   ●​ Took a reserve weapon from a squire beyond an allocated weapon distribution\n                      zone, or inside of the fenced list area, or, if the list has a wide top bar, collected\n                      it in any way other than picking it up from the surface of the bar in the allocated\n                      area.\n                   ●​ If the list is a wide top bar, the fighter has their full body and legs on top of the\n                      list.\n                   ●​ Was grounded by a marshal as a result of the rules violation. (see article 8)\n                      Yielded by kneeling, voluntarily withdrawing from a fight.\n\n\n\n\nBuhurt Rules                                                                                 4\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 6,
+      "text": "        ​      1.3.2 The competitor is not grounded in the following cases:\n                  ●​ They touch the ground during or immediately after a successful takedown with\n                     one of the following cases.\n                          ○​ Edge of their shield (not a flat part)\n                          ○​ Hand (open hand)\n                          ○​ Fist (closed hand)\n                  ●​ They touch their immediate opponent (a fighter they are grappling/falling\n                     together with) with any point of contact except for their torso, hips, or buttocks\n                     immediately after a successful throw.\n                  ●​ If the remaining protective elements can compensate for an armor failure.\n                  ●​ If the armor failure occurs to buttocks protection, cuisses that are\n                     supplementing a skirt or back elements of a greave.\n\n                  ●​ Any part of a polearm, a sword blade or mace is not considered as contacting\n                     the ground.\n\n\n\n\nBuhurt Rules                                                                            5\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 7,
+      "text": "                             2. Marshals Committee\n        Marshals Committee of a tournament should consist of:\n\n        2.1 The Knight Marshal (Chief Official)\n           ●​ Is appointed by the Tournament Organizer.\n           ●​ Shall make the final decision in the case of any disagreement.\n           ●​ The Knight Marshal supervises the course of the fight and assesses the team’s\n              interactions.\n           ●​ The Knight Marshal can return a fighter who was grounded by unauthorized technique\n              to the fight, or withdraw the fighter who is ‘out of battle’.\n           ●​ Shall break inactive clinches with the “Break” local command and a yellow flag\n              between the helmets of the fighters. The fighters must stop fighting immediately and\n              take two steps apart.\n           ●​ Shall stop rounds with the “Hold” command and yellow flag between helmets of the\n              fighters. The fighters must stop across the entire list and should not move.\n           ●​ Only the knight marshal is allowed to use the command “Start fight” and a signal with a\n              flag that will start the round.\n           ●​ Only the knight marshal is allowed to use the command “Stop fight” and a signal with a\n              flag that will stop the round.\n           ●​ Only the knight Marshal is allowed to use the command “All rise” verbally.\n\n        2.2 Field Marshals\n           ●​ Shall break inactive clinches with the “Break” local command and a yellow flag\n              between the helmets of the fighters. The fighters must stop fighting immediately and\n              take two steps apart.\n           ●​ Local command “Fight” and a signal with a flag of the same marshal who announced\n              the break indicates the recommencement of the fight for the fighters pulled out of the\n              clinch, and a continuation of the fight in general.\n           ●​ Local commands “Break” and “Fight” are effective only for the fighters in the clinch.\n              After the “Fight” command, any fighter can continue the fight with the same opponent\n              or attack another opponent.\n           ●​ Will stop a fight on the command of the Knight Marshal “Stop fight” the line marshals\n              will stop the fight with verbal commands and a yellow flag\n\n\n\n\nBuhurt Rules                                                                          6\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 8,
+      "text": "        2.3 Line Marshals\n           ●​ There are between 4 and 8 Line Marshals.\n                Line Marshals are the external eyes of the Knight Marshal and Field Marshals in\n        Buhurt. They look for and report rule’s violations, armour malfunctions and any other\n        situation in the list to the Knight Marshal or Field Marshal during the fight. Particular\n        Line Marshals will keep watch of the allocated weapon distribution zone and inform the\n        Knight Marshal or Field Marshals of any rule’s violation. Line Marshals do not\n        intervene directly in the battle unless there is an extreme circumstance such as an\n        injurie or potential injury. After the round, the Line Marshal is to report any relevant\n        information to the Knight Marshal.\n\n\n\n        2.4 One (1) Secretary\n           ●​ Shall document the course and results of fights.\n           ●​ Shall compile the tournament ladders, and determine the winner of the group stage\n              based on registered results of the individual fights.\n           ●​ For the countries/regions with a certification system in place, a secretary must hold a\n              certificate issued by a local/regional/international Tournament committee.\n\n        2.5 One (1) Authenticity Committee Representative (AC rep)\n\n        2.6 Number of Marshals\n        The number of marshals is determined separately for each tournament, depending on its form.\n\n\n\n\nBuhurt Rules                                                                           7\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 9,
+      "text": "                           3. Authorized Equipment\n        These rules aim to ensure a high standard of authenticity, safety, and historical accuracy in the\n                                 equipment and conduct of the participants.\n\n        3.1 General Requirements\n               3.1.1 Technical and Authentic Compliance\n                   ●​ All equipment must meet Buhurt International technical and authentic\n                      requirements.\n                   ●​ Reference ”Weapons requirements” for all the rules.\n                   ●​ Reference “Weapons/Shield Chart” for sizes and weights.\n\n               3.1.2 Competitor Eligibility\n                   ●​ Competitors are not allowed unless they have passed technical and authenticity\n                      checks.\n               3.1.3 Weapon Requirements\n                   ●​ Weapons must meet the Technical Requirement for Permitted Weapons.\n                   ●​ Low-quality, dirty, rusty, or historically implausible weapons are not allowed.\n               3.1.4 Footwear\n                   ●​ Medieval Shoes with low profile(non lugged/studded/spiked) soles as\n                      referenced in Authenticity Standards\n               3.1.5 Materials\n                   ●​ Modern adhesive tape, plastic ties, and other visible modern materials are not\n                      permitted.\n                   ●​ Textile adhesive tape of neutral colors for kit repair is an exception.\n               3.1.6 Decorations\n                   ●​ Slogans and imagery on equipment should be historically plausible and not\n                      derogatory.\n                   ●​ No modern equipment or decorations are allowed.\n\n\n\n        3.2 Specifics on Weapons and Shields\n           ●​ All Buhurt International weapons and shields are permitted.\n           ●​ Any combination of these weapons is allowed.\n\n\n\n\nBuhurt Rules                                                                             8\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 10,
+      "text": "        3.3 Equipment Changes\n           ●​ Participants are allowed to change elements of equipment (armor or weapon) during\n              the time between rounds and/or matches.\n           ●​ Technical Marshal supervision is required for equipment changes.\n\n        3.4 Marshal Authority\n           ●​ The Head Marshal and Authenticity Representative have the authority to demand\n              changes to any element of armor or weapon for safety, aesthetic, or historical accuracy\n              reasons.\n\n\n\n\nBuhurt Rules                                                                         9\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 11,
+      "text": "                4. Authorized Fighting Techniques\n          A fighter must hold a weapon with at least one hand. If a fighter is not holding their weapon\n          with a hand, they are considered disarmed and are not authorized to perform any attacking\n                                actions until the grip on the weapon is restored.\n\n        4.1 Permitted Strikes\n           ●​ Strikes are permitted with any part of the weapon, shield, and various body parts\n              (arms, legs and head).\n           ●​ A competitor can strike with a free hand provided they have a weapon in the other\n              hand. That is at the ready and unsheathed.\n           ●​ A competitor can strike an opponent who has lost their weapon.\n           ●​ A competitor can strike an out of balance opponent before they are grounded.\n\n        4.2 Strike Zones\n           ●​ Strikes are allowed to any area not mentioned as a prohibited strike zone .\n               (refer to section 5. Prohibited Fighting Techniques).\n\n\n        4.3 Weapon-Grabbing\n           ●​ Grabbing the opponent's weapon (except the blade) or shield with a free hand is\n              permitted.\n\n        4.4 Techniques and Moves\n           ●​ Back heels (tripping), wrestling throws, and clinching are allowed.\n           ●​ Any movement in the list, leaning on the barrier of the list, any holds and grips of the\n              barrier of the list.\n           ●​ A competitor can disarm any opponent by any authorized action,\n           ●​ A competitor can take away a weapon from the belt of the opponent, provided the\n              fighter holds their weapon. The fighter is then allowed to use the opponent’s weapon\n              until the end of the round, and then it must be surrendered back to the opponent.\n           ●​ Opposing fighters can take or knock down reserve weapons that are placed on a wide\n              top bar list as long as the squire is not holding them.\n           ●​ Grappling the base of the skull but not the bottom edge of the helmet is permitted.\n\n\n\n\nBuhurt Rules                                                                           10\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 12,
+      "text": "        4.5 Weapon loss\n        A fighter who has lost their weapon is allowed to:\n           ●​ Protect themself from the strikes without performing any offensive actions or holds.\n           ●​ Take a reserve weapon they had with them.\n           ●​ Take a reserve weapon from an ungrounded teammate in the list.\n           ●​ Take a reserve weapon from their teammate located in the allocated weapon\n              distribution zone.\n           ●​ Grab a polearm which leans against the top rail of the barrier or its ungrounded\n              teammate’s/owner’s body. In this case, it is not considered lying on the surface of the\n              list.\n           ●​ Yield by kneeling.\n\n        4.6 Reserve Weapons\n               4.6.1 Wide top bar list\n                   ●​ Reserve weapons must be placed on the top of the bar in the designated area\n                      for a fighter to pick up themselves. It is prohibited to pass a weapon to the\n                      fighter or hold the weapon when a fighter is taking it. This will impose a penalty\n                      (See article 5 in “Buhurt Regulations”).\n               4.6.2 No top bar list\n                   ●​ Reserve weapons may be passed to the fighter from above the top rail of the\n                      list within the designated area. It is prohibited to pass a weapon below the top\n                      rail of the list. This will impose a penalty (See article 5 in “Buhurt Regulations”)\n\n\n\n\nBuhurt Rules                                                                              11\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 13,
+      "text": "                5. Prohibited Fighting Techniques\n         Performance of any prohibited technique is a serious rules violation and is penalized with a\n         verbal warning, yellow or red card. The penalty is imposed regardless of the fighter’s intent.\n\n        5.1 Unlisted Techniques\n           ●​ Any actions not listed in section 4 of the rules are prohibited. Only authorized\n              techniques are permitted.\n\n        5.2 Thrusting Actions\n           ●​ Any thrusting actions with a weapon are prohibited. Threats of a thrusting action are\n              also prohibited.\n\n        5.3 Offensive Actions at Prohibited Strike Zones\n           ●​ Any offensive actions that land on prohibited strike zones (See section: 7. Prohibited\n              Strike Zones) are prohibited.\n\n        5.4 Actions with Foot, Shin and Knee\n           ●​ Actions with foot, shin, and knee aimed at the knee are prohibited. This includes\n              actions that may cause the knee to hyperextend, such as push kicks to the thigh.\n\n        5.5 Grappling and Holds\n           ●​ Grappling and holding with the hand on specific armor elements (aventail, edge of\n              pauldrons, edge of the helmet), pushes on the bottom edge of the helmet and\n              subsequent neck twists are prohibited.\n\n        5.6 Armor Tampering\n           ●​ Deliberate attempts to remove any elements of the armor are prohibited.\n           ●​ The fighter committing the offense will be sat down and given a yellow card.\n           ●​ A fighter who deliberately has their armor so it can be easily removed will receive a\n              yellow card for unsportsmanlike conduct.\n\n        5.7 Suffocation Techniques\n           ●​ Grips, clamps, suffocation techniques with direct pressure on the front, side and back\n              of neck (under or on top of the aventail) using any part of the body, equipment, or\n              weapon are prohibited. A poorly fitted helmet does not count as a suffocating\n              technique.\n\n        5.8 Specific Strikes\n           ●​ Strikes or punching with the head of a one-handed axe are prohibited if the grip of the\n              hand is less than 30 cm away from the blade.\n\n\n\n\nBuhurt Rules                                                                           12\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 14,
+      "text": "           ●​ strikes with hammerheads are prohibited.\n\n        5.9 Dangerous Takedowns\n           ●​ Any takedown that spikes an opponent on their head/neck and suplex (arch throws)\n              variations are prohibited.\n\n        5.10 Intentional Passivity\n           ●​ Intentional passivity and stalling of the action (such as an inactive clinch) are\n              prohibited. An inactive clinch is a clinch situation with the fighters performing weak\n              weapon strikes or no grappling techniques aimed at grounding their opponent for 10\n              seconds or longer. The strikes with a fist, knees, or shield, are not considered.\n\n        5.11 Joint Locks and Hyperextension\n           ●​ Arm lock and leg lock techniques, and any actions that may cause a limb to\n              hyperextend, are prohibited.\n\n        5.12 Striking Grounded competitors\n           ●​ Striking a grounded competitor is prohibited.\n\n        5.13 Injuring competitor\n           ●​ Deliberately injuring the fighter who has lost a defensive element of equipment.\n\n        5.14 Uncontrolled Strikes\n           ●​ Any uncontrolled strikes and actions with a weapon.\n\n        5.15 Weapon Loss\n           ●​ It is prohibited to pick up a weapon that is lying flat on the ground, to receive a weapon\n              from an already grounded fighter, to receive a weapon from any outside the list except\n              for the squire in the designated area.\n\n\n\n\nBuhurt Rules                                                                           13\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 15,
+      "text": "                        6. Other Prohibited Actions\n         These rules contribute to maintaining the integrity, safety, and orderliness of the event. They\n          cover aspects such as participant behavior, substance use, adherence to commands, and\n           respect for officials and other attendees. The role of the Knight Marshal is highlighted in\n            several instances, emphasizing their authority and responsibility in ensuring the proper\n                                               conduct of the event.\n\n\n\n        6.1 Leaving Lists\n           ●​ Intentional leaving of the lists after the command “Start Fight” and before the\n              announcement of the results of the fight is prohibited. Permission to leave must be\n              granted by the Knight Marshal.\n\n        6.2 Interference from grounded competitors\n           ●​ Grounded fighters must remain on the ground until the “All Rise” command of the\n              Knight Marshal. They are not allowed to return to a standing position.\n           ●​ The grounded fighters are not allowed to physically interfere in the course of the fight.\n           ●​ A grounded fighter must maintain a comfortable seated or lying position until the end of\n              the round. A comfortable position is a signal that the fighter is not injured.\n           ●​ The grounded competitors are not allowed to change their position in the list unless\n              there is a threat to their safety.\n\n        6.3 Equipment and Weapon Approval\n           ●​ Competitors are not allowed to use any part of the equipment or any weapon that\n              hasn't been allowed by the Authenticity.\n\n        6.4 Substance Use\n           ●​ It's not allowed for the competitor to be under the influence of alcohol or any\n              psychoactive substances.\n\n        6.5 Offensive Actions Against Others\n           ●​ Any offensive actions against marshals, corner support, spectators, or anyone else\n              other than the current opponent are prohibited.\n\n        6.6 Event Interference\n           ●​ Any actions made by a competitor or their support that may impede the course of the\n              event are prohibited.\n           ●​ For a demonstration of poor sportsmanship, derogatory behavior, obscene language,\n              commentaries directed at marshals, opponents, or spectators.\n\n\n\n\nBuhurt Rules                                                                            14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 16,
+      "text": "                          7. Prohibited Strike Zones\n          These rules are designed to prioritize the safety of the participants by prohibiting strikes to\n        vulnerable and potentially dangerous areas. The specific definitions and considerations for the\n         base of the skull and back of the knee provide clarity on the prohibited strike zones. Striking\n          the foot is allowed under certain circumstances, emphasizing the importance of situational\n         awareness and control during combat. The overall intention is to prevent serious injuries and\n                                      ensure a fair and safe competition.\n\n        7.1 Back and Front of the Neck\n           ●​ Strikes to the back and front of the neck are prohibited.\n\n        7.2 Base of Skull\n           ●​ The base of the skull is considered a prohibited strike zone, specifically defined as the\n              bottom third of the back of the helmet.\n\n        7.3 Back of Knee\n           ●​ Strikes to the back of the knee are prohibited. No pressure is to be placed on the back\n              of the knee.\n\n        7.4 Groin and Crotch\n           ●​ Strikes to the groin and crotch are prohibited.\n\n        7.5 Feet and Ankle\n           ●​ Strikes to the feet and ankles are prohibited. However, striking the foot is not\n              considered a prohibited strike if the competitor raises their foot while the strike is\n              already occurring.\n\n        7.6 Unprotected Body Parts\n           ●​ Any part of the opponent’s body that has lost its protection is considered a prohibited\n              strike zone.\n\n\n\n\nBuhurt Rules                                                                             15\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 17,
+      "text": "                      8. Management of the Fights\n         Fights of the category are managed under the Buhurt International ‘Buhurt Regulations’ by\n         penalties that are imposed depending on the situation in the list and fighters’ and marshals’\n                                                 actions.\n\n\n\n\nBuhurt Rules                                                                          16\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 18,
+      "text": "                                                 9. Change log\n                  This will be the change log of this document. It will be updated regularly and we will\n                    display what has been removed/added/reworded/formatted. This way we keep\n                                      transparent communication and clarity about the rules\n                                 January 2026 (Version update from 2024.12 to 2026.1)\n\n\n    Update date: January-2026\n    -add: 2.1 Shall stop rounds with the “Hold” command and yellow flag between helmets of the fighters. The fighters must\n    stop across the entire list and should not move.\n    -clarification: 3.1.4 Medieval Shoes with low profile(non lugged/studded/spiked) soles as referenced in Authenticity\n    Standards\n    -add: 4.1 That is at the ready and unsheathed.\n    -clarification: 5.3 Any offensive actions that land on prohibited strike zones (See section: 7. Prohibited Strike Zones) are\n    prohibited.\n    .\n\n\n\n\n    Update date: December-2024\n    -replaced: “Oral” with “Verbal”\n    -add: 4.6.2 : This will impose a penalty (See article 5 in “Buhurt Regulations”)\n    -add: 4.6.1 : This will impose a penalty (See article 5 in “Buhurt Regulations”)\n    -add: 3.1 Reference ”Weapons requirements” for all the rules​\n    -add: 3.1 Reference “Weapons/Shield Chart” for sizes and weights\n\n\n    Update date: March-2024\n    - format: new design format, document will be used from now on.\n\n\n\n\nBuhurt Rules                                                                                                17\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

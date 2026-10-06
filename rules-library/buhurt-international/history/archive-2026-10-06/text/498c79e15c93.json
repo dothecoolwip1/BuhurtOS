@@ -1,0 +1,319 @@
+{
+  "sha256": "498c79e15c93619fd51fc812afccadbc777c73b43283d2065c1e87f9b40a59c4",
+  "files": [
+    "Authenticity/Archive/Greaves.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 19,
+    "title": "Greaves",
+    "creator": null,
+    "producer": "Skia/PDF m136 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)) BUHURT(Z\n\nA (\nNe iy) 2Z\nim BX\nC WK \\/ HL .\nGk. USve\n\ne\n\n~\nticity Conm™\n\nVER. 2025.03\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 45.1,
+      "ocr_lines": [
+        {
+          "text": "\\)) BUHURT(Z",
+          "conf_mean": 40.6,
+          "conf_min": 33.2,
+          "words": 2,
+          "uncertain": [
+            "BUHURT(Z"
+          ],
+          "box": [
+            812,
+            172,
+            1526,
+            247
+          ],
+          "paper": 0,
+          "height": 75,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 40.6"
+        },
+        {
+          "text": "A (",
+          "conf_mean": 41.2,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            878,
+            361,
+            1460,
+            482
+          ],
+          "paper": 0,
+          "height": 121,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 41.2"
+        },
+        {
+          "text": "Ne iy) 2Z",
+          "conf_mean": 31.6,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [
+            "iy)"
+          ],
+          "box": [
+            793,
+            505,
+            1543,
+            647
+          ],
+          "paper": 0,
+          "height": 101,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 31.6"
+        },
+        {
+          "text": "im BX",
+          "conf_mean": 28.4,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            849,
+            635,
+            1477,
+            747
+          ],
+          "paper": 0,
+          "height": 112,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 28.4"
+        },
+        {
+          "text": "C WK \\/ HL .",
+          "conf_mean": 31.9,
+          "conf_min": 0,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            843,
+            717,
+            1486,
+            874
+          ],
+          "paper": 0.02,
+          "height": 73,
+          "in_picture": "on a coloured or photographic background (paper 2%), confidence 31.9"
+        },
+        {
+          "text": "Gk. USve",
+          "conf_mean": 18,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "Gk.",
+            "USve"
+          ],
+          "box": [
+            761,
+            769,
+            1548,
+            1006
+          ],
+          "paper": 0.07,
+          "height": 237,
+          "in_picture": "on a coloured or photographic background (paper 7%), confidence 18.0"
+        },
+        {
+          "text": "e",
+          "conf_mean": 92.3,
+          "conf_min": 92.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            873,
+            985,
+            918,
+            1026
+          ],
+          "paper": 0,
+          "height": 41,
+          "in_picture": "no readable word: marks of a drawing"
+        },
+        {
+          "text": "~",
+          "conf_mean": 61.4,
+          "conf_min": 61.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1438,
+            967,
+            1473,
+            1003
+          ],
+          "paper": 0,
+          "height": 36,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 61.4"
+        },
+        {
+          "text": "ticity Conm™",
+          "conf_mean": 42.3,
+          "conf_min": 26.2,
+          "words": 2,
+          "uncertain": [
+            "ticity",
+            "Conm™"
+          ],
+          "box": [
+            911,
+            980,
+            1458,
+            1135
+          ],
+          "paper": 0.03,
+          "height": 155,
+          "in_picture": "on a coloured or photographic background (paper 3%), confidence 42.3"
+        },
+        {
+          "text": "VER. 2025.03",
+          "conf_mean": 95.5,
+          "conf_min": 94.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            559,
+            1424,
+            1121,
+            1502
+          ],
+          "paper": 0,
+          "height": 78
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            559,
+            1564,
+            1675,
+            1787
+          ],
+          "paper": 0,
+          "height": 223
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "                                     Authenticity rules - Greaves\nTable of contents\n1. Definition and General Requirements​                                    3\n    1.1. Types of Greaves​                                                 3\n    1.2. General Requirements for All Greaves​                             3\n2. One Panel Greaves (Half-Greaves)​                                       4\n    2.1. Historical Sources and Datation​                                  4\n    2.2. Specific Requirements for One Panel Greaves (Half-Greaves)​       4\n    2.3. Examples of Approved reproductions​                               4\n    2.4. Examples of Denied reproductions​                                 5\n3. Two panels-graves (cased greaves)​                                      6\n    3.1. Historical Sources and Datation​                                  6\n    3.2. Specific Requirements​                                            6\n    3.3. Examples of Articulation​                                         7\n    3.4. Examples of Approved reproductions​                               7\n    3.5. Examples of Denied reproductions​                                 7\n4. Three Panel Greaves​                                                    8\n    4.1. Historical Sources and Datation​                                  8\n    4.2. Historical Example:​                                              8\n    4.3. Specific Requirements​                                            8\n    4.4. Examples of approved reproductions​                               9\n    4.5. Examples of denied reproductions​                                 10\n5. Three Quarters Greaves​                                                 11\n    5.1. Historical Sources and Datation​                                  11\n    5.2. Specific Requirements​                                            11\n    5.3. Examples of approved reproductions​                               12\n    5.4. Examples of denied reproductions​                                 12\n6. Splinted Greaves​                                                       13\n    6.1. Historical Sources and Datation​                                  13\n    6.2. Specific Requirements for Splinted Greaves​                       13\n    6.3. Examples of approved reproductions​                               14\n    6.4. Examples of denied reproductions​                                 14\n7. Brigand Greaves​                                                        14\n    7.1. Historical Sources and Datation​                                  15\n    7.2. Specific Requirements for Brigand Greaves​                        15\n    7.3. Examples of approved reproductions​                               15\n    7.4. Examples of denied reproductions​                                 16\n8. Other denied items​                                                     17\n    8.1. 4 or 5 panels greaves​                                            17\n    8.2. Examples of denied reproductions:​                                17\n9. Change log​                                                             18\n\n\n\n\n  Greaves                                                              2\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "    1.​ Definition and General Requirements\n 2.​ Definition and general requirements\n\n    Greaves is the term used to describe all lower leg protections.\n\n   1.1.​ Types of Greaves\n\n          1-Panel Greaves (Half-Greaves)\n             ●​ Made of 1 plate of metal forged to the shape of the lower leg.\n             ●​ Attached by a leather strap at the back of the calf.\n\n          2-Panel Greaves (Cased Greaves)\n             ●​ Made of 2 plates of metal built to protect the lower leg at 360°.\n             ●​ The plates are built with hinges and attached by a leather strap at the inner side of the lower\n                leg.\n\n          3-Panel Greaves\n             ●​ Made of 3 plates of metal attached with leather.\n\n          3/4 Greaves\n             ●​ The front side of the lower leg is protected by a metal plate.\n             ●​ The outside of the lower leg is protected by a half-plate of metal, leaving the inner side of the\n                lower leg unprotected.\n\n          Splinted Greaves\n            ●​ Metal plates riveted to a leather base.\n            ●​ The plates are alternately outside and inside the leather.\n\n          Brigand Greaves\n            ●​ Metal plates riveted to a fabric base.\n            ●​ The plates are covered by the fabric.\n\n          Eastern Greaves\n            ●​ Due to very few historical sources, it is allowed to use eastern stylization of European\n               greaves.\n            ●​ Allowed designs are displayed in the document “Eastern Armors.”\n\n   1.2.​ General Requirements for All Greaves\n\n       1.2.1.​ Historical Basis: Must be based on historical sources.\n       1.2.2.​ Anatomical Shape: Must have the anatomical shape of the lower leg.\n       1.2.3.​ Proportions: Must reproduce the proportions based on historical sources.\n       1.2.4.​ Malleolus Protection: Must protect the malleolus bone.\n\n\n\n\nGreaves                                                                                    3\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "               2.​ One Panel Greaves (Half-Greaves)\n             2.1.​ Historical Sources and Datation\n\n                    ●​ The 1-panel greave is the earliest form of lower leg protection available for knights, originating\n                       in the early 14th century.\n                            ●​ Approved for 14th-century and Transitional armors.\n                            ●​ Denied for 15th-century armor.​\n\n                    ●​ Historical References\n                           ●​ Crucifixion, Niederhaslach – 1360, France (A)\n                           ●​ J. von Falkenstein – 1365, Germany (B)\n\n​    ​          ​             (A)​ ​          ​         ​   ​    ​      ​       ​            (B)\n\n\n\n\n             2.2.​ Specific Requirements for One Panel Greaves (Half-Greaves)\n\n                    ●​ must conform to the general requirements outlined in article 3\n                    ●​ The entire front of the lower leg must be covered by the greaves\n\n             2.3.​ Examples of Approved reproductions\n\n\n         ​\n\n\n\n\n​    ​          ​         Picture from Forge of Svan ©​ ​   ​    ​      ​       ​          Picture from Age of Craft ©\n\n\n\n\n    Greaves                                                                                           4\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "   2.4.​ Examples of Denied reproductions\n\n\n\n\n                                         Non-anatomic shape\n\n                                   Pictures from The Medieval Things ©\n\n\n\n\nGreaves                                                                  5\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 6,
+      "text": "              3.​ Two panels-graves (cased greaves)\n             3.1.​ Historical Sources and Datation\n                   ●​ 2-panel greaves, also known as cased greaves, were the most common form of lower leg\n                       protection from 1370 to 1600 and later. They provided superior protection for competitors by\n                       covering the entire lower leg from all sides.\n                   ●​ Approved for 14th-century, Transitional, and 15th-century armors.\n\n\n\n\n         ​       ​         Metropolitan Museum of Arts - 1450 ​       ​   ​   ​        Brescia - 1470/1480 - Ital\n​    ​           ​         ​        ​         ​         ​         ​\n\n             3.2.​ Specific Requirements\n\n                     must conform to the general requirements outlined in article 3​\n\n                     Articulated Plates\n\n                     Permitted:\n                       ●​ Articulated plates are allowed if worn with the adequate armor style from the 15th\n                          century.\n                     Denied:\n                       ●​ Articulated plates at the bottom or top of the greaves are not allowed for 14th-century\n                          and Transitional-style armors.​\n\n\n\n\n    Greaves                                                                                              6\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "             3.3.​ Examples of Articulation\n\n                    Fully enclosed greaves (with heel-protection) appear in the late 15th century only. They are\n                    denied for 14th century and Transitional style armors.\n         ​\n         ​\n         ​\n         ​\n\n         Examples of fully enclosed greaves:\n\n\n\n\n             3.4.​ Examples of Approved reproductions\n\n\n\n\n​    ​          ​        ​      ​\n\n\n\n\n    Greaves                                                                                 7\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "         3.5.​ Examples of Denied reproductions\n\n\n\n\n​    ​        ​    Non-anatomic design Greaves with riveted ankle part (not based on historical sources)\n                                           Pictures from The Medieval Things ©\n\n\n\n\n    Greaves                                                                            8\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 9,
+      "text": "                      4.​ Three Panel Greaves\n      4.1.​ Historical Sources and Datation\n\n            3 panel greaves are mainly represented in Germany from 1360 to 1380. They consist of one\n            front panel and two side panels, articulated by leather straps.\n\n             ●​ Approved for 14th-century and Transitional armors.\n             ●​ Denied for 15th-century armors.​\n                ​\n\n      4.2.​ Historical Example:\n      ●​ Sir Burchard von Steinberg – 1376, Germany (A)\n\n  ​\n\n\n\n\n      4.3.​ Specific Requirements\n\n          ●​ must conform to the general requirements article 3\n          ●​ The side panels must protect both sides of the lower leg, including the malleolus bone.\n          ●​ The panels can be articulated with leather straps or a piece of leather between each panel.\n          ●​ It is allowed to extend the width of the side panels to cover the back of the calf, despite this\n             not being based on historical proportions.\n          ●​ It is allowed to use hinges instead of leather despite it not being documented by historical\n             sources.\n\n\n\n\nGreaves                                                                                9\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 10,
+      "text": "    4.4.​ Examples of approved reproductions\n\n\n\n\n  Side panels that are based on historical proportion​​           ​          Wider size panels for safety\n\n\n  Picture from Age of Craft © ​​   ​       Picture from Medieval Extreme ©\n\n\n\n\n                                          Picture from The Medieval Things ©\n\n\n\n\nGreaves                                                                                        10\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 11,
+      "text": "      4.5.​ Examples of denied reproductions\n\n\n\n\n  ​\n  ​\n  ​\n  ​\n  ​\n  ​\n  ​\n\n\n                                      Side panels lack of shaping\n                        Does not adequately protect the malleolus bone, rule 1.2.4\n                                       Pictures from The Medieval Things ©\n\n\n\n\nGreaves                                                                              11\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 12,
+      "text": "                   5.​ Three Quarters Greaves​\n\n   5.1.​ Historical Sources and Datation\n\n          3/4 greaves first appeared in the 15th century.\n\n          ●​ Approved for Transitional and 15th-century armors.\n          ●​ Denied for 14th-century armors.​\n\n     ●​ Historical Example\n        ●​ Metropolitan Museum of Art – 1550, Italy (A)\n\n\n\n\n                                                     (A)\n\n\n\n\n   5.2.​ Specific Requirements\n\n      ●​ must conform to the general requirements article 3.\n      ●​ The side panel must cover at least half of the back of the calf.\n\n\n\n\nGreaves                                                                     12\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 13,
+      "text": "      5.3.​ Examples of approved reproductions\n\n\n\n\n  ​       ​     Picture from Age of Craft ©​ ​ ​   ​   ​   Picture from The Medieval Things ©\n      5.4.​ Examples of denied reproductions\n\n\n\n\n  ​\n  ​\n  ​\n  ​\n  ​\n  ​\n\n\n\n\nGreaves                                                                           13\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 14,
+      "text": "                                        6.​ Splinted Greaves​\n\n             6.1.​ Historical Sources and Datation\n\n                        ●​ Introduction: Splinted greaves are represented in Europe from 1350 to 1380. They consist\n                           of metal plates riveted to a leather base.\n                        ●​ Approved for 14th-century and Transitional armor.\n                        ●​ Denied for 15th-century armor\n\n                ●​Historical Examples:\n                    ●​ Louis Thys – 1365, Belgium (A)\n                    ●​ G. von Schwarzburg – 1349, Germany (B)\n\n         ​      ​                     (A)​   ​   ​     ​       ​      ​           ​       (B)\n         ​      ​          ​      ​          ​   ​     ​\n\n         ​          ​      ​      ​          ​   ​     ​       ​          ​   ​       ​         ​        ​   ​\n         ​      ​          ​\n\n\n\n\n​    ​          ​          ​       ​         ​\n\n             6.2.​ Specific Requirements for Splinted Greaves\n\n              ●​ must conform to the general requirements outlined in article 3.\n              ●​ Must be made of metal plates with the following features:\n                   ●​ Rectangular shape.\n                   ●​ Firmly riveted to a leather base.\n                   ●​ Plates must be riveted alternatively inside and outside the leather base.\n              ●​ Plates must conform to the anatomical shape of the lower leg.\n\n\n\n\n    Greaves                                                                                         14\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 15,
+      "text": "   6.3.​ Examples of approved reproductions\n\n\n\n\n                                     Picture from Medieval Extreme ©\n\n\n\n\n   6.4.​ Examples of denied reproductions\n\n                            Fantasy designs and Non-anatomical shape\n\n\n\n\nGreaves                                                                15\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 16,
+      "text": "                          7.​ Brigand Greaves\n   7.1.​ Historical Sources and Datation\n\n          Brigand greaves are represented in Europe from 1350 to 1380. They consist of metal plates\n          riveted to a fabric base.\n           ●​ Approved for 14th-century and Transitional armors.\n           ●​ Denied for 15th-century armors.\n\n   7.2.​ Specific Requirements for Brigand Greaves\n\n          ●​ must conform to the general requirements outlined in section 1.3.\n          ●​ Must be made of metal plates with the following features:\n              ●​ Rectangular shape.\n              ●​ Firmly riveted to a fabric base.\n              ●​ Plates must be riveted inside the fabric, not outside.\n          ●​ Plates must conform to the anatomical shape of the lower leg.\n\n\n   7.3.​ Examples of approved reproductions\n\n\n\n\n                                          Picture from Forge of Svan ©\n\n\n\n\nGreaves                                                                          16\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 17,
+      "text": "   7.4.​ Examples of denied reproductions\n\n\n\n\n                                      Non-anatomical shape\n                                    Picture from The Medieval Things ©\n\n\n\n\nGreaves                                                                  17\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 18,
+      "text": "                        8.​ Other denied items\n   8.1.​ 4 or 5 panels greaves\n\n          This type of greaves is not based on historical sources.\n          To get an approved piece, the 4th plate can be removed. The closest alternative would be the\n          3-panels greaves.\n\n   8.2.​ Examples of denied reproductions:\n\n\n\n\n                                         Picture from The Medieval Things ©\n\n\n\n\nGreaves                                                                              18\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 19,
+      "text": "                                9.​ Change log\n  Below, we will keep track of all the changes made over the lifetime of this document. This way, all our\n                     members can see how the documents are changing over time.\n\n\n\n    March-2025 (V2025.03)​\n    - Formatting: Overall grammar and formatting​\n    - add: 8.1: the 4th plate can be removed\n    - add: 4.5: Side panels lack shaping, Does not adequately protect the malleolus bone, rule 1.2.\n    - add: 3.5: Greaves with riveted ankle part (not based on historical sources)\n    ​\n    December-2024: -add ​\n    Document has been created\n\n\n\n\nGreaves                                                                               19\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

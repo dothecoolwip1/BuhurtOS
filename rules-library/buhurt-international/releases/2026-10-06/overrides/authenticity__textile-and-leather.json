@@ -1,0 +1,24 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "textile-and-leather:3": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly (\"not be decorated\" is printed)",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "22ae188139d9353dae3e6e617b35a5986b0d6fa5d87b146b369e98644898de1e"
+    },
+    "textile-and-leather:6": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "732b075c1958b0e764da3fd21d4d0cfe411f3f4b92efc9541763e0ef591697e9"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\".",
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

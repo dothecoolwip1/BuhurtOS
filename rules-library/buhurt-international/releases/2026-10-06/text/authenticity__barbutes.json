@@ -1,0 +1,1930 @@
+{
+  "inventory_key": "authenticity/barbutes",
+  "sha256": "6a3d140a13e1180d57a5209374a1c98856a8603a19c45391ba7d22f282650a56",
+  "source_file": "Authenticity/Barbutes.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 10 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 11,
+    "title": "Barbutes - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:17:41 2026 UTC",
+    "modified": "Wed Jan 28 14:17:41 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. Implementation\n2. Definition\n3. Historical Sources and Datation\n3.1. T-shaped Barbutes\n3.2. Y-shaped Barbutes\n4. Requirements\n4.1. General Requirements\n4.2. Visor\n4.3. Eyes and Mouth slot\n4.4. Gorget\n4.5. Others\n5. Examples of Approved Reproductions\n6. Examples of Denied Reproductions\n7. Changelog\n\nBarbutes V. 26.1]\n\n2/11",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.1,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            377,
+            621,
+            417
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            449,
+            512,
+            491
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            514,
+            389,
+            548
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.4,
+          "conf_min": 90.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            579,
+            840,
+            613
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "3.1. T-shaped Barbutes",
+          "conf_mean": 93.9,
+          "conf_min": 92.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            645,
+            700,
+            687
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "3.2. Y-shaped Barbutes",
+          "conf_mean": 92.7,
+          "conf_min": 92.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            710,
+            701,
+            752
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "4. Requirements",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            152,
+            775,
+            485,
+            817
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            840,
+            774,
+            882
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            905,
+            419,
+            939
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "4.3. Eyes and Mouth slot",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            226,
+            971,
+            730,
+            1013
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "4.4. Gorget",
+          "conf_mean": 92.6,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            1035,
+            455,
+            1078
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "4.5. Others",
+          "conf_mean": 95.2,
+          "conf_min": 94.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            226,
+            1101,
+            451,
+            1135
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1166,
+            969,
+            1208
+          ],
+          "paper": 0.71,
+          "height": 41
+        },
+        {
+          "text": "6. Examples of Denied Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1231,
+            918,
+            1274
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            153,
+            1296,
+            421,
+            1339
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "Barbutes V. 26.1]",
+          "conf_mean": 76.7,
+          "conf_min": 47.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            595,
+            3428
+          ],
+          "paper": 0.76,
+          "height": 32,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "2/11",
+          "conf_mean": 73.7,
+          "conf_min": 73.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2185,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.79,
+          "height": 47
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 29.11.2025.\nThe document and its rules will be implemented from the 2029 season (01/01/2029).\nCompetitors will have 3 seasons to align their equipment with this document and its rules.\n\n2. Definition\n\nBarbutes are a design of helmet growing extremely popular during the 15th century. They see an\nextensive use and evolution between approximately 1430 to 1500.\n\nBarbutes tend to be locally used in Italy.\nBarbutes are worn alone or with an addition of a gorget of plate or mail.\n\nBarbutes can be of different designs: T shape or Y shape. The term “shape” refers to the opening for the\neyes and mouth.\n\nBarbutes type helmets are Approved for 15th century armors of matching design.\n\nBarbutes type helmets are Denied for 14th century and Transitional armors.\n\nT-shaped Barbute\n\nSJ » i\nJ\n\nBcrbutes v. 26.1 3/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.8,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 94.1,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            819,
+            190,
+            1663,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 29.11.2025.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            414
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The document and its rules will be implemented from the 2029 season (01/01/2029).",
+          "conf_mean": 96.2,
+          "conf_min": 93.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1884,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Competitors will have 3 seasons to align their equipment with this document and its rules.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            491,
+            1985,
+            535
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            947,
+            717,
+            1530,
+            788
+          ],
+          "paper": 0.61,
+          "height": 71
+        },
+        {
+          "text": "Barbutes are a design of helmet growing extremely popular during the 15th century. They see an",
+          "conf_mean": 95.9,
+          "conf_min": 92.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            898,
+            2296,
+            942
+          ],
+          "paper": 0.76,
+          "height": 35
+        },
+        {
+          "text": "extensive use and evolution between approximately 1430 to 1500.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            959,
+            1518,
+            1002
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Barbutes tend to be locally used in Italy.",
+          "conf_mean": 95.8,
+          "conf_min": 91.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            1061,
+            982,
+            1104
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Barbutes are worn alone or with an addition of a gorget of plate or mail.",
+          "conf_mean": 95.3,
+          "conf_min": 92.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            1163,
+            1617,
+            1207
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Barbutes can be of different designs: T shape or Y shape. The term “shape” refers to the opening for the",
+          "conf_mean": 92.2,
+          "conf_min": 30.9,
+          "words": 20,
+          "uncertain": [
+            "“shape”"
+          ],
+          "box": [
+            182,
+            1265,
+            2300,
+            1309
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "eyes and mouth.",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1326,
+            514,
+            1369
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Barbutes type helmets are Approved for 15th century armors of matching design.",
+          "conf_mean": 96,
+          "conf_min": 92.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            1428,
+            1901,
+            1472
+          ],
+          "paper": 0.69,
+          "height": 35
+        },
+        {
+          "text": "Barbutes type helmets are Denied for 14th century and Transitional armors.",
+          "conf_mean": 95.8,
+          "conf_min": 92.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            182,
+            1531,
+            1767,
+            1574
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "T-shaped Barbute",
+          "conf_mean": 93,
+          "conf_min": 92.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1048,
+            1735,
+            1432,
+            1778
+          ],
+          "paper": 0.55,
+          "height": 43
+        },
+        {
+          "text": "SJ » i",
+          "conf_mean": 18.3,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1190,
+            3093,
+            2230,
+            3121
+          ],
+          "paper": 0.26,
+          "height": 12,
+          "in_picture": "lettering 12px tall, smaller than any printed text"
+        },
+        {
+          "text": "J",
+          "conf_mean": 51.8,
+          "conf_min": 51.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1200,
+            3118,
+            1215,
+            3130
+          ],
+          "paper": 0,
+          "height": 12,
+          "in_picture": "lettering 12px tall, smaller than any printed text"
+        },
+        {
+          "text": "Bcrbutes v. 26.1 3/11",
+          "conf_mean": 30.5,
+          "conf_min": 4.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "Y-shaped Barbute\n\na\n=\n—\n\n~\n<<\n~ [co\n\nBcrbutes v. 26.1 4/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 56.5,
+      "ocr_lines": [
+        {
+          "text": "Y-shaped Barbute",
+          "conf_mean": 92,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1046,
+            290,
+            1434,
+            332
+          ],
+          "paper": 0.59,
+          "height": 42
+        },
+        {
+          "text": "a",
+          "conf_mean": 60.6,
+          "conf_min": 60.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1530,
+            1681,
+            1542,
+            1691
+          ],
+          "paper": 0.3,
+          "height": 10,
+          "in_picture": "lettering 10px tall, smaller than any printed text"
+        },
+        {
+          "text": "=",
+          "conf_mean": 84.1,
+          "conf_min": 84.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1515,
+            1687,
+            1526,
+            1695
+          ],
+          "paper": 0.25,
+          "height": 8,
+          "in_picture": "lettering 8px tall, smaller than any printed text"
+        },
+        {
+          "text": "—",
+          "conf_mean": 65.8,
+          "conf_min": 65.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1470,
+            1692,
+            1513,
+            1706
+          ],
+          "paper": 0.47,
+          "height": 14,
+          "in_picture": "lettering 14px tall, smaller than any printed text"
+        },
+        {
+          "text": "~",
+          "conf_mean": 80,
+          "conf_min": 80,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1127,
+            1684,
+            1138,
+            1693
+          ],
+          "paper": 0.3,
+          "height": 9,
+          "in_picture": "lettering 9px tall, smaller than any printed text"
+        },
+        {
+          "text": "<<",
+          "conf_mean": 41.4,
+          "conf_min": 41.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1141,
+            1690,
+            1154,
+            1699
+          ],
+          "paper": 0.4,
+          "height": 9,
+          "in_picture": "lettering 9px tall, smaller than any printed text"
+        },
+        {
+          "text": "~ [co",
+          "conf_mean": 62.3,
+          "conf_min": 51.7,
+          "words": 2,
+          "uncertain": [
+            "[co"
+          ],
+          "box": [
+            1157,
+            1695,
+            1467,
+            1716
+          ],
+          "paper": 0.39,
+          "height": 15,
+          "in_picture": "lettering 15px tall, smaller than any printed text"
+        },
+        {
+          "text": "Bcrbutes v. 26.1 4/11",
+          "conf_mean": 31.7,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "3. Historical Sources and Datation\n\n3.1. T-shaped Barbutes\n\nMetropolitan Museum of Art - 1460 - Italy\n\nCastello Sforzesco, Milano - 1460/1470 - Italy\n\nCastello Sforzesco, Milano - 1475/1500 - Italy\n\nBcrbutes v. 26.1 5/1",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 85.3,
+      "ocr_lines": [
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 93.9,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            445,
+            189,
+            2033,
+            260
+          ],
+          "paper": 0.62,
+          "height": 70
+        },
+        {
+          "text": "3.1. T-shaped Barbutes",
+          "conf_mean": 94.2,
+          "conf_min": 93,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            839,
+            422
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Metropolitan Museum of Art - 1460 - Italy",
+          "conf_mean": 94.6,
+          "conf_min": 91.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            940,
+            1142,
+            1544,
+            1173
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Castello Sforzesco, Milano - 1460/1470 - Italy",
+          "conf_mean": 93.4,
+          "conf_min": 92.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            332,
+            2151,
+            1003,
+            2191
+          ],
+          "paper": 0.78,
+          "height": 25
+        },
+        {
+          "text": "Castello Sforzesco, Milano - 1475/1500 - Italy",
+          "conf_mean": 93.5,
+          "conf_min": 92.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            907,
+            3213,
+            1579,
+            3244
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Bcrbutes v. 26.1 5/1",
+          "conf_mean": 36.2,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "3.2. Y-shaped Barbutes\n\nThe Wallace Collection - 1470 - Italy\n\nMaster Christoforo, Detroit institute of art - 1450/1460 - Italy Philadelphia Museum of Art -1450/1470 - Italy\n\nSe\n\nBrescia, Metropolitan Museum of Art - 1470/80- Italy Bernardino da Carnago, Metropolitan Museum of Art - 1475 - Italy\n\nBcrbutes v. 26.1 6/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 86.8,
+      "ocr_lines": [
+        {
+          "text": "3.2. Y-shaped Barbutes",
+          "conf_mean": 92.4,
+          "conf_min": 91.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            842,
+            239
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "The Wallace Collection - 1470 - Italy",
+          "conf_mean": 94.4,
+          "conf_min": 93.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1589,
+            958,
+            2121,
+            989
+          ],
+          "paper": 0.73,
+          "height": 24
+        },
+        {
+          "text": "Master Christoforo, Detroit institute of art - 1450/1460 - Italy Philadelphia Museum of Art -1450/1470 - Italy",
+          "conf_mean": 94.4,
+          "conf_min": 89.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            2100,
+            1962,
+            2139
+          ],
+          "paper": 0.8,
+          "height": 24
+        },
+        {
+          "text": "Se",
+          "conf_mean": 21.8,
+          "conf_min": 21.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            563,
+            2262,
+            728,
+            2376
+          ],
+          "paper": 0.01,
+          "height": 114,
+          "in_picture": "on a coloured or photographic background (paper 1%), confidence 21.8"
+        },
+        {
+          "text": "Brescia, Metropolitan Museum of Art - 1470/80- Italy Bernardino da Carnago, Metropolitan Museum of Art - 1475 - Italy",
+          "conf_mean": 94.2,
+          "conf_min": 90.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            218,
+            3249,
+            2170,
+            3281
+          ],
+          "paper": 0.75,
+          "height": 25
+        },
+        {
+          "text": "Bcrbutes v. 26.1 6/11",
+          "conf_mean": 34.1,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "4. Requirements\n\n4.1. General Requirements\n\nReproductions must closely resemble the appearance and proportions of historical sources.\n\nA particular attention must be paid to the crest on top of the Barbute, often forgotten by modern\narmorers.\n\nyw\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations\ndocument.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nVisors must not be too long or too short, it must respect the proportions of historical sources.\n\nIt is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full\ncontact fight and must be concealed under the aventail.\n\n4.3. Eyes and Mouth slot\n\nEyes and Mouth slots must resemble sources for the visor (T shape or Y shape).\nEyes and Mouth slots should not exceed 25 mm tall to prevent any injury, as a safety recommendation.\nIt is Allowed to add:\n\n● Up to five (5) safety Eye bars: one (1) in the middle and two (2) on each side of the Eye slots,\n● Up to five (5) safety Eye bars on the mouth slot,\nIt is allowed to use a T shaped-Eye bar at the junction of the Eye slots and the Mouth slot.\n\nIt is allowed to use slanted safety Eye bars for barbute with Y shape only.\nEye bars must be welded internally or riveted internally.\nEye bars must conform to the “Eye bars” document.\n\n4.4. Gorget\n\nBarbutes are not designed to be worn with an aventail, unlike bascinets. Barbutes are worn with a\ngorget.\n\nBarbutes must be worn with a plate gorget, or a safe construction simulating a mail gorget as best as\npossible.\n\nGorget must be constructed in such a way as to protect its wearer. Mail gorget must integrate a grill of\nprotection or additional plates.\n\nChainmail gorget must conform to Chainmail Aventails requirements listed in the “Aventails” document.\nAdditional neck protection can be worn according to historical sources.\nAdditional neck protection not based on historical sources can be worn if concealed.\n\nBcrbutes v. 26.1 7/1",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.2,
+      "ocr_lines": [
+        {
+          "text": "4. Requirements",
+          "conf_mean": 95.5,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            848,
+            190,
+            1630,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            929,
+            422
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of historical sources.",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            483,
+            2028,
+            526
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "A particular attention must be paid to the crest on top of the Barbute, often forgotten by modern",
+          "conf_mean": 96.1,
+          "conf_min": 92.2,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            556,
+            2298,
+            600
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "armorers.",
+          "conf_mean": 92.1,
+          "conf_min": 92.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            626,
+            371,
+            651
+          ],
+          "paper": 0.56,
+          "height": 25
+        },
+        {
+          "text": "yw",
+          "conf_mean": 9,
+          "conf_min": 9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            2290,
+            691,
+            2304,
+            702
+          ],
+          "paper": 0.4,
+          "height": 11,
+          "in_picture": "lettering 11px tall, smaller than any printed text"
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations",
+          "conf_mean": 95.9,
+          "conf_min": 92.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            690,
+            2285,
+            733
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "document.",
+          "conf_mean": 94.5,
+          "conf_min": 94.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            751,
+            389,
+            785
+          ],
+          "paper": 0.63,
+          "height": 34
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.6,
+          "conf_min": 83.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            824,
+            2060,
+            867
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            960,
+            489,
+            999
+          ],
+          "paper": 0.63,
+          "height": 39
+        },
+        {
+          "text": "Visors must not be too long or too short, it must respect the proportions of historical sources.",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1071,
+            2045,
+            1114
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full",
+          "conf_mean": 96.1,
+          "conf_min": 94,
+          "words": 22,
+          "uncertain": [],
+          "box": [
+            184,
+            1144,
+            2298,
+            1187
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "contact fight and must be concealed under the aventail.",
+          "conf_mean": 95.5,
+          "conf_min": 92.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1205,
+            1298,
+            1248
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "4.3. Eyes and Mouth slot",
+          "conf_mean": 96.7,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            1340,
+            880,
+            1391
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "Eyes and Mouth slots must resemble sources for the visor (T shape or Y shape).",
+          "conf_mean": 94.9,
+          "conf_min": 91.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            1451,
+            1808,
+            1494
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Eyes and Mouth slots should not exceed 25 mm tall to prevent any injury, as a safety recommendation.",
+          "conf_mean": 96.2,
+          "conf_min": 93.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            1524,
+            2257,
+            1567
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "It is Allowed to add:",
+          "conf_mean": 94.3,
+          "conf_min": 87.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            184,
+            1598,
+            587,
+            1631
+          ],
+          "paper": 0.62,
+          "height": 33
+        },
+        {
+          "text": "● Up to five (5) safety Eye bars: one (1) in the middle and two (2) on each side of the Eye slots,",
+          "conf_mean": 96.2,
+          "conf_min": 93.1,
+          "words": 23,
+          "uncertain": [],
+          "box": [
+            230,
+            1671,
+            2183,
+            1714
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Up to five (5) safety Eye bars: one (1) in the middle and two (2) on each side of the Eye slots,"
+        },
+        {
+          "text": "● Up to five (5) safety Eye bars on the mouth slot,",
+          "conf_mean": 95.5,
+          "conf_min": 92.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            230,
+            1731,
+            1264,
+            1774
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Up to five (5) safety Eye bars on the mouth slot,"
+        },
+        {
+          "text": "It is allowed to use a T shaped-Eye bar at the junction of the Eye slots and the Mouth slot.",
+          "conf_mean": 95.6,
+          "conf_min": 90.2,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            184,
+            1792,
+            1993,
+            1835
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "It is allowed to use slanted safety Eye bars for barbute with Y shape only.",
+          "conf_mean": 94.3,
+          "conf_min": 81.6,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            184,
+            1865,
+            1656,
+            1908
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Eye bars must be welded internally or riveted internally.",
+          "conf_mean": 96.1,
+          "conf_min": 94.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            1939,
+            1294,
+            1981
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "Eye bars must conform to the “Eye bars” document.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            2011,
+            1224,
+            2054
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "4.4. Gorget",
+          "conf_mean": 92.4,
+          "conf_min": 91.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            243,
+            2146,
+            531,
+            2198
+          ],
+          "paper": 0.69,
+          "height": 52
+        },
+        {
+          "text": "Barbutes are not designed to be worn with an aventail, unlike bascinets. Barbutes are worn with a",
+          "conf_mean": 95,
+          "conf_min": 91.5,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            182,
+            2258,
+            2296,
+            2301
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "gorget.",
+          "conf_mean": 92.4,
+          "conf_min": 92.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            2320,
+            318,
+            2362
+          ],
+          "paper": 0.67,
+          "height": 42
+        },
+        {
+          "text": "Barbutes must be worn with a plate gorget, or a safe construction simulating a mail gorget as best as",
+          "conf_mean": 95.1,
+          "conf_min": 90.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            2392,
+            2298,
+            2435
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "possible.",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            2453,
+            356,
+            2495
+          ],
+          "paper": 0.68,
+          "height": 42
+        },
+        {
+          "text": "Gorget must be constructed in such a way as to protect its wearer. Mail gorget must integrate a grill of",
+          "conf_mean": 95.6,
+          "conf_min": 91.2,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            182,
+            2525,
+            2300,
+            2568
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "protection or additional plates.",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2586,
+            786,
+            2628
+          ],
+          "paper": 0.72,
+          "height": 42
+        },
+        {
+          "text": "Chainmail gorget must conform to Chainmail Aventails requirements listed in the “Aventails” document.",
+          "conf_mean": 94.3,
+          "conf_min": 87.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            2659,
+            2256,
+            2702
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Additional neck protection can be worn according to historical sources.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            2732,
+            1603,
+            2775
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Additional neck protection not based on historical sources can be worn if concealed.",
+          "conf_mean": 96.2,
+          "conf_min": 94.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            2805,
+            1876,
+            2848
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Bcrbutes v. 26.1 7/1",
+          "conf_mean": 20.1,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ],
+          "in_picture": "nothing read with confidence (best word 31): marks of a picture"
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "4.5. Others\n\nBarbutes may be decorated in the spirit of medieval styles, such as orle, torse, decorated collar, coat of\narms badges etc.\n\nSuch decoration must be made in coherence with historical sources.\n\nBarbutes can be covered with silk or velvet, as per historical sources. These decorations require a lot of\nmaintenance to maintain a high level of aesthetic. Any Barbute with silk or velvet cover that is too much\ndamaged can be denied during Authenticity Check.\n\nUsing modern and/or offensive imagery and slogans is prohibited.\n\nBcrbutes v. 26.1 8/11",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.7,
+      "ocr_lines": [
+        {
+          "text": "4.5. Others",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            189,
+            526,
+            229
+          ],
+          "paper": 0.6,
+          "height": 40,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Barbutes may be decorated in the spirit of medieval styles, such as orle, torse, decorated collar, coat of",
+          "conf_mean": 95.4,
+          "conf_min": 91.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            182,
+            300,
+            2300,
+            343
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "arms badges etc.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            361,
+            526,
+            403
+          ],
+          "paper": 0.73,
+          "height": 32
+        },
+        {
+          "text": "Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 96.2,
+          "conf_min": 94.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            434,
+            1558,
+            468
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Barbutes can be covered with silk or velvet, as per historical sources. These decorations require a lot of",
+          "conf_mean": 96.1,
+          "conf_min": 92.3,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            182,
+            503,
+            2301,
+            554
+          ],
+          "paper": 0.79,
+          "height": 33
+        },
+        {
+          "text": "maintenance to maintain a high level of aesthetic. Any Barbute with silk or velvet cover that is too much",
+          "conf_mean": 96,
+          "conf_min": 92.2,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            568,
+            2298,
+            611
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "damaged can be denied during Authenticity Check.",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            628,
+            1211,
+            671
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            701,
+            1506,
+            744
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Bcrbutes v. 26.1 8/11",
+          "conf_mean": 32,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "5. Examples of Approved Reproductions\n\nWe recommend the addition of safety bars\n\nPictures from The Medieval Things ©\n\n«\\\n\nWe recommend a smaller opening for safety\n\nPicture from Medieval Extreme ©\n\nPicture from Zoom en lice ©\n\nBcrbutes v. 26.1 9/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 87.3,
+      "ocr_lines": [
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96,
+          "conf_min": 95.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            299,
+            189,
+            2181,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88
+        },
+        {
+          "text": "We recommend the addition of safety bars",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1351,
+            1340,
+            2272,
+            1383
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            1496,
+            1516,
+            1528
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "«\\",
+          "conf_mean": 27.9,
+          "conf_min": 27.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            573,
+            1730,
+            627,
+            1759
+          ],
+          "paper": 0.05,
+          "height": 29,
+          "in_picture": "on a coloured or photographic background (paper 5%), confidence 27.9"
+        },
+        {
+          "text": "We recommend a smaller opening for safety",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1277,
+            2628,
+            2238,
+            2671
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 95.8,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            339,
+            2686,
+            829,
+            2711
+          ],
+          "paper": 0.63,
+          "height": 25
+        },
+        {
+          "text": "Picture from Zoom en lice ©",
+          "conf_mean": 96.7,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1512,
+            2724,
+            1925,
+            2749
+          ],
+          "paper": 0.68,
+          "height": 24
+        },
+        {
+          "text": "Bcrbutes v. 26.1 9/11",
+          "conf_mean": 37.3,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "6. Examples of Denied Reproductions\n\nFabric aventail\n\nPicture from The Medieval Things ©\n\nBcrbutes v. 26.1 10/11",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 74.7,
+      "ocr_lines": [
+        {
+          "text": "6. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            363,
+            189,
+            2117,
+            278
+          ],
+          "paper": 0.68,
+          "height": 71,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "Fabric aventail",
+          "conf_mean": 92.3,
+          "conf_min": 92.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1075,
+            450,
+            1404,
+            504
+          ],
+          "paper": 0.66,
+          "height": 54
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            981,
+            1332,
+            1512,
+            1363
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Bcrbutes v. 26.1 10/11",
+          "conf_mean": 37.8,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nDocument has been created\n\nBcrbutes v. 26.1 n/t",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 86.2,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            922,
+            189,
+            1557,
+            279
+          ],
+          "paper": 0.69,
+          "height": 90,
+          "dropped": [
+            "i"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            222,
+            408,
+            2263,
+            451
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96,
+          "conf_min": 95.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            470,
+            1869,
+            512
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.7,
+          "conf_min": 92.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            662,
+            679,
+            705
+          ],
+          "paper": 0.68,
+          "height": 43
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 95.9,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            289,
+            714,
+            858,
+            747
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Bcrbutes v. 26.1 n/t",
+          "conf_mean": 24.3,
+          "conf_min": 2.8,
+          "words": 4,
+          "uncertain": [
+            "Bcrbutes",
+            "n/t"
+          ],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ],
+          "in_picture": "nothing read with confidence (best word 32): marks of a picture"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1212 @@
+{
+  "inventory_key": "authenticity/tabards",
+  "version": {
+    "version": "26.1",
+    "title": "Tabards - GoogleÂ€Docs",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+    "source_url": "https://drive.google.com/file/d/1mkBe8JCRfQxDuPPTMJImzV_UWaW4Mgvc/view?usp=drive_link",
+    "source_sha256": "0609e4753d13dbbaa9c6b6db9c579e130a57eb57d398491bea132b12cb1d7fda",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 14,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 13 page(s) without a text layer",
+    "content_sha256": "89e7c7b7de91322dcf0d0bc7d311e8824687069a1402bf58ee21c6e91c77eca1",
+    "detected": {
+      "version": null,
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1"
+      ],
+      "pages": 14,
+      "source_lines": 189,
+      "assigned_lines": 238,
+      "furniture_lines": 45,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99476,
+      "provisions": 27,
+      "numbered": 26,
+      "needs_review": 0,
+      "verified": 2,
+      "empty_pages": [
+        1
+      ],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 190,
+      "picture_text_lines": 4,
+      "ocr_corrections": 7
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "tabards:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Implementation",
+      "body": "The document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "tabards:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "7e35b5946ae02907f8e065d2e3656f914639f40e08c6eb5efd4d1160c27157d4",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "3:0",
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Definition",
+      "body": "“Tabard” is a generic term used to describe the cloth worn upon the armor. It is made to show the heraldry of the wearer and prove your wealth and status on the battlefield, or in the list.\nNowadays, Tabards have the same function as a sports jersey: to indicate the team you belong to.\n\nType of Tabards:\n\n● Sleeveless Tabard Tabards without sleeves. Simple design, common in the 13th century and 14th century. Tend to be rare in the 15th century.\n\n● Short-sleeves Tabard Tabards with short sleeves that can go up to the elbow. Common design in the 14th century.\nTend to be rare in the 15th century.\n\n● Long-sleeves Tabard Tabards with long sleeves that cover the whole arms, from shoulder to hand. Common design in the 14th and the 15th century.\n\n● Eastern Tabard We do not have many historical references for eastern Tabard. It is allowed to use the same Tabard as European armors. Eastern stylization of Tabard are displayed in the document “Eastern Armors”.\n\n● Exception for full plates armors Wearing full plates armor makes the use of Tabard not practical. Therefore, it is allowed to wear only a scarf. Scarves must follow the General Requirements (see section 3 below).\n\nExample of scarf:\n\nPicture from The Medieval Things ©",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "tabards:2",
+      "parent_key": null,
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "8d487917e2d1c304c99d1b80e5f5453281d940a1f967a2efddc5099b9dfa5b27",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "3:5",
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27",
+        "3:28",
+        "3:29",
+        "3:30",
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36",
+        "3:37"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "General Requirements",
+      "body": "",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "tabards:3",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b8295fe2bc4208d485f0e4d62f112a839e3bfc08e2b952098f2a20793db34314",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "4:0",
+        "4:1"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.1",
+      "title": "Material Requirements",
+      "body": "All Tabards and Scarves must respect the following requirements:\n\n● Shapes, decorations and designs must be based on historical sources.\n● Tabards must conform to the “Textiles and Leather” document.\n● Tabards can be made of the following materials:\n\n○ wool, ○ linen, ○ silk,\n\n○ coton,\n\n○ any other material based on historical sources.\n\n● Tabards can be made of modern materials in the following cases:\n○ the modern material replicates the aesthetic of an approved material listed above, ○ the modern material is strong enough to endure full contact fights and to not be damaged too easily, ○ we recommend asking for approval of the Authenticity Committee regarding Tabard made of modern materials before placing an order.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "tabards:3.1",
+      "parent_key": "tabards:3",
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b64797425149d047f3a456f23c8481937e3569e5e366fe2cb46e765e38aaf4e8",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10",
+        "4:11",
+        "4:12",
+        "4:13",
+        "4:14",
+        "4:15",
+        "4:16",
+        "4:17",
+        "4:18",
+        "4:19",
+        "4:20",
+        "4:21",
+        "4:22",
+        "4:23",
+        "4:24"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.2",
+      "title": "Fastening Systems Requirements",
+      "body": "Tabards can be tied with the following systems:\n\n● buttons made of fabric, wood, bone, or metal,\n\n● laces, made of leather, rope or fabric,\n\n● any other system based on historical sources,\n\n● any modern fastening system is denied. (Zips, snap buttons, velcro, paracord, nylon rope etc.).\n\nTabards can be open on the side, tied with laces.\nTabards can be open on the front, and tied with buttons.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "tabards:3.2",
+      "parent_key": "tabards:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3d439ce450658cd4df5495a9bc84e55ebe5971a4e3636a2669ef6838e8996280",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "4:25",
+        "4:26",
+        "4:27",
+        "4:28",
+        "4:29",
+        "4:30",
+        "4:31",
+        "4:32",
+        "4:33",
+        "4:34",
+        "4:35",
+        "4:36",
+        "4:37",
+        "4:38",
+        "4:39",
+        "4:40"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.3",
+      "title": "Colors Requirements",
+      "body": "Colors used for Tabards must be based on historical sources. Any clearly modern color is denied. (Neon pink, fluorescent yellow, etc.)\n\nFor the Marshals’ safety, the use of yellow as a main color of a Tabard is Denied. Yellow color must represent less than 50% of the Tabard colors. The combination of black and yellow must not be inspired by Marshal’s uniforms.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "tabards:3.3",
+      "parent_key": "tabards:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "707304f63f686185324e39edcfb83802a33e088f0fbeece479d349bdd87ff6e2",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "4:41",
+        "4:42",
+        "4:43",
+        "4:44",
+        "4:45",
+        "4:46",
+        "4:47",
+        "4:48",
+        "4:49"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.4",
+      "title": "Symbols and Decorations Requirements",
+      "body": "Symbols and decorations used for Tabards must be based on historical sources. Any clearly modern symbol or decoration is denied. (Warhammer logo, movies or TV show imagery, modern slogan etc.)\n\nWe recommend taking inspiration from middle ages manuscripts to create your symbols.\nSymbols and decorations used for Tabards must be made with the following techniques:\n\n● embroidery,\n\n● painting: can be by hand or by stamp,\n\n● sewing a patchwork of clothes to create a design,\n● any other techniques based on historical sources.",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "tabards:3.4",
+      "parent_key": "tabards:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "556cd8e84983a2d1021f4dffefe8eb2b54bb213f1389f3f4d9fc068871f78fc2",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3",
+        "5:4",
+        "5:5",
+        "5:6",
+        "5:7",
+        "5:8",
+        "5:9",
+        "5:10",
+        "5:11",
+        "5:12",
+        "5:13",
+        "5:14"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.5",
+      "title": "Exception for Cuirass",
+      "body": "When wearing a Cuirass, it is allowed to wear the Tabard under it. In this case, it is also allowed to wear the pauldrons upon the Tabard.\n\nExample:\n\nPicture from Helli ©",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "tabards:3.5",
+      "parent_key": "tabards:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "6c99053b979aa0eb08a5da4c4f62da2ebc468ca7ff47396f35eee532182ea69d",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:15",
+        "5:16",
+        "5:17",
+        "5:18",
+        "5:19",
+        "5:20",
+        "5:21",
+        "5:22",
+        "5:23"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 0,
+      "kind": "section",
+      "number": "4",
+      "title": "Sleeveless Tabard",
+      "body": "",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "tabards:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b3c7a6135edea9e4dacbd3cfa5a7fb912d3e5c3f6b7f7e98a447a712d34d7bfd",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:0",
+        "6:1"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.1",
+      "title": "Historical Sources and Datation",
+      "body": "Sleeveless Tabard is an easy way to display your heraldic. This type of Tabard has been used all along the Middle Ages, from knight templars to late 15th century armors.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nLife of Eustace and Other Saints - 1300 - France Weltchronik - 1360 - Germany Bibliothèque de Besançon - 1410 - France",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "tabards:4.1",
+      "parent_key": "tabards:4",
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d9240ed17d5d3e267233c5430eaf2f88295a1f6717aeec57876fa36793e2e9fa",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:2",
+        "6:3",
+        "6:4",
+        "6:5",
+        "6:6",
+        "6:7",
+        "6:8",
+        "6:9",
+        "6:10"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.2",
+      "title": "Specific Requirements",
+      "body": "Sleeveless Tabard must:\n\n● follow the General Requirements (see Section 3 above),\n● not be too long, Knee is the limit.",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "tabards:4.2",
+      "parent_key": "tabards:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "5f1c2d2eed0e36220e927a0867b3b65a583f4e4be60c02cf43a72abb7a132df1",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:11",
+        "6:12",
+        "6:13",
+        "6:14",
+        "6:15",
+        "6:16",
+        "6:17"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Pictures from Age of Craft ©\n\n4.4, Examples of Denied Reproductions\n\nYellow as a main color Over long Tabard",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "tabards:4.3",
+      "parent_key": "tabards:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "96549cbcdb7508eb889ac0e41f94cca9e4fddc0fe01e7cf8524a550cb41b426b",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:0",
+        "7:1",
+        "7:2",
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6",
+        "7:7",
+        "7:11"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 0,
+      "kind": "section",
+      "number": "5",
+      "title": "Short-sleeves Tabard",
+      "body": "",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "tabards:5",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "435ed53d72839efcd22bfba745f3d83bf4286f08dcf06c58475ff3878f17bb22",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:0",
+        "8:1"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.1",
+      "title": "Historical Sources and Datation",
+      "body": "Short-sleeves Tabard is the main design of the 14th century and later. Its simple shape makes it easy to craft and to wear. Many different designs can be documented by historical sources\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nBible historiale - 1360 - France Weltchronik - 1360 - Germany Office of the Feast of Corpus Christi - 1403 - Austria",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "tabards:5.1",
+      "parent_key": "tabards:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "023f35abe1a1a70cd0e2a912c8cd4a788afdbaeb53170173e503314ba54738a7",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:2",
+        "8:3",
+        "8:4",
+        "8:5",
+        "8:6",
+        "8:7",
+        "8:8",
+        "8:9",
+        "8:10"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.2",
+      "title": "Specific Requirements",
+      "body": "Short-sleeves Tabard must:\n● follow the General Requirements (see Section 3 above),\n● not be too long, Knee is the limit,\n● not have sleeves too long. Elbow is the limit, unless it can be documented by historical sources.\n● have open or plain (as a shirt) sleeves.\n\nExamples:\nOpen sleeve Plain sleeve",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "tabards:5.2",
+      "parent_key": "tabards:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "b924d29f3bdc8609de9ee366dbeb516ed880467cfffcf22cd9888dba4c97bf55",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:0",
+        "9:1",
+        "9:2",
+        "9:3",
+        "9:4",
+        "9:5",
+        "9:6",
+        "9:7",
+        "9:8",
+        "9:9",
+        "9:10",
+        "9:11"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Pictures from Gohurt ©",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "tabards:5.3",
+      "parent_key": "tabards:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "58429ac36be14a4525b683b46a69e7b0d35353b8fd7db06dad38da64fa579e33",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:12",
+        "9:13",
+        "9:14",
+        "9:15"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "depth": 0,
+      "kind": "section",
+      "number": "6",
+      "title": "Long-Sleeves Tabard",
+      "body": "",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "tabards:6",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "5b361c4d5b360daef1afee70a831d2d38c2a1dd5fd0e3764ab851ed5a98d94fd",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "10:0",
+        "10:1"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.1",
+      "title": "Historical Sources and Datation",
+      "body": "Long-sleeves Tabard combine the role of exposing your heraldry and protecting your armor. The sleeves often cover the whole arm, up to the wrist, but can be shorter (up to mid-forearm). Many different designs can be documented by historical sources.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nGuiron le Courtois - Knebel von Katzenelnbogen - Bible historiale, BL Royal 15 D III - Le Livre et le vraye hystoire 1380 - France 1401 - Germany 1420 - France du bon roy Alixandre -\n\n1420 - France",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "tabards:6.1",
+      "parent_key": "tabards:6",
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3b2ae7c4ca1827965b3f1f300672ccfa91652a18b074a7245c0de95afbb1c23c",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "10:2",
+        "10:3",
+        "10:4",
+        "10:5",
+        "10:6",
+        "10:7",
+        "10:8",
+        "10:9",
+        "10:11",
+        "10:12",
+        "10:13",
+        "10:14"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.2",
+      "title": "Specific Requirements",
+      "body": "Long-sleeves Tabard must:\n\n● follow the General Requirements (see Section 3 above),\n\n● not be too long, Knee is the limit,\n\n● cover the arm up to the middle of the forearm as a minimum,\n● have plain (as a shirt) sleeves.",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "tabards:6.2",
+      "parent_key": "tabards:6",
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly (\"not be too long\" is printed)",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "fbc960be7127c440b5ebba2d59d837b1db7e47d8fb70831a527be1d61e38bd51",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "10:15",
+        "10:16",
+        "10:17",
+        "10:18",
+        "10:19",
+        "10:20",
+        "10:21",
+        "10:22",
+        "10:23",
+        "10:24",
+        "10:25"
+      ]
+    },
+    {
+      "ordinal": 21,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "",
+      "page_from": 11,
+      "page_to": 11,
+      "stable_key": "tabards:6.3",
+      "parent_key": "tabards:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "118007f1a943fe8afd0d250f62a925249c0b27c791b7701eafc21689050c61dc",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "11:0",
+        "11:1"
+      ]
+    },
+    {
+      "ordinal": 22,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.4",
+      "title": "Examples of Denied Reproductions",
+      "body": "Yellow as the main colour\n\nPictures from The Medieval Things ©",
+      "page_from": 11,
+      "page_to": 11,
+      "stable_key": "tabards:6.4",
+      "parent_key": "tabards:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "edc16f3172a89b6e1f0a5ea53ca270657f2f0a5792a7924f59051cbf74d2372f",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "11:2",
+        "11:3",
+        "11:4",
+        "11:5",
+        "11:6",
+        "11:7"
+      ]
+    },
+    {
+      "ordinal": 23,
+      "depth": 0,
+      "kind": "section",
+      "number": "7",
+      "title": "Examples of Approved Designs and Decorations",
+      "body": "",
+      "page_from": 12,
+      "page_to": 12,
+      "stable_key": "tabards:7",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "34484f14203f3b011ad7b8a852cb770689edc04a23e6116b204b32ab0421da8f",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "12:0",
+        "12:1",
+        "12:2"
+      ]
+    },
+    {
+      "ordinal": 24,
+      "depth": 0,
+      "kind": "section",
+      "number": "8",
+      "title": "Fastening Systems",
+      "body": "",
+      "page_from": 13,
+      "page_to": 13,
+      "stable_key": "tabards:8",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "c61d156e9b48248fae3972b914491161bf7b73cb089101de429aa10118c1c3aa",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "13:0",
+        "13:1"
+      ]
+    },
+    {
+      "ordinal": 25,
+      "depth": 1,
+      "kind": "rule",
+      "number": "8.1",
+      "title": "Examples of Systems",
+      "body": "Metal buttons covered with fabric Wood buttons\n\nPicture from S.Bier © Picture from A. Labat © Picture from The Medieval Thing ©",
+      "page_from": 13,
+      "page_to": 13,
+      "stable_key": "tabards:8.1",
+      "parent_key": "tabards:8",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "48fadb16ae07613713fff8f398fa40f19b10cd005847bfa8eebb104e0b6625b8",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "13:2",
+        "13:3",
+        "13:4",
+        "13:5",
+        "13:6",
+        "13:7"
+      ]
+    },
+    {
+      "ordinal": 26,
+      "depth": 1,
+      "kind": "rule",
+      "number": "8.2",
+      "title": "Examples of Denied Systems",
+      "body": "Velcro\n\nPicture from The Medieval Thing ©",
+      "page_from": 13,
+      "page_to": 13,
+      "stable_key": "tabards:8.2",
+      "parent_key": "tabards:8",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "331faaad13825bf403f71f461ee01d16344230d88b0c4707033d6bd06342b572",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "13:8",
+        "13:9",
+        "13:10",
+        "13:11",
+        "13:12",
+        "13:13"
+      ]
+    },
+    {
+      "ordinal": 27,
+      "depth": 0,
+      "kind": "note",
+      "number": "9",
+      "title": "Changelog",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1) Formatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “41. Implementation” (and subsequent modification of all Title numbers in the document) Clarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and description ” and “3. General Requirements”. This split doesn’t have an impact on the content of the rules.\n\nSuppression:\n\n- Titles “1.1 Definition” and “1.2 Types of Tabards” to harmonise with other documents. Content is unchanged.\n\nDecember-2024: -Add Document has been created",
+      "page_from": 14,
+      "page_to": 14,
+      "stable_key": "tabards:9",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d0b302ed563bebb1be2f0579d7f14eb98674ac4473126580cf6306e1f7bf97d9",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "14:0",
+        "14:1",
+        "14:2",
+        "14:3",
+        "14:4",
+        "14:5",
+        "14:6",
+        "14:7",
+        "14:8",
+        "14:9",
+        "14:10",
+        "14:11",
+        "14:12",
+        "14:13",
+        "14:14",
+        "14:15",
+        "14:16",
+        "14:17",
+        "14:18",
+        "14:19",
+        "14:20",
+        "14:21"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "Table of contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "1. Implementation 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "2. Definition 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "3. General Requirements 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "3.1. Material Requirements 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "3.2. Fastening Systems Requirements 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "3.3. Colors Requirements 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "3.4. Symbols and Decorations Requirements 5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "3.5. Exception for Cuirass 5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "4. Sleeveless Tabard 6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "4.1. Historical Sources and Datation 6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "4.2. Specific Requirements 6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "4.3. Examples of Approved Reproductions 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:14",
+      "page": 2,
+      "text": "4.4. Examples of Denied Reproductions 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "5. Short-sleeves Tabard 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:16",
+      "page": 2,
+      "text": "5.1. Historical Sources and Datation 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:17",
+      "page": 2,
+      "text": "5.2. Specific Requirements 9",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "5.3. Examples of Approved Reproductions 9",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:19",
+      "page": 2,
+      "text": "6. Long-Sleeves Tabard 10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:20",
+      "page": 2,
+      "text": "6.1. Historical Sources and Datation 10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:21",
+      "page": 2,
+      "text": "6.2. Specific Requirements 10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:22",
+      "page": 2,
+      "text": "6.3. Examples of Approved Reproductions 11",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:23",
+      "page": 2,
+      "text": "6.4. Examples of Denied Reproductions 11",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:24",
+      "page": 2,
+      "text": "7. Examples of Approved Designs and Decorations 12",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:25",
+      "page": 2,
+      "text": "8. Fastening Systems 13",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:26",
+      "page": 2,
+      "text": "8.1. Examples of Approved Systems 13",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:27",
+      "page": 2,
+      "text": "8.2. Examples of Denied Systems 13",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:28",
+      "page": 2,
+      "text": "9. Changelog 14",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:30",
+      "page": 2,
+      "text": "J obords v. 261 2/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "3:38",
+      "page": 3,
+      "text": "J obords v. 261 3/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "4:50",
+      "page": 4,
+      "text": "J obords v. 261 4/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "5:24",
+      "page": 5,
+      "text": "J obords v. 261 5/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "6:18",
+      "page": 6,
+      "text": "J obords v. 261 6/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "7:8",
+      "page": 7,
+      "text": "rs A",
+      "reason": "OCR: text inside a picture (lettering 16px tall, smaller than any printed text)"
+    },
+    {
+      "id": "7:9",
+      "page": 7,
+      "text": "Se",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 17.8)"
+    },
+    {
+      "id": "7:10",
+      "page": 7,
+      "text": "f |",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 1%), confidence 41.4)"
+    },
+    {
+      "id": "7:12",
+      "page": 7,
+      "text": "J obords v. 261 7/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "8:11",
+      "page": 8,
+      "text": "J obords v. 261 8/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "9:16",
+      "page": 9,
+      "text": "J obords v. 261 9/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "10:10",
+      "page": 10,
+      "text": "\\ aoe)",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 1%), confidence 49.9)"
+    },
+    {
+      "id": "10:26",
+      "page": 10,
+      "text": "J obords v. 261 10/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "11:8",
+      "page": 11,
+      "text": "J obords v. 261 1/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "12:3",
+      "page": 12,
+      "text": "J obords v. 261 12/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "13:14",
+      "page": 13,
+      "text": "Tabards V. 26.1 13/14",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "14:22",
+      "page": 14,
+      "text": "J obords v. 261 14/14",
+      "reason": "page footer (page N/M)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": [
+    {
+      "id": "3:28",
+      "from": "“Eastern Armors’”.",
+      "to": "“Eastern Armors”.",
+      "reason": "page image shows “Eastern Armors”. with no apostrophe"
+    },
+    {
+      "id": "4:12",
+      "from": "○ Silk,",
+      "to": "○ silk,",
+      "reason": "page image shows \"silk,\" in the list of materials; OCR read \"Silk,\" with low confidence and the line had been set aside as picture text"
+    },
+    {
+      "id": "6:9",
+      "from": "Life of Eustace and Other Saints - 1300 - France Weltchronik - 1360 - Germany Bibliothéque de Besancon - 1410 - France",
+      "to": "Life of Eustace and Other Saints - 1300 - France Weltchronik - 1360 - Germany Bibliothèque de Besançon - 1410 - France",
+      "reason": "page image shows \"Bibliothèque de Besançon\""
+    },
+    {
+      "id": "10:11",
+      "from": "Guiron le Courtois - Knebel von Katzenelnbogen - Bible historiale, BL Royal 15 D Ill - Le Livre et le vraye hystoire",
+      "to": "Guiron le Courtois - Knebel von Katzenelnbogen - Bible historiale, BL Royal 15 D III - Le Livre et le vraye hystoire",
+      "reason": "page image shows \"15 D III\" (Roman numeral)"
+    },
+    {
+      "id": "12:0",
+      "from": "_ Fy Examples of Approved Designs and",
+      "to": "7. Examples of Approved Designs and Decorations",
+      "reason": "page image shows the heading \"7. Examples of Approved Designs and Decorations\" (wrapped onto two lines); OCR read the number and the coloured band as \"_ Fy\""
+    },
+    {
+      "id": "12:1",
+      "from": "Decorations",
+      "to": "",
+      "reason": "the second line of the heading above, joined to it"
+    },
+    {
+      "id": "14:19",
+      "from": "December-2024: Add",
+      "to": "December-2024: -Add",
+      "reason": "page image shows \"-Add\" (highlighted)"
+    }
+  ]
+}

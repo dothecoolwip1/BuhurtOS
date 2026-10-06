@@ -1,0 +1,10 @@
+{
+  "marshal/example-combat-rules": {
+    "url": "https://example.invalid/files/example-combat-rules.pdf",
+    "retrieved_at": "2026-10-06T04:37:17.363Z",
+    "sha256": "b7795b40247a2c28ce2836b0970d94173e6a694773be845c640167586e86ba1c",
+    "bytes": 44968,
+    "content_type": "application/pdf",
+    "supplied_by": "Pack 22 fixture generator (invented documents)"
+  }
+}

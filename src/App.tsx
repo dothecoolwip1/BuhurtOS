@@ -17,6 +17,8 @@ import { MarshalPage } from './pages/MarshalPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RulesPage } from './pages/RulesPage';
+import { RuleDocPage } from './pages/rules/RuleDocPage';
+import { RulePage } from './pages/rules/RulePage';
 import { RegisterPage } from './registration/RegisterPage';
 import { ManagePage } from './pages/ManagePage';
 import { AccountPage } from './auth/AccountPage';
@@ -33,11 +35,13 @@ import { TeamsPage } from './pages/TeamsPage';
 import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
+import { PlatformRulesPage } from './pages/platform/PlatformRulesPage';
 import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
 import { CommandCentrePage } from './pages/CommandCentrePage';
+import { DisciplineLogPage } from './pages/DisciplineLogPage';
 import { AnnouncerPage } from './pages/AnnouncerPage';
 import { DeviceSignInPage } from './pages/DeviceSignInPage';
 import { DeviceApp } from './DeviceApp';
@@ -90,6 +94,7 @@ function SiteApp() {
         <Route path="events/:eventId/manage" element={<ManagePage />} />
         <Route path="events/:eventId/checkin" element={<CheckinDeskPage />} />
         <Route path="events/:eventId/command" element={<CommandCentrePage />} />
+        <Route path="events/:eventId/discipline" element={<DisciplineLogPage />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="organizations/:slug" element={<OrganizationPage />} />
         <Route path="platform" element={<PlatformHomePage />} />
@@ -99,6 +104,7 @@ function SiteApp() {
         <Route path="platform/analytics" element={<PlatformActivityPage />} />
         <Route path="platform/activity" element={<Navigate to="/platform/analytics" replace />} />
         <Route path="platform/bugs" element={<PlatformBugsPage />} />
+        <Route path="platform/rules" element={<PlatformRulesPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="sign-in" element={<SignInPage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />
@@ -108,6 +114,8 @@ function SiteApp() {
         <Route path="formats" element={<FormatsPage />} />
         <Route path="marshal" element={<MarshalPage />} />
         <Route path="rules" element={<RulesPage />} />
+        <Route path="rules/doc/:slug" element={<RuleDocPage />} />
+        <Route path="rules/r/:id" element={<RulePage />} />
         <Route path="privacy" element={<PrivacyPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

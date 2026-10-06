@@ -1,0 +1,28 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "great-helms:7": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "bbb85ffd4c85d8933c274e2bea3862d3e32d60860ffae2022c6142c68430b8ef"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\".",
+  "ocr": {
+    "fix": {
+      "7:27": {
+        "from": "December-2024: “add",
+        "to": "December-2024: -add",
+        "reason": "page image shows \"-add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

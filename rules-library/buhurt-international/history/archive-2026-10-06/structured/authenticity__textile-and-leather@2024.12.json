@@ -1,0 +1,784 @@
+{
+  "edition": "authenticity/textile-and-leather@2024.12",
+  "inventory_key": "authenticity/textile-and-leather",
+  "seq": 1,
+  "version": {
+    "version": "2024.12",
+    "title": "Textiles and Leather 2024.12",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Title \"Textiles and Leather\"; cover \"VER. 2024.12\"; change log only \"December-2024: created\". Older than the current 26.1.",
+    "source_url": "https://drive.google.com/file/d/19IA0DIduObyOuU1wuLRFn37KNCny1guf/view",
+    "source_sha256": "07e19e7dca46ccb66961d444a00954a3cc0c5ce0f10c706ab853ec59f2eb213e",
+    "retrieved_at": null,
+    "page_count": 8,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+    "content_sha256": "0c9e9392731ae1ea75e90f3873faa17f31ab75ecbeeb1d06d2b6e9a0174d6495",
+    "detected": {
+      "version": "2024.12",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 historical import), read from the archived PDF: cover (OCR of the page image), footers and change log",
+    "historical": true,
+    "edition_seq": 1,
+    "edition_evidence": "Title \"Textiles and Leather\"; cover \"VER. 2024.12\"; change log only \"December-2024: created\". Older than the current 26.1.",
+    "source_files": [
+      {
+        "file": "Authenticity/Archive/Textiles and Leather V2024.12.pdf",
+        "archive": "Authenticity",
+        "sha256": "07e19e7dca46ccb66961d444a00954a3cc0c5ce0f10c706ab853ec59f2eb213e",
+        "drive_file_id": "19IA0DIduObyOuU1wuLRFn37KNCny1guf"
+      }
+    ],
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "1 line(s) looked like a numbered heading but did not fit the sequence"
+      ],
+      "pages": 8,
+      "source_lines": 123,
+      "assigned_lines": 170,
+      "furniture_lines": 34,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99876,
+      "provisions": 15,
+      "numbered": 14,
+      "needs_review": 0,
+      "verified": 0,
+      "empty_pages": [],
+      "rejected_numbers": 1,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 14,
+      "picture_text_lines": 12,
+      "ocr_corrections": 0
+    }
+  },
+  "file_contents": [],
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "note",
+      "number": null,
+      "title": null,
+      "body": "VER. 2024.12\n\nAuthenticity Textile and Leather",
+      "page_from": 1,
+      "page_to": 2,
+      "stable_key": "textile-and-leather:p0001",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "introduction"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "4a4a8b9623a6bfd1e5c7a5afa50541390ccd6fb79f87120677b210929f579c1e",
+      "has_figures": true,
+      "extraction": "mixed",
+      "lines": [
+        "1:1",
+        "1:5",
+        "1:9",
+        "1:15",
+        "1:16",
+        "1:17",
+        "1:18",
+        "2:0",
+        "2:2",
+        "2:3",
+        "2:17",
+        "2:18",
+        "2:19",
+        "2:20",
+        "2:22"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Definition and general requirements",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "textile-and-leather:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "df9d4b4971cd1ada36b96ec4e6602cd5f968c25814a104728b68a69b7ffb6242",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:0",
+        "3:1"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.1",
+      "title": "Importance of aesthetics",
+      "body": "● Armors and weapons aesthetics are very important for the fighters' appearance and sports representation. The development of our sport will be easier with well-maintained and properly finished armor and weapons.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "textile-and-leather:1.1",
+      "parent_key": "textile-and-leather:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b358cbf31ce376887e3e4105f17e74093ea559cd6395f58a5695e6a10fa18270",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:2",
+        "3:3",
+        "3:4",
+        "3:5",
+        "3:6"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.2",
+      "title": "Textiles and leather",
+      "body": "● Textiles and leather are part of a knightly appearance. Tabards are made of fabric (linen, wool, silk…), coats of plates are covered with fabric, leather is mainly used for armor (helmet suspension, belts, pouches, straps), etc. All skin must be covered.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "textile-and-leather:1.2",
+      "parent_key": "textile-and-leather:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "de99df328bbfb1c2ecc2692841501e007212a19c07fb1bee56ca9fe2a2e53acd",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.3",
+      "title": "Requirements",
+      "body": "● Be based on historical sources.\n● Not be of a clearly modern color (I.E neon or fluorescent)\n● Be maintained in a good shape prior to any Buhurt International Event.\n● Not be decorated with modern images, offensive logos, etc.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "textile-and-leather:1.3",
+      "parent_key": "textile-and-leather:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "643d9ec782cde3792ae1bd1ffac7d51da1995f0cdfd7bd0baeb809aca6ebe885",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:22"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Textiles",
+      "body": "",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "textile-and-leather:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "62ea9becade7627e5d69b67ada738161d5d06980951c02eee321cbf394fbd4b2",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "4:0",
+        "4:1"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.1",
+      "title": "Historical sources and datation",
+      "body": "● The sources provide the following available materials during the middle ages:\n○ Linen ○ Wool ○ Silk ○ Coton.\n● Those materials are approved for 14th-century, Transitional armors and 15th-century armors.\n● Depending on the area and time-period, other textiles fibers may be available. Any other material based on historical sources can be accepted.\n● Textiles were used in many applications, such as:\n○ Tabard ○ Covering a coat of plates, corazzina or brigantine ○ Gambesons ○ Chausses ○ Helmet decoration (burlet, torse, orle, crest etc.).",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "textile-and-leather:2.1",
+      "parent_key": "textile-and-leather:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "ae98cdd05495158303308def21dd20234fb9fc46d93110a6481c700f81ecb6a7",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10",
+        "4:11",
+        "4:12",
+        "4:13",
+        "4:14",
+        "4:15",
+        "4:16",
+        "4:17",
+        "4:18"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.2",
+      "title": "Specific requirements",
+      "body": "● Any material listed in 2.1 is allowed.\n● Any material based on historical sources thus not listed in 2.1 is allowed.\n● It is allowed to use a modern material under the following conditions:\n○ The modern material replicates the aesthetic of an approved material listed in 2.1 ○ The modern material is strong enough to endure full contact fights and to not be damaged too easily ○ We recommend asking for approval of Authenticity regarding modern materials before placing an order of an item made of such material.\n● Any clearly modern cloth element, such as underpants, sport legging, knee pad etc., must not be visible from any position.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "textile-and-leather:2.2",
+      "parent_key": "textile-and-leather:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "2.1"
+      ],
+      "content_sha256": "ae34de23769efd24e78f071bbb5d9a59baa0645734503c3fda589dfa7f7b5c92",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "4:19",
+        "4:20",
+        "4:21",
+        "4:22",
+        "4:23",
+        "4:24",
+        "4:25",
+        "4:26",
+        "4:27",
+        "4:28",
+        "4:29",
+        "4:30",
+        "4:31",
+        "4:32",
+        "4:33",
+        "4:34",
+        "4:36"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.3",
+      "title": "Examples of Approved reproductions",
+      "body": "Pictures from The Medieval Things ©",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "textile-and-leather:2.3",
+      "parent_key": "textile-and-leather:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3705146961bc83782cdeb237a29a71485cf28a27eb5052c8a8519f802c2cf638",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3",
+        "5:4",
+        "5:5",
+        "5:6",
+        "5:7",
+        "5:8",
+        "5:9"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.4",
+      "title": "Examples of Denied reproductions",
+      "body": "Visible modern clothes / butt protection\n\nModern legging Pictures from The Medieval Things ©",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "textile-and-leather:2.4",
+      "parent_key": "textile-and-leather:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "17ed6997470c2f4c72e3bc050a0c13cfdb6579061f17e79377b99ed3ca9be919",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "5:10",
+        "5:11",
+        "5:12",
+        "5:13",
+        "5:14",
+        "5:15",
+        "5:16",
+        "5:17",
+        "5:18",
+        "5:19",
+        "5:20",
+        "5:21",
+        "5:22",
+        "5:23",
+        "5:24",
+        "5:25",
+        "5:27"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "Leather",
+      "body": "",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "textile-and-leather:3",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "2fa655f7acb121ec1c5abaeb54a29cbbb2ea60aee45b28cedbe113d71285c479",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "6:0",
+        "6:1"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.1",
+      "title": "Historical sources and datation",
+      "body": "● The sources provide a numerous amount of information about the use of leather.\nLeather can be decorated or not.\n● The use of leather is approved for 14th-century, Transitional armors and 15th-century armors.\n● Leather was used in many applications, such as:\n○ Covering a coat of plates, corazzina or brigantine ○ Gambesons ○ Helmet element (suspension system, straps etc.) ○ Belts ○ Pouches ○ Shoes ○ Etc.\n\nReproduction of a medieval shoes - 1300/1350 - Archeologisch Museum Haarlem\n\nLeather glove Metropolitan Museum of Art",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "textile-and-leather:3.1",
+      "parent_key": "textile-and-leather:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "5968e0663273570a0c2dc7f848c23ae1cbbe212e9e518041d7ed282a35644c3a",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "6:2",
+        "6:3",
+        "6:4",
+        "6:5",
+        "6:6",
+        "6:7",
+        "6:8",
+        "6:9",
+        "6:10",
+        "6:11",
+        "6:12",
+        "6:13",
+        "6:14",
+        "6:15",
+        "6:16",
+        "6:17",
+        "6:18",
+        "6:19",
+        "6:20",
+        "6:21",
+        "6:22",
+        "6:23",
+        "6:24",
+        "6:25",
+        "6:27",
+        "6:28",
+        "6:29",
+        "6:30",
+        "6:31",
+        "6:33"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.2",
+      "title": "Specific requirements",
+      "body": "● Any natural leather is allowed.\n● It is allowed to use a modern material under the following conditions:\n○ The modern material replicates the aesthetic of natural leather.\n○ The modern material is strong enough to endure full contact fights and to not be damaged too easily.\n○ We recommend asking for approval of Authenticity regarding modern materials before placing an order of an item made of such material.\n● Specific requirements for boots and shoes ○ Boots and shoes must be based on historical sources.\n○ Boots and shoes must be fastened by leather laces, fabric laces or any historically plausible mechanism.",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "textile-and-leather:3.2",
+      "parent_key": "textile-and-leather:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "789ec409fe5fe8621b072c6f1a9483398311a71f5dc227ec2a6fea66dbc7e0c4",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "7:0",
+        "7:1",
+        "7:2",
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6",
+        "7:7",
+        "7:8",
+        "7:9",
+        "7:10",
+        "7:11",
+        "7:12"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 1,
+      "kind": "rule",
+      "number": "3.3",
+      "title": "Examples of Approved reproductions",
+      "body": "Picture from Age of Craft © Picture from GoHurt ©",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "textile-and-leather:3.3",
+      "parent_key": "textile-and-leather:3",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "6a7716c7406f4f7119d1b6913fee57bc58d4123df7db6bc38d1819dac80aae27",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": [
+        "7:13",
+        "7:14",
+        "7:15",
+        "7:16",
+        "7:17",
+        "7:18",
+        "7:19",
+        "7:20",
+        "7:21",
+        "7:22",
+        "7:24"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 0,
+      "kind": "note",
+      "number": "4",
+      "title": "Change log",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nDecember-2024: -Add Document has been created",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "textile-and-leather:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a3c0c1200b4bedbea681187a83868d1e233d4fa08d4c87594c025d852930cff3",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "8:0",
+        "8:1",
+        "8:2",
+        "8:3",
+        "8:4",
+        "8:5",
+        "8:6",
+        "8:7",
+        "8:8",
+        "8:9",
+        "8:10",
+        "8:11",
+        "8:12",
+        "8:14"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "1:0",
+      "page": 1,
+      "text": "\\)) BUHURT (7",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 27.6)"
+    },
+    {
+      "id": "1:2",
+      "page": 1,
+      "text": "p h",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 35.3)"
+    },
+    {
+      "id": "1:3",
+      "page": 1,
+      "text": "Aq GQ) Z",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 8.9)"
+    },
+    {
+      "id": "1:4",
+      "page": 1,
+      "text": "cA | Ao",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 45.9)"
+    },
+    {
+      "id": "1:6",
+      "page": 1,
+      "text": "_. Zi",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 34.1)"
+    },
+    {
+      "id": "1:7",
+      "page": 1,
+      "text": "● 7X",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 41.9)"
+    },
+    {
+      "id": "1:8",
+      "page": 1,
+      "text": "aS",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 32.4)"
+    },
+    {
+      "id": "1:10",
+      "page": 1,
+      "text": "6",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 28.8)"
+    },
+    {
+      "id": "1:11",
+      "page": 1,
+      "text": "AK \\ / HL",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 41.2)"
+    },
+    {
+      "id": "1:12",
+      "page": 1,
+      "text": "Gk. Tee",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 8%), confidence 10.0)"
+    },
+    {
+      "id": "1:13",
+      "page": 1,
+      "text": "2e3 SS",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 9%), confidence 15.2)"
+    },
+    {
+      "id": "1:14",
+      "page": 1,
+      "text": "icity Com",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 66.2)"
+    },
+    {
+      "id": "2:1",
+      "page": 2,
+      "text": "         Table of Contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "            1. Definition and general requirements.............................................................................2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "                1.1 Importance of aesthetics........................................................................................... 2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "                1.2 Textiles and leather................................................................................................... 2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "                1.3 Requirements............................................................................................................ 2",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "            2. Textiles............................................................................................................................. 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "                2.1 Historical sources and datation................................................................................. 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "                2.2 Specific requirements................................................................................................3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "                2.3 Examples of Approved reproductions....................................................................... 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "                2.4 Examples of Denied reproductions........................................................................... 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "            3. Leather............................................................................................................................. 5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:14",
+      "page": 2,
+      "text": "                3.1 Historical sources and datation................................................................................. 5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "                3.2 Specific requirements................................................................................................6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:16",
+      "page": 2,
+      "text": "                3.3 Examples of Approved reproductions....................................................................... 6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:21",
+      "page": 2,
+      "text": "Textiles and Leather                                                                                                         1",
+      "reason": "table of contents"
+    },
+    {
+      "id": "3:21",
+      "page": 3,
+      "text": "Textiles and Leather                                                                    2",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "4:35",
+      "page": 4,
+      "text": "Textiles and Leather                                                                    3",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "5:26",
+      "page": 5,
+      "text": "Textiles and Leather                                                                4",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "6:26",
+      "page": 6,
+      "text": "                                            1450/1470",
+      "reason": "page number"
+    },
+    {
+      "id": "6:32",
+      "page": 6,
+      "text": "Textiles and Leather                                                                5",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "7:23",
+      "page": 7,
+      "text": "Textiles and Leather                                                                      6",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "8:13",
+      "page": 8,
+      "text": "Textiles and Leather                                                                     7",
+      "reason": "repeated on most pages (header or footer)"
+    }
+  ],
+  "rejected_numbers": [
+    {
+      "id": "4:24",
+      "text": "2.1",
+      "expected": "2.3"
+    }
+  ],
+  "ocr_corrections": []
+}

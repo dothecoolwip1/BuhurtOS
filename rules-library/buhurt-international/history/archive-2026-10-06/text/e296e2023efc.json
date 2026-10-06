@@ -1,0 +1,1268 @@
+{
+  "sha256": "e296e2023efc8aa32339ecd44a0f72adbf92cc8817b27d18ee5d333a01f4a852",
+  "files": [
+    "Authenticity/Archive/Infractions Classification and Application.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 5 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 5,
+    "title": "Infraction classification and application - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:22:11 2026 UTC",
+    "modified": "Wed Jan 28 14:22:11 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)}\\) BUHURT (7\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 75,
+      "ocr_lines": [
+        {
+          "text": "\\)}\\) BUHURT (7",
+          "conf_mean": 54.4,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            885,
+            181,
+            1598,
+            300
+          ],
+          "paper": 0,
+          "height": 40,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 54.4"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.2,
+          "conf_min": 93.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1272,
+            991,
+            1343
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            606,
+            1449,
+            1724,
+            1643
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n1. Definition\n2. Infraction Classification\n3. Application of the Rules\n4. Changelog\n\nInfractions Classification and Application V. 26.1 2/5",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.3,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.7,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            361,
+            621,
+            402
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "1. Definition",
+          "conf_mean": 95.9,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            156,
+            444,
+            390,
+            478
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "2. Infraction Classification",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            509,
+            670,
+            543
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "3. Application of the Rules",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            574,
+            682,
+            617
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "4. Changelog",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            151,
+            639,
+            421,
+            682
+          ],
+          "paper": 0.72,
+          "height": 43
+        },
+        {
+          "text": "Infractions Classification and Application V. 26.1 2/5",
+          "conf_mean": 93.5,
+          "conf_min": 83.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Definition\n\nAuthenticity rules are meant to be followed by all competitors attending Buhurt International\ntournaments, no matter the category. If a competitor shows up with an armor, shield or weapon that does\nnot comply with the Authenticity rules, he/she risks a penalty.\n\n2. Infraction Classification\n\nDuring Authenticity Check, Authenticity officers will evaluate the entire equipment of competitors before\nthe start of the tournament. Any violation of the Authenticity rules will result in an infraction. Infractions\ncan be classified under 3 different levels:\n\n2.1. Minor infraction\n\nIt is a small detail not easy to see, and it does not affect the coherence of the whole armor (small traces\nof rust, hammering marks, little datation difference between 2 parts etc.).\n\n2.2. Moderate Infraction\n\nIt is something forbidden by the Authenticity rules (i.e badly designed helmet, over numerous eye bars\netc.). Not respecting the rules can't be accepted, thus it is not severe enough to prevent the fighter from\nentering the list.\n\n2.3. Major infraction\n\nFantasy armor or totally inaccurate equipment, that prevent the fighter from entering the list and damage\nthe image of the sport, the teams and Buhurt International.\n\nInfractions Classification and Application V. 26.1] 3/5",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.7,
+      "ocr_lines": [
+        {
+          "text": "1. Definition",
+          "conf_mean": 95.8,
+          "conf_min": 95.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            946,
+            197,
+            1485,
+            268
+          ],
+          "paper": 0.61,
+          "height": 71,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "Authenticity rules are meant to be followed by all competitors attending Buhurt International",
+          "conf_mean": 95.5,
+          "conf_min": 91.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            397,
+            2297,
+            440
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "tournaments, no matter the category. If a competitor shows up with an armor, shield or weapon that does",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            457,
+            2298,
+            500
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "not comply with the Authenticity rules, he/she risks a penalty.",
+          "conf_mean": 96.2,
+          "conf_min": 94.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            182,
+            518,
+            1407,
+            561
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2. Infraction Classification",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            619,
+            733,
+            1807,
+            804
+          ],
+          "paper": 0.6,
+          "height": 71
+        },
+        {
+          "text": "During Authenticity Check, Authenticity officers will evaluate the entire equipment of competitors before",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            932,
+            2261,
+            975
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "the start of the tournament. Any violation of the Authenticity rules will result in an infraction. Infractions",
+          "conf_mean": 96.6,
+          "conf_min": 95.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            993,
+            2237,
+            1036
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "can be classified under 3 different levels:",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            1053,
+            1002,
+            1087
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "2.1. Minor infraction",
+          "conf_mean": 72.2,
+          "conf_min": 44.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            328,
+            1218,
+            881,
+            1258
+          ],
+          "paper": 0.63,
+          "height": 39
+        },
+        {
+          "text": "It is a small detail not easy to see, and it does not affect the coherence of the whole armor (small traces",
+          "conf_mean": 96.3,
+          "conf_min": 93.7,
+          "words": 22,
+          "uncertain": [],
+          "box": [
+            184,
+            1330,
+            2301,
+            1373
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "of rust, hammering marks, little datation difference between 2 parts etc.).",
+          "conf_mean": 94.7,
+          "conf_min": 88.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            1390,
+            1643,
+            1433
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2.2. Moderate Infraction",
+          "conf_mean": 94.4,
+          "conf_min": 94.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            328,
+            1513,
+            975,
+            1553
+          ],
+          "paper": 0.6,
+          "height": 39
+        },
+        {
+          "text": "It is something forbidden by the Authenticity rules (i.e badly designed helmet, over numerous eye bars",
+          "conf_mean": 95.5,
+          "conf_min": 91.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            1624,
+            2298,
+            1668
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "etc.). Not respecting the rules can't be accepted, thus it is not severe enough to prevent the fighter from",
+          "conf_mean": 95.9,
+          "conf_min": 90.2,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            181,
+            1685,
+            2299,
+            1728
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "entering the list.",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1746,
+            499,
+            1789
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2.3. Major infraction",
+          "conf_mean": 93,
+          "conf_min": 91.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            328,
+            1869,
+            878,
+            1920
+          ],
+          "paper": 0.69,
+          "height": 40
+        },
+        {
+          "text": "Fantasy armor or totally inaccurate equipment, that prevent the fighter from entering the list and damage",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            183,
+            1980,
+            2301,
+            2023
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "the image of the sport, the teams and Buhurt International.",
+          "conf_mean": 95.6,
+          "conf_min": 92.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            2041,
+            1360,
+            2084
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Infractions Classification and Application V. 26.1] 3/5",
+          "conf_mean": 88.7,
+          "conf_min": 49.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. Application of the Rules\n\nA violation of the authenticity rules will result in a green card. Depending on the rank of tournament,\ninfraction will be applied differently.\n\nA green card combined with a yellow card will result in a red card and the competitor will be disqualified\nfrom the tournament.\n\nA competitor can receive only 1 green card per tournament, no matter how many infractions they have.\n3.1. Source\n\nNo authenticity check required.\nAuthenticity members on site will be able to give advice and guidance.\n\n3.2. Classic\n\nAuthenticity check is mandatory prior to the start of the tournament.\nA competitor is allowed to enter the list if they respect the following cumulative criterias:\n\n● Have no more than 3 minors infraction (if they have 4 or more, they will receive a green card).\n● Have no more than 1 moderate infraction (if they have 2 or more, they will receive a green card.\n● Have no major infraction.\n\n3.3. Regional\n\nAuthenticity check is mandatory prior to the start of the tournament.\n\nA competitor is allowed to enter the list if they respect the following cumulative criterias.\n● Have no more than 2 minors infraction, if you have 3 or more, then they will receive a green card.\n● Have no moderate infraction. If they have 1 or more, they will receive a green card.\n● Have no major infraction.\n\n3.4. Conference\n\nAuthenticity check is mandatory prior to the start of the tournament.\n\nA competitor is allowed to enter the list if they respect the following cumulative criterias.\n● Have no more than 1 minor infraction, if you have 2 or more, then they will receive a green card.\n● Have no moderate infraction.\n● Have no major infraction.\n\nNote: as an exceptional measure, for season 2025, tournaments of Conference level will be considered\nas Regional regarding Authenticity rules. It means a competitor with 1 moderate infraction will be allowed\nto fight, but will receive a green card.\n\nInfractions Classification and Application V. 26.1] 4/5",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.8,
+      "ocr_lines": [
+        {
+          "text": "3. Application of the Rules",
+          "conf_mean": 96.1,
+          "conf_min": 95.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            615,
+            197,
+            1814,
+            286
+          ],
+          "paper": 0.68,
+          "height": 70,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "A violation of the authenticity rules will result in a green card. Depending on the rank of tournament,",
+          "conf_mean": 96,
+          "conf_min": 93.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            397,
+            2296,
+            440
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "infraction will be applied differently.",
+          "conf_mean": 95.7,
+          "conf_min": 93.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            457,
+            881,
+            500
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "A green card combined with a yellow card will result in a red card and the competitor will be disqualified",
+          "conf_mean": 96.2,
+          "conf_min": 93.9,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            179,
+            560,
+            2298,
+            603
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "from the tournament.",
+          "conf_mean": 94.7,
+          "conf_min": 94,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            620,
+            601,
+            654
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "A competitor can receive only 1 green card per tournament, no matter how many infractions they have.",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            722,
+            2256,
+            765
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "3.1. Source",
+          "conf_mean": 78.6,
+          "conf_min": 67.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            328,
+            826,
+            657,
+            866
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "No authenticity check required.",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            938,
+            804,
+            981
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "Authenticity members on site will be able to give advice and guidance.",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            179,
+            998,
+            1596,
+            1041
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "3.2. Classic",
+          "conf_mean": 94.5,
+          "conf_min": 92.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            328,
+            1103,
+            664,
+            1143
+          ],
+          "paper": 0.65,
+          "height": 40
+        },
+        {
+          "text": "Authenticity check is mandatory prior to the start of the tournament.",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            179,
+            1214,
+            1538,
+            1257
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "A competitor is allowed to enter the list if they respect the following cumulative criterias:",
+          "conf_mean": 96.5,
+          "conf_min": 95.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1275,
+            1942,
+            1318
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● Have no more than 3 minors infraction (if they have 4 or more, they will receive a green card).",
+          "conf_mean": 92.7,
+          "conf_min": 65.1,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            230,
+            1377,
+            2192,
+            1420
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e Have no more than 3 minors infraction (if they have 4 or more, they will receive a green card)."
+        },
+        {
+          "text": "● Have no more than 1 moderate infraction (if they have 2 or more, they will receive a green card.",
+          "conf_mean": 95.6,
+          "conf_min": 91.9,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            230,
+            1437,
+            2232,
+            1480
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e Have no more than 1 moderate infraction (if they have 2 or more, they will receive a green card."
+        },
+        {
+          "text": "● Have no major infraction.",
+          "conf_mean": 94.5,
+          "conf_min": 91.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            1498,
+            806,
+            1541
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e Have no major infraction."
+        },
+        {
+          "text": "3.3. Regional",
+          "conf_mean": 88.7,
+          "conf_min": 87.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            328,
+            1621,
+            701,
+            1672
+          ],
+          "paper": 0.7,
+          "height": 51
+        },
+        {
+          "text": "Authenticity check is mandatory prior to the start of the tournament.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1733,
+            1538,
+            1775
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "A competitor is allowed to enter the list if they respect the following cumulative criterias.",
+          "conf_mean": 96,
+          "conf_min": 92.6,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            179,
+            1793,
+            1942,
+            1836
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Have no more than 2 minors infraction, if you have 3 or more, then they will receive a green card.",
+          "conf_mean": 95.8,
+          "conf_min": 91.9,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            230,
+            1854,
+            2263,
+            1897
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e Have no more than 2 minors infraction, if you have 3 or more, then they will receive a green card."
+        },
+        {
+          "text": "● Have no moderate infraction. If they have 1 or more, they will receive a green card.",
+          "conf_mean": 95.7,
+          "conf_min": 91.8,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            230,
+            1914,
+            1975,
+            1957
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e Have no moderate infraction. If they have 1 or more, they will receive a green card."
+        },
+        {
+          "text": "● Have no major infraction.",
+          "conf_mean": 91.6,
+          "conf_min": 82.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            1975,
+            806,
+            2018
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e Have no major infraction."
+        },
+        {
+          "text": "3.4. Conference",
+          "conf_mean": 94.6,
+          "conf_min": 94.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            328,
+            2110,
+            771,
+            2150
+          ],
+          "paper": 0.65,
+          "height": 40
+        },
+        {
+          "text": "Authenticity check is mandatory prior to the start of the tournament.",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            179,
+            2222,
+            1538,
+            2265
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "A competitor is allowed to enter the list if they respect the following cumulative criterias.",
+          "conf_mean": 96.5,
+          "conf_min": 95.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            2282,
+            1942,
+            2325
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● Have no more than 1 minor infraction, if you have 2 or more, then they will receive a green card.",
+          "conf_mean": 94.8,
+          "conf_min": 85.6,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            230,
+            2343,
+            2240,
+            2386
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e Have no more than 1 minor infraction, if you have 2 or more, then they will receive a green card."
+        },
+        {
+          "text": "● Have no moderate infraction.",
+          "conf_mean": 92.8,
+          "conf_min": 87.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            2403,
+            885,
+            2437
+          ],
+          "paper": 0.69,
+          "height": 33,
+          "raw": "e Have no moderate infraction."
+        },
+        {
+          "text": "● Have no major infraction.",
+          "conf_mean": 92.7,
+          "conf_min": 86.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            230,
+            2464,
+            806,
+            2507
+          ],
+          "paper": 0.77,
+          "height": 34,
+          "raw": "e Have no major infraction."
+        },
+        {
+          "text": "Note: as an exceptional measure, for season 2025, tournaments of Conference level will be considered",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            2598,
+            2297,
+            2640
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "as Regional regarding Authenticity rules. It means a competitor with 1 moderate infraction will be allowed",
+          "conf_mean": 95.5,
+          "conf_min": 85.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            2658,
+            2297,
+            2701
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "to fight, but will receive a green card.",
+          "conf_mean": 96.7,
+          "conf_min": 96.3,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            2719,
+            921,
+            2762
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Infractions Classification and Application V. 26.1] 4/5",
+          "conf_mean": 88.7,
+          "conf_min": 49.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all\nour members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nSuppression:\n- 2 first paragraphs of “2. Definition” as they were outdated.\n\nFebruary - 2025:\n\n- Replaced: 1. (After vote) introducing the green card rule\n\n- Replaced: 2. Members | Officers || Fighters | Competitors\n\n- Add: 2. Any violation of the Authenticity rules will result in an infraction\n\n- Replaced: 3. violation breach of | greenYellow card remains the sanction for Aany” with “A\nviolation of\n\n- Rephrased: 3. (After vote) to clarify the green card rule.\n\n- Add: 3.3 If they have 1 or more, they will receive a green card.\n\n- Add: 3.4: Note\n\nDecember 2024:\n-add Document has been created\n\nInfractions Classification and Application V. 26.1] 3/5",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.9,
+      "ocr_lines": [
+        {
+          "text": "4. Changelog",
+          "conf_mean": 95.9,
+          "conf_min": 95.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            914,
+            197,
+            1512,
+            287
+          ],
+          "paper": 0.66,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all",
+          "conf_mean": 96.5,
+          "conf_min": 95.3,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            192,
+            397,
+            2150,
+            440
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "our members can see how the documents are changing over time.",
+          "conf_mean": 96.1,
+          "conf_min": 95,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            500,
+            457,
+            1839,
+            500
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.7,
+          "conf_min": 92.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            675,
+            679,
+            718
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            727,
+            2163,
+            770
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Suppression:",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            787,
+            443,
+            830
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- 2 first paragraphs of “2. Definition” as they were outdated.",
+          "conf_mean": 95.4,
+          "conf_min": 89.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            848,
+            1494,
+            891
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "February - 2025:",
+          "conf_mean": 93.3,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            970,
+            526,
+            1012
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "- Replaced: 1. (After vote) introducing the green card rule",
+          "conf_mean": 96.1,
+          "conf_min": 93.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1030,
+            1336,
+            1073
+          ],
+          "paper": 0.6,
+          "height": 34
+        },
+        {
+          "text": "- Replaced: 2. Members | Officers || Fighters | Competitors",
+          "conf_mean": 95.9,
+          "conf_min": 93.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1090,
+            1359,
+            1134
+          ],
+          "paper": 0.12,
+          "height": 43
+        },
+        {
+          "text": "- Add: 2. Any violation of the Authenticity rules will result in an infraction",
+          "conf_mean": 96.1,
+          "conf_min": 93.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            1151,
+            1622,
+            1194
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "- Replaced: 3. violation breach of | greenYellow card remains the sanction for Aany” with “A",
+          "conf_mean": 95.2,
+          "conf_min": 90.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1211,
+            2023,
+            1255
+          ],
+          "paper": 0.05,
+          "height": 34
+        },
+        {
+          "text": "violation of",
+          "conf_mean": 96.8,
+          "conf_min": 96.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            180,
+            1272,
+            399,
+            1306
+          ],
+          "paper": 0.01,
+          "height": 34
+        },
+        {
+          "text": "- Rephrased: 3. (After vote) to clarify the green card rule.",
+          "conf_mean": 95.9,
+          "conf_min": 92.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1333,
+            1324,
+            1376
+          ],
+          "paper": 0.58,
+          "height": 34
+        },
+        {
+          "text": "- Add: 3.3 If they have 1 or more, they will receive a green card.",
+          "conf_mean": 95.8,
+          "conf_min": 92.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1393,
+            1464,
+            1436
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "- Add: 3.4: Note",
+          "conf_mean": 95.2,
+          "conf_min": 93.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            1454,
+            498,
+            1488
+          ],
+          "paper": 0.42,
+          "height": 34
+        },
+        {
+          "text": "December 2024:",
+          "conf_mean": 96.7,
+          "conf_min": 96.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1575,
+            524,
+            1609
+          ],
+          "paper": 0.54,
+          "height": 34
+        },
+        {
+          "text": "-add Document has been created",
+          "conf_mean": 95,
+          "conf_min": 92.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1636,
+            856,
+            1670
+          ],
+          "paper": 0.57,
+          "height": 33
+        },
+        {
+          "text": "Infractions Classification and Application V. 26.1] 3/5",
+          "conf_mean": 78.8,
+          "conf_min": 26.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            230,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.9,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    }
+  ]
+}

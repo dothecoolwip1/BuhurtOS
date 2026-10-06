@@ -1,0 +1,100 @@
+{
+  "sha256": "3fd1e811a7a114279be6116094c99ead0f647cd38f82e164f9cc25d7ea26dcb5",
+  "files": [
+    "Authenticity/Archive/Infraction classification and application.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 5,
+    "title": "Infraction classification and application",
+    "creator": null,
+    "producer": "Skia/PDF m135 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)\\i) BUHURT (7\n\nVER. 2025.02\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 65.4,
+      "ocr_lines": [
+        {
+          "text": "\\)\\i) BUHURT (7",
+          "conf_mean": 35,
+          "conf_min": 16.8,
+          "words": 3,
+          "uncertain": [
+            "\\)\\i)",
+            "BUHURT"
+          ],
+          "box": [
+            813,
+            371,
+            1527,
+            485
+          ],
+          "paper": 0,
+          "height": 30,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 35.0"
+        },
+        {
+          "text": "VER. 2025.02",
+          "conf_mean": 96.1,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            486,
+            1778,
+            1049,
+            1846
+          ],
+          "paper": 0,
+          "height": 68
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 95.3,
+          "conf_min": 95.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            485,
+            1928,
+            1603,
+            2116
+          ],
+          "paper": 0,
+          "height": 188
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "        Table of content\n           Table of content.................................................................................................................................... 2\n           1. Introduction.....................................................................................................................................3\n           2. Infraction classification..................................................................................................................3\n              2.1. Minor infraction.......................................................................................................................... 3\n              2.2. Moderate Infraction....................................................................................................................3\n              2.3. Major infraction.......................................................................................................................... 3\n           3. Application of the rules..................................................................................................................3\n              3.1. Source....................................................................................................................................... 3\n              3.2. Classic....................................................................................................................................... 3\n              3.3. Regional.................................................................................................................................... 4\n              3.4. Conference................................................................................................................................ 4\n\n\n\n\nInfraction classification and application                                                                                      2\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "            Infraction classification and application\n\n         1.​Definition\n                                                               ​\n           If we read the current rules, if a fighter enters the list with equipment (armor, shield, or weapon)\n           that fails the authenticity check, he/she receives a green card the fighter enters the list but only\n           once per tournament.\n\n           Authenticity Committee think this rule is too punishing as we understand some fighters are not\n           supported by any authenticity committee members, or have difficulties to purchase armor that\n           match aesthetic standards of Buhurt International. Therefore, we would like to propose both\n           clarification and softening of how authenticity rules are applied.\n\n           Authenticity rules are meant to be followed by all competitors attending Buhurt International\n           tournaments, no matter the category. If a competitor shows up with an armor, shield or weapon that\n           does not comply with the Authenticity rules, he/she risks a penalty.\n\n         2.​Infraction classification\n           During Authenticity Check, Authenticity officers will evaluate the entire equipment of competitors\n           before the start of the tournament. Any violation of the Authenticity rules will result in an infraction.\n           Infractions can be classified under 3 different levels:\n\n             2.1.​Minor infraction\n                  It is a small detail not easy to see, and it does not affect the coherence of the whole armor\n                  (small traces of rust, hammering marks, little datation difference between 2 parts etc.).​\n\n             2.2.​Moderate Infraction\n                  It is something forbidden by the Authenticity rules (i.e badly designed helmet, over numerous\n                  eye bars etc.). Not respecting the rules can't be accepted, thus it is not severe enough to\n                  prevent the fighter from entering the list.​\n\n             2.3.​Major infraction\n                  Fantasy armor or totally inaccurate equipment, that prevent the fighter from entering the list\n                  and damage the image of the sport, the teams and Buhurt International.​\n\n\n\n\nInfraction classification and application                                                    3\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "         3.​Application of the rules\n\n         ●​ A violation of the authenticity rules will result in a green card. Depending on the rank of\n            tournament, infraction will be applied differently.​\n\n         ●​ A green card combined with a yellow card will result in a red card and the competitor will be\n            disqualified from the tournament.\n\n         ●​ A competitor can receive only 1 green card per tournament, no matter how many infractions they\n            have.\n\n            3.1.​Source\n                 No authenticity check required.​\n                 Authenticity members on site will be able to give advice and guidance.\n\n            3.2.​Classic\n                 Authenticity check is mandatory prior to the start of the tournament. ​\n                 A competitor is allowed to enter the list if they respects the following cumulative criterias.\n                      ●​ Have no more than 3 minors infraction (if they have 4 or more, they will receive a\n                          green card).\n                      ●​ Have no more than 1 moderate infraction (if they have 2 or more, they will receive a\n                          green card.\n                      ●​ Have no major infraction.\n\n            3.3.​Regional\n                 Authenticity check is mandatory prior to the start of the tournament.\n                 A competitor is allowed to enter the list if they respects the following cumulative criterias.\n                      ●​ Have no more than 2 minors infraction, if you have 3 or more, then they will receive\n                          a green card.\n                      ●​ Have no moderate infraction. If they have 1 or more, they will receive a green card.\n                      ●​ Have no major infraction.\n\n            3.4.​Conference\n                 Authenticity check is mandatory prior to the start of the tournament.\n                 A competitor is allowed to enter the list if they respects the following cumulative criterias.\n                      ●​ Have no more than 1 minor infraction, if you have 2 or more, then they will receive a\n                          green card.\n                      ●​ Have no moderate infraction.\n                      ●​ Have no major infraction.\n\n                Note: as an exceptional measure, for season 2025, tournaments of Conference level will be\n                considered as Regional regarding Authenticity rules. It means a competitor with 1 moderate\n                infraction will be allowed to fight, but will receive a green card.\n\n\n\n\nInfraction classification and application                                                 4\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "                                                      4.​Change log\n           Below, we will keep track of all the changes made over the lifetime of this document. This way, all our\n                              members can see how the documents are changing over time.\n           ​\n           February - 2025: ​\n           - Replaced: 1. (After vote) introducing the green card rule​\n           - Replaced: 2. Members | Officers || Fighters | Competitors\n           - Add: 2. Any violation of the Authenticity rules will result in an infraction​\n           - Replaced: 3. violation breach of | greenYellow card remains the sanction for Aany” with “A violation of\n           - Rephrased: 3. (After vote) to clarify the green card rule.\n           - Add: 3.3 If they have 1 or more, they will receive a green card.\n           - Add: 3.4: Note\n\n           December 2024: ​\n           -add Document has been created\n\n\n\n\nInfraction classification and application                                                                              5\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

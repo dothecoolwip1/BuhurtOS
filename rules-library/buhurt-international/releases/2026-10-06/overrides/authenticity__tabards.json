@@ -1,0 +1,64 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "tabards:2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "8d487917e2d1c304c99d1b80e5f5453281d940a1f967a2efddc5099b9dfa5b27"
+    },
+    "tabards:6.2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly (\"not be too long\" is printed)",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "fbc960be7127c440b5ebba2d59d837b1db7e47d8fb70831a527be1d61e38bd51"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+  "ocr": {
+    "fix": {
+      "3:28": {
+        "from": "“Eastern Armors’”.",
+        "to": "“Eastern Armors”.",
+        "reason": "page image shows “Eastern Armors”. with no apostrophe"
+      },
+      "4:12": {
+        "from": "○ Silk,",
+        "to": "○ silk,",
+        "reason": "page image shows \"silk,\" in the list of materials; OCR read \"Silk,\" with low confidence and the line had been set aside as picture text"
+      },
+      "6:9": {
+        "from": "Life of Eustace and Other Saints - 1300 - France Weltchronik - 1360 - Germany Bibliothéque de Besancon - 1410 - France",
+        "to": "Life of Eustace and Other Saints - 1300 - France Weltchronik - 1360 - Germany Bibliothèque de Besançon - 1410 - France",
+        "reason": "page image shows \"Bibliothèque de Besançon\""
+      },
+      "10:11": {
+        "from": "Guiron le Courtois - Knebel von Katzenelnbogen - Bible historiale, BL Royal 15 D Ill - Le Livre et le vraye hystoire",
+        "to": "Guiron le Courtois - Knebel von Katzenelnbogen - Bible historiale, BL Royal 15 D III - Le Livre et le vraye hystoire",
+        "reason": "page image shows \"15 D III\" (Roman numeral)"
+      },
+      "12:0": {
+        "from": "_ Fy Examples of Approved Designs and",
+        "to": "7. Examples of Approved Designs and Decorations",
+        "reason": "page image shows the heading \"7. Examples of Approved Designs and Decorations\" (wrapped onto two lines); OCR read the number and the coloured band as \"_ Fy\""
+      },
+      "12:1": {
+        "from": "Decorations",
+        "to": "",
+        "reason": "the second line of the heading above, joined to it"
+      },
+      "14:19": {
+        "from": "December-2024: Add",
+        "to": "December-2024: -Add",
+        "reason": "page image shows \"-Add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

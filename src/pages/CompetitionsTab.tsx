@@ -6,6 +6,7 @@ import {
   type CompetitionInput, type Division, type RefCategory, type SetupCompetition, type Structure
 } from '../data/competitions';
 import { friendlyError } from '../lib/friendlyError';
+import { OfficialRulesetPicker } from '../components/rules/OfficialRulesetPicker';
 import { useAsync } from '../lib/useAsync';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
@@ -99,6 +100,7 @@ function CompetitionRow({ k, onEdit, onRemoved, onError }: { k: SetupCompetition
         {structure}{k.roundsToWin ? ` · first to ${k.roundsToWin} ${k.roundsToWin === 1 ? 'round' : 'rounds'}` : ''} · {k.ruleset ?? 'Ruleset not set'}
         {dependents > 0 && <> · {[k.registrations ? `${k.registrations} registered` : '', k.entries ? `${k.entries} ${k.entries === 1 ? 'entry' : 'entries'}` : '', k.matches ? `${k.matches} ${k.matches === 1 ? 'match' : 'matches'}` : ''].filter(Boolean).join(', ')}</>}
       </p>
+      <OfficialRulesetPicker competitionId={k.id} league={k.league} value={k.rulesetVersionId ?? null} finished={k.status === 'finished'} />
       {!confirming && (
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {k.status !== 'finished' && <button type="button" className="btn btn-line btn-sm" onClick={onEdit}>Change</button>}

@@ -1,0 +1,374 @@
+{
+  "inventory_key": "authenticity/belt-flag-s",
+  "version": {
+    "version": "26.1",
+    "title": "Belt Flag - GoogleÂ€Docs",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\".",
+    "source_url": "https://drive.google.com/file/d/1ATswdLydtmGmWQeiTmF7GmyAod7GSQci/view?usp=sharing",
+    "source_sha256": "857bb42b4d04ee8c5bc582aaa6e65651ca3f175d7afc37ccea32a7dcd4729c33",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 6,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 6 page(s) without a text layer",
+    "content_sha256": "ab37dfa6037aae3c461da7624878d29c90c2cbb6e0e9c1599768b254c02e0ef6",
+    "detected": {
+      "version": "26.1",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [],
+      "pages": 6,
+      "source_lines": 71,
+      "assigned_lines": 92,
+      "furniture_lines": 13,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99792,
+      "provisions": 6,
+      "numbered": 5,
+      "needs_review": 0,
+      "verified": 1,
+      "empty_pages": [],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 71,
+      "picture_text_lines": 2,
+      "ocr_corrections": 2
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "note",
+      "number": null,
+      "title": null,
+      "body": "VER. 26.1\n\nAuthenticity",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "belt-flag-s:p0001",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "introduction"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b3cd075ee5755a5513c4f726dcdef54be200038fbb1071b0c1257f4b18b0c3f9",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "1:1",
+        "1:2",
+        "1:3",
+        "1:4",
+        "2:6"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Implementation",
+      "body": "The document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "belt-flag-s:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "7e35b5946ae02907f8e065d2e3656f914639f40e08c6eb5efd4d1160c27157d4",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:0",
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Definition and Rules",
+      "body": "A Belt flag is an element hung on a belt designed to show your belt number in the list.\nA Belt flag must be made of fabric or leather.\nA Belt flag must conform with the “Textiles and Leather’ document.\n\nAs a competitor, it is required to wear a Belt flag with your belt number during buhurt fights.t is not required for duel and outrance fights.\n\nA competitor may have a second Belt flag that is decorative. No more than two Belt flags may be worn by a competitor.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "belt-flag-s:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "8a374497f49af71bb9fa8145b1aa2878ac82fd1e4782ee84db6a2263351ec938",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:5",
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "General Requirements",
+      "body": "Belts flags consist of a base and a number.\n\nBase must:\n● have a shape that can be square, rectangular or triangular,\n● have atrim to be worn with a belt,\n● be made of one main color.\n\nSome decoration can be added on the edges of the base.\nSuch decoration must not interfere with the readability of the Belt flag.\n\nNumbers must:\n● have individual figures from 0 to 9,\n● be from 01 to 99,\n● be written in Arabic numerals,\n● be 13 cm tall as a minimum.\n\nNumbers can be of any color, contrasting with the base main color.\nAll Belt flags must respect the following dimensions:\n\n● Length: from 26 cm to 36 cm.\n● Width: from 14 cm to 18 cm.\n\nSymbols and decorations used for belt flags must be based on historical sources. Any clearly modern symbol or decoration is denied.\n\nExamples: Warhammer logos, movies or TV show imagery, modern slogans, etc...\nException: It is allowed to wear a belt flag with the global medical imagery stating you are hearing impaired or deaf:",
+      "page_from": 3,
+      "page_to": 4,
+      "stable_key": "belt-flag-s:3",
+      "parent_key": null,
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly; \"13 cm\" corrected from \"13cm\"",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "fae8b5bc1a4c36c4060ecdc138cd5393668df6366d0f93996ba886d5944ec36f",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27",
+        "3:28",
+        "3:29",
+        "3:30",
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36",
+        "3:37",
+        "3:38",
+        "3:39",
+        "3:40",
+        "4:0",
+        "4:1",
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 0,
+      "kind": "section",
+      "number": "4",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture by Zoom en Lice\n\nPictures by The Medieval Things",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "belt-flag-s:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "01d007b4e4a972c4604b66b06ca0f398a5807e641a3a744c5a89023791853aa8",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3",
+        "5:5",
+        "5:6",
+        "5:7"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 0,
+      "kind": "note",
+      "number": "5",
+      "title": "Changelog",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1) Formatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd? “1. Implementation” (and subsequent modification of all Title numbers in the document) Clarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and Rules” and “3. General Requirements”. This split doesn’t have an impact on the content of the rules.\n\n- “Examples of Approved Reproductions” is now “4.” instead of “1.2”\n\nAdd:\n\n- In 3. General Requirements: “Exception: it is allowed to wear a belt flag with the global medical imagery stating you are hearing impaired or deaf’ + picture\n\n- In 4. Examples of Approved Reproductions: New picture to illustrate a belt flag for hearing-impaired people\n\nReplace:\n\n- In “2. Definition and rules”: “As a competitor, you must have a belt flag with your number [...]” by “As a competitor, it is required to wear a belt flag with your belt number [...]”\n\n11-Nov-2024: -add Document has been created",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "belt-flag-s:5",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [
+        "3",
+        "4"
+      ],
+      "content_sha256": "5d34e5e712b4e5e652ea4bf1bbe18c95a08970d3615804234777c7308b11477c",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "6:0",
+        "6:1",
+        "6:2",
+        "6:3",
+        "6:4",
+        "6:5",
+        "6:6",
+        "6:7",
+        "6:8",
+        "6:9",
+        "6:10",
+        "6:11",
+        "6:12",
+        "6:13",
+        "6:14",
+        "6:15",
+        "6:16",
+        "6:17",
+        "6:18",
+        "6:19",
+        "6:20",
+        "6:21",
+        "6:22",
+        "6:23",
+        "6:24",
+        "6:25",
+        "6:26",
+        "6:27",
+        "6:28",
+        "6:29",
+        "6:30",
+        "6:31"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "1:0",
+      "page": 1,
+      "text": ")\\) BUHURT(Z",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 54.9)"
+    },
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "Table of contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:1",
+      "page": 2,
+      "text": "1. Implementation",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "2. Definition and Rules",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "3. General Requirements",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "4. Examples of Approved Reproductions",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "5. Changelog",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "36! Flags v. 26.1 2/6",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "3:41",
+      "page": 3,
+      "text": "36! Flags v. 26.1 3/6",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "4:7",
+      "page": 4,
+      "text": "36! Flags v. 26.1 4/6",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "5:4",
+      "page": 5,
+      "text": "(a",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 10%), confidence 19.1)"
+    },
+    {
+      "id": "5:8",
+      "page": 5,
+      "text": "36! Flags v. 26.1 5/6",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "6:32",
+      "page": 6,
+      "text": "36! Flags v. 26.1 6/6",
+      "reason": "page footer (page N/M)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": [
+    {
+      "id": "3:33",
+      "from": "● be 13cm tall as a minimum.",
+      "to": "● be 13 cm tall as a minimum.",
+      "reason": "page image shows \"13 cm\""
+    },
+    {
+      "id": "6:29",
+      "from": "11-Nov-2024: “add",
+      "to": "11-Nov-2024: -add",
+      "reason": "page image shows \"-add\" (highlighted)"
+    }
+  ]
+}

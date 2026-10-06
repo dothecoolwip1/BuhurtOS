@@ -1,0 +1,23 @@
+{
+  "sha256": "8876ec33e03db56eade79eb2f671845accea009f242216591ea37c74dbfa0e65",
+  "files": [
+    "Marshal/Archive/Weapons_Shield Chart - Shields 2025.3.pdf"
+  ],
+  "extractor": "pdftotext unknown -layout -enc UTF-8",
+  "pdfinfo": {
+    "pages": 1,
+    "title": "Weapons/Shield Chart",
+    "creator": "Google Sheets",
+    "producer": null,
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "                      TECHNICAL REQUIREMENTS FOR PERMITTED SHIELDS\n                                                   V2025.03\n\n                                All weights and sizes are in metric (kg,cm)\n\nDuels Shields and Bucklers                                   Lenght         Width         Diameter    Weight\n\n                                                           Min    Max     Min    Max     Min    Max    Max\n\nHeater shield                                              40      75     30      65\n\nPunch shield                                               55      75     30      50\n\nRound shield for sword and shield                                                         25     70     5\n\nRound shield for sword and buckler                                                        25     35\n\nBuckler                                                                                   20     35\n\n\nBuhurt Bucklers and Shields                                  Lenght         Width         Diameter    Weight\n\nHeater shield                                              40      75     30      65\n\nPunch shield                                               55      75     30      50\n                                                                                                        5\nRound shield                                                                              25     70\n\nBuckler                                                                                   20     40\n\n                                  Other Restrictions for all Weapon Types\nAll shapes must be conform with the Shields and Buckler rule document\nThe Radius of striking edge must be more than 7 cm.\nOnly Shields which have chronological validity of a specific historical period as confirmed by the\nAuthenticity Committee are allowed.\n",
+      "method": "text",
+      "figures": true
+    }
+  ]
+}

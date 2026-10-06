@@ -1,0 +1,34 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "neck-protection:3": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "a1e816a62c9903bea632a13e9ed1e0756109ab1cb369bfbdf9a0aeecbc37fd7d"
+    },
+    "neck-protection:7.2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "f59fd96bbd66556162c0e2098b6d3249b4458af4a9910cf84e80084a7c821029"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\".",
+  "ocr": {
+    "fix": {
+      "13:18": {
+        "from": "December-2024: Add",
+        "to": "December-2024: -Add",
+        "reason": "page image shows \"-Add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

@@ -1,0 +1,16 @@
+{
+  "governing_body": "Example Body (test)",
+  "snapshot": { "file": "none (hand-written test inventory)", "sha256_html": "0000000000000000000000000000000000000000000000000000000000000000", "captured_on": "2026-10-06", "captured_by": "Pack 22 test fixture" },
+  "page_url": "https://example.invalid/rules",
+  "page_title": "Example Body rules (TEST DATA, not real rules)",
+  "sections": [
+    { "key": "marshal", "name": "Example Marshal Committee", "intro": "Invented section for tests" },
+    { "key": "tournament", "name": "Example Tournament Committee", "intro": "Invented section for tests" }
+  ],
+  "documents": [
+    { "key": "marshal/example-combat-rules", "label": "Example Combat Rules", "committee": "marshal", "heading": null, "url": "https://example.invalid/files/example-combat-rules.pdf", "host": "site_file", "ref": "example-combat-rules.pdf", "order": 1 },
+    { "key": "marshal/example-archives", "label": "Example Archives", "committee": "marshal", "heading": null, "url": "https://drive.google.com/drive/folders/EXAMPLEFOLDER", "host": "drive_folder", "ref": "EXAMPLEFOLDER", "order": 2 },
+    { "key": "tournament/example-event-regulations", "label": "Example Event Regulations", "committee": "tournament", "heading": null, "url": "https://example.invalid/files/example-event-regulations.pdf", "host": "site_file", "ref": "example-event-regulations.pdf", "order": 3 },
+    { "key": "tournament/example-chart", "label": "Example Chart", "committee": "tournament", "heading": null, "url": "https://example.invalid/files/example-chart.pdf", "host": "site_file", "ref": "example-chart.pdf", "order": 4 }
+  ]
+}
