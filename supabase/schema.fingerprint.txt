@@ -2032,6 +2032,7 @@ function public.club_meeting_dashboard(p_meeting uuid) secdef=true f3694d07b917d
 function public.club_meeting_member_view(p_team uuid) secdef=true 084a70eb1d79fba0b89739fafee996ec
 function public.club_meeting_proxy_list(p_meeting uuid) secdef=true 3d1dcc673711461426df33f79f6f3e44
 function public.club_meeting_records(p_meeting uuid) secdef=true 568959dffd9e111319697e6766092029
+function public.club_member_profile_links(p_team uuid, p_year integer) secdef=true 2cf3fea2b5a78c8cc26dfa3efb9350a4
 function public.club_member_roster(p_team uuid, p_year integer, p_as_of date) secdef=true 02775bf13cfbd299a98e3f6cda50dd8a
 function public.club_membership_overview(p_team uuid) secdef=true c5ee141319f2088f6452f19bb7cc8967
 function public.competition_finalize_preflight(p_competition uuid, p_multiplier_source text) secdef=true 194ee55ccb4232da13950f246d32a74c
