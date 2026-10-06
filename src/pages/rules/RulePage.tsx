@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { appliesLabel, RuleRow, SourceNote, STATUS_WORD, VersionChip } from '../../components/rules/RuleBits';
+import { RuleBody } from '../../components/rules/RuleBody';
 import { currentVersion, fetchConflicts, fetchRevisions, officialLink, sameRuleElsewhere, type RuleEntry, type RulesIndex } from '../../data/rules';
 import { useAsync } from '../../lib/useAsync';
 import { useRules } from '../../lib/rules/useRules';
@@ -56,9 +57,13 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
 
       <header className="rl-rhead">
         {p.number && <span className="rl-bignum mono">{p.number}</span>}
-        <h1>{p.title ?? (e.ancestors.length ? e.ancestors[e.ancestors.length - 1].title : null) ?? e.doc.name}</h1>
+        <h1>{p.title ?? (p.kind === 'figure' ? `${e.doc.name}, ${pages ?? 'a page'}` : null) ?? (e.ancestors.length ? e.ancestors[e.ancestors.length - 1].title : null) ?? e.doc.name}</h1>
       </header>
-      {p.body ? <div className="rl-body">{p.body}</div> : <p className="src">This heading has no text of its own; its rules are listed below.</p>}
+      {(p.topics ?? []).includes('changelog') && <p className="rl-banner" role="note">This is the document's own change log (what changed between its versions). It is not a rule.</p>}
+      {p.body ? <RuleBody body={p.body} />
+        : p.kind === 'figure' ? <p className="rl-banner" role="note"><b>{(p.topics ?? []).includes('cover') ? 'Cover page.' : 'Pictures only.'}</b> This page of the official document has pictures and no text to show here. {link ? 'Open the official document to see it.' : ''}</p>
+        : <p className="src">This heading has no text of its own; its rules are listed below.</p>}
+      {p.body && p.has_figures && <p className="rl-banner" role="note"><b>The official {pages ?? 'page'} also {p.page_from && p.page_to && p.page_to !== p.page_from ? 'have' : 'has'} pictures</b> (examples, drawings or photos) that are not reproduced here. Check them in the official document.</p>}
       {p.review_status === 'needs_review' && <p className="rl-banner rl-warn" role="note"><b>Check the official document.</b> {p.review_note ?? 'This part could not be imported with confidence.'}</p>}
 
       <dl className="rl-meta">
@@ -67,7 +72,8 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
         <div><dt>Version</dt><dd><VersionChip v={v} />{v.published_on && <span>dated {v.published_on}</span>}</dd></div>
         <div><dt>Where</dt><dd>{p.number ? `${p.kind === 'section' ? 'Section' : 'Rule'} ${p.number}` : 'Unnumbered'}{e.ancestors.length > 0 && <> in {e.ancestors.map(a => [a.number, a.title].filter(Boolean).join(' ')).join(' › ')}</>}{pages && <> · {pages}</>}</dd></div>
         <div><dt>Applies to</dt><dd>{appliesLabel(e.doc)}</dd></div>
-        <div><dt>Checked</dt><dd>{p.review_status === 'verified' ? 'Compared with the official document by a person' : p.review_status === 'needs_review' ? 'Needs checking against the official document' : 'Imported from the official file; not yet compared line by line'}</dd></div>
+        <div><dt>Read from</dt><dd>{p.extraction === 'ocr' ? 'An image of the page (the official file has no text here), read by OCR and checked against the page image' : p.extraction === 'mixed' ? 'The official file’s text, and OCR of page images checked against them' : 'The official file’s own text'}</dd></div>
+        <div><dt>Checked</dt><dd>{p.review_status === 'verified' ? `Compared with the official page during the import${p.review_note ? `: ${p.review_note}` : ''}` : p.review_status === 'needs_review' ? 'Needs checking against the official document' : p.review_note && /OCR corrections/.test(p.review_note) ? 'Imported from the official file; OCR misreadings corrected against the page image' : 'Imported from the official file; every line of the page is accounted for'}</dd></div>
       </dl>
       {link && <a className="btn btn-line rl-official" href={link} target="_blank" rel="noopener noreferrer">Open the official document{pages ? ` at ${pages}` : ''} ↗</a>}
 

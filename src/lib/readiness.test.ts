@@ -62,3 +62,14 @@ describe('readiness desk helpers (Pack 16)', () => {
     expect(matchWarnings([])).toEqual([]);
   });
 });
+
+describe('Pack 22: a suspension is a block, not a reason to override', () => {
+  it('recognizes the database\'s suspension wording only', async () => {
+    const { disciplineBlock, isDisciplineBlock } = await import('./readiness');
+    expect(isDisciplineBlock('Suspended for the rest of this event')).toBe(true);
+    expect(isDisciplineBlock('Suspended from Org A events until 2026-11-15')).toBe(true);
+    expect(isDisciplineBlock('Armour failed inspection')).toBe(false);
+    expect(disciplineBlock(['Not checked in', 'Suspended from all events (no end date)'])).toBe('Suspended from all events (no end date)');
+    expect(disciplineBlock(['Not checked in'])).toBeNull();
+  });
+});

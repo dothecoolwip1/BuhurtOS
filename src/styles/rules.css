@@ -115,3 +115,37 @@
 .dl-items li.void .dl-what{text-decoration:line-through}
 .dl-what{font-weight:700}
 .dl-where{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+
+/* Pack 22 import: quick questions, tables and pictures from the official documents */
+.rl-quick{display:flex;flex-wrap:wrap;gap:8px}
+.rl-qchip{min-height:40px;padding:6px 12px;text-transform:none;letter-spacing:0;font:600 14px/1.2 var(--f-body);cursor:pointer;background:var(--raised)}
+.rl-qchip:hover,.rl-qchip:focus-visible{border-color:var(--steel);color:var(--steel)}
+.rl-body .rl-para{margin:0 0 .7em;white-space:pre-line}
+.rl-body .rl-para:last-child{margin-bottom:0}
+.rl-tablewrap{overflow-x:auto;max-width:100%;margin:.4em 0 .9em;border:1px solid var(--line);border-radius:var(--r-sm);-webkit-overflow-scrolling:touch}
+.rl-tablewrap:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+.rl-table{border-collapse:collapse;font-size:15px;line-height:1.4;min-width:100%;white-space:normal}
+.rl-table th,.rl-table td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left;min-width:7em}
+.rl-table thead th{background:var(--ground);font-weight:700}
+.rl-table tbody th{font-weight:600;background:var(--raised)}
+
+/* Pack 22 discipline desk */
+.dd-panel{display:grid;gap:12px;min-width:0}
+.dd-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.dd-btns{display:flex;flex-wrap:wrap;gap:8px}
+.dd-sub{font-size:17px;display:flex;gap:8px;align-items:baseline;margin-top:6px}
+.dd-sub .mono{font-size:13px;color:var(--muted);font-weight:500}
+.dd-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dd-list>li{background:var(--raised);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:6px;min-width:0}
+.dd-list>li.void{opacity:.62}
+.dd-list>li .btn{justify-self:start}
+.dd-what{overflow-wrap:anywhere;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.dd-late{color:#B42318;font-weight:600}
+.dd-form{display:grid;gap:14px;min-width:0}
+.dd-actions{display:flex;flex-wrap:wrap;gap:10px;position:sticky;bottom:0;background:var(--raised);padding-top:8px}
+.dd-actions .btn{min-height:48px;flex:1 1 140px}
+.dd-seg{display:flex;flex-wrap:wrap;gap:8px}
+.dd-err{color:#B42318;font-weight:600}
+.dd-record{display:grid;gap:10px}
+/* the check-in desk: a suspension is a block, not a reason to override */
+.desk-block{margin:0;padding:10px 12px;border-radius:var(--r-sm);background:#FEE4E2;color:#7A271A;border:1px solid #FDA29B}

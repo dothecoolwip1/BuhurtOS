@@ -7,6 +7,7 @@
 import { supabase } from '../lib/supabase';
 import { RULES } from '../content/rules';
 import type { SearchableRule } from '../lib/rules/search';
+import { plainBody } from '../lib/rules/body';
 
 export interface RuleDocument {
   id: string; slug: string; name: string; governing_body: string | null; inventory_key: string | null; committee: string | null; committee_name: string | null;
@@ -22,12 +23,18 @@ export interface RuleVersion {
 export interface RuleProvision {
   id: string; ruleset_version_id: string; parent_id: string | null; ordinal: number; depth: number; kind: string; number: string | null; title: string | null; body: string;
   page_from: number | null; page_to: number | null; stable_key: string; review_status: 'extracted' | 'needs_review' | 'verified'; review_note: string | null; keywords: string[]; cross_refs: string[];
+  /** BuhurtOS topic keys ("changelog", "cover", "pictures"): not official. */
+  topics: string[];
+  /** The official pages of this provision carry pictures. */
+  has_figures: boolean;
+  /** How the words were read: the PDF's text layer, OCR of a page image (checked against it), or both. */
+  extraction: 'text' | 'ocr' | 'mixed';
 }
 export interface RulesData { documents: RuleDocument[]; versions: RuleVersion[]; provisions: RuleProvision[]; loadedAt: string }
 
 const DOC_COLS = 'id, slug, name, governing_body, inventory_key, committee, committee_name, heading, kind, applies_to, relevance, official_url, source_host, listed_on_page, page_order, previously_cited_as, classification_note, synthetic';
 const VER_COLS = 'id, ruleset_id, version, title, status, published_on, effective_from, effective_to, source_url, source_sha256, source_retrieved_at, page_count, import_release, imported_at, published_at, successor_version_id, withdrawn_reason, synthetic, note';
-const PROV_COLS = 'id, ruleset_version_id, parent_id, ordinal, depth, kind, number, title, body, page_from, page_to, stable_key, review_status, review_note, keywords, cross_refs';
+const PROV_COLS = 'id, ruleset_version_id, parent_id, ordinal, depth, kind, number, title, body, page_from, page_to, stable_key, review_status, review_note, keywords, cross_refs, topics, has_figures, extraction';
 const PAGE = 1000;
 
 export async function fetchRulesData(): Promise<RulesData> {
@@ -53,14 +60,15 @@ export async function fetchRulesData(): Promise<RulesData> {
 }
 
 /* ---------------- the saved copy in this browser ---------------- */
-const CACHE_KEY = 'bos-rules-cache-v1';
+// v2: provisions carry topics, pictures and how they were read (Pack 22 import of the official documents).
+const CACHE_KEY = 'bos-rules-cache-v2';
 let memory: RulesData | null = null;
 let inflight: Promise<RulesData> | null = null;
 const subs = new Set<(d: RulesData) => void>();
 
 export function readCachedRules(): RulesData | null {
   if (memory) return memory;
-  try { const raw = localStorage.getItem(CACHE_KEY); if (raw) memory = JSON.parse(raw) as RulesData; } catch { /* storage blocked or full: just load */ }
+  try { localStorage.removeItem('bos-rules-cache-v1'); const raw = localStorage.getItem(CACHE_KEY); if (raw) memory = JSON.parse(raw) as RulesData; } catch { /* storage blocked or full: just load */ }
   return memory;
 }
 /** Loads the library (once at a time), keeps it in memory and in this browser, and tells everyone showing rules. */
@@ -115,10 +123,14 @@ export function buildRulesIndex(data: RulesData): RulesIndex {
     const doc = docById.get(version.ruleset_id); if (!doc) continue;
     const ancestors: RuleProvision[] = [];
     for (let a = p.parent_id ? provisionById.get(p.parent_id) : undefined, n = 0; a && n < 10; a = a.parent_id ? provisionById.get(a.parent_id) : undefined, n++) ancestors.unshift(a);
-    entries.push({ id: p.id, number: p.number, title: p.title, body: p.body, keywords: p.keywords, path: ancestors.map(a => a.title ?? a.number ?? '').filter(Boolean), document: doc.name, provision: p, version, doc, ancestors });
+    // search and previews read the words only (a table's cells, without its layout marks)
+    entries.push({ id: p.id, number: p.number, title: p.title, body: plainBody(p.body), keywords: p.keywords, path: ancestors.map(a => a.title ?? a.number ?? '').filter(Boolean), document: doc.name, provision: p, version, doc, ancestors });
   }
   return { data, docById, docBySlug, versionById, versionsByDoc, provisionById, byVersion, entries, entryById: new Map(entries.map(e => [e.id, e])) };
 }
+
+/** Not a rule: the document's own change log, its cover, or a page that is pictures only. Browsable, but left out of rule search. */
+export const isRuleText = (p: RuleProvision) => !(p.topics ?? []).some(t => t === 'changelog' || t === 'cover') && !(p.kind === 'figure' && !p.body);
 
 /** The version a document is currently governed by: the published one, else (for the owner) the newest in review. */
 export const currentVersion = (idx: RulesIndex, docId: string): RuleVersion | null => (idx.versionsByDoc.get(docId) ?? []).find(v => v.status === 'published') ?? null;

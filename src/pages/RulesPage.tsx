@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Seg } from '../components/ui';
 import { Highlight, RuleRow, SourceNote } from '../components/rules/RuleBits';
-import { currentVersion, summaryEntries, type RuleDocument, type RulesIndex } from '../data/rules';
+import { currentVersion, isRuleText, summaryEntries, type RuleDocument, type RulesIndex } from '../data/rules';
 import { searchRules } from '../lib/rules/search';
 import { useRules } from '../lib/rules/useRules';
 import { useSampleMode } from '../data/mode';
@@ -11,6 +11,12 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 type F = 'all' | 'buhurt' | 'duels' | 'outrance';
 const FORMATS: readonly (readonly [F, string])[] = [['all', 'All'], ['buhurt', 'Group fight'], ['duels', 'Duels'], ['outrance', 'Profight']];
+/** Shortcuts for questions asked at the side of the list: each just runs a search (BuhurtOS shortcuts, not official categories). */
+const QUICK: readonly (readonly [string, string])[] = [
+  ['Cards and penalties', 'card'], ['Green card', 'green card'], ['Grounded fighter', 'striking grounded fighter'], ['Strike zones', 'strike zones'],
+  ['Back of the knee', 'back of knee'], ['Appeals', 'appeal'], ['Authenticity infractions', 'infraction'], ['Weapon weights', 'weight length blade'],
+  ['Marshal accreditation', 'marshal accreditation']
+];
 const SUMMARY_WORD: Record<Exclude<F, 'all'>, string> = { buhurt: 'Group fight', duels: 'Duels', outrance: 'Profight' };
 
 /** A document applies to a format when it names it, or names none (general documents apply to every format). */
@@ -55,7 +61,7 @@ export function RulesPage() {
   };
   // Test rulesets show only in sample mode, like other test data.
   const docs = useMemo(() => (index?.data.documents ?? []).filter(d => (sample || !d.synthetic) && docFits(d, f)), [index, sample, f]);
-  const official = useMemo(() => (index?.entries ?? []).filter(e => (sample || !e.doc.synthetic) && docFits(e.doc, f) && (older ? e.version.status !== 'draft' : e.version.status === 'published' || e.version.status === 'in_review')), [index, sample, f, older]);
+  const official = useMemo(() => (index?.entries ?? []).filter(e => isRuleText(e.provision) && (sample || !e.doc.synthetic) && docFits(e.doc, f) && (older ? e.version.status !== 'draft' : e.version.status === 'published' || e.version.status === 'in_review')), [index, sample, f, older]);
   const summaries = useMemo(() => summaryEntries(index?.data.documents ?? []).filter(s => f === 'all' || s.summary.kind.includes(SUMMARY_WORD[f]) || /All formats|Tournaments/.test(s.summary.kind)), [index, f]);
   const needle = q.trim();
   const res = useMemo(() => (needle ? searchRules(official, needle, 80) : null), [official, needle]);
@@ -80,6 +86,11 @@ export function RulesPage() {
         <Seg label="Format" value={f} options={FORMATS} onChange={x => set({ f: x })} scroll />
         {anyOlder && <label className="rl-check"><input type="checkbox" checked={older} onChange={e => set({ old: e.target.checked })} /> Include older versions</label>}
       </div>
+      {!needle && textCount > 0 && (
+        <div className="rl-quick" role="group" aria-label="Common questions">
+          {QUICK.map(([label, query]) => <button key={label} type="button" className="chip rl-qchip" onClick={() => set({ q: query })}>{label}</button>)}
+        </div>
+      )}
       {stale && <p className="src" role="status">Showing the rules saved on this device; they could not be refreshed just now.</p>}
       {error != null && !index && <div className="panel rule"><h3>The rules could not be loaded</h3><p>Check the connection and try again.</p><button type="button" className="btn btn-line" onClick={reload}>Try again</button></div>}
       {loading && <p className="src" role="status">Loading the rules…</p>}

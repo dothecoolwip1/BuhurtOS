@@ -1,5 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { Chip, PageHead } from '../components/ui';
+import { SuspensionAdmin } from '../components/discipline/SuspensionAdmin';
+import { useAuth } from '../auth/AuthContext';
 import { fetchOrganizationBySlug, fetchOrganizationPage } from '../data/organizationPublic';
 import { fetchActiveOrganizations, organizationLabel, type Organization } from '../data/organizations';
 import { dateRange } from '../lib/dates';
@@ -67,6 +69,7 @@ function EventList({ events }: { events: OrgEventInput[] }) {
 }
 
 function OrganizationBody({ org }: { org: Organization }) {
+  const { session } = useAuth();
   const today = todayUtc();
   const page = useAsync(() => fetchOrganizationPage(org, today), [org.id, org.enabled]);
   const label = organizationLabel(org);
@@ -121,6 +124,7 @@ function OrganizationBody({ org }: { org: Organization }) {
             {events.past.length === 0 ? <p className="muted">No past events are recorded.</p> : <EventList events={events.past} />}
           </section>
           <p><Link className="btn btn-line" to={rankingsPath(org.slug)}>Rankings for {label}</Link></p>
+          {session && <SuspensionAdmin organizationId={org.id} title={`Suspensions by ${label}`} />}
         </>
       )}
       <p><Link className="more" to="/organizations">All organizations</Link></p>

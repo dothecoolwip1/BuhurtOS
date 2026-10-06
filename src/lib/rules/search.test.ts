@@ -96,3 +96,19 @@ describe('text helpers', () => {
     expect((performance.now() - t0) / 5).toBeLessThan(200);
   });
 });
+
+describe('the questions people ask at the side of the list (Pack 22 import)', () => {
+  // Shapes of real provisions (titles and text as Buhurt International prints them), searched with the words people type.
+  const items = [
+    { id: 'br412', number: '4.12', title: 'Striking Grounded competitors', body: 'Striking a grounded competitor is prohibited.', document: 'Buhurt Rules' },
+    { id: 'br63', number: '6.3', title: 'Back of the knee', body: 'Strikes to the back of the knee are prohibited.', document: 'Buhurt Rules' },
+    { id: 'reg64', number: '6.4', title: 'Infraction in Authenticity Rules (Green Card)', body: 'An official authenticity warning (green card) is a penalty imposed for an authenticity rule violation.', document: 'Buhurt Regulations' },
+    { id: 'acc1', number: '1', title: 'Accreditation Levels', body: 'A Trainee Marshal is the first step toward achieving international accreditation as a marshal.', document: 'Marshal Accreditation' },
+    { id: 'other', number: '2.1', title: 'Stages overview', body: 'Stage 1 – Learning the rules', document: 'Marshal Accreditation' }
+  ];
+  const top = (q: string) => searchRules(items, q).hits[0]?.item.id;
+  it('"striking grounded fighter" finds the rule on grounded competitors', () => { expect(top('striking grounded fighter')).toBe('br412'); });
+  it('"back of knee" finds the back of the knee', () => { expect(top('back of knee')).toBe('br63'); });
+  it('"green card" finds the authenticity warning', () => { expect(top('green card')).toBe('reg64'); });
+  it('"marshal accreditation" finds the accreditation levels first', () => { expect(top('marshal accreditation')).toBe('acc1'); });
+});

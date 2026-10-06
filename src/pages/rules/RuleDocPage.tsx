@@ -89,7 +89,8 @@ function Contents({ entries }: { entries: RuleEntry[] }) {
           <li key={p.id} className={heading ? 'rl-toc-h' : ''} style={{ paddingLeft: Math.min(p.depth, 4) * 12 }}>
             <Link to={`/rules/r/${p.id}`}>
               <span className="rl-num mono">{p.number ?? '·'}</span>
-              <span className="rl-tt">{p.title ?? (p.body ? p.body.slice(0, 90) + (p.body.length > 90 ? '…' : '') : 'Untitled')}</span>
+              <span className="rl-tt">{p.title ?? (p.kind === 'figure' && !p.body ? ((p.topics ?? []).includes('cover') ? 'Cover page (pictures only)' : `Page ${p.page_from ?? ''}: pictures only`) : e.body ? e.body.slice(0, 90) + (e.body.length > 90 ? '…' : '') : 'Untitled')}</span>
+              {(p.topics ?? []).includes('changelog') && <span className="chip">Change log</span>}
               {p.review_status === 'needs_review' && <span className="chip brass">Check</span>}
             </Link>
           </li>

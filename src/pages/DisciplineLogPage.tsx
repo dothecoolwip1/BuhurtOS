@@ -5,6 +5,8 @@ import { SignIn } from '../auth/SignIn';
 import { PageHead, Seg } from '../components/ui';
 import { fetchEvent } from '../data/api';
 import { fetchDisciplineLog, type DisciplineLogRow } from '../data/rules';
+import { fetchDisciplineOverview } from '../data/discipline';
+import { DisciplineDesk, type DeskTab } from '../components/discipline/DisciplineDesk';
 import { describeRow, groupDiscipline, type LogFilter } from '../lib/rules/disciplineLog';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
@@ -28,12 +30,18 @@ export function DisciplineLogPage() {
   if (ev.error != null) return <p role="alert">{friendlyError(ev.error, 'Could not load this event.')}</p>;
   if (!ev.data) return <><PageHead eyebrow="Discipline" title="Event not found" /><p>This event does not exist, or is not visible to you.</p></>;
   if (!session) return <><PageHead eyebrow="Discipline" title={ev.data.event.name} /><SignIn reason="Sign in with an account that officiates at this event." /></>;
-  return <Log eventId={ev.data.event.id} slug={slug} name={ev.data.event.name} />;
+  return <Log eventId={ev.data.event.id} slug={slug} name={ev.data.event.name} competitions={ev.data.competitions.map(c => ({ id: c.id, name: c.name }))} />;
 }
 
-function Log({ eventId, slug, name }: { eventId: string; slug: string; name: string }) {
+type Tab = 'cards' | DeskTab;
+const TABS: readonly (readonly [Tab, string])[] = [['cards', 'Cards'], ['sanctions', 'Sanctions'], ['authenticity', 'Authenticity'], ['appeals', 'Appeals'], ['suspensions', 'Suspensions']];
+
+function Log({ eventId, slug, name, competitions }: { eventId: string; slug: string; name: string; competitions: { id: string; name: string }[] }) {
   const [tick, setTick] = useState(0);
+  const [tab, setTab] = useState<Tab>(() => { const t = new URLSearchParams(window.location.search).get('tab'); return TABS.some(([k]) => k === t) ? (t as Tab) : 'cards'; });
+  const pick = (t: Tab) => { setTab(t); const u = new URL(window.location.href); if (t === 'cards') u.searchParams.delete('tab'); else u.searchParams.set('tab', t); window.history.replaceState(window.history.state, '', u); };
   const log = useAsync(() => fetchDisciplineLog(eventId), [eventId], [tick]);
+  const overview = useAsync(() => fetchDisciplineOverview(eventId), [eventId], [tick]);
   useEffect(() => {
     const t = window.setInterval(() => setTick(n => n + 1), REFRESH_MS);
     const again = () => { if (document.visibilityState === 'visible') setTick(n => n + 1); };
@@ -52,6 +60,11 @@ function Log({ eventId, slug, name }: { eventId: string; slug: string; name: str
   return (
     <section className="fade-in dl-page">
       <div><p className="eyebrow">Discipline · {name}</p><h1 style={{ fontSize: 'clamp(32px,6vw,56px)', marginTop: 6 }}>Cards and penalties</h1></div>
+      <Seg label="Section" value={tab} options={TABS} onChange={pick} scroll />
+      {tab !== 'cards' && (overview.data
+        ? <DisciplineDesk tab={tab} eventId={eventId} competitions={competitions} overview={overview.data} log={rows} onChanged={() => setTick(n => n + 1)} />
+        : overview.error != null ? <p role="alert">{friendlyError(overview.error, 'Could not load the discipline desk.')}</p> : <p className="src" role="status">Loading…</p>)}
+      {tab === 'cards' && <>
       <p className="src">Recorded on the field tablets from the marshal's call. Voided records stay, with their reason, and are never counted. What a number of cards means is decided by the rules and the head marshal, not by BuhurtOS.</p>
       {log.loading && !log.data && <p className="src" role="status">Loading…</p>}
       {log.error != null && !log.data && <p role="alert">{friendlyError(log.error, 'Could not load the discipline log.')}</p>}
@@ -86,6 +99,7 @@ function Log({ eventId, slug, name }: { eventId: string; slug: string; name: str
           )}
         </>
       )}
+      </>}
       <p className="src"><Link className="lnk" to={`/events/${slug}/command`}>Command Centre</Link> · <Link className="lnk" to="/rules">Rules</Link></p>
     </section>
   );

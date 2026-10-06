@@ -35,6 +35,7 @@ import { TeamsPage } from './pages/TeamsPage';
 import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
+import { PlatformRulesPage } from './pages/platform/PlatformRulesPage';
 import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
@@ -90,6 +91,7 @@ export function App() {
         <Route path="platform/analytics" element={<PlatformActivityPage />} />
         <Route path="platform/activity" element={<Navigate to="/platform/analytics" replace />} />
         <Route path="platform/bugs" element={<PlatformBugsPage />} />
+        <Route path="platform/rules" element={<PlatformRulesPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="sign-in" element={<SignInPage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />

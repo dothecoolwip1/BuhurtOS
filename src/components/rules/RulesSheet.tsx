@@ -2,14 +2,15 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Dialog } from '../Dialog';
 import { Highlight, STATUS_WORD } from './RuleBits';
-import { officialLink, type RuleEntry, type RulesIndex } from '../../data/rules';
+import { isRuleText, officialLink, type RuleEntry, type RulesIndex } from '../../data/rules';
+import { RuleBody } from './RuleBody';
 import { searchRules } from '../../lib/rules/search';
 import { useRules } from '../../lib/rules/useRules';
 import { useSampleMode } from '../../data/mode';
 
 /** The rules an official can cite or look up during a fight: the versions in force (test rulesets only in sample mode). */
 export function officiatingEntries(idx: RulesIndex | null, sample: boolean): RuleEntry[] {
-  return (idx?.entries ?? []).filter(e => e.version.status === 'published' && (sample || !e.doc.synthetic) && e.provision.kind !== 'section' && e.provision.kind !== 'part');
+  return (idx?.entries ?? []).filter(e => e.version.status === 'published' && (sample || !e.doc.synthetic) && e.provision.kind !== 'section' && e.provision.kind !== 'part' && isRuleText(e.provision));
 }
 
 /** Search box + results, used by the rules sheet and the rule picker. */
@@ -45,7 +46,8 @@ export function RulesSheet({ onClose }: { onClose: () => void }) {
           <>
             <button type="button" className="btn btn-line" onClick={() => setOpen(null)}>← Back to results</button>
             <h3>{open.provision.title ?? open.doc.name}</h3>
-            <div className="rl-body" style={{ fontSize: 17 }}>{open.provision.body}</div>
+            <RuleBody body={open.provision.body} />
+            {open.provision.has_figures && <p className="src">The official page also has pictures: open the official document to see them.</p>}
             <p className="src">{open.doc.name} · {open.version.version} ({STATUS_WORD[open.version.status]}){open.provision.page_from ? ` · page ${open.provision.page_from}` : ''}{open.ancestors.length ? ` · in ${open.ancestors.map(a => a.number ?? a.title).join(' › ')}` : ''}</p>
             {open.provision.review_status === 'needs_review' && <p className="rl-banner rl-warn">Check the official document: {open.provision.review_note}</p>}
             <div className="rl-picked">
