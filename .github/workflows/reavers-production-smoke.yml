@@ -1,0 +1,37 @@
+name: Reavers production smoke (manual)
+# Runs ONLY when started by hand. Drives the LIVE club website and LIVE BuhurtOS in Chromium with two labelled test accounts on the owner's
+# test domain. See scripts/e2e/reavers-production-smoke.mjs (it waits for an operator to confirm the test addresses and approve the test memberships).
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Short unique tag for the two test accounts (letters and digits)'
+        required: true
+      wait_minutes:
+        description: 'How long to wait for operator steps'
+        required: false
+        default: '15'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright-core install --with-deps chromium
+      - name: Smoke test the live sites
+        env:
+          TAG: ${{ inputs.tag }}
+          WAIT_MINUTES: ${{ inputs.wait_minutes }}
+        run: node scripts/e2e/reavers-production-smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-screenshots
+          path: /tmp/smoke-shots

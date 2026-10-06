@@ -15,6 +15,7 @@ import {
 } from '../lib/careerProfile';
 import { categoryLabel, divisionLabel, orgName, plural, rosterGroups, todayIso } from '../lib/careerView';
 import { fetchTeamEditRights } from '../data/teamEdit';
+import { fetchClubEnabled } from '../data/clubMembership';
 import { CLAIMED_LABEL, fetchMyTeamIds, fetchTeamRoster } from '../data/teamManager';
 import { dateRange } from '../lib/dates';
 import { friendlyError } from '../lib/friendlyError';
@@ -58,6 +59,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
   const onTeam = (mineTeams.data ?? []).includes(t.id);
   const rights = useAsync(() => (userId ? fetchTeamEditRights(t.id) : Promise.resolve({ edit: false, rename: false })), [t.id, userId]);
   const roster = useAsync(() => fetchTeamRoster(t.id), [t.id]);
+  const club = useAsync(() => fetchClubEnabled(t.id), [t.id]);
   const { hash } = useLocation();
   useEffect(() => { if (hash === '#roster' && !roster.loading) document.getElementById('roster')?.scrollIntoView(); }, [hash, roster.loading]);
   const entries = useAsync(() => fetchTeamEntries(t.id), [t.id]);
@@ -152,6 +154,13 @@ function Workspace({ t }: { t: DirectoryEntry }) {
         <div className="evfilter">
           <Link className="btn btn-ink" to={`/teams/${t.slug}/edit`}>Edit team</Link>
           <span className="muted" style={{ fontSize: 14 }}>Change the description, links, shield and emblem.</span>
+        </div>
+      )}
+
+      {club.data && (
+        <div className="evfilter">
+          <Link className="btn btn-line" to={`/teams/${t.slug}/membership`} data-testid="club-membership-link">Club membership</Link>
+          <span className="muted" style={{ fontSize: 14 }}>Members: your membership, dues and AGM voting status.</span>
         </div>
       )}
 
