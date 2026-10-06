@@ -30,7 +30,7 @@ import { fetchMyFighterId } from '../data/fighters';
 import { fetchMyInvitation, withdrawMyInvitation, withdrawRegistration, type MyInvitation } from '../data/invitations';
 import { OfficialResults } from '../components/OfficialResults';
 import { CheckinCode } from '../components/CheckinCode';
-import { DeskEntry } from '../components/DeskEntry';
+import { CommandEntry, DeskEntry } from '../components/DeskEntry';
 import { useEventRecordWatch } from '../lib/useEventRecordWatch';
 
 const LEAGUE_TITLE: Record<LeagueKey, string> = { buhurt: 'Group fights', duels: 'Duels', outrance: 'Profights', hacsa: 'HACSA events' };
@@ -147,7 +147,10 @@ function OrganizerPanel({ event, mine }: { event: LiveEvent; mine: MyEventContex
         {event.status === 'draft' && <> The event is a <b>draft</b>: only you and your event staff can see it.</>}
       </p>
       {event.eventType === 'tournament' && event.competitionCount === 0 && <p><Chip tone="brass">Needs competition setup</Chip> <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/manage?tab=competitions`}>+ Add competition</Link></p>}
-      <p><Link className="btn btn-ink" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link></p>
+      <p style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <Link className="btn btn-ink" to={`/events/${event.slug}/command`} data-testid="open-command">Command Centre: what needs you now</Link>
+        <Link className="btn btn-line" to={`/events/${event.slug}/manage`}>Review registrations and check people in</Link>
+      </p>
       <p style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=setup`}>Event setup, waiver and publishing</Link>
         <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=competitions`}>Competitions</Link>
@@ -234,6 +237,7 @@ export function EventWorkspace() {
           <span className="src">Who is fighting now, on deck and in the hole, with the running score. For a TV or projector beside the list.</span>
         </p>
       )}
+      {mine.data && <CommandEntry slug={event.slug} roles={mine.data.roles} />}
       {mine.data && <DeskEntry slug={event.slug} roles={mine.data.roles} />}
       {mine.data && <ScorekeepingPanel slug={event.slug} competitions={competitions} roles={mine.data.roles} />}
       {mine.data?.isOrganizer && <OrganizerPanel event={event} mine={mine.data} />}

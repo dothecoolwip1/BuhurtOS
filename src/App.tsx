@@ -36,6 +36,7 @@ import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
+import { CommandCentrePage } from './pages/CommandCentrePage';
 
 export function App() {
   const { pathname, search } = useLocation();
@@ -73,6 +74,7 @@ export function App() {
         <Route path="events/:eventId/field/:field" element={<FieldPage />} />
         <Route path="events/:eventId/manage" element={<ManagePage />} />
         <Route path="events/:eventId/checkin" element={<CheckinDeskPage />} />
+        <Route path="events/:eventId/command" element={<CommandCentrePage />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="organizations/:slug" element={<OrganizationPage />} />
         <Route path="platform" element={<PlatformHomePage />} />
