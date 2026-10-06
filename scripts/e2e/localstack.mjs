@@ -1,6 +1,7 @@
 // A local stand-in for the hosted Supabase API, so the REAL app can run against a REAL Postgres built from the migrations:
 //   /rest/v1/*  -> PostgREST (the real tables, row level security and database functions)
-//   /auth/v1/*  -> just enough for a session that is already in the browser (user lookup, sign-out)
+//   /auth/v1/*  -> the REAL Supabase Auth server when AUTH_URL is set (scripts/e2e/realauth.sh); otherwise just enough for a session that is
+//                  already in the browser (user lookup, sign-out)
 //   /storage/v1/* -> an in-memory stand-in (upload, public read, remove) so picture uploads can be exercised. It does NOT enforce bucket policies:
 //                    those are tested directly in the database gates.
 //   /realtime   -> not offered (the app then uses its polling fallback)
@@ -11,6 +12,7 @@ import crypto from 'node:crypto';
 const PORT = Number(process.env.STACK_PORT ?? 54321);
 const REST = new URL(process.env.POSTGREST_URL ?? 'http://127.0.0.1:3000');
 const SECRET = process.env.JWT_SECRET;
+const AUTH = process.env.AUTH_URL ? new URL(process.env.AUTH_URL) : null;
 if (!SECRET || SECRET.length < 32) { console.error('JWT_SECRET (32+ characters) is required'); process.exit(2); }
 
 const b64 = (b) => Buffer.from(b).toString('base64url');
@@ -70,6 +72,15 @@ http.createServer(async (req, res) => {
       for (const p of list) files.delete(`${bucket}/${p}`);
       return json(200, list.map((name) => ({ name })));
     }
+  }
+  if (AUTH && url.pathname.startsWith('/auth/v1/')) {
+    const headers = { ...req.headers, host: AUTH.host };
+    const up = http.request({ host: AUTH.hostname, port: AUTH.port, path: url.pathname.replace('/auth/v1', '') + url.search, method: req.method, headers }, (r) => {
+      res.writeHead(r.statusCode ?? 502, { ...r.headers, ...cors });
+      r.pipe(res);
+    });
+    up.on('error', (e) => { res.writeHead(502, cors); res.end(String(e)); });
+    return req.pipe(up);
   }
   if (url.pathname === '/auth/v1/user') {
     if (!claims) { res.writeHead(401, { ...cors, 'content-type': 'application/json' }); return res.end('{"msg":"invalid token"}'); }
