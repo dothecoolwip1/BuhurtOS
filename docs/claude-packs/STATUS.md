@@ -545,3 +545,19 @@ work). Plan, investigation, decisions, root causes and limits: `docs/claude-pack
 | PR / merged / deployed / production verified | no / no / no / no |
 
 Not verified (honest list): the hosted Auth settings (confirm email, secure password change, redirect URLs, SMTP) — the app handles both settings and the runbook lists what to check; real phones; realtime websockets for these screens locally (the polling fallbacks were what ran; realtime uses the same in-place update paths); hosted database; production.
+
+## Pack 18.1: temporary event devices, Announcer view, Camera Off, OBS Broadcast Companion (2026-10-06) — IMPLEMENTED ON BRANCH, NOT MERGED, NOT DEPLOYED, NOT APPLIED TO HOSTED
+
+Branch `pack18-1-event-ops` from `main` `e880e09` (Pack 18 merged, PR #38). Everything: `docs/claude-packs/PACK_18_1_EVENT_OPS.md` (architecture, final permission matrix, evidence ladder, known failures, what is not verified). Owner steps (not performed): `docs/runbooks/PACK181_HOSTED_ROLLOUT.md`. Event day: `PACK181_DEVICES.md`, `PACK181_EVENT_LAPTOP.md`.
+
+| Level | Status |
+| --- | --- |
+| Implemented in repository | event sessions for eight devices (12-character code + QR, server-side expiry final day + 24 h, revoke / replace / sign-out-all), `device-session` Edge Function, device client + shell, Announcer view, Camera Off (latched, audited), Secretary/Scorekeeper powers, Temporary Organizer/Event Admin, Command Centre device/broadcast/staff panels, OBS Broadcast Companion, music policy |
+| Migrations created | `20261013000100_pack181_event_sessions`, `20261013000200_pack181_roles_camera`, `20261013000300_pack181_broadcast_control` (additive) |
+| Applied locally | yes (scratch databases only). **Applied to hosted Supabase: NO** |
+| Unit / DB | Vitest 1354/1354; Companion 186/186; `run_all.sh` DATABASE GATE PASSED (new gates 119 + 113 + 103 checks; fingerprint regenerated) |
+| Real stack + Chromium | pack181-live 176/176, device-live 82/82, cc181-live 148/148, announcer-live 181/181; REAL_AUTH pack18-live 68/68; regressions pack13/14/15/16, eventday, finalize, pack10, represented-team, broadcast-realtime, five CI mocked suites all pass |
+| OBS | stand-in only: `obs-live` 119/119 (**NOT real OBS**) |
+| Known failures not from 18.1 (same on `e880e09`) | arena-live 2, pack09d-live 1, rumble-live 2; live-stability desktop Command Centre scroll check is position-sensitive (46/47 here at 60 %; fails on `e880e09` at 50 %/70 %) |
+| Not verified | hosted Supabase (custom-role JWT, signing key, function secrets/CORS), real OBS, ducking, PA routing, cameras/mic, Windows/macOS launchers, firewall, Realtime sockets, installed iOS PWA, physical phones/tablets |
+| PR / merged / deployed / production verified | no / no / no / no |

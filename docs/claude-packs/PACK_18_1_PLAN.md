@@ -1,6 +1,6 @@
 # Pack 18.1 plan: automatic event operations, OBS broadcast control and temporary event devices
 
-Status: **PLANNING ONLY (revision 2). Nothing here is implemented, migrated, deployed or merged.**
+Status: **IMPLEMENTED ON BRANCH `pack18-1-event-ops` (not merged, not deployed, not applied to hosted Supabase). This file is the PLAN (revision 2) and is kept as written; where it differs from the built system, `PACK_18_1_CONTRACTS.md`, `PACK_18_1_EVENT_OPS.md` and the migrations are the truth.** Known differences: the Temporary Organizer also carries head-marshal desk powers (check-in, inspection, readiness override; recorded with no person for devices); registrations admin, withdraw-entry and build-schedule are not available to devices; the device allow-list is 56 functions beyond `anon` (controller: 2); the Companion polls rather than using Realtime.
 Revision 1: 2026-10-06 against `main` `90ff429`. Revision 2: same day, after the owner's follow-up decisions (see §0.2). Written on branch `ccr-ef74f1c4-1ks28z`; the only file this branch adds.
 
 ## 0. Gate, and what changed
