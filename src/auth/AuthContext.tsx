@@ -5,6 +5,8 @@ import { friendlyError } from '../lib/friendlyError';
 import { disablePush } from '../lib/push';
 import { identifyUser, isNewAccount, markSignInStarted, resetUser, takeSignInStarted, trackEvent, wantOnboarding } from '../lib/analytics';
 import { authErrorMessage, isPerAddressLimit, siteUrl } from '../lib/authFlow';
+import { DEVICE_NOT_AVAILABLE, shimSession } from '../lib/deviceClient';
+import { deviceManager, isDeviceMode } from '../lib/deviceSession';
 
 /** Absolute link back to a page of this deployment (for the emails Supabase sends). */
 const back = (path: string) => siteUrl(window.location.origin, import.meta.env.BASE_URL ?? '/', path);
@@ -29,7 +31,33 @@ interface AuthValue {
 
 const Ctx = createContext<AuthValue | null>(null);
 
+/**
+ * A temporary event device (Pack 18.1) is not a person. Its "session" answers useAuth() with a minimal Session whose user.id is the DEVICE SESSION
+ * id (no email, no profile), so the screens that only need "someone is signed in" work, while sign-in, sign-up, passwords, profile setup, analytics
+ * and alerts do not exist here. The mode cannot change without a full page load, so which provider runs never changes while the app is open.
+ */
+function DeviceAuthProvider({ children }: { children: ReactNode }) {
+  const mgr = deviceManager();
+  const sessionId = mgr.getWhoami()?.session_id ?? null;
+  // One stable object per device session, so effects keyed on `session` do not re-run on every token refresh. Requests get a fresh token from the client itself.
+  const session = useMemo(() => {
+    const s = mgr.getSession();
+    return s ? shimSession(s.whoami, s.access_token, s.expires_at) : null;
+  }, [mgr, sessionId]);
+  const no = useCallback(async () => DEVICE_NOT_AVAILABLE, []);
+  const value = useMemo<AuthValue>(() => ({
+    session, loading: false, sendCode: no, verifyCode: no, signInWithGoogle: no, signInWithPassword: no,
+    signUpWithPassword: async () => ({ error: DEVICE_NOT_AVAILABLE, confirm: false }), resendConfirmation: no, requestPasswordReset: no,
+    signOut: () => mgr.signOut()
+  }), [session, no, mgr]);
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
+  return isDeviceMode() ? <DeviceAuthProvider>{children}</DeviceAuthProvider> : <PersonAuthProvider>{children}</PersonAuthProvider>;
+}
+
+function PersonAuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 

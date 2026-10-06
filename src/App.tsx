@@ -37,8 +37,17 @@ import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
 import { CommandCentrePage } from './pages/CommandCentrePage';
+import { AnnouncerPage } from './pages/AnnouncerPage';
+import { DeviceSignInPage } from './pages/DeviceSignInPage';
+import { DeviceApp } from './DeviceApp';
+import { isDeviceMode } from './lib/deviceSession';
 
+/** A temporary event device (Pack 18.1) runs its own small app; a person's account runs the site. Chosen once per page load: switching is a full page load. */
 export function App() {
+  return isDeviceMode() ? <DeviceApp /> : <SiteApp />;
+}
+
+function SiteApp() {
   const { pathname, search } = useLocation();
   // Last line of defence for the screens outside the site chrome (venue display, broadcast overlay, counter phone); the chrome has its own.
   return (
@@ -54,6 +63,10 @@ export function App() {
       <Route path="lyst/join" element={<CounterPage />} />
       <Route path="lyst/join/:code" element={<CounterPage />} />
       <Route path="lyst/counter" element={<CounterPage />} />
+      {/* A temporary event device signs in here once with its code (or a QR that opens /device#c=...). Chrome-less; the fragment is removed at start-up. */}
+      <Route path="device" element={<DeviceSignInPage />} />
+      {/* The announcer's view (Pack 18.1): chrome-less like the venue display. Devices reach it through DeviceApp; accounts holding the announcer role, here. */}
+      <Route path="events/:eventId/announcer" element={<AnnouncerPage />} />
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />

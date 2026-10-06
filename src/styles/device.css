@@ -1,0 +1,32 @@
+/* Temporary event devices (Pack 18.1): the bar that says what this screen IS, and the sign-in page. Phone first. */
+.device-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; display: grid; gap: 4px; padding: 8px 14px 8px; background: var(--side, #0F141B); color: #fff; border-bottom: 3px solid var(--brass, #9A6B1F); }
+.device-bar .db-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.device-bar .db-icon { flex: none; color: #E3C77A; }
+.device-bar .db-event { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1rem; letter-spacing: .02em; text-transform: uppercase; }
+.device-bar .db-tag { flex: none; font: 800 11px/1 var(--f-data, monospace); letter-spacing: .08em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; background: #E3C77A; color: #11151C; }
+.device-bar .db-meta { margin: 0; font-size: .82rem; line-height: 1.35; color: #C3CBD8; overflow-wrap: anywhere; }
+.device-bar .db-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: space-between; }
+.device-bar .db-actions .camoff { flex: 1 1 auto; min-width: 0; }
+.device-bar .db-out { flex: none; margin-left: auto; min-height: 40px; background: transparent; color: #fff; border-color: #5A6578; }
+.device-bar .camoff-btn.compact { min-height: 40px; padding: 6px 12px; }
+.device-bar .camoff-banner { padding: 8px 10px; }
+.device-bar .camoff-title { font-size: 1.05rem; }
+@media (min-width: 700px) {
+  .device-bar { grid-template-columns: 1fr auto; align-items: center; padding: 10px 20px; }
+  .device-bar .db-row { grid-column: 1; }
+  .device-bar .db-meta { grid-column: 1; }
+  .device-bar .db-actions { grid-column: 2; grid-row: 1 / span 2; flex-wrap: nowrap; }
+}
+
+/* a counter's one-screen layout takes whatever the bar leaves */
+.device-frame .cp { min-height: calc(100dvh - var(--device-bar-h, 96px)); }
+.device-main { max-width: 1180px; margin: 0 auto; padding: 16px 14px 48px; }
+.device-home { display: grid; gap: 16px; }
+
+.device-signin { min-height: 100dvh; display: grid; align-content: start; justify-items: stretch; gap: 14px; max-width: 460px; margin: 0 auto; padding: 28px 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
+.device-signin h1 { margin: 0; font-size: 1.7rem; }
+.device-signin .ds-code { font: 700 1.6rem/1.2 var(--f-data, monospace); letter-spacing: .12em; text-align: center; padding: 14px 10px; border-radius: 12px; border: 2px solid var(--line); background: var(--raised); color: var(--ink); width: 100%; box-sizing: border-box; text-transform: uppercase; }
+.device-signin .ds-code:focus-visible { outline: 3px solid var(--steel); outline-offset: 2px; }
+.device-signin .ds-go { min-height: 56px; font-size: 1.1rem; }
+.device-signin .ds-error { color: var(--live); font-weight: 600; }
+.device-signin .ds-ended { border-left: 4px solid var(--live); }

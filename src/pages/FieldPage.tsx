@@ -7,6 +7,7 @@ import { fetchEvent, fetchMyEventContext, type LiveEvent } from '../data/api';
 import { fetchEventMatches, fetchFieldCompetitions, type FieldCompetition } from '../data/field';
 import { sideLabel } from '../lib/entryLabel';
 import { setQueue, type CompetitionMatch } from '../data/matches';
+import { moveMatchInQueue, type QueueMove } from '../data/eventDay';
 import { EnterOfficialResult, ResultConflicts } from '../components/ResultReview';
 import { QUEUE_LABEL, fieldQueue } from '../lib/fieldScoring';
 import { ScoringScreen, type Opened } from '../components/scoring/ScoringScreen';
@@ -24,9 +25,11 @@ import { NotFoundPage } from './NotFoundPage';
 import { realtimeChannel } from '../lib/realtimeChannel';
 
 /** Mirrors private.can_score: organizer, marshal, scorekeeper, plus the platform owner. The database enforces it again on every call. */
-const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'owner'];
+const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'owner', 'operator'];
 /** Mirrors private.can_resolve_results: who may settle a disagreement or enter an official result from paper. */
-const RESOLVE_ROLES = ['organizer', 'head_marshal', 'owner'];
+const RESOLVE_ROLES = ['organizer', 'head_marshal', 'owner', 'operator'];
+/** Mirrors private.can_adjust_queue (Pack 18.1): who may change the running order. The head marshal and marshals may not; an event admin (Temporary Organizer) is an operator. */
+const QUEUE_ROLES = ['organizer', 'owner', 'scorekeeper', 'operator'];
 const POLL_MS = 10000;
 /** Duels are scored through Lyst Control (clock, rounds, marshal's call). A marshal can fall back to the classic board; the choice is remembered on this device only. */
 const LYST_MODE_KEY = 'bos-lyst-mode';
@@ -47,10 +50,12 @@ function SyncBar({ waiting, stuck = 0, heldForOthers = 0, durable = true }: { wa
 
 const sideName = (m: CompetitionMatch) => ({ a: sideLabel(m.entryA, m.nameA, 'Side A'), b: sideLabel(m.entryB, m.nameB, 'Side B') });
 
-function QueueRow({ m, comp, busy, onOpen }: { m: CompetitionMatch; comp: FieldCompetition | undefined; busy: boolean; onOpen: () => void }) {
+interface Adjust { canEarlier: boolean; canLater: boolean; onMove: (action: QueueMove) => void }
+
+function QueueRow({ m, comp, busy, onOpen, adjust }: { m: CompetitionMatch; comp: FieldCompetition | undefined; busy: boolean; onOpen: () => void; adjust?: Adjust }) {
   const n = sideName(m);
   const ready = m.entryA !== null && m.entryB !== null;
-  return (
+  const row = (
     <button type="button" className="panel info fq-row" disabled={busy || !ready} onClick={onOpen} aria-label={`Score ${n.a} against ${n.b}`}>
       <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         <Chip tone={m.queueState === 'active' ? 'live' : m.queueState === 'on_deck' ? 'brass' : ''}>{QUEUE_LABEL[m.queueState]}</Chip>
@@ -60,6 +65,19 @@ function QueueRow({ m, comp, busy, onOpen }: { m: CompetitionMatch; comp: FieldC
       {!ready && <span className="src">{m.stage === 'third_place' && !m.entryA && !m.entryB ? 'Waiting for the semifinals to finish' : 'Waiting for an earlier match to decide the other side.'}</span>}
       {ready && <span className="src">{m.queueState === 'active' ? 'Tap to continue scoring' : 'Tap to start scoring'}</span>}
     </button>
+  );
+  if (!adjust) return row;
+  // Running-order controls sit beside the row, not inside it (a button cannot hold buttons). Only for a fight that is waiting: one being fought stays put.
+  const label = `${n.a} against ${n.b}`;
+  return (
+    <div className="fq-item" style={{ display: 'grid', gap: 6 }}>
+      {row}
+      <div className="fq-adjust" role="group" aria-label={`Running order: ${label}`} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button type="button" className="btn btn-line btn-sm" disabled={busy || !adjust.canEarlier} onClick={() => adjust.onMove('earlier')} aria-label={`Move ${label} earlier`}>Move earlier</button>
+        <button type="button" className="btn btn-line btn-sm" disabled={busy || !adjust.canLater} onClick={() => adjust.onMove('later')} aria-label={`Move ${label} later`}>Move later</button>
+        <button type="button" className="btn btn-line btn-sm" disabled={busy || !adjust.canEarlier} onClick={() => adjust.onMove('first')} aria-label={`Make ${label} next`}>Make next</button>
+      </div>
+    </div>
   );
 }
 
@@ -85,6 +103,8 @@ export function FieldPage() {
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   const canScore = mine.data?.roles.some(r => SCORE_ROLES.includes(r)) === true;
   const canResolve = mine.data?.roles.some(r => RESOLVE_ROLES.includes(r)) === true;
+  const canAdjust = mine.data?.roles.some(r => QUEUE_ROLES.includes(r)) === true;
+  const [moving, setMoving] = useState(false);
   const comps = useAsync(() => (eventId && canScore ? fetchFieldCompetitions(eventId) : Promise.resolve([] as FieldCompetition[])), [eventId, canScore]);
   const matches = useAsync(() => (comps.data?.length ? fetchEventMatches(comps.data) : Promise.resolve([] as CompetitionMatch[])), [comps.data], [reloadKey]);
   useDocumentTitle(event ? `${field} · ${event.name}` : 'Field scoring');
@@ -106,6 +126,16 @@ export function FieldPage() {
   const compById = useMemo(() => new Map((comps.data ?? []).map(c => [c.id, c])), [comps.data]);
   const queue = useMemo(() => fieldQueue(matches.data ?? [], field), [matches.data, field]);
   const otherFields = useMemo(() => fieldOverview(matches.data ?? []).filter(f => f.field !== field), [matches.data, field]);
+
+  // Running order (organizer, secretary / scorekeeper, event admin): the database checks who you are again and refuses a fight that is being fought or has no place in the line yet.
+  const move = async (m: CompetitionMatch, action: QueueMove) => {
+    setMoving(true); setOpenError(null); setNotice(null);
+    try {
+      const r = await moveMatchInQueue(m.id, action);
+      setNotice(!r.changed ? 'It is already there.' : action === 'first' ? 'It will run next.' : action === 'earlier' ? 'Moved up one place.' : 'Moved back one place.');
+      reload();
+    } catch (e) { setOpenError(friendlyError(e)); } finally { setMoving(false); }
+  };
 
   const open = async (m: CompetitionMatch) => {
     const comp = compById.get(m.competitionId);
@@ -184,7 +214,14 @@ export function FieldPage() {
             <div className="panel info"><h3>Nothing queued on {field}</h3><p>Matches show here once an organizer puts them on deck, in the hole or active for this field.</p></div>
           )}
           <div style={{ display: 'grid', gap: 12 }}>
-            {queue.map(m => <QueueRow key={m.id} m={m} comp={compById.get(m.competitionId)} busy={opening} onOpen={() => void open(m)} />)}
+            {queue.map(m => {
+              // Position among the waiting fights: the first cannot move earlier, the last cannot move later. A fight being fought is not moved.
+              const waitingIds = queue.filter(x => x.queueState !== 'active' && x.entryA && x.entryB).map(x => x.id);
+              const at = waitingIds.indexOf(m.id);
+              const adjust: Adjust | undefined = canAdjust && m.queueState !== 'active' && at >= 0
+                ? { canEarlier: at > 0, canLater: at < waitingIds.length - 1, onMove: a => void move(m, a) } : undefined;
+              return <QueueRow key={m.id} m={m} comp={compById.get(m.competitionId)} busy={opening || moving} onOpen={() => void open(m)} adjust={adjust} />;
+            })}
           </div>
           {canResolve && <EnterOfficialResult matches={matches.data ?? []} names={new Map((comps.data ?? []).map(c => [c.id, c.name]))} onDone={reload} />}
           {otherFields.length > 0 && (
