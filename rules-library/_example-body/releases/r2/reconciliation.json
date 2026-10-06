@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "errors": [],
+  "inventory_documents": 4,
+  "imported": [
+    "marshal/example-combat-rules"
+  ],
+  "excluded": [
+    {
+      "key": "tournament/example-chart",
+      "reason": "image-only chart: kept as a link to the official file, not transcribed"
+    },
+    {
+      "key": "tournament/example-event-regulations",
+      "reason": "not changed since release r1: V.2.0 from r1 stays current"
+    },
+    {
+      "key": "marshal/example-archives",
+      "reason": "archive folder of earlier versions, not a current document"
+    }
+  ],
+  "missing": [],
+  "unknown": [],
+  "same_file_twice": [],
+  "documents_ok": 1,
+  "documents_with_errors": []
+}

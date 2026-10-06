@@ -1,0 +1,346 @@
+{
+  "_about": "BuhurtOS classification of the inventory. NOT official: kind, applies_to and relevance are BuhurtOS reading of the document titles, to help filtering. previously_cited_as is the version an earlier BuhurtOS pack quoted from files the owner provided then; it is NOT verified to be the version currently linked from the official page. Every key must exist in source-inventory.json (checked by tests).",
+  "kinds": {
+    "rules": "Bout rules",
+    "regulations": "Competition regulations",
+    "tournament_structure": "Tournament and league structure",
+    "equipment": "Equipment and authenticity requirements",
+    "infractions": "Infractions",
+    "discipline": "Conduct and discipline",
+    "eligibility": "Eligibility",
+    "officials": "Officials and accreditation",
+    "governance": "Governance",
+    "archive": "Archive"
+  },
+  "documents": {
+    "executive/gender-policies": {
+      "kind": "eligibility",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "executive/committees-internal-regulations": {
+      "kind": "governance",
+      "applies_to": [],
+      "relevance": "governance",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "executive/committees-decision-process": {
+      "kind": "governance",
+      "applies_to": [],
+      "relevance": "governance",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "executive/judiciary-committee": {
+      "kind": "discipline",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": "Expected to hold disciplinary / appeal procedure. Not read yet: content unavailable in this environment."
+    },
+    "executive/no-agreement": {
+      "kind": "governance",
+      "applies_to": [],
+      "relevance": "governance",
+      "previously_cited_as": null,
+      "note": "\"NO\" is read as National Organization from the site navigation (\"OUR MEMBERS\" \u2192 nationalorganization); confirm when the document is read."
+    },
+    "executive/code-of-conduct": {
+      "kind": "discipline",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "executive/rule-update-policy": {
+      "kind": "governance",
+      "applies_to": [],
+      "relevance": "governance",
+      "previously_cited_as": null,
+      "note": "Governs how BI changes its rules; relevant to how BuhurtOS versions them."
+    },
+    "executive/structure-accreditation-titles": {
+      "kind": "officials",
+      "applies_to": [],
+      "relevance": "supporting",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "marshal/duels-rules": {
+      "kind": "rules",
+      "applies_to": [
+        "duels"
+      ],
+      "relevance": "direct",
+      "previously_cited_as": "Duels rules V.26.4",
+      "note": null
+    },
+    "marshal/buhurt-rules": {
+      "kind": "rules",
+      "applies_to": [
+        "buhurt"
+      ],
+      "relevance": "direct",
+      "previously_cited_as": "Buhurt Rules V.26.4.1",
+      "note": null
+    },
+    "marshal/outrance-rules": {
+      "kind": "rules",
+      "applies_to": [
+        "outrance"
+      ],
+      "relevance": "direct",
+      "previously_cited_as": "Outrance Rules V.26.4",
+      "note": null
+    },
+    "marshal/jobs-titles-uniforms-accreditations": {
+      "kind": "officials",
+      "applies_to": [],
+      "relevance": "supporting",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "marshal/accreditation": {
+      "kind": "officials",
+      "applies_to": [],
+      "relevance": "supporting",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "marshal/weapon-shield-chart": {
+      "kind": "equipment",
+      "applies_to": [
+        "buhurt",
+        "duels",
+        "outrance"
+      ],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": "A chart: likely a table or image. May not be extractable as numbered text; review required."
+    },
+    "marshal/marshal-archives": {
+      "kind": "archive",
+      "applies_to": [],
+      "relevance": "archive",
+      "previously_cited_as": null,
+      "note": "Folder of earlier Marshal Committee documents: historical versions, not current rules."
+    },
+    "tournament/buhurt-regulations": {
+      "kind": "regulations",
+      "applies_to": [
+        "buhurt"
+      ],
+      "relevance": "direct",
+      "previously_cited_as": "Buhurt Regulations V.26.4",
+      "note": null
+    },
+    "tournament/duel-regulations": {
+      "kind": "regulations",
+      "applies_to": [
+        "duels"
+      ],
+      "relevance": "direct",
+      "previously_cited_as": "Duels Regulations V.26.4",
+      "note": null
+    },
+    "tournament/tournament-structure": {
+      "kind": "tournament_structure",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": "Tournament Structure and Formats (Jan 2026)",
+      "note": null
+    },
+    "tournament/league-structure": {
+      "kind": "tournament_structure",
+      "applies_to": [],
+      "relevance": "supporting",
+      "previously_cited_as": "League Structure V2026.1",
+      "note": null
+    },
+    "tournament/secretary-accreditation": {
+      "kind": "officials",
+      "applies_to": [],
+      "relevance": "supporting",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "tournament/tournament-archives": {
+      "kind": "archive",
+      "applies_to": [],
+      "relevance": "archive",
+      "previously_cited_as": null,
+      "note": "Folder of earlier Tournament Committee documents: historical versions, not current rules."
+    },
+    "authenticity/infractions": {
+      "kind": "infractions",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": "Heading on the page: \"Infractions Classification and Application\"."
+    },
+    "authenticity/armor-requirements": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/weapon-requirements": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/falchions": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/shields-and-bucklers": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/aesthetics-and-decorations": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/belt-flag-s": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/tabards": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/textile-and-leather": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/klappvisors": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/great-helms": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/wolfribs": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/nasals-and-breteches": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/side-pivoting-visored-bascinets": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/eyebars": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/barbutes": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/aventails": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/sallets": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/perforated-visor-bascinets": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/authenticity-archives": {
+      "kind": "archive",
+      "applies_to": [],
+      "relevance": "archive",
+      "previously_cited_as": null,
+      "note": "Folder of earlier Authenticity Committee documents: historical versions, not current rules."
+    },
+    "authenticity/gauntlets": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/sabatons": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/greaves": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    },
+    "authenticity/neck-protection": {
+      "kind": "equipment",
+      "applies_to": [],
+      "relevance": "direct",
+      "previously_cited_as": null,
+      "note": null
+    }
+  }
+}

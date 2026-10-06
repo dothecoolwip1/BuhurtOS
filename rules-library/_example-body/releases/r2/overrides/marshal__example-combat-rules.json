@@ -1,0 +1,27 @@
+{
+  "version": "V.1.1",
+  "published_on": "2026-06-01",
+  "version_confirmed_by": "Pack 22 fixture (invented document)",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "example-combat-rules:p0001": {
+      "status": "verified",
+      "note": "title page"
+    }
+  },
+  "keywords": {
+    "example-combat-rules:2.1": [
+      "back of knee",
+      "knee"
+    ],
+    "example-combat-rules:2.3": [
+      "two handed weapon",
+      "2h"
+    ],
+    "example-combat-rules:1.2": [
+      "downed",
+      "on the ground"
+    ]
+  },
+  "topics": {}
+}

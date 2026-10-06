@@ -1,0 +1,19 @@
+{
+  "inventory_key": "tournament/example-event-regulations",
+  "sha256": "6db368fa513a21d1d2a042d93a1ecf5bd08c4de929293e8ddd9536ff54e411c7",
+  "extractor": "pdftotext unknown -layout -enc UTF-8",
+  "pdfinfo": {
+    "pages": 1,
+    "title": "about:blank",
+    "creator": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36",
+    "producer": "Skia/PDF m141",
+    "created": "Tue Oct  6 04:36:50 2026 UTC",
+    "modified": "Tue Oct  6 04:36:50 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "             EXAMPLE BODY · TEST DOCUMENT · NOT REAL RULES\n\n\n\n\nExample Event Regulations\nV.2.0 · 15.02.2026\nInvented for software testing only.\n\n1. Registration\n1.1 Deadline\nTeams register at least ten days before the example event.\n\n1.2 Fighters\nEach fighter is registered by name before the first bout.\n\n2. Results\n2.1 Protests\nA captain may raise a protest with the head marshal within ten\nminutes of the bout ending.\n\n\n\n\n                               Page 1 of 1\n"
+    }
+  ]
+}

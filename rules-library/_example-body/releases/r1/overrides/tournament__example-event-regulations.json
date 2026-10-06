@@ -1,0 +1,19 @@
+{
+  "version": "V.2.0",
+  "published_on": "2026-02-15",
+  "version_confirmed_by": "Pack 22 fixture (invented document)",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "example-event-regulations:p0001": {
+      "status": "verified",
+      "note": "title page"
+    }
+  },
+  "keywords": {
+    "example-event-regulations:2.1": [
+      "appeal",
+      "complaint"
+    ]
+  },
+  "topics": {}
+}
