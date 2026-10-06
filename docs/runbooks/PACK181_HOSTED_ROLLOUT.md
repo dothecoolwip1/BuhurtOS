@@ -1,13 +1,13 @@
 # Pack 18.1 hosted rollout (NOT performed by the build; the owner does this, in this order, after review)
 
-Steps 1 to 3 below are done on hosted (2026-10-06); the signing key / function secrets, the hosted device proof, the merge and production are not. Everything else was verified locally; the items in "Only provable on hosted" below are the open risks.
+Done on hosted and in production (2026-10-06): migrations, signing key and secrets, the function, the hosted proof (except Realtime), the merge and the Pages deployment. Open: Realtime with a device token, production browser checks on real phones/tablets, real OBS and hardware. Everything else was verified locally; the items in "Only provable on hosted" below are the open risks.
 Do not apply migrations, deploy the function or change Auth settings until each step below is understood. The migrations are additive and Pack 18's
 `20261012000100_pack18_command_centre` must already be applied (it is: version `20261006015820`).
 
 ## 0. Where the rollout stands (2026-10-06, rollout session 3) and what each step needs
 | Step | Status | Needs |
 | --- | --- | --- |
-| Pull request `#42` | open, **NOT merged**; CI green on `a18f353` | merge only after step 5 (a merge deploys the app automatically) |
+| Pull request `#42` | **MERGED** 2026-10-06 as `8b25e67` after step 5 | nothing |
 | 1. The three migrations `20261015000100/200/300` | **APPLIED** on hosted: `20261006081036 pack181_event_sessions`, `20261006081056 pack181_roles_camera`, `20261006081102 pack181_broadcast_control` (from the committed files at `a18f353`). Verified read-only against a scratch database built from the repository: all 62 Pack 18.1 functions identical (one comment-only difference in `request_counter_seat`, pre-existing), roles / allow-list / table privileges / RLS exactly as section 5 requires | nothing |
 | 1a. Follow-up `20261016000100_pack181_camera_log_search_path` | **APPLIED** (`20261006082002`): fixes the advisor's `function_search_path_mutable` on `private.camera_log_append_only` | nothing |
 | 2. Role grants allowed on hosted | **done** (the first migration's `grant anon to ...` and `grant ... to authenticator` succeeded) | nothing |
@@ -15,7 +15,7 @@ Do not apply migrations, deploy the function or change Auth settings until each 
 | 4. Function secrets (`DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS`) and the trusted signing key | **DONE by the owner**: imported ES256 key `de2891ff…` is the current signing key; the three secrets are set | confirm the earlier key `bfe4ac4e…` is "previously used", not revoked (it is no longer in the JWKS) |
 | 4a. Hosted permission tests (the three Pack 18.1 gates, each one rolled-back transaction) | **PASSED on hosted: 119 + 113 + 104 = 336 checks** | nothing |
 | 5. Hosted proof (sign a device in, Data API with the custom role, Realtime, CORS, refresh, revoke) | **PASSED** except Realtime (end-to-end through Supabase Auth, the deployed function and the Data API, driven with pg_net; evidence in STATUS.md) | Realtime: check on a phone after the release |
-| 6. Production check | not done | the merge, and network access to `dothecoolwip1.github.io` |
+| 6. Production check | **deployed and identified**: Pages run #130 succeeded; the live bundle reports `build 130 · 8b25e67`. Browser check on real phones/tablets **not done** | Garrett: `PACK181_REHEARSAL_CHECKLIST.md` (devices, Realtime, Camera Off, OBS, PA) |
 
 Leaked Password Protection stays **disabled**: it is only available on Supabase Pro plans and is not available on the current BuhurtOS plan (a known, accepted plan
 limitation, not a Pack 18.1 regression and not a release blocker). It can be enabled if the project moves to a plan that includes it.
