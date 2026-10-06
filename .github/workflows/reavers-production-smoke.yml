@@ -11,6 +11,10 @@ on:
         description: 'How long to wait for operator steps'
         required: false
         default: '15'
+      only:
+        description: 'Leave empty for the full run; "approved" reruns only the approved-member section with the same tag'
+        required: false
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -29,6 +33,7 @@ jobs:
         env:
           TAG: ${{ inputs.tag }}
           WAIT_MINUTES: ${{ inputs.wait_minutes }}
+          ONLY: ${{ inputs.only }}
         run: node scripts/e2e/reavers-production-smoke.mjs
       - uses: actions/upload-artifact@v4
         if: always()
