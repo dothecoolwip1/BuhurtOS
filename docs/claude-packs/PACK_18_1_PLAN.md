@@ -5,11 +5,16 @@ Revision 1: 2026-10-06 against `main` `90ff429`. Revision 2: same day, after the
 
 ## 0. Gate, and what changed
 
-### 0.1 Pack 18 is NOT merged (re-verified for revision 2)
-- `origin/main` = `90ff429` (Pack 16 merge). No `PACK_18_*.md`, no Command Centre, no `20261012000100` migration on main.
-- Pack 18 is PR #38, **open, not merged**, head `95bde75` (`pack18-command-centre`). Read only; never modified.
-- **Implementation does not start** until the owner explicitly confirms the merge **and** I verify it against `origin/main` (PR `merged:true`, merge commit reachable from main, `PACK_18_COMMAND_CENTRE.md` and the migration present). Then: new branch from the NEW main (never from the Pack 18 branch), re-read the finished Pack 18 code, reconcile this plan, update it, then build.
-- Everything below that mentions Pack 18 is from the unmerged branch and must be re-checked after merge.
+### 0.1 Pack 18 merge status (verified 2026-10-06, after revision 2 was first pushed)
+- **Pack 18 is now merged**: PR #38 `merged: true` (merged by the repository owner), merge commit `e880e09` is `origin/main`; `95bde75` (the Pack 18 head) is an ancestor of main; `PACK_18_COMMAND_CENTRE.md`, `src/pages/CommandCentrePage.tsx` and `supabase/migrations/20261012000100_pack18_command_centre.sql` are present on main.
+- **Implementation has still NOT started.** The owner's instruction is to begin only after the owner explicitly confirms the merge in the 18.1 session; this is waiting on that confirmation. Implementation will branch from the then-current `origin/main` (never from the Pack 18 branch).
+- **Reconciliation done so far (read-only, against `e880e09`; plan assumptions hold):**
+  - `private.can_command` is still `can_resolve_results` (organizer, head marshal); `event_command_snapshot` unchanged from the branch I read. The only migration added since Pack 16 is `20261012000100`; the next free timestamps are `20261013…`.
+  - `useAsync(load, deps, refreshDeps)` is on main with `refreshing` / `refreshError` semantics; `/events/:eventId/command` is routed in `App.tsx`; Arena, Broadcast and counter routes remain outside the chrome.
+  - `REAL_AUTH` is implemented inside `scripts/e2e/eventday-live.sh` (real GoTrue on :9999, mail sink `scripts/e2e/mailsink.mjs`); `pack18-live`, `live-stability`, fixture `pack18.sql` and `pack18_gate` (in `run_all.sh`) exist.
+  - `private.handle_new_user` (profile per `auth.users` row) is unchanged, so the §11.1 finding stands.
+- **Still to do at the start of implementation (not done yet):** read the finished Command Centre page/data modules and `PACK18_HOSTED_ROLLOUT.md` in full, re-run the gates/browser suites on the new main as a baseline, re-run the §11.4 spike, and update this plan for anything that differs.
+- Everything below that mentions Pack 18 was first read from the unmerged branch; the facts above re-check the load-bearing ones.
 
 ### 0.2 Owner decisions folded into revision 2 (override revision 1)
 1. **Secretary and Scorekeeper are ONE role.** The permission class is the existing `scorekeeper`. UI label: "Secretary / Scorekeeper". No `secretary` role is created. Missing event-day powers are added to `scorekeeper` deliberately (§13).
@@ -470,7 +475,7 @@ Physical checklist (camera, wireless mic, PA routing, Windows/macOS packaging, f
 ## 21. Open questions and blockers
 
 **Blockers (first session after Pack 18 merges):**
-- **B1** Pack 18 merged and reconciled (§0.1).
+- **B1** Pack 18 is merged (verified, §0.1); remaining: the owner's explicit go-ahead in this session and the full reconciliation read.
 - **B2** Hosted Supabase viability of the chosen transport (§11.3): signing-key import + rotation (project-wide Auth change, owner action), custom DB role claim accepted by PostgREST/Realtime, Edge Function CORS. Needs a non-production project/branch or an explicit owner-scheduled window. If not viable and the owner accepts: contingency G′ (documented, not built).
 - **B3** OBS WebSocket bind address on the real install (research says all interfaces).
 
