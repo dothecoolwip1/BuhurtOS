@@ -32,7 +32,7 @@ Hosted was checked read-only on 2026-10-06. The 11 functions this branch replace
 | --- | --- |
 | `pack24a0_gate.sql` | **PASSED 151 checks**. New: atomic refusal (same rows, draw settings, scoring and audit count after a refused replace that carried a new draw), the refusal message, discipline review protection, the entrant guard (allowed and refused cases), Scorekeeper and head-marshal calls audited with role, Scorekeeper hold and release, head marshal refused `save_queue_plan`. Soft mode against `main`'s schema: **80 of 151 fail**, including the replace over an active fight succeeding and deleting its score event and live score. See `docs/reviews/assets/2026-10-06-pack24-reconcile/`. |
 | `pack24_followups_gate.sql` (new) | **PASSED 28 checks**. Against `main`'s schema, 13 fail. |
-| Full database gate `run_all.sh` from zero | **DATABASE GATE PASSED, 49/49 steps** (`run_all-database-gate-passed-49.log`) |
+| Full database gate `run_all.sh` from zero | **DATABASE GATE PASSED, 49/49 steps** (`run_all-database-gate-passed-49.txt`) |
 | Browser `scripts/e2e/pack24a0-live.sh` | **40/40** on the reconciled branch: Scorekeeper and head marshal calls expected and audited, Scorekeeper may hold |
 | Gates changed on purpose | `security_gate`, `pack02_gate`, `pack03_gate`, `pack09c_gate`, `simulate_tournament.sql`: the organizer no longer inserts, deletes or restructures matches through the table, so the harness lays out fixtures as the database owner. The draft's changes to `pack09a_gate` and `pack09d_gate`, and its Scorekeeper / marshal `set_match_queue` refusals in `security_gate` and the simulation, were **reverted to `main`'s assertions**. |
 

@@ -1,0 +1,109 @@
+PASS  (setup) the organizer puts Aldric v Brann on deck on Field 1
+EVIDENCE field.390x844.queue.chrome: {"siteHeader":false,"bottomBar":false,"footer":false,"bugButton":false,"themeSwitch":false,"focusHeader":true,"sideways":0}
+PASS  [390x844] field queue: no site header, bottom bar, footer, bug button or theme switch; the focus header is there
+PASS  [390x844] the focus header names the event and the field and offers Exit
+PASS  [390x844] the header says this is the Lyst on Field 1
+PASS  [390x844] Lyst screen: no site bottom bar or header, no sideways scroll
+EVIDENCE field.390x844.start_round_by_scroll: [{"y":0,"label":"Start round 1 · 1:00","top":726,"bottom":790,"w":366,"h":64,"vh":844,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":65,"label":"Start round 1 · 1:00","top":661,"bottom":725,"w":366,"h":64,"vh":844,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":129,"label":"Start round 1 · 1:00","top":597,"bottom":661,"w":366,"h":64,"vh":844,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":194,"label":"Start round 1 · 1:00","top":532,"bottom":596,"w":366,"h":64,"vh":844,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"}]
+PASS  [390x844] Start round is fully visible and nothing covers it, at every scroll position (top to bottom)
+PASS  [390x844] Start round is a large target (at least 64 px tall, 280 px wide)
+EVIDENCE field.390x844.tools: [{"nm":"Marshal's call","h":52,"topmost":true},{"nm":"Counters","h":52,"topmost":true},{"nm":"Record","h":52,"topmost":true},{"nm":"Back to the queue","h":69,"topmost":true}]
+PASS  [390x844] Marshal's call, Counters, Record and Back to the queue are reachable, uncovered and at least 44 px tall
+PASS  [390x844] no page errors
+EVIDENCE field.1024x768.queue.chrome: {"siteHeader":false,"bottomBar":false,"footer":false,"bugButton":false,"themeSwitch":false,"focusHeader":true,"sideways":0}
+PASS  [1024x768] field queue: no site header, bottom bar, footer, bug button or theme switch; the focus header is there
+PASS  [1024x768] the focus header names the event and the field and offers Exit
+PASS  [1024x768] the header says this is the Lyst on Field 1
+PASS  [1024x768] Lyst screen: no site bottom bar or header, no sideways scroll
+EVIDENCE field.1024x768.start_round_by_scroll: [{"y":0,"label":"Start round 1 · 1:00","top":696,"bottom":760,"w":511,"h":64,"vh":768,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":85,"label":"Start round 1 · 1:00","top":631,"bottom":695,"w":511,"h":64,"vh":768,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":171,"label":"Start round 1 · 1:00","top":545,"bottom":609,"w":511,"h":64,"vh":768,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":256,"label":"Start round 1 · 1:00","top":460,"bottom":524,"w":511,"h":64,"vh":768,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"}]
+PASS  [1024x768] Start round is fully visible and nothing covers it, at every scroll position (top to bottom)
+PASS  [1024x768] Start round is a large target (at least 64 px tall, 280 px wide)
+EVIDENCE field.1024x768.tools: [{"nm":"Marshal's call","h":52,"topmost":true},{"nm":"Counters","h":52,"topmost":true},{"nm":"Record","h":52,"topmost":true},{"nm":"Back to the queue","h":64,"topmost":true}]
+PASS  [1024x768] Marshal's call, Counters, Record and Back to the queue are reachable, uncovered and at least 44 px tall
+PASS  [1024x768] no page errors
+EVIDENCE field.1280x900.queue.chrome: {"siteHeader":false,"bottomBar":false,"footer":false,"bugButton":false,"themeSwitch":false,"focusHeader":true,"sideways":0}
+PASS  [1280x900] field queue: no site header, bottom bar, footer, bug button or theme switch; the focus header is there
+PASS  [1280x900] the focus header names the event and the field and offers Exit
+PASS  [1280x900] the header says this is the Lyst on Field 1
+PASS  [1280x900] Lyst screen: no site bottom bar or header, no sideways scroll
+EVIDENCE field.1280x900.start_round_by_scroll: [{"y":0,"label":"Start round 1 · 1:00","top":716,"bottom":780,"w":511,"h":64,"vh":900,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":41,"label":"Start round 1 · 1:00","top":675,"bottom":739,"w":511,"h":64,"vh":900,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":83,"label":"Start round 1 · 1:00","top":633,"bottom":697,"w":511,"h":64,"vh":900,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":124,"label":"Start round 1 · 1:00","top":592,"bottom":656,"w":511,"h":64,"vh":900,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"}]
+PASS  [1280x900] Start round is fully visible and nothing covers it, at every scroll position (top to bottom)
+PASS  [1280x900] Start round is a large target (at least 64 px tall, 280 px wide)
+EVIDENCE field.1280x900.tools: [{"nm":"Marshal's call","h":52,"topmost":true},{"nm":"Counters","h":52,"topmost":true},{"nm":"Record","h":52,"topmost":true},{"nm":"Back to the queue","h":64,"topmost":true}]
+PASS  [1280x900] Marshal's call, Counters, Record and Back to the queue are reachable, uncovered and at least 44 px tall
+PASS  [1280x900] no page errors
+EVIDENCE field.768x1024.queue.chrome: {"siteHeader":false,"bottomBar":false,"footer":false,"bugButton":false,"themeSwitch":false,"focusHeader":true,"sideways":0}
+PASS  [768x1024] field queue: no site header, bottom bar, footer, bug button or theme switch; the focus header is there
+PASS  [768x1024] the focus header names the event and the field and offers Exit
+PASS  [768x1024] the header says this is the Lyst on Field 1
+PASS  [768x1024] Lyst screen: no site bottom bar or header, no sideways scroll
+EVIDENCE field.768x1024.start_round_by_scroll: [{"y":0,"label":"Start round 1 · 1:00","top":716,"bottom":780,"w":511,"h":64,"vh":1024,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":0,"label":"Start round 1 · 1:00","top":716,"bottom":780,"w":511,"h":64,"vh":1024,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":0,"label":"Start round 1 · 1:00","top":716,"bottom":780,"w":511,"h":64,"vh":1024,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},{"y":0,"label":"Start round 1 · 1:00","top":716,"bottom":780,"w":511,"h":64,"vh":1024,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"}]
+PASS  [768x1024] Start round is fully visible and nothing covers it, at every scroll position (top to bottom)
+PASS  [768x1024] Start round is a large target (at least 64 px tall, 280 px wide)
+EVIDENCE field.768x1024.tools: [{"nm":"Marshal's call","h":52,"topmost":true},{"nm":"Counters","h":52,"topmost":true},{"nm":"Record","h":52,"topmost":true},{"nm":"Back to the queue","h":64,"topmost":true}]
+PASS  [768x1024] Marshal's call, Counters, Record and Back to the queue are reachable, uncovered and at least 44 px tall
+EVIDENCE field.start_round.rpc_calls: ["lyst_state","lyst_timer_command","lyst_state"]
+PASS  Start round still goes through the server: one lyst_timer_command, and the server clock is now running round 1
+PASS  ... the next primary action (End round) is in the same reachable place
+PASS  ... Marshal's call is enabled once the round runs and opens the marshal's sheet
+PASS  ... and the official score did not change because of the layout (no round confirmed, 0-0 public)
+PASS  [768x1024] no page errors
+EVIDENCE field.running.1024x768: [{"y":0,"endLabel":"End round · start break","end":{"top":696,"bottom":760,"w":511,"h":64,"vh":768,"inView":true,"topmost":true,"hit":"BUTTON.btn fq-big ly-go btn-ink"},"pause":{"inView":true,"topmost":true}},{"y":179,"endLabel":"End round · start break","end":{"top":583,"bottom":647,"w":511,"h":64,"vh":768,"inView":true,"topmost":true,"hit":"BUTTON.btn fq-big ly-go btn-ink"},"pause":{"inView":true,"topmost":true}},{"y":358,"endLabel":"End round · start break","end":{"top":404,"bottom":468,"w":511,"h":64,"vh":768,"inView":true,"topmost":true,"hit":"BUTTON.btn fq-big ly-go btn-ink"},"pause":{"inView":true,"topmost":true}}]
+PASS  [1024x768] round running: End round and Pause are both fully visible and uncovered at every scroll position (the clock never slides under the action)
+EVIDENCE longname.390x844: {"header":{"top":0,"bottom":61,"w":390,"h":61,"vh":844,"inView":true,"topmost":true,"hit":"SPAN.focus-event"},"exit":{"top":8,"bottom":52,"w":76,"h":44,"vh":844,"inView":true,"topmost":true,"hit":"SPAN."},"go":{"top":726,"bottom":790,"w":366,"h":64,"vh":844,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},"sideways":0}
+PASS  [390x844] long event name: the header stays one compact row (<= 72 px), Exit and Start round stay on screen, no sideways scroll
+EVIDENCE longname.768x1024: {"header":{"top":0,"bottom":61,"w":768,"h":61,"vh":1024,"inView":true,"topmost":true,"hit":"SPAN.focus-event"},"exit":{"top":8,"bottom":52,"w":76,"h":44,"vh":1024,"inView":true,"topmost":true,"hit":"SPAN."},"go":{"top":716,"bottom":780,"w":511,"h":64,"vh":1024,"inView":true,"topmost":true,"hit":"BUTTON.btn btn-win fq-big ly-go"},"sideways":0}
+PASS  [768x1024] long event name: the header stays one compact row (<= 72 px), Exit and Start round stay on screen, no sideways scroll
+PASS  [390x844] classic scoreboard: Finish match and Back to the queue are fully visible and uncovered at the end of the page; no bottom bar
+PASS  Exit on the field screen returns to the event page, which has the normal site chrome again
+PASS  Coming from Event day, Exit goes back to Event day
+PASS  [390x844] desk: no site header, bottom bar, footer, bug button or theme switch; no sideways scroll
+PASS  [390x844] desk header: Exit, "Check-in" and the event
+PASS  [390x844] the search is reachable straight away: on screen, near the top (top <= 150 px), uncovered, at least 48 px tall
+EVIDENCE desk.390x844.search: {"atLoad":{"top":105,"bottom":157,"w":366,"h":52,"vh":844,"inView":true,"topmost":true,"hit":"INPUT."},"afterScrollingTheList":{"top":32,"bottom":84,"w":366,"h":52,"vh":844,"inView":true,"topmost":true,"hit":"INPUT."},"cards":40}
+PASS  [390x844] after scrolling to the end of a long list (40 fighters) the search is still on screen and uncovered
+PASS  [390x844] no page errors
+PASS  [768x1024] desk: no site header, bottom bar, footer, bug button or theme switch; no sideways scroll
+PASS  [768x1024] desk header: Exit, "Check-in" and the event
+PASS  [768x1024] the search is reachable straight away: on screen, near the top (top <= 150 px), uncovered, at least 48 px tall
+EVIDENCE desk.768x1024.search: {"atLoad":{"top":109,"bottom":161,"w":728,"h":52,"vh":1024,"inView":true,"topmost":true,"hit":"INPUT."},"afterScrollingTheList":{"top":32,"bottom":84,"w":728,"h":52,"vh":1024,"inView":true,"topmost":true,"hit":"INPUT."},"cards":40}
+PASS  [768x1024] after scrolling to the end of a long list (40 fighters) the search is still on screen and uncovered
+PASS  [768x1024] no page errors
+PASS  [1024x768] desk: no site header, bottom bar, footer, bug button or theme switch; no sideways scroll
+PASS  [1024x768] desk header: Exit, "Check-in" and the event
+PASS  [1024x768] the search is reachable straight away: on screen, near the top (top <= 150 px), uncovered, at least 48 px tall
+EVIDENCE desk.1024x768.search: {"atLoad":{"top":109,"bottom":161,"w":984,"h":52,"vh":768,"inView":true,"topmost":true,"hit":"INPUT."},"afterScrollingTheList":{"top":32,"bottom":84,"w":984,"h":52,"vh":768,"inView":true,"topmost":true,"hit":"INPUT."},"cards":40}
+PASS  [1024x768] after scrolling to the end of a long list (40 fighters) the search is still on screen and uncovered
+PASS  [1024x768] no page errors
+PASS  [1280x900] desk: no site header, bottom bar, footer, bug button or theme switch; no sideways scroll
+PASS  [1280x900] desk header: Exit, "Check-in" and the event
+PASS  [1280x900] the search is reachable straight away: on screen, near the top (top <= 150 px), uncovered, at least 48 px tall
+EVIDENCE desk.1280x900.search: {"atLoad":{"top":109,"bottom":161,"w":1140,"h":52,"vh":900,"inView":true,"topmost":true,"hit":"INPUT."},"afterScrollingTheList":{"top":32,"bottom":84,"w":1140,"h":52,"vh":900,"inView":true,"topmost":true,"hit":"INPUT."},"cards":40}
+PASS  [1280x900] after scrolling to the end of a long list (40 fighters) the search is still on screen and uncovered
+PASS  [1280x900] no page errors
+PASS  [768x1024, keyboard open: 620 px left] the search stays on screen while typing, and the match's Check in is visible
+PASS  [768x1024] Check in saved on the server (set_attendance, unchanged)
+EVIDENCE desk.768x1024.undo_look: {"undo":{"bg":"rgba(0, 0, 0, 0)","border":"rgba(0, 0, 0, 0)","w":59,"h":44},"others":[]}
+PASS  [768x1024] Undo is quiet (no fill) and still a real target (>= 44 px tall)
+EVIDENCE desk.arrived.checkin_vs_undo: {"checkIn":{"bg":"rgb(44, 74, 140)","w":628,"h":48},"undo":{"bg":"rgba(0, 0, 0, 0)","w":59,"h":44}}
+PASS  an arrived fighter: Check in is the filled, wider button; Undo is unfilled and narrower
+PASS  [390x844, keyboard open: 480 px left] the search stays on screen while typing, and the match's Check in is visible
+PASS  [390x844] Check in saved on the server (set_attendance, unchanged)
+EVIDENCE desk.390x844.undo_look: {"undo":{"bg":"rgba(0, 0, 0, 0)","border":"rgba(0, 0, 0, 0)","w":59,"h":44},"others":[]}
+PASS  [390x844] Undo is quiet (no fill) and still a real target (>= 44 px tall)
+PASS  the armour inspector sees the desk as "Armour inspection" in the same focus layout
+PASS  Exit on the desk returns to the event page
+PASS  the organizer (check-in and inspection) sees "Check-in and armour"
+PASS  stranger on the field: refused as before ("This area is for scorekeepers and marshals"), nothing operational shown, still inside the focus layout with Exit
+PASS  desk on the field: refused as before ("This area is for scorekeepers and marshals"), nothing operational shown, still inside the focus layout with Exit
+PASS  signed out on the field: refused as before ("Sign in"), nothing operational shown, still inside the focus layout with Exit
+PASS  stranger on the desk: refused as before ("check-in desk and armour inspectors"), nothing operational shown, still inside the focus layout with Exit
+PASS  otherDesk on the desk: refused as before ("check-in desk and armour inspectors"), nothing operational shown, still inside the focus layout with Exit
+PASS  scorer on the desk: refused as before ("check-in desk and armour inspectors"), nothing operational shown, still inside the focus layout with Exit
+PASS  signed out on the desk: refused as before ("Sign in"), nothing operational shown, still inside the focus layout with Exit
+EVIDENCE api.refusals: {"stranger_timer":403,"desk_queue":403,"scorer_checkin":403,"other_desk_checkin":403}
+PASS  the database still refuses: a stranger's clock command, check-in staff moving a fight, a scorekeeper or another event's desk checking someone in
+PASS  ... and Pack 24A0 still holds: not even the organizer can delete a fight through the table
+PASS  Manage › Event day is unchanged: normal header and bottom bar, no focus header
+
+83/83 checks passed

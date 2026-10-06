@@ -1,0 +1,50 @@
+NOTICE:  database "bos_24a0e" does not exist, skipping
+PASS  crew: head_marshal granted
+PASS  crew: scorekeeper granted
+PASS  crew: check_in granted
+PASS  Build tournament: all draws built (the server accepted every bracket shape the client planned, byes included)
+EVIDENCE build.done: TOURNAMENT BUILT 10 competitions, 99 fights. The fight order is planned for rest; Event day keeps it up to date as results come in. Open Event day Who fights next, on every field See the draws
+PASS  10 competitions and 99 fights exist
+PASS  every bracket match that others feed has both sides covered, exactly once (the rule the server enforces)
+PASS  the 24 Longsword pool fights are finished by the scorekeeper
+PASS  pools to bracket: the 8 bracket fights were accepted
+PASS  ... and the final has both feeders
+PASS  the organizer holds a fight with a reason
+PASS  (setup) no saved plan before Event day is opened
+PASS  [desktop] opening Event day saved the plan (so the page really did write: 67 fights planned)
+PASS  [desktop] ... and the deliberate hold is still held
+PASS  [tabletP] opening Event day saved the plan (so the page really did write: 67 fights planned)
+PASS  [tabletP] ... and the deliberate hold is still held
+PASS  the organizer releases it explicitly
+PASS  ... and opening Event day does not hold it again by itself
+EVIDENCE hold.audit: queue.hold_set by a2@example.test, queue.hold_released by a2@example.test
+PASS  headmarshal cannot hold a fight
+PASS  checkin cannot hold a fight
+PASS  f1 cannot hold a fight
+PASS  stranger cannot hold a fight
+PASS  Field 1 has a fight now, one on deck and one in the hole
+EVIDENCE public.phone.order: ["NOW","ON DECK","IN THE HOLE"]
+PASS  [phone] the public page lists NOW, then ON DECK, then IN THE HOLE
+EVIDENCE public.desktop.order: ["NOW","ON DECK","IN THE HOLE"]
+PASS  [desktop] the public page lists NOW, then ON DECK, then IN THE HOLE
+PASS  (a) Men 3v3: a fight is active, so the draw cannot be replaced and the screen says why
+PASS  (a) ... "Use this draw" is disabled
+PASS  (b) Women Longsword: the server refuses and the screen shows its reason
+PASS  (b) ... the fights and the scoring event are untouched
+PASS  (a) ... the active fight's competition is intact too
+PASS  (c) Men Sabre: an untouched draw can still be rebuilt from the screen
+PASS  (c) ... and the rebuild is on the audit trail with what it replaced
+EVIDENCE scorer.field_called_fights_listed: 3
+PASS  the scorekeeper sees only the called fights (now, on deck, in the hole), not the whole line
+PASS  ... tapping the on-deck fight opens it (set_match_queue active for a called fight still works)
+PASS  the scorekeeper may still call a waiting fight on deck (Pack 18.1 matrix; 204)
+PASS  ... the head marshal sends it back (204)
+PASS  ... both calls are on the audit trail with the caller's role
+EVIDENCE raw_table_writes_as_organizer: {"delete":{"status":403,"rows":null,"msg":"permission denied for table matches"},"patch_entry":{"status":403,"rows":null,"msg":"permission denied for table matches"},"patch_link":{"status":403,"rows":null,"msg":"permission denied for table matches"},"insert":{"status":403,"rows":null,"msg":"permission denied for table matches"}}
+PASS  the live API refuses the organizer's raw DELETE, entrant edit, relink and insert (403)
+PASS  ... and the match is still there, unchanged
+PASS  Run: Set time wrote the time
+PASS  ... and it is on the audit trail with the new time
+EVIDENCE audit.actions: competition.created=10, entry.roster_set=17, event.created=1, match.finalized=24, match.schedule_changed=1, queue.advanced=1, queue.hold_released=1, queue.hold_set=1, queue.planned=3, queue.state_set=3, registration.accepted=50, registration.check=49, registration.paid=50, registration.submitted=50, schedule.built=12, staff.granted=3
+
+40/40 checks passed
