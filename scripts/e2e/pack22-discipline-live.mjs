@@ -22,10 +22,22 @@ const WHO = {
 const session = ([id, email]) => ({ access_token: jwt(id, email), refresh_token: 'r-' + id, token_type: 'bearer', expires_in: 31536000, expires_at: 4102444800,
   user: { id, aud: 'authenticated', role: 'authenticated', email, app_metadata: {}, user_metadata: {}, created_at: '2026-01-01T00:00:00Z' } });
 const STORAGE_KEY = 'sb-localhost-auth-token';
+// REAL_AUTH: each role signs in through the real Supabase Auth server (password grant) and the browser keeps the session Auth issued.
+const REAL = !!process.env.AUTH_URL;
+const realSessions = new Map();
+if (REAL) {
+  for (const [who, [, email]] of Object.entries(WHO)) {
+    const r = await fetch(`${API}/auth/v1/token?grant_type=password`, { method: 'POST', headers: { 'content-type': 'application/json', apikey: 'x' }, body: JSON.stringify({ email, password: 'Fixture-pass-22' }) });
+    const b = await r.json().catch(() => ({}));
+    if (r.status !== 200 || !b.access_token) { console.error(`REAL_AUTH sign-in failed for ${who}: ${r.status} ${JSON.stringify(b).slice(0, 200)}`); process.exit(2); }
+    realSessions.set(who, b);
+  }
+}
+const sessionOf = (who) => (REAL ? realSessions.get(who) : session(WHO[who]));
 const sql = (q) => execFileSync('psql', ['-X', '-At', '-d', DB, '-c', q], { encoding: 'utf8' }).trim();
 const SLUG = 'test-stuff-test';
 async function rest(who, method, path, body) {
-  const headers = { 'content-type': 'application/json', apikey: 'x', ...(who ? { authorization: `Bearer ${session(WHO[who]).access_token}` } : {}) };
+  const headers = { 'content-type': 'application/json', apikey: 'x', ...(who ? { authorization: `Bearer ${sessionOf(who).access_token}` } : {}) };
   const r = await fetch(`${API}/rest/v1/${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   return { status: r.status, body: await r.json().catch(() => null) };
 }
@@ -37,7 +49,7 @@ const pageErrors = [];
 async function open(kind, who) {
   const ctx = await browser.newContext({ ...VIEW[kind], serviceWorkers: 'block', locale: 'en-CA', timezoneId: 'America/Edmonton' });
   await ctx.route(/posthog\.com|maps\.googleapis\.com/, r => r.abort('failed'));
-  if (who) await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [STORAGE_KEY, session(WHO[who])]);
+  if (who) await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [STORAGE_KEY, sessionOf(who)]);
   const page = await ctx.newPage();
   page.errors = [];
   page.on('pageerror', e => page.errors.push(String(e).slice(0, 300)));
@@ -61,6 +73,7 @@ async function pickPerson(page, name) {
 }
 
 try {
+  if (REAL) check('REAL_AUTH: every role signed in through the real Supabase Auth server (password grant), sessions issued by Auth', realSessions.size === Object.keys(WHO).length && [...realSessions.values()].every(b => b.user?.aud === 'authenticated'));
   check('fixture: the BI release is in the database (42 documents), 9 published for this run, and one yellow card against Brann carries its concept',
     sql(`select count(*) from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International'`) === '42'
     && sql(`select count(*) from public.ruleset_versions where status = 'published'`) === '9'
