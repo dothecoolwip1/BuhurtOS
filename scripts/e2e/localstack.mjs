@@ -73,6 +73,28 @@ http.createServer(async (req, res) => {
       return json(200, list.map((name) => ({ name })));
     }
   }
+  if (url.pathname === '/functions/v1/device-session') {
+    // The REAL Edge Function code (supabase/functions/_shared/deviceSession.ts), run by Node with HS256 signing and this stack's PostgREST.
+    const mod = await import('../../supabase/functions/_shared/deviceSession.ts');
+    const raw = await readBody(req);
+    const keep = ['content-type', 'origin', 'authorization', 'x-forwarded-for'];
+    const request = new Request('http://stack/functions/v1/device-session', { method: req.method, headers: Object.fromEntries(Object.entries(req.headers).filter(([k]) => keep.includes(k)).map(([k, v]) => [k, String(v)])), body: ['GET', 'HEAD'].includes(req.method ?? '') ? undefined : raw });
+    const rest = (name, args, as) => new Promise((ok) => {
+      const bearer = 'service' in as ? signJwt({ role: 'service_role', aud: 'authenticated', exp: Math.floor(Date.now() / 1000) + 60 }) : as.jwt;
+      const payload = Buffer.from(JSON.stringify(args));
+      const up = http.request({ host: REST.hostname, port: REST.port, path: `/rpc/${name}`, method: 'POST', headers: { 'content-type': 'application/json', 'content-length': payload.length, authorization: `Bearer ${bearer}` } }, (r) => {
+        const c = []; r.on('data', (d) => c.push(d)); r.on('end', () => { let data = null; try { data = JSON.parse(Buffer.concat(c).toString()); } catch { /* empty */ } ok({ ok: (r.statusCode ?? 500) < 300, status: r.statusCode ?? 500, data }); });
+      });
+      up.on('error', () => ok({ ok: false, status: 502, data: null }));
+      up.end(payload);
+    });
+    const out = await mod.handleRequest(request, {
+      env: { pepper: process.env.DEVICE_CODE_PEPPER ?? 'local-device-pepper-0123456789-abcdefghij', signing: { alg: 'HS256', secret: SECRET }, allowedOrigins: ['*'] },
+      rpc: rest, nowMs: () => Date.now(), randomBytes: (n) => crypto.randomBytes(n), sleep: (ms) => new Promise((r) => setTimeout(r, ms))
+    });
+    res.writeHead(out.status, { ...cors, ...Object.fromEntries(out.headers) });
+    return res.end(Buffer.from(await out.arrayBuffer()));
+  }
   if (AUTH && url.pathname.startsWith('/auth/v1/')) {
     const headers = { ...req.headers, host: AUTH.host };
     const up = http.request({ host: AUTH.hostname, port: AUTH.port, path: url.pathname.replace('/auth/v1', '') + url.search, method: req.method, headers }, (r) => {
