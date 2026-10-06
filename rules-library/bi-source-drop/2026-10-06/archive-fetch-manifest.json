@@ -1,6 +1,8 @@
 {
+  "status": "ARCHIVED earlier editions of Buhurt International documents. Not the current official ruleset; not imported into the rules database.",
+  "source": "Google Drive folder https://drive.google.com/drive/folders/19zF9HoMA899NVpGuPy4qgQ8OJHXEBgBg (owner dothecoolwip@gmail.com), sub-folders below",
+  "retrieved_by": "GitHub Actions one-shot workflow .github/workflows/fetch-bi-archive-pdfs.yml (removed after it ran), gdown 6.4.1",
   "retrieved_at": "2026-10-06T13:48:04Z",
-  "gdown": "6.4.1",
   "folders": {
     "Tournament": {
       "drive_folder_id": "17scM3X5Bj-OjsWCEiNi4An4g7CdeOGjm",
@@ -18,6 +20,7 @@
       "entries": 22
     }
   },
+  "note": "File names are the Drive names; gdown writes a \"/\" inside a Drive title as \"_\" (e.g. \"Weapons/Shield Chart\" -> \"Weapons_Shield Chart\"). Nothing was overwritten.",
   "files": [
     {
       "committee": "Tournament",
@@ -26,7 +29,8 @@
       "sha256": "253663c21e363c1b1fe9cb3fa7122fcee776d1c94544ad9afef0453944e229f2",
       "bytes": 2742132,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 2025.03.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 2025.03.pdf",
+      "pages": 17
     },
     {
       "committee": "Tournament",
@@ -35,7 +39,11 @@
       "sha256": "d2c9760c257657120df7d3222ce20a03f1831f6b7d5b9b2d4cf392d7cb02a3c3",
       "bytes": 2852295,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 26.1(1).pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 26.1(1).pdf",
+      "pages": 18,
+      "identical_to": [
+        "Tournament/Archive/Buhurt Regulations 26.1.pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -44,7 +52,11 @@
       "sha256": "d2c9760c257657120df7d3222ce20a03f1831f6b7d5b9b2d4cf392d7cb02a3c3",
       "bytes": 2852295,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 26.1.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Buhurt Regulations 26.1.pdf",
+      "pages": 18,
+      "identical_to": [
+        "Tournament/Archive/Buhurt Regulations 26.1(1).pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -53,7 +65,11 @@
       "sha256": "ec7ad0283f6cec6852db08892a8026ebb8c53f66812635cf5abe0c0dd8b8f9ca",
       "bytes": 12373378,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 2025.03.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 2025.03.pdf",
+      "pages": 11,
+      "identical_to": [
+        "Tournament/Archive/Duels Regulations.pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -62,7 +78,11 @@
       "sha256": "ee8383f77f948f045406d53b0a547df2314b886b05aa9a130691dde4fd091f9f",
       "bytes": 12373174,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 26.1(1).pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 26.1(1).pdf",
+      "pages": 11,
+      "identical_to": [
+        "Tournament/Archive/Duels Regulations 26.1.pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -71,7 +91,11 @@
       "sha256": "ee8383f77f948f045406d53b0a547df2314b886b05aa9a130691dde4fd091f9f",
       "bytes": 12373174,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 26.1.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations 26.1.pdf",
+      "pages": 11,
+      "identical_to": [
+        "Tournament/Archive/Duels Regulations 26.1(1).pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -80,7 +104,11 @@
       "sha256": "e0089cb358f1807fe91eda47c63b8b18049806f2daff3b4a9d4150064af373b8",
       "bytes": 12306435,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations V2024.12(1).pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations V2024.12(1).pdf",
+      "pages": 11,
+      "identical_to": [
+        "Tournament/Archive/Duels Regulations V2024.12.pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -89,7 +117,11 @@
       "sha256": "e0089cb358f1807fe91eda47c63b8b18049806f2daff3b4a9d4150064af373b8",
       "bytes": 12306435,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations V2024.12.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations V2024.12.pdf",
+      "pages": 11,
+      "identical_to": [
+        "Tournament/Archive/Duels Regulations V2024.12(1).pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -98,7 +130,11 @@
       "sha256": "ec7ad0283f6cec6852db08892a8026ebb8c53f66812635cf5abe0c0dd8b8f9ca",
       "bytes": 12373378,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Duels Regulations.pdf",
+      "pages": 11,
+      "identical_to": [
+        "Tournament/Archive/Duels Regulations 2025.03.pdf"
+      ]
     },
     {
       "committee": "Tournament",
@@ -107,7 +143,8 @@
       "sha256": "1dcc399d8e0b661a800c97a79284885f6ee29cde4c5181b49ed6abe8319b3c71",
       "bytes": 9089313,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Tournament Structure V2024.06.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Tournament/Archive/Tournament Structure V2024.06.pdf",
+      "pages": 8
     },
     {
       "committee": "Marshal",
@@ -116,7 +153,8 @@
       "sha256": "de16344f2507084e6e07216344689308e5d57a796221e047c81e0c794aab4b1a",
       "bytes": 20191075,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Buhurt Rules 2024.12.13.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Buhurt Rules 2024.12.13.pdf",
+      "pages": 18
     },
     {
       "committee": "Marshal",
@@ -125,7 +163,8 @@
       "sha256": "418c849783cf388b07fffef4ae5acbc7aa65eccceff85fd9f5069a789005c1ed",
       "bytes": 19546061,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Buhurt Rules 2026.1.1.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Buhurt Rules 2026.1.1.pdf",
+      "pages": 18
     },
     {
       "committee": "Marshal",
@@ -134,7 +173,8 @@
       "sha256": "bdd993c3bc48a612e55570b627f16db8db4ce84a05fb2c1be99b6ad0e8c2049e",
       "bytes": 12757104,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Duels rules 2025.03.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Duels rules 2025.03.pdf",
+      "pages": 11
     },
     {
       "committee": "Marshal",
@@ -143,7 +183,8 @@
       "sha256": "02e4ae60375375488be7ea792f60eae3c7a6cc5fd690862e314de2cc8da50287",
       "bytes": 12758136,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Duels rules 26.1.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Duels rules 26.1.pdf",
+      "pages": 11
     },
     {
       "committee": "Marshal",
@@ -152,7 +193,8 @@
       "sha256": "abc8fef7cafc65dfb62a3d71e1de89bfb2fcf1dc7577d5c1d4b388d3390e41d5",
       "bytes": 37909662,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Outrance Rules 2025.3.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Outrance Rules 2025.3.pdf",
+      "pages": 34
     },
     {
       "committee": "Marshal",
@@ -161,7 +203,8 @@
       "sha256": "a5904a25fc5c9aaf06f38e07dfdf08370f4bfcd169ebed05d1698462263739d5",
       "bytes": 36825949,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Outrance Rules 26.1.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Outrance Rules 26.1.pdf",
+      "pages": 33
     },
     {
       "committee": "Marshal",
@@ -170,7 +213,9 @@
       "sha256": "8876ec33e03db56eade79eb2f671845accea009f242216591ea37c74dbfa0e65",
       "bytes": 175255,
       "action": "skipped_identical",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart - Shields 2025.3.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart - Shields 2025.3.pdf",
+      "pages": 1,
+      "note": "already committed in 33fe99c; the Drive copy is byte-identical, so it was not added again"
     },
     {
       "committee": "Marshal",
@@ -179,7 +224,8 @@
       "sha256": "22927e949dfc460d413de01219977c116dd586b6540c156e8d088788fab508d5",
       "bytes": 207333,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart 2024.12.13.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart 2024.12.13.pdf",
+      "pages": 3
     },
     {
       "committee": "Marshal",
@@ -188,7 +234,8 @@
       "sha256": "44b9ec5e2e644c3c957d4d7fc3b61ede9b35cd28608e99f67ab9590b6ed1726f",
       "bytes": 219907,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart 26.1.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart 26.1.pdf",
+      "pages": 3
     },
     {
       "committee": "Marshal",
@@ -197,7 +244,8 @@
       "sha256": "6342d58e1f352c97104dcfaa3a8af740720efd35c7e3a5780449d2f2e7b5cd73",
       "bytes": 233459,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart V26.2.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Marshal/Archive/Weapons_Shield Chart V26.2.pdf",
+      "pages": 3
     },
     {
       "committee": "Authenticity",
@@ -206,7 +254,8 @@
       "sha256": "6d2eeed99605990d3b0a0d0a2ed2eada69235c38f5326f6e600e1cd95f730876",
       "bytes": 30705195,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Armors and weapons Aesthetics and Decoration V2024.12.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Armors and weapons Aesthetics and Decoration V2024.12.pdf",
+      "pages": 18
     },
     {
       "committee": "Authenticity",
@@ -215,7 +264,8 @@
       "sha256": "dcc5ba335e3b1a4266ba6c97cd4fb97af39f517136dc1f7aaff295b0d9c3a9de",
       "bytes": 11916622,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Aventails.docx.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Aventails.docx.pdf",
+      "pages": 17
     },
     {
       "committee": "Authenticity",
@@ -224,7 +274,8 @@
       "sha256": "7266ed5298ae1a9138f6933c0bf71052af09db16f5f82a4f0c7d259f569d2c4e",
       "bytes": 657645,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Belt Flag V2024.12.docx.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Belt Flag V2024.12.docx.pdf",
+      "pages": 4
     },
     {
       "committee": "Authenticity",
@@ -233,7 +284,8 @@
       "sha256": "45bda44ac3e67d68e69364b2028f0581c0e46f97dbcba1346a0767e4fb663a10",
       "bytes": 2376955,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Eyebars V2024.12.docx.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Eyebars V2024.12.docx.pdf",
+      "pages": 8
     },
     {
       "committee": "Authenticity",
@@ -242,7 +294,8 @@
       "sha256": "498c79e15c93619fd51fc812afccadbc777c73b43283d2065c1e87f9b40a59c4",
       "bytes": 15479328,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Greaves.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Greaves.pdf",
+      "pages": 19
     },
     {
       "committee": "Authenticity",
@@ -251,7 +304,8 @@
       "sha256": "9264f54892f263c5c3824c4e3868695d8d6d0f02bb71c31b27e5a83edf7d87d4",
       "bytes": 3802014,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Helmet - Great Helms 2024.12.docx.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Helmet - Great Helms 2024.12.docx.pdf",
+      "pages": 9
     },
     {
       "committee": "Authenticity",
@@ -260,7 +314,8 @@
       "sha256": "3fd1e811a7a114279be6116094c99ead0f647cd38f82e164f9cc25d7ea26dcb5",
       "bytes": 431123,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Infraction classification and application.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Infraction classification and application.pdf",
+      "pages": 5
     },
     {
       "committee": "Authenticity",
@@ -269,7 +324,8 @@
       "sha256": "e296e2023efc8aa32339ecd44a0f72adbf92cc8817b27d18ee5d333a01f4a852",
       "bytes": 695225,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Infractions Classification and Application.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Infractions Classification and Application.pdf",
+      "pages": 5
     },
     {
       "committee": "Authenticity",
@@ -278,7 +334,8 @@
       "sha256": "1b6eb01a6244c99ac28227a15dbc4a9848598cf79dd563511d99f51fa2ced30b",
       "bytes": 7269547,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Klappvisors.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Klappvisors.pdf",
+      "pages": 12
     },
     {
       "committee": "Authenticity",
@@ -287,7 +344,8 @@
       "sha256": "09824e8d5387146c5b4b87506fea3e33dadedd3d7d47970c396018f1125fe0ad",
       "bytes": 21358759,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Nasal and Breteche.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Nasal and Breteche.pdf",
+      "pages": 11
     },
     {
       "committee": "Authenticity",
@@ -296,7 +354,8 @@
       "sha256": "33574884f8962d1f396bcdc437e63667cc6ce14557915838ab1bdd75f83b8c99",
       "bytes": 16918478,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Neck Protection.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Neck Protection.pdf",
+      "pages": 12
     },
     {
       "committee": "Authenticity",
@@ -305,7 +364,8 @@
       "sha256": "691f1b945d0c2abed9d8ff593cb33e82a5276e4b8326a691516ae117b50847c2",
       "bytes": 1984674,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Perforated Visor Bascinets.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Perforated Visor Bascinets.pdf",
+      "pages": 11
     },
     {
       "committee": "Authenticity",
@@ -314,7 +374,8 @@
       "sha256": "19e7d8866c748cf66bccb738191f72df4d01c632ecc9f70f98450736dc762c5d",
       "bytes": 19322987,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Sabatons V2024.12.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Sabatons V2024.12.pdf",
+      "pages": 13
     },
     {
       "committee": "Authenticity",
@@ -323,7 +384,8 @@
       "sha256": "a38d3d82e956cbe5f92f98d688d91dd1a6ebf236f2d14fafe455ca666c43afe9",
       "bytes": 47725775,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields and Bucklers(1).pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields and Bucklers(1).pdf",
+      "pages": 23
     },
     {
       "committee": "Authenticity",
@@ -332,7 +394,8 @@
       "sha256": "5211df463ccf6c3f90a98e6304438868f47a0f3cbb02d01fbf985dea4b963a16",
       "bytes": 3680392,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields and Bucklers.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields and Bucklers.pdf",
+      "pages": 19
     },
     {
       "committee": "Authenticity",
@@ -341,7 +404,8 @@
       "sha256": "c55557f38036e9a6e6914f88f44bc0f779272ada71cb290c6c7dd1de5fb5e3cb",
       "bytes": 3705179,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields_and_Bucklers V26.2.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Shields_and_Bucklers V26.2.pdf",
+      "pages": 19
     },
     {
       "committee": "Authenticity",
@@ -350,7 +414,8 @@
       "sha256": "daa8d22872dc427dc359e69675e4520d183054225cb0ffff2d1ef58da90eb5e4",
       "bytes": 15758741,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Side-hinged visored Bascinets V2024.12.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Side-hinged visored Bascinets V2024.12.pdf",
+      "pages": 16
     },
     {
       "committee": "Authenticity",
@@ -359,7 +424,8 @@
       "sha256": "a83827f601b7a06bdf23d75db3c1bdc0c806ab51dd7cc1d743357432a546ab2f",
       "bytes": 15803214,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Side-hinged visored Bascinets.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Side-hinged visored Bascinets.pdf",
+      "pages": 16
     },
     {
       "committee": "Authenticity",
@@ -368,7 +434,8 @@
       "sha256": "9873607afbf3713917d5db4d159eb0dede126d23503147240525533314d590b4",
       "bytes": 33944201,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Tabards V2024.12.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Tabards V2024.12.pdf",
+      "pages": 14
     },
     {
       "committee": "Authenticity",
@@ -377,7 +444,8 @@
       "sha256": "54eddb12c8eb3af317a05c78e0a8cf6e4eec8b4484836de7f4deba5a9d8df3d3",
       "bytes": 2556799,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Technical Requirements for Weapons.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Technical Requirements for Weapons.pdf",
+      "pages": 14
     },
     {
       "committee": "Authenticity",
@@ -386,7 +454,8 @@
       "sha256": "07e19e7dca46ccb66961d444a00954a3cc0c5ce0f10c706ab853ec59f2eb213e",
       "bytes": 11726413,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Textiles and Leather V2024.12.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Textiles and Leather V2024.12.pdf",
+      "pages": 8
     },
     {
       "committee": "Authenticity",
@@ -395,7 +464,8 @@
       "sha256": "fc959c05280842b660fe1e96ec792b23eb1893ef7b8a83731c8fd6921bdb4032",
       "bytes": 16662938,
       "action": "added",
-      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Wolf Ribs.pdf"
+      "repo_path": "rules-library/bi-source-drop/2026-10-06/Authenticity/Archive/Wolf Ribs.pdf",
+      "pages": 10
     }
   ]
 }
