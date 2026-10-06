@@ -1,0 +1,2022 @@
+{
+  "inventory_key": "authenticity/nasals-and-breteches",
+  "sha256": "9d9fa618929079c3990d352e651b296bd363443f796b4d783e7c89a3e9e48b78",
+  "source_file": "Authenticity/Nasals and Breteches.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 10 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 10,
+    "title": "Nasal and Breteche - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:22:56 2026 UTC",
+    "modified": "Wed Jan 28 14:22:56 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")pBUHURT(G\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 71.8,
+      "ocr_lines": [
+        {
+          "text": ")pBUHURT(G",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            ")pBUHURT(G"
+          ],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 116,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.5,
+          "conf_min": 94.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            606,
+            1293,
+            990,
+            1363
+          ],
+          "paper": 0,
+          "height": 70
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1469,
+            1724,
+            1664
+          ],
+          "paper": 0,
+          "height": 195
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n3. Historical Sources and Datation 4\n3.1. Nasal Helmet 4\n3.2. Breteche Helmet 5\n4. Requirements 6\n4.1. General Requirements 6\n4.2. Visor 6\n4.3. Eye slots 6\n4.4. Aventail 6\n4.5. Others 6\n5. Examples of Approved Reproductions 7\n6. Examples of Denied Reproductions 9\n7. Changelog 10\n\nNasals and Breteches V. 26.1 2/10",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            338,
+            621,
+            378
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            410,
+            2217,
+            452
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            475,
+            2217,
+            509
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "3. Historical Sources and Datation 4",
+          "conf_mean": 95,
+          "conf_min": 92.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            540,
+            2217,
+            574
+          ],
+          "paper": 0.88,
+          "height": 34
+        },
+        {
+          "text": "3.1. Nasal Helmet 4",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            605,
+            2217,
+            639
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "3.2. Breteche Helmet 5",
+          "conf_mean": 94.6,
+          "conf_min": 91.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            670,
+            2217,
+            704
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "4. Requirements 6",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            736,
+            2217,
+            778
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "4.1. General Requirements 6",
+          "conf_mean": 96.2,
+          "conf_min": 95,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            801,
+            2217,
+            843
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor 6",
+          "conf_mean": 95.8,
+          "conf_min": 95.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            866,
+            2217,
+            900
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "4.3. Eye slots 6",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            931,
+            2217,
+            974
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "4.4. Aventail 6",
+          "conf_mean": 93.7,
+          "conf_min": 90.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            997,
+            2217,
+            1030
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "4.5. Others 6",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            1061,
+            2217,
+            1095
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "5. Examples of Approved Reproductions 7",
+          "conf_mean": 95.4,
+          "conf_min": 90.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1127,
+            2217,
+            1169
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "6. Examples of Denied Reproductions 9",
+          "conf_mean": 95.5,
+          "conf_min": 90.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1192,
+            2217,
+            1234
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "7. Changelog 10",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1257,
+            2217,
+            1300
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "Nasals and Breteches V. 26.1 2/10",
+          "conf_mean": 92.2,
+          "conf_min": 87.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\nNasal and Breteche bascinets are medieval helmets that originated in the early 14th century. They\nare an evolution of simple bascinets worn with chainmail. The chainmail aventail is attached to the\nfront of the helmet to increase its face protection.\n\nNasal bascinet uses a solid metal nasal to protect the nose, attached on the forehead by a piece of\nmetal, the “spoon”.\n\nBreteche bascinet uses chainmail to protect the nose, attached on the forehead by a piece of metal,\nthe “cross”.\n\nBoth helmets were used from 1340 to the late 14th century in Western Europe.\nNasal and breteche bascinets are Approved for 14th century and Transitional armors.\n\nNasal and breteche bascinets are Denied for 15th century armors.\n\nSpoon Cross\n\nee\n\n[>>>\n[eeee\n\nNasals and Breteches V. 26.7 3/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.3,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.1,
+          "conf_min": 94.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            771,
+            190,
+            1576,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            414
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1714,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            899,
+            596,
+            1443,
+            667
+          ],
+          "paper": 0.59,
+          "height": 71
+        },
+        {
+          "text": "Nasal and Breteche bascinets are medieval helmets that originated in the early 14th century. They",
+          "conf_mean": 95.5,
+          "conf_min": 91.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            777,
+            2217,
+            820
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "are an evolution of simple bascinets worn with chainmail. The chainmail aventail is attached to the",
+          "conf_mean": 95.5,
+          "conf_min": 92.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            838,
+            2217,
+            881
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "front of the helmet to increase its face protection.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            179,
+            898,
+            1165,
+            941
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Nasal bascinet uses a solid metal nasal to protect the nose, attached on the forehead by a piece of",
+          "conf_mean": 96.2,
+          "conf_min": 92.7,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            183,
+            971,
+            2220,
+            1015
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "metal, the “spoon”.",
+          "conf_mean": 85.7,
+          "conf_min": 64.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            1032,
+            557,
+            1075
+          ],
+          "paper": 0.75,
+          "height": 40
+        },
+        {
+          "text": "Breteche bascinet uses chainmail to protect the nose, attached on the forehead by a piece of metal,",
+          "conf_mean": 95.6,
+          "conf_min": 91.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            182,
+            1105,
+            2213,
+            1148
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "the “cross”.",
+          "conf_mean": 94.4,
+          "conf_min": 92,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            179,
+            1166,
+            405,
+            1200
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Both helmets were used from 1340 to the late 14th century in Western Europe.",
+          "conf_mean": 96.3,
+          "conf_min": 94.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            1312,
+            1768,
+            1355
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Nasal and breteche bascinets are Approved for 14th century and Transitional armors.",
+          "conf_mean": 95.2,
+          "conf_min": 91.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            1458,
+            1975,
+            1501
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Nasal and breteche bascinets are Denied for 15th century armors.",
+          "conf_mean": 95.1,
+          "conf_min": 91.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            1604,
+            1555,
+            1647
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "Spoon Cross",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            231,
+            1812,
+            2155,
+            1883
+          ],
+          "paper": 0.97,
+          "height": 49
+        },
+        {
+          "text": "ee",
+          "conf_mean": 24.3,
+          "conf_min": 24.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            820,
+            2247,
+            883,
+            2257
+          ],
+          "paper": 0.69,
+          "height": 10,
+          "in_picture": "lettering 10px tall, smaller than any printed text"
+        },
+        {
+          "text": "[>>>",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1255,
+            2653,
+            1306,
+            2662
+          ],
+          "paper": 0.29,
+          "height": 9,
+          "in_picture": "lettering 9px tall, smaller than any printed text"
+        },
+        {
+          "text": "[eeee",
+          "conf_mean": 34.7,
+          "conf_min": 34.7,
+          "words": 1,
+          "uncertain": [
+            "[eeee"
+          ],
+          "box": [
+            1253,
+            2665,
+            1314,
+            2675
+          ],
+          "paper": 0.32,
+          "height": 10,
+          "in_picture": "lettering 10px tall, smaller than any printed text"
+        },
+        {
+          "text": "Nasals and Breteches V. 26.7 3/10",
+          "conf_mean": 92.8,
+          "conf_min": 89.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. Historical Sources and Datation\n\n3.1. Nasal Helmet\n\nSecond half of the 14th century (datation unknown) - France\nGunther XXI. von Schwarzburg - 1349 - Germany\n\nBKE Cod. 339 Der Passionstraktat des Nikolaus\nSchulmeister - 1396 - Switzerland\n\nGaleotto Malaspina - 1367 - Italy\n\nNasals and Breteches V. 26.1 4/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.5,
+      "ocr_lines": [
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.5,
+          "conf_min": 92.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            397,
+            189,
+            1946,
+            260
+          ],
+          "paper": 0.61,
+          "height": 70,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "3.1. Nasal Helmet",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            694,
+            412
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Second half of the 14th century (datation unknown) - France",
+          "conf_mean": 95,
+          "conf_min": 91.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            200,
+            1438,
+            1084,
+            1470
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Gunther XXI. von Schwarzburg - 1349 - Germany",
+          "conf_mean": 86.6,
+          "conf_min": 52.4,
+          "words": 8,
+          "uncertain": [
+            "XXI."
+          ],
+          "box": [
+            1311,
+            1494,
+            2040,
+            1526
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "BKE Cod. 339 Der Passionstraktat des Nikolaus",
+          "conf_mean": 94.9,
+          "conf_min": 92.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1593,
+            2646,
+            2303,
+            2672
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "Schulmeister - 1396 - Switzerland",
+          "conf_mean": 93.1,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1671,
+            2695,
+            2168,
+            2720
+          ],
+          "paper": 0.66,
+          "height": 24
+        },
+        {
+          "text": "Galeotto Malaspina - 1367 - Italy",
+          "conf_mean": 93.2,
+          "conf_min": 92.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            507,
+            2860,
+            988,
+            2892
+          ],
+          "paper": 0.72,
+          "height": 26
+        },
+        {
+          "text": "Nasals and Breteches V. 26.1 4/10",
+          "conf_mean": 93.8,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "3.2. Breteche Helmet\n\nMuseo Stibbert, Florence - Second half of the 14th century (datation unknown) - Italy\n\nNote: This artifact may not be 100% original, as the founder of the museum commissioned\nsome fiorentina armorers in 1881 to adapt and repair the skull, to create the cross and the\nchainmail (maybe original pieces of mail were patched up).\n\nDoge’s Palace, Venice - 1350/1370 - Italy Klosterneuburg Stiftsmuseum - 1335/1340 - Austria\n\nNasals and Breteches V. 26.7 5/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "3.2. Breteche Helmet",
+          "conf_mean": 93,
+          "conf_min": 91.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            781,
+            229
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "Museo Stibbert, Florence - Second half of the 14th century (datation unknown) - Italy",
+          "conf_mean": 94.3,
+          "conf_min": 92.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            495,
+            1271,
+            1742,
+            1303
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Note: This artifact may not be 100% original, as the founder of the museum commissioned",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            1387,
+            2216,
+            1431
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "some fiorentina armorers in 1881 to adapt and repair the skull, to create the cross and the",
+          "conf_mean": 95.8,
+          "conf_min": 92.1,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1448,
+            2217,
+            1490
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "chainmail (maybe original pieces of mail were patched up).",
+          "conf_mean": 96.1,
+          "conf_min": 93.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1508,
+            1456,
+            1552
+          ],
+          "paper": 0.67,
+          "height": 42
+        },
+        {
+          "text": "Doge’s Palace, Venice - 1350/1370 - Italy Klosterneuburg Stiftsmuseum - 1335/1340 - Austria",
+          "conf_mean": 92.9,
+          "conf_min": 87.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            338,
+            2755,
+            2065,
+            2795
+          ],
+          "paper": 0.82,
+          "height": 25
+        },
+        {
+          "text": "Nasals and Breteches V. 26.7 5/10",
+          "conf_mean": 92.7,
+          "conf_min": 89.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "4. Requirements\n\n4.1. General Requirements\n\nReproductions must closely resemble the appearance and proportions of a Nasal or a Breteche\nhelmet source.\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and\nDecorations” document.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nVisors must be made of metal grill or plates, concealed under chainmail.\n\nChainmail must be properly attached to the visor with metal, leather or fabric thread.\n\nVisors must not be too long or too short and respect the proportions of historical sources.\n\nNasal helmet visor bottom line must end between nose and chin.\n\nThe fixation system must be reproduced as per historical sources (“spoon” or “cross”).\n\nIt is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure\n\nfull contact fight and must be concealed under the Aventail.\n\n4.3. Eye slots\n\nEye slots should resemble sources for the visor.\nEye slots should not exceed 25mm tall to prevent any injury.\n\nIt is allowed to add up to two (2) safety Eye bars per Eye slot. Externally riveted Eye bars and\nintegrated Eye bars are not allowed.\n\nEye bars must conform to the “Eye bars” rules document.\n\n4.4. Aventail\n\nNasal and Breteche helmets must be worn with chainmail Aventails. Fabric or scales Aventails are\nnot allowed.\n\nAventails must conform to the “Aventails” document.\n\nAventails must be attached to the bascinet by a suspension system made of vervelles and leather.\nThe Aventail must be fastened down to the edge of a padded pelerine attached to the helmet liner.\nAny additional protective plates covering the cervical spine must be hidden under the Aventail.\n\n4.5. Others\n\nNasal and Breteche helmets may be decorated in the spirit of medieval styles, such as orle, torse,\ndecorated Aventails (with copper/brass chainmail rings), vervelle covers and coat of arms badges,\netc. Such decoration must be made in coherence with historical sources.\n\nUsing modern and/or offensive imagery and slogans is prohibited.\n\nNasals and Breteches V. 26.1 6/10",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.1,
+      "ocr_lines": [
+        {
+          "text": "4. Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            800,
+            190,
+            1544,
+            278
+          ],
+          "paper": 0.67,
+          "height": 88,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            929,
+            422
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of a Nasal or a Breteche",
+          "conf_mean": 95.9,
+          "conf_min": 90.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            183,
+            483,
+            2216,
+            526
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "helmet source.",
+          "conf_mean": 96.7,
+          "conf_min": 96.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            544,
+            476,
+            578
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and",
+          "conf_mean": 96,
+          "conf_min": 93.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            617,
+            2220,
+            660
+          ],
+          "paper": 0.78,
+          "height": 33
+        },
+        {
+          "text": "Decorations” document.",
+          "conf_mean": 95.7,
+          "conf_min": 95.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            678,
+            661,
+            712
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.7,
+          "conf_min": 85.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            751,
+            2060,
+            794
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.7,
+          "conf_min": 96.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            924,
+            489,
+            963
+          ],
+          "paper": 0.64,
+          "height": 39
+        },
+        {
+          "text": "Visors must be made of metal grill or plates, concealed under chainmail.",
+          "conf_mean": 95.6,
+          "conf_min": 91,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1034,
+            1635,
+            1077
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Chainmail must be properly attached to the visor with metal, leather or fabric thread.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            1108,
+            1876,
+            1151
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Visors must not be too long or too short and respect the proportions of historical sources.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1181,
+            1975,
+            1224
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Nasal helmet visor bottom line must end between nose and chin.",
+          "conf_mean": 96.1,
+          "conf_min": 95,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1254,
+            1486,
+            1288
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "The fixation system must be reproduced as per historical sources (“spoon” or “cross”).",
+          "conf_mean": 91.6,
+          "conf_min": 68.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            1327,
+            1914,
+            1370
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure",
+          "conf_mean": 96.1,
+          "conf_min": 95.1,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            184,
+            1400,
+            2215,
+            1443
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "full contact fight and must be concealed under the Aventail.",
+          "conf_mean": 95.1,
+          "conf_min": 90.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1479,
+            1374,
+            1522
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "4.3. Eye slots",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1652,
+            589,
+            1702
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "Eye slots should resemble sources for the visor.",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1763,
+            1145,
+            1806
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Eye slots should not exceed 25mm tall to prevent any injury.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1836,
+            1391,
+            1879
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "It is allowed to add up to two (2) safety Eye bars per Eye slot. Externally riveted Eye bars and",
+          "conf_mean": 96.3,
+          "conf_min": 95.2,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            184,
+            1909,
+            2215,
+            1952
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "integrated Eye bars are not allowed.",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            182,
+            1970,
+            909,
+            2013
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Eye bars must conform to the “Eye bars” rules document.",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            2043,
+            1336,
+            2086
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "4.4. Aventail",
+          "conf_mean": 93,
+          "conf_min": 92.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            2216,
+            559,
+            2255
+          ],
+          "paper": 0.59,
+          "height": 39
+        },
+        {
+          "text": "Nasal and Breteche helmets must be worn with chainmail Aventails. Fabric or scales Aventails are",
+          "conf_mean": 94.7,
+          "conf_min": 90.7,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            2327,
+            2217,
+            2361
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "not allowed.",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            2387,
+            420,
+            2421
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Aventails must conform to the “Aventails” document.",
+          "conf_mean": 89,
+          "conf_min": 54,
+          "words": 7,
+          "uncertain": [
+            "“Aventails”"
+          ],
+          "box": [
+            179,
+            2460,
+            1232,
+            2494
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Aventails must be attached to the bascinet by a suspension system made of vervelles and leather.",
+          "conf_mean": 95.3,
+          "conf_min": 92.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            2533,
+            2160,
+            2576
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The Aventail must be fastened down to the edge of a padded pelerine attached to the helmet liner.",
+          "conf_mean": 95.5,
+          "conf_min": 92.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            2606,
+            2164,
+            2649
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Any additional protective plates covering the cervical spine must be hidden under the Aventail.",
+          "conf_mean": 95.6,
+          "conf_min": 88.4,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            2680,
+            2082,
+            2722
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "4.5. Others",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            2852,
+            526,
+            2892
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Nasal and Breteche helmets may be decorated in the spirit of medieval styles, such as orle, torse,",
+          "conf_mean": 95,
+          "conf_min": 90.8,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            2963,
+            2212,
+            3006
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "decorated Aventails (with copper/brass chainmail rings), vervelle covers and coat of arms badges,",
+          "conf_mean": 94.5,
+          "conf_min": 91,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            3024,
+            2214,
+            3067
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "etc. Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            3084,
+            1644,
+            3118
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited.",
+          "conf_mean": 96,
+          "conf_min": 95,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            3157,
+            1506,
+            3200
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Nasals and Breteches V. 26.1 6/10",
+          "conf_mean": 92.2,
+          "conf_min": 87.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "5. Examples of Approved Reproductions\n\nExample of approved welded spoon\n\nPictures from The Medieval Things ©\n\nNasals and Breteches V. 26.1 7/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.4,
+      "ocr_lines": [
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            189,
+            2094,
+            278
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Example of approved welded spoon",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            854,
+            370,
+            1629,
+            406
+          ],
+          "paper": 0.59,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            2645,
+            1517,
+            2676
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "Nasals and Breteches V. 26.1 7/10",
+          "conf_mean": 93.7,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": ") py\nGj 455.)\nLPAI GSS % |\n\nPictures from The Medieval Things ©\n\nPicture from M. Leclere ©\n\nNasals and Breteches V. 26.1 8/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 67.7,
+      "ocr_lines": [
+        {
+          "text": ") py",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1518,
+            1185,
+            1629,
+            1208
+          ],
+          "paper": 0,
+          "height": 23,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "Gj 455.)",
+          "conf_mean": 22.3,
+          "conf_min": 11.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1466,
+            1199,
+            1642,
+            1233
+          ],
+          "paper": 0,
+          "height": 34,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 22.3"
+        },
+        {
+          "text": "LPAI GSS % |",
+          "conf_mean": 17.5,
+          "conf_min": 0,
+          "words": 4,
+          "uncertain": [
+            "LPAI",
+            "GSS"
+          ],
+          "box": [
+            1459,
+            1222,
+            1670,
+            1258
+          ],
+          "paper": 0,
+          "height": 28,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 17.5"
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            1353,
+            1517,
+            1385
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Picture from M. Leclere ©",
+          "conf_mean": 93.8,
+          "conf_min": 91.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1053,
+            2494,
+            1432,
+            2519
+          ],
+          "paper": 0.67,
+          "height": 24
+        },
+        {
+          "text": "Nasals and Breteches V. 26.1 8/10",
+          "conf_mean": 93.6,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "6. Examples of Denied Reproductions\n\nEyebars not painted in black\n\nOverall design does not\nreproduce historical\n\nsources, including =>\nimproper chainmail\n\nfixation on the forehead\n\n(no cross)\n\n<= Aventail mixing fabric and\nchainmail\n\nPictures from The Medieval Things ©\n\nNasals and Breteches V. 26.1 9/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.6,
+      "ocr_lines": [
+        {
+          "text": "6. Examples of Denied Reproductions",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            315,
+            189,
+            2031,
+            278
+          ],
+          "paper": 0.68,
+          "height": 71
+        },
+        {
+          "text": "Eyebars not painted in black",
+          "conf_mean": 95,
+          "conf_min": 90.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            934,
+            367,
+            1551,
+            403
+          ],
+          "paper": 0.58,
+          "height": 33
+        },
+        {
+          "text": "Overall design does not",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            943,
+            2101,
+            1402,
+            2143
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "reproduce historical",
+          "conf_mean": 95.8,
+          "conf_min": 95.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            944,
+            2154,
+            1321,
+            2195
+          ],
+          "paper": 0.69,
+          "height": 41
+        },
+        {
+          "text": "sources, including =>",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            942,
+            2207,
+            1502,
+            2249
+          ],
+          "paper": 0.8,
+          "height": 30
+        },
+        {
+          "text": "improper chainmail",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            944,
+            2260,
+            1309,
+            2301
+          ],
+          "paper": 0.71,
+          "height": 41
+        },
+        {
+          "text": "fixation on the forehead",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            941,
+            2312,
+            1397,
+            2345
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "(no cross)",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            943,
+            2365,
+            1135,
+            2407
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "<= Aventail mixing fabric and",
+          "conf_mean": 94.1,
+          "conf_min": 90.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            805,
+            2650,
+            1399,
+            2693
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "chainmail",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            881,
+            2698,
+            1069,
+            2732
+          ],
+          "paper": 0.61,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            3136,
+            1517,
+            3167
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "Nasals and Breteches V. 26.1 9/10",
+          "conf_mean": 93.8,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 35
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\n\nFormatting redone for consistency and readability. Except points listed below, no content changes.\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\nReplace:\n\n- In 4.1 General Requirements: “Klappvisor” by “Nasal or a Breteche helmet”\n\n- In 4.3 Eye slots: Externally riveted and integrated eyebars are not allowed.”\n\nFebruary-2025 (2025.03)\nFormatting: grammar and formatting\n\nDecember-2024: =Add\nDocument has been created\n\nNasals and Breteches V. 26.1 10/10",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.8,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            874,
+            189,
+            1470,
+            279
+          ],
+          "paper": 0.67,
+          "height": 90,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.5,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            443,
+            2263,
+            486
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            504,
+            1870,
+            547
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.6,
+          "conf_min": 92.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            649,
+            679,
+            692
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            700,
+            2163,
+            743
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 96,
+          "conf_min": 90,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            751,
+            2042,
+            800
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            809,
+            356,
+            852
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 4.1 General Requirements: “Klappvisor” by “Nasal or a Breteche helmet”",
+          "conf_mean": 93.1,
+          "conf_min": 78.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            869,
+            1844,
+            912
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "- In 4.3 Eye slots: Externally riveted and integrated eyebars are not allowed.”",
+          "conf_mean": 88.4,
+          "conf_min": 6.5,
+          "words": 13,
+          "uncertain": [
+            "Externally"
+          ],
+          "box": [
+            180,
+            991,
+            1865,
+            1033
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "February-2025 (2025.03)",
+          "conf_mean": 93.7,
+          "conf_min": 90.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1087,
+            699,
+            1130
+          ],
+          "paper": 0.62,
+          "height": 43
+        },
+        {
+          "text": "Formatting: grammar and formatting",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1135,
+            909,
+            1178
+          ],
+          "paper": 0.52,
+          "height": 43
+        },
+        {
+          "text": "December-2024: =Add",
+          "conf_mean": 64.6,
+          "conf_min": 37.3,
+          "words": 2,
+          "uncertain": [
+            "=Add"
+          ],
+          "box": [
+            182,
+            1224,
+            641,
+            1273
+          ],
+          "paper": 0.54,
+          "height": 49
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1279,
+            752,
+            1312
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Nasals and Breteches V. 26.1 10/10",
+          "conf_mean": 91.2,
+          "conf_min": 87.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.93,
+          "height": 34,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    }
+  ]
+}

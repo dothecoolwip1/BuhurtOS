@@ -1,0 +1,859 @@
+{
+  "inventory_key": "authenticity/eyebars",
+  "version": {
+    "version": "26.1",
+    "title": "Eyebars - GoogleÂ€Docs",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+    "source_url": "https://drive.google.com/file/d/1skAksQXo5-RNNdEP1Tje8dGw_uiJ_ucb/view?usp=sharing",
+    "source_sha256": "2c34b05ad8173bfa08dd964246946174d4039b3c08dcb9fd4e7543b13d474e74",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 9,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 8 page(s) without a text layer",
+    "content_sha256": "bed132b6f3b09f57b7b0a19bcd8c2674f2afbb5d092b0c77beac51ac785dbdf4",
+    "detected": {
+      "version": "26.1",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1",
+        "1 line(s) looked like a numbered heading but did not fit the sequence"
+      ],
+      "pages": 9,
+      "source_lines": 129,
+      "assigned_lines": 163,
+      "furniture_lines": 28,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99576,
+      "provisions": 20,
+      "numbered": 19,
+      "needs_review": 0,
+      "verified": 4,
+      "empty_pages": [
+        1
+      ],
+      "rejected_numbers": 1,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 129,
+      "picture_text_lines": 0,
+      "ocr_corrections": 2
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "eyebars:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Implementation",
+      "body": "The document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "7e35b5946ae02907f8e065d2e3656f914639f40e08c6eb5efd4d1160c27157d4",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:0",
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Definition and Description",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "6cbfee393877c9e22587dc5be99d5858f07bd00b9726562bdcd10d1fcf53a39d",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:5",
+        "3:6"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.1",
+      "title": "Definition",
+      "body": "“Eye bars” are the term used to describe additional protection for the eye slots of a helmet.\nRare historical sources display some additional eye protection, mainly for great helms.\n\nHowever, it is permitted to add Eye bars that do not rely on historical sources to increase the safety of helmets. The number and type of permitted Eye bars are displayed in each helmet rules document.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:2.1",
+      "parent_key": "eyebars:2",
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "5b127f22d4683792d131ec02db0d1a3d52181df442713092a574f8a3f1a2dd19",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 1,
+      "kind": "rule",
+      "number": "2.2",
+      "title": "Eye bars Description",
+      "body": "Eye bars can be:\n\n● Externally Riveted Eye bars This type of Eye bars is documented by historical sources for specific helmets. Therefore, they are only allowed on helmet models that can be historically referenced to have externally riveted Eye bars. If there is no supporting evidence for a particular helmet style, externally riveted Eye bars are not permitted on that helmet.\n\n● Integrated Eye bars This type of Eye bars is documented by historical sources for certain helmets as part of the visor or faceplate itself. They are only permitted on helmet models that can be shown to have used integrated Eye bars historically. If no suitable source exists, integrated Eye bars are not allowed.\nThey must closely replicate the shape, placement, and size seen in surviving artifacts or credible period art.\n\n● Safety Eye bars This type of Eye bar is not documented by historical sources. These concealed Eye bars are allowed solely to increase safety in modern buhurt combat. They typically consist of metal bars riveted or welded to the inside of a helmet, thus remaining concealed from the outside.\n\nNumber and Placement of Safety Eye bars:\n\n○ For helmets with two separate Eye slots, you may install up to two (2) vertical Eye bars per Eye slot.\n\n○ For helmets with one continuous Eye slot, you may install up to five (5) Eye bars across the slot.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "eyebars:2.2",
+      "parent_key": "eyebars:2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "77c2ca6c769380fbcfafb7af96e8603fee9b07f90b30e234987a2be715fffa53",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27",
+        "3:28",
+        "3:29",
+        "3:30",
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36",
+        "3:37",
+        "3:38",
+        "3:39",
+        "3:40",
+        "3:41",
+        "3:42",
+        "3:43",
+        "3:44"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "General Requirements",
+      "body": "All types of Eye bars must respect the following requirements:\n● Be firmly attached to prevent any breakage and maintain a high level of protection in any situation.\n\n● Protect the whole Eye slot from top to bottom.\n\nRecommended: Eye slots should not exceed an opening of 25 mm\n\n<< 25mm tall maximum |",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "eyebars:3",
+      "parent_key": null,
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d67dba79e2bfaf601879789d2d4ab158e3d6df23daa58e02017cd63e96b9c7d7",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:0",
+        "4:1",
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 0,
+      "kind": "section",
+      "number": "4",
+      "title": "Externally Riveted Eye bars",
+      "body": "",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "eyebars:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "fa6c0a12d57025d02752fd4062b6b0c900483c29278e15e80405f62ca04842c9",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:11",
+        "4:12"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.1",
+      "title": "Historical Sources and Datation",
+      "body": "A few historical sources display this type of Eye bar.\nThe main source is the Great Helm from Nuremberg (1350).\n\nDespite its rarity, it is Approved for 14th century, Transitional and 15th century armors.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "eyebars:4.1",
+      "parent_key": "eyebars:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "9b39e3ea674ffa1889be87ca5e20f31590eba6bf87a21151a72c25080b9e663e",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:13",
+        "4:14",
+        "4:15",
+        "4:16",
+        "4:17",
+        "4:18",
+        "4:19"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.2",
+      "title": "Specific Requirements",
+      "body": "Externally riveted Eye bars must:\n● conform with the General Requirements (see Section 3 above),\n● be firmly riveted to the outside of the Eye slot,\n● resemble the historical sources and not exceed a width of 30mm,\n● be made of metal.",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "eyebars:4.2",
+      "parent_key": "eyebars:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "cfb85293b1e47384071772ebdbac43c213967b1fb79971494fd1a391aa285ba3",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3",
+        "5:4",
+        "5:5",
+        "5:6",
+        "5:7"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture by Zoom en Lice ©",
+      "page_from": 5,
+      "page_to": 5,
+      "stable_key": "eyebars:4.3",
+      "parent_key": "eyebars:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "eb3088b7223a1941a3bfd62b8c150534a64e5eb6cf3d2e52d1f619345c3bf5da",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "5:8",
+        "5:9",
+        "5:10",
+        "5:11"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 0,
+      "kind": "section",
+      "number": "5",
+      "title": "Integrated Eye bars",
+      "body": "",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "eyebars:5",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "bae04bf551c5a837dc43322ec93faba016bd597de140cc55f930a1fdcc482713",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:0",
+        "6:1"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.1",
+      "title": "Historical Sources and Datation",
+      "body": "A few historical sources display this type of Eye bar. One artifact from the Churburg castle shows a nice example. .\n\n1380 BNF Nouvelle acquisition frangaise Paris France Integrated eyebar for side-pivoting visored bascinet\n\n1390-1410 - Churburg - Italy",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "eyebars:5.1",
+      "parent_key": "eyebars:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "e688ba5f1f56238c6d25e4dec1e96e8a2a32904d2b7e53a2dbcad975835fd98b",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:2",
+        "6:3",
+        "6:4",
+        "6:5",
+        "6:6",
+        "6:7",
+        "6:8",
+        "6:9",
+        "6:10",
+        "6:11"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.2",
+      "title": "Specific Requirements",
+      "body": "Integrated Eye bars must:\n● conform with the general requirements (see Section 3 above),\n● be sturdy made and able to endure full-contact fights,\n● resemble the historical sources and not exceed a width of 20mm.",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "eyebars:5.2",
+      "parent_key": "eyebars:5",
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "4e55eb2274614bf292bb2373f7304d239e6acd05502c68cfae1d551a75007f1a",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:0",
+        "7:1",
+        "7:2",
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Master Uley ©",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "eyebars:5.3",
+      "parent_key": "eyebars:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "880d93f8cce8438e568f5b64713b553facad3829b392c40bc9b66b8874020d5c",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:7",
+        "7:8",
+        "7:9",
+        "7:10"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 0,
+      "kind": "section",
+      "number": "6",
+      "title": "Safety Eye bars",
+      "body": "",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "eyebars:6",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "96066988de01064546e4616288b83d8335a83f2b5346086dffeb223e5de47482",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:0",
+        "8:1"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.1",
+      "title": "Historical Sources and Datation",
+      "body": "There are no historical sources for Eye bars welded onto Eye slots.\n\nNevertheless, for safety reasons, they are Approved for 14th century, Transitional and 15th century armors.",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "eyebars:6.1",
+      "parent_key": "eyebars:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "b2912f610ebc70c959ed93cd37a6b7b5ee173571fa004ea08e6d412b407f4d9d",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:2",
+        "8:3",
+        "8:4",
+        "8:5",
+        "8:6",
+        "8:7",
+        "8:8"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.2",
+      "title": "Specific Requirements",
+      "body": "Safety Eye bars must:\n\n● conform with the General Requirements (see Section 3 above),\n● be welded or riveted from the inside of the helm,\n\n● be sturdy made and able to endure full-contact fights,\n\n● be painted black.",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "eyebars:6.2",
+      "parent_key": "eyebars:6",
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "1e4bf716de59f493182aec8776dddde10a14cc392c411615322b5852cc535dba",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:9",
+        "8:10",
+        "8:11",
+        "8:12",
+        "8:13",
+        "8:14",
+        "8:15",
+        "8:16",
+        "8:17",
+        "8:18",
+        "8:19"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Pictures from The Medieval Things ©",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "eyebars:6.3",
+      "parent_key": "eyebars:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "4f1cd9b5432108c0555278d395c5d5f4631b90033f061a2d1771b9e116698028",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:20",
+        "8:21",
+        "8:22",
+        "8:23"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.4",
+      "title": "Examples of Denied Reproductions",
+      "body": "Too many eyebars\n\nPicture from The Medieval Things ©",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "eyebars:6.4",
+      "parent_key": "eyebars:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "ae0f58edf81d2fe69f41b18b522476eed649421a0b2c7f646b2cfd108a0fb94d",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:24",
+        "8:25",
+        "8:26",
+        "8:27",
+        "8:28",
+        "8:29"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "depth": 0,
+      "kind": "note",
+      "number": "7",
+      "title": "Changelog",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1) Formatting redone for consistency and legibility. Except points listed below, no content changes.\n\nReplace:\nThroughout the document “Buhurt “Optimized” Eye bars” by “Safety Eye bars”\n\nAdd? “1. Implementation” (and subsequent modification of all Title numbers in the document) Clarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and description” and “3. General Requirements”. This split doesn’t have an impact on the content of the rules.\n\nAdd:\n\n- 2.2 Eye bars description: whole paragraph on Integrated Eye bars and multiple precisions on Externally riveted Eye bars and Safety Eye bars\n\nAdd: “5. Integrated Eye bars” (and subsequent modification of all Title numbers in the document) Replace:\n\n- In 5.1 Historical Sources and Datation: “The main source is the Great Helm from Nuremberg (1350).” by “One artifact from the Churburg castle shows a nice example.”\n\n- In 6.4 Examples of Denied Reproductions: “Too much eyebars” by “too many Eye bars”\n\nDecember-2024: -add Document has been created",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "eyebars:7",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [
+        "5.1",
+        "6.4"
+      ],
+      "content_sha256": "c75f4f272f05dd88a635b0d5d319fd7af4fd5a8da8028b954a4366e3e820db65",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "9:0",
+        "9:1",
+        "9:2",
+        "9:3",
+        "9:4",
+        "9:5",
+        "9:6",
+        "9:7",
+        "9:8",
+        "9:9",
+        "9:10",
+        "9:11",
+        "9:12",
+        "9:13",
+        "9:14",
+        "9:15",
+        "9:16",
+        "9:17",
+        "9:18",
+        "9:19",
+        "9:20",
+        "9:21",
+        "9:22",
+        "9:23",
+        "9:24",
+        "9:25",
+        "9:26",
+        "9:27",
+        "9:28",
+        "9:29",
+        "9:30",
+        "9:31",
+        "9:32"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "Table of contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "1. Implementation 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "2. Definition and Description 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "2.1. Definition 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "2.2. Eye bars Description 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "3. General Requirements 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "4. Externally Riveted Eye bars 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "4.1. Historical Sources and Dating 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "4.2. Specific Requirements 5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "4.3. Examples of Approved Reproductions 5",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "5. Integrated Eye bars 6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "5.1. Historical Sources and Datation 6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "5.2. Specific Requirements 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:14",
+      "page": 2,
+      "text": "5.3. Examples of Approved Reproductions 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "6. Safety Eye bars 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:16",
+      "page": 2,
+      "text": "6.1. Historical Sources and Dating 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:17",
+      "page": 2,
+      "text": "6.2. Specific Requirements 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "6.3. Examples of Approved Reproductions 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:19",
+      "page": 2,
+      "text": "6.4. Examples of Denied Reproductions 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:20",
+      "page": 2,
+      "text": "7. Changelog 9",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:22",
+      "page": 2,
+      "text": "Eye bars V. 26.1 2/9",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "3:45",
+      "page": 3,
+      "text": "Eye bars V. 26.1 3/9",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "4:20",
+      "page": 4,
+      "text": "Eye bars V. 26.1 4/9",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "5:12",
+      "page": 5,
+      "text": "Eye bars V. 26.1 5/9",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "6:12",
+      "page": 6,
+      "text": "Eye bars V. 26.1 6/9",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "7:11",
+      "page": 7,
+      "text": "22 bars v. 26.1 7/9",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "8:30",
+      "page": 8,
+      "text": "Eye bars V. 26.1 8/9",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "9:33",
+      "page": 9,
+      "text": "Eye bars V. 26.1 9/9",
+      "reason": "page footer (page N/M)"
+    }
+  ],
+  "rejected_numbers": [
+    {
+      "id": "9:19",
+      "text": "- 2.2 Eye bars description: whole paragraph on Integrated Eye bars and multiple precisions on",
+      "expected": "7.1"
+    }
+  ],
+  "ocr_corrections": [
+    {
+      "id": "9:28",
+      "from": "- In 6.4 Examples of Denied Reproductions: “Too much eyebars’” by “too many Eye bars”",
+      "to": "- In 6.4 Examples of Denied Reproductions: “Too much eyebars” by “too many Eye bars”",
+      "reason": "page image shows “Too much eyebars” with no apostrophe"
+    },
+    {
+      "id": "9:30",
+      "from": "December-2024: Sadd",
+      "to": "December-2024: -add",
+      "reason": "page image shows \"-add\" (highlighted)"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "inventory_key": "executive/gender-policies",
+  "sha256": "45b9925e034112526679516c1cba57525c48b267ab41ae2a3a7d60ef2a85b1bc",
+  "source_file": "Executive/Gender policies V2024.06.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8",
+  "pdfinfo": {
+    "pages": 4,
+    "title": "Gender policies V2024.06",
+    "creator": null,
+    "producer": "Skia/PDF m133 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "                Tournament Eligibility and Gender\n                       Category Policy\n        Table of Contents\n\n\n        1. Tournament Gender Categories\n              1.1 Recognized Gender Categories\n              1.2 Eligibility for Men’s Tournaments\n                     1.2.1 Assigned male at birth (AMAB)\n                     1.2.2 Female to male surgery (FTM)\n              1.3 Eligibility for Women’s Tournaments\n              1.4 Eligibility for Women’s Open Tournaments\n                     1.4.1 Assigned female at birth (AFAB)\n                     1.4.2 Male to female (MTF)\n              1.5 Categories in Tournament\n                     1.5.1 Men's and Women's categories\n                     1.5.2 Women's Open category\n                     1.5.3 Announce of Women's Open category\n              1.6 Awards\n\n\n        2. Change Log (page 3)\n\n\n\n\nGender Category Policy                                         1\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                   1. Tournament Gender Categories\n\n        1.1 Recognized Gender Categories\n        Buhurt International recognizes three Gender Categories for duels, outrance (profight), and\n        buhurt (group fight). Competitors are required to choose and compete in a single gender\n        category for the entire event. Each category will be ranked separately.\n\n        1.2 Eligibility for Men’s Tournaments\n               1.2.1 All AMAB (assigned male at birth) competitors are eligible to compete, regardless\n                      of gender identity, including cisgender males.\n               1.2.2 FTM (female to male) competitors are also eligible to compete in this category.\n\n        1.3 Eligibility for Women’s Tournaments\n        All AFAB (assigned female at birth) competitors are eligible to compete regardless of gender\n        identity, including cisgender women.\n\n        1.4 Eligibility for Women’s Open Tournaments\n               1.4.1 All AFAB (assigned female at birth) competitors are eligible to compete\n                      regardless of gender identity, including cisgender women.\n               1.4.2 MTF (male to female) competitors are eligible to compete if they have been living\n                      as a woman for 2 years or more.\n\n        1.5 Categories in Tournament\n               1.5.1 All tournaments must offer both the Men’s and Women’s categories.\n               1.5.2 A tournament may also allow duels, pro fights, or group fights in the Women’s\n                      Open category if there are sufficient competitors willing to do so. If dividing the\n                      categories results in insufficient competitors for either the Women’s or the\n                      Women’s Open category, only the Women’s category may be held.\n               1.5.3 Event Organizers must inform competitors at least one (1) month from the start\n                      date of the event if the Women's Open category will be part of the event or not.\n\n        1.6 Awards\n        To issue awards for the Regional, Conference, and International stage, there must be a\n        minimum number of five events per category in the season.\n\n\n\n\nGender Category Policy                                                                  2\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "                                       2. Change log\n             This will be the change log of this document. It will be updated regularly and we will\n               display what has been removed/added/reworded/formatted. This way we keep\n                            transparent communication and clarity about the rules\n\n\n                          March 2024 (Version update from 2024.01 to 2024.03)\n\n\n              Update date: March-2024\n              - format: new design format, document will be used from now on.\n\n\n\n\nGender Category Policy                                                                  3\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

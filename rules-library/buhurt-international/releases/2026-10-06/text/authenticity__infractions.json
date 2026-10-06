@@ -1,0 +1,104 @@
+{
+  "inventory_key": "authenticity/infractions",
+  "sha256": "313d5d3bf9264d8d3be7a32f88e2a046a933f50024676354ad732f43f6504565",
+  "source_file": "Authenticity/Infraction classification and application 26.4.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 6,
+    "title": "Infraction classification and application 26.4",
+    "creator": null,
+    "producer": "Skia/PDF m148 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "jp BUBURT(Z\n\nVER. 26.4\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 63.3,
+      "ocr_lines": [
+        {
+          "text": "jp BUBURT(Z",
+          "conf_mean": 14.1,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "BUBURT(Z"
+          ],
+          "box": [
+            884,
+            182,
+            1598,
+            301
+          ],
+          "paper": 0,
+          "height": 119,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 14.1"
+        },
+        {
+          "text": "VER. 26.4",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            605,
+            1271,
+            1021,
+            1342
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            604,
+            1448,
+            1722,
+            1644
+          ],
+          "paper": 0,
+          "height": 196
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": " Table of contents\n1. Definition​                                                 3\n2. Infraction Classification​                                  3\n3. Application of the Rules​                                   4\n4. Changelog​                                                  6\n\n\n\n\n                                           ​\n\n\n\n\n    Infractions Classification and Application V. 26.4   2/6\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                                        1.​Definition\nAuthenticity rules are meant to be followed by all competitors attending Buhurt International\ntournaments, no matter the category. If a competitor shows up with an armor, shield or weapon that does\nnot comply with the Authenticity rules, he/she risks a penalty.\n\n\n\n\n                       2.​Infraction Classification\nDuring Authenticity Check, Authenticity officers will evaluate the entire equipment of competitors before\nthe start of the tournament. Any violation of the Authenticity rules will result in an infraction. Infractions\ncan be classified under 3 different levels:\n\n\n       2.1.​ Minor infraction\nIt is a small detail not easy to see, and it does not affect the coherence of the whole armor (small traces\nof rust, hammering marks, little datation difference between 2 parts etc.).​\n\n       2.2.​ Moderate Infraction\nIt is something forbidden by the Authenticity rules (i.e badly designed helmet, over numerous eye bars\netc.). Not respecting the rules can't be accepted, thus it is not severe enough to prevent the fighter from\nentering the list.​\n\n       2.3.​ Major infraction\nFantasy armor or totally inaccurate equipment, that prevent the fighter from entering the list and damage\nthe image of the sport, the teams and Buhurt International.​\n\n\n\n\n  Infractions Classification and Application V. 26.4                                                      3/6\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "                     3.​Application of the Rules\nA violation of the authenticity rules will result in a green card. Depending on the rank of tournament,\ninfraction will be applied differently.\n\nA green card combined with a yellow card will result in a red card and the competitor will be disqualified\nfrom the tournament.\n\nA competitor can receive only 1 green card per tournament, no matter how many infractions they have.\n\nIf a competitor fixes the issue(s) that warranted a green card, the green card can be removed after\nvalidation by the Authenticity Officer in charge of the event.\n\nGreen cards will be represented by a green ribbon worn at the competitor’s belt. It is mandatory to keep\nit during the whole competition. Any removal of the green card will be considered as an attempt to cheat.\n\nOnly the Authenticity Officer in charge of the event can allow a fighter to remove the green card from\ntheir belt.\n\n\n\n\n  Infractions Classification and Application V. 26.4                                                4/6\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "       3.1.​ Source\nNo authenticity check required.​\nAuthenticity members on site will be able to give advice and guidance.\n\n       3.2.​ Classic\nAuthenticity check is mandatory prior to the start of the tournament. ​\nA competitor is allowed to enter the list if they respect the following cumulative criterias:\n\n  ●​ Have no more than 3 minors infraction (if they have 4 or more, they will receive a green card).\n  ●​ Have no more than 1 moderate infraction (if they have 2 or more, they will receive a green card.\n  ●​ Have no major infraction.\n\n       3.3.​ Regional\nAuthenticity check is mandatory prior to the start of the tournament.\nA competitor is allowed to enter the list if they respect the following cumulative criterias.\n  ●​ Have no more than 2 minors infraction, if you have 3 or more, then they will receive a green card.\n  ●​ Have no moderate infraction. If they have 1 or more, they will receive a green card.\n  ●​ Have no major infraction.\n\n\n       3.4.​ Conference\nAuthenticity check is mandatory prior to the start of the tournament.\nA competitor is allowed to enter the list if they respect the following cumulative criterias.\n  ●​ Have no more than 1 minor infraction, if you have 2 or more, then they will receive a green card.\n  ●​ Have no moderate infraction.\n  ●​ Have no major infraction.\n\nNote: as an exceptional measure, for season 2025, tournaments of Conference level will be considered\nas Regional regarding Authenticity rules. It means a competitor with 1 moderate infraction will be allowed\nto fight, but will receive a green card.\n\n\n\n\n  Infractions Classification and Application V. 26.4                                                5/6\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 6,
+      "text": "                                             4.​Changelog\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all\n                our members can see how the documents are changing over time.\n\nApril - 2026 (V. 26.4)\nAdd:\n-​       3. Application of the rules: Addition of the Green Ribbon.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\nSuppression:\n-​       2 first paragraphs of “2. Definition” as they were outdated.\n\nFebruary - 2025: ​\n- Replaced: 1. (After vote) introducing the green card rule​\n- Replaced: 2. Members | Officers || Fighters | Competitors\n- Add: 2. Any violation of the Authenticity rules will result in an infraction​\n- Replaced: 3. violation breach of | greenYellow card remains the sanction for Aany” with “A violation of\n- Rephrased: 3. (After vote) to clarify the green card rule.\n- Add: 3.3 If they have 1 or more, they will receive a green card.\n- Add: 3.4: Note\n\nDecember 2024: ​\n-add Document has been created\n\n\n\n\n  Infractions Classification and Application V. 26.4                                                        6/6\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

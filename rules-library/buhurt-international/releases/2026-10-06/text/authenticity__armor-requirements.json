@@ -1,0 +1,128 @@
+{
+  "inventory_key": "authenticity/armor-requirements",
+  "sha256": "e6bfc37709315cac775255ef91c9f0b91a389f724e44bedc8340d9c9ed939477",
+  "source_file": "Authenticity/Technical Requirements for Armors.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 10,
+    "title": "Armor requirement 26.2",
+    "creator": null,
+    "producer": "Skia/PDF m146 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")BUBURT(Z\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 71.2,
+      "ocr_lines": [
+        {
+          "text": ")BUBURT(Z",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            ")BUBURT(Z"
+          ],
+          "box": [
+            884,
+            182,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 115,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 94.5,
+          "conf_min": 92.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            605,
+            1271,
+            989,
+            1342
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            604,
+            1448,
+            1722,
+            1644
+          ],
+          "paper": 0,
+          "height": 196
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": " Table of contents\n1. Introduction and Definitions​               2\n    1.1. Equipment​                            2\n    1.2. List​                                 2\n    1.3. Categories​                           2\n    1.4. Historical Sources​                   2\n2. Historical Consistency Requirements​        3\n    2.1. Equipment from Historical Sources​    3\n    2.2. Dates of Sources​                     3\n    2.3. Prohibited Features​                  3\n    2.4. Consistency in Equipment​             3\n        2.4.1. Western Europe Style​           3\n        2.4.2. Slavic Influence​               3\n        2.4.3. Eastern Influence​              3\n        2.4.4. Authorized Deviations​          4\n3. General Requirements​                       4\n    3.1. Competitor Responsibility​            4\n    3.2. Quality Equipment​                    4\n    3.3. Safe Equipment​                       4\n    3.4. Access to the List​                   4\n4. Helmets Requirements​                       5\n    4.1. Protection​                           5\n    4.2. Thickness and Composition​            5\n    4.3. Coif​                                 6\n    4.4. Chin Strap​                           6\n    4.5. Neck Protection​                      6\n5. Armor Requirements​                         7\n    5.1. Metal Thickness Recommendations​      7\n    5.2. Chest​                                7\n    5.3. Groin​                                7\n    5.4. Hands​                                7\n    5.5. Arms​                                 7\n    5.6. Joints​                               8\n    5.7. Legs​                                 8\n    5.8. Feet​                                 8\n    5.9. Shoes​                                8\n6. Changelog​                                  9\n\n\n\n\n   Technical Requirements for Armors V. 26.1       2/10\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                  1.​ Introduction and Definitions\nThis document will display all requirements for armors, shields, and weapons used in any category.\nEvery competitor is solely responsible for the quality of his/her equipment. Marshals and Authenticity\nOfficers are responsible for the correct application of this document.\n\n\n  1.1.​ Equipment\nArmors, clothes, shields and weapons used by a competitor.\n\n  1.2.​ List\nPlace where the fights occur.\n\n  1.3.​ Categories\n  ●​ Duel\n      1v1 sword and shield, sword and buckler, longsword, polearm.\n  ●​ Buhurt\n      Group fight, 5v5, 12v12, 30v30.\n  ●​ Outrance\n\n\n  1.4.​ Historical Sources\nIt is the result of research to conclude the plausibility of the item had existed. Historical sources can be\nprimary (artifacts, museum originals…) or secondary (images, paintings, statues, description, writings…).\nAny historical source must be analyzed through criticism and logic.\n\n\n\n\n  Technical Requirements for Armors V. 26.1                                                              3/10\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "       2.​ Historical Consistency Requirements\n  2.1.​ Equipment from Historical Sources\nOnly armors derived from historical sources are permitted for use.\nArmors must align with Authenticity Rules documents.\n\n\n  2.2.​ Dates of Sources\nArmors must align with sources dating between the 14th (1300) and 17th (1600) centuries.\nFor safety considerations, reproductions of armors predating the 13th century are prohibited.\n\n\n  2.3.​ Prohibited Features\nProhibited features encompass evident indications of modern materials or manufacturing techniques\nincluding: neon colors, obvious nylon cords, plastic ties, visible welded seams, heat-induced\ndiscoloration, modern footwear and other visible modern equipment.\n\n\n  2.4.​ Consistency in Equipment\nArmors, shields and weapons must consist of pieces from the same style. Distinct styles are defined in\nmodern-day terms as:\n\n    2.4.1.​   Western Europe Style\n  ●​ 14th century: from 1300 to 1380\n  ●​ Transitional: from 1380 to 1420\n  ●​ 15th century: from 1420 to 1500. 15th century style armor must be approved by the\n     Authenticity Committee. We recommended seeking approval before buying such armor.\nWestern Europe includes the following modern countries: Great Britain, Ireland, France, Portugal,\nSpain, Germany, Italy, Norway, Denmark, Sweden, Finland, Austria, Switzerland, Belgium, and the\nNetherlands\n\n    2.4.2.​   Slavic Influence\n  ●​ Central Europe 14th: from 1300 to 1400\n  ●​ Russian late armors: from 1500 to 1700\nSlavic Influence includes the following modern countries: Czech Republic, Romania, Hungary,\nPoland, Slovakia, Slovenia, Croatia, Latvia, Estonia, Moldova, Serbia, Ukraine, Russia, and Belarus.\n\n    2.4.3.​   Eastern Influence\n  ●​ Chinese style: from 1300 to 1600\n  ●​ Japanese samurai style: from 1400 to 1700\n  ●​ Middle-East style: from 1300 to 1700\nEastern influence includes the following modern countries: China, Japan, India, Korea, Iran, Iraq,\nTurkey, Egypt.\n\n\n\n\n  Technical Requirements for Armors V. 26.1                                                            4/10\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "    2.4.4.​   Authorized Deviations\nCompetitors may deviate from these specified styles if they provide sources supporting their\nequipment choices.\n\nCompetitors who deviate from these specified styles must                      send     an   email    to\nauthenticity@buhurtinternational.com to obtain validation of their armor.\n\n\n\n\n                         3.​ General Requirements\n  3.1.​ Competitor Responsibility\nEvery competitor is responsible for the quality and the safety of his/her equipment.\n\n  3.2.​ Quality Equipment\nAll armor parts must be made of strong metal plates able to endure full contact fights.\nPoor quality equipment is not allowed in any category.\nPoor quality armor examples: highly damaged, almost broken or cracked, barely attached to the\nother armor pieces etc.\n\n  3.3.​ Safe Equipment\nThe whole armor must protect the following body parts:\n  ●​   Head: open-face helmets are not allowed in any category,\n  ●​   Neck: throat and all sides of the neck,\n  ●​   Chest: torso and back,\n  ●​   Pelvis: Ball joint of Hip, Groin, tailbone,\n  ●​   Arms: shoulders, biceps, elbows and forearms,\n  ●​   Legs: thighs and shins,\n  ●​   Feet: toes included,\n  ●​   Hands: wrist and fingers.\n\n\n\n\n       Mandatory-protected body parts:\n\n\n\n\n  3.4.​ Access to the List\nMarshals are allowed to deny any competitor with clearly poor quality equipment to enter the list.\n\n\n\n\n  Technical Requirements for Armors V. 26.1                                                               5/10\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 6,
+      "text": "                        4.​ Helmets Requirements\n  4.1.​ Protection\nA helmet is the head protection. It must protect the entire head and neck from all sides.\n\n\n                            A helmet is composed by the following parts:\n\n\n\n\nA helmet must protect the whole head. Open-face helmets are not allowed in any category.\nHelmet must conform to the corresponding Authenticity Rules documents.\nIf the helmet includes a removable or pivoting visor, it should be secured to prevent any opening during a\nfight.\nLocking systems, if visible, must be based on historical sources and use authentic materials (leather,\nrope, etc.).\nApproved locking systems are displayed in corresponding Authenticity Rules documents.\n\n\n  4.2.​ Thickness and Composition\nDome and visor must be made of metal.\nIt is recommended to use steel (mild, tempered, hardened or stainless).\nAny other material (I.e titanium) is not permitted.\nVisors may be made of titanium.\nA helmet can be made of steel of varying thicknesses.\nRecommend minimum thicknesses:\n  ●​ 2.5mm mild steel / spring steel.\n  ●​ 2.5mm stainless steel.\n  ●​ 2.0mm tempered steel / hardened steel.\n\n\n\n\n  Technical Requirements for Armors V. 26.1                                                            6/10\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "  4.3.​ Coif\nA helmet must have a quilted, or padded, coif inside, or a leather suspension system with a quilted coif.\nThe recommended minimum thickness of the coif is 5 mm.\n\n\n  4.4.​ Chin Strap\nA chin strap must secure the helmet to the head, preventing any loss of it during a fight.\nIf the construction of the helmet excludes the use of the chinstrap, the helmet must be secured on the\nhead by other means.\nIt is recommended to use additional straps to secure the helmet to the torso and/or back protection. The\nstraps must be made of strong leather with metal buckles(plastic buckles are not permitted).\n\n\n  4.5.​ Neck Protection\nA neck protection is mandatory and must cover the neck in any position.\nThis protection can be made of metal plates sewn to the pellerine and hidden by an aventail.\nIt is recommended to wear a neck protection attached to the gambeson.\nNeck protection must conform to the “Neck Protection” document.\n\n\n\n\n  Technical Requirements for Armors V. 26.1                                                             7/10\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 8,
+      "text": "                          5.​ Armor Requirements\n  5.1.​ Metal Thickness Recommendations\nThe minimum recommended thickness for steel plates of an armor is 1.5 mm (mild steel) or 0.8 mm\n(tempered steel, hardened steel, stainless steel).\n\nThe minimum recommended thickness for titanium plates of an armor is 0.8 mm.\n\n  5.2.​ Chest\nThe torso and the back must be protected with metal plates.\n\nChainmail elements can be used as an additional protection or as an articulation of plate elements.\n\nAn under-armor layer protecting the torso and the back is mandatory, commonly called gambeson. It\nshould consist of at least a layer of felted fabric quilted with fabric.\n\nIt is allowed and recommended to wear concealed modern protection for the back.\n\nHips protection is mandatory. If the torso protection is not long enough to cover the hips in standing\nposition, competitors can use a metal scale skirt, hidden metal plates attached to gambeson, or other\npermitted protection displayed in Authenticity Rule documents.\n\n  5.3.​ Groin\nGroin must be protected with armor or modern groin protection.\n\nModern groin protection must be concealed.\n\n  5.4.​ Hands\nBoth hands must be protected with gauntlets or plate mittens.\n\nGauntlets and mittens must conform to the “Gauntlets” document.\n\nChainmail can be used only as an additional element or as an articulation of plate elements.\n\nGauntlets with separate fingers are not allowed in any category.\n\nIt is allowed to lock the gauntlet in closed-position with a leather strap or any locking system based on\nhistorical source.\n\nIt is not allowed to use gauntlets that can’t be opened in any way. Such gauntlets can be found under\nmany names, including “torpedo”, “hoof”, “fist” etc. Except for the Longsword Duels Category.\n\n  5.5.​ Arms\nArms must be protected with metal plate armor.\n\nUnder-shield forearms can be left unprotected if the shield covers the entire forearm.\n\nIt is recommended to wear full arms protection in the Buhurt category, even if the shield covers the\nforearm.\n\n\n\n\n  Technical Requirements for Armors V. 26.1                                                           8/10\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 9,
+      "text": "  5.6.​ Joints\nAll joints (shoulders, elbows, hips, knees, wrists) must be sufficiently protected with metal plate armor.\n\n  5.7.​ Legs\nLegs must be protected with metal plate armor.\n\nLeg armor can leave the back of the leg unprotected.\n\nIt is recommended to wear leg armor with full cover of the back of the leg in Buhurt categories.\n\nIt is recommended to wear padded chausses to cover the open areas.\n\nIt is allowed to wear only a pair of pants. Such a pair of pants must conform to the “Textiles and Leather”\ndocument .\n\nKnee pads or knee braces must be concealed.\n\n  5.8.​ Feet\nFeet must be protected with metal plates, commonly called sabatons.\n\nSabatons must conform to the “Sabatons” document.\n\nSabatons must cover the top part of the foot (including tarsal and metatarsals) and toes.\n\nSabatons must be well attached to the shoes by leather laces or any other authentical material (rope,\nlinen thread for example).\n\n  5.9.​ Shoes\nModern shoes are not permitted.\n\nOnly replicas of medieval shoes are allowed.\n\nFlat rubber soles with low profile texture are permitted to replace historical soles.\n\nShoes must conform to the “Textiles and Leather” document.\n\n\n\n\n  Technical Requirements for Armors V. 26.1                                                                  9/10\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 10,
+      "text": "                                               6.​ Changelog\n             This will be the change log of this document. It will be updated regularly and we will\n                 display what has been removed/added/reworded/formatted. This way we keep\n                                transparent communication and clarity about the rules\n\n\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\nReplace:\n-​     In 4.5. Neck Protection: “Neck protection must conform to the Authenticity Rules document.”\nby “Neck protection must conform to the “Neck Protection” document.”\n-​     In 5.8. Feet: “Sabatons must conform to the Authenticity Rules document.” by “Sabatons\nmust conform to the “Sabatons” document.”\n\n\n\nDate update: February 2025 (V2025.02)\n- add: 3.3: Pelvis: Ball joint of Hip, Groin, tailbone\n- add: 5.6: All joints (shoulders, elbows,hips, knees, wrists) must be sufficiently protected with metal plate armor.\n\nDate update: December 2024\n- add: Document created\n\n\n\n\n   Technical Requirements for Armors V. 26.1                                                                            10/10\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

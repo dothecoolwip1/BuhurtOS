@@ -1,0 +1,2024 @@
+{
+  "inventory_key": "authenticity/wolfribs",
+  "sha256": "67253af516d33f96a4a81f39e6ea7f1d8f435f0cc2419b250b5ebaa53ebabb04",
+  "source_file": "Authenticity/Wolf Ribs.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 9 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 9,
+    "title": "Wolf Ribs - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:30:39 2026 UTC",
+    "modified": "Wed Jan 28 14:30:39 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")\\) BUHURT(Z\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 79.4,
+      "ocr_lines": [
+        {
+          "text": ")\\) BUHURT(Z",
+          "conf_mean": 54.9,
+          "conf_min": 53.8,
+          "words": 2,
+          "uncertain": [
+            "BUHURT(Z"
+          ],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 116,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 54.9"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.2,
+          "conf_min": 93.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1272,
+            991,
+            1343
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            606,
+            1449,
+            1724,
+            1643
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n3. Historical Sources and Datation 4\n4. Requirements 4\n4.1. General Requirements 4\n4.2. Visor 4\n4.3. Eye slots 4\n4.4. Aventail 5\n4.5. Others 5\n5. Examples of Approved Reproductions 6\n6. Examples of Denied Reproductions 7\n7. Changelog AS)\n\nWolf Ribs v. 26.1 2/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.7,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            366,
+            621,
+            406
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            438,
+            2217,
+            480
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            503,
+            2217,
+            537
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "3. Historical Sources and Datation 4",
+          "conf_mean": 95,
+          "conf_min": 90.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            568,
+            2217,
+            602
+          ],
+          "paper": 0.88,
+          "height": 33
+        },
+        {
+          "text": "4. Requirements 4",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            634,
+            2217,
+            676
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "4.1. General Requirements 4",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            699,
+            2217,
+            741
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "4.2. Visor 4",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            764,
+            2217,
+            798
+          ],
+          "paper": 0.97,
+          "height": 33
+        },
+        {
+          "text": "4.3. Eye slots 4",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            829,
+            2217,
+            872
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "4.4. Aventail 5",
+          "conf_mean": 92.7,
+          "conf_min": 88.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            894,
+            2217,
+            928
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "4.5. Others 5",
+          "conf_mean": 96.6,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            959,
+            2217,
+            993
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "5. Examples of Approved Reproductions 6",
+          "conf_mean": 96.4,
+          "conf_min": 95,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1024,
+            2217,
+            1067
+          ],
+          "paper": 0.89,
+          "height": 42
+        },
+        {
+          "text": "6. Examples of Denied Reproductions 7",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1089,
+            2217,
+            1132
+          ],
+          "paper": 0.89,
+          "height": 35
+        },
+        {
+          "text": "7. Changelog AS)",
+          "conf_mean": 64.3,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [
+            "AS)"
+          ],
+          "box": [
+            153,
+            1155,
+            2217,
+            1198
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 2/9",
+          "conf_mean": 84.2,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            233,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season beside the part in Blue.\n\nCompetitors will have a grace period to align their equipment with the rule written in Blue. This grace\nperiod will end on 31/12/2027.\n\n2. Definition\n\nWolf Ribs helmets are bascinet-based helmets topped by a central-pivot facial grill. The few available\nsources are paintings from the Czech Republic and Germany. The primary sources are dated from 1380\nand 1450.\n\nThe helmet is very similar to other bascinets. It is constructed with a center-hinge visor (such as\nKlappvisor), locked with a “spoon”, and is worn with an aventail.\n\nWolf Ribs helmets are Approved for 14th century and Transitional armors.\nWolf Ribs helmets with bascinet shape are Denied for 15th century armors.\n\nWolf Ribs v. 26.1 3/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.7,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.2,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            820,
+            226,
+            1664,
+            314
+          ],
+          "paper": 0.68,
+          "height": 88,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            425,
+            1955,
+            468
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season beside the part in Blue.",
+          "conf_mean": 96.2,
+          "conf_min": 94.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            486,
+            2182,
+            528
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Competitors will have a grace period to align their equipment with the rule written in Blue. This grace",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            588,
+            2336,
+            631
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "period will end on 31/12/2027.",
+          "conf_mean": 95.8,
+          "conf_min": 94.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            648,
+            786,
+            691
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            948,
+            761,
+            1531,
+            832
+          ],
+          "paper": 0.62,
+          "height": 71
+        },
+        {
+          "text": "Wolf Ribs helmets are bascinet-based helmets topped by a central-pivot facial grill. The few available",
+          "conf_mean": 95.2,
+          "conf_min": 89.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            950,
+            2333,
+            993
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "sources are paintings from the Czech Republic and Germany. The primary sources are dated from 1380",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            1011,
+            2335,
+            1054
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "and 1450.",
+          "conf_mean": 95.2,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            1072,
+            379,
+            1106
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "The helmet is very similar to other bascinets. It is constructed with a center-hinge visor (such as",
+          "conf_mean": 94.9,
+          "conf_min": 89.8,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1145,
+            2334,
+            1188
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "Klappvisor), locked with a “spoon”, and is worn with an aventail.",
+          "conf_mean": 94.7,
+          "conf_min": 90.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            182,
+            1205,
+            1464,
+            1248
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Wolf Ribs helmets are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1278,
+            1740,
+            1321
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Wolf Ribs helmets with bascinet shape are Denied for 15th century armors.",
+          "conf_mean": 95.7,
+          "conf_min": 91.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            179,
+            1351,
+            1807,
+            1387
+          ],
+          "paper": 0.6,
+          "height": 33
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 3/9",
+          "conf_mean": 84,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            232,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "__ 3. Historical Sources and Datation\n\nTrebori-altarpiece resurrection, Praha - Master of the Karlsruhe Passion - Christ\n1380/1385 - Czech Republic Carrying the Cross - 1450/1474 - Germany\n\n4. Requirements\n\n4.1. General Requirements\n\nReproductions must closely resemble the appearance and proportions of the sources.\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”\ndocument.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nThe visor must not be too long or too short and respect the proportions of historical sources.\n\nThe hinge must be reproduced as per historical sources.\n\nIt is permitted to weld the hinge. Welded hinges must resemble a functional hinge.\n\nIt is permitted to weld the visor down. A welded visor must resemble a functional removable visor.\n\nIt is permitted to add a metal plate to protect the throat. Such a plate must be strong enough to endure full\ncontact fight and must be concealed under the aventail.\n\nThe visor must consist of 5 horizontal ribs.\nRibs must be round or bar-shaped.\nRibs can not be made of flat sheets.\n\n4.3. Eye slots\n\nIt is not recommended to have oversized eye slots (over 30x50 mm).\nIt is permitted to add up to four (4) vertical safety Eye bars on the visor: two (2) on each side of the visor.\nEye bars must conform to the “Eye bars” document.\n\nWolf Ribs v. 26.1 4/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.6,
+      "ocr_lines": [
+        {
+          "text": "__ 3. Historical Sources and Datation",
+          "conf_mean": 79.4,
+          "conf_min": 6.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            0,
+            114,
+            2034,
+            310
+          ],
+          "paper": 0.81,
+          "height": 70
+        },
+        {
+          "text": "Trebori-altarpiece resurrection, Praha - Master of the Karlsruhe Passion - Christ",
+          "conf_mean": 88.8,
+          "conf_min": 35.9,
+          "words": 11,
+          "uncertain": [
+            "Trebori-altarpiece"
+          ],
+          "box": [
+            398,
+            980,
+            1943,
+            1011
+          ],
+          "paper": 0.79,
+          "height": 25
+        },
+        {
+          "text": "1380/1385 - Czech Republic Carrying the Cross - 1450/1474 - Germany",
+          "conf_mean": 94.5,
+          "conf_min": 91.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            456,
+            1024,
+            1963,
+            1055
+          ],
+          "paper": 0.81,
+          "height": 25
+        },
+        {
+          "text": "4. Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            849,
+            1185,
+            1631,
+            1272
+          ],
+          "paper": 0.68,
+          "height": 87
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1385,
+            929,
+            1435
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of the sources.",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1496,
+            1912,
+            1539
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”",
+          "conf_mean": 95.8,
+          "conf_min": 91.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            1569,
+            2342,
+            1612
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "document.",
+          "conf_mean": 85.2,
+          "conf_min": 85.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            1631,
+            389,
+            1664
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.6,
+          "conf_min": 82.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            1703,
+            2060,
+            1746
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            1852,
+            489,
+            1891
+          ],
+          "paper": 0.63,
+          "height": 39
+        },
+        {
+          "text": "The visor must not be too long or too short and respect the proportions of historical sources.",
+          "conf_mean": 96.4,
+          "conf_min": 95.1,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1962,
+            2036,
+            2005
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "The hinge must be reproduced as per historical sources.",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            2036,
+            1319,
+            2078
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "It is permitted to weld the hinge. Welded hinges must resemble a functional hinge.",
+          "conf_mean": 96.1,
+          "conf_min": 94.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            184,
+            2109,
+            1834,
+            2151
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "It is permitted to weld the visor down. A welded visor must resemble a functional removable visor.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            184,
+            2182,
+            2146,
+            2224
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "It is permitted to add a metal plate to protect the throat. Such a plate must be strong enough to endure full",
+          "conf_mean": 96.5,
+          "conf_min": 95.5,
+          "words": 22,
+          "uncertain": [],
+          "box": [
+            184,
+            2255,
+            2333,
+            2298
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "contact fight and must be concealed under the aventail.",
+          "conf_mean": 95.2,
+          "conf_min": 92.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            2316,
+            1298,
+            2359
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "The visor must consist of 5 horizontal ribs.",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            2389,
+            1031,
+            2422
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Ribs must be round or bar-shaped.",
+          "conf_mean": 95.3,
+          "conf_min": 92.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            183,
+            2462,
+            883,
+            2504
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Ribs can not be made of flat sheets.",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            2535,
+            906,
+            2568
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "4.3. Eye slots",
+          "conf_mean": 96.1,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            2683,
+            589,
+            2734
+          ],
+          "paper": 0.69,
+          "height": 40
+        },
+        {
+          "text": "It is not recommended to have oversized eye slots (over 30x50 mm).",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            184,
+            2794,
+            1565,
+            2837
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is permitted to add up to four (4) vertical safety Eye bars on the visor: two (2) on each side of the visor.",
+          "conf_mean": 96.2,
+          "conf_min": 94.9,
+          "words": 24,
+          "uncertain": [],
+          "box": [
+            184,
+            2867,
+            2286,
+            2910
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Eye bars must conform to the “Eye bars” document.",
+          "conf_mean": 95.2,
+          "conf_min": 88.4,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            2940,
+            1224,
+            2983
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 4/9",
+          "conf_mean": 84.1,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            232,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4.4. Aventail\n\nWolf Ribs helmets must be worn with chainmail Aventails, fabric Aventails, or scales Aventails.\nAventails must conform to the “Aventails” document.\nChainmail Aventail must be fastened down to the edge of a padded pelerine, attached to the helmet liner.\n\nScales and fabric Aventails are recommended to be fastened down to the edge of a padded pelerine,\nattached to the helmet liner.\n\nAny additional protective plates covering the cervical spine should be hidden under the Aventail.\n\n4.5. Others\n\nWolf Ribs helmets may be decorated in the spirit of medieval styles, such as an orle, torse, decorated\naventails (with copper/brass chainmail rings), vervelle covers, coat of arms badges, etc.\n\nSuch decoration must be made in coherence with historical sources.\nUsing modern and/or offensive imagery and slogans is prohibited.\n\nSpoon Fixation\n\n__| 5 Horizontal Ribs / Not Flat Ribs |\n\nVertical Eye Bars\n\nRecommendations for Eyes slots :\n\n○ : 5 EyeSlot\nstir\n\ni _= | 50mm\nay\na, Uf\n\nWolf Ribs v. 26.1 5/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.9,
+      "ocr_lines": [
+        {
+          "text": "4.4. Aventail",
+          "conf_mean": 91.8,
+          "conf_min": 91.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            217,
+            559,
+            257
+          ],
+          "paper": 0.59,
+          "height": 40
+        },
+        {
+          "text": "Wolf Ribs helmets must be worn with chainmail Aventails, fabric Aventails, or scales Aventails.",
+          "conf_mean": 94.5,
+          "conf_min": 89.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            328,
+            2084,
+            368
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "Aventails must conform to the “Aventails” document.",
+          "conf_mean": 91.5,
+          "conf_min": 72,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            179,
+            401,
+            1232,
+            435
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Chainmail Aventail must be fastened down to the edge of a padded pelerine, attached to the helmet liner.",
+          "conf_mean": 95.4,
+          "conf_min": 91.4,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            474,
+            2300,
+            518
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Scales and fabric Aventails are recommended to be fastened down to the edge of a padded pelerine,",
+          "conf_mean": 95.4,
+          "conf_min": 91.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            547,
+            2332,
+            591
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "attached to the helmet liner.",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            608,
+            738,
+            642
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Any additional protective plates covering the cervical spine should be hidden under the Aventail.",
+          "conf_mean": 95.7,
+          "conf_min": 90.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            681,
+            2118,
+            724
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "4.5. Others",
+          "conf_mean": 95.5,
+          "conf_min": 94.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            816,
+            526,
+            857
+          ],
+          "paper": 0.63,
+          "height": 41
+        },
+        {
+          "text": "Wolf Ribs helmets may be decorated in the spirit of medieval styles, such as an orle, torse, decorated",
+          "conf_mean": 95.5,
+          "conf_min": 91.3,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            928,
+            2333,
+            971
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "aventails (with copper/brass chainmail rings), vervelle covers, coat of arms badges, etc.",
+          "conf_mean": 94.8,
+          "conf_min": 91.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            988,
+            1947,
+            1032
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 94.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            1061,
+            1558,
+            1096
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited.",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            1134,
+            1506,
+            1178
+          ],
+          "paper": 0.73,
+          "height": 35
+        },
+        {
+          "text": "Spoon Fixation",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1148,
+            1336,
+            1430,
+            1379
+          ],
+          "paper": 0.6,
+          "height": 43
+        },
+        {
+          "text": "__| 5 Horizontal Ribs / Not Flat Ribs |",
+          "conf_mean": 86.6,
+          "conf_min": 36.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            1001,
+            1439,
+            1532,
+            1509
+          ],
+          "paper": 0.78,
+          "height": 26
+        },
+        {
+          "text": "Vertical Eye Bars",
+          "conf_mean": 96.9,
+          "conf_min": 96.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1159,
+            1555,
+            1419,
+            1589
+          ],
+          "paper": 0.55,
+          "height": 28
+        },
+        {
+          "text": "Recommendations for Eyes slots :",
+          "conf_mean": 94.3,
+          "conf_min": 89,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            2085,
+            923,
+            2128
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "○ : 5 EyeSlot",
+          "conf_mean": 46.9,
+          "conf_min": 5.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1084,
+            2495,
+            1771,
+            2538
+          ],
+          "paper": 0.86,
+          "height": 26,
+          "raw": "; : 5 EyeSlot"
+        },
+        {
+          "text": "stir",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            "stir"
+          ],
+          "box": [
+            913,
+            2542,
+            1255,
+            2629
+          ],
+          "paper": 0.84,
+          "height": 87,
+          "in_picture": "nothing read with confidence (best word 0): marks of a picture"
+        },
+        {
+          "text": "i _= | 50mm",
+          "conf_mean": 54.8,
+          "conf_min": 0,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            797,
+            2574,
+            1764,
+            2697
+          ],
+          "paper": 0.86,
+          "height": 65
+        },
+        {
+          "text": "ay",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            935,
+            2697,
+            1251,
+            2809
+          ],
+          "paper": 0.85,
+          "height": 112,
+          "in_picture": "nothing read with confidence (best word 0): marks of a picture"
+        },
+        {
+          "text": "a, Uf",
+          "conf_mean": 39.7,
+          "conf_min": 31.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            970,
+            2750,
+            1248,
+            2857
+          ],
+          "paper": 0.77,
+          "height": 107
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 5/9",
+          "conf_mean": 84,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            232,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "5. Examples of Approved Reproductions\n\nPictures from V. Mishurin ©\n\nWolf Ribs v. 26.1 6/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 86.4,
+      "ocr_lines": [
+        {
+          "text": "5. Examples of Approved Reproductions",
+          "conf_mean": 95.8,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            300,
+            225,
+            2182,
+            314
+          ],
+          "paper": 0.68,
+          "height": 87
+        },
+        {
+          "text": "Pictures from V. Mishurin ©",
+          "conf_mean": 94.2,
+          "conf_min": 91.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1041,
+            2442,
+            1444,
+            2466
+          ],
+          "paper": 0.65,
+          "height": 24
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 6/9",
+          "conf_mean": 84.1,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            233,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "6. Examples of Reproductions\n\nMore than 5 horizontal ribs Flat ribs\n\nFrame around visor Welding spot visible\n(not based on historical sources) Eyebars not black-painted\n\nWolf Ribs v. 26.1 7/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.9,
+      "ocr_lines": [
+        {
+          "text": "6. Examples of Reproductions",
+          "conf_mean": 95.4,
+          "conf_min": 94.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            364,
+            225,
+            2118,
+            314
+          ],
+          "paper": 0.68,
+          "height": 87
+        },
+        {
+          "text": "More than 5 horizontal ribs Flat ribs",
+          "conf_mean": 95.5,
+          "conf_min": 95.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            195,
+            509,
+            1702,
+            543
+          ],
+          "paper": 0.78,
+          "height": 33
+        },
+        {
+          "text": "Frame around visor Welding spot visible",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            604,
+            1487,
+            2167,
+            1524
+          ],
+          "paper": 0.79,
+          "height": 34
+        },
+        {
+          "text": "(not based on historical sources) Eyebars not black-painted",
+          "conf_mean": 94.9,
+          "conf_min": 91.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            454,
+            1539,
+            2240,
+            1582
+          ],
+          "paper": 0.76,
+          "height": 37
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 7/9",
+          "conf_mean": 83.8,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            233,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "Neck protection visible\nIt must be concealed under the Aventail\n\nPictures from The Medieval Things ©\n\nWolf Ribs v. 26.1 8/9",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89,
+      "ocr_lines": [
+        {
+          "text": "Neck protection visible",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            994,
+            211,
+            1490,
+            253
+          ],
+          "paper": 0.55,
+          "height": 34
+        },
+        {
+          "text": "It must be concealed under the Aventail",
+          "conf_mean": 94.5,
+          "conf_min": 90.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            844,
+            259,
+            1640,
+            293
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            1838,
+            1517,
+            1870
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 8/9",
+          "conf_mean": 83.5,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            233,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\nFormat: Following sentences in Blue for Implementation schedule:\n- In 2. Definition: “Wolf Ribs helmets with bascinet shape are denied for 15th century armor.”\nReplace:\n- In 4.4 Aventails:\n- “The aventail must be fastened down to the outer edge of a padded pelerine attached to the\nhelmet liner.”\nby\n“Chainmail aventail must be fastened down to the edge of a padded pelerine, attached to the\nhelmet liner.”\n- “Wolf Ribs helmets can be worn with chainmail or fabric Aventails. Scales aventails are not\npermitted.”\nby\n“Wolf Ribs helmets must be worn with chainmail Aventails, fabric Aventails, or scales Aventails.”\n- “Protective plates covering the cervical spine should be hidden under the Aventail.”\nby\n“Any additional protective plates covering the cervical spine should be hidden under the Aventail.”\nAdd:\n- In 4.4 Aventails: “Scales and Fabric aventails are recommended to be fastened down to the edge\nof a padded pelerine, attached to the helmet liner.”\n\nMarch - 2025 (V2025.03)\n- Clarification: Wolf Ribs helmets with bascinet shape are denied for 15th century armors\n\nFebruary - 2025 (V2025.02)\n\n- Format: formatting and grammar improvements\n\n- Replaced: 3.3 It is permitted to add up to four (4) vertical Buhurt Optimized eyebars on the visor: two\n(2) on each side of the visor. || It is permitted to add up to four (4) vertical safety eyebars on the visor:\ntwo (2) on each side of the visor.\n\nDecember - 2024 (V2024.12)\nDocument has been created\n\nWolf Ribs v. 26.1 9/9",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.8,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            923,
+            225,
+            1558,
+            315
+          ],
+          "paper": 0.69,
+          "height": 90,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            341,
+            2263,
+            384
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            403,
+            1870,
+            445
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.3,
+          "conf_min": 91.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            554,
+            679,
+            598
+          ],
+          "paper": 0.63,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            606,
+            2152,
+            649
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 93,
+          "conf_min": 72.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            657,
+            2042,
+            710
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Format: Following sentences in Blue for Implementation schedule:",
+          "conf_mean": 95.7,
+          "conf_min": 93.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            727,
+            1515,
+            770
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "- In 2. Definition: “Wolf Ribs helmets with bascinet shape are denied for 15th century armor.”",
+          "conf_mean": 95.7,
+          "conf_min": 92.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            788,
+            2162,
+            831
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            849,
+            356,
+            891
+          ],
+          "paper": 0,
+          "height": 42
+        },
+        {
+          "text": "- In 4.4 Aventails:",
+          "conf_mean": 93.2,
+          "conf_min": 91,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            910,
+            650,
+            943
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "- “The aventail must be fastened down to the outer edge of a padded pelerine attached to the",
+          "conf_mean": 94.7,
+          "conf_min": 85.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            228,
+            970,
+            2155,
+            1013
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "helmet liner.”",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            304,
+            1030,
+            561,
+            1064
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "by",
+          "conf_mean": 96.9,
+          "conf_min": 96.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            304,
+            1092,
+            349,
+            1134
+          ],
+          "paper": 0.67,
+          "height": 42
+        },
+        {
+          "text": "“Chainmail aventail must be fastened down to the edge of a padded pelerine, attached to the",
+          "conf_mean": 95.5,
+          "conf_min": 91.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            303,
+            1152,
+            2176,
+            1195
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "helmet liner.”",
+          "conf_mean": 95.1,
+          "conf_min": 95.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            304,
+            1212,
+            561,
+            1246
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "- “Wolf Ribs helmets can be worn with chainmail or fabric Aventails. Scales aventails are not",
+          "conf_mean": 94.2,
+          "conf_min": 83.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            228,
+            1273,
+            2134,
+            1307
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "permitted.”",
+          "conf_mean": 95.5,
+          "conf_min": 95.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            304,
+            1334,
+            518,
+            1376
+          ],
+          "paper": 0.68,
+          "height": 42
+        },
+        {
+          "text": "by",
+          "conf_mean": 96.9,
+          "conf_min": 96.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            304,
+            1394,
+            349,
+            1437
+          ],
+          "paper": 0.69,
+          "height": 43
+        },
+        {
+          "text": "“Wolf Ribs helmets must be worn with chainmail Aventails, fabric Aventails, or scales Aventails.”",
+          "conf_mean": 94.7,
+          "conf_min": 91.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            303,
+            1454,
+            2238,
+            1494
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "- “Protective plates covering the cervical spine should be hidden under the Aventail.”",
+          "conf_mean": 94.7,
+          "conf_min": 88.3,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            228,
+            1515,
+            1976,
+            1558
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "by",
+          "conf_mean": 96.9,
+          "conf_min": 96.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            304,
+            1576,
+            349,
+            1618
+          ],
+          "paper": 0.68,
+          "height": 42
+        },
+        {
+          "text": "“Any additional protective plates covering the cervical spine should be hidden under the Aventail.”",
+          "conf_mean": 95.8,
+          "conf_min": 90.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            303,
+            1636,
+            2272,
+            1679
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Add:",
+          "conf_mean": 94.6,
+          "conf_min": 94.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1687,
+            273,
+            1740
+          ],
+          "paper": 0,
+          "height": 53
+        },
+        {
+          "text": "- In 4.4 Aventails: “Scales and Fabric aventails are recommended to be fastened down to the edge",
+          "conf_mean": 95.2,
+          "conf_min": 91.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1758,
+            2292,
+            1800
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "of a padded pelerine, attached to the helmet liner.”",
+          "conf_mean": 95.5,
+          "conf_min": 91.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            181,
+            1818,
+            1198,
+            1860
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "March - 2025 (V2025.03)",
+          "conf_mean": 92.8,
+          "conf_min": 91.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            1970,
+            693,
+            2013
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "- Clarification: Wolf Ribs helmets with bascinet shape are denied for 15th century armors",
+          "conf_mean": 95.6,
+          "conf_min": 91.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            2018,
+            1969,
+            2061
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "February - 2025 (V2025.02)",
+          "conf_mean": 92.9,
+          "conf_min": 92.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2154,
+            754,
+            2197
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "- Format: formatting and grammar improvements",
+          "conf_mean": 95.8,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            180,
+            2202,
+            1165,
+            2245
+          ],
+          "paper": 0.63,
+          "height": 34
+        },
+        {
+          "text": "- Replaced: 3.3 It is permitted to add up to four (4) vertical Buhurt Optimized eyebars on the visor: two",
+          "conf_mean": 95.6,
+          "conf_min": 91.5,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            180,
+            2249,
+            2299,
+            2293
+          ],
+          "paper": 0.57,
+          "height": 34
+        },
+        {
+          "text": "(2) on each side of the visor. || It is permitted to add up to four (4) vertical safety eyebars on the visor:",
+          "conf_mean": 95.3,
+          "conf_min": 81.8,
+          "words": 23,
+          "uncertain": [],
+          "box": [
+            182,
+            2297,
+            2299,
+            2341
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "two (2) on each side of the visor.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            2345,
+            835,
+            2388
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "December - 2024 (V2024.12)",
+          "conf_mean": 92.4,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2441,
+            780,
+            2484
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            317,
+            2489,
+            886,
+            2523
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Wolf Ribs v. 26.1 9/9",
+          "conf_mean": 84.2,
+          "conf_min": 55.4,
+          "words": 5,
+          "uncertain": [
+            "Wolf"
+          ],
+          "box": [
+            233,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "WE"
+          ]
+        }
+      ]
+    }
+  ]
+}

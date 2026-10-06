@@ -1,0 +1,33 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "gauntlets:4.2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "acca473126c416d8845c0c126ba7a32473967d3712ccadb1433edace7c5db7d3"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+  "ocr": {
+    "fix": {
+      "19:0": {
+        "from": "my... Examples of Approved Reproductions",
+        "to": "12.3. Examples of Approved Reproductions",
+        "reason": "page image shows the heading \"12.3. Examples of Approved Reproductions\"; OCR read the number and the coloured band as \"my...\""
+      },
+      "21:53": {
+        "from": "05-Dec-2024: add",
+        "to": "05-Dec-2024: -add",
+        "reason": "page image shows \"-add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

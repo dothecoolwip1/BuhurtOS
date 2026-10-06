@@ -1,0 +1,188 @@
+{
+  "inventory_key": "authenticity/shields-and-bucklers",
+  "sha256": "2cb34c31c11c52a4abdbf5c736a3cfbeec06673ee8dbe2e0104059638a3afe04",
+  "source_file": "Authenticity/Shields and Bucklers 26.4.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 20,
+    "title": "Shields and Bucklers 26.4",
+    "creator": null,
+    "producer": "Skia/PDF m148 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")BUBURT(Z\n\nVER. 26.4\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 72.1,
+      "ocr_lines": [
+        {
+          "text": ")BUBURT(Z",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            ")BUBURT(Z"
+          ],
+          "box": [
+            884,
+            182,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 115,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.4",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            605,
+            1274,
+            1021,
+            1345
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            604,
+            1451,
+            1721,
+            1647
+          ],
+          "paper": 0,
+          "height": 196
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": " Table of contents\n1. Implementation​                              3\n2. Definition​                                  3\n3. General Requirements​                        4\n4. Wooden Shields Requirements​                 5\n5. Metal Shields Requirements​                  5\n6. Heater Shields​                              6\n    6.1. Historical Sources and Datation​       6\n    6.2. Specific Requirements​                 7\n    6.3. Examples of Approved Reproductions​    8\n    6.4. Examples of Denied Reproductions​      8\n7. Punch Shields​                               9\n    7.1. Historical Sources and Datation​       9\n    7.2. Specific Requirements​                11\n    7.3. Examples of Approved Reproductions​   12\n    7.4. Examples of Denied Reproductions​     14\n8. Round Shields​                              15\n    8.1. Historical Sources and Datation​      15\n    8.2. Specific Requirements​                15\n    8.3. Examples of Approved Reproductions​   16\n    8.4. Examples of Denied Reproductions​     16\n9. Bucklers​                                   17\n    9.1. Historical Sources and Datation​      17\n    9.2. Specific Requirements​                17\n    9.3. Examples of Approved Reproductions​   18\n    9.4. Examples of Denied Reproductions​     18\n10. Fastening Systems​                         19\n    10.1. Historical Sources and Datation​     19\n    10.2. Specific requirements​               19\n    10.3. Examples of Approved Systems​        19\n11. Changelog​                                 20\n ​\n ​\n\n\n\n\n     Shields and Bucklers V. 26.4              2/20\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                            1.​ Implementation\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n\n\n                                  2.​ Definition\n“Shields and Bucklers” are the terms used to describe every protection made of wood or steel\nand designed to protect yourself.\n\nShields and Bucklers can be:\n  ●​ Heater Shields\nShields made of triangular shape, the most common shape of Shields from the XIIIth century and\nbeyond. They must be made of wood.\n  ●​ Punch Shields\nPunch Shields are primarily designed to hit the opponent. It includes a wide variety of shapes. They must\nbe made of wood.\n  ●​ Round Shields\nShields made of a round shape, very common throughout the middle ages. They can be made of wood\nor metal.\n  ●​ Bucklers\nSmall round shape Shields with central handle, mainly used in duels and as a secondary equipment for\nclose defense. They can be made of wood or metal.\n\n\n\n\n  Shields and Bucklers V. 26.4                                                                    3/20\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "                     3.​ General Requirements\nAll types of Shields and Bucklers must respect the following requirements:\n  ●​ be based on historical sources,\n  ●​ must reproduce the proportions and curves based on historical sources,\n  ●​ must be made of wood or metal. Any other material must be approved by the Authenticity\n     Committee to be allowed in Buhurt International events,\n  ●​ must match the style of the armor kit of the competitor.\nAll images, drawings, and paintings on Shields must be stylized in accordance with the style of the armor\nkit of the competitor.\nIt is prohibited to decorate Shields and Bucklers with images that are clearly modern and/or offensive.\nFor the Marshals’ safety, it is prohibited to decorate Shields and Bucklers with black and yellow\ncombinations, which include stripes, chevrons and other marshals symbols. The weight of all Shields\nand Bucklers must not exceed 5 kg.\nIt is allowed to use bolts and nuts to fasten straps:\n  ●​ nuts must not protrude the screw,\n  ●​ bolts and nuts must be painted in black or concealed with leather or fabric.\nAll straps must be made of leather.\nAny metal part of the Shield or Buckler must conform to the “Armors and Weapons Aesthetics and\nDecorations” document.\nAny textile or leather part of the Shield or Buckler must conform to the “Textiles and Leather” document.\n\n\n\n\n  Shields and Bucklers V. 26.4                                                                     4/20\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "           4.​ Wooden Shields Requirements\nThe entire edge must be covered with either a band of strong leather, or with at least three or more\nlayers of fabric.\nA leather band must be glued, sewn or riveted, to the Shield. Any rivets must be neatly finished, the\nedge of the rivet should not stick out.\nThe flat outside a wooden Shield must be covered with leather or fabric.\nThe handles must be made of leather.\nWooden Buckler and Heater Shield with a central handle must have a handle made of wood.\nShield boss (umbo) made of metal must conform to the “Armors and Weapons Aesthetics and\nDecorations” document.\n\n\n\n              5.​ Metal Shields Requirements\nMust be of round shapes, based on historical sources, and repeat the form of the original in all three\ndimensions.\nThe entire edge of metal Shields must be rolled to the thickness of a minimum of 4 mm or more.\nThe handles must be made of metal and or wood\nMetal Shield and Shield boss (umbo) must conform to the “Armors and Weapons Aesthetics and\nDecorations” document.\nIt is allowed to blacken the back part of a metal Shield or metal Buckler.\nExample:\n\n\n\n\n                                          Picture from O. Haguenstein ©\n\n\n\n\n  Shields and Bucklers V. 26.4                                                                   5/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 6,
+      "text": "                                       6.​ Heater Shields\n     6.1.​ Historical Sources and Datation\n\nThe Heater Shield the main Shield shape for knights of the Middle Ages. Its triangular shape is typical of\nthe 14th century. The shape goes thinner as the armors become more effective.\nThey are Approved for 14th century, Transitional and 15th century armors.\n\n\n\n\n        ​ Shield of Loew von Steinfurth - 1380 - Germany​ ​   ​       Grande Chroniques de France - 1400 - France\n ​      ​         ​         ​         ​\n\n\n\n\n                     Politica & Economica - 1376 - France​​   ​   ​      Ab Urbe Condita - 1390/1400 - France\n\n\n\n\n     Shields and Bucklers V. 26.4                                                                                   6/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "      6.2.​ Specific Requirements\n\nHeater Shields must:\n     ●​ conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4\n        above),\n     ●​ be made of wood,\n     ●​ have a rectangular shape with a pointy shape at the bottom:\n\n\n\n\n     ●​ be curved, not flat:\n\n\n\n\n●​        have a length of 55 cm to 75 cm,\n●​        have a width of 30 cm to 65 cm,\n●​        have handles made of leather:\n                Example:\n\n\n\n\n                               Picture from O. Haguenstein ©\n\n\nIt is allowed to add a Shield boss (umbo) on a Heater Shield with a central handle, as documented by\nhistorical sources.\nCentral handles must be made of wood.\n\n\n\n\n     Shields and Bucklers V. 26.4                                                            7/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "6.3.​ Examples of Approved Reproductions\n\n\n\n\n                                  Pictures from The Medieval Things ©\n\n\n\n6.4.​ Examples of Denied Reproductions\n\n    This shape (oval) is not based on historical sources for Shield with a central handle.\n\n\n\n\n                                  Picture from The Medieval Things ©\n\n\n\n\nShields and Bucklers V. 26.4                                                                 8/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 9,
+      "text": "                                          7.​ Punch Shields\n    7.1.​ Historical Sources and Datation\n\nPunch Shields are designed to strike with the edge. The handles and straps allow you to wear them in a\nstriking position. Their shape may vary depending on the time and place. Most common shapes are\nrectangular, trapezoid and oval.\nTheir ultimate evolution is the Pavese of the 15th century. This type of Shield has a rectangular shape and\na gutter in the middle.\nAll shapes except the Pavese are Approved for 14th century, Transitional and 15th century armors.\nPavese shape is Approved for 15th century armors.\nPavese shape is Denied for 14th century and Transitional armors.\n\n\n\n\n                  ​​        ​         ​          ​   ​    ​     Castello di Avio - 1350 - Italy\n\n\n\n\n     Shield of Order Teutonicus Great Master -\n               1320 - Germany\n​       ​         ​             ​\n\n\n\n\n    Shields and Bucklers V. 26.4                                                                  9/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 10,
+      "text": "​         ​         ​         ​        ​       ​   ​         ​          ​        ​\n\n\n\n\n                                           ​                                         ​                          ​\n                                           ​                                         ​                          ​\n\n\n\n\n    Deutsches Historisches Museum (Berlin) -\n            1480 - Germany ​​         ​        ​   ​         ​          ​        ​       ​   Wien Museum -\n                                                                                             1480 - Austria\n\n\n\n\n                                                   Paduan Bible - 1400 - Italy\n\n\n\n\n      Shields and Bucklers V. 26.4                                                                            10/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 11,
+      "text": "   7.2.​ Specific Requirements\n\nPunch Shield must:\n ●​ conform to the General Requirements and Wooden Shield requirements (see Sections 3 and 4\n    above),\n ●​ be made of wood,\n ●​ have a shape rectangular, oval or pointed:\n\n\n\n\n ●​ be curved, not flat:\n\n\n\n\n       ○​ Except for Pavese shape, that can be flat if they conform to historical designs:\n\n\n\n\n ●​ have a length of 55 cm to 75 cm,\n ●​ have a width of 30 cm to 50 cm,\n ●​ have handles made of leather (see example in 6.2. Punch Shield).\n\n\n\n\n  Shields and Bucklers V. 26.4                                                               11/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 12,
+      "text": "The striking area can be rounded or flat.\nThe rounded striking area must conform to a curve of 7 cm diameter.\nFlat striking area must be 7 cm wide as a minimum.\n\n\n\n\n​                          ​ ​       ​            7 cm wide\n\n\n\n\nIt is not allowed to add a Shield boss (umbo) on a Punch Shield.\nIt is allowed to add a metal sheet on the Shield to increase its resilience. In this case:\n    ●​ Additional metal sheets must be covered by leather or fabric as another part of the outside of\n       the Shield.\n    ●​ Additional metal sheets must have no sharp edges nor pointy parts.\n    ●​ Additional metal sheets must be properly attached to the wooden core of the Shield, by rivets,\n       nails or strong glue.\n\n\n\n     7.3.​ Examples of Approved Reproductions\n\n\n\n\n    Shields and Bucklers V. 26.4                                                                 12/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 13,
+      "text": "                               Pictures from The Medieval Things ©\n\n\n\n\nShields and Bucklers V. 26.4                                         13/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 14,
+      "text": "7.4.​ Examples of Denied Reproductions\n\n\n                                          Flat Shield\n\n\n\n\n                      Absence of leather or 3 layers of fabric on the edge\n\n\n\n\n                                Pictures from The Medieval Things ©\n\n\n\n\nShields and Bucklers V. 26.4                                                 14/20\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 15,
+      "text": "                                       8.​ Round Shields\n   8.1.​ Historical Sources and Datation\n\nRound Shields were very common in the early 14th century, and became rare while other designs spread.\nThey are mainly made of wood. Some examples of metal round Shields exist but they are parade Shields\nand should be worn only with the proper set of armor of the late 15th century.\nRound Shields are worn with straps made of leather.\nThey are Approved for 14th century and Transitional armors.\nThey are Denied for 15th century armors unless historical sources are provided.\n\n\n\n\n                         ​         ​           ​           Roman de la Rose - 1350 - France\n\n\n     Cathedral of Strasbourg - 1340 - France\n\n\n\n\n   8.2.​ Specific Requirements\n\nRound Shield must:\n ●​ conform to the General Requirements and either the Wooden Shield Requirements or the\n    Metal Shield Requirements (see Sections 3, 4 and 5 above),\n ●​ be made of wood or metal,\n      ○​ Any metal Round Shields must be approved by the Authenticity Committee to be allowed\n           in Buhurt International events.\n ●​ have a diameter:\n                 ○​ for Sword and Buckler (Duel): from 25 cm to 35 cm,\n                 ○​ for Buhurt and Sword and Shield (Duel): from 25 cm to 70 cm,\n ●​ be flat or have a concave curve,\n ●​ have handles made of leather (see example in 6.2. Punch Shield).\n\n\nIt is not allowed to add a Shield boss (umbo) on a Round Shield unless documented by historical sources.\n\n\n  Shields and Bucklers V. 26.4                                                                 15/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 16,
+      "text": "8.3.​ Examples of Approved Reproductions\n\n\n\n\n                                Pictures from The Medieval Things ©\n\n\n8.4.​ Examples of Denied Reproductions\n\n\n\n                          Round Shield with Shield boss (umbo)\n\n\n\n\nShields and Bucklers V. 26.4                                          16/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 17,
+      "text": "                                   9.​ Bucklers\n   9.1.​ Historical Sources and Datation\n\nBucklers are small round Shields made of wood or metal. They do not have straps but a rigid handle and a\nShield boss (umbo).\nThey are Approved for 14th century, Transitional and 15th century armors.\n\n\n\n\n                                                                Weltchronik in Versen - 1370 - Germany\n\n\n   9.2.​ Specific Requirements\n\nBucklers must:\n ●​ conform to the General Requirements and either the Wooden Shield Requirements or the\n    Metal Shield Requirements (see Sections 3, 4 and 5 above),\n ●​ be made of wood or metal,\n ●​ have a Shield boss (umbo):\n      ○​ Shield boss must be made of metal.\n      ○​ Shield boss can be riveted or forged.\n ●​ have a diameter:\n                 ○​ for Buhurt: from 20 cm to 40 cm,\n                 ○​ for Duels: from 20 cm to 35 cm,\n ●​ be flat or curved depending on historical sources.\n\n\n\n\nIf the Buckler is made of wood, the handle must be made of wood.\nIf the Buckler is made of metal, the handle must be made of metal.\nA strap can be added to secure the Buckler in punch position. This strap must be made of leather.\n\n\n  Shields and Bucklers V. 26.4                                                                           17/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 18,
+      "text": "    9.3.​ Examples of Approved Reproductions\n\n\n\n\n                                                      Picture from Black Dog Armoury ©\n\n\n\n\n               Wooden Buckler\n           Picture from The Medieval Things ©​   ​        ​         ​                      Additional leather strap\n​      ​           ​         ​        ​          ​        ​                                Picture from Medieval Extreme ©\n\n\n    9.4.​ Examples of Denied Reproductions\n\n\n\n\n                                                     Black painting is not allowed as per “Armors and Weapons\n                                                     Aesthetics and Decoration” document.\n\n\n\n                                                      Picture from The Medieval Things ©\n\n\n\n\n    Shields and Bucklers V. 26.4                                                                                       18/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 19,
+      "text": "                          10.​Fastening Systems\n  10.1.​ Historical Sources and Datation\n\nLeather straps were fastened with nails or rivets.\nThe following methods are Approved for 14th century, Transitional and 15th century armors:\n  ●​ nails,\n  ●​ rivets,\n  ●​ modern nuts and bolts.\n      Examples:\n\n\n\n\n                        Nails​​         ​       ​        ​         ​            Rivet with metal plate\n                                            Pictures from Black Dog Armoury ©\n\n\n  10.2.​ Specific requirements\n\nNails and rivets can be left visible.\nModern nuts and bolts must be concealed by one of the following methods:\n  ●​ Covered by a piece of leather nailed to the Shield.\n  ●​ Painted in black or any other color to make it concealed.\n  ●​ Hexagonal unpainted bolts must be ground to a rounded shape, replicating a rivet aesthetic.\nBolts must not protrude from the nuts.\n\n\n  10.3.​ Examples of Approved Systems\n\n\n\n\n              Rivets can be visible​ ​              ​                  Modern nuts and bolts, painted black\n                                            Pictures from Medieval Extreme ©\n\n\n\n\n  Shields and Bucklers V. 26.4                                                                                19/20\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 20,
+      "text": "                                          11.​Changelog\n  Below, we will keep track of all the changes made over the lifetime of this document. This way, all our\n                     members can see how the documents are changing over time.\n\nApril - 2026 (V. 26.4)\nAdd:\n-​       3. General Requirements: “For the Marshals’ safety, it is prohibited to decorate Shields and Bucklers with black and\nyellow combinations, which include stripes, chevrons and other marshals symbols.”\n\n\n\nFebruary - 2026 (V. 26.2)\nChange:\n-​      8.2 “Specific Requirements” of Round Shields: Maximum diameter changed from 35 to 70 cm for Sword and Shield\n(Duel).\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\nAdd:\n-​        “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n-​        Split of “1. Definition and general requirements” in “2. Definition” and “3. General Requirements”.\n-​        From 1.1. to “4. Wooden Shields requirements” and 1.2. to “5. Metal Shields Requirements”.\n-​        This doesn’t have an impact on the content of the rules.\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\n-​        Modification of diameters for Round shields and Bucklers depending on the type of fight.\n\nMarch-2025 (V2025.02)​\n- clarification : 6.2\n- format: Grammar and Formatting​\n​\nDecember-2024: -Add ​\nDocument has been created\n\n\n\n\n  Shields and Bucklers V. 26.4                                                                                        20/20\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

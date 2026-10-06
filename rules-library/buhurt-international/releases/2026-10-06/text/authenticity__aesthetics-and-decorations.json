@@ -1,0 +1,4275 @@
+{
+  "inventory_key": "authenticity/aesthetics-and-decorations",
+  "sha256": "cd98ad0a074984a2ec84d4b8bf85cd4104b02ca916d57563e35d6f58eae2e089",
+  "source_file": "Authenticity/Armors and Weapons Aesthetics and Decorations.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 16 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 17,
+    "title": "Armors and Weapons Aesthetics and Decoration 26.2 - Google€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Mon Feb  2 08:27:32 2026 UTC",
+    "modified": "Mon Feb  2 08:27:32 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n3. General Requirements 3\n4. Matte Polish 5\n4.1. Definition and Sources 5\n4.2. Specific Requirements 5\n4.3. Examples of Approved Finishes 6\n4.4. Examples of Denied Finishes 7\n\n5. Satin Polish 8\n5.1. Definition and Sources 8\n5.2. Specific Requirements 8\n5.3. Examples of Approved Finishes 8\n\n6. Mirror Polish 9\n6.1. Definition and Sources 9\n6.2. Specific Requirements 9\n6.3. Examples of Approved Finishes 9\n\n7. Blackening and Bluing 10\n7.1. Definition and Sources 10\n7.2. Specific Requirements 11\n7.3. Examples of Approved Finishes 11\n7.4. Examples of Denied Finishes 11\n\n8. Decorations 12\n8.1. Definition and Sources 12\n8.2. Specific Requirements 12\n8.3. Allowed Decoration Techniques 13\n8.3.1. Etching 13\n\n8.3.2. Engraving 13\n\n8.3.3. Plating 13\n\n8.3.4. Gilding 13\n\n8.3.5. Helmet decorations 13\n\n8.3.6. Shield Decorations 13\n\n8.4. Examples of Approved Decorations 14\n8.5. Examples of Denied Decorations 15\n\n9. Repairs 16\n9.1. Definition and Sources 16\n9.2. Specific Requirements 16\n\n10. Changelog 17\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 2/17",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.5,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            339,
+            621,
+            379
+          ],
+          "paper": 0.58,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            411,
+            2304,
+            453
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            476,
+            2304,
+            510
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements 3",
+          "conf_mean": 96.6,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            542,
+            2303,
+            584
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4. Matte Polish 5",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            152,
+            607,
+            2304,
+            641
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "4.1. Definition and Sources 5",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            227,
+            672,
+            2304,
+            706
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "4.2. Specific Requirements 5",
+          "conf_mean": 96.6,
+          "conf_min": 96.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            227,
+            737,
+            2304,
+            780
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "4.3. Examples of Approved Finishes 6",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            227,
+            803,
+            2304,
+            845
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "4.4. Examples of Denied Finishes 7",
+          "conf_mean": 95.4,
+          "conf_min": 91.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            227,
+            868,
+            2304,
+            910
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "5. Satin Polish 8",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            933,
+            2304,
+            967
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "5.1. Definition and Sources 8",
+          "conf_mean": 95.9,
+          "conf_min": 95.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            998,
+            2304,
+            1032
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "5.2. Specific Requirements 8",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1063,
+            2304,
+            1106
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "5.3. Examples of Approved Finishes 8",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1129,
+            2304,
+            1172
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "6. Mirror Polish 9",
+          "conf_mean": 95.9,
+          "conf_min": 94.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1194,
+            2304,
+            1228
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "6.1. Definition and Sources 9",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1260,
+            2304,
+            1293
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "6.2. Specific Requirements 9",
+          "conf_mean": 95.7,
+          "conf_min": 95.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1325,
+            2304,
+            1367
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "6.3. Examples of Approved Finishes 9",
+          "conf_mean": 95.8,
+          "conf_min": 93.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1390,
+            2304,
+            1432
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "7. Blackening and Bluing 10",
+          "conf_mean": 93.4,
+          "conf_min": 90.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1456,
+            2304,
+            1498
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "7.1. Definition and Sources 10",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1520,
+            2304,
+            1554
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "7.2. Specific Requirements 11",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1586,
+            2298,
+            1628
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "7.3. Examples of Approved Finishes 11",
+          "conf_mean": 95.8,
+          "conf_min": 94.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1651,
+            2298,
+            1694
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "7.4. Examples of Denied Finishes 11",
+          "conf_mean": 96.1,
+          "conf_min": 94,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1716,
+            2298,
+            1759
+          ],
+          "paper": 0.91,
+          "height": 33
+        },
+        {
+          "text": "8. Decorations 12",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1782,
+            2304,
+            1816
+          ],
+          "paper": 0.94,
+          "height": 34
+        },
+        {
+          "text": "8.1. Definition and Sources 12",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1847,
+            2304,
+            1881
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "8.2. Specific Requirements 12",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1912,
+            2304,
+            1955
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "8.3. Allowed Decoration Techniques 13",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1978,
+            2304,
+            2020
+          ],
+          "paper": 0.89,
+          "height": 33
+        },
+        {
+          "text": "8.3.1. Etching 13",
+          "conf_mean": 96.1,
+          "conf_min": 94.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            303,
+            2043,
+            2304,
+            2085
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "8.3.2. Engraving 13",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            303,
+            2108,
+            2304,
+            2151
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "8.3.3. Plating 13",
+          "conf_mean": 96.1,
+          "conf_min": 95.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            303,
+            2173,
+            2303,
+            2216
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "8.3.4. Gilding 13",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            303,
+            2239,
+            2304,
+            2282
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "8.3.5. Helmet decorations 13",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            303,
+            2304,
+            2304,
+            2338
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "8.3.6. Shield Decorations 13",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            303,
+            2369,
+            2304,
+            2403
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "8.4. Examples of Approved Decorations 14",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            2434,
+            2304,
+            2477
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "8.5. Examples of Denied Decorations 15",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            2499,
+            2304,
+            2542
+          ],
+          "paper": 0.9,
+          "height": 33
+        },
+        {
+          "text": "9. Repairs 16",
+          "conf_mean": 95.8,
+          "conf_min": 94,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            2565,
+            2304,
+            2607
+          ],
+          "paper": 0.97,
+          "height": 34
+        },
+        {
+          "text": "9.1. Definition and Sources 16",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            2630,
+            2304,
+            2664
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "9.2. Specific Requirements 16",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            2695,
+            2304,
+            2738
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "10. Changelog 17",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            2761,
+            2304,
+            2804
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 2/17",
+          "conf_mean": 94.2,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\nArmors and weapons aesthetics are very important for the fighters' appearance and sports\nrepresentation.\n\nThe development of our sport will be easier with well-maintained and properly finished armor and\nweapons.\n\nCrafting armor and its parts is a process mostly made by hand with the help of different hand tools such\nas hammers and files, even during the surfacing process and polishing. Thus, it is not rare to find such\ntraces on artifacts, even in the corners of a highly polished armor.\n\n3. General Requirements\n\nThe following aesthetics are allowed:\n\n● Matte polish (see Section 4 below),\n● Satin Polish (see Section 5 below),\n● Mirror Polish (see Section 6 below),\n● Blackening and Bluing (see Section 7 below).\n\nAll types of aesthetics must:\n\n● be based on historical sources,\n\n● be homogenous regarding the whole set of armor: it is not allowed to mix different aesthetics in the\nsame armor set unless specifically written in the specific requirements,\n\n● have a steel surface that does not present strong forging remains, big filing traces, and modern\ngrinding marks,\n\n● be properly polished, any highly unpolished armor part is Denied,\n\n● be free of rust.\n\nDecoration\n\nAn armor can be decorated with different methods, such as:\n● etching,\n● engraving,\n● plating and gilding.\nHelmets can be decorated with the medieval spirit, with crest, torse, burlets or orle for example.\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 3/17",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.1,
+          "conf_min": 94.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            814,
+            190,
+            1620,
+            278
+          ],
+          "paper": 0.67,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            371,
+            1957,
+            414
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.2,
+          "conf_min": 94.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            432,
+            1716,
+            474
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 95.7,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            929,
+            597,
+            1500,
+            668
+          ],
+          "paper": 0.61,
+          "height": 71
+        },
+        {
+          "text": "Armors and weapons aesthetics are very important for the fighters' appearance and sports",
+          "conf_mean": 89.5,
+          "conf_min": 59.6,
+          "words": 13,
+          "uncertain": [
+            "and",
+            "sports"
+          ],
+          "box": [
+            179,
+            778,
+            2303,
+            821
+          ],
+          "paper": 0.78,
+          "height": 34
+        },
+        {
+          "text": "representation.",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            839,
+            482,
+            881
+          ],
+          "paper": 0.7,
+          "height": 42
+        },
+        {
+          "text": "The development of our sport will be easier with well-maintained and properly finished armor and",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            941,
+            2302,
+            984
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "weapons.",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1011,
+            372,
+            1044
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Crafting armor and its parts is a process mostly made by hand with the help of different hand tools such",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            182,
+            1105,
+            2302,
+            1148
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "as hammers and files, even during the surfacing process and polishing. Thus, it is not rare to find such",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            181,
+            1165,
+            2302,
+            1208
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "traces on artifacts, even in the corners of a highly polished armor.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1226,
+            1501,
+            1269
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            653,
+            1391,
+            1779,
+            1480
+          ],
+          "paper": 0.68,
+          "height": 71
+        },
+        {
+          "text": "The following aesthetics are allowed:",
+          "conf_mean": 96.1,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1572,
+            985,
+            1615
+          ],
+          "paper": 0.66,
+          "height": 33
+        },
+        {
+          "text": "● Matte polish (see Section 4 below),",
+          "conf_mean": 95.6,
+          "conf_min": 92.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            1646,
+            1004,
+            1689
+          ],
+          "paper": 0.75,
+          "height": 42,
+          "raw": "e Matte polish (see Section 4 below),"
+        },
+        {
+          "text": "● Satin Polish (see Section 5 below),",
+          "conf_mean": 95.7,
+          "conf_min": 91.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            1706,
+            999,
+            1749
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Satin Polish (see Section 5 below),"
+        },
+        {
+          "text": "● Mirror Polish (see Section 6 below),",
+          "conf_mean": 95.9,
+          "conf_min": 92.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            1767,
+            1014,
+            1810
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e Mirror Polish (see Section 6 below),"
+        },
+        {
+          "text": "● Blackening and Bluing (see Section 7 below).",
+          "conf_mean": 91.2,
+          "conf_min": 80.2,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            224,
+            1828,
+            1211,
+            1871
+          ],
+          "paper": 0.74,
+          "height": 43,
+          "raw": "e Blackening and Bluing (see Section 7 below)."
+        },
+        {
+          "text": "All types of aesthetics must:",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            179,
+            1936,
+            797,
+            1979
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "● be based on historical sources,",
+          "conf_mean": 94,
+          "conf_min": 92.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            224,
+            2010,
+            923,
+            2049
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e be based on historical sources,"
+        },
+        {
+          "text": "● be homogenous regarding the whole set of armor: it is not allowed to mix different aesthetics in the",
+          "conf_mean": 96,
+          "conf_min": 91.8,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            224,
+            2070,
+            2304,
+            2113
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be homogenous regarding the whole set of armor: it is not allowed to mix different aesthetics in the"
+        },
+        {
+          "text": "same armor set unless specifically written in the specific requirements,",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            296,
+            2131,
+            1721,
+            2174
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● have a steel surface that does not present strong forging remains, big filing traces, and modern",
+          "conf_mean": 96.1,
+          "conf_min": 92.2,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            224,
+            2192,
+            2301,
+            2235
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e have a steel surface that does not present strong forging remains, big filing traces, and modern"
+        },
+        {
+          "text": "grinding marks,",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            296,
+            2253,
+            604,
+            2295
+          ],
+          "paper": 0.7,
+          "height": 42
+        },
+        {
+          "text": "● be properly polished, any highly unpolished armor part is Denied,",
+          "conf_mean": 95.4,
+          "conf_min": 92.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            2313,
+            1619,
+            2356
+          ],
+          "paper": 0.74,
+          "height": 41,
+          "raw": "e be properly polished, any highly unpolished armor part is Denied,"
+        },
+        {
+          "text": "● be free of rust.",
+          "conf_mean": 95,
+          "conf_min": 92.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            2373,
+            587,
+            2407
+          ],
+          "paper": 0.71,
+          "height": 34,
+          "raw": "e be free of rust."
+        },
+        {
+          "text": "Decoration",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            2495,
+            416,
+            2529
+          ],
+          "paper": 0.54,
+          "height": 34
+        },
+        {
+          "text": "An armor can be decorated with different methods, such as:",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            2568,
+            1388,
+            2608
+          ],
+          "paper": 0.71,
+          "height": 34
+        },
+        {
+          "text": "● etching,",
+          "conf_mean": 93.4,
+          "conf_min": 92.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            2629,
+            452,
+            2671
+          ],
+          "paper": 0.75,
+          "height": 42,
+          "raw": "e etching,"
+        },
+        {
+          "text": "● engraving,",
+          "conf_mean": 71.5,
+          "conf_min": 51.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            2689,
+            505,
+            2732
+          ],
+          "paper": 0.76,
+          "height": 43,
+          "raw": "e engraving,"
+        },
+        {
+          "text": "● plating and gilding.",
+          "conf_mean": 94.1,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            2750,
+            674,
+            2793
+          ],
+          "paper": 0.73,
+          "height": 43,
+          "raw": "e plating and gilding."
+        },
+        {
+          "text": "Helmets can be decorated with the medieval spirit, with crest, torse, burlets or orle for example.",
+          "conf_mean": 95.3,
+          "conf_min": 92.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            183,
+            2823,
+            2106,
+            2866
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 3/17",
+          "conf_mean": 94.2,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "Example of burlet:\n\n\\ Picture from Age of Craft ©\n\nAs the topic of painted armors is very controversial among armor experts, historical sources can’t stand\na clear position about painted armor.\n\nWe have historical sources for the late 15th century helmets (mainly Sallets) but nothing relevant for the\n14th century nor for armor parts.\n\nTherefore, any painted armor metal part, metal buckler or weapon is Denied.\n\nPainted armor\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 4/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.9,
+      "ocr_lines": [
+        {
+          "text": "Example of burlet:",
+          "conf_mean": 91.9,
+          "conf_min": 90.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            308,
+            548,
+            351
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "\\ Picture from Age of Craft ©",
+          "conf_mean": 91.4,
+          "conf_min": 62.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1166,
+            419,
+            1755,
+            629
+          ],
+          "paper": 0.89,
+          "height": 25
+        },
+        {
+          "text": "As the topic of painted armors is very controversial among armor experts, historical sources can’t stand",
+          "conf_mean": 96.3,
+          "conf_min": 94.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            850,
+            2301,
+            893
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "a clear position about painted armor.",
+          "conf_mean": 95.3,
+          "conf_min": 93.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            181,
+            911,
+            918,
+            953
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "We have historical sources for the late 15th century helmets (mainly Sallets) but nothing relevant for the",
+          "conf_mean": 95.8,
+          "conf_min": 91.2,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            971,
+            2302,
+            1014
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "14th century nor for armor parts.",
+          "conf_mean": 96,
+          "conf_min": 92.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            184,
+            1032,
+            833,
+            1075
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Therefore, any painted armor metal part, metal buckler or weapon is Denied.",
+          "conf_mean": 95.7,
+          "conf_min": 92.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1093,
+            1736,
+            1136
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Painted armor",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            183,
+            778,
+            488,
+            811
+          ],
+          "paper": 0.56,
+          "height": 33
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 4/17",
+          "conf_mean": 94.1,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "4. Matte Polish\n\n4.1. Definition and Sources\n\nA basic polishing method, widely used during the Middle Ages. Its appearance is flat and gray, and\nsubtle marks from the polishing process are still visible. A utilitarian finish that hides scratches and holds\na protective oil film well.\n\nThe basic and most common finish is the matte polish. It is recommended for all types of 14th and 15th\ncentury armor and weapons.\n\nIt is Approved for 14th century, Transitional and 15th century armors.\n\nArmet, on display at the Metropolitan Museum of Arts (MET) - 1440 - New York (USA)\n\n4.2. Specific Requirements\n\nThe whole armor or weapon must be matte polished.\nIt is Denied to have an armor set mixing matte polish with other aesthetics.\nMatte polish can be used with other decoration techniques, such as etching, engraving, gilding or plating.\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 5/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.4,
+      "ocr_lines": [
+        {
+          "text": "4. Matte Polish",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            880,
+            190,
+            1548,
+            260
+          ],
+          "paper": 0.57,
+          "height": 70,
+          "dropped": [
+            "—_"
+          ]
+        },
+        {
+          "text": "4.1. Definition and Sources",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            942,
+            413
+          ],
+          "paper": 0.63,
+          "height": 41
+        },
+        {
+          "text": "A basic polishing method, widely used during the Middle Ages. Its appearance is flat and gray, and",
+          "conf_mean": 95.9,
+          "conf_min": 88.5,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            484,
+            2300,
+            527
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "subtle marks from the polishing process are still visible. A utilitarian finish that hides scratches and holds",
+          "conf_mean": 96.3,
+          "conf_min": 94.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            545,
+            2304,
+            588
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "a protective oil film well.",
+          "conf_mean": 96.2,
+          "conf_min": 94.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            605,
+            660,
+            648
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The basic and most common finish is the matte polish. It is recommended for all types of 14th and 15th",
+          "conf_mean": 96.2,
+          "conf_min": 93.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            180,
+            666,
+            2302,
+            709
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "century armor and weapons.",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            727,
+            757,
+            770
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "It is Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 94.5,
+          "conf_min": 87,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            848,
+            1664,
+            892
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Armet, on display at the Metropolitan Museum of Arts (MET) - 1440 - New York (USA)",
+          "conf_mean": 94.9,
+          "conf_min": 91.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            614,
+            2037,
+            1878,
+            2068
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "4.2. Specific Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            2206,
+            936,
+            2257
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "The whole armor or weapon must be matte polished.",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            2318,
+            1246,
+            2361
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "It is Denied to have an armor set mixing matte polish with other aesthetics.",
+          "conf_mean": 96,
+          "conf_min": 92.8,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            184,
+            2391,
+            1694,
+            2434
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Matte polish can be used with other decoration techniques, such as etching, engraving, gilding or plating.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            183,
+            2465,
+            2302,
+            2508
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 5/17",
+          "conf_mean": 90.9,
+          "conf_min": 67.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "4.3. Examples of Approved Finishes\n\nPicture from Medieval Extreme © Picture from Master Uley ©\n\nAcceptable grinder marks\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 6/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 88.8,
+      "ocr_lines": [
+        {
+          "text": "4.3. Examples of Approved Finishes",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            237,
+            188,
+            1175,
+            239
+          ],
+          "paper": 0.68,
+          "height": 41,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "Picture from Medieval Extreme © Picture from Master Uley ©",
+          "conf_mean": 95.7,
+          "conf_min": 92.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            321,
+            1268,
+            1933,
+            1300
+          ],
+          "paper": 0.84,
+          "height": 25
+        },
+        {
+          "text": "Acceptable grinder marks",
+          "conf_mean": 96.6,
+          "conf_min": 96.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            961,
+            1448,
+            1522,
+            1486
+          ],
+          "paper": 0.6,
+          "height": 38
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 6/17",
+          "conf_mean": 94,
+          "conf_min": 89.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "Examples of Denied Finishes\n\nExcessive rust\n\nUnpolished weapons\n\nPictures from The Medieval Things ©\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 7/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.3,
+      "ocr_lines": [
+        {
+          "text": "Examples of Denied Finishes",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            367,
+            188,
+            1112,
+            239
+          ],
+          "paper": 0.65,
+          "height": 41
+        },
+        {
+          "text": "Excessive rust",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1055,
+            374,
+            1373,
+            408
+          ],
+          "paper": 0.56,
+          "height": 34
+        },
+        {
+          "text": "Unpolished weapons",
+          "conf_mean": 94.3,
+          "conf_min": 92,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            969,
+            1325,
+            1423,
+            1368
+          ],
+          "paper": 0.56,
+          "height": 43
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            969,
+            2890,
+            1519,
+            2922
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 7/17",
+          "conf_mean": 93.9,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "5. Satin Polish\n\n5.1. Definition and Sources\n\nSatin polish has a semi-reflective surface with a subdued sheen, the polishing marks are small and only\nvisible upon close inspection. A practical polishing method that balances functionality with a refined\nappearance. Armors are polished with multiple grinding grits to obtain an intermediary reflective finish. It\nis not as shiny as mirror polishing.\n\nIt is Approved for 14th century, Transitional and 15th century armors.\n\nMontefeltro Altarpiece by Piero della Francesca - 1472 - Italy\nNote: the helmet in this art is mirror polished\n\n5.2. Specific Requirements\n\nThe whole armor must be satin polished or a mix of satin and mirror polished.\n\nIt is Denied to have an armor set mixing matte polishing parts with satin polishing parts.\n\nIt is Denied to have an armor set mixing black/blued polishing parts with satin polishing parts.\n\nSatin polish can be used with other decoration techniques, such as etching, engraving, gilding or plating.\n\n5.3. Examples of Approved Finishes\n\nPictures from Master Uley © Picture from Black Dog Armoury ©\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 8/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.7,
+      "ocr_lines": [
+        {
+          "text": "5. Satin Polish",
+          "conf_mean": 94.9,
+          "conf_min": 92.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            891,
+            189,
+            1541,
+            260
+          ],
+          "paper": 0.6,
+          "height": 70,
+          "dropped": [
+            "—_"
+          ]
+        },
+        {
+          "text": "5.1. Definition and Sources",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            942,
+            413
+          ],
+          "paper": 0.62,
+          "height": 40
+        },
+        {
+          "text": "Satin polish has a semi-reflective surface with a subdued sheen, the polishing marks are small and only",
+          "conf_mean": 96,
+          "conf_min": 91.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            484,
+            2305,
+            527
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "visible upon close inspection. A practical polishing method that balances functionality with a refined",
+          "conf_mean": 96.2,
+          "conf_min": 95.1,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            545,
+            2302,
+            588
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "appearance. Armors are polished with multiple grinding grits to obtain an intermediary reflective finish. It",
+          "conf_mean": 95.9,
+          "conf_min": 92.6,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            606,
+            2304,
+            649
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "is not as shiny as mirror polishing.",
+          "conf_mean": 96.1,
+          "conf_min": 94.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            666,
+            866,
+            709
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 95.4,
+          "conf_min": 92.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            813,
+            1664,
+            856
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "Montefeltro Altarpiece by Piero della Francesca - 1472 - Italy",
+          "conf_mean": 93.6,
+          "conf_min": 90.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            798,
+            1577,
+            1690,
+            1608
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Note: the helmet in this art is mirror polished",
+          "conf_mean": 95.8,
+          "conf_min": 93.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            919,
+            1612,
+            1567,
+            1643
+          ],
+          "paper": 0.71,
+          "height": 24
+        },
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1820,
+            936,
+            1870
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "The whole armor must be satin polished or a mix of satin and mirror polished.",
+          "conf_mean": 96.1,
+          "conf_min": 95.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            1931,
+            1743,
+            1974
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "It is Denied to have an armor set mixing matte polishing parts with satin polishing parts.",
+          "conf_mean": 96.2,
+          "conf_min": 94.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            2005,
+            1952,
+            2047
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "It is Denied to have an armor set mixing black/blued polishing parts with satin polishing parts.",
+          "conf_mean": 95.6,
+          "conf_min": 92.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            2077,
+            2069,
+            2120
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Satin polish can be used with other decoration techniques, such as etching, engraving, gilding or plating.",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            2151,
+            2292,
+            2194
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "5.3. Examples of Approved Finishes",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2287,
+            1175,
+            2337
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "Pictures from Master Uley © Picture from Black Dog Armoury ©",
+          "conf_mean": 95.7,
+          "conf_min": 92.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            718,
+            3017,
+            2183,
+            3048
+          ],
+          "paper": 0.82,
+          "height": 25
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 8/17",
+          "conf_mean": 94,
+          "conf_min": 89.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "6. Mirror Polish\n\n6.1. Definition and Sources\n\nA late-period polishing technique that gained popularity in the 15th century. Metal plates are polished\nwith progressively finer grit until polishing marks are not visible, resulting in a reflective sheen. This finish\nrequires high maintenance to keep it looking its best. Armors are polished with multiple grinding grits\nreaching into the 1000 grid to obtain a beautiful reflective finish.\n\nIt is Approved for 14th century, Transitional and 15th century armors.\n\nArmor of Sigismund von Tirol, Kunsthistorisches Museum Wien - 1484 - Austria\n6.2. Specific Requirements\n\nThe whole armor must be satin polished or a mix of satin and mirror polished.\nIt is Denied to have an armor set mixing black/blued polishing parts with mirror polishing parts.\n\nMirror polish can be used with other decoration techniques, such as etching, engraving, gilding or\nplating.\n\n6.3. Examples of Approved Finishes\n\n1 |\n\nWi thy\n\nPictures from Master Uley © Pictures from J. Amiot ©\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 9/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.8,
+      "ocr_lines": [
+        {
+          "text": "6. Mirror Polish",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            869,
+            190,
+            1562,
+            260
+          ],
+          "paper": 0.59,
+          "height": 70,
+          "dropped": [
+            "—_"
+          ]
+        },
+        {
+          "text": "6.1. Definition and Sources",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            942,
+            413
+          ],
+          "paper": 0.62,
+          "height": 40
+        },
+        {
+          "text": "A late-period polishing technique that gained popularity in the 15th century. Metal plates are polished",
+          "conf_mean": 95.8,
+          "conf_min": 90.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            179,
+            484,
+            2303,
+            527
+          ],
+          "paper": 0.74,
+          "height": 41
+        },
+        {
+          "text": "with progressively finer grit until polishing marks are not visible, resulting in a reflective sheen. This finish",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            545,
+            2301,
+            588
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "requires high maintenance to keep it looking its best. Armors are polished with multiple grinding grits",
+          "conf_mean": 95.9,
+          "conf_min": 92.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            606,
+            2303,
+            649
+          ],
+          "paper": 0.74,
+          "height": 42
+        },
+        {
+          "text": "reaching into the 1000 grid to obtain a beautiful reflective finish.",
+          "conf_mean": 96.2,
+          "conf_min": 93.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            182,
+            666,
+            1460,
+            709
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "It is Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 95.7,
+          "conf_min": 92.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            739,
+            1664,
+            782
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "Armor of Sigismund von Tirol, Kunsthistorisches Museum Wien - 1484 - Austria",
+          "conf_mean": 94.4,
+          "conf_min": 91.5,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            658,
+            1864,
+            1826,
+            1895
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "6.2. Specific Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1957,
+            936,
+            2007
+          ],
+          "paper": 0.65,
+          "height": 50
+        },
+        {
+          "text": "The whole armor must be satin polished or a mix of satin and mirror polished.",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            180,
+            2068,
+            1743,
+            2111
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "It is Denied to have an armor set mixing black/blued polishing parts with mirror polishing parts.",
+          "conf_mean": 95.6,
+          "conf_min": 92.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            184,
+            2141,
+            2092,
+            2185
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Mirror polish can be used with other decoration techniques, such as etching, engraving, gilding or",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            2215,
+            2304,
+            2258
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "plating.",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            2275,
+            323,
+            2318
+          ],
+          "paper": 0.67,
+          "height": 43
+        },
+        {
+          "text": "6.3. Examples of Approved Finishes",
+          "conf_mean": 96.3,
+          "conf_min": 94.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2411,
+            1175,
+            2461
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "1 |",
+          "conf_mean": 70.3,
+          "conf_min": 47.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            1153,
+            2748,
+            1288,
+            2858
+          ],
+          "paper": 0.01,
+          "height": 110
+        },
+        {
+          "text": "Wi thy",
+          "conf_mean": 46.1,
+          "conf_min": 39,
+          "words": 2,
+          "uncertain": [
+            "thy"
+          ],
+          "box": [
+            1159,
+            2902,
+            1358,
+            2948
+          ],
+          "paper": 0.03,
+          "height": 46,
+          "in_picture": "on a coloured or photographic background (paper 3%), confidence 46.1"
+        },
+        {
+          "text": "Pictures from Master Uley © Pictures from J. Amiot ©",
+          "conf_mean": 94.9,
+          "conf_min": 91.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            662,
+            3199,
+            2061,
+            3230
+          ],
+          "paper": 0.84,
+          "height": 24
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 9/17",
+          "conf_mean": 94,
+          "conf_min": 89.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "7. Blackening and Bluing\n\n7.1. Definition and Sources\n\nThis finishing method appeared in the mid-15th century sources, the metal plates are carefully heated to\nhigh temperatures to obtain a black or blue finish by treating the steel with oils\n\nWe lack historical sources for the 14th century to allow those finishes for armors of this period.\nBlackening and blueing are Approved for 15th century armors.\nBlackening and blueing are Denied for 14th century and Transitional armors.\n\nNote: We want to gather data on blackened armor. Which different technique and material armorers can\nuse and which is the result in terms of aesthetics, maintenance, prevention of corrosion, sustainability\netc. If you want to submit your work, please send us an email to: authenticity@buhurtinternational.com\n\nAcceptable methods of blackening/bluing are as followed:\n● Temperature bluing\n\nThe metal plates are carefully heated to adequate temperatures to obtain a blue oxide finish on the\nsurface of the steel.\n\n● Oil blackening\n\nThis technique involves applying oils, such as linseed oil, to steel, which is then baked in an oven\nor applied to heated steel at relatively low temperatures. The process results in a deep black,\nprotective finish. However, it requires regular touch-ups to maintain its appearance and protective\nqualities.\n\n● Chemical blackening/bluing\nModern chemicals normally intended for use on firearms are permitted for armor. Hot-blue\ntreatment is preferred, as it results in a deeper and more durable finish, but be mindful of how this\n\ncould affect heat-treated steel. Cold-blue can be repeatedly applied to darken the surface of the\nsteel and also to touch up hot-blued steel.\n\nGreenwich Armour replica (1595) Plates formed by Robert MacPherson & Jeff Wasson,\ndecoration and finishing by Chris Gilman\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 10/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.2,
+      "ocr_lines": [
+        {
+          "text": "7. Blackening and Bluing",
+          "conf_mean": 92.5,
+          "conf_min": 92,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            648,
+            190,
+            1783,
+            279
+          ],
+          "paper": 0.67,
+          "height": 89,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "7.1. Definition and Sources",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            942,
+            413
+          ],
+          "paper": 0.62,
+          "height": 40
+        },
+        {
+          "text": "This finishing method appeared in the mid-15th century sources, the metal plates are carefully heated to",
+          "conf_mean": 95.9,
+          "conf_min": 91.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            484,
+            2302,
+            527
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "high temperatures to obtain a black or blue finish by treating the steel with oils",
+          "conf_mean": 96.6,
+          "conf_min": 95.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            545,
+            1756,
+            588
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "We lack historical sources for the 14th century to allow those finishes for armors of this period.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            618,
+            2084,
+            661
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Blackening and blueing are Approved for 15th century armors.",
+          "conf_mean": 94.1,
+          "conf_min": 89,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            691,
+            1489,
+            734
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Blackening and blueing are Denied for 14th century and Transitional armors.",
+          "conf_mean": 95.5,
+          "conf_min": 93.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            764,
+            1787,
+            807
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "Note: We want to gather data on blackened armor. Which different technique and material armorers can",
+          "conf_mean": 96,
+          "conf_min": 92.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            898,
+            2302,
+            941
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "use and which is the result in terms of aesthetics, maintenance, prevention of corrosion, sustainability",
+          "conf_mean": 96.2,
+          "conf_min": 95.2,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            959,
+            2305,
+            1002
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "etc. If you want to submit your work, please send us an email to: authenticity@buhurtinternational.com",
+          "conf_mean": 95.1,
+          "conf_min": 84.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            1019,
+            2251,
+            1062
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "Acceptable methods of blackening/bluing are as followed:",
+          "conf_mean": 95.4,
+          "conf_min": 92,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            179,
+            1141,
+            1343,
+            1184
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● Temperature bluing",
+          "conf_mean": 92.4,
+          "conf_min": 91.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            224,
+            1215,
+            717,
+            1257
+          ],
+          "paper": 0.66,
+          "height": 42,
+          "raw": "e Temperature bluing"
+        },
+        {
+          "text": "The metal plates are carefully heated to adequate temperatures to obtain a blue oxide finish on the",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            296,
+            1287,
+            2301,
+            1330
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "surface of the steel.",
+          "conf_mean": 96,
+          "conf_min": 93.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            296,
+            1348,
+            691,
+            1382
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "● Oil blackening",
+          "conf_mean": 94.5,
+          "conf_min": 91.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            224,
+            1421,
+            606,
+            1464
+          ],
+          "paper": 0.68,
+          "height": 43,
+          "raw": "e Oil blackening"
+        },
+        {
+          "text": "This technique involves applying oils, such as linseed oil, to steel, which is then baked in an oven",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            296,
+            1495,
+            2301,
+            1537
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "or applied to heated steel at relatively low temperatures. The process results in a deep black,",
+          "conf_mean": 96.3,
+          "conf_min": 94.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            296,
+            1555,
+            2300,
+            1598
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "protective finish. However, it requires regular touch-ups to maintain its appearance and protective",
+          "conf_mean": 96.2,
+          "conf_min": 94.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            298,
+            1616,
+            2302,
+            1659
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "qualities.",
+          "conf_mean": 95,
+          "conf_min": 95,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            297,
+            1676,
+            472,
+            1719
+          ],
+          "paper": 0.7,
+          "height": 43
+        },
+        {
+          "text": "● Chemical blackening/bluing",
+          "conf_mean": 92.8,
+          "conf_min": 92.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            224,
+            1750,
+            899,
+            1793
+          ],
+          "paper": 0.67,
+          "height": 43,
+          "raw": "e Chemical blackening/bluing"
+        },
+        {
+          "text": "Modern chemicals normally intended for use on firearms are permitted for armor. Hot-blue",
+          "conf_mean": 95.4,
+          "conf_min": 92.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            298,
+            1823,
+            2301,
+            1866
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "treatment is preferred, as it results in a deeper and more durable finish, but be mindful of how this",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            296,
+            1883,
+            2304,
+            1926
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "could affect heat-treated steel. Cold-blue can be repeatedly applied to darken the surface of the",
+          "conf_mean": 95.8,
+          "conf_min": 89.6,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            297,
+            1944,
+            2303,
+            1987
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "steel and also to touch up hot-blued steel.",
+          "conf_mean": 95.5,
+          "conf_min": 91.8,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            297,
+            2005,
+            1140,
+            2047
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Greenwich Armour replica (1595) Plates formed by Robert MacPherson & Jeff Wasson,",
+          "conf_mean": 95.8,
+          "conf_min": 91.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            509,
+            2887,
+            1791,
+            2918
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "decoration and finishing by Chris Gilman",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            853,
+            2921,
+            1449,
+            2953
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 10/17",
+          "conf_mean": 94,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "EUV ZUE ARMOURIES\n\nGeorgsaltar' (Meister der Georgslegende) Armet, German - 1550 - Foot combat armor, Royal Armouries -\nK6In, Wallraf-Richartz-Museum - Metropolitan Museum of Arts 1591 - England\n1460-1465 - Germany\n\n7.2. Specific Requirements\n\nThe whole armor must be of the same method of blackening/bluing.\nIt is Denied to have an armor set mixing black/blued polishing parts with other aesthetics.\n\nBlackening/bluing finish can be used with other decoration techniques, such as etching, engraving,\ngilding, or plating.\nIt is Denied to use paint to reproduce a black/blued finish.\n\n7.3. Examples of Approved Finishes\n\nPictures from Master Uley ©\n\n7.4. Examples of Denied Finishes\n\nUnpolished helmet, trying to imitate proper blackening\n\nPicture from The Medieval Things ©\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 11/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.2,
+      "ocr_lines": [
+        {
+          "text": "EUV ZUE ARMOURIES",
+          "conf_mean": 27.1,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [
+            "EUV",
+            "ZUE"
+          ],
+          "box": [
+            1379,
+            847,
+            1520,
+            878
+          ],
+          "paper": 0.37,
+          "height": 17,
+          "in_picture": "lettering 17px tall, smaller than any printed text"
+        },
+        {
+          "text": "Georgsaltar' (Meister der Georgslegende) Armet, German - 1550 - Foot combat armor, Royal Armouries -",
+          "conf_mean": 92.1,
+          "conf_min": 71.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            912,
+            2065,
+            944
+          ],
+          "paper": 0.77,
+          "height": 24
+        },
+        {
+          "text": "K6In, Wallraf-Richartz-Museum - Metropolitan Museum of Arts 1591 - England",
+          "conf_mean": 88.8,
+          "conf_min": 37.2,
+          "words": 10,
+          "uncertain": [
+            "K6In,"
+          ],
+          "box": [
+            246,
+            956,
+            1880,
+            988
+          ],
+          "paper": 0.8,
+          "height": 25
+        },
+        {
+          "text": "1460-1465 - Germany",
+          "conf_mean": 93.1,
+          "conf_min": 91.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            305,
+            1000,
+            628,
+            1032
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "7.2. Specific Requirements",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1093,
+            936,
+            1144
+          ],
+          "paper": 0.68,
+          "height": 50
+        },
+        {
+          "text": "The whole armor must be of the same method of blackening/bluing.",
+          "conf_mean": 95.4,
+          "conf_min": 89.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            1204,
+            1545,
+            1248
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "It is Denied to have an armor set mixing black/blued polishing parts with other aesthetics.",
+          "conf_mean": 95.8,
+          "conf_min": 92.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            184,
+            1278,
+            1988,
+            1321
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Blackening/bluing finish can be used with other decoration techniques, such as etching, engraving,",
+          "conf_mean": 95.9,
+          "conf_min": 91.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            1351,
+            2300,
+            1394
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "gilding, or plating.",
+          "conf_mean": 96,
+          "conf_min": 94.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1412,
+            535,
+            1455
+          ],
+          "paper": 0.71,
+          "height": 43
+        },
+        {
+          "text": "It is Denied to use paint to reproduce a black/blued finish.",
+          "conf_mean": 95.5,
+          "conf_min": 92.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            1485,
+            1348,
+            1528
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "7.3. Examples of Approved Finishes",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1620,
+            1175,
+            1671
+          ],
+          "paper": 0.68,
+          "height": 41
+        },
+        {
+          "text": "Pictures from Master Uley ©",
+          "conf_mean": 95.1,
+          "conf_min": 91.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            959,
+            2336,
+            1377,
+            2368
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "7.4. Examples of Denied Finishes",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            2429,
+            1102,
+            2480
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "Unpolished helmet, trying to imitate proper blackening",
+          "conf_mean": 95.8,
+          "conf_min": 91.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            559,
+            2585,
+            1743,
+            2621
+          ],
+          "paper": 0.59,
+          "height": 36
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            903,
+            3216,
+            1436,
+            3248
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 11/17",
+          "conf_mean": 94,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "8. Decorations\n\n8.1. Definition and Sources\n\nArmors were often decorated with different methods to display the owner’s status. The following\ndecoration methods are documented by historical sources: etching, engraving, plating and gilding.\n\nHelmets were decorated with fabric or metal elements such as crest, burlet, torse and orle.\nIt is Approved for 14th century, Transitional and 15th century armors.\n\nBL Royal 20 C VII Chroniques de France ou de St Denis -\n1380/1400 - France\n\nLate 14th century, MET Museum\n\n8.2. Specific Requirements\n\nAll decorations must be based on historical sources. It is permissible to combine different decorative\nelements as long as they form a cohesive and visually consistent design across the entire armor set. No\noffensive symbols, words, or political messages of any kind may be used. If a logo is included, it must be\nstylized to align with medieval aesthetics and designs.\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 12/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.1,
+      "ocr_lines": [
+        {
+          "text": "8. Decorations",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            888,
+            190,
+            1545,
+            260
+          ],
+          "paper": 0.59,
+          "height": 70
+        },
+        {
+          "text": "8.1. Definition and Sources",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            942,
+            413
+          ],
+          "paper": 0.62,
+          "height": 40
+        },
+        {
+          "text": "Armors were often decorated with different methods to display the owner’s status. The following",
+          "conf_mean": 95.5,
+          "conf_min": 91.4,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            484,
+            2302,
+            527
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "decoration methods are documented by historical sources: etching, engraving, plating and gilding.",
+          "conf_mean": 96.4,
+          "conf_min": 94.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            545,
+            2159,
+            588
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Helmets were decorated with fabric or metal elements such as crest, burlet, torse and orle.",
+          "conf_mean": 95.1,
+          "conf_min": 92.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            618,
+            2010,
+            658
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "It is Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 95.7,
+          "conf_min": 92.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            691,
+            1664,
+            734
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "BL Royal 20 C VII Chroniques de France ou de St Denis -",
+          "conf_mean": 94.3,
+          "conf_min": 90.3,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            1354,
+            2362,
+            2205,
+            2402
+          ],
+          "paper": 0.79,
+          "height": 24
+        },
+        {
+          "text": "1380/1400 - France",
+          "conf_mean": 94.4,
+          "conf_min": 93.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1573,
+            2401,
+            1858,
+            2426
+          ],
+          "paper": 0.66,
+          "height": 24
+        },
+        {
+          "text": "Late 14th century, MET Museum",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            453,
+            2754,
+            932,
+            2785
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "8.2. Specific Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2866,
+            936,
+            2916
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "All decorations must be based on historical sources. It is permissible to combine different decorative",
+          "conf_mean": 96.1,
+          "conf_min": 95.1,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            179,
+            2977,
+            2304,
+            3020
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "elements as long as they form a cohesive and visually consistent design across the entire armor set. No",
+          "conf_mean": 96.3,
+          "conf_min": 95.1,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            3038,
+            2302,
+            3081
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "offensive symbols, words, or political messages of any kind may be used. If a logo is included, it must be",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            181,
+            3099,
+            2301,
+            3142
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "stylized to align with medieval aesthetics and designs.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            3160,
+            1272,
+            3202
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 12/17",
+          "conf_mean": 94.1,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "8.3. Allowed Decoration Techniques\n\n8.3.1. Etching\n\nIt is allowed to etch symbols, inscriptions, and motifs inspired by medieval artwork. The etching may be\ncarried out by traditional or modern techniques, but the resulting designs should be in keeping with the\naesthetics of the period. Exact historical reproductions are not required; however, modern logos,\noffensive imagery, and contemporary text or symbolism must be avoided.\n\n8.3.2. Engraving\nIt is allowed to engrave symbols, lettering, and decorative motifs consistent with medieval sources.\nEngravings may be done by hand or with mechanical tools, so long as the overall appearance remains\nhistorically inspired. As with etching, the use of modern, offensive, or overtly contemporary themes is\n\nprohibited.\n8.3.3. Plating\n\nIt is Allowed to decorate the edges of an armor part with metal plates. The following materials can be\nused:\n\n● Copper,\n\n● Brass,\n\n● Gold,\n\n● Silver,\n\n● any other metal that can be documented by historical sources.\n\n8.3.4. Gilding\nIt is Allowed to use gilding as a decoration on armor and weapons. The following materials can be used:\n\n● Copper,\n● Brass,\n● Gold,\n\n● Silver,\n\n● any other metal that can be documented by historical sources.\n\n8.3.5. Helmet decorations\n\nIt is Allowed to decorate a helmet in the medieval spirit. It must be based on historical sources. Any\ntextile or leather part must conform with the “Textiles and Leather’ document.\n\n8.3.6. Shield Decorations\n\nIt is Allowed to decorate shields with paint and other embellishments in the spirit of medieval artwork.\nWhile exact historical reproductions are not required, the overall design must closely approximate\nmedieval styles and avoid any modern logos, symbols, or contemporary imagery.\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 13/17",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.3,
+      "ocr_lines": [
+        {
+          "text": "8.3. Allowed Decoration Techniques",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            1170,
+            239
+          ],
+          "paper": 0.67,
+          "height": 40,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "8.3.1. Etching",
+          "conf_mean": 66.9,
+          "conf_min": 61.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            263,
+            317,
+            617,
+            360
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "It is allowed to etch symbols, inscriptions, and motifs inspired by medieval artwork. The etching may be",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            184,
+            386,
+            2303,
+            429
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "carried out by traditional or modern techniques, but the resulting designs should be in keeping with the",
+          "conf_mean": 96.3,
+          "conf_min": 95.2,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            447,
+            2304,
+            490
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "aesthetics of the period. Exact historical reproductions are not required; however, modern logos,",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            508,
+            2302,
+            551
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "offensive imagery, and contemporary text or symbolism must be avoided.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            569,
+            1658,
+            612
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "8.3.2. Engraving",
+          "conf_mean": 50.6,
+          "conf_min": 50.6,
+          "words": 2,
+          "uncertain": [
+            "Engraving"
+          ],
+          "box": [
+            263,
+            688,
+            673,
+            731
+          ],
+          "paper": 0.71,
+          "height": 43
+        },
+        {
+          "text": "It is allowed to engrave symbols, lettering, and decorative motifs consistent with medieval sources.",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            184,
+            757,
+            2300,
+            800
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Engravings may be done by hand or with mechanical tools, so long as the overall appearance remains",
+          "conf_mean": 96.2,
+          "conf_min": 92.4,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            818,
+            2303,
+            861
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "historically inspired. As with etching, the use of modern, offensive, or overtly contemporary themes is",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            182,
+            878,
+            2303,
+            921
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "prohibited.",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            939,
+            389,
+            981
+          ],
+          "paper": 0.68,
+          "height": 42
+        },
+        {
+          "text": "8.3.3. Plating",
+          "conf_mean": 79.4,
+          "conf_min": 79.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            263,
+            1058,
+            601,
+            1101
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "It is Allowed to decorate the edges of an armor part with metal plates. The following materials can be",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            184,
+            1128,
+            2301,
+            1171
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "used:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            1189,
+            287,
+            1222
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "● Copper,",
+          "conf_mean": 93,
+          "conf_min": 91.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1249,
+            452,
+            1291
+          ],
+          "paper": 0.76,
+          "height": 42,
+          "raw": "e Copper,"
+        },
+        {
+          "text": "● Brass,",
+          "conf_mean": 93.3,
+          "conf_min": 91.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1310,
+            421,
+            1349
+          ],
+          "paper": 0.74,
+          "height": 39,
+          "raw": "e Brass,"
+        },
+        {
+          "text": "● Gold,",
+          "conf_mean": 93.8,
+          "conf_min": 91.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1370,
+            401,
+            1410
+          ],
+          "paper": 0.76,
+          "height": 40,
+          "raw": "e Gold,"
+        },
+        {
+          "text": "● Silver,",
+          "conf_mean": 94.4,
+          "conf_min": 92.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1431,
+            416,
+            1471
+          ],
+          "paper": 0.76,
+          "height": 40,
+          "raw": "e Silver,"
+        },
+        {
+          "text": "● any other metal that can be documented by historical sources.",
+          "conf_mean": 95.2,
+          "conf_min": 90.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            1492,
+            1553,
+            1534
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e any other metal that can be documented by historical sources."
+        },
+        {
+          "text": "8.3.4. Gilding",
+          "conf_mean": 71,
+          "conf_min": 71,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            263,
+            1611,
+            606,
+            1654
+          ],
+          "paper": 0.73,
+          "height": 43
+        },
+        {
+          "text": "It is Allowed to use gilding as a decoration on armor and weapons. The following materials can be used:",
+          "conf_mean": 96.3,
+          "conf_min": 93.9,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            184,
+            1680,
+            2297,
+            1723
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Copper,",
+          "conf_mean": 93.9,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1741,
+            452,
+            1783
+          ],
+          "paper": 0.76,
+          "height": 42,
+          "raw": "e Copper,"
+        },
+        {
+          "text": "● Brass,",
+          "conf_mean": 92.8,
+          "conf_min": 90.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1802,
+            421,
+            1841
+          ],
+          "paper": 0.74,
+          "height": 39,
+          "raw": "e Brass,"
+        },
+        {
+          "text": "● Gold,",
+          "conf_mean": 93.8,
+          "conf_min": 92.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1862,
+            401,
+            1901
+          ],
+          "paper": 0.76,
+          "height": 39,
+          "raw": "e Gold,"
+        },
+        {
+          "text": "● Silver,",
+          "conf_mean": 90,
+          "conf_min": 89,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1923,
+            416,
+            1962
+          ],
+          "paper": 0.76,
+          "height": 39,
+          "raw": "e Silver,"
+        },
+        {
+          "text": "● any other metal that can be documented by historical sources.",
+          "conf_mean": 95.6,
+          "conf_min": 91.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            1984,
+            1553,
+            2026
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e any other metal that can be documented by historical sources."
+        },
+        {
+          "text": "8.3.5. Helmet decorations",
+          "conf_mean": 95.6,
+          "conf_min": 94.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            263,
+            2099,
+            875,
+            2146
+          ],
+          "paper": 0.72,
+          "height": 47
+        },
+        {
+          "text": "It is Allowed to decorate a helmet in the medieval spirit. It must be based on historical sources. Any",
+          "conf_mean": 95.6,
+          "conf_min": 83.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            184,
+            2172,
+            2200,
+            2215
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "textile or leather part must conform with the “Textiles and Leather’ document.",
+          "conf_mean": 94.3,
+          "conf_min": 76.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2225,
+            1736,
+            2267
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "8.3.6. Shield Decorations",
+          "conf_mean": 95.7,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            263,
+            2336,
+            865,
+            2370
+          ],
+          "paper": 0.6,
+          "height": 34
+        },
+        {
+          "text": "It is Allowed to decorate shields with paint and other embellishments in the spirit of medieval artwork.",
+          "conf_mean": 96.2,
+          "conf_min": 94.4,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            184,
+            2405,
+            2235,
+            2448
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "While exact historical reproductions are not required, the overall design must closely approximate",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            2458,
+            2150,
+            2501
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "medieval styles and avoid any modern logos, symbols, or contemporary imagery.",
+          "conf_mean": 96.4,
+          "conf_min": 95.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            182,
+            2511,
+            1817,
+            2554
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 13/17",
+          "conf_mean": 94,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "text": "8.4. Examples of Approved Decorations\n\nPictures from The Medieval Things ©\n\nPictures from R. Desgranges ©\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 14/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.3,
+      "ocr_lines": [
+        {
+          "text": "8.4. Examples of Approved Decorations",
+          "conf_mean": 95.8,
+          "conf_min": 95.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            1268,
+            239
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1560,
+            1980,
+            2109,
+            2012
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Pictures from R. Desgranges ©",
+          "conf_mean": 93.8,
+          "conf_min": 91.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            999,
+            3084,
+            1461,
+            3116
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 14/17",
+          "conf_mean": 94.1,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "text": "8.5. Examples of Denied Decorations\n\nPainted helmets\n\nPictures from The Medieval Things ©\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 15/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.2,
+      "ocr_lines": [
+        {
+          "text": "8.5. Examples of Denied Decorations",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            189,
+            1196,
+            239
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "Painted helmets",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            978,
+            297,
+            1324,
+            330
+          ],
+          "paper": 0.53,
+          "height": 33
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            877,
+            1397,
+            1426,
+            1428
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 15/17",
+          "conf_mean": 94,
+          "conf_min": 89.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 16,
+      "text": "9. Repairs\n\n9.1. Definition and Sources\n\nArmors were sometimes repaired to increase its durability. In the Middle Ages, the most common way to\nrepair an armor was to rivet a metal plate from beneath. From a buhurt point of view, it will be important\nto respect period techniques for visible repairs.\n\nIt is Approved for 14th century, Transitional, and 15th century armors.\n\n9.2. Specific Requirements\n\nVisible repairs must be executed with period techniques, for example with a riveted patch installed on the\ninside of the armor part and riveted.\n\nRepairs must be clean and not dangerous for other equipment elements.\n\nAny modern reparation is allowed if properly concealed. Any type of welding must be grinded/filed and\npolished on the outside.\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 16/17",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "9. Repairs",
+          "conf_mean": 95.4,
+          "conf_min": 95.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            988,
+            190,
+            1444,
+            278
+          ],
+          "paper": 0.66,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "9.1. Definition and Sources",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            942,
+            413
+          ],
+          "paper": 0.62,
+          "height": 41
+        },
+        {
+          "text": "Armors were sometimes repaired to increase its durability. In the Middle Ages, the most common way to",
+          "conf_mean": 96.2,
+          "conf_min": 93,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            484,
+            2301,
+            527
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "repair an armor was to rivet a metal plate from beneath. From a buhurt point of view, it will be important",
+          "conf_mean": 96.1,
+          "conf_min": 92.6,
+          "words": 21,
+          "uncertain": [],
+          "box": [
+            182,
+            545,
+            2304,
+            588
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "to respect period techniques for visible repairs.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            605,
+            1124,
+            648
+          ],
+          "paper": 0.73,
+          "height": 41
+        },
+        {
+          "text": "It is Approved for 14th century, Transitional, and 15th century armors.",
+          "conf_mean": 95.5,
+          "conf_min": 92.1,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            184,
+            678,
+            1676,
+            722
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "9.2. Specific Requirements",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            1348,
+            936,
+            1398
+          ],
+          "paper": 0.65,
+          "height": 50
+        },
+        {
+          "text": "Visible repairs must be executed with period techniques, for example with a riveted patch installed on the",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            1459,
+            2303,
+            1502
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "inside of the armor part and riveted.",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            1520,
+            899,
+            1563
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Repairs must be clean and not dangerous for other equipment elements.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1593,
+            1649,
+            1636
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Any modern reparation is allowed if properly concealed. Any type of welding must be grinded/filed and",
+          "conf_mean": 95.7,
+          "conf_min": 91.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            1666,
+            2300,
+            1709
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "polished on the outside.",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            1727,
+            660,
+            1769
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 16/17",
+          "conf_mean": 93.9,
+          "conf_min": 89.6,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 17,
+      "text": "10. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “41. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n- Split of “2. Definition” and “3. General Requirements” and subsequent title-numbers modifications)\n\nFebruary-2025 (V2025.02)\n\n- rephrased 6.2\n- formatting: grammar and formatting improvements\n\n11-Nov-2024\n\"Add Document has been created\n\nArmors and Weapons Aesthetics and Decorations V. 26.1 17/17",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.4,
+      "ocr_lines": [
+        {
+          "text": "10. Changelog",
+          "conf_mean": 95.7,
+          "conf_min": 95.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            868,
+            189,
+            1514,
+            279
+          ],
+          "paper": 0.66,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            371,
+            2266,
+            414
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            612,
+            432,
+            1873,
+            474
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.3,
+          "conf_min": 90.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            664,
+            680,
+            707
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            716,
+            2166,
+            759
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Add: “41. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 91.2,
+          "conf_min": 34,
+          "words": 13,
+          "uncertain": [
+            "Title"
+          ],
+          "box": [
+            175,
+            762,
+            2045,
+            825
+          ],
+          "paper": 0.79,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            837,
+            428,
+            872
+          ],
+          "paper": 0,
+          "height": 35
+        },
+        {
+          "text": "- Split of “2. Definition” and “3. General Requirements” and subsequent title-numbers modifications)",
+          "conf_mean": 94.7,
+          "conf_min": 88.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            228,
+            898,
+            2283,
+            941
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "February-2025 (V2025.02)",
+          "conf_mean": 90.1,
+          "conf_min": 90.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            183,
+            1002,
+            730,
+            1046
+          ],
+          "paper": 0.61,
+          "height": 43
+        },
+        {
+          "text": "- rephrased 6.2",
+          "conf_mean": 95,
+          "conf_min": 93.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1051,
+            488,
+            1093
+          ],
+          "paper": 0.18,
+          "height": 33
+        },
+        {
+          "text": "- formatting: grammar and formatting improvements",
+          "conf_mean": 95.6,
+          "conf_min": 92.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            181,
+            1098,
+            1225,
+            1142
+          ],
+          "paper": 0.6,
+          "height": 42
+        },
+        {
+          "text": "11-Nov-2024",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1243,
+            446,
+            1276
+          ],
+          "paper": 0.56,
+          "height": 33
+        },
+        {
+          "text": "\"Add Document has been created",
+          "conf_mean": 81.4,
+          "conf_min": 22.9,
+          "words": 5,
+          "uncertain": [
+            "\"Add"
+          ],
+          "box": [
+            192,
+            1284,
+            887,
+            1332
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "Armors and Weapons Aesthetics and Decorations V. 26.1 17/17",
+          "conf_mean": 94.1,
+          "conf_min": 87.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            226,
+            3398,
+            2360,
+            3445
+          ],
+          "paper": 0.88,
+          "height": 33,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    }
+  ]
+}

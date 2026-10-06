@@ -5,9 +5,9 @@ Result: **PASSED**
 Inventory documents: 4 · imported: 1 · excluded: 3 · missing: 0
 
 
-| Document | Provisions | To review | Coverage | Result |
-| --- | --- | --- | --- | --- |
-| marshal/example-combat-rules | 13 | 0 | 99.58% | ok |
+| Document | Source file | Version (confirmed by) | sha256 | Pages | Read by | Provisions | To review | Verified | Picture text set aside | OCR corrections | Coverage | Result |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| marshal/example-combat-rules |  | V.1.1 | b7795b40247a | 2 | text layer | 13 | 0 | 1 | 0 | 0 | 99.58% | ok |
 
 ## Excluded
 - tournament/example-chart: image-only chart: kept as a link to the official file, not transcribed

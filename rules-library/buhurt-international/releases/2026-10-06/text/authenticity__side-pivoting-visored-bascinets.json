@@ -1,0 +1,2931 @@
+{
+  "inventory_key": "authenticity/side-pivoting-visored-bascinets",
+  "sha256": "f63587c9dc71d4e2c642c6e3f85eeb0ce47e3b05e10342306c7ccd4aa22bdee1",
+  "source_file": "Authenticity/Side-pivoting visored Bascinets.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 15 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 15,
+    "title": "Side-pivoting visored Bascinets - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:26:32 2026 UTC",
+    "modified": "Wed Jan 28 14:26:32 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)\\) BUHURT (7\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 76,
+      "ocr_lines": [
+        {
+          "text": "\\)\\) BUHURT (7",
+          "conf_mean": 55.9,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 40,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 55.9"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            607,
+            1275,
+            990,
+            1346
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1452,
+            1724,
+            1646
+          ],
+          "paper": 0,
+          "height": 194
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 2\n2. Definition 2\n3. Historical Sources and Datation 3\n3.1. 14th Century Sugarloaf Helmets 3\n3.2. Transitional Style Helmets 4\n3.2.1. Romance of Alexander, Spoleto, and Other Flat-faced Bascinets 4\n\n3.2.2. Houndskull/Hundsgugel Style Bascinets 5\n\n3.3. 15th century Style Helmets 6\n\n4. Requirements 7\n4.1. General Requirements 7\n4.2. Visor 7\n4.3. Eye slots 7\n4.4. Aventail 8\n4.5. Others 8\n\n5. Examples of Approved Reproductions 9\n5.1. Sugarloaf 9\n5.2. Romance of Alexander, Spoleto, and Other Flat-faced Bascinets 9\n5.3. Houndskull/Hundsgugel Style Bascinets 11\n5.4. Great Bascinets 12\n\n6. Examples of Denied Reproductions 13\n7. Changelog 14\n\nSide-hinged visored Bascinets V. 26.1 1/15",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            338,
+            621,
+            378
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation 2",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            410,
+            2301,
+            452
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2. Definition 2",
+          "conf_mean": 96.7,
+          "conf_min": 96.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            475,
+            2301,
+            508
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "3. Historical Sources and Datation 3",
+          "conf_mean": 95,
+          "conf_min": 91.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            540,
+            2301,
+            574
+          ],
+          "paper": 0.88,
+          "height": 34
+        },
+        {
+          "text": "3.1. 14th Century Sugarloaf Helmets 3",
+          "conf_mean": 95.9,
+          "conf_min": 95.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            605,
+            2300,
+            648
+          ],
+          "paper": 0.9,
+          "height": 34
+        },
+        {
+          "text": "3.2. Transitional Style Helmets 4",
+          "conf_mean": 96.2,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            670,
+            2301,
+            713
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "3.2.1. Romance of Alexander, Spoleto, and Other Flat-faced Bascinets 4",
+          "conf_mean": 95.1,
+          "conf_min": 91.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            303,
+            736,
+            2301,
+            778
+          ],
+          "paper": 0.8,
+          "height": 33
+        },
+        {
+          "text": "3.2.2. Houndskull/Hundsgugel Style Bascinets 5",
+          "conf_mean": 93.7,
+          "conf_min": 92.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            303,
+            801,
+            2301,
+            844
+          ],
+          "paper": 0.86,
+          "height": 34
+        },
+        {
+          "text": "3.3. 15th century Style Helmets 6",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            866,
+            2301,
+            909
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "4. Requirements 7",
+          "conf_mean": 94.8,
+          "conf_min": 94,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            932,
+            2301,
+            973
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "4.1. General Requirements 7",
+          "conf_mean": 95.9,
+          "conf_min": 95.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            996,
+            2301,
+            1039
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor 7",
+          "conf_mean": 95.5,
+          "conf_min": 95.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            1062,
+            2301,
+            1095
+          ],
+          "paper": 0.97,
+          "height": 33
+        },
+        {
+          "text": "4.3. Eye slots 7",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            1127,
+            2301,
+            1170
+          ],
+          "paper": 0.96,
+          "height": 34
+        },
+        {
+          "text": "4.4. Aventail 8",
+          "conf_mean": 93.6,
+          "conf_min": 90.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            1192,
+            2301,
+            1226
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "4.5. Others 8",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            226,
+            1257,
+            2301,
+            1291
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "5. Examples of Approved Reproductions 9",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1322,
+            2301,
+            1365
+          ],
+          "paper": 0.89,
+          "height": 42
+        },
+        {
+          "text": "5.1. Sugarloaf 9",
+          "conf_mean": 95.4,
+          "conf_min": 94.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            228,
+            1387,
+            2301,
+            1430
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "5.2. Romance of Alexander, Spoleto, and Other Flat-faced Bascinets 9",
+          "conf_mean": 94.9,
+          "conf_min": 91,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            228,
+            1452,
+            2301,
+            1495
+          ],
+          "paper": 0.82,
+          "height": 34
+        },
+        {
+          "text": "5.3. Houndskull/Hundsgugel Style Bascinets 11",
+          "conf_mean": 92.8,
+          "conf_min": 89.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            228,
+            1518,
+            2295,
+            1561
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "5.4. Great Bascinets 12",
+          "conf_mean": 94.4,
+          "conf_min": 91.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1583,
+            2301,
+            1617
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "6. Examples of Denied Reproductions 13",
+          "conf_mean": 96.7,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            153,
+            1648,
+            2301,
+            1691
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "7. Changelog 14",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1713,
+            2301,
+            1756
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 1/15",
+          "conf_mean": 87.7,
+          "conf_min": 62.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\nSide-pivoting visored Bascinets are helmets with movable visors attached to the dome with pivots at\nthe temples, in contrast to center-mounted hinges on the forehead. This type of helmet was very\npopular in Western Europe from 1350 to 1450. Such helmets are designed to be worn as primary head\nprotection, and the design of the visor is made to deflect strikes.\n\nSide-pivoting visored Bascinets use a solid metal visor to protect the face, attached on the sides by\npivots.\n\nSide-pivoting visored Bascinets were used from the early 14th century to 1450 across all of Western\nEurope. The shape of the visor will evolve throughout time.\n\nSide-hinged visored Bascinets V. 26.1 2/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.5,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.3,
+          "conf_min": 95.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            707,
+            190,
+            1556,
+            278
+          ],
+          "paper": 0.69,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            414
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.2,
+          "conf_min": 95.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1714,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 95.9,
+          "conf_min": 95.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            822,
+            596,
+            1436,
+            667
+          ],
+          "paper": 0.64,
+          "height": 71
+        },
+        {
+          "text": "Side-pivoting visored Bascinets are helmets with movable visors attached to the dome with pivots at",
+          "conf_mean": 95.5,
+          "conf_min": 91.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            777,
+            2263,
+            820
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "the temples, in contrast to center-mounted hinges on the forehead. This type of helmet was very",
+          "conf_mean": 95.5,
+          "conf_min": 91.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            838,
+            2264,
+            881
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "popular in Western Europe from 1350 to 1450. Such helmets are designed to be worn as primary head",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            182,
+            898,
+            2262,
+            942
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "protection, and the design of the visor is made to deflect strikes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            959,
+            1469,
+            1002
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Side-pivoting visored Bascinets use a solid metal visor to protect the face, attached on the sides by",
+          "conf_mean": 95.8,
+          "conf_min": 91.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            1032,
+            2263,
+            1075
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "pivots.",
+          "conf_mean": 96.3,
+          "conf_min": 96.3,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            1093,
+            308,
+            1135
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "Side-pivoting visored Bascinets were used from the early 14th century to 1450 across all of Western",
+          "conf_mean": 95.6,
+          "conf_min": 91.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            1165,
+            2262,
+            1209
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Europe. The shape of the visor will evolve throughout time.",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            183,
+            1226,
+            1367,
+            1269
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 2/15",
+          "conf_mean": 93.5,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "3. Historical Sources and Datation\n\n3.1. 14th Century Sugarloaf Helmets\n\nSugarloaf helmets are one of the earliest types of Side-pivoting visored Bascinets. It appeared at the\nbeginning of the 14th century and includes a solid chin protection, derived from Great helms design.\n\nSugarloaf helmets are Approved for 14th century armors.\nSugarloaf helmets are Denied for Transitional and 15th century armors.\n\nBL Royal 6 E IX Address in verse to Robert of Anjou, King of Naples - 1335/1340 - Italy\n\nSide-hinged visored Bascinets V. 26.1 3/15",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.3,
+      "ocr_lines": [
+        {
+          "text": "3. Historical Sources and Datation",
+          "conf_mean": 94.2,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            333,
+            189,
+            1926,
+            260
+          ],
+          "paper": 0.62,
+          "height": 70,
+          "dropped": [
+            "—_"
+          ]
+        },
+        {
+          "text": "3.1. 14th Century Sugarloaf Helmets",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            372,
+            1173,
+            423
+          ],
+          "paper": 0.69,
+          "height": 40
+        },
+        {
+          "text": "Sugarloaf helmets are one of the earliest types of Side-pivoting visored Bascinets. It appeared at the",
+          "conf_mean": 95.1,
+          "conf_min": 90.9,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            483,
+            2262,
+            527
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "beginning of the 14th century and includes a solid chin protection, derived from Great helms design.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            544,
+            2194,
+            587
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Sugarloaf helmets are Approved for 14th century armors.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            617,
+            1382,
+            660
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Sugarloaf helmets are Denied for Transitional and 15th century armors.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            690,
+            1680,
+            733
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "BL Royal 6 E IX Address in verse to Robert of Anjou, King of Naples - 1335/1340 - Italy",
+          "conf_mean": 94.9,
+          "conf_min": 91.4,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            578,
+            1784,
+            1870,
+            1815
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 3/15",
+          "conf_mean": 93.3,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "3.2. Transitional Style Helmets\n\nIn the middle of the 14th century, Bascinets with a side-pivoting visor began to be depicted in\nminiatures and art. They include a longer visor with no chin plate and will represent the majority of\nhelmets until the middle of the 15th century.\n\nTransitional style helmets are Approved for 14th century and Transitional armors.\nTransitional style helmets are Denied for 15th century armors.\n\n3.2.1. | Romance of Alexander, Spoleto, and Other Flat-faced Bascinets\n\nThese helmets are based on period art:\n\nHolkham Bible - 1327/1335 - England Romance of Alexander - 1338 - England\n\nSide-hinged visored Bascinets V. 26.1 4/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.2,
+      "ocr_lines": [
+        {
+          "text": "3.2. Transitional Style Helmets",
+          "conf_mean": 95.9,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            188,
+            1025,
+            239
+          ],
+          "paper": 0.68,
+          "height": 40,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "In the middle of the 14th century, Bascinets with a side-pivoting visor began to be depicted in",
+          "conf_mean": 95.3,
+          "conf_min": 89.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            184,
+            300,
+            2261,
+            343
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "miniatures and art. They include a longer visor with no chin plate and will represent the majority of",
+          "conf_mean": 96.3,
+          "conf_min": 94.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            182,
+            360,
+            2265,
+            404
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "helmets until the middle of the 15th century.",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            421,
+            1058,
+            464
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Transitional style helmets are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            494,
+            1887,
+            537
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Transitional style helmets are Denied for 15th century armors.",
+          "conf_mean": 96.1,
+          "conf_min": 94.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            567,
+            1467,
+            611
+          ],
+          "paper": 0.71,
+          "height": 33
+        },
+        {
+          "text": "3.2.1. | Romance of Alexander, Spoleto, and Other Flat-faced Bascinets",
+          "conf_mean": 90.1,
+          "conf_min": 72.5,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            263,
+            709,
+            1836,
+            760
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "These helmets are based on period art:",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            835,
+            975,
+            878
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Holkham Bible - 1327/1335 - England Romance of Alexander - 1338 - England",
+          "conf_mean": 93.8,
+          "conf_min": 90.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            319,
+            2464,
+            1939,
+            2495
+          ],
+          "paper": 0.8,
+          "height": 25
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 4/15",
+          "conf_mean": 93.5,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "3.2.2. | Houndskull/Hundsgugel Style Bascinets\n\nThese helmets are very common at this time. Many originals survived and are displayed in museums.\n\nLes Grandes Chroniques de France - 1400/1425 - France\n\nSide-hinged visored Bascinets V. 26.1 9/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90,
+      "ocr_lines": [
+        {
+          "text": "3.2.2. | Houndskull/Hundsgugel Style Bascinets",
+          "conf_mean": 85.1,
+          "conf_min": 64,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            263,
+            182,
+            1327,
+            234
+          ],
+          "paper": 0.72,
+          "height": 44
+        },
+        {
+          "text": "These helmets are very common at this time. Many originals survived and are displayed in museums.",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            321,
+            2227,
+            364
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Les Grandes Chroniques de France - 1400/1425 - France",
+          "conf_mean": 93,
+          "conf_min": 89.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            764,
+            3202,
+            1611,
+            3233
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 9/15",
+          "conf_mean": 87.9,
+          "conf_min": 62.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "3.3. 15th century Style Helmets\n\nAt the edge of the 15th century, an evolution of previous Bascinets was developed. The great Bascinet\nencompasses an increased neck protection that makes it very safe. Some extant artifacts are\ndisplayed in museums.\n\nMusée de I’Armée, Paris - 1400/1420 - France Musées des Beaux Arts, Dijon - 1400/1420 - France\n\nDoges Palace, Venice - 1380/1390 - Italy\n\nSide-hinged visored Bascinets V. 26.1 6/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.5,
+      "ocr_lines": [
+        {
+          "text": "3.3. 15th century Style Helmets",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            188,
+            1044,
+            239
+          ],
+          "paper": 0.69,
+          "height": 40,
+          "dropped": [
+            "—"
+          ]
+        },
+        {
+          "text": "At the edge of the 15th century, an evolution of previous Bascinets was developed. The great Bascinet",
+          "conf_mean": 95.6,
+          "conf_min": 91.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            179,
+            283,
+            2263,
+            327
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "encompasses an increased neck protection that makes it very safe. Some extant artifacts are",
+          "conf_mean": 96.5,
+          "conf_min": 95.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            181,
+            344,
+            2261,
+            387
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "displayed in museums.",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            405,
+            641,
+            448
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "Musée de I’Armée, Paris - 1400/1420 - France Musées des Beaux Arts, Dijon - 1400/1420 - France",
+          "conf_mean": 90,
+          "conf_min": 26.6,
+          "words": 17,
+          "uncertain": [
+            "I’Armée,"
+          ],
+          "box": [
+            338,
+            1314,
+            2059,
+            1346
+          ],
+          "paper": 0.77,
+          "height": 25
+        },
+        {
+          "text": "Doges Palace, Venice - 1380/1390 - Italy",
+          "conf_mean": 94,
+          "conf_min": 92.3,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            845,
+            2317,
+            1449,
+            2357
+          ],
+          "paper": 0.78,
+          "height": 29
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 6/15",
+          "conf_mean": 93.5,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "4. Requirements\n\n4.1. General Requirements\nReproductions must closely resemble the appearance and proportions of a Side-pivoting Bascinet\nsource.\n\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”\ndocument.\n\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n4.2. Visor\n\nThe visor must not be too long or too short, it must conform to the proportions of historical sources.\nThe pivots must be reproduced as per historical sources.\nIt is permitted to weld the visor down. A welded visor must resemble a functional removable visor.\n\nIt is permitted to add metal plates to protect the throat. Such a plate must be strong enough to endure\nfull-contact fighting and must be concealed under the aventail.\n\nA leather strap can be used to secure the visor.\n\nBreath holes should be round and must not exceed a diameter of 10 mm. Breath holes must not be so\nnumerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to\nboth sides.\n\nBreath holes of other shapes must be documented by historical sources to be permitted.\n\n4.3. Eye slots\n\nEye slots should resemble sources for the visor.\nEye slots should not exceed 25 mm tall to prevent any injury.\n\nSide-pivoting visored Bascinets with historical evidence of externally riveted Eye bars can add up to\ntwo (2) externally riveted eye bars per eye slot.\n\nHelmets that are currently documented with externally riveted Eye bars are Sugarloaf and Romance of\nAlexander.\n\nSide-pivoting visored Bascinets with two (2) Eye slots are permitted to add up to two (2) safety Eye\nbars per Eye slot.\n\nSide-pivoting visored Bascinets with a single Eye slot are permitted to add up to five (5) safety Eye\nbars: one (1) in the middle and two (2) on each side.\n\nExample:\n\nPicture from Medieval Extreme ©\n\nSide-hinged visored Bascinets V. 26.1 7/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95.3,
+      "ocr_lines": [
+        {
+          "text": "4. Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            735,
+            190,
+            1523,
+            278
+          ],
+          "paper": 0.69,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "4.1. General Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            372,
+            929,
+            422
+          ],
+          "paper": 0.67,
+          "height": 40
+        },
+        {
+          "text": "Reproductions must closely resemble the appearance and proportions of a Side-pivoting Bascinet",
+          "conf_mean": 95.2,
+          "conf_min": 91.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            467,
+            2263,
+            510
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "source.",
+          "conf_mean": 96.5,
+          "conf_min": 96.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            536,
+            326,
+            562
+          ],
+          "paper": 0.54,
+          "height": 26
+        },
+        {
+          "text": "Any metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”",
+          "conf_mean": 95.8,
+          "conf_min": 90.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            601,
+            2268,
+            644
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "document.",
+          "conf_mean": 93.4,
+          "conf_min": 93.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            662,
+            389,
+            695
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "Any textile or leather part of the helmet must conform to the “Textiles and Leather” document.",
+          "conf_mean": 95.9,
+          "conf_min": 88.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            734,
+            2060,
+            777
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "4.2. Visor",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            872,
+            489,
+            911
+          ],
+          "paper": 0.63,
+          "height": 39
+        },
+        {
+          "text": "The visor must not be too long or too short, it must conform to the proportions of historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 95.1,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            180,
+            966,
+            2174,
+            1009
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "The pivots must be reproduced as per historical sources.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1040,
+            1327,
+            1082
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "It is permitted to weld the visor down. A welded visor must resemble a functional removable visor.",
+          "conf_mean": 96.4,
+          "conf_min": 95.6,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            184,
+            1113,
+            2146,
+            1155
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "It is permitted to add metal plates to protect the throat. Such a plate must be strong enough to endure",
+          "conf_mean": 96.1,
+          "conf_min": 94.8,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            184,
+            1186,
+            2261,
+            1229
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "full-contact fighting and must be concealed under the aventail.",
+          "conf_mean": 95,
+          "conf_min": 91,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            1246,
+            1434,
+            1289
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "A leather strap can be used to secure the visor.",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1319,
+            1132,
+            1362
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Breath holes should be round and must not exceed a diameter of 10 mm. Breath holes must not be so",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            182,
+            1392,
+            2261,
+            1426
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "numerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to",
+          "conf_mean": 95.8,
+          "conf_min": 90.1,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            1453,
+            2262,
+            1496
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "both sides.",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1514,
+            397,
+            1547
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "Breath holes of other shapes must be documented by historical sources to be permitted.",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            1586,
+            1960,
+            1629
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "4.3. Eye slots",
+          "conf_mean": 96.5,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            237,
+            1725,
+            589,
+            1775
+          ],
+          "paper": 0.68,
+          "height": 39
+        },
+        {
+          "text": "Eye slots should resemble sources for the visor.",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            1819,
+            1145,
+            1862
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Eye slots should not exceed 25 mm tall to prevent any injury.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            1892,
+            1405,
+            1935
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Side-pivoting visored Bascinets with historical evidence of externally riveted Eye bars can add up to",
+          "conf_mean": 95.6,
+          "conf_min": 91.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            1965,
+            2263,
+            2008
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "two (2) externally riveted eye bars per eye slot.",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            2025,
+            1125,
+            2068
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Helmets that are currently documented with externally riveted Eye bars are Sugarloaf and Romance of",
+          "conf_mean": 96.3,
+          "conf_min": 94.5,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            2098,
+            2265,
+            2141
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Alexander.",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            180,
+            2159,
+            392,
+            2193
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Side-pivoting visored Bascinets with two (2) Eye slots are permitted to add up to two (2) safety Eye",
+          "conf_mean": 95.5,
+          "conf_min": 91.5,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            2232,
+            2263,
+            2275
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "bars per Eye slot.",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            2293,
+            532,
+            2336
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Side-pivoting visored Bascinets with a single Eye slot are permitted to add up to five (5) safety Eye",
+          "conf_mean": 95.6,
+          "conf_min": 91.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            181,
+            2366,
+            2261,
+            2409
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "bars: one (1) in the middle and two (2) on each side.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            2427,
+            1235,
+            2470
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Example:",
+          "conf_mean": 85,
+          "conf_min": 85,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            2500,
+            369,
+            2542
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 95.7,
+          "conf_min": 94.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            845,
+            2886,
+            1334,
+            2910
+          ],
+          "paper": 0.63,
+          "height": 24
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 7/15",
+          "conf_mean": 93.3,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "Side-pivoting visored Bascinets with historical evidence of integrated Eye bars can use some, such as\nthe following:\n\nBL Royal 20 C VII\nChroniques de France ou de St Denis -\n1380/1400 - France\n\nEye bars must conform to the “Eye bars” document.\n\n4.4. Aventail\nSide-pivoting visored Bascinets must be worn with chainmail Aventails, fabric Aventails, or scales\nAventails.\nAventails must conform to the “Aventails” document.\n\nAventails must be attached to the Bascinet by a system of leather and vervelles, or sewn to the edges\nof the helmet.\n\nChainmail Aventail must be fastened down to the edge of a padded pelerine, attached to the helmet\nliner.\n\nScales and fabric Aventails are recommended to be fastened down to the edge of a padded pelerine,\nattached to the helmet liner.\n\nAny additional protective plates covering the cervical spine should be hidden under the Aventail.\n\n4.5. Others\n\nSide-pivoting visored Bascinets may be decorated in the spirit of medieval styles, such as an orle,\ntorse, decorated aventails (with copper/brass chainmail rings), vervelle covers, coat of arms badges,\netc.\n\nSuch decoration must be made in coherence with historical sources.\nUsing modern and/or offensive imagery and slogans is prohibited as part of decorations or heraldry.\n\nSide-hinged visored Bascinets V. 26.1 8/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.7,
+      "ocr_lines": [
+        {
+          "text": "Side-pivoting visored Bascinets with historical evidence of integrated Eye bars can use some, such as",
+          "conf_mean": 95.6,
+          "conf_min": 91.3,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            181,
+            308,
+            2261,
+            351
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "the following:",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            180,
+            368,
+            443,
+            411
+          ],
+          "paper": 0.71,
+          "height": 43
+        },
+        {
+          "text": "BL Royal 20 C VII",
+          "conf_mean": 88.8,
+          "conf_min": 81.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1091,
+            1023,
+            1355,
+            1055
+          ],
+          "paper": 0.73,
+          "height": 24
+        },
+        {
+          "text": "Chroniques de France ou de St Denis -",
+          "conf_mean": 94.6,
+          "conf_min": 92,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            936,
+            1067,
+            1511,
+            1098
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "1380/1400 - France",
+          "conf_mean": 93.5,
+          "conf_min": 90.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1082,
+            1112,
+            1367,
+            1137
+          ],
+          "paper": 0.65,
+          "height": 25
+        },
+        {
+          "text": "Eye bars must conform to the “Eye bars” document.",
+          "conf_mean": 95.6,
+          "conf_min": 94.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            183,
+            1203,
+            1224,
+            1246
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "4.4. Aventail",
+          "conf_mean": 92.7,
+          "conf_min": 92.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            1340,
+            528,
+            1380
+          ],
+          "paper": 0.64,
+          "height": 39
+        },
+        {
+          "text": "Side-pivoting visored Bascinets must be worn with chainmail Aventails, fabric Aventails, or scales",
+          "conf_mean": 94.3,
+          "conf_min": 91.3,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            181,
+            1435,
+            2262,
+            1478
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Aventails.",
+          "conf_mean": 92.7,
+          "conf_min": 92.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            179,
+            1496,
+            373,
+            1529
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "Aventails must conform to the “Aventails” document.",
+          "conf_mean": 94.7,
+          "conf_min": 90.8,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            179,
+            1568,
+            1232,
+            1602
+          ],
+          "paper": 0.67,
+          "height": 33
+        },
+        {
+          "text": "Aventails must be attached to the Bascinet by a system of leather and vervelles, or sewn to the edges",
+          "conf_mean": 95.5,
+          "conf_min": 91.8,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            179,
+            1641,
+            2261,
+            1685
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "of the helmet.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            181,
+            1702,
+            453,
+            1736
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Chainmail Aventail must be fastened down to the edge of a padded pelerine, attached to the helmet",
+          "conf_mean": 95.4,
+          "conf_min": 92.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            1775,
+            2263,
+            1818
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "liner.",
+          "conf_mean": 95.9,
+          "conf_min": 95.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            1836,
+            272,
+            1870
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "Scales and fabric Aventails are recommended to be fastened down to the edge of a padded pelerine,",
+          "conf_mean": 95.5,
+          "conf_min": 90.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            1909,
+            2259,
+            1952
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "attached to the helmet liner.",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            1970,
+            738,
+            2003
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "Any additional protective plates covering the cervical spine should be hidden under the Aventail.",
+          "conf_mean": 95.7,
+          "conf_min": 89.7,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            179,
+            2043,
+            2117,
+            2085
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "4.5. Others",
+          "conf_mean": 95.9,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            237,
+            2180,
+            500,
+            2220
+          ],
+          "paper": 0.65,
+          "height": 40
+        },
+        {
+          "text": "Side-pivoting visored Bascinets may be decorated in the spirit of medieval styles, such as an orle,",
+          "conf_mean": 95.1,
+          "conf_min": 91.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            2275,
+            2260,
+            2318
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "torse, decorated aventails (with copper/brass chainmail rings), vervelle covers, coat of arms badges,",
+          "conf_mean": 94.4,
+          "conf_min": 91.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            2335,
+            2260,
+            2378
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "etc.",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            2398,
+            249,
+            2430
+          ],
+          "paper": 0.62,
+          "height": 32
+        },
+        {
+          "text": "Such decoration must be made in coherence with historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 95.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            2469,
+            1558,
+            2503
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "Using modern and/or offensive imagery and slogans is prohibited as part of decorations or heraldry.",
+          "conf_mean": 96.3,
+          "conf_min": 95.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            2542,
+            2188,
+            2585
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 8/15",
+          "conf_mean": 93.4,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "5.Examples of Approved Reproductions\n\n5.1. Sugarloaf\n\nPicture from Age of Craft © Picture from Forge of Svan ©\n\n5.2. Romance of Alexander, Spoleto, and Other Flat-faced Bascinets\n\nea Oe ee\nId yy ¥\n\nPictures from Master Uley ©\n\nSide-hinged visored Bascinets V. 26.1 9/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 84.8,
+      "ocr_lines": [
+        {
+          "text": "5.Examples of Approved Reproductions",
+          "conf_mean": 93.9,
+          "conf_min": 86,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            295,
+            291,
+            2107,
+            380
+          ],
+          "paper": 0.67,
+          "height": 87
+        },
+        {
+          "text": "5.1. Sugarloaf",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            476,
+            605,
+            533
+          ],
+          "paper": 0.72,
+          "height": 51
+        },
+        {
+          "text": "Picture from Age of Craft © Picture from Forge of Svan ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.1,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            404,
+            1796,
+            1943,
+            1827
+          ],
+          "paper": 0.85,
+          "height": 25
+        },
+        {
+          "text": "5.2. Romance of Alexander, Spoleto, and Other Flat-faced Bascinets",
+          "conf_mean": 94.6,
+          "conf_min": 91.5,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            245,
+            1964,
+            1777,
+            2012
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "ea Oe ee",
+          "conf_mean": 30.9,
+          "conf_min": 14.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1588,
+            3157,
+            1830,
+            3201
+          ],
+          "paper": 0,
+          "height": 41,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 30.9"
+        },
+        {
+          "text": "Id yy ¥",
+          "conf_mean": 38.5,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1622,
+            3194,
+            1816,
+            3221
+          ],
+          "paper": 0,
+          "height": 23,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 38.5"
+        },
+        {
+          "text": "Pictures from Master Uley ©",
+          "conf_mean": 94.9,
+          "conf_min": 91.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1013,
+            3256,
+            1429,
+            3288
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 9/15",
+          "conf_mean": 93.5,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "Pictures from Medieval Extreme ©\n\nPicture from Zoom en Lice ©\n\nSide-hinged visored Bascinets V. 26.1 10/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 89.9,
+      "ocr_lines": [
+        {
+          "text": "Pictures from Medieval Extreme ©",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            938,
+            1426,
+            1443,
+            1451
+          ],
+          "paper": 0.64,
+          "height": 24
+        },
+        {
+          "text": "Picture from Zoom en Lice ©",
+          "conf_mean": 95.9,
+          "conf_min": 94.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            938,
+            2999,
+            1362,
+            3023
+          ],
+          "paper": 0.66,
+          "height": 24
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 10/15",
+          "conf_mean": 93.3,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "5.3. Houndskull/Hundsgugel Style Bascinets\n\nPictures from The Medieval Things ©\n\nWEE EEE\nEN REME\n\nPicture from Medieval Extreme ©\n\nSide-hinged visored Bascinets V. 26.1 11/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 78.6,
+      "ocr_lines": [
+        {
+          "text": "5.3. Houndskull/Hundsgugel Style Bascinets",
+          "conf_mean": 91.9,
+          "conf_min": 90.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            188,
+            1389,
+            239
+          ],
+          "paper": 0.66,
+          "height": 51
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            938,
+            1298,
+            1486,
+            1329
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "WEE EEE",
+          "conf_mean": 6.1,
+          "conf_min": 6.1,
+          "words": 2,
+          "uncertain": [
+            "WEE",
+            "EEE"
+          ],
+          "box": [
+            792,
+            2391,
+            935,
+            2414
+          ],
+          "paper": 0,
+          "height": 22,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 6.1"
+        },
+        {
+          "text": "EN REME",
+          "conf_mean": 53.5,
+          "conf_min": 18.4,
+          "words": 2,
+          "uncertain": [
+            "REME"
+          ],
+          "box": [
+            805,
+            2426,
+            1025,
+            2451
+          ],
+          "paper": 0,
+          "height": 25,
+          "dropped": [
+            "r+"
+          ],
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 53.5"
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            910,
+            2566,
+            1399,
+            2591
+          ],
+          "paper": 0.65,
+          "height": 25
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 11/15",
+          "conf_mean": 93.2,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "5.4. Great Bascinets\n\nPicture from The Medieval Things ©\n\nSide-hinged visored Bascinets V. 26.1 12/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 88.6,
+      "ocr_lines": [
+        {
+          "text": "5.4. Great Bascinets",
+          "conf_mean": 92.8,
+          "conf_min": 91,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            245,
+            187,
+            732,
+            225
+          ],
+          "paper": 0.59,
+          "height": 37
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            910,
+            1712,
+            1440,
+            1743
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 12/15",
+          "conf_mean": 93.4,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "text": "6. Examples of Denied Reproductions\n\nToo many eye bars, not painted in black.\nEye slots are too tall, the safest option is to\nchoose a helmet with thinner eye slots as per sources.\n\nDesign of the bottom of the visor does not Additional plate must be concealed\nreproduce historical sources.\n\nPictures from The Medieval Things ©\n\nSide-hinged visored Bascinets V. 26.1 13/15",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.8,
+      "ocr_lines": [
+        {
+          "text": "6. Examples of Denied Reproductions",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            251,
+            189,
+            2010,
+            278
+          ],
+          "paper": 0.68,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Too many eye bars, not painted in black.",
+          "conf_mean": 96,
+          "conf_min": 94.9,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            713,
+            371,
+            1589,
+            406
+          ],
+          "paper": 0.62,
+          "height": 33
+        },
+        {
+          "text": "Eye slots are too tall, the safest option is to",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            683,
+            431,
+            1623,
+            468
+          ],
+          "paper": 0.64,
+          "height": 34
+        },
+        {
+          "text": "choose a helmet with thinner eye slots as per sources.",
+          "conf_mean": 95.7,
+          "conf_min": 94.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            559,
+            492,
+            1743,
+            528
+          ],
+          "paper": 0.61,
+          "height": 33
+        },
+        {
+          "text": "Design of the bottom of the visor does not Additional plate must be concealed",
+          "conf_mean": 96.3,
+          "conf_min": 95.2,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            2615,
+            2109,
+            2662
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "reproduce historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            182,
+            2663,
+            818,
+            2699
+          ],
+          "paper": 0.61,
+          "height": 33
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            949,
+            2888,
+            1498,
+            2919
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 13/15",
+          "conf_mean": 93.3,
+          "conf_min": 92,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 35,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "text": "7. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nReplace:\n\nThroughout the document “Side-hinged visored Bascinets” by “Side-pivoting visored\nBascinets”\n\nAdd: “41. Implementation” (and subsequent modification of all Title numbers in the document)\nSuppression:\n\n- In 3.2 Transitional Style Helmets: “(such as sugarloaf)”\n\n- In 4.3 Eye slots: “internal”\n\n- In 4.4 Aventails “Supplemental hidden collar plates are permitted.”\n\n- In 4.3 Eye slots: “per eye slot”\n\n- In 4.4 Aventails: “Scales and Fabric aventails are recommended to be fastened down to the\nedge of a padded pelerine, attached to the helmet liner.”\n\nReplace:\n\n- In 4.4 Aventails: “The aventail must be fastened down to the outer edge of a padded pelerine\nattached to the helmet liner.”\n\nby “Chainmail aventail must be fastened down to the edge of a padded pelerine, attached to the\nhelmet liner.”\n\nFebruary-2025 (V2025.03)\n- Clarification: 3.3\n- formatting: Grammar and Formatting\n\nDecember-2024: SAdd\nDocument has been created\n\nSide-hinged visored Bascinets V. 26.1 14/15",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.7,
+      "ocr_lines": [
+        {
+          "text": "7. Changelog",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            810,
+            189,
+            1449,
+            279
+          ],
+          "paper": 0.7,
+          "height": 90,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            204,
+            370,
+            2244,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            593,
+            431,
+            1851,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.4,
+          "conf_min": 91.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            535,
+            679,
+            579
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            587,
+            2163,
+            630
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.9,
+          "conf_min": 96.9,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            648,
+            366,
+            690
+          ],
+          "paper": 0,
+          "height": 42
+        },
+        {
+          "text": "Throughout the document “Side-hinged visored Bascinets” by “Side-pivoting visored",
+          "conf_mean": 93.2,
+          "conf_min": 91.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            708,
+            2039,
+            751
+          ],
+          "paper": 0.56,
+          "height": 33
+        },
+        {
+          "text": "Bascinets”",
+          "conf_mean": 92.7,
+          "conf_min": 92.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            770,
+            415,
+            803
+          ],
+          "paper": 0.52,
+          "height": 33
+        },
+        {
+          "text": "Add: “41. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 94.7,
+          "conf_min": 79.4,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            175,
+            816,
+            2042,
+            877
+          ],
+          "paper": 0.78,
+          "height": 33
+        },
+        {
+          "text": "Suppression:",
+          "conf_mean": 96.8,
+          "conf_min": 96.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            890,
+            443,
+            933
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 3.2 Transitional Style Helmets: “(such as sugarloaf)”",
+          "conf_mean": 94.4,
+          "conf_min": 87.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            951,
+            1430,
+            994
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "- In 4.3 Eye slots: “internal”",
+          "conf_mean": 95.3,
+          "conf_min": 92.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            180,
+            1011,
+            847,
+            1054
+          ],
+          "paper": 0.81,
+          "height": 33
+        },
+        {
+          "text": "- In 4.4 Aventails “Supplemental hidden collar plates are permitted.”",
+          "conf_mean": 95.1,
+          "conf_min": 90.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            180,
+            1072,
+            1666,
+            1115
+          ],
+          "paper": 0.77,
+          "height": 34
+        },
+        {
+          "text": "- In 4.3 Eye slots: “per eye slot”",
+          "conf_mean": 95.7,
+          "conf_min": 92.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            180,
+            1193,
+            933,
+            1236
+          ],
+          "paper": 0.8,
+          "height": 34
+        },
+        {
+          "text": "- In 4.4 Aventails: “Scales and Fabric aventails are recommended to be fastened down to the",
+          "conf_mean": 95,
+          "conf_min": 92.5,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            1254,
+            2177,
+            1288
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "edge of a padded pelerine, attached to the helmet liner.”",
+          "conf_mean": 95.6,
+          "conf_min": 90.8,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            1314,
+            1313,
+            1357
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Replace:",
+          "conf_mean": 96.6,
+          "conf_min": 96.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            183,
+            1375,
+            356,
+            1418
+          ],
+          "paper": 0,
+          "height": 43
+        },
+        {
+          "text": "- In 4.4 Aventails: “The aventail must be fastened down to the outer edge of a padded pelerine",
+          "conf_mean": 94.7,
+          "conf_min": 91.9,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            180,
+            1435,
+            2205,
+            1478
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "attached to the helmet liner.”",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            181,
+            1496,
+            755,
+            1530
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "by “Chainmail aventail must be fastened down to the edge of a padded pelerine, attached to the",
+          "conf_mean": 95.6,
+          "conf_min": 92.1,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            182,
+            1556,
+            2115,
+            1599
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "helmet liner.”",
+          "conf_mean": 96.7,
+          "conf_min": 96.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1617,
+            439,
+            1651
+          ],
+          "paper": 0.66,
+          "height": 34
+        },
+        {
+          "text": "February-2025 (V2025.03)",
+          "conf_mean": 91.6,
+          "conf_min": 91.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            1714,
+            730,
+            1757
+          ],
+          "paper": 0.66,
+          "height": 43
+        },
+        {
+          "text": "- Clarification: 3.3",
+          "conf_mean": 95.3,
+          "conf_min": 93.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            1761,
+            523,
+            1796
+          ],
+          "paper": 0.16,
+          "height": 34
+        },
+        {
+          "text": "- formatting: Grammar and Formatting",
+          "conf_mean": 95.8,
+          "conf_min": 92.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            1809,
+            947,
+            1853
+          ],
+          "paper": 0.54,
+          "height": 33
+        },
+        {
+          "text": "December-2024: SAdd",
+          "conf_mean": 45.7,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "SAdd"
+          ],
+          "box": [
+            182,
+            1892,
+            641,
+            1940
+          ],
+          "paper": 0.53,
+          "height": 48
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1946,
+            752,
+            1979
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Side-hinged visored Bascinets V. 26.1 14/15",
+          "conf_mean": 87.8,
+          "conf_min": 62.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            3400,
+            2355,
+            3447
+          ],
+          "paper": 0.92,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    }
+  ]
+}

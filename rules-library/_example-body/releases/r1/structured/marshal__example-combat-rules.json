@@ -11,7 +11,7 @@
     "retrieved_at": "2026-10-06T04:37:17.132Z",
     "page_count": 3,
     "extractor": "pdftotext unknown -layout -enc UTF-8",
-    "content_sha256": "25bffe2c7deb721683ebf04002dcd2d671ac10b078eb94b773fd9da3df0b6256",
+    "content_sha256": "045c7c974383ede458291c1e66fea33905dd4a42ca097efd7c55b0e480df5f27",
     "detected": {
       "version": "1.0",
       "date": "2026-03-01"
@@ -37,14 +37,17 @@
       "duplicate_numbers": [],
       "duplicate_texts": [],
       "version_confirmed": true,
-      "source_sha256_matches": true
+      "source_sha256_matches": true,
+      "ocr_lines": 0,
+      "picture_text_lines": 0,
+      "ocr_corrections": 0
     }
   },
   "provisions": [
     {
       "ordinal": 1,
       "depth": 0,
-      "kind": "unstructured",
+      "kind": "note",
       "number": null,
       "title": null,
       "body": "Example Combat Rules V.1.0 · 01.03.2026 Invented for software testing only.",
@@ -54,10 +57,14 @@
       "parent_key": null,
       "review_status": "verified",
       "review_note": "title page: document name, version, date",
-      "topics": [],
+      "topics": [
+        "cover"
+      ],
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "da1b800b8f66397ee1f650ab8a2df77166d15bf2423a78ac4be75ce444b40fc2",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:1",
         "1:2",
@@ -86,6 +93,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "3cac7f5c7196f6a646028cd647762c4113be2ef3f740d03bb04a540c913d5a6f",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:9"
       ]
@@ -107,6 +116,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "44863799a2e59baa8416d1320b76f215d98e6caa0970fd6fc7ed0c4099d136c0",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:10",
         "1:11",
@@ -133,6 +144,8 @@
       ],
       "cross_refs": [],
       "content_sha256": "c0d8b740f5a4d746a33f95e57b50d469414c113d07ea0d1894bb3fee00c95981",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:13",
         "1:14",
@@ -158,6 +171,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "dc1c89ef3b7da1cbef556c1f27c54587eafe8436aad80b86fb760946560869c0",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:18"
       ]
@@ -184,6 +199,8 @@
         "1.2"
       ],
       "content_sha256": "5aaaa638a9e09b6687d48d3753a2047d48ed4209231ca54b5d6df7567df3790b",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:19",
         "1:20",
@@ -207,6 +224,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "86422b412747ecf533a8335397120c7efcf37161f859cf7206bdd38c98fe8bf3",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:22",
         "1:23",
@@ -233,6 +252,8 @@
       ],
       "cross_refs": [],
       "content_sha256": "2dba42bdf6b73f9aa22060b9f416111d903b5c367761d2d72524a65e0ffd49af",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:25",
         "1:26",
@@ -257,6 +278,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "0e7a8b63b31793003a34f3d9d28d5440227cc82f1f4bdcafb7b41d1c1f9c597d",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "1:29",
         "1:30",
@@ -284,6 +307,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "947b15dd544356e24cfecf8d85b4dbf581b609d259667614260fd8c52d3a81da",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "2:4",
         "2:5"
@@ -308,6 +333,8 @@
         "3.1"
       ],
       "content_sha256": "af3a00b539321571b12871da84f0137e5d8c7a8f44c9fef0503ae67609ef6473",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "2:6",
         "2:7",
@@ -341,6 +368,8 @@
         "9"
       ],
       "content_sha256": "f5539cdc3ccead5c4a9f2e175fe92ad95b5d339786635326b2a24fe495cb8fd3",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "2:9",
         "2:10",
@@ -406,6 +435,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "eca7ceec076eeff8aecb342d3bd00b77bdc008a55798abf1f8ccbe500eb33131",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "3:17"
       ]
@@ -427,6 +458,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "e534323dc60173b622f3038f4352427842b6b9fbf66273189587366367708d4c",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "3:18",
         "3:19"
@@ -449,6 +482,8 @@
       "keywords": [],
       "cross_refs": [],
       "content_sha256": "27c85e3f83d94c33d3eb811f35c499a066559f256a1670b47e80ea9cb7148a29",
+      "has_figures": false,
+      "extraction": "text",
       "lines": [
         "3:20",
         "3:21",
@@ -501,5 +536,6 @@
       "reason": "page number"
     }
   ],
-  "rejected_numbers": []
+  "rejected_numbers": [],
+  "ocr_corrections": []
 }

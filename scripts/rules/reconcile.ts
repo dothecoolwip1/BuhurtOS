@@ -31,12 +31,18 @@ export interface DocReconciliation {
   duplicate_texts: string[][];
   version_confirmed: boolean;
   source_sha256_matches: boolean | null;
+  /** Lines read by OCR from page images; of those, lines set aside as lettering inside a picture; reviewed OCR corrections applied. */
+  ocr_lines: number;
+  picture_text_lines: number;
+  ocr_corrections: number;
 }
 
-const chars = (s: string) => s.replace(/\s+/g, '').length;
+// Reviewed tables are stored as "| cell | cell |" rows: the pipes, the header rule and the merged-cell marks are layout, not words.
+const plain = (s: string) => s.replace(/^\|.*$/gm, row => row.replace(/<br>/g, ' ').replace(/\|/g, ' ').replace(/(^|\s)(---|\^|<)(?=\s|$)/g, ' '));
+const chars = (s: string) => plain(s).replace(/\s+/g, '').length;
 
 export function reconcileDocument(input: {
-  result: StructureResult; provisions: Provision[]; pages: number; versionConfirmed: boolean; sourceSha256?: string | null; fetchedSha256?: string | null; textFixes?: number;
+  result: StructureResult; provisions: Provision[]; pages: number; versionConfirmed: boolean; sourceSha256?: string | null; fetchedSha256?: string | null; textFixes?: number; ocrLines?: number;
 }): DocReconciliation {
   const { result, provisions } = input;
   const errors: string[] = [];
@@ -55,7 +61,7 @@ export function reconcileDocument(input: {
   const srcChars = nonEmpty.filter(l => !furnitureIds.has(l.id)).reduce((n, l) => n + chars(l.text), 0);
   // The printed number's punctuation ("4." / "1.2.") is not stored, so allow for it.
   const numberPunct = provisions.filter(p => p.number && p.kind !== 'appendix').length;
-  const provChars = provisions.filter(p => p.kind !== 'figure').reduce((n, p) => n + chars(`${p.number ?? ''}${p.title ?? ''}${p.body}`), 0);
+  const provChars = provisions.filter(p => p.kind !== 'figure').reduce((n, p) => n + chars(p.number ?? '') + chars(p.title ?? '') + chars(p.body), 0);
   const coverage = srcChars === 0 ? (provChars === 0 ? 1 : 0) : Math.min(provChars, srcChars) / srcChars;
   const overflow = provChars - srcChars;
   if (srcChars > 0 && coverage < 0.98) errors.push(`provisions hold only ${(coverage * 100).toFixed(2)}% of the source characters`);
@@ -73,7 +79,7 @@ export function reconcileDocument(input: {
   if (result.rejected_numbers.length) warnings.push(`${result.rejected_numbers.length} line(s) looked like a numbered heading but did not fit the sequence`);
   const needs = provisions.filter(p => p.review_status === 'needs_review').length;
   if (needs) warnings.push(`${needs} provision(s) need review against the official document`);
-  if (!input.versionConfirmed) errors.push('the version label and date have not been confirmed by a person (overrides: version_confirmed_by)');
+  if (!input.versionConfirmed) errors.push('the version label has not been confirmed by a named reviewer (overrides: version_confirmed_by)');
   if (!provisions.length) errors.push('no provisions');
   let shaOk: boolean | null = null;
   if (input.fetchedSha256 !== undefined || input.sourceSha256 !== undefined) {
@@ -92,7 +98,8 @@ export function reconcileDocument(input: {
     ok: errors.length === 0, errors, warnings, pages: input.pages, source_lines: nonEmpty.length, assigned_lines: owner.size, furniture_lines: result.furniture.length,
     unaccounted_lines: unaccounted, double_assigned_lines: double, char_coverage: Number(coverage.toFixed(5)), provisions: provisions.length,
     numbered: numbers.length, needs_review: needs, verified: provisions.filter(p => p.review_status === 'verified').length, empty_pages: result.empty_pages,
-    rejected_numbers: result.rejected_numbers.length, duplicate_numbers: dupNumbers, duplicate_texts: dupTexts, version_confirmed: input.versionConfirmed, source_sha256_matches: shaOk
+    rejected_numbers: result.rejected_numbers.length, duplicate_numbers: dupNumbers, duplicate_texts: dupTexts, version_confirmed: input.versionConfirmed, source_sha256_matches: shaOk,
+    ocr_lines: input.ocrLines ?? 0, picture_text_lines: result.furniture.filter(f => /text inside a picture/.test(f.reason)).length, ocr_corrections: input.textFixes ?? 0
   };
 }
 

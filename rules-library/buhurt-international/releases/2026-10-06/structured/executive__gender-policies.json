@@ -1,0 +1,616 @@
+{
+  "inventory_key": "executive/gender-policies",
+  "version": {
+    "version": "2024.03",
+    "title": "Gender policies V2024.06",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Changelog: latest entry \"March 2024 (Version update from 2024.01 to 2024.03)\". The file name used for the source drop says \"V2024.06\", which the document itself does not support.",
+    "source_url": "https://www.buhurtinternational.com/_files/ugd/d219c5_cd29c29d07894734abfd546ea3665066.pdf",
+    "source_sha256": "45b9925e034112526679516c1cba57525c48b267ab41ae2a3a7d60ef2a85b1bc",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 4,
+    "extractor": "pdftotext unknown -layout -enc UTF-8",
+    "content_sha256": "ff961a2d09d3de611f132570ed8445623bd8eeb072a3d32eb1948cfed5321128",
+    "detected": {
+      "version": null,
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1"
+      ],
+      "pages": 4,
+      "source_lines": 56,
+      "assigned_lines": 67,
+      "furniture_lines": 19,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.99892,
+      "provisions": 17,
+      "numbered": 15,
+      "needs_review": 0,
+      "verified": 0,
+      "empty_pages": [
+        1
+      ],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 0,
+      "picture_text_lines": 0,
+      "ocr_corrections": 0
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "gender-policies:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "note",
+      "number": null,
+      "title": null,
+      "body": "Tournament Eligibility and Gender Category Policy",
+      "page_from": 2,
+      "page_to": 2,
+      "stable_key": "gender-policies:p0001",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "introduction"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "627cf0844349c01e2a30a637b3363484ec646c8740a4ab569e7478d08b1e35e8",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "1:0",
+        "2:0",
+        "2:1",
+        "2:3",
+        "2:4",
+        "2:19",
+        "2:20",
+        "2:22",
+        "2:23",
+        "2:24",
+        "2:25",
+        "2:27"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Tournament Gender Categories",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d28923abbc1730c3d20b367e7292d045e26bd68547d19f55f762bbf9af6f5f76",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:0",
+        "3:1"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.1",
+      "title": "Recognized Gender Categories",
+      "body": "Buhurt International recognizes three Gender Categories for duels, outrance (profight), and buhurt (group fight). Competitors are required to choose and compete in a single gender category for the entire event. Each category will be ranked separately.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.1",
+      "parent_key": "gender-policies:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "cd10c8458e5ac30216bbaa0295eff9ea08e2af1b3a14552b3916c300d7f41fd1",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:2",
+        "3:3",
+        "3:4",
+        "3:5",
+        "3:6"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.2",
+      "title": "Eligibility for Men’s Tournaments",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.2",
+      "parent_key": "gender-policies:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "a92ff48224a9dd268940d656c51b02b3d118bed820ebb37678a5c143674c4ba0",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:7"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.2.1",
+      "title": "All AMAB (assigned male at birth) competitors are eligible to compete, regardless",
+      "body": "of gender identity, including cisgender males.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.2.1",
+      "parent_key": "gender-policies:1.2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "c3f808fd582aa41818f28f70bf12bd46e2a6e2da53151be05205a8d88c14eb9d",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:8",
+        "3:9"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.2.2",
+      "title": null,
+      "body": "FTM (female to male) competitors are also eligible to compete in this category.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.2.2",
+      "parent_key": "gender-policies:1.2",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "cb421de01f5a6cb4e7fca39634d86a1ad0a61e83a93bb4800588d5e86b397d13",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:10",
+        "3:11"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.3",
+      "title": "Eligibility for Women’s Tournaments",
+      "body": "All AFAB (assigned female at birth) competitors are eligible to compete regardless of gender identity, including cisgender women.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.3",
+      "parent_key": "gender-policies:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "17f39a8b495b192911ac2a21e15b703e16bfe57ba049fde8cb8635040dee2647",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.4",
+      "title": "Eligibility for Women’s Open Tournaments",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.4",
+      "parent_key": "gender-policies:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "23f9fd0ceef82df399054599f459d627f7eccf40fcc56fb0adac3828242d8ccf",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:16"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.4.1",
+      "title": "All AFAB (assigned female at birth) competitors are eligible to compete",
+      "body": "regardless of gender identity, including cisgender women.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.4.1",
+      "parent_key": "gender-policies:1.4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "fe0b8c3052376c5e572130022d2c1fd06342f85017b3ac455b42192f17589b53",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:17",
+        "3:18"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.4.2",
+      "title": "MTF (male to female) competitors are eligible to compete if they have been living",
+      "body": "as a woman for 2 years or more.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.4.2",
+      "parent_key": "gender-policies:1.4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "714dc52827765b48496470b707ac02851a088efd5ae3d16fcaaaae82a54cab68",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:19",
+        "3:20",
+        "3:21"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.5",
+      "title": "Categories in Tournament",
+      "body": "",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.5",
+      "parent_key": "gender-policies:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "59cdc61895e16c31fcd578240c03eee99639b9a1cbd7da634e2a587cb6fb54a8",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:22"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.5.1",
+      "title": null,
+      "body": "All tournaments must offer both the Men’s and Women’s categories.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.5.1",
+      "parent_key": "gender-policies:1.5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d8f6501b31f4c3f70df57fc883e09a73b948576e1585ac2feca133c4ecd44432",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:23"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.5.2",
+      "title": "A tournament may also allow duels, pro fights, or group fights in the Women’s",
+      "body": "Open category if there are sufficient competitors willing to do so. If dividing the categories results in insufficient competitors for either the Women’s or the Women’s Open category, only the Women’s category may be held.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.5.2",
+      "parent_key": "gender-policies:1.5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "00cf44d32e855d6613aa0a1554c25a0e1a12983883c797cd17fc61259398e703",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 2,
+      "kind": "rule",
+      "number": "1.5.3",
+      "title": "Event Organizers must inform competitors at least one (1) month from the start",
+      "body": "date of the event if the Women's Open category will be part of the event or not.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.5.3",
+      "parent_key": "gender-policies:1.5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "1729ddf2012ff0f20f7480caeda3f81fcf8c7069610727e3aa541fc64f4e8c94",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:28",
+        "3:29",
+        "3:30"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "depth": 1,
+      "kind": "rule",
+      "number": "1.6",
+      "title": "Awards",
+      "body": "To issue awards for the Regional, Conference, and International stage, there must be a minimum number of five events per category in the season.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "gender-policies:1.6",
+      "parent_key": "gender-policies:1",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "17a779a321c5d25660a3808f89dd93df3d42d28901b8443dace1c1d4a48d65ff",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36",
+        "3:37",
+        "3:39"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "depth": 0,
+      "kind": "note",
+      "number": "2",
+      "title": "Change log",
+      "body": "This will be the change log of this document. It will be updated regularly and we will display what has been removed/added/reworded/formatted. This way we keep transparent communication and clarity about the rules\n\nMarch 2024 (Version update from 2024.01 to 2024.03)\n\nUpdate date: March-2024\n- format: new design format, document will be used from now on.",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "gender-policies:2",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "4071e4e5401854eaf504a33b66278bc052e281b6d56d837649cf6e177cbdd8b9",
+      "has_figures": false,
+      "extraction": "text",
+      "lines": [
+        "4:0",
+        "4:1",
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10",
+        "4:11",
+        "4:12",
+        "4:13",
+        "4:14",
+        "4:16"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "        Table of Contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "        1. Tournament Gender Categories",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "              1.1 Recognized Gender Categories",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "              1.2 Eligibility for Men’s Tournaments",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "                     1.2.1 Assigned male at birth (AMAB)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "                     1.2.2 Female to male surgery (FTM)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "              1.3 Eligibility for Women’s Tournaments",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "              1.4 Eligibility for Women’s Open Tournaments",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "                     1.4.1 Assigned female at birth (AFAB)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "                     1.4.2 Male to female (MTF)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:14",
+      "page": 2,
+      "text": "              1.5 Categories in Tournament",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "                     1.5.1 Men's and Women's categories",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:16",
+      "page": 2,
+      "text": "                     1.5.2 Women's Open category",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:17",
+      "page": 2,
+      "text": "                     1.5.3 Announce of Women's Open category",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "              1.6 Awards",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:21",
+      "page": 2,
+      "text": "        2. Change Log (page 3)",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:26",
+      "page": 2,
+      "text": "Gender Category Policy                                         1",
+      "reason": "table of contents"
+    },
+    {
+      "id": "3:38",
+      "page": 3,
+      "text": "Gender Category Policy                                                                  2",
+      "reason": "repeated on most pages (header or footer)"
+    },
+    {
+      "id": "4:15",
+      "page": 4,
+      "text": "Gender Category Policy                                                                  3",
+      "reason": "repeated on most pages (header or footer)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": []
+}

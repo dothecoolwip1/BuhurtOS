@@ -1,0 +1,51 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "eyebars:2.1": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "5b127f22d4683792d131ec02db0d1a3d52181df442713092a574f8a3f1a2dd19"
+    },
+    "eyebars:3": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "d67dba79e2bfaf601879789d2d4ab158e3d6df23daa58e02017cd63e96b9c7d7"
+    },
+    "eyebars:5.2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "4e55eb2274614bf292bb2373f7304d239e6acd05502c68cfae1d551a75007f1a"
+    },
+    "eyebars:6.2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "1e4bf716de59f493182aec8776dddde10a14cc392c411615322b5852cc535dba"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+  "ocr": {
+    "fix": {
+      "9:28": {
+        "from": "- In 6.4 Examples of Denied Reproductions: “Too much eyebars’” by “too many Eye bars”",
+        "to": "- In 6.4 Examples of Denied Reproductions: “Too much eyebars” by “too many Eye bars”",
+        "reason": "page image shows “Too much eyebars” with no apostrophe"
+      },
+      "9:30": {
+        "from": "December-2024: Sadd",
+        "to": "December-2024: -add",
+        "reason": "page image shows \"-add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

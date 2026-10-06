@@ -1,0 +1,293 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {},
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER, 26.1\"; changelog entry \"January-26 (v2026.1)\".",
+  "layout": {
+    "tables": [
+      {
+        "replaces": [
+          "3:14",
+          "3:16",
+          "3:17",
+          "3:18",
+          "3:19",
+          "3:20",
+          "3:21",
+          "3:22",
+          "3:23",
+          "3:24",
+          "3:25",
+          "3:26",
+          "3:27",
+          "3:28",
+          "3:29",
+          "3:30",
+          "3:31",
+          "3:32",
+          "3:33",
+          "3:34",
+          "3:35",
+          "3:36",
+          "3:37",
+          "3:38",
+          "3:39",
+          "3:40"
+        ],
+        "rows": [
+          [
+            "Conferences",
+            "North America",
+            "South America",
+            "APAC",
+            "Europe"
+          ],
+          [
+            "Regions",
+            "Canada<br>USA<br>Mexico",
+            "Argentina<br>Chile<br>Brazil",
+            "China<br>New Zealand<br>Australia",
+            "Austria<br>Belgium<br>Czech Republic<br>Denmark<br>Finland<br>France<br>Germany<br>Hungary<br>Ireland<br>Israel<br>Italy<br>Latvia<br>Monaco<br>Netherlands<br>Norway<br>Poland<br>Portugal<br>Romania<br>Serbia<br>Spain<br>Sweden<br>Switzerland<br>Turkey<br>Ukraine<br>United Kingdom"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "6:11",
+          "6:13",
+          "6:15",
+          "6:16",
+          "6:18",
+          "6:19",
+          "6:21",
+          "6:22",
+          "6:23",
+          "6:24",
+          "6:25",
+          "6:27",
+          "6:28"
+        ],
+        "rows": [
+          [
+            "",
+            "Buhurt",
+            "Duels"
+          ],
+          [
+            "Points given",
+            "50 %",
+            "<"
+          ],
+          [
+            "Minimal number of Marshal",
+            "1 Regional Accredited Marshal (may be waived by National Org)",
+            "<"
+          ],
+          [
+            "Minimal number of participants",
+            "3 Teams for either 3v3 or 5v5.",
+            "3 or more Duellists for each Category ran at the tournament."
+          ],
+          [
+            "Divisions",
+            "No Teams from Division 1 can compete.",
+            "It is preferred that Division 1 duelists only coach at these events, but due to low number of duelists it is accepted to compete, but will be reviewed in case of abuse"
+          ],
+          [
+            "Authenticity",
+            "Basic level ( Waiting to be defined by Authenticity Committee)",
+            "Basic level of Authenticity. (Defined in AC documents)"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "7:14",
+          "7:16",
+          "7:18",
+          "7:19",
+          "7:21",
+          "7:22",
+          "7:23",
+          "7:24",
+          "7:25",
+          "7:26",
+          "7:28",
+          "7:30",
+          "7:32",
+          "7:33"
+        ],
+        "rows": [
+          [
+            "",
+            "Buhurt",
+            "Duels"
+          ],
+          [
+            "Points given",
+            "100 %",
+            "<"
+          ],
+          [
+            "Minimal number of Marshal",
+            "1 Conference Accredited Marshal(waiver may be requested)",
+            "<"
+          ],
+          [
+            "Minimal number of participants",
+            "4 Registered 5v5 Buhurt International Teams for Men.<br>3 Registered 5v5 Buhurt International Teams for Women.",
+            "6 Duelists for Men’s and/or 3 Duellists for Women’s for each Category ran at the tournament.<br>Duellists from at least 2 clubs/teams must be competing"
+          ],
+          [
+            "Divisions",
+            "Depending on Classification",
+            "<"
+          ],
+          [
+            "Authenticity",
+            "change wording to match AC regs",
+            "<"
+          ],
+          [
+            "Video recording and online streaming",
+            "Only video recording (livestream recommended)",
+            "<"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "8:6",
+          "8:8",
+          "8:10",
+          "8:11",
+          "8:13",
+          "8:14",
+          "8:15",
+          "8:16",
+          "8:17",
+          "8:18",
+          "8:20",
+          "8:22",
+          "8:23",
+          "8:24",
+          "8:26",
+          "8:28",
+          "8:29",
+          "8:30"
+        ],
+        "rows": [
+          [
+            "",
+            "Buhurt",
+            "Duels"
+          ],
+          [
+            "Points given",
+            "150 %",
+            "<"
+          ],
+          [
+            "Minimal number of Marshal",
+            "1 Buhurt International Accredited Marshal and 2 Regional Accredited Marshals.",
+            "<"
+          ],
+          [
+            "Minimal number of participants",
+            "8 Registered 5v5 Buhurt International Teams for Men.<br>5 Registered 5v5 Buhurt International Teams for Women.",
+            "8 Duelists for Men’s and/or 5 Duellists for Women’s for each Category ran at the tournament.<br>Duellists from at least 3 clubs must be competing"
+          ],
+          [
+            "Division",
+            "Any Division<br>If a region has 2 Regional Tournaments, they can be split to have 1 regional tournament for Division 1 teams/duellist’s and the other for Division 2 teams/duellist’s.",
+            "<"
+          ],
+          [
+            "Authenticity",
+            "change wording to match AC regs",
+            "<"
+          ],
+          [
+            "Video recording and online streaming",
+            "Video Recording required, Livestream Recommended",
+            "<"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      },
+      {
+        "replaces": [
+          "9:6",
+          "9:8",
+          "9:10",
+          "9:11",
+          "9:13",
+          "9:14",
+          "9:15",
+          "9:17",
+          "9:18",
+          "9:19",
+          "9:21",
+          "9:22",
+          "9:23",
+          "9:25",
+          "9:28",
+          "9:30",
+          "9:31",
+          "9:32"
+        ],
+        "rows": [
+          [
+            "",
+            "Buhurt",
+            "Duels"
+          ],
+          [
+            "Points given",
+            "200 %",
+            "<"
+          ],
+          [
+            "Minimal number of Marshal",
+            "3 Buhurt International Accredited Marshals",
+            "<"
+          ],
+          [
+            "Minimal number of participants",
+            "Representatives of 3 countries are participating. (2 with Buhurt International Council Approval).<br>10 Registered 5v5 Buhurt International Teams for Men. (8 with Buhurt International Council Approval).<br>7 Registered 5v5 Buhurt International Teams for Women. (5 with Buhurt International Council Approval).",
+            "Representatives of 3 countries are participating. (2 with Buhurt International Council Approval).<br>10 Duelists for Men’s and/or 7 Duellists for Women’s for each Category ran at the tournament.<br>Duellists from at least 5 clubs must be competing"
+          ],
+          [
+            "Divisions",
+            "Any Division",
+            "<"
+          ],
+          [
+            "Authenticity",
+            "Full Authenticity Requirements",
+            "<"
+          ],
+          [
+            "Video recording and online streaming",
+            "Mandatory- livestream and recording",
+            "<"
+          ]
+        ],
+        "header_rows": 1,
+        "note": "Table transcribed cell by cell from the official page; merged cells are shown once (\"^\" above, \"<\" left); the cells hold exactly the words of the official page."
+      }
+    ]
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

@@ -1,0 +1,33 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "belt-flag-s:3": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly; \"13 cm\" corrected from \"13cm\"",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "fae8b5bc1a4c36c4060ecdc138cd5393668df6366d0f93996ba886d5944ec36f"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\".",
+  "ocr": {
+    "fix": {
+      "3:33": {
+        "from": "● be 13cm tall as a minimum.",
+        "to": "● be 13 cm tall as a minimum.",
+        "reason": "page image shows \"13 cm\""
+      },
+      "6:29": {
+        "from": "11-Nov-2024: “add",
+        "to": "11-Nov-2024: -add",
+        "reason": "page image shows \"-add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

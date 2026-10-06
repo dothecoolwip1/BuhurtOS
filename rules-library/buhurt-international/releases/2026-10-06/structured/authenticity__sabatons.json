@@ -1,0 +1,977 @@
+{
+  "inventory_key": "authenticity/sabatons",
+  "version": {
+    "version": "26.1",
+    "title": "Sabatons - GoogleÂ€Docs",
+    "published_on": null,
+    "effective_from": null,
+    "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+    "source_url": "https://drive.google.com/file/d/1xeX4tDns1F0hnF1mGNhfDbtYTwPScrhv/view?usp=sharing",
+    "source_sha256": "d7d90d9c7e88aa3d3b60abf9307b99cc8944034e9c55626b7bd861bbbdc0de97",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "page_count": 10,
+    "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 9 page(s) without a text layer",
+    "content_sha256": "aac3b203a05e051dd7c68d11a0a07d0691173009c559e19fcf94f509af4c4530",
+    "detected": {
+      "version": "26.1",
+      "date": null
+    },
+    "confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+    "reconciliation": {
+      "ok": true,
+      "errors": [],
+      "warnings": [
+        "page(s) without extractable text: 1"
+      ],
+      "pages": 10,
+      "source_lines": 149,
+      "assigned_lines": 189,
+      "furniture_lines": 41,
+      "unaccounted_lines": [],
+      "double_assigned_lines": [],
+      "char_coverage": 0.9957,
+      "provisions": 21,
+      "numbered": 20,
+      "needs_review": 0,
+      "verified": 1,
+      "empty_pages": [
+        1
+      ],
+      "rejected_numbers": 0,
+      "duplicate_numbers": [],
+      "duplicate_texts": [],
+      "version_confirmed": true,
+      "source_sha256_matches": true,
+      "ocr_lines": 149,
+      "picture_text_lines": 11,
+      "ocr_corrections": 2
+    }
+  },
+  "provisions": [
+    {
+      "ordinal": 1,
+      "depth": 0,
+      "kind": "figure",
+      "number": null,
+      "title": null,
+      "body": "",
+      "page_from": 1,
+      "page_to": 1,
+      "stable_key": "sabatons:page-1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "cover page: artwork only, no text",
+      "topics": [
+        "cover"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "has_figures": true,
+      "extraction": "text",
+      "lines": []
+    },
+    {
+      "ordinal": 2,
+      "depth": 0,
+      "kind": "section",
+      "number": "1",
+      "title": "Implementation",
+      "body": "The document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "sabatons:1",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "7e35b5946ae02907f8e065d2e3656f914639f40e08c6eb5efd4d1160c27157d4",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:0",
+        "3:1",
+        "3:2",
+        "3:3",
+        "3:4"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "depth": 0,
+      "kind": "section",
+      "number": "2",
+      "title": "Definition",
+      "body": "“Sabatons’ is the term used to describe all foot protections.\n\nTypes of Greaves:\n\n● Plate Sabatons Made of metal plates riveted together, it is the most effective and the most common foot protection over all Middle Ages.\n\n● Brigand Sabaton Made of metal plates riveted to a leather base. This protection is not commonly represented in historical sources. The plates are covered by the leather.\n\n● Scales Sabatons Made of small scales riveted upon a leather base. This protection is not commonly represented in historical sources.\n\n● Chainmail Sabatons The protection of the foot is ensured by chainmail. This is the earliest foot protection documented by historical sources.\n\n● Eastern Sabatons Due to very few historical sources, we allow eastern stylization of European Sabatons.\nAllowed designs are displayed in the “Eastern Armors” document.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "sabatons:2",
+      "parent_key": null,
+      "review_status": "verified",
+      "review_note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "48069f2516e02127c625e9e327475e612a5a15cf99b6304c502733c2b2e51131",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:5",
+        "3:6",
+        "3:7",
+        "3:8",
+        "3:9",
+        "3:10",
+        "3:11",
+        "3:12",
+        "3:13",
+        "3:14",
+        "3:15",
+        "3:16",
+        "3:17",
+        "3:18",
+        "3:19",
+        "3:20",
+        "3:21",
+        "3:22",
+        "3:23",
+        "3:24",
+        "3:25",
+        "3:26",
+        "3:27",
+        "3:28",
+        "3:29",
+        "3:30"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "depth": 0,
+      "kind": "section",
+      "number": "3",
+      "title": "General Requirements",
+      "body": "All types of Sabatons must:\n\n● be based on historical sources,\n● have an anatomical shape of the foot,\n● reproduce the proportions based on historical sources,\n\nAny metal part of the Sabatons must conform to the “Armors and Weapons Aesthetics and Decorations document.\n\nAny textile or leather part of the Sabatons must conform to the “Textiles and Leather” document.",
+      "page_from": 3,
+      "page_to": 3,
+      "stable_key": "sabatons:3",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "9035077a5b82edfbe497c17f5acf26e9355ae5aee9adf2ddd7450a00407d6b83",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "3:31",
+        "3:32",
+        "3:33",
+        "3:34",
+        "3:35",
+        "3:36",
+        "3:37",
+        "3:38",
+        "3:39",
+        "3:40",
+        "3:41",
+        "3:42",
+        "3:43"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "depth": 0,
+      "kind": "section",
+      "number": "4",
+      "title": "Plate sabatons",
+      "body": "",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "sabatons:4",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "dd831e569430bb5190fd0bee477beb4d7b405ff642a7d39607b1629dc54bc2a5",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:0",
+        "4:1"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.1",
+      "title": "Historical Sources and Datation",
+      "body": "Plate Sabatons are mainly represented from the mid-14th century to very late armors of the 15th century.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nBL Sloane 2683 Book of Hours - 1390/1399 - Belgium\n\nKöln - 1375 - Germany E. of Woodstock - 1376 - England",
+      "page_from": 4,
+      "page_to": 4,
+      "stable_key": "sabatons:4.1",
+      "parent_key": "sabatons:4",
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "bd8438a853ecc751e87c548b699727001271a5c8ebf7dec0bafebe357545a11f",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:2",
+        "4:3",
+        "4:4",
+        "4:5",
+        "4:6",
+        "4:7",
+        "4:8",
+        "4:9",
+        "4:10",
+        "4:11"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.2",
+      "title": "Specific Requirements",
+      "body": "Plate Sabatons must conform to the General Requirements (see Section 3 above).\nPlate Sabatons must have at least 5 segments.\n\n=> Example:\n\nIt is allowed to add heel protection.\n\n=> Example:\n\nPlate Sabatons must have a pointed shape.\n\n> Example:\n\nMaximilian style armors of the 16th century can have square-shaped Sabatons.\n\n=> Example:",
+      "page_from": 4,
+      "page_to": 5,
+      "stable_key": "sabatons:4.2",
+      "parent_key": "sabatons:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "70211a1a3f862cb4c8c9c5b525c6bc22e75e12585b11ac47312679bbfb16aefe",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "4:12",
+        "4:13",
+        "4:14",
+        "4:15",
+        "4:16",
+        "4:17",
+        "5:0",
+        "5:1",
+        "5:2",
+        "5:3",
+        "5:5",
+        "5:6",
+        "5:7",
+        "5:8",
+        "5:9",
+        "5:10",
+        "5:11",
+        "5:12",
+        "5:13"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "depth": 1,
+      "kind": "rule",
+      "number": "4.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Medieval Extreme ©\n\nPicture from Age of Craft ©",
+      "page_from": 6,
+      "page_to": 6,
+      "stable_key": "sabatons:4.3",
+      "parent_key": "sabatons:4",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "2166635fc8ebafea086d6dccc2a1a0cad0e8680d584b9073c83c1f684d9a798e",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "6:0",
+        "6:1",
+        "6:4",
+        "6:5",
+        "6:6",
+        "6:7",
+        "6:8"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "depth": 0,
+      "kind": "section",
+      "number": "5",
+      "title": "Brigand Sabatons",
+      "body": "",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "sabatons:5",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "63934a7210bde845c12d395913739f289d86a287db2e74611571e5085657df6f",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:0",
+        "7:1"
+      ]
+    },
+    {
+      "ordinal": 10,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.1",
+      "title": "Historical Sources and Datation",
+      "body": "Brigand Sabatons are not well represented in historical sources. They are displayed in sources from the middle of the 14th century.\n\nThey are Approved for 14th century armors.\n\nThey are Denied for Transitional and 15th century armors.\n\nG. von Schwarzburg - 1349 - Germany",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "sabatons:5.1",
+      "parent_key": "sabatons:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "0386266a1d40424602affddecb28ba66c8d6db3f453c8b2443d92506969ac2d7",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:2",
+        "7:3",
+        "7:4",
+        "7:5",
+        "7:6",
+        "7:7",
+        "7:8",
+        "7:9",
+        "7:10",
+        "7:14",
+        "7:15",
+        "7:16"
+      ]
+    },
+    {
+      "ordinal": 11,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.2",
+      "title": "Specific Requirements",
+      "body": "Brigand Sabatons must conform to the General Requirements (see Section 3 above).\nBrigand Sabatons must be made of metal plates.\n\nThe plates must be firmly-riveted to a leather base.\n\nThe plates must be riveted from the inside of the leather base.",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "sabatons:5.2",
+      "parent_key": "sabatons:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "df9b70e5a3239377e880259ab707adcada6d030e4d7bcc971b26d985dfc35575",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:17",
+        "7:18",
+        "7:19",
+        "7:20",
+        "7:21",
+        "7:22",
+        "7:23",
+        "7:24",
+        "7:25"
+      ]
+    },
+    {
+      "ordinal": 12,
+      "depth": 1,
+      "kind": "rule",
+      "number": "5.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Medieval Extreme ©",
+      "page_from": 7,
+      "page_to": 7,
+      "stable_key": "sabatons:5.3",
+      "parent_key": "sabatons:5",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "d2ea4c5f1a569b7fcc8f40a87d84683e41cbd259ea0bcdd73de7b0a41014250c",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "7:26",
+        "7:27",
+        "7:28",
+        "7:29"
+      ]
+    },
+    {
+      "ordinal": 13,
+      "depth": 0,
+      "kind": "section",
+      "number": "6",
+      "title": "Scale Sabatons",
+      "body": "",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "sabatons:6",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "26fcedd22ba71c8e06964fc0880725213e00b82f858b89159ad9e6c44f25b89f",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:0",
+        "8:1"
+      ]
+    },
+    {
+      "ordinal": 14,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.1",
+      "title": "Historical Sources and Datation",
+      "body": "Scales Sabatons are not well represented in historical sources. They are displayed in sources from 1350 to 1395.\n\nThey are Approved for 14th century and Transitional armors.\nThey are Denied for 15th century armor.\n\nTheir construction makes scale Sabatons less protective than plate Sabatons. Therefore, we do not recommend such Sabatons in any category.\n\nJ. von Falkenstein- 1365 - Germany Guda von Bellersheim - 1394 - Germany",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "sabatons:6.1",
+      "parent_key": "sabatons:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "9863a978402dd15490dfc16aa71a5b3121839af5b1ed156c5a5c1e7e17925402",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:2",
+        "8:3",
+        "8:4",
+        "8:5",
+        "8:6",
+        "8:7",
+        "8:8",
+        "8:9",
+        "8:10",
+        "8:11",
+        "8:12",
+        "8:14",
+        "8:17",
+        "8:18",
+        "8:19"
+      ]
+    },
+    {
+      "ordinal": 15,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.2",
+      "title": "Specific Requirements",
+      "body": "Scales Sabatons must conform to the General Requirements (see Section 3 above).\nThe scales can have a rectangular shape or a rounded shape.\n\nThe scales must be firmly attached to the shoe with rivets or leather thread\n\nScale Sabatons must have a pointed shape.",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "sabatons:6.2",
+      "parent_key": "sabatons:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "3b54ce564d3f41b1533b290b481871a70566ffb5ab5be9923e7ea27d1997e183",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:20",
+        "8:21",
+        "8:22",
+        "8:23",
+        "8:24",
+        "8:25",
+        "8:26",
+        "8:27",
+        "8:28"
+      ]
+    },
+    {
+      "ordinal": 16,
+      "depth": 1,
+      "kind": "rule",
+      "number": "6.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Medieval Extreme ©",
+      "page_from": 8,
+      "page_to": 8,
+      "stable_key": "sabatons:6.3",
+      "parent_key": "sabatons:6",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "88aff2fe4a494e022d0d298c8c8f69e1ab826e25e1bb88500c29be5df80c473a",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "8:29",
+        "8:30",
+        "8:31",
+        "8:32"
+      ]
+    },
+    {
+      "ordinal": 17,
+      "depth": 0,
+      "kind": "section",
+      "number": "7",
+      "title": "Chainmail Sabatons",
+      "body": "",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "sabatons:7",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "29f5aab9c88e4d278d3c94d6b1b0ed7d93afeb4a0af1c4460f1b71d7349af78c",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:0",
+        "9:1"
+      ]
+    },
+    {
+      "ordinal": 18,
+      "depth": 1,
+      "kind": "rule",
+      "number": "7.1",
+      "title": "Historical Sources and Datation",
+      "body": "Chainmail Sabatons are the earliest foot protection. They were popular in the 13th and early 14th century, and were replaced by more protective Sabatons around the middle of the 14th century. They are still in use in very rare cases during the 15th century.\n\nThey are Approved for 14th century armors and Transitional.\n\nThey are Approved for 15th century armors if documented by sources. We encourage you to send an email to the authenticity committee before purchasing such Sabatons and armors.\n\nTheir construction makes chainmail Sabatons less protective than plate Sabatons. Therefore, we do not recommend such Sabatons in any category.\n\nPfarr- und Klosterkirche Sankt Lampert, Seeon-Seebruck, Bavaria - 1395 - Germany",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "sabatons:7.1",
+      "parent_key": "sabatons:7",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "dc2ead7cc8e7cdeb84d772b281d54fbf77d38ade4c298282a3274af75b4f563c",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:2",
+        "9:3",
+        "9:4",
+        "9:5",
+        "9:6",
+        "9:7",
+        "9:8",
+        "9:9",
+        "9:10",
+        "9:11",
+        "9:12",
+        "9:13",
+        "9:14",
+        "9:15",
+        "9:17",
+        "9:19",
+        "9:20",
+        "9:21"
+      ]
+    },
+    {
+      "ordinal": 19,
+      "depth": 1,
+      "kind": "rule",
+      "number": "7.2",
+      "title": "Specific Requirements",
+      "body": "Chainmail Sabatons must conform to the General Requirements (see Section 3 above).\n\nIt is mandatory to use plate segments as the main protection, and use chainmail only for articulation purposes.\n\nIt is strongly recommended to use plate Sabatons as it is the best protection you can use for your foot.",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "sabatons:7.2",
+      "parent_key": "sabatons:7",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [
+        "3"
+      ],
+      "content_sha256": "b535630f2856aa815f948c19f4d929bb342ceaef471c7e1e083f83b3316ee80f",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:22",
+        "9:23",
+        "9:24",
+        "9:25",
+        "9:26",
+        "9:27",
+        "9:28",
+        "9:29",
+        "9:30"
+      ]
+    },
+    {
+      "ordinal": 20,
+      "depth": 1,
+      "kind": "rule",
+      "number": "7.3",
+      "title": "Examples of Approved Reproductions",
+      "body": "Picture from Medieval Extreme ©",
+      "page_from": 9,
+      "page_to": 9,
+      "stable_key": "sabatons:7.3",
+      "parent_key": "sabatons:7",
+      "review_status": "extracted",
+      "review_note": null,
+      "topics": [],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "e0425806256c6490d7111a395be93b676a7f0370e524f7ad2235e2bab5c67aef",
+      "has_figures": true,
+      "extraction": "ocr",
+      "lines": [
+        "9:31",
+        "9:32",
+        "9:33",
+        "9:34"
+      ]
+    },
+    {
+      "ordinal": 21,
+      "depth": 0,
+      "kind": "note",
+      "number": "8",
+      "title": "Changelog",
+      "body": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our members can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1) Formatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document) Clarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and description ” and “3. General Requirements”. This split doesn’t have an impact on the content of the rules.\n\nDecember-2024: -Add Document has been created",
+      "page_from": 10,
+      "page_to": 10,
+      "stable_key": "sabatons:8",
+      "parent_key": null,
+      "review_status": "extracted",
+      "review_note": "includes OCR corrections checked against the page image",
+      "topics": [
+        "changelog"
+      ],
+      "keywords": [],
+      "cross_refs": [],
+      "content_sha256": "3f5bc07950991f2266211a8e7ffd12481f10f0fcdfc1f38d94d746843567eea9",
+      "has_figures": false,
+      "extraction": "ocr",
+      "lines": [
+        "10:0",
+        "10:1",
+        "10:2",
+        "10:3",
+        "10:4",
+        "10:5",
+        "10:6",
+        "10:7",
+        "10:8",
+        "10:9",
+        "10:10",
+        "10:11",
+        "10:12",
+        "10:13",
+        "10:14",
+        "10:15",
+        "10:16"
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "id": "2:0",
+      "page": 2,
+      "text": "Table of contents",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:2",
+      "page": 2,
+      "text": "1. Implementation 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:3",
+      "page": 2,
+      "text": "2. Definition 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:4",
+      "page": 2,
+      "text": "3. General Requirements 3",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:5",
+      "page": 2,
+      "text": "4. Plate sabatons 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:6",
+      "page": 2,
+      "text": "4.1. Historical Sources and Datation 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:7",
+      "page": 2,
+      "text": "4.2. Specific Requirements 4",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:8",
+      "page": 2,
+      "text": "4.3. Examples of Approved Reproductions 6",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:9",
+      "page": 2,
+      "text": "5. Brigand Sabatons 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:10",
+      "page": 2,
+      "text": "5.1. Historical Sources and Datation 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:11",
+      "page": 2,
+      "text": "5.2. Specific Requirements 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:12",
+      "page": 2,
+      "text": "5.3. Examples of Approved Reproductions 7",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:13",
+      "page": 2,
+      "text": "6. Scale Sabatons 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:14",
+      "page": 2,
+      "text": "6.1. Historical Sources and Datation 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:15",
+      "page": 2,
+      "text": "6.2. Specific Requirements 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:16",
+      "page": 2,
+      "text": "6.3. Examples of Approved Reproductions 8",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:17",
+      "page": 2,
+      "text": "7. Chainmail Sabatons 9",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:18",
+      "page": 2,
+      "text": "7.1. Historical Sources and Datation 9",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:19",
+      "page": 2,
+      "text": "7.2. Specific Requirements 9",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:20",
+      "page": 2,
+      "text": "7.3. Examples of Approved Reproductions 9",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:21",
+      "page": 2,
+      "text": "8. Changelog 10",
+      "reason": "table of contents"
+    },
+    {
+      "id": "2:23",
+      "page": 2,
+      "text": "scbatons v. 26.1 2/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "3:44",
+      "page": 3,
+      "text": "Sabatons V. 26.1 3/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "4:18",
+      "page": 4,
+      "text": "scbatons v. 26.1 4/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "5:4",
+      "page": 5,
+      "text": "Fs",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 29.0)"
+    },
+    {
+      "id": "5:14",
+      "page": 5,
+      "text": "scbatons v. 26.1 5/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "6:2",
+      "page": 6,
+      "text": "WET ED EE WAL.",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 13%), confidence 0.0)"
+    },
+    {
+      "id": "6:3",
+      "page": 6,
+      "text": "iN a FEL WEE",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 14%), confidence 31.1)"
+    },
+    {
+      "id": "6:9",
+      "page": 6,
+      "text": "scbatons v. 26.1 6/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "7:11",
+      "page": 7,
+      "text": "ae",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 21.2)"
+    },
+    {
+      "id": "7:12",
+      "page": 7,
+      "text": "A i \\P Raz",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 35.9)"
+    },
+    {
+      "id": "7:13",
+      "page": 7,
+      "text": "WO —A2u'",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 25.1)"
+    },
+    {
+      "id": "7:30",
+      "page": 7,
+      "text": "scbatons v. 26.1 7/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "8:13",
+      "page": 8,
+      "text": "af ial",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 35.2)"
+    },
+    {
+      "id": "8:15",
+      "page": 8,
+      "text": "‘i y",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 14.8)"
+    },
+    {
+      "id": "8:16",
+      "page": 8,
+      "text": "4 a",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 46.8)"
+    },
+    {
+      "id": "8:33",
+      "page": 8,
+      "text": "scbatons v. 26.1 8/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "9:16",
+      "page": 9,
+      "text": "|",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 50.6)"
+    },
+    {
+      "id": "9:18",
+      "page": 9,
+      "text": "- : a. Se",
+      "reason": "OCR: text inside a picture (on a coloured or photographic background (paper 0%), confidence 24.2)"
+    },
+    {
+      "id": "9:35",
+      "page": 9,
+      "text": "scbatons v. 26.1 9/10",
+      "reason": "page footer (page N/M)"
+    },
+    {
+      "id": "10:17",
+      "page": 10,
+      "text": "scbatons v. 26.1 10/10",
+      "reason": "page footer (page N/M)"
+    }
+  ],
+  "rejected_numbers": [],
+  "ocr_corrections": [
+    {
+      "id": "4:10",
+      "from": "K6In - 1375 - Germany E. of Woodstock - 1376 - England",
+      "to": "Köln - 1375 - Germany E. of Woodstock - 1376 - England",
+      "reason": "page image shows \"Köln\""
+    },
+    {
+      "id": "10:14",
+      "from": "December-2024: SAdd",
+      "to": "December-2024: -Add",
+      "reason": "page image shows \"-Add\" (highlighted)"
+    }
+  ]
+}

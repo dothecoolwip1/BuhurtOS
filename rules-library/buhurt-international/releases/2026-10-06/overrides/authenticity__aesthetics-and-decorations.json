@@ -1,0 +1,41 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "aesthetics-and-decorations:2": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "2ada4d9d7f482c48734c79f80dbf20b80c71b07b362b5345a8fb4e45b61decc6"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\". The cover page is artwork only.",
+  "ocr": {
+    "fix": {
+      "11:3": {
+        "from": "K6In, Wallraf-Richartz-Museum - Metropolitan Museum of Arts 1591 - England",
+        "to": "Köln, Wallraf-Richartz-Museum - Metropolitan Museum of Arts 1591 - England",
+        "reason": "page image shows \"Köln\""
+      },
+      "17:8": {
+        "from": "Add: “41. Implementation” (and subsequent modification of all Title numbers in the document)",
+        "to": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+        "reason": "page image shows “1. Implementation”, OCR read \"41.\""
+      },
+      "17:18": {
+        "from": "\"Add Document has been created",
+        "to": "-Add Document has been created",
+        "reason": "page image shows \"-Add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "noise": {
+    "9:22": "marks inside a photo (\"1 |\")"
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

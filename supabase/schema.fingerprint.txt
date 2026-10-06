@@ -660,6 +660,8 @@ column public.rule_provisions.content_sha256 text not null
 column public.rule_provisions.created_at timestamp with time zone not null
 column public.rule_provisions.cross_refs text[] not null
 column public.rule_provisions.depth smallint not null
+column public.rule_provisions.extraction text not null
+column public.rule_provisions.has_figures boolean not null
 column public.rule_provisions.id uuid not null
 column public.rule_provisions.keywords text[] not null
 column public.rule_provisions.kind text not null
@@ -1264,10 +1266,11 @@ constraint rule_provision_revisions rule_provision_revisions_provision_id_fkey F
 constraint rule_provision_revisions rule_provision_revisions_reason_check CHECK (((char_length(reason) >= 3) AND (char_length(reason) <= 500)))
 constraint rule_provisions rule_provisions_body_check CHECK ((char_length(body) <= 30000))
 constraint rule_provisions rule_provisions_check CHECK (((page_to IS NULL) OR (page_from IS NULL) OR (page_to >= page_from)))
-constraint rule_provisions rule_provisions_check1 CHECK (((number IS NOT NULL) OR (title IS NOT NULL) OR (char_length(body) > 0)))
 constraint rule_provisions rule_provisions_content_sha256_check CHECK ((content_sha256 ~ '^[0-9a-f]{64}$'::text))
 constraint rule_provisions rule_provisions_cross_refs_check CHECK ((cardinality(cross_refs) <= 40))
 constraint rule_provisions rule_provisions_depth_check CHECK (((depth >= 0) AND (depth <= 8)))
+constraint rule_provisions rule_provisions_extraction_check CHECK ((extraction = ANY (ARRAY['text'::text, 'ocr'::text, 'mixed'::text])))
+constraint rule_provisions rule_provisions_has_content CHECK (((number IS NOT NULL) OR (title IS NOT NULL) OR (char_length(body) > 0) OR ((kind = 'figure'::text) AND has_figures)))
 constraint rule_provisions rule_provisions_keywords_check CHECK ((cardinality(keywords) <= 30))
 constraint rule_provisions rule_provisions_kind_check CHECK ((kind = ANY (ARRAY['part'::text, 'section'::text, 'rule'::text, 'definition'::text, 'table'::text, 'figure'::text, 'note'::text, 'appendix'::text, 'unstructured'::text])))
 constraint rule_provisions rule_provisions_number_check CHECK (((number IS NULL) OR ((char_length(number) >= 1) AND (char_length(number) <= 40))))
@@ -1546,11 +1549,11 @@ function private.review_notify() secdef=true dc9403808491858fccb16246221d6975
 function private.revoke_subscription(p_id uuid) secdef=true 5cfeea7d95782ee153d5efc85d676491
 function private.round_rank(p_stage text, p_label text) secdef=false c346e2163e169752721e61a406c02a05
 function private.rule_content_sha256(p_number text, p_title text, p_body text) secdef=false b3b79ef8f11e1518f0a60a4b0fc893d6
-function private.rule_provision_guard() secdef=false 047d3331ece9a20c380e3795a3ee5953
+function private.rule_provision_guard() secdef=false 5c7efb79ac25e76895522c9cd8fadf28
 function private.rule_revision_guard() secdef=false 55d1ff3d96fb0ed7b899db9279cbbe57
 function private.rule_version_readable(p_version uuid) secdef=true eba08970f63ad8bb7a56fbf4813c5c93
 function private.rules_import_inventory(p jsonb) secdef=true 45c6af91ab1fa0db771338352ce60b3b
-function private.rules_import_version(p jsonb) secdef=true d930215dbb77358ccd14cba517f42bcb
+function private.rules_import_version(p jsonb) secdef=true df7f28dc24333374c64f83ba9b6cd069
 function private.ruleset_guard() secdef=false 1f130763785b35e5d76151940522871f
 function private.ruleset_version_guard() secdef=false 1218bc89d2538379fc82c049d242dd80
 function private.schedule_notify() secdef=true df1983843e9bac9a3ec276403d8c0ed0

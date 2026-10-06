@@ -1,0 +1,28 @@
+{
+  "version": "26.1",
+  "published_on": null,
+  "version_confirmed_by": "Claude Code (Pack 22 import), read from the official PDF: cover, page footers and changelog",
+  "confirmed_on": "2026-10-06",
+  "review": {
+    "klappvisors:7": {
+      "status": "verified",
+      "note": "OCR text checked against the page image: the low-confidence words are read correctly (the closing quotation mark is printed as “)",
+      "reviewed_by": "Claude Code (Pack 22 import), checked against the page image",
+      "content_sha256": "a6b4216cd56154a78371e1581c2df85729450298ecd31473d4e468dae6c776ef"
+    }
+  },
+  "keywords": {},
+  "topics": {},
+  "note": "Cover \"VER. 26.1\" and every page footer \"V. 26.1\"; changelog entry \"January - 2026 (V. 26.1)\".",
+  "ocr": {
+    "fix": {
+      "13:34": {
+        "from": "11-Nov-2024: (Add",
+        "to": "11-Nov-2024: -Add",
+        "reason": "page image shows \"-Add\" (highlighted)"
+      }
+    },
+    "insert": []
+  },
+  "reviewed_by": "Claude Code (Pack 22 import), checked against the page image"
+}

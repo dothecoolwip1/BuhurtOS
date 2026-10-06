@@ -1,0 +1,380 @@
+{
+  "executive/gender-policies": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/d219c5_cd29c29d07894734abfd546ea3665066.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "45b9925e034112526679516c1cba57525c48b267ab41ae2a3a7d60ef2a85b1bc",
+    "bytes": 4748491,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/Gender policies V2024.06.pdf"
+  },
+  "executive/committees-internal-regulations": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/d219c5_08fcf19112fc416992b0b429ba714b84.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "07950f0881d64ef1f16c23bac5affda70931ad7b03f22a8e67cc12174c6709ab",
+    "bytes": 298433,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/Committees Internal Regulations.pdf"
+  },
+  "executive/committees-decision-process": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/d219c5_78b65da8c8f041eda86d604ca17a67f6.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "dfd835867d0b9fb82efaecaae675aa1234e03ad40e6543df53d80580d5689fdf",
+    "bytes": 338816,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/Committees Decision-making process.pdf"
+  },
+  "executive/judiciary-committee": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/d219c5_8f5a49fd19eb4c0696ad541e20b40ee4.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "bceb0ba813475b67d42bd323cd0f6301c74b5fd569853490d3a33c8b270e4a67",
+    "bytes": 9101366,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/Judiciary Committee V2024.06.pdf"
+  },
+  "executive/no-agreement": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/735f05_5ca8040d7eca41c896090743c2bc9fab.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "fcc8b25fe0aa7e76f66a7db2145c8571bfe3eef36391b2846213d38055b4c068",
+    "bytes": 4627726,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/NO Agreement V26.1.pdf"
+  },
+  "executive/code-of-conduct": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/735f05_eae9128857c1444290eaee38ec0fa73b.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "a8bf8f82abb25868612a3c58f16c84553db3965a565a75182351f52798a761ef",
+    "bytes": 8022021,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/Code of Conduct.pdf"
+  },
+  "executive/rule-update-policy": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/d219c5_0fec8c7da3bb4ab4a6f507e1ea724410.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "f149e0e2a7f80b77bd9d993f6a60f8e0026f722415c742f4389076f359d11965",
+    "bytes": 4748524,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/Rules Update Policy V2024.06.pdf"
+  },
+  "executive/structure-accreditation-titles": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/d219c5_ffce59b9558045d8a5dec698616e1b21.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "401cf406309543d3fb0454b9b2d43b3da92544374e33e0793a8ac035c4990a2b",
+    "bytes": 310573,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Executive/Committees Structure Accreditation and Titles V2024.12.pdf"
+  },
+  "marshal/duels-rules": {
+    "url": "https://drive.google.com/file/d/1BsQVd3-9v_mp8l5DPj2p_jDUGn2hZPrD/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "f20867141e8adf6c897cff6f1630d0cdf56fbfc6ad387d6c475a166854d6bd26",
+    "bytes": 11433148,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Marshal/Duels rules 26.4.pdf"
+  },
+  "marshal/buhurt-rules": {
+    "url": "https://drive.google.com/file/d/1peAGsMBV8ldNkSlgR-U33V0JqCFYL8ja/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "b019f927ac23bdc57acf58e4262e6c48f450a3689c3feea4b2988f2022ec245d",
+    "bytes": 14486459,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Marshal/Buhurt Rules 26.4.1.pdf"
+  },
+  "marshal/outrance-rules": {
+    "url": "https://drive.google.com/file/d/1nRkVgelFzD3Vrk4EGXIAvZaCzWYniqQz/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "a55222b0f7dacc00ddced85d23ebcb85aadbd134007630ac6a1a422cfb8fff7b",
+    "bytes": 28972300,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Marshal/Outrance Rules and Regulations 26.4.pdf"
+  },
+  "marshal/jobs-titles-uniforms-accreditations": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/53cbbd_8340848f5250498c85d1c11c1b3653c8.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "d41222754963fc7ea49626e84fd4238fe82236826fc1faadcbd9be5e4d514ee6",
+    "bytes": 10481244,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Marshal/Marshal Jobs Titles Uniforms and Accreditation.pdf"
+  },
+  "marshal/accreditation": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/53cbbd_aadb219ddd34443c817c2c5f6236a6a9.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "163ae6660527c5e3d9a7de5bfbc7ceb9a3a9ea3608b918426577037790e464b6",
+    "bytes": 10225738,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Marshal/Marshal Accreditation.pdf"
+  },
+  "marshal/weapon-shield-chart": {
+    "url": "https://drive.google.com/file/d/1n1JTMVa9t4lgQdTEp9kU8U63flesYTqy/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "392d7ecf41f75491e48341140f0718fdf9cb3d23f2f7120dc985e55cdb60edb2",
+    "bytes": 234208,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Marshal/Weapons Shield Chart V26.2.1.pdf"
+  },
+  "tournament/buhurt-regulations": {
+    "url": "https://drive.google.com/file/d/154lPdIUM8lnf4VSZmY_vlY88Waygzoq5/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "24f44a49019551bb29614df604daeeced70292ac05942f85808f1c12bc281adf",
+    "bytes": 9883754,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Tournament/Buhurt Regulations 26.4.pdf"
+  },
+  "tournament/duel-regulations": {
+    "url": "https://drive.google.com/file/d/1gr2EmgMvo5SprZo46vBgGKWOOg6m7bTx/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "16078b6f655167ed3cf3923c8cbc004a8585e6548fbd1e477c806d83c39f1392",
+    "bytes": 10053564,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Tournament/Duels Regulations 26.4.pdf"
+  },
+  "tournament/tournament-structure": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/735f05_c0af5616cd814a779c43181befa8b29c.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "8434175acdc0ced13439cc2966589a54153fb24085aea53300d9876f2e298c2d",
+    "bytes": 10234321,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Tournament/Tournament Structure 26.1.pdf"
+  },
+  "tournament/league-structure": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/735f05_a1ec192413a34eef82ef91f57207ab80.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "b88d1ee4d4a0a500aea10063433b9f1fdc92374ee623a9222f3dca744746d33c",
+    "bytes": 6736093,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Tournament/League Structure 26.1.pdf"
+  },
+  "tournament/secretary-accreditation": {
+    "url": "https://www.buhurtinternational.com/_files/ugd/d219c5_bb995d5ca4d345d2a649067d7cb9d494.pdf",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "4c99a239cd06340aa2abcab966b6f2936d2d1969852e88d3821968bd5248659a",
+    "bytes": 7992203,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Tournament/Secretary Accreditation V2024.06.pdf"
+  },
+  "authenticity/infractions": {
+    "url": "https://drive.google.com/file/d/1NQ5O-CT62qn-V6w3Zh4JqcCzKJVxEZS5/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "313d5d3bf9264d8d3be7a32f88e2a046a933f50024676354ad732f43f6504565",
+    "bytes": 908128,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Infraction classification and application 26.4.pdf"
+  },
+  "authenticity/armor-requirements": {
+    "url": "https://drive.google.com/file/d/1yQDGSiXkM2pjHS9yj5e-HLJklWIeRKZE/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "e6bfc37709315cac775255ef91c9f0b91a389f724e44bedc8340d9c9ed939477",
+    "bytes": 784875,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Technical Requirements for Armors.pdf"
+  },
+  "authenticity/weapon-requirements": {
+    "url": "https://drive.google.com/file/d/1cVip6PUx62koGD1yzrygb9p0sAJ44IOj/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "97bad6993ab48b619730c443d36cda331bf766d831febf74529b5563c2d232fc",
+    "bytes": 1963522,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Weapons requirements 26.4.pdf"
+  },
+  "authenticity/falchions": {
+    "url": "https://drive.google.com/file/d/1blWdDUbcSepUW9dy1C4x-MCzGFymFki6/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "a8c2b137d637edc2fa238e2cd37535d790230677983448ef1ab59855c49a206f",
+    "bytes": 22618260,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Falchions.pdf"
+  },
+  "authenticity/shields-and-bucklers": {
+    "url": "https://drive.google.com/file/d/1u3RCMI3PhELiRPootNoVZiLR9YbU5Nzt/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "2cb34c31c11c52a4abdbf5c736a3cfbeec06673ee8dbe2e0104059638a3afe04",
+    "bytes": 23559760,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Shields and Bucklers 26.4.pdf"
+  },
+  "authenticity/aesthetics-and-decorations": {
+    "url": "https://drive.google.com/file/d/1eTch7jpn5rapbeYvzmIZ48g49bcIKF4O/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "cd98ad0a074984a2ec84d4b8bf85cd4104b02ca916d57563e35d6f58eae2e089",
+    "bytes": 3908385,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Armors and Weapons Aesthetics and Decorations.pdf"
+  },
+  "authenticity/belt-flag-s": {
+    "url": "https://drive.google.com/file/d/1ATswdLydtmGmWQeiTmF7GmyAod7GSQci/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "857bb42b4d04ee8c5bc582aaa6e65651ca3f175d7afc37ccea32a7dcd4729c33",
+    "bytes": 724351,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Belt Flags.pdf"
+  },
+  "authenticity/tabards": {
+    "url": "https://drive.google.com/file/d/1mkBe8JCRfQxDuPPTMJImzV_UWaW4Mgvc/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "0609e4753d13dbbaa9c6b6db9c579e130a57eb57d398491bea132b12cb1d7fda",
+    "bytes": 2257134,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Tabards.pdf"
+  },
+  "authenticity/textile-and-leather": {
+    "url": "https://drive.google.com/file/d/1a7vTdkrW4ZhS-SdA22eczMmKrTUR2X38/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "555cc6f566137da3f8f7de1251e866b4d9eaed6806412871412147c4b1a53546",
+    "bytes": 1414663,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Textiles and Leather.pdf"
+  },
+  "authenticity/klappvisors": {
+    "url": "https://drive.google.com/file/d/1nGbacRRmwzdVNeJg2OrkxRItcKL_Bu9a/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "e47d380dc11050342382e9fce90485b2f0f8a7c072c282f03afa4d716f406411",
+    "bytes": 1664960,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Klappvisors.pdf"
+  },
+  "authenticity/great-helms": {
+    "url": "https://drive.google.com/file/d/12ImGYz_z95qyThLls4MI8j0IUDuRDkq8/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "87fd76fb602b2955dca88a47a4b7c968b4b5120a56ee946b28c8d01848309f52",
+    "bytes": 1230877,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Great Helms.pdf"
+  },
+  "authenticity/wolfribs": {
+    "url": "https://drive.google.com/file/d/1hd82Hg44UkAK7xa2puStRUIxoGKC_McR/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "67253af516d33f96a4a81f39e6ea7f1d8f435f0cc2419b250b5ebaa53ebabb04",
+    "bytes": 2924404,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Wolf Ribs.pdf"
+  },
+  "authenticity/nasals-and-breteches": {
+    "url": "https://drive.google.com/file/d/1UhguW3phwP3DUHV1kiUcsu8pM1nQ0z7M/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "9d9fa618929079c3990d352e651b296bd363443f796b4d783e7c89a3e9e48b78",
+    "bytes": 1682363,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Nasals and Breteches.pdf"
+  },
+  "authenticity/side-pivoting-visored-bascinets": {
+    "url": "https://drive.google.com/file/d/1v9GjZNB6xaTEkKWBgC-zo0tkiCin6VSc/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "f63587c9dc71d4e2c642c6e3f85eeb0ce47e3b05e10342306c7ccd4aa22bdee1",
+    "bytes": 2487706,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Side-pivoting visored Bascinets.pdf"
+  },
+  "authenticity/eyebars": {
+    "url": "https://drive.google.com/file/d/1skAksQXo5-RNNdEP1Tje8dGw_uiJ_ucb/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "2c34b05ad8173bfa08dd964246946174d4039b3c08dcb9fd4e7543b13d474e74",
+    "bytes": 1298490,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Eye Bars.pdf"
+  },
+  "authenticity/barbutes": {
+    "url": "https://drive.google.com/file/d/1zllcOqunbMXrrV1K1PPtahGEjncrol3V/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "6a3d140a13e1180d57a5209374a1c98856a8603a19c45391ba7d22f282650a56",
+    "bytes": 1361489,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Barbutes.pdf"
+  },
+  "authenticity/aventails": {
+    "url": "https://drive.google.com/file/d/1nKUSTq1LoUk3-OTymAJa4Pa_SWcJQA0h/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "32b032c3f8e9e7a80a22d8c755514f7bc1f2fe91a5b65fc877361eafe297655d",
+    "bytes": 2297109,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Aventails.pdf"
+  },
+  "authenticity/sallets": {
+    "url": "https://drive.google.com/file/d/1wQX1hGzV4fkjc8R5cmV_HsLYMDlmfEw6/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "a4902a342148d9d03f8142d614a8f9119768635de3aa85996ab18389b7a84850",
+    "bytes": 1962761,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Sallets.pdf"
+  },
+  "authenticity/perforated-visor-bascinets": {
+    "url": "https://drive.google.com/file/d/1hXeuPmztpXG9LdNrGV8j5dlr7ne7R93p/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "e1962ebf619e9bb67660282eaf6e3815c05a3b5d0cafdf733d8d097f1b9397cf",
+    "bytes": 8492131,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Perforated Visor Bascinets 26.4.pdf"
+  },
+  "authenticity/gauntlets": {
+    "url": "https://drive.google.com/file/d/1u71LdLSm6zVKW7jhI5djRKiF7D5UtqRS/view?usp=drive_link",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "013dcddd2f2fb0033cbab5f06ce06fca2d8cc3b1a56eb3a2e26cf1923f797b6f",
+    "bytes": 3751233,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Gauntlets.pdf"
+  },
+  "authenticity/sabatons": {
+    "url": "https://drive.google.com/file/d/1xeX4tDns1F0hnF1mGNhfDbtYTwPScrhv/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "d7d90d9c7e88aa3d3b60abf9307b99cc8944034e9c55626b7bd861bbbdc0de97",
+    "bytes": 1469911,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Sabatons.pdf"
+  },
+  "authenticity/greaves": {
+    "url": "https://drive.google.com/file/d/1f9RnYIO90XcFlZyoKKVo6HjoM_3WH8xE/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "2f663fe24c935172f731eb2f4d42a3ee8227dfbde0f710e3415e0bc5da9d0cb4",
+    "bytes": 2571732,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Greaves.pdf"
+  },
+  "authenticity/neck-protection": {
+    "url": "https://drive.google.com/file/d/1bo8-eNr_pTawNLNGod5mN64-d4EkkLS-/view?usp=sharing",
+    "retrieved_at": "2026-10-06T00:00:00Z",
+    "sha256": "8da92f75d7fec05ca4001dba88012f4ec4fc5d1221ca18252247627261d17023",
+    "bytes": 1522954,
+    "content_type": "application/pdf",
+    "supplied_by": "GitHub Actions (buhurtos-source-bot), workflow fetch-bi-source-pdfs.yml",
+    "source_file": "Authenticity/Neck Protections.pdf"
+  }
+}

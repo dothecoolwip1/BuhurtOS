@@ -57,16 +57,41 @@ select t.expect_eq('BI directory: every entry is classified and traced to the pa
 select t.expect_eq('BI directory: the core rulebooks are there with the format they apply to',
   (select string_agg(inventory_key || ':' || array_to_string(applies_to, '+'), ',' order by inventory_key) from public.rulesets where inventory_key in ('marshal/buhurt-rules', 'marshal/duels-rules', 'marshal/outrance-rules')),
   'marshal/buhurt-rules:buhurt,marshal/duels-rules:duels,marshal/outrance-rules:outrance');
-select t.expect_eq('BI directory: no rule text is loaded for Buhurt International yet (the documents were not readable here)',
-  (select count(*) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International')::int, 0);
+-- The official text (migration 20261015000400, generated from rules-library/buhurt-international/releases/2026-10-06): 42 documents, reconciled.
+select t.expect_eq('BI release: one version for each of the 42 documents, none for the archive folders',
+  (select count(*) || '/' || count(distinct r.id) || '/' || count(*) filter (where r.source_host = 'drive_folder') from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International'), '42/42/0');
+select t.expect_eq('BI release: every version reconciled, in review (waiting for the owner to publish), from release 2026-10-06, not synthetic',
+  (select count(*) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International'
+     and rv.status = 'in_review' and (rv.reconciliation ->> 'ok')::boolean and rv.import_release = '2026-10-06' and not rv.synthetic and rv.source_sha256 ~ '^[0-9a-f]{64}$' and rv.page_count > 0)::int, 42);
+select t.expect_eq('BI release: 42 different source files', (select count(distinct rv.source_sha256) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International')::int, 42);
+select t.expect_eq('BI release: no provision is left needing review, and every version has text',
+  (select count(*) filter (where p.review_status = 'needs_review') || '/' || count(distinct p.ruleset_version_id) from public.rule_provisions p join public.ruleset_versions rv on rv.id = p.ruleset_version_id join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International'), '0/42');
+select t.expect_eq('BI release: version labels read from the documents themselves',
+  (select string_agg(r.inventory_key || '=' || rv.version, ',' order by r.inventory_key) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id
+    where r.inventory_key in ('marshal/buhurt-rules', 'marshal/duels-rules', 'tournament/buhurt-regulations', 'authenticity/infractions', 'executive/judiciary-committee', 'marshal/weapon-shield-chart')),
+  'authenticity/infractions=26.4,executive/judiciary-committee=2024.06,marshal/buhurt-rules=26.4.1,marshal/duels-rules=26.4,marshal/weapon-shield-chart=26.2.1,tournament/buhurt-regulations=26.4');
+select t.expect_eq('BI release: a picture-only page is a figure with no words of BuhurtOS''s own (empty body)',
+  (select count(*) filter (where p.body <> '' or not p.has_figures) || '/' || sign(count(*)) from public.rule_provisions p join public.ruleset_versions rv on rv.id = p.ruleset_version_id join public.rulesets r on r.id = rv.ruleset_id
+    where r.governing_body = 'Buhurt International' and p.kind = 'figure'), '0/1');
+select t.expect_eq('BI release: text read from page images is marked as OCR',
+  (select count(*) from public.rule_provisions p where p.ruleset_version_id = t.ver('authenticity/gauntlets', '26.1') and p.extraction = 'ocr') > 20, true);
+select t.expect_eq('BI release: Buhurt Rules 4.12 is "Striking Grounded competitors", word for word (capital G as printed)',
+  (select title || ' | ' || body from public.rule_provisions where id = t.prov('marshal/buhurt-rules', '26.4.1', '4.12')), 'Striking Grounded competitors | Striking a grounded competitor is prohibited.');
+select t.expect_eq('BI release: tables are stored as rows and cells, not flattened (Duel Regulations 3.2)',
+  (select body ~ '\| Category \| End of round \| Break between rounds \| Fight victory \| Technical win \|' and body ~ '\| Sword and buckler \|' from public.rule_provisions where id = t.prov('tournament/duel-regulations', '26.4', '3.2')), true);
 select t.as_anon();
 select t.expect_eq('BI directory: anonymous visitors can read it', (select count(*) from public.rulesets where governing_body = 'Buhurt International')::int, 45);
+select t.expect_eq('BI release: versions still in review are not public', (select count(*) from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International')::int, 0);
+select t.expect_eq('BI release: their provisions are not public either', (select count(*) from public.rule_provisions where ruleset_version_id = (select t.ver('marshal/buhurt-rules', '26.4.1')))::int, 0);
 select t.as_admin();
 select t.as_admin();
 \i supabase/migrations/20261015000200_pack22_bi_document_inventory.sql
 select t.expect_eq('BI directory: importing the same inventory again changes nothing',
   (select details ->> 'unchanged' || '/' || (details ->> 'new') || '/' || (details ->> 'changed') from public.audit_log where action = 'rules.inventory_imported' and subject = 'Buhurt International' order by id desc limit 1), '45/0/0');
 select t.expect_eq('BI directory: still exactly 45 entries', (select count(*) from public.rulesets where governing_body = 'Buhurt International')::int, 45);
+\i supabase/migrations/20261015000400_rules_bi_2026_10_06.sql
+select t.expect_eq('BI release: loading the same release again changes nothing',
+  (select count(*) from public.audit_log where action = 'rules.version_imported' and (details ->> 'release') = '2026-10-06')::int, 42);
 select t.expect_error('a rules document from the inventory is never deleted', $$delete from public.rulesets where inventory_key = 'marshal/buhurt-rules'$$, 'P0001');
 
 -- ---------------------------------------------------------------- 2. people and events

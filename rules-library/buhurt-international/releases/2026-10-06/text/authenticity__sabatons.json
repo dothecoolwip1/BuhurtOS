@@ -1,0 +1,2442 @@
+{
+  "inventory_key": "authenticity/sabatons",
+  "sha256": "d7d90d9c7e88aa3d3b60abf9307b99cc8944034e9c55626b7bd861bbbdc0de97",
+  "source_file": "Authenticity/Sabatons.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 9 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 10,
+    "title": "Sabatons - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:25:03 2026 UTC",
+    "modified": "Wed Jan 28 14:25:03 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n3. General Requirements 3\n4. Plate sabatons 4\n4.1. Historical Sources and Datation 4\n4.2. Specific Requirements 4\n4.3. Examples of Approved Reproductions 6\n5. Brigand Sabatons 7\n5.1. Historical Sources and Datation 7\n5.2. Specific Requirements 7\n5.3. Examples of Approved Reproductions 7\n6. Scale Sabatons 8\n6.1. Historical Sources and Datation 8\n6.2. Specific Requirements 8\n6.3. Examples of Approved Reproductions 8\n7. Chainmail Sabatons 9\n7.1. Historical Sources and Datation 9\n7.2. Specific Requirements 9\n7.3. Examples of Approved Reproductions 9\n8. Changelog 10\n\nscbatons v. 26.1 2/10",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.6,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96,
+          "conf_min": 95.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            338,
+            621,
+            378
+          ],
+          "paper": 0.57,
+          "height": 40
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96.1,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            410,
+            2217,
+            452
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 96,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            475,
+            2217,
+            509
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements 3",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            540,
+            2217,
+            583
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4. Plate sabatons 4",
+          "conf_mean": 93.7,
+          "conf_min": 91.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            152,
+            605,
+            2217,
+            639
+          ],
+          "paper": 0.94,
+          "height": 33
+        },
+        {
+          "text": "4.1. Historical Sources and Datation 4",
+          "conf_mean": 95.3,
+          "conf_min": 92.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            226,
+            670,
+            2217,
+            704
+          ],
+          "paper": 0.87,
+          "height": 33
+        },
+        {
+          "text": "4.2. Specific Requirements 4",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            226,
+            736,
+            2217,
+            778
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "4.3. Examples of Approved Reproductions 6",
+          "conf_mean": 93.8,
+          "conf_min": 80.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            226,
+            801,
+            2217,
+            843
+          ],
+          "paper": 0.87,
+          "height": 42
+        },
+        {
+          "text": "5. Brigand Sabatons 7",
+          "conf_mean": 92.3,
+          "conf_min": 90.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            866,
+            2217,
+            909
+          ],
+          "paper": 0.94,
+          "height": 34
+        },
+        {
+          "text": "5.1. Historical Sources and Datation 7",
+          "conf_mean": 95.3,
+          "conf_min": 93.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            931,
+            2217,
+            965
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "5.2. Specific Requirements 7",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            996,
+            2217,
+            1039
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "5.3. Examples of Approved Reproductions 7",
+          "conf_mean": 96.1,
+          "conf_min": 95.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1061,
+            2217,
+            1104
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "6. Scale Sabatons 8",
+          "conf_mean": 94.3,
+          "conf_min": 91.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1127,
+            2217,
+            1161
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "6.1. Historical Sources and Datation 8",
+          "conf_mean": 95.1,
+          "conf_min": 93,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1192,
+            2217,
+            1226
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "6.2. Specific Requirements 8",
+          "conf_mean": 95.9,
+          "conf_min": 95.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1257,
+            2217,
+            1299
+          ],
+          "paper": 0.92,
+          "height": 41
+        },
+        {
+          "text": "6.3. Examples of Approved Reproductions 8",
+          "conf_mean": 96.3,
+          "conf_min": 95.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1322,
+            2217,
+            1365
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "7. Chainmail Sabatons 9",
+          "conf_mean": 92,
+          "conf_min": 89.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            1387,
+            2217,
+            1421
+          ],
+          "paper": 0.92,
+          "height": 34
+        },
+        {
+          "text": "7.1. Historical Sources and Datation 9",
+          "conf_mean": 94.7,
+          "conf_min": 91.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1452,
+            2217,
+            1486
+          ],
+          "paper": 0.87,
+          "height": 33
+        },
+        {
+          "text": "7.2. Specific Requirements 9",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1518,
+            2217,
+            1560
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "7.3. Examples of Approved Reproductions 9",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1583,
+            2217,
+            1625
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "8. Changelog 10",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1648,
+            2217,
+            1691
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "scbatons v. 26.1 2/10",
+          "conf_mean": 71.3,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\n“Sabatons’ is the term used to describe all foot protections.\n\nTypes of Greaves:\n\n● Plate Sabatons\nMade of metal plates riveted together, it is the most effective and the most common foot\nprotection over all Middle Ages.\n\n● Brigand Sabaton\nMade of metal plates riveted to a leather base. This protection is not commonly represented\nin historical sources. The plates are covered by the leather.\n\n● Scales Sabatons\nMade of small scales riveted upon a leather base. This protection is not commonly\nrepresented in historical sources.\n\n● Chainmail Sabatons\nThe protection of the foot is ensured by chainmail. This is the earliest foot protection\ndocumented by historical sources.\n\n● Eastern Sabatons\nDue to very few historical sources, we allow eastern stylization of European Sabatons.\nAllowed designs are displayed in the “Eastern Armors” document.\n\n3. General Requirements\n\nAll types of Sabatons must:\n\n● be based on historical sources,\n● have an anatomical shape of the foot,\n● reproduce the proportions based on historical sources,\n\nAny metal part of the Sabatons must conform to the “Armors and Weapons Aesthetics and Decorations\ndocument.\n\nAny textile or leather part of the Sabatons must conform to the “Textiles and Leather” document.\n\nSabatons V. 26.1 3/10",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.7,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.3,
+          "conf_min": 95.3,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            820,
+            281,
+            1664,
+            368
+          ],
+          "paper": 0.68,
+          "height": 87
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            438,
+            1955,
+            481
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            499,
+            1714,
+            541
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            948,
+            662,
+            1531,
+            733
+          ],
+          "paper": 0.62,
+          "height": 71
+        },
+        {
+          "text": "“Sabatons’ is the term used to describe all foot protections.",
+          "conf_mean": 95.7,
+          "conf_min": 89.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            181,
+            873,
+            1385,
+            916
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "Types of Greaves:",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            1007,
+            547,
+            1050
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● Plate Sabatons",
+          "conf_mean": 92.5,
+          "conf_min": 91.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1133,
+            627,
+            1167
+          ],
+          "paper": 0.59,
+          "height": 34,
+          "raw": "e Plate Sabatons"
+        },
+        {
+          "text": "Made of metal plates riveted together, it is the most effective and the most common foot",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            304,
+            1193,
+            2180,
+            1236
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "protection over all Middle Ages.",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            304,
+            1254,
+            936,
+            1297
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● Brigand Sabaton",
+          "conf_mean": 91.3,
+          "conf_min": 90.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1356,
+            664,
+            1399
+          ],
+          "paper": 0.67,
+          "height": 42,
+          "raw": "e Brigand Sabaton"
+        },
+        {
+          "text": "Made of metal plates riveted to a leather base. This protection is not commonly represented",
+          "conf_mean": 96.5,
+          "conf_min": 95.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            304,
+            1417,
+            2175,
+            1460
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "in historical sources. The plates are covered by the leather.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            304,
+            1478,
+            1494,
+            1520
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "● Scales Sabatons",
+          "conf_mean": 92.8,
+          "conf_min": 92.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1579,
+            663,
+            1613
+          ],
+          "paper": 0.6,
+          "height": 34,
+          "raw": "e Scales Sabatons"
+        },
+        {
+          "text": "Made of small scales riveted upon a leather base. This protection is not commonly",
+          "conf_mean": 96.1,
+          "conf_min": 94,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            304,
+            1640,
+            2178,
+            1683
+          ],
+          "paper": 0.77,
+          "height": 33
+        },
+        {
+          "text": "represented in historical sources.",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            304,
+            1701,
+            969,
+            1743
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "● Chainmail Sabatons",
+          "conf_mean": 92.4,
+          "conf_min": 91.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            1803,
+            736,
+            1837
+          ],
+          "paper": 0.6,
+          "height": 34,
+          "raw": "e Chainmail Sabatons"
+        },
+        {
+          "text": "The protection of the foot is ensured by chainmail. This is the earliest foot protection",
+          "conf_mean": 96.1,
+          "conf_min": 94.8,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            302,
+            1864,
+            2177,
+            1906
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "documented by historical sources.",
+          "conf_mean": 96.2,
+          "conf_min": 95.2,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            302,
+            1925,
+            990,
+            1967
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● Eastern Sabatons",
+          "conf_mean": 92.5,
+          "conf_min": 91.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            230,
+            2026,
+            686,
+            2060
+          ],
+          "paper": 0.59,
+          "height": 34,
+          "raw": "e Eastern Sabatons"
+        },
+        {
+          "text": "Due to very few historical sources, we allow eastern stylization of European Sabatons.",
+          "conf_mean": 95.2,
+          "conf_min": 92.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            304,
+            2087,
+            2175,
+            2130
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Allowed designs are displayed in the “Eastern Armors” document.",
+          "conf_mean": 90.3,
+          "conf_min": 45.2,
+          "words": 9,
+          "uncertain": [
+            "Armors”"
+          ],
+          "box": [
+            301,
+            2147,
+            1626,
+            2191
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 96,
+          "conf_min": 95.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            659,
+            2353,
+            1823,
+            2441
+          ],
+          "paper": 0.68,
+          "height": 70
+        },
+        {
+          "text": "All types of Sabatons must:",
+          "conf_mean": 94.6,
+          "conf_min": 92.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            179,
+            2523,
+            730,
+            2566
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "● be based on historical sources,",
+          "conf_mean": 92.9,
+          "conf_min": 91.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            230,
+            2597,
+            928,
+            2636
+          ],
+          "paper": 0.72,
+          "height": 33,
+          "raw": "e be based on historical sources,"
+        },
+        {
+          "text": "● have an anatomical shape of the foot,",
+          "conf_mean": 95.2,
+          "conf_min": 92.3,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2657,
+            1061,
+            2700
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e have an anatomical shape of the foot,"
+        },
+        {
+          "text": "● reproduce the proportions based on historical sources,",
+          "conf_mean": 95.2,
+          "conf_min": 87.4,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            230,
+            2718,
+            1402,
+            2760
+          ],
+          "paper": 0.73,
+          "height": 33,
+          "raw": "e reproduce the proportions based on historical sources,"
+        },
+        {
+          "text": "Any metal part of the Sabatons must conform to the “Armors and Weapons Aesthetics and Decorations",
+          "conf_mean": 95.5,
+          "conf_min": 92.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            2851,
+            2288,
+            2894
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "document.",
+          "conf_mean": 86.7,
+          "conf_min": 86.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            2913,
+            389,
+            2946
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "Any textile or leather part of the Sabatons must conform to the “Textiles and Leather” document.",
+          "conf_mean": 93.7,
+          "conf_min": 65.7,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            2985,
+            2117,
+            3028
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Sabatons V. 26.1 3/10",
+          "conf_mean": 93.2,
+          "conf_min": 90.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "—"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "4. Plate sabatons\n\n4.1. Historical Sources and Datation\nPlate Sabatons are mainly represented from the mid-14th century to very late armors of the 15th century.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nBL Sloane 2683 Book of Hours -\n1390/1399 - Belgium\n\nK6In - 1375 - Germany E. of Woodstock - 1376 - England\n\n4.2. Specific Requirements\nPlate Sabatons must conform to the General Requirements (see Section 3 above).\nPlate Sabatons must have at least 5 segments.\n\n=> Example:\n\nscbatons v. 26.1 4/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.7,
+      "ocr_lines": [
+        {
+          "text": "4. Plate sabatons",
+          "conf_mean": 94.1,
+          "conf_min": 92.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            830,
+            189,
+            1650,
+            260
+          ],
+          "paper": 0.62,
+          "height": 70,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "4.1. Historical Sources and Datation",
+          "conf_mean": 80.8,
+          "conf_min": 62.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            327,
+            362,
+            1291,
+            402
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Plate Sabatons are mainly represented from the mid-14th century to very late armors of the 15th century.",
+          "conf_mean": 95.5,
+          "conf_min": 91,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            473,
+            2295,
+            516
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            575,
+            1772,
+            619
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "BL Sloane 2683 Book of Hours -",
+          "conf_mean": 95.4,
+          "conf_min": 93.2,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            912,
+            1479,
+            1388,
+            1504
+          ],
+          "paper": 0.65,
+          "height": 25
+        },
+        {
+          "text": "1390/1399 - Belgium",
+          "conf_mean": 94.3,
+          "conf_min": 93.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            971,
+            1535,
+            1272,
+            1567
+          ],
+          "paper": 0.7,
+          "height": 25
+        },
+        {
+          "text": "K6In - 1375 - Germany E. of Woodstock - 1376 - England",
+          "conf_mean": 89.9,
+          "conf_min": 48.8,
+          "words": 12,
+          "uncertain": [
+            "K6In"
+          ],
+          "box": [
+            264,
+            1636,
+            2118,
+            1668
+          ],
+          "paper": 0.88,
+          "height": 25
+        },
+        {
+          "text": "4.2. Specific Requirements",
+          "conf_mean": 92.3,
+          "conf_min": 90.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            327,
+            1867,
+            1057,
+            1917
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Plate Sabatons must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 95.5,
+          "conf_min": 92.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            1978,
+            1848,
+            2022
+          ],
+          "paper": 0.74,
+          "height": 35
+        },
+        {
+          "text": "Plate Sabatons must have at least 5 segments.",
+          "conf_mean": 95,
+          "conf_min": 91.2,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            183,
+            2080,
+            1132,
+            2124
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "=> Example:",
+          "conf_mean": 82,
+          "conf_min": 68.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            184,
+            2183,
+            457,
+            2225
+          ],
+          "paper": 0.77,
+          "height": 42
+        },
+        {
+          "text": "scbatons v. 26.1 4/10",
+          "conf_mean": 69.6,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "It is allowed to add heel protection.\n\n=> Example:\n\nFs\n\nPlate Sabatons must have a pointed shape.\n\n> Example:\n\nMaximilian style armors of the 16th century can have square-shaped Sabatons.\n\n=> Example:\n\nscbatons v. 26.1 5/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 86.3,
+      "ocr_lines": [
+        {
+          "text": "It is allowed to add heel protection.",
+          "conf_mean": 96.5,
+          "conf_min": 95.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            184,
+            289,
+            881,
+            332
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "=> Example:",
+          "conf_mean": 73.2,
+          "conf_min": 52.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            184,
+            392,
+            457,
+            434
+          ],
+          "paper": 0.77,
+          "height": 42
+        },
+        {
+          "text": "Fs",
+          "conf_mean": 29,
+          "conf_min": 29,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            823,
+            465,
+            1030,
+            526
+          ],
+          "paper": 0,
+          "height": 61,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 29.0"
+        },
+        {
+          "text": "Plate Sabatons must have a pointed shape.",
+          "conf_mean": 95,
+          "conf_min": 92.5,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            183,
+            1180,
+            1061,
+            1223
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "> Example:",
+          "conf_mean": 78.8,
+          "conf_min": 62.5,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            184,
+            1283,
+            457,
+            1325
+          ],
+          "paper": 0.77,
+          "height": 42
+        },
+        {
+          "text": "Maximilian style armors of the 16th century can have square-shaped Sabatons.",
+          "conf_mean": 95.8,
+          "conf_min": 92.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            183,
+            1969,
+            1782,
+            2013
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "=> Example:",
+          "conf_mean": 79.7,
+          "conf_min": 64.8,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            184,
+            2072,
+            457,
+            2114
+          ],
+          "paper": 0.77,
+          "height": 42
+        },
+        {
+          "text": "scbatons v. 26.1 5/10",
+          "conf_mean": 71,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "4.3. Examples of Approved Reproductions\n\nWET ED EE WAL.\niN a FEL WEE\n\nPicture from Medieval Extreme ©\n\nPicture from Age of Craft ©\n\nscbatons v. 26.1 6/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 67.6,
+      "ocr_lines": [
+        {
+          "text": "4.3. Examples of Approved Reproductions",
+          "conf_mean": 94,
+          "conf_min": 91.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            327,
+            188,
+            1457,
+            239
+          ],
+          "paper": 0.69,
+          "height": 50
+        },
+        {
+          "text": "WET ED EE WAL.",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 4,
+          "uncertain": [
+            "WET",
+            "WAL."
+          ],
+          "box": [
+            1017,
+            1004,
+            1482,
+            1060
+          ],
+          "paper": 0.13,
+          "height": 56,
+          "in_picture": "on a coloured or photographic background (paper 13%), confidence 0.0"
+        },
+        {
+          "text": "iN a FEL WEE",
+          "conf_mean": 31.1,
+          "conf_min": 6.2,
+          "words": 4,
+          "uncertain": [
+            "FEL",
+            "WEE"
+          ],
+          "box": [
+            1041,
+            1067,
+            1428,
+            1100
+          ],
+          "paper": 0.14,
+          "height": 32,
+          "in_picture": "on a coloured or photographic background (paper 14%), confidence 31.1"
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1004,
+            1222,
+            1493,
+            1247
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "Picture from Age of Craft ©",
+          "conf_mean": 96.6,
+          "conf_min": 95.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1052,
+            2187,
+            1453,
+            2219
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "scbatons v. 26.1 6/10",
+          "conf_mean": 70.9,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "5. Brigand Sabatons\n\n5.1. Historical Sources and Datation\n\nBrigand Sabatons are not well represented in historical sources. They are displayed in sources from the\nmiddle of the 14th century.\n\nThey are Approved for 14th century armors.\n\nThey are Denied for Transitional and 15th century armors.\n\nae\nA i \\P Raz\nWO —A2u'\n\nG. von Schwarzburg - 1349 - Germany\n\n5.2. Specific Requirements\n\nBrigand Sabatons must conform to the General Requirements (see Section 3 above).\nBrigand Sabatons must be made of metal plates.\n\nThe plates must be firmly-riveted to a leather base.\n\nThe plates must be riveted from the inside of the leather base.\n\n5.3. Examples of Approved Reproductions\n\nPicture from Medieval Extreme ©\n\nscbatons v. 26.1 7/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 88.9,
+      "ocr_lines": [
+        {
+          "text": "5. Brigand Sabatons",
+          "conf_mean": 92.2,
+          "conf_min": 91.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            761,
+            189,
+            1721,
+            279
+          ],
+          "paper": 0.68,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "5.1. Historical Sources and Datation",
+          "conf_mean": 86.6,
+          "conf_min": 68.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            328,
+            362,
+            1291,
+            402
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Brigand Sabatons are not well represented in historical sources. They are displayed in sources from the",
+          "conf_mean": 95.7,
+          "conf_min": 92.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            473,
+            2300,
+            516
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "middle of the 14th century.",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            182,
+            533,
+            712,
+            577
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century armors.",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            636,
+            1115,
+            679
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for Transitional and 15th century armors.",
+          "conf_mean": 96.5,
+          "conf_min": 95.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            738,
+            1418,
+            781
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "ae",
+          "conf_mean": 21.2,
+          "conf_min": 21.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1081,
+            1507,
+            1291,
+            1629
+          ],
+          "paper": 0,
+          "height": 122,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 21.2"
+        },
+        {
+          "text": "A i \\P Raz",
+          "conf_mean": 35.9,
+          "conf_min": 15.9,
+          "words": 4,
+          "uncertain": [
+            "Raz"
+          ],
+          "box": [
+            1007,
+            1584,
+            1562,
+            1650
+          ],
+          "paper": 0,
+          "height": 49,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 35.9"
+        },
+        {
+          "text": "WO —A2u'",
+          "conf_mean": 25.1,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "—A2u'"
+          ],
+          "box": [
+            1068,
+            1607,
+            1486,
+            1694
+          ],
+          "paper": 0,
+          "height": 87,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 25.1"
+        },
+        {
+          "text": "G. von Schwarzburg - 1349 - Germany",
+          "conf_mean": 93.3,
+          "conf_min": 91.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            958,
+            1715,
+            1529,
+            1746
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 87.9,
+          "conf_min": 83.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            329,
+            1832,
+            1057,
+            1882
+          ],
+          "paper": 0.68,
+          "height": 49
+        },
+        {
+          "text": "Brigand Sabatons must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 95.5,
+          "conf_min": 91.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            1944,
+            1901,
+            1987
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Brigand Sabatons must be made of metal plates.",
+          "conf_mean": 95.3,
+          "conf_min": 92.6,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            182,
+            2017,
+            1166,
+            2060
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The plates must be firmly-riveted to a leather base.",
+          "conf_mean": 95.5,
+          "conf_min": 91.3,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            2090,
+            1206,
+            2133
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "The plates must be riveted from the inside of the leather base.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            2163,
+            1433,
+            2206
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "5.3. Examples of Approved Reproductions",
+          "conf_mean": 95.6,
+          "conf_min": 94.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            329,
+            2311,
+            1457,
+            2361
+          ],
+          "paper": 0.67,
+          "height": 49
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            254,
+            3134,
+            741,
+            3159
+          ],
+          "paper": 0.64,
+          "height": 25
+        },
+        {
+          "text": "scbatons v. 26.1 7/10",
+          "conf_mean": 71,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "6. Scale Sabatons\n\n6.1. Historical Sources and Datation\n\nScales Sabatons are not well represented in historical sources. They are displayed in sources from 1350\nto 1395.\n\nThey are Approved for 14th century and Transitional armors.\nThey are Denied for 15th century armor.\n\nTheir construction makes scale Sabatons less protective than plate Sabatons. Therefore, we do\nnot recommend such Sabatons in any category.\n\naf ial\n\n‘i y\n4 a\n\nJ. von Falkenstein- 1365 - Germany Guda von Bellersheim - 1394 - Germany\n\n6.2. Specific Requirements\n\nScales Sabatons must conform to the General Requirements (see Section 3 above).\nThe scales can have a rectangular shape or a rounded shape.\n\nThe scales must be firmly attached to the shoe with rivets or leather thread\n\nScale Sabatons must have a pointed shape.\n\n6.3. Examples of Approved Reproductions\n\nPicture from Medieval Extreme ©\n\nscbatons v. 26.1 8/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 90.5,
+      "ocr_lines": [
+        {
+          "text": "6. Scale Sabatons",
+          "conf_mean": 93.4,
+          "conf_min": 91.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            816,
+            189,
+            1666,
+            260
+          ],
+          "paper": 0.61,
+          "height": 71,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "6.1. Historical Sources and Datation",
+          "conf_mean": 87.6,
+          "conf_min": 78.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            328,
+            362,
+            1291,
+            402
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Scales Sabatons are not well represented in historical sources. They are displayed in sources from 1350",
+          "conf_mean": 95.8,
+          "conf_min": 92.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            473,
+            2299,
+            516
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "to 1395.",
+          "conf_mean": 91,
+          "conf_min": 85.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            179,
+            534,
+            341,
+            568
+          ],
+          "paper": 0.67,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century and Transitional armors.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            636,
+            1473,
+            679
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 15th century armor.",
+          "conf_mean": 96.4,
+          "conf_min": 96,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            738,
+            1028,
+            781
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "Their construction makes scale Sabatons less protective than plate Sabatons. Therefore, we do",
+          "conf_mean": 95.2,
+          "conf_min": 91.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            840,
+            2302,
+            883
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "not recommend such Sabatons in any category.",
+          "conf_mean": 95.1,
+          "conf_min": 92.6,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            182,
+            901,
+            1216,
+            944
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "af ial",
+          "conf_mean": 35.2,
+          "conf_min": 23.6,
+          "words": 2,
+          "uncertain": [
+            "ial"
+          ],
+          "box": [
+            857,
+            1353,
+            966,
+            1480
+          ],
+          "paper": 0,
+          "height": 127,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 35.2"
+        },
+        {
+          "text": "‘i y",
+          "conf_mean": 14.8,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            865,
+            1366,
+            1035,
+            1561
+          ],
+          "paper": 0,
+          "height": 195,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 14.8"
+        },
+        {
+          "text": "4 a",
+          "conf_mean": 46.8,
+          "conf_min": 15.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            795,
+            1376,
+            1058,
+            1665
+          ],
+          "paper": 0,
+          "height": 289,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 46.8"
+        },
+        {
+          "text": "J. von Falkenstein- 1365 - Germany Guda von Bellersheim - 1394 - Germany",
+          "conf_mean": 93.4,
+          "conf_min": 91.5,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            339,
+            1866,
+            1951,
+            1898
+          ],
+          "paper": 0.82,
+          "height": 25
+        },
+        {
+          "text": "6.2. Specific Requirements",
+          "conf_mean": 90,
+          "conf_min": 86.9,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            328,
+            1964,
+            1057,
+            2014
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "Scales Sabatons must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 95.6,
+          "conf_min": 92.4,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            2075,
+            1881,
+            2118
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "The scales can have a rectangular shape or a rounded shape.",
+          "conf_mean": 96,
+          "conf_min": 95.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            2149,
+            1436,
+            2192
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The scales must be firmly attached to the shoe with rivets or leather thread",
+          "conf_mean": 96.4,
+          "conf_min": 95.5,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            180,
+            2221,
+            1688,
+            2265
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Scale Sabatons must have a pointed shape.",
+          "conf_mean": 94.9,
+          "conf_min": 91.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            181,
+            2294,
+            1072,
+            2337
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "6.3. Examples of Approved Reproductions",
+          "conf_mean": 93.7,
+          "conf_min": 90.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            328,
+            2442,
+            1457,
+            2493
+          ],
+          "paper": 0.69,
+          "height": 50
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            1780,
+            3128,
+            2269,
+            3153
+          ],
+          "paper": 0.65,
+          "height": 25
+        },
+        {
+          "text": "scbatons v. 26.1 8/10",
+          "conf_mean": 69.5,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "7. Chainmail Sabatons\n\n7.1. Historical Sources and Datation\n\nChainmail Sabatons are the earliest foot protection. They were popular in the 13th and early 14th\ncentury, and were replaced by more protective Sabatons around the middle of the 14th century. They are\nstill in use in very rare cases during the 15th century.\n\nThey are Approved for 14th century armors and Transitional.\n\nThey are Approved for 15th century armors if documented by sources. We encourage you to send an\nemail to the authenticity committee before purchasing such Sabatons and armors.\n\nTheir construction makes chainmail Sabatons less protective than plate Sabatons. Therefore, we\ndo not recommend such Sabatons in any category.\n\n|\n\n- : a. Se\n\nPfarr- und Klosterkirche Sankt Lampert, Seeon-Seebruck, Bavaria - 1395 - Germany\n\n7.2. Specific Requirements\n\nChainmail Sabatons must conform to the General Requirements (see Section 3 above).\n\nIt is mandatory to use plate segments as the main protection, and use chainmail only for articulation\npurposes.\n\nIt is strongly recommended to use plate Sabatons as it is the best protection you can use for your foot.\n\n7.3. Examples of Approved Reproductions\n\nPicture from Medieval Extreme ©\n\nscbatons v. 26.1 9/10",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.3,
+      "ocr_lines": [
+        {
+          "text": "7. Chainmail Sabatons",
+          "conf_mean": 92.9,
+          "conf_min": 90.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            712,
+            189,
+            1770,
+            260
+          ],
+          "paper": 0.62,
+          "height": 71,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "7.1. Historical Sources and Datation",
+          "conf_mean": 87.6,
+          "conf_min": 65,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            328,
+            362,
+            1291,
+            402
+          ],
+          "paper": 0.6,
+          "height": 40
+        },
+        {
+          "text": "Chainmail Sabatons are the earliest foot protection. They were popular in the 13th and early 14th",
+          "conf_mean": 95.7,
+          "conf_min": 91.3,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            473,
+            2299,
+            516
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "century, and were replaced by more protective Sabatons around the middle of the 14th century. They are",
+          "conf_mean": 96.1,
+          "conf_min": 92.4,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            533,
+            2300,
+            577
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "still in use in very rare cases during the 15th century.",
+          "conf_mean": 95.8,
+          "conf_min": 94.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            594,
+            1241,
+            637
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "They are Approved for 14th century armors and Transitional.",
+          "conf_mean": 96.1,
+          "conf_min": 92.9,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            696,
+            1419,
+            740
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 15th century armors if documented by sources. We encourage you to send an",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            799,
+            2298,
+            842
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "email to the authenticity committee before purchasing such Sabatons and armors.",
+          "conf_mean": 95.5,
+          "conf_min": 91.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            181,
+            859,
+            1833,
+            903
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Their construction makes chainmail Sabatons less protective than plate Sabatons. Therefore, we",
+          "conf_mean": 94.9,
+          "conf_min": 90.8,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            961,
+            2301,
+            1004
+          ],
+          "paper": 0.68,
+          "height": 34
+        },
+        {
+          "text": "do not recommend such Sabatons in any category.",
+          "conf_mean": 95.3,
+          "conf_min": 92.7,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            181,
+            1022,
+            1285,
+            1065
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "|",
+          "conf_mean": 50.6,
+          "conf_min": 50.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            887,
+            1124,
+            924,
+            1249
+          ],
+          "paper": 0,
+          "height": 125,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 50.6"
+        },
+        {
+          "text": "- : a. Se",
+          "conf_mean": 24.2,
+          "conf_min": 0,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1002,
+            1797,
+            1377,
+            1846
+          ],
+          "paper": 0,
+          "height": 28,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 24.2"
+        },
+        {
+          "text": "Pfarr- und Klosterkirche Sankt Lampert, Seeon-Seebruck, Bavaria - 1395 - Germany",
+          "conf_mean": 93,
+          "conf_min": 90.9,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            621,
+            1862,
+            1865,
+            1894
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "7.2. Specific Requirements",
+          "conf_mean": 92.4,
+          "conf_min": 90.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            328,
+            1955,
+            1057,
+            2005
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Chainmail Sabatons must conform to the General Requirements (see Section 3 above).",
+          "conf_mean": 95.2,
+          "conf_min": 91.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            181,
+            2066,
+            1948,
+            2109
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "It is mandatory to use plate segments as the main protection, and use chainmail only for articulation",
+          "conf_mean": 96.2,
+          "conf_min": 91.2,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            183,
+            2139,
+            2299,
+            2182
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "purposes.",
+          "conf_mean": 94.7,
+          "conf_min": 94.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            182,
+            2209,
+            377,
+            2242
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "It is strongly recommended to use plate Sabatons as it is the best protection you can use for your foot.",
+          "conf_mean": 95.7,
+          "conf_min": 92.4,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            183,
+            2273,
+            2243,
+            2316
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "7.3. Examples of Approved Reproductions",
+          "conf_mean": 92.4,
+          "conf_min": 86.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            328,
+            2419,
+            1457,
+            2470
+          ],
+          "paper": 0.69,
+          "height": 49
+        },
+        {
+          "text": "Picture from Medieval Extreme ©",
+          "conf_mean": 96.1,
+          "conf_min": 95.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            347,
+            3170,
+            836,
+            3195
+          ],
+          "paper": 0.64,
+          "height": 24
+        },
+        {
+          "text": "scbatons v. 26.1 9/10",
+          "conf_mean": 71.2,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "8. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and description ” and “3. General\nRequirements”. This split doesn’t have an impact on the content of the rules.\n\nDecember-2024: SAdd\nDocument has been created\n\nscbatons v. 26.1 10/10",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 91.9,
+      "ocr_lines": [
+        {
+          "text": "8. Changelog",
+          "conf_mean": 96.1,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            923,
+            189,
+            1558,
+            279
+          ],
+          "paper": 0.68,
+          "height": 90,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.7,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            360,
+            2263,
+            403
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.3,
+          "conf_min": 95.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            421,
+            1870,
+            463
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.8,
+          "conf_min": 92.8,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            565,
+            679,
+            608
+          ],
+          "paper": 0.64,
+          "height": 42
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.2,
+          "conf_min": 95.2,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            616,
+            2163,
+            660
+          ],
+          "paper": 0,
+          "height": 39
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 92.8,
+          "conf_min": 73.1,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            668,
+            2042,
+            720
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.1,
+          "conf_min": 96.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            737,
+            427,
+            772
+          ],
+          "paper": 0,
+          "height": 35
+        },
+        {
+          "text": "- Split of “1. Definition and general requirements” in “2. Definition and description ” and “3. General",
+          "conf_mean": 94.5,
+          "conf_min": 81.7,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            799,
+            2286,
+            841
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "Requirements”. This split doesn’t have an impact on the content of the rules.",
+          "conf_mean": 94.9,
+          "conf_min": 80.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            859,
+            1823,
+            901
+          ],
+          "paper": 0.69,
+          "height": 33
+        },
+        {
+          "text": "December-2024: SAdd",
+          "conf_mean": 45.3,
+          "conf_min": 0,
+          "words": 2,
+          "uncertain": [
+            "SAdd"
+          ],
+          "box": [
+            182,
+            998,
+            641,
+            1046
+          ],
+          "paper": 0.53,
+          "height": 48
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1052,
+            752,
+            1086
+          ],
+          "paper": 0.64,
+          "height": 33
+        },
+        {
+          "text": "scbatons v. 26.1 10/10",
+          "conf_mean": 69.4,
+          "conf_min": 21.6,
+          "words": 4,
+          "uncertain": [
+            "scbatons"
+          ],
+          "box": [
+            228,
+            3394,
+            2267,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}

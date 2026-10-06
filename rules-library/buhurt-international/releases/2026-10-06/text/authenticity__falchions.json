@@ -1,0 +1,394 @@
+{
+  "inventory_key": "authenticity/falchions",
+  "sha256": "a8c2b137d637edc2fa238e2cd37535d790230677983448ef1ab59855c49a206f",
+  "source_file": "Authenticity/Falchions.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 2 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 26,
+    "title": "Falchions 26.2",
+    "creator": null,
+    "producer": "Skia/PDF m146 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")BUBURT(Z\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 71.2,
+      "ocr_lines": [
+        {
+          "text": ")BUBURT(Z",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            ")BUBURT(Z"
+          ],
+          "box": [
+            884,
+            182,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 115,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 94.5,
+          "conf_min": 92.7,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            605,
+            1271,
+            989,
+            1342
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            604,
+            1448,
+            1722,
+            1644
+          ],
+          "paper": 0,
+          "height": 196
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": " Table of contents\n1. Implementation​                                                   3\n2. Definition and Description​                                       3\n    2.1. Definition​                                                 3\n    2.2. Description​                                                3\n3. General Requirements​                                             5\n4. Falchions Type 1​                                                 6\n    4.1. Historical Sources and Datation​                            6\n    4.2. Examples of Approved Reproductions​                         7\n5. Falchions Type 2​                                                 8\n    5.1. Historical Sources and Datation​                            8\n    5.2. Examples of Approved Reproductions​                        10\n6. Falchions Type 3​                                                11\n    6.1. Historical Sources and Datation​                           11\n    6.2. Examples of Approved Reproductions​                        14\n7. Falchions Type 4​                                                15\n    7.1. Historical Sources and Datation​                           15\n    7.2. Examples of Approved Reproductions​                        15\n8. Falchions Type 5​                                                16\n    8.1. Historical Sources and Datation​                           16\n9. 2-Handed Falchions​                                              18\n    9.1. Historical Sources and Datation​                           18\n    9.2. Examples of Approved Reproductions​                        20\n10. Pommels and Guards​                                             21\n    10.1. Pommels​                                                  21\n    10.2. Guards​                                                   23\n11. Common Mistakes​                                                23\n    11.1. 1-Handed Falchions with D-guards​                         24\n    1.1. Examples of Denied Reproductions​                          24\n    11.2. Beidanas​                                                 25\n    11.3. Falchions from the Morgan Bible (or Maciejowski Bible)​   25\n12. Changelog​                                                      26\n ​\n\n\n\n\n     Falchions V. 26.1                                              2/26\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                               1.​Implementation\nThe document has been created and approved by the General Assembly of 29.11.2025.\nThe document and its rules will be implemented from the 2029 season (01/01/2029).\nCompetitors will have 3 seasons to align their equipment with this document and its rules.\n\n\n\n                     2.​Definition and Description\n  2.1.​ Definition\n“Falchion” is the term used to describe a single-edged bladed weapon from the Middle Ages in Europe.\nThe falchion originated in the 12th century and evolved until the 15th century.\nFalchions can be one-handed or two-handed.\n“Messer” is the term used to describe a specific subtype of falchion.\n\n\n  2.2.​ Description\nFalchions existed in many forms throughout the Middle Ages.\nThey have been classified by James Elmslie in 2015, and we will stick to his typology for buhurt.\n\nType of Falchions:\n\n  ●​ Type 1\n     A straight blade with a wider part on the striking edge.\n\n  ●​ Type 2\n     “Reverse-edged” forward curve, the point must be rounded or removed.\n\n  ●​ Type 3\n     Variations in having scalloped or cutaway tips on the blades.\n\n  ●​ Type 4\n     Curved saber-like blades often associated with, but not exclusive to, Eastern Europe.\n\n  ●​ Type 5\n     Symmetrical single-edged profiles with little to no curvature.\n\n  ●​ 2-handed\n     Not classified by James Elmslie , but depicted in manuscripts.\n\n\nFalchions that are not based on the James Elmslie typology can be accepted if documented by historical\nsources.\n\n\n\n\n  Falchions V. 26.1                                                                                 3/26\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 4,
+      "text": "Falchions V. 26.1   4/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "                       3.​General Requirements\nFalchions of any types must:\n  ●​   be based on historical sources,\n  ●​   reproduce the proportions and curves based on historical sources,\n  ●​   match the style of the armor kit of the competitor,\n  ●​   be conform to the 9.0 section about pommels and guards,\n  ●​   be conform to the Technical Requirements document for weapons.\n\nAll decorations on the falchion must be stylized in accordance with the style of the armor kit of the\ncompetitor.\n\nIt is prohibited to decorate a falchion with images that are clearly modern and/or offensive. Any metal\npart of the falchion must conform to the “Armors and Weapons Aesthetics and Decorations” document.\n\nAny textile or leather part of the falchion must conform to the “Textiles and Leather” document.\n\n\n\n\n  Falchions V. 26.1                                                                                 5/26\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 6,
+      "text": "                             4.​Falchions Type 1\n  4.1.​ Historical Sources and Datation\nType 1 falchions are based on Elmslie typology. They are characterized by a flaring profile, and broad,\nabrupt tip.\nThere are 4 subtypes, from 1a to 1d.\nAll subtypes type 1 falchion have been used since the 13th century.\nThey are Approved for 14th century, Transitional and 15th century armors.\nType 1d falchion is Denied because its pointy edge is not safe.\n\n\n                 APPROVED​         ​           ​        ​                   ​   DENIED\n\n\n\n\n                                       Falchion of Cluny - 1270/1280 - France\n\n\n\n\n                                   Falchion of Conyers - 1260/1270 - England\n\n\n\n\n  Falchions V. 26.1                                                                                 6/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "4.2.​ Examples of Approved Reproductions\n\n\n\n\n                       Pictures from The Medieval Things ©\n\n\n\n\nFalchions V. 26.1                                            7/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "                                  5.​Falchions Type 2\n  5.1.​ Historical Sources and Datation\nType 2 falchions are based on Elmslie typology. They are also called “reverse-edge falchions”. They are\nsharpened along the ‘short’ edge, which features a clipped portion, leading to the reinforced thrusting tip.\nThey are Approved for 14th century, Transitional and 15th century armors.\nA particular attention must be paid to the safety of the pointy edge, it must be made to be safe.\n\n\n\n\n               BNF Français 246 Histoire Ancienne -\n                   C. 1360-1400 - France\n\n\n                                                                        Flemish Falchion - C. 1400 -\n                                                                        Musée de L’Armée - France\n\n\n\n\n  Falchions V. 26.1                                                                                      8/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 9,
+      "text": "Oey ce emntes AER Ee aye By\n○ ees OS * oS ~ Yor\nge. See\ncon zs\n\n**\n\nBY x\n\nwre KE XG\n\nCastello di Avio - 1350 - Italy\n\n-clchions v. 26.1 9/26",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 47,
+      "ocr_lines": [
+        {
+          "text": "Oey ce emntes AER Ee aye By",
+          "conf_mean": 24.5,
+          "conf_min": 0,
+          "words": 7,
+          "uncertain": [
+            "Oey",
+            "emntes",
+            "AER",
+            "aye"
+          ],
+          "box": [
+            722,
+            295,
+            1477,
+            338
+          ],
+          "paper": 0,
+          "height": 32,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 24.5"
+        },
+        {
+          "text": "○ ees OS * oS ~ Yor",
+          "conf_mean": 39.4,
+          "conf_min": 0,
+          "words": 7,
+          "uncertain": [
+            "ees",
+            "Yor"
+          ],
+          "box": [
+            784,
+            332,
+            1428,
+            361
+          ],
+          "paper": 0,
+          "height": 18,
+          "raw": "‘ ees OS * oS ~ Yor",
+          "dropped": [
+            ";"
+          ],
+          "in_picture": "lettering 18px tall, smaller than any printed text"
+        },
+        {
+          "text": "ge. See",
+          "conf_mean": 25,
+          "conf_min": 18.1,
+          "words": 2,
+          "uncertain": [
+            "ge.",
+            "See"
+          ],
+          "box": [
+            853,
+            356,
+            1276,
+            374
+          ],
+          "paper": 0,
+          "height": 18,
+          "in_picture": "lettering 18px tall, smaller than any printed text"
+        },
+        {
+          "text": "con zs",
+          "conf_mean": 13.7,
+          "conf_min": 11.5,
+          "words": 2,
+          "uncertain": [
+            "con"
+          ],
+          "box": [
+            882,
+            364,
+            1397,
+            386
+          ],
+          "paper": 0,
+          "height": 16,
+          "in_picture": "lettering 16px tall, smaller than any printed text"
+        },
+        {
+          "text": "**",
+          "conf_mean": 18.5,
+          "conf_min": 18.5,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1154,
+            368,
+            1176,
+            380
+          ],
+          "paper": 0,
+          "height": 12,
+          "in_picture": "lettering 12px tall, smaller than any printed text"
+        },
+        {
+          "text": "BY x",
+          "conf_mean": 45.6,
+          "conf_min": 36,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            285,
+            550,
+            539,
+            583
+          ],
+          "paper": 0,
+          "height": 26,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 45.6"
+        },
+        {
+          "text": "wre KE XG",
+          "conf_mean": 37,
+          "conf_min": 18.2,
+          "words": 3,
+          "uncertain": [
+            "wre"
+          ],
+          "box": [
+            229,
+            581,
+            619,
+            655
+          ],
+          "paper": 0,
+          "height": 50,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 37.0"
+        },
+        {
+          "text": "Castello di Avio - 1350 - Italy",
+          "conf_mean": 93.8,
+          "conf_min": 91.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            1031,
+            2454,
+            1453,
+            2485
+          ],
+          "paper": 0.75,
+          "height": 25
+        },
+        {
+          "text": "-clchions v. 26.1 9/26",
+          "conf_mean": 64.5,
+          "conf_min": 0,
+          "words": 4,
+          "uncertain": [
+            "-clchions"
+          ],
+          "box": [
+            229,
+            3395,
+            2353,
+            3441
+          ],
+          "paper": 0.96,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "5.2.​ Examples of Approved Reproductions\n\n\n\n\n                             Picture from Gohurt ©\n\n\n\n\n                       Picture from The Medieval Things ©\n\n\n\n\nFalchions V. 26.1                                           10/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 11,
+      "text": "                              6.​Falchions Type 3\n  6.1.​ Historical Sources and Datation\nType 3 falchions are based on Elmslie typology. They are characterized by having scalloped or cutaway\ntips on the blades of various shapes. The curvature of the blade can vary.\nThere are 5 subtypes, from 3a to 3e.\nAll type 3 falchions have been used since the 14th century.\nThey are Approved for 14th century, Transitional and 15th century armors.\nA particular attention must be paid to the safety of the pointy edge, it must be made to be safe.\n\n\n\n\n                                       Falchion from Thorpe - 1350 - England\n\n\n\n\n  Falchions V. 26.1                                                                                 11/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 12,
+      "text": "                    BNF Français 167 Bible Moralisée - 1345/1355 - France\n\n\n\n\nFalchions V. 26.1                                                           12/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 13,
+      "text": "                    Morgan M.394 Bible Historiale - 1415 - France\n\n\n\n\nFalchions V. 26.1                                                   13/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 14,
+      "text": "6.2.​ Examples of Approved Reproductions\n\n\n\n\n                          Pictures from The Medieval Things ©\n\n\n\n\nFalchions V. 26.1                                               14/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 15,
+      "text": "                             7.​Falchions Type 4\n  7.1.​ Historical Sources and Datation\nType 4 falchions are based on Elmslie typology. They are characterized by a curved blade that gives\nthem a sabre look.\nThere are 4 subtypes, from 4a to 4d.\nAll type 4 falchions have been used since the 14th century.\nThey are Approved for 14th century, Transitional and 15th century armors.\n\n\n\n\n  7.2.​ Examples of Approved Reproductions\n\n\n\n\n                                        Picture from Gohurt ©\n\n\n\n\n  Falchions V. 26.1                                                                             15/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 16,
+      "text": "                             8.​Falchions Type 5\n  8.1.​ Historical Sources and Datation\nType 5 falchions are based on Elmslie typology. They are characterized by relatively symmetrical\nprofiles, typically featuring little to no curvature over their length.\nThere are 5 subtypes, from 4a to 4e.\nAll type 5 falchions have been used since the 14th century.\nSubtypes 5a, 5b, 5c falchions are Approved for 14th century, Transitional and 15th century armors.\nSubtypes 5d and 5e are Denied for safety reasons.\n\n\n                                             APPROVED\n\n\n\n\n                                               DENIED\n\n\n\n\n  Falchions V. 26.1                                                                             16/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 17,
+      "text": "                    Morgan M.394 Bible Historiale - 1415 - France\n\n\n\n\nFalchions V. 26.1                                                   17/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 18,
+      "text": "                          9.​2-Handed Falchions\n  9.1.​ Historical Sources and Datation\n2-handed falchions are not based on Elmslie typology. They are depicted in manuscripts from the middle\nages in Europe.\nThere are 3 subtypes of 2-handed that are suitable for buhurt:\n  ●​ Type 2\n     It has a similar shape to 1-handed falchion type 2, with a square guard.\n  ●​ Type 3c\n     It has a similar shape to 1-handed falchion type 3c.\n  ●​ Type 3e\n     It has a similar shape to 1-handed falchion type 3e.\n\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\n\n\n                                        2-handed Type 2\n\n\n\n\n                               Romance of Alexander - 1338/1344 - England\n\n\n\n\n  Falchions V. 26.1                                                                               18/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 19,
+      "text": "                                                 2-handed Type 3c\n\n\n\n\n          Lyon BM PA 30 Cy commencent les grans croniques de la genealogie des roys de France - 1380 - France\n\n\n\n                                                 2-handed Type 3e\n\n\n\n\n            Martyr of Saint Savinien - Bibliotheque Nationale de France - Department of Manuscripts 50 f. 324v. -\n                                            second half of the 14th century - France\n\n\n\n\nFalchions V. 26.1                                                                                                   19/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 20,
+      "text": "9.2.​ Examples of Approved Reproductions\n\n\n\n   2-Handed Type 2​   ​   ​        ​         ​        ​      ​   2-Handed Type 3c\n\n\n\n\n                                   2-Handed Type 3e\n\n\n\n\n                          Pictures from Medieval Extreme ©\n\n\n\n\nFalchions V. 26.1                                                                   20/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 21,
+      "text": "                      10.​Pommels and Guards\n 10.1.​ Pommels\nPommels can be of many forms and designs, mainly of rounded or square shape.\nPommels shapes are sorted under the Oakeshott Typology.\nPommels can be decorated.\nAny metal part of the pommel must conform to the “Armors and Weapons Aesthetics and Decorations”\ndocument.\n\n\nExample of historical shapes from OakeshottTypology:\n\n\n\n\nTypes A to E are all Denied as they are from centuries that predate the 14th century.\n\n\nTypes G1 and G2 originated from the 16th century.\nThey are:\n  ●​ Approved for 16th century armors and weapons.\n  ●​ Denied for 14th century, Transitional and 15th century armors and weapons.\n\n\n\n\n  Falchions V. 26.1                                                                          21/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 22,
+      "text": "For safety reason, it is Denied to reproduce a hook shape for the pommel, despite it is documented by\nhistorical sources, such as:\n\n\n\n\n  Falchions V. 26.1                                                                              22/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 23,
+      "text": "  10.2.​ Guards\nGuards can be of many forms and designs, mainly of straight design for 14th and 15th century designs.\nIt is recommended to avoid exotic shapes of guards and stick to the classic shapes, widely supported by\nhistorical sources.\nGuards can be decorated.\nAny metal part of the pommel must conform to the “Armors and Weapons Aesthetics and Decorations”\ndocument.\n\n\nExample of historical shapes from Oakeshott Typology:\n\n\n\n\n                                  © Ewatt Oakeshott - The Sword in the Age of Chivalry\n\n\n\nNote: Oakeshott defined up to 12 different styles of guards, with variations.\nWe selected only the first 6 styles to keep the document simple, but other styles of guards from the\nOakeshott typology are acceptable to use.\n\n\n\n   Falchions V. 26.1                                                                                   23/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 24,
+      "text": "                           11.​Common Mistakes\n  11.1.​ 1-Handed Falchions with D-guards\nFrom the 16th century, mainly in Italy, falchions with “D Guard” started to be used for civil combats.\nThey represent a serious risk of injury and can not be used.\n\n\nAll 1-handed falchions reproducing the designs of a 1-handed falchion with a D-guard are Denied.\n\n\n\n\n    1.1.​ Examples of Denied Reproductions\n\n\n\n\n                                          Picture from Medieval Extreme ©\n\n\n\n\n   Falchions V. 26.1                                                                                     24/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 25,
+      "text": "  11.2.​ Beidanas\nBeidanas are a farming tool from the 17th century in Italy. Despite its falchion inspired design, it is not a\nweapon for combat and therefore not suitable for buhurt.\n\n\nAll falchions reproducing the designs of a Beidana are Denied.\n\n\n\n\n  11.3.​ Falchions from the Morgan Bible (or Maciejowski Bible)\n\n\nThis manuscript is often used for falchions sources. But it originated from the middle of the 13th century,\nand its design is unsafe for our sport.\n\n\nAll falchions reproducing the designs from this manuscript are Denied.\n\n\n\n\n   Falchions V. 26.1                                                                                     25/26\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 26,
+      "text": "                                 12.​Changelog\n Below, we will keep track of all the changes made over the lifetime of this document. This way, all our\n                    members can see how the documents are changing over time.\n\n\nJanuary - 2026 (V. 26.1)\nAdd: Document has been created\n\n\n\n\n  Falchions V. 26.1                                                                                   26/26\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

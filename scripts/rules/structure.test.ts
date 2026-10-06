@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { contentSha256, crossRefs, detectDate, detectVersion, joinBody, structureDocument } from './structure';
+import { contentSha256, crossRefs, detectDate, detectVersion, joinBody, renderTable, structureDocument, type SourcePage } from './structure';
 import { reconcileDocument, reconcileRelease } from './reconcile';
 
 // An invented document. It is NOT Buhurt International text: it only has the shapes real rulebooks have (title page, headers/footers, numbered
@@ -59,9 +59,9 @@ describe('rule document structuring', () => {
   it('flags a skipped number, a table, text before the first heading and an unreadable page; never drops them', () => {
     expect(by('2.3').review_status).toBe('needs_review');
     expect(by('2.3').review_note).toMatch(/skips to 2\.3 \(expected 2\.2\)/);
+    // Text before the first heading is kept as a note (here the cover); it is only flagged when it holds numbered lines.
     const pre = r.provisions[0];
-    expect(pre.kind).toBe('unstructured');
-    expect(pre.review_status).toBe('needs_review');
+    expect(pre).toMatchObject({ kind: 'note', topics: ['cover'], review_status: 'extracted' });
     expect(pre.body).toContain('These example rules exist only to test');
     // "3.4 points ..." does not follow 2.3.1, so it stays in the text and is listed
     expect(r.rejected_numbers.map(x => x.text)).toEqual(['3.4 points are not a heading here because they do not fit']);
@@ -86,7 +86,7 @@ describe('rule document structuring', () => {
     expect(rec.ok).toBe(true);
     expect(rec.unaccounted_lines).toEqual([]);
     expect(rec.char_coverage).toBeGreaterThan(0.99);
-    expect(rec.needs_review).toBe(4);
+    expect(rec.needs_review).toBe(3);
   });
   it('detects the printed version and date for a person to confirm', () => {
     expect(r.detected).toEqual({ version: '1.2', date: '2026-02-03' });
@@ -141,17 +141,81 @@ describe('the committed example releases are reproducible from their own files',
   it('re-running structure on the committed text and overrides gives exactly the committed provisions and checksums', async () => {
     const { readFileSync, readdirSync } = await import('node:fs');
     const { applyOverrides, versionContentSha } = await import('./release');
-    for (const rel of ['r1', 'r2']) {
-      const dir = `rules-library/_example-body/releases/${rel}`;
+    // The invented example body and the real Buhurt International release (its OCR corrections, picture text, tables and reviews included).
+    for (const rel of ['_example-body/releases/r1', '_example-body/releases/r2', 'buhurt-international/releases/2026-10-06']) {
+      const dir = `rules-library/${rel}`;
       for (const f of readdirSync(`${dir}/structured`)) {
         const committed = JSON.parse(readFileSync(`${dir}/structured/${f}`, 'utf8'));
         const text = JSON.parse(readFileSync(`${dir}/text/${f}`, 'utf8'));
         const o = JSON.parse(readFileSync(`${dir}/overrides/${f}`, 'utf8'));
-        const again = applyOverrides(structureDocument(text.pages, committed.inventory_key.split('/').pop()).provisions, o);
+        const again = applyOverrides(structureDocument(text.pages, committed.inventory_key.split('/').pop(), o.noise ?? {}, o.ocr ?? {}, o.layout ?? {}).provisions, o);
         expect(again, `${rel}/${f}`).toEqual(committed.provisions);
         expect(versionContentSha(again)).toBe(committed.version.content_sha256);
         expect(committed.version.source_sha256).toBe(text.sha256);
       }
     }
+  });
+});
+
+describe('reviewed layout: tables, unnumbered headings, OCR corrections and picture text', () => {
+  const page = (text: string, extra: Partial<SourcePage> = {}): SourcePage => ({ page: 1, text, ...extra });
+  const DOC = [page(`1. Weights
+1.1 Categories
+The categories are:
+                 Men          Women
+ Light           < 75 kg      < 60 kg
+ Heavy           > 75 kg
+Competitors   who   deviate   from   these   styles   must   ask.`)];
+  const table = { replaces: ['1:3', '1:4', '1:5'], rows: [['', 'Men', 'Women'], ['Light', '< 75 kg', '< 60 kg'], ['Heavy', '> 75 kg', '']], note: 'transcribed' };
+  it('replaces the transcribed lines by a table that holds exactly their words', () => {
+    const r = structureDocument(DOC, 'w', {}, {}, { tables: [table] });
+    const p = r.provisions.find(x => x.number === '1.1')!;
+    expect(p.body).toBe('The categories are:\n\n|  | Men | Women |\n| --- | --- | --- |\n| Light | < 75 kg | < 60 kg |\n| Heavy | > 75 kg |  |\n\nCompetitors who deviate from these styles must ask.');
+    // justified prose with wide gaps is not a table; the transcribed table is no longer flagged
+    expect(p.review_status).toBe('extracted');
+    const rec = reconcileDocument({ result: r, provisions: r.provisions, pages: 1, versionConfirmed: true });
+    // nothing unaccounted and nothing added (the tiny document's only missing characters are the headings' printed dots)
+    expect(rec.unaccounted_lines).toEqual([]);
+    expect(rec.errors.join(' ')).not.toMatch(/more characters|in no provision|more than one/);
+    expect(rec.char_coverage).toBeGreaterThan(0.95);
+  });
+  it('refuses a table that adds, drops or changes a word', () => {
+    expect(() => structureDocument(DOC, 'w', {}, {}, { tables: [{ ...table, rows: [...table.rows, ['Ultra', '> 115 kg', '']] }] })).toThrow(/not in source: .*Ultra/);
+    expect(() => structureDocument(DOC, 'w', {}, {}, { tables: [{ ...table, rows: table.rows.slice(0, 2) }] })).toThrow(/missing: .*Heavy/);
+    expect(() => structureDocument(DOC, 'w', {}, {}, { tables: [{ ...table, replaces: ['1:3', '1:4', '1:9'] }] })).toThrow(/not all in one provision|no provision holds/);
+  });
+  it('renders merged cells and paragraphs inside cells as layout marks, and a table without a heading row', () => {
+    expect(renderTable({ replaces: [], note: '', rows: [['A', 'B'], ['x<br>y', '^']], header_rows: 0 })).toEqual(['| A | B |', '| x<br>y | ^ |']);
+  });
+  it('starts a provision at a reviewed unnumbered heading, keyed by its words', () => {
+    const r = structureDocument([page('CHART\nBladed Weapons (Sword)   Weight\nType 1   1.1 - 1.7\nOther Restrictions\nNo thrusting.')], 'chart', {}, {}, {
+      headings: { '1:0': { title: 'CHART' }, '1:1': { title: 'Bladed Weapons (Sword)' }, '1:3': { title: 'Other Restrictions' } },
+      tables: [{ replaces: ['1:1', '1:2'], rows: [['', 'Weight'], ['Type 1', '1.1 - 1.7']], note: 't' }]
+    });
+    expect(r.provisions.map(p => [p.stable_key, p.kind, p.number])).toEqual([['chart:chart', 'section', null], ['chart:bladed-weapons-sword', 'table', null], ['chart:other-restrictions', 'section', null]]);
+    expect(() => structureDocument([page('CHART')], 'c', {}, {}, { headings: { '1:0': { title: 'TABLE' } } })).toThrow(/does not start with/);
+  });
+  const OCR = [page('1. Rules\n● be 13cm tall\nVEE £088 WINE\nDecember-2024: Sadd', {
+    method: 'ocr', ocr_lines: [
+      { text: '1. Rules', conf_mean: 96, conf_min: 95, words: 2, uncertain: [] },
+      { text: '● be 13cm tall', conf_mean: 80, conf_min: 50, words: 4, uncertain: ['13cm'] },
+      { text: 'VEE £088 WINE', conf_mean: 37, conf_min: 16, words: 3, uncertain: ['VEE', 'WINE'], in_picture: 'lettering 10px tall' },
+      { text: 'December-2024: Sadd', conf_mean: 63, conf_min: 33, words: 2, uncertain: ['Sadd'] }
+    ]
+  })];
+  it('sets picture lettering aside as furniture and flags uncertain OCR words', () => {
+    const r = structureDocument(OCR, 'o');
+    expect(r.furniture.map(f => [f.id, f.reason])).toEqual([['1:2', 'OCR: text inside a picture (lettering 10px tall)']]);
+    expect(r.provisions[0].review_note).toMatch(/OCR could not read some words with confidence: 13cm, Sadd/);
+  });
+  it('applies reviewed OCR corrections only where the recorded reading still matches, and reports them', () => {
+    const r = structureDocument(OCR, 'o', {}, { fix: { '1:1': { from: '● be 13cm tall', to: '● be 13 cm tall', reason: 'image' }, '1:3': { from: 'December-2024: Sadd', to: 'December-2024: -add', reason: 'image' } }, insert: [{ after: '1:3', text: 'Document created', reason: 'missed' }] });
+    expect(r.provisions[0].body).toContain('● be 13 cm tall');
+    expect(r.provisions[0].body).toContain('December-2024: -add Document created');
+    expect(r.provisions[0].review_status).toBe('extracted');
+    expect(r.provisions[0].review_note).toMatch(/includes OCR corrections checked against the page image/);
+    expect(r.ocr_corrections.map(c => c.id)).toEqual(['1:1', '1:3', '1:3+1']);
+    expect(() => structureDocument(OCR, 'o', {}, { fix: { '1:1': { from: 'something else', to: 'x', reason: '' } } })).toThrow(/now reads/);
+    expect(() => structureDocument(DOC, 'o', {}, { fix: { '1:1': { from: '1.1 Categories', to: 'x', reason: '' } } })).toThrow(/no such OCR line/);
   });
 });

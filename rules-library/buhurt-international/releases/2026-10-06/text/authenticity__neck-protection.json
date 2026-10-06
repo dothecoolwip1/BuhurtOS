@@ -1,0 +1,2835 @@
+{
+  "inventory_key": "authenticity/neck-protection",
+  "sha256": "8da92f75d7fec05ca4001dba88012f4ec4fc5d1221ca18252247627261d17023",
+  "source_file": "Authenticity/Neck Protections.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 13 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 13,
+    "title": "Neck Protection - GoogleÂ€Docs",
+    "creator": null,
+    "producer": "Microsoft: Print To PDF",
+    "created": "Wed Jan 28 14:23:34 2026 UTC",
+    "modified": "Wed Jan 28 14:23:34 2026 UTC"
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": "\\)\\) BUHURT (7\n\nVER. 26.1\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 75.8,
+      "ocr_lines": [
+        {
+          "text": "\\)\\) BUHURT (7",
+          "conf_mean": 55.9,
+          "conf_min": 0,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            885,
+            181,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 40,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 55.9"
+        },
+        {
+          "text": "VER. 26.1",
+          "conf_mean": 95.5,
+          "conf_min": 94.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            606,
+            1293,
+            990,
+            1363
+          ],
+          "paper": 0,
+          "height": 70
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            605,
+            1469,
+            1724,
+            1664
+          ],
+          "paper": 0,
+          "height": 195
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "Table of contents\n\n1. Implementation 3\n2. Definition 3\n3. General Requirements 3\n4. Recommendations 4\n5. Neck shield 5\n5.1. Historical Sources and Datation 5\n5.2. Specific Requirements 5\n5.3. Examples of Approved Reproductions 6\n5.4. Examples of Denied Reproductions 6\n6. Lobster tail 7\n6.1. Historical Sources and Datation 7\n6.2. Specific Requirements 7\n6.3. Examples of Approved Reproductions 8\n6.4. Examples of Denied Reproductions 8\n7. Gorget 9\n7.1. Historical Sources and Datation 9\n7.2. Specific Requirements 9\n7.3. Examples of Approved Reproductions 10\n8. Concealed neck plates 11\n8.1. Historical Sources and Datation 11\n8.2. Specific Requirements 11\n8.3. Examples of Approved Reproductions 11\n8.4. Examples of Denied Reproductions 12\n9. Changelog 13\n\nNeck Protections V. 26.1 2/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 95,
+      "ocr_lines": [
+        {
+          "text": "Table of contents",
+          "conf_mean": 96.3,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            180,
+            286,
+            621,
+            326
+          ],
+          "paper": 0.58,
+          "height": 39
+        },
+        {
+          "text": "1. Implementation 3",
+          "conf_mean": 96.4,
+          "conf_min": 96.3,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            156,
+            358,
+            2217,
+            400
+          ],
+          "paper": 0.95,
+          "height": 34
+        },
+        {
+          "text": "2. Definition 3",
+          "conf_mean": 96,
+          "conf_min": 95.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            423,
+            2217,
+            457
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements 3",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            488,
+            2217,
+            531
+          ],
+          "paper": 0.93,
+          "height": 34
+        },
+        {
+          "text": "4. Recommendations 4",
+          "conf_mean": 93.3,
+          "conf_min": 86.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            152,
+            554,
+            2217,
+            588
+          ],
+          "paper": 0.92,
+          "height": 33
+        },
+        {
+          "text": "5. Neck shield 5",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            619,
+            2217,
+            653
+          ],
+          "paper": 0.94,
+          "height": 34
+        },
+        {
+          "text": "5.1. Historical Sources and Datation 5",
+          "conf_mean": 95.3,
+          "conf_min": 92.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            684,
+            2217,
+            718
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "5.2. Specific Requirements 5",
+          "conf_mean": 96.1,
+          "conf_min": 95.7,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            749,
+            2217,
+            792
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "5.3. Examples of Approved Reproductions 6",
+          "conf_mean": 96.7,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            814,
+            2217,
+            857
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "5.4. Examples of Denied Reproductions 6",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            879,
+            2217,
+            922
+          ],
+          "paper": 0.89,
+          "height": 34
+        },
+        {
+          "text": "6. Lobster tail 7",
+          "conf_mean": 93.9,
+          "conf_min": 86.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            153,
+            945,
+            2217,
+            978
+          ],
+          "paper": 0.95,
+          "height": 33
+        },
+        {
+          "text": "6.1. Historical Sources and Datation 7",
+          "conf_mean": 94.6,
+          "conf_min": 91.7,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1010,
+            2217,
+            1044
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "6.2. Specific Requirements 7",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1075,
+            2217,
+            1118
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "6.3. Examples of Approved Reproductions 8",
+          "conf_mean": 96.3,
+          "conf_min": 95,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1140,
+            2217,
+            1183
+          ],
+          "paper": 0.88,
+          "height": 42
+        },
+        {
+          "text": "6.4. Examples of Denied Reproductions 8",
+          "conf_mean": 95.7,
+          "conf_min": 92.1,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1206,
+            2217,
+            1248
+          ],
+          "paper": 0.88,
+          "height": 33
+        },
+        {
+          "text": "7. Gorget 9",
+          "conf_mean": 87.7,
+          "conf_min": 77.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1271,
+            2217,
+            1314
+          ],
+          "paper": 0.97,
+          "height": 34
+        },
+        {
+          "text": "7.1. Historical Sources and Datation 9",
+          "conf_mean": 93.9,
+          "conf_min": 89.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1336,
+            2217,
+            1370
+          ],
+          "paper": 0.87,
+          "height": 34
+        },
+        {
+          "text": "7.2. Specific Requirements 9",
+          "conf_mean": 94.1,
+          "conf_min": 88.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1401,
+            2217,
+            1443
+          ],
+          "paper": 0.92,
+          "height": 42
+        },
+        {
+          "text": "7.3. Examples of Approved Reproductions 10",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1466,
+            2217,
+            1508
+          ],
+          "paper": 0.87,
+          "height": 41
+        },
+        {
+          "text": "8. Concealed neck plates 11",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            153,
+            1531,
+            2210,
+            1574
+          ],
+          "paper": 0.93,
+          "height": 33
+        },
+        {
+          "text": "8.1. Historical Sources and Datation 11",
+          "conf_mean": 95.2,
+          "conf_min": 93,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1596,
+            2210,
+            1631
+          ],
+          "paper": 0.87,
+          "height": 33
+        },
+        {
+          "text": "8.2. Specific Requirements 11",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            228,
+            1662,
+            2210,
+            1704
+          ],
+          "paper": 0.91,
+          "height": 42
+        },
+        {
+          "text": "8.3. Examples of Approved Reproductions 11",
+          "conf_mean": 96.4,
+          "conf_min": 96.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1727,
+            2210,
+            1769
+          ],
+          "paper": 0.87,
+          "height": 41
+        },
+        {
+          "text": "8.4. Examples of Denied Reproductions 12",
+          "conf_mean": 96.3,
+          "conf_min": 95.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            228,
+            1792,
+            2216,
+            1835
+          ],
+          "paper": 0.88,
+          "height": 34
+        },
+        {
+          "text": "9. Changelog 13",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            153,
+            1857,
+            2217,
+            1900
+          ],
+          "paper": 0.96,
+          "height": 33
+        },
+        {
+          "text": "Neck Protections V. 26.1 2/13",
+          "conf_mean": 93.8,
+          "conf_min": 88.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 34,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "text": "1. Implementation\n\nThe document has been created and approved by the General Assembly of 09.11.2024.\nThe document and its rules have been implemented since the 2025 season.\n\n2. Definition\n\n“Neck protection’ is the term to describe all historical and adapted protection for neck, shoulders and\nthroat. Those protections are mandatory to ensure the safety of competitors.\n\nNeck protection can be worn upon the Aventail or not, depending on the type of protection.\n\nTypes of Neck protection:\n● Neck shield\nMetal plates that replicate the shape of a heater shield. It is allowed to be worn upon the Aventail.\n\n● Lobster tail\nArticulated metal plates designed as a lobster tail. It is allowed to be worn upon the Aventail.\n\n● Gorget\n\nA gorget is a plate protection that covers the neck, shoulders and throat. It is allowed to be visible\nand worn with the proper armor set.\n\n● Concealed neck plates\nMetal plates directly sewn to the gambeson or the Aventail. They must be hidden under the\nAventail.\n\n3. General Requirements\n\nAll types of Neck protection must respect the following requirements:\n\n● be based on historical sources if they are visible,\n● be concealed if they are not based on historical sources,\n● be firmly attached to prevent any breakage and maintain a high level of protection in any case.\n\nAny metal part of the Neck protection must conform to the “Armors and Weapons Aesthetics and\nDecorations” document.\n\nAny textile or leather part of the Neck protection must conform to the \"Textiles and Leather” document.\n\nNeck Protections V. 26.1 3/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "1. Implementation",
+          "conf_mean": 95.3,
+          "conf_min": 94.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            726,
+            190,
+            1575,
+            278
+          ],
+          "paper": 0.69,
+          "height": 88,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "The document has been created and approved by the General Assembly of 09.11.2024.",
+          "conf_mean": 96.2,
+          "conf_min": 95.8,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            180,
+            370,
+            1955,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "The document and its rules have been implemented since the 2025 season.",
+          "conf_mean": 96.3,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            431,
+            1714,
+            473
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "2. Definition",
+          "conf_mean": 95.9,
+          "conf_min": 95.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            854,
+            596,
+            1441,
+            667
+          ],
+          "paper": 0.62,
+          "height": 71
+        },
+        {
+          "text": "“Neck protection’ is the term to describe all historical and adapted protection for neck, shoulders and",
+          "conf_mean": 94.7,
+          "conf_min": 70.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            777,
+            2298,
+            820
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "throat. Those protections are mandatory to ensure the safety of competitors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.3,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            838,
+            1718,
+            881
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "Neck protection can be worn upon the Aventail or not, depending on the type of protection.",
+          "conf_mean": 95.9,
+          "conf_min": 92.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            183,
+            911,
+            2008,
+            954
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Types of Neck protection:",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            180,
+            1058,
+            692,
+            1101
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "● Neck shield",
+          "conf_mean": 95,
+          "conf_min": 92.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            224,
+            1131,
+            546,
+            1165
+          ],
+          "paper": 0.62,
+          "height": 34,
+          "raw": "e Neck shield"
+        },
+        {
+          "text": "Metal plates that replicate the shape of a heater shield. It is allowed to be worn upon the Aventail.",
+          "conf_mean": 96.1,
+          "conf_min": 91.3,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            304,
+            1204,
+            2267,
+            1247
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "● Lobster tail",
+          "conf_mean": 94.7,
+          "conf_min": 92.8,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            224,
+            1325,
+            539,
+            1359
+          ],
+          "paper": 0.63,
+          "height": 34,
+          "raw": "e Lobster tail"
+        },
+        {
+          "text": "Articulated metal plates designed as a lobster tail. It is allowed to be worn upon the Aventail.",
+          "conf_mean": 95.6,
+          "conf_min": 90.3,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            301,
+            1399,
+            2163,
+            1441
+          ],
+          "paper": 0.72,
+          "height": 33
+        },
+        {
+          "text": "● Gorget",
+          "conf_mean": 89.4,
+          "conf_min": 89.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            224,
+            1519,
+            444,
+            1562
+          ],
+          "paper": 0.71,
+          "height": 43,
+          "raw": "e Gorget"
+        },
+        {
+          "text": "A gorget is a plate protection that covers the neck, shoulders and throat. It is allowed to be visible",
+          "conf_mean": 95.8,
+          "conf_min": 91.6,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            301,
+            1593,
+            2299,
+            1635
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "and worn with the proper armor set.",
+          "conf_mean": 96.5,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            302,
+            1654,
+            1020,
+            1696
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● Concealed neck plates",
+          "conf_mean": 95.3,
+          "conf_min": 92.9,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            1775,
+            787,
+            1817
+          ],
+          "paper": 0.68,
+          "height": 33,
+          "raw": "e Concealed neck plates"
+        },
+        {
+          "text": "Metal plates directly sewn to the gambeson or the Aventail. They must be hidden under the",
+          "conf_mean": 95.6,
+          "conf_min": 92,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            304,
+            1835,
+            2301,
+            1878
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "Aventail.",
+          "conf_mean": 90.6,
+          "conf_min": 90.6,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            301,
+            1896,
+            472,
+            1929
+          ],
+          "paper": 0.63,
+          "height": 33
+        },
+        {
+          "text": "3. General Requirements",
+          "conf_mean": 95.8,
+          "conf_min": 95.5,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            565,
+            2061,
+            1734,
+            2149
+          ],
+          "paper": 0.68,
+          "height": 70
+        },
+        {
+          "text": "All types of Neck protection must respect the following requirements:",
+          "conf_mean": 96.4,
+          "conf_min": 95.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            179,
+            2242,
+            1565,
+            2285
+          ],
+          "paper": 0.73,
+          "height": 42
+        },
+        {
+          "text": "● be based on historical sources if they are visible,",
+          "conf_mean": 95.6,
+          "conf_min": 93,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            2315,
+            1276,
+            2358
+          ],
+          "paper": 0.76,
+          "height": 33,
+          "raw": "e be based on historical sources if they are visible,"
+        },
+        {
+          "text": "● be concealed if they are not based on historical sources,",
+          "conf_mean": 79.4,
+          "conf_min": 7,
+          "words": 11,
+          "uncertain": [
+            "concealed"
+          ],
+          "box": [
+            224,
+            2376,
+            1434,
+            2419
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be concealed if they are not based on historical sources,"
+        },
+        {
+          "text": "● be firmly attached to prevent any breakage and maintain a high level of protection in any case.",
+          "conf_mean": 89.5,
+          "conf_min": 33.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            224,
+            2436,
+            2200,
+            2479
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e be firmly attached to prevent any breakage and maintain a high level of protection in any case."
+        },
+        {
+          "text": "Any metal part of the Neck protection must conform to the “Armors and Weapons Aesthetics and",
+          "conf_mean": 95.6,
+          "conf_min": 90.6,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            179,
+            2509,
+            2304,
+            2552
+          ],
+          "paper": 0.76,
+          "height": 33
+        },
+        {
+          "text": "Decorations” document.",
+          "conf_mean": 96.6,
+          "conf_min": 96.4,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            181,
+            2570,
+            661,
+            2604
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "Any textile or leather part of the Neck protection must conform to the \"Textiles and Leather” document.",
+          "conf_mean": 95.4,
+          "conf_min": 82.9,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            2643,
+            2242,
+            2686
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Neck Protections V. 26.1 3/13",
+          "conf_mean": 93.8,
+          "conf_min": 88.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 34,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "text": "4. Recommendations\n\nIt is recommended to wear a Neck protection sewn to your gambeson. This protection covers your neck\nno matter the position of your helmet (bent or twisted during wrestling).\n\nNeck protection relying on your Aventail can be damaged during fights and may be removed if not firmly\nattached to the Aventail. It is recommended to ensure those Neck protections are well attached and will\nnot be removed easily.\n\nNeck Protections V. 26.1 4/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.1,
+      "ocr_lines": [
+        {
+          "text": "4. Recommendations",
+          "conf_mean": 95.2,
+          "conf_min": 95.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            645,
+            190,
+            1651,
+            260
+          ],
+          "paper": 0.6,
+          "height": 70,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "It is recommended to wear a Neck protection sewn to your gambeson. This protection covers your neck",
+          "conf_mean": 95.9,
+          "conf_min": 92,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            184,
+            371,
+            2303,
+            413
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "no matter the position of your helmet (bent or twisted during wrestling).",
+          "conf_mean": 96.2,
+          "conf_min": 95,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            431,
+            1606,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "Neck protection relying on your Aventail can be damaged during fights and may be removed if not firmly",
+          "conf_mean": 95.9,
+          "conf_min": 91.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            183,
+            504,
+            2300,
+            547
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "attached to the Aventail. It is recommended to ensure those Neck protections are well attached and will",
+          "conf_mean": 95.8,
+          "conf_min": 91.2,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            181,
+            565,
+            2298,
+            607
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "not be removed easily.",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            182,
+            625,
+            633,
+            668
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "Neck Protections V. 26.1 4/13",
+          "conf_mean": 93.8,
+          "conf_min": 88.9,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 34,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "text": "5. Neck shield\n\n5.1. Historical Sources and Datation\n\nMiniatures sometimes display a small shield attached to the Aventail, mainly during the 14th century.\nThose shields were supposed to show the heraldry of the wearer. Thus, as Neck protection is mandatory\nin our sport, such neck shields are allowed to be worn on the Aventail.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\nf. ua ry\n\nBook of Hours - 1320 - The Netherlands\n\n5.2. Specific Requirements\n\nNeck shield:\n\n● must conform to the General Requirements (see Section 3 above),\n\n● can be worn upon the Aventail. It must be firmly attached to the Aventail,\n\n● must have a shape inspired by the heater shield,\n\n● cannot exceed 15x17 cm,\n\n● can be painted,\n\n● if painted, must conform to the “Armors and Weapons Aesthetics and Decorations” document.\n\nNeck Protections v. 26.1 5/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92,
+      "ocr_lines": [
+        {
+          "text": "5. Neck shield",
+          "conf_mean": 96.2,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            810,
+            190,
+            1488,
+            260
+          ],
+          "paper": 0.61,
+          "height": 70,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "5.1. Historical Sources and Datation",
+          "conf_mean": 95,
+          "conf_min": 92.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            367,
+            1169,
+            408
+          ],
+          "paper": 0.61,
+          "height": 40
+        },
+        {
+          "text": "Miniatures sometimes display a small shield attached to the Aventail, mainly during the 14th century.",
+          "conf_mean": 95.9,
+          "conf_min": 92.7,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            183,
+            510,
+            2299,
+            553
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Those shields were supposed to show the heraldry of the wearer. Thus, as Neck protection is mandatory",
+          "conf_mean": 96.1,
+          "conf_min": 95,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            180,
+            571,
+            2300,
+            614
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "in our sport, such neck shields are allowed to be worn on the Aventail.",
+          "conf_mean": 95.7,
+          "conf_min": 92.3,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            182,
+            632,
+            1593,
+            674
+          ],
+          "paper": 0.73,
+          "height": 33
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            734,
+            1772,
+            777
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "f. ua ry",
+          "conf_mean": 27,
+          "conf_min": 11.7,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            757,
+            1929,
+            967,
+            2020
+          ],
+          "paper": 0.13,
+          "height": 65,
+          "in_picture": "on a coloured or photographic background (paper 13%), confidence 27.0"
+        },
+        {
+          "text": "Book of Hours - 1320 - The Netherlands",
+          "conf_mean": 94.7,
+          "conf_min": 93,
+          "words": 8,
+          "uncertain": [],
+          "box": [
+            782,
+            2047,
+            1371,
+            2072
+          ],
+          "paper": 0.68,
+          "height": 25
+        },
+        {
+          "text": "5.2. Specific Requirements",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2176,
+            935,
+            2227
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Neck shield:",
+          "conf_mean": 96.7,
+          "conf_min": 96.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            183,
+            2319,
+            425,
+            2353
+          ],
+          "paper": 0.62,
+          "height": 34
+        },
+        {
+          "text": "● must conform to the General Requirements (see Section 3 above),",
+          "conf_mean": 94.4,
+          "conf_min": 87.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            2392,
+            1640,
+            2436
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e must conform to the General Requirements (see Section 3 above),"
+        },
+        {
+          "text": "● can be worn upon the Aventail. It must be firmly attached to the Aventail,",
+          "conf_mean": 92.1,
+          "conf_min": 69.4,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            224,
+            2453,
+            1759,
+            2496
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e can be worn upon the Aventail. It must be firmly attached to the Aventail,"
+        },
+        {
+          "text": "● must have a shape inspired by the heater shield,",
+          "conf_mean": 94.2,
+          "conf_min": 89,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            2514,
+            1276,
+            2557
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e must have a shape inspired by the heater shield,"
+        },
+        {
+          "text": "● cannot exceed 15x17 cm,",
+          "conf_mean": 95.2,
+          "conf_min": 91.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            2574,
+            813,
+            2614
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e cannot exceed 15x17 cm,"
+        },
+        {
+          "text": "● can be painted,",
+          "conf_mean": 91.5,
+          "conf_min": 81.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            2635,
+            604,
+            2677
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e can be painted,"
+        },
+        {
+          "text": "● if painted, must conform to the “Armors and Weapons Aesthetics and Decorations” document.",
+          "conf_mean": 94.8,
+          "conf_min": 92,
+          "words": 14,
+          "uncertain": [],
+          "box": [
+            224,
+            2691,
+            2190,
+            2742
+          ],
+          "paper": 0.79,
+          "height": 34,
+          "raw": "e if painted, must conform to the “Armors and Weapons Aesthetics and Decorations” document."
+        },
+        {
+          "text": "Neck Protections v. 26.1 5/13",
+          "conf_mean": 77.2,
+          "conf_min": 51,
+          "words": 5,
+          "uncertain": [
+            "Neck"
+          ],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "text": "5.3. Examples of Approved Reproductions\n\n5.4. Examples of Denied Reproductions\n\nOversized neck shield, it risks being ripped off during wrestling.\n\nRound shape is not allowed, it must be concealed under the Aventail.\n\nPictures from The Medieval Things ©\n\nNeck Protections v. 26.1 6/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.3,
+      "ocr_lines": [
+        {
+          "text": "5.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.2,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            183,
+            1335,
+            234
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "5.4. Examples of Denied Reproductions",
+          "conf_mean": 96,
+          "conf_min": 93.6,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1404,
+            1263,
+            1455
+          ],
+          "paper": 0.68,
+          "height": 41
+        },
+        {
+          "text": "Oversized neck shield, it risks being ripped off during wrestling.",
+          "conf_mean": 96.1,
+          "conf_min": 95.3,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            545,
+            1547,
+            1935,
+            1584
+          ],
+          "paper": 0.63,
+          "height": 36
+        },
+        {
+          "text": "Round shape is not allowed, it must be concealed under the Aventail.",
+          "conf_mean": 95.4,
+          "conf_min": 92.3,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            401,
+            2278,
+            1903,
+            2314
+          ],
+          "paper": 0.6,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            873,
+            3067,
+            1422,
+            3098
+          ],
+          "paper": 0.72,
+          "height": 25
+        },
+        {
+          "text": "Neck Protections v. 26.1 6/13",
+          "conf_mean": 77.5,
+          "conf_min": 51,
+          "words": 5,
+          "uncertain": [
+            "Neck"
+          ],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "text": "6. Lobster tail\n\n6.1. Historical Sources and Datation\n\nLobster tail is a lobster-shape Neck protection made of articulated metal plates. It is depicted in\nmanuscript and art from the late 14th century to the 15th century.\n\nThey are Approved for 14th century, Transitional and 15th century armors.\n\n‘Le Livre et le vraye hystoire du bon roy Alixandre”\n- 1400/1420 - France\n\nAltar of St James, Pistoia -\n1380/1400 - Italy\n\nPaduan Bible - 1400 - Italy\n\n6.2. Specific Requirements\n\nLobster tail:\n\n● must conform to the General Requirements (see Section 3 above),\n\n● can be worn upon the Aventail. It must be firmly attached to the Aventail,\n● cannot be painted if they are worn upon the Aventail,\n\n● must be articulated and consist of at least 3 parts,\n\n● cannot exceed 15 x 25 cm.\n\nNeck Protections v. 26.1 7/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93,
+      "ocr_lines": [
+        {
+          "text": "6. Lobster tail",
+          "conf_mean": 96.3,
+          "conf_min": 96.2,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            818,
+            190,
+            1479,
+            260
+          ],
+          "paper": 0.62,
+          "height": 70,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "6.1. Historical Sources and Datation",
+          "conf_mean": 94.7,
+          "conf_min": 91.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            367,
+            1169,
+            408
+          ],
+          "paper": 0.61,
+          "height": 40
+        },
+        {
+          "text": "Lobster tail is a lobster-shape Neck protection made of articulated metal plates. It is depicted in",
+          "conf_mean": 95.7,
+          "conf_min": 91,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            182,
+            510,
+            2298,
+            553
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "manuscript and art from the late 14th century to the 15th century.",
+          "conf_mean": 96.5,
+          "conf_min": 96,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            571,
+            1489,
+            614
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 14th century, Transitional and 15th century armors.",
+          "conf_mean": 96.2,
+          "conf_min": 95.7,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            673,
+            1772,
+            716
+          ],
+          "paper": 0.69,
+          "height": 34
+        },
+        {
+          "text": "‘Le Livre et le vraye hystoire du bon roy Alixandre”",
+          "conf_mean": 92.9,
+          "conf_min": 78.4,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            960,
+            1723,
+            1703,
+            1754
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "- 1400/1420 - France",
+          "conf_mean": 93.5,
+          "conf_min": 92.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1115,
+            1779,
+            1424,
+            1804
+          ],
+          "paper": 0.69,
+          "height": 25
+        },
+        {
+          "text": "Altar of St James, Pistoia -",
+          "conf_mean": 95.4,
+          "conf_min": 93.2,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            1782,
+            1847,
+            2175,
+            1877
+          ],
+          "paper": 0.72,
+          "height": 24
+        },
+        {
+          "text": "1380/1400 - Italy",
+          "conf_mean": 94.3,
+          "conf_min": 93,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1843,
+            1904,
+            2088,
+            1944
+          ],
+          "paper": 0.78,
+          "height": 31
+        },
+        {
+          "text": "Paduan Bible - 1400 - Italy",
+          "conf_mean": 93,
+          "conf_min": 91.4,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            310,
+            2039,
+            703,
+            2070
+          ],
+          "paper": 0.73,
+          "height": 25
+        },
+        {
+          "text": "6.2. Specific Requirements",
+          "conf_mean": 96.1,
+          "conf_min": 95.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2180,
+            935,
+            2231
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "Lobster tail:",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            2323,
+            412,
+            2357
+          ],
+          "paper": 0.65,
+          "height": 34
+        },
+        {
+          "text": "● must conform to the General Requirements (see Section 3 above),",
+          "conf_mean": 95.6,
+          "conf_min": 92.4,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            2396,
+            1640,
+            2440
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e must conform to the General Requirements (see Section 3 above),"
+        },
+        {
+          "text": "● can be worn upon the Aventail. It must be firmly attached to the Aventail,",
+          "conf_mean": 93.3,
+          "conf_min": 85.6,
+          "words": 15,
+          "uncertain": [],
+          "box": [
+            224,
+            2457,
+            1759,
+            2500
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e can be worn upon the Aventail. It must be firmly attached to the Aventail,"
+        },
+        {
+          "text": "● cannot be painted if they are worn upon the Aventail,",
+          "conf_mean": 94.6,
+          "conf_min": 91.5,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            2518,
+            1360,
+            2561
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e cannot be painted if they are worn upon the Aventail,"
+        },
+        {
+          "text": "● must be articulated and consist of at least 3 parts,",
+          "conf_mean": 93.1,
+          "conf_min": 79.8,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            224,
+            2578,
+            1299,
+            2621
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e must be articulated and consist of at least 3 parts,"
+        },
+        {
+          "text": "● cannot exceed 15 x 25 cm.",
+          "conf_mean": 92.6,
+          "conf_min": 87.4,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            2639,
+            839,
+            2673
+          ],
+          "paper": 0.71,
+          "height": 34,
+          "raw": "e cannot exceed 15 x 25 cm."
+        },
+        {
+          "text": "Neck Protections v. 26.1 7/13",
+          "conf_mean": 77.6,
+          "conf_min": 51,
+          "words": 5,
+          "uncertain": [
+            "Neck"
+          ],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "text": "6.3. Examples of Approved Reproductions\n\nPicture from Gohurt ©\n\n6.4. Examples of Denied Reproductions\n\nOversized\n\n\")\n\n>\n- ae ta\n\n™ _ an a\n(4 ” (MB\n\nPicture from The Medieval Things ©\n\nNeck Protections V. 26.7 8/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 73.5,
+      "ocr_lines": [
+        {
+          "text": "6.3. Examples of Approved Reproductions",
+          "conf_mean": 96.5,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            183,
+            1335,
+            234
+          ],
+          "paper": 0.66,
+          "height": 50
+        },
+        {
+          "text": "Picture from Gohurt ©",
+          "conf_mean": 94.6,
+          "conf_min": 92.3,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            1080,
+            1111,
+            1405,
+            1137
+          ],
+          "paper": 0.66,
+          "height": 26
+        },
+        {
+          "text": "6.4. Examples of Denied Reproductions",
+          "conf_mean": 96.6,
+          "conf_min": 96.3,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1318,
+            1263,
+            1369
+          ],
+          "paper": 0.68,
+          "height": 40
+        },
+        {
+          "text": "Oversized",
+          "conf_mean": 96.2,
+          "conf_min": 96.2,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            1133,
+            1461,
+            1348,
+            1495
+          ],
+          "paper": 0.53,
+          "height": 34
+        },
+        {
+          "text": "\")",
+          "conf_mean": 33.7,
+          "conf_min": 33.7,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            900,
+            1542,
+            980,
+            1709
+          ],
+          "paper": 0.37,
+          "height": 167,
+          "dropped": [
+            "“9"
+          ],
+          "in_picture": "on a coloured or photographic background (paper 37%), confidence 33.7"
+        },
+        {
+          "text": ">",
+          "conf_mean": 83.1,
+          "conf_min": 83.1,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            905,
+            1712,
+            913,
+            1714
+          ],
+          "paper": 0,
+          "height": 2,
+          "dropped": [
+            "<",
+            "«"
+          ],
+          "in_picture": "lettering 2px tall, smaller than any printed text"
+        },
+        {
+          "text": "- ae ta",
+          "conf_mean": 38.5,
+          "conf_min": 35.6,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            890,
+            1788,
+            1610,
+            1812
+          ],
+          "paper": 0.02,
+          "height": 12,
+          "in_picture": "lettering 12px tall, smaller than any printed text"
+        },
+        {
+          "text": "™ _ an a",
+          "conf_mean": 48.4,
+          "conf_min": 35.4,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            889,
+            1826,
+            1631,
+            1919
+          ],
+          "paper": 0.04,
+          "height": 55,
+          "in_picture": "on a coloured or photographic background (paper 4%), confidence 48.4"
+        },
+        {
+          "text": "(4 ” (MB",
+          "conf_mean": 56.3,
+          "conf_min": 30.5,
+          "words": 3,
+          "uncertain": [
+            "(MB"
+          ],
+          "box": [
+            801,
+            1878,
+            1659,
+            2032
+          ],
+          "paper": 0.02,
+          "height": 74,
+          "dropped": [
+            "he",
+            "MCA",
+            "ECLA"
+          ],
+          "in_picture": "on a coloured or photographic background (paper 2%), confidence 56.3"
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            977,
+            2137,
+            1509,
+            2169
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Neck Protections V. 26.7 8/13",
+          "conf_mean": 88.1,
+          "conf_min": 64.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 35,
+          "dropped": [
+            "|"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "text": "7. Gorget\n\n7.1. Historical Sources and Datation\n\nA gorget was a type of Neck protection worn over the neck, clavicles, and shoulders. It evolved from\nearlier forms of neck defenses, which often relied on chainmail or padded fabrics like the Aventail.\n\nBy the late 15th century, as plate armor became more refined, the gorget emerged as a key piece of\nprotection for the throat and neck, made primarily from steel plates. Gorgets were most common in the\n16th century but evidence exists of gorgets and plate collars.\n\nThey are Approved for 15th century armors.\n\nThey are Denied for 14th century and Transitional armors.\n\nWade Allen collection - 1510 - Italy\n\n7.2. Specific Requirements\n\nGorget must:\n\n● conform to the General Requirements (see Section 3 above),\n\n● be constructed from plates,\n\n● cover the clavicles and back of the neck. The throat should have a low profile, be articulated or\notherwise fitted in such a way that it doesn’t choke the wearer when their head is tilted forward.\n\n● be worn with appropriate armor styles and match historical sources in function and appearance.\n\nNeck Protections v. 26.1 9/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.8,
+      "ocr_lines": [
+        {
+          "text": "7. Gorget",
+          "conf_mean": 92.7,
+          "conf_min": 92.2,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            919,
+            189,
+            1383,
+            279
+          ],
+          "paper": 0.72,
+          "height": 90,
+          "dropped": [
+            "7"
+          ]
+        },
+        {
+          "text": "7.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 92.4,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            367,
+            1169,
+            407
+          ],
+          "paper": 0.61,
+          "height": 39
+        },
+        {
+          "text": "A gorget was a type of Neck protection worn over the neck, clavicles, and shoulders. It evolved from",
+          "conf_mean": 94.8,
+          "conf_min": 90,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            179,
+            506,
+            2300,
+            557
+          ],
+          "paper": 0.8,
+          "height": 34
+        },
+        {
+          "text": "earlier forms of neck defenses, which often relied on chainmail or padded fabrics like the Aventail.",
+          "conf_mean": 95.7,
+          "conf_min": 90.2,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            181,
+            571,
+            2153,
+            613
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "By the late 15th century, as plate armor became more refined, the gorget emerged as a key piece of",
+          "conf_mean": 96.1,
+          "conf_min": 92.5,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            182,
+            673,
+            2304,
+            716
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "protection for the throat and neck, made primarily from steel plates. Gorgets were most common in the",
+          "conf_mean": 96,
+          "conf_min": 93.1,
+          "words": 17,
+          "uncertain": [],
+          "box": [
+            182,
+            734,
+            2300,
+            777
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "16th century but evidence exists of gorgets and plate collars.",
+          "conf_mean": 95.5,
+          "conf_min": 91.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            184,
+            794,
+            1406,
+            837
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "They are Approved for 15th century armors.",
+          "conf_mean": 96.6,
+          "conf_min": 96.1,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            180,
+            896,
+            1115,
+            939
+          ],
+          "paper": 0.7,
+          "height": 34
+        },
+        {
+          "text": "They are Denied for 14th century and Transitional armors.",
+          "conf_mean": 96,
+          "conf_min": 95.1,
+          "words": 9,
+          "uncertain": [],
+          "box": [
+            180,
+            999,
+            1413,
+            1041
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "Wade Allen collection - 1510 - Italy",
+          "conf_mean": 94.3,
+          "conf_min": 92.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            989,
+            1956,
+            1499,
+            1987
+          ],
+          "paper": 0.73,
+          "height": 24
+        },
+        {
+          "text": "7.2. Specific Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            2130,
+            935,
+            2181
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "Gorget must:",
+          "conf_mean": 94.3,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            2274,
+            440,
+            2316
+          ],
+          "paper": 0.71,
+          "height": 42
+        },
+        {
+          "text": "● conform to the General Requirements (see Section 3 above),",
+          "conf_mean": 95.6,
+          "conf_min": 92.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            2347,
+            1541,
+            2390
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e conform to the General Requirements (see Section 3 above),"
+        },
+        {
+          "text": "● be constructed from plates,",
+          "conf_mean": 57.2,
+          "conf_min": 0,
+          "words": 5,
+          "uncertain": [
+            "constructed"
+          ],
+          "box": [
+            224,
+            2407,
+            843,
+            2450
+          ],
+          "paper": 0.76,
+          "height": 34,
+          "raw": "e be constructed from plates,"
+        },
+        {
+          "text": "● cover the clavicles and back of the neck. The throat should have a low profile, be articulated or",
+          "conf_mean": 95.8,
+          "conf_min": 92.2,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            224,
+            2468,
+            2303,
+            2510
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e cover the clavicles and back of the neck. The throat should have a low profile, be articulated or"
+        },
+        {
+          "text": "otherwise fitted in such a way that it doesn’t choke the wearer when their head is tilted forward.",
+          "conf_mean": 96.4,
+          "conf_min": 95.8,
+          "words": 18,
+          "uncertain": [],
+          "box": [
+            296,
+            2528,
+            2211,
+            2571
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "● be worn with appropriate armor styles and match historical sources in function and appearance.",
+          "conf_mean": 85.8,
+          "conf_min": 19.1,
+          "words": 15,
+          "uncertain": [
+            "worn"
+          ],
+          "box": [
+            224,
+            2589,
+            2226,
+            2632
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e be worn with appropriate armor styles and match historical sources in function and appearance."
+        },
+        {
+          "text": "Neck Protections v. 26.1 9/13",
+          "conf_mean": 77.5,
+          "conf_min": 51,
+          "words": 5,
+          "uncertain": [
+            "Neck"
+          ],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "text": "7.3. Examples of Reproductions\n\nPicture from The Medieval Things ©\n\nNeck Protections V. 26.1 10/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 94.6,
+      "ocr_lines": [
+        {
+          "text": "7.3. Examples of Reproductions",
+          "conf_mean": 95.9,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            238,
+            184,
+            1335,
+            234
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "Picture from The Medieval Things ©",
+          "conf_mean": 96.7,
+          "conf_min": 96.3,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            977,
+            1664,
+            1508,
+            1696
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Neck Protections V. 26.1 10/13",
+          "conf_mean": 90.9,
+          "conf_min": 78.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 34
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "text": "8. Concealed neck plates\n\n8.1. Historical Sources and Datation\n\nThere are no historical sources nor datation for such armor elements.\n\nNevertheless, it is Approved to reinforce your neck armor with concealed plates.\n\n8.2. Specific Requirements\n\nConcealed neck plates must:\n\n● conform to the general requirements (see Section 3 above).\n● be made of metal.\n\n● be hidden under the Aventail.\n\n● be firmly attached.\n\n● be smooth with no sharp edges.\n\nIt is recommended to paint concealed neck plates with anti rust paint. Such paint must be a neutral color\n(grey, black) and do not interfere with the aesthetic of the armor.\n\n8.3. Examples of Approved Reproductions\n\nyr Pictures from Medieval Extreme ©\n\nNeck Protections v. 26.1 11/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 92.4,
+      "ocr_lines": [
+        {
+          "text": "8. Concealed neck plates",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            560,
+            189,
+            1739,
+            278
+          ],
+          "paper": 0.7,
+          "height": 71,
+          "dropped": [
+            "_"
+          ]
+        },
+        {
+          "text": "8.1. Historical Sources and Datation",
+          "conf_mean": 94.8,
+          "conf_min": 92.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            367,
+            1169,
+            407
+          ],
+          "paper": 0.6,
+          "height": 39
+        },
+        {
+          "text": "There are no historical sources nor datation for such armor elements.",
+          "conf_mean": 95.3,
+          "conf_min": 92.2,
+          "words": 11,
+          "uncertain": [],
+          "box": [
+            180,
+            510,
+            1578,
+            544
+          ],
+          "paper": 0.68,
+          "height": 33
+        },
+        {
+          "text": "Nevertheless, it is Approved to reinforce your neck armor with concealed plates.",
+          "conf_mean": 96.3,
+          "conf_min": 96,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            183,
+            613,
+            1813,
+            656
+          ],
+          "paper": 0.73,
+          "height": 34
+        },
+        {
+          "text": "8.2. Specific Requirements",
+          "conf_mean": 96.2,
+          "conf_min": 96.1,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            238,
+            806,
+            935,
+            856
+          ],
+          "paper": 0.66,
+          "height": 49
+        },
+        {
+          "text": "Concealed neck plates must:",
+          "conf_mean": 96.3,
+          "conf_min": 96.1,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            181,
+            949,
+            763,
+            991
+          ],
+          "paper": 0.72,
+          "height": 34
+        },
+        {
+          "text": "● conform to the general requirements (see Section 3 above).",
+          "conf_mean": 95.4,
+          "conf_min": 92.9,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            224,
+            1022,
+            1501,
+            1065
+          ],
+          "paper": 0.75,
+          "height": 34,
+          "raw": "e conform to the general requirements (see Section 3 above)."
+        },
+        {
+          "text": "● be made of metal.",
+          "conf_mean": 84.5,
+          "conf_min": 71,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            224,
+            1082,
+            657,
+            1117
+          ],
+          "paper": 0.72,
+          "height": 34,
+          "raw": "e be made of metal."
+        },
+        {
+          "text": "● be hidden under the Aventail.",
+          "conf_mean": 93.2,
+          "conf_min": 90,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            224,
+            1144,
+            886,
+            1177
+          ],
+          "paper": 0.69,
+          "height": 33,
+          "raw": "e be hidden under the Aventail."
+        },
+        {
+          "text": "● be firmly attached.",
+          "conf_mean": 88.2,
+          "conf_min": 68.8,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            224,
+            1204,
+            666,
+            1247
+          ],
+          "paper": 0.75,
+          "height": 33,
+          "raw": "e be firmly attached."
+        },
+        {
+          "text": "● be smooth with no sharp edges.",
+          "conf_mean": 94.6,
+          "conf_min": 91.9,
+          "words": 7,
+          "uncertain": [],
+          "box": [
+            224,
+            1265,
+            940,
+            1307
+          ],
+          "paper": 0.74,
+          "height": 33,
+          "raw": "e be smooth with no sharp edges."
+        },
+        {
+          "text": "It is recommended to paint concealed neck plates with anti rust paint. Such paint must be a neutral color",
+          "conf_mean": 96.1,
+          "conf_min": 93.1,
+          "words": 19,
+          "uncertain": [],
+          "box": [
+            184,
+            1337,
+            2303,
+            1380
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "(grey, black) and do not interfere with the aesthetic of the armor.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            182,
+            1398,
+            1470,
+            1441
+          ],
+          "paper": 0.74,
+          "height": 33
+        },
+        {
+          "text": "8.3. Examples of Approved Reproductions",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            1570,
+            1335,
+            1621
+          ],
+          "paper": 0.67,
+          "height": 50
+        },
+        {
+          "text": "yr Pictures from Medieval Extreme ©",
+          "conf_mean": 84.2,
+          "conf_min": 23.6,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            698,
+            3079,
+            1495,
+            3160
+          ],
+          "paper": 0.83,
+          "height": 25
+        },
+        {
+          "text": "Neck Protections v. 26.1 11/13",
+          "conf_mean": 74.1,
+          "conf_min": 51,
+          "words": 5,
+          "uncertain": [
+            "Neck"
+          ],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.95,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "text": "8.4. Examples of Denied Reproductions\n\nMetal plates visible\n\nPictures from The Medieval Things ©\n\nNeck Protections v. 26.1 12/13",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 88.3,
+      "ocr_lines": [
+        {
+          "text": "8.4. Examples of Denied Reproductions",
+          "conf_mean": 96.4,
+          "conf_min": 96.1,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            238,
+            286,
+            1263,
+            336
+          ],
+          "paper": 0.66,
+          "height": 40
+        },
+        {
+          "text": "Metal plates visible",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 3,
+          "uncertain": [],
+          "box": [
+            1036,
+            429,
+            1448,
+            471
+          ],
+          "paper": 0.52,
+          "height": 34
+        },
+        {
+          "text": "Pictures from The Medieval Things ©",
+          "conf_mean": 96.2,
+          "conf_min": 95.9,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            968,
+            1542,
+            1517,
+            1573
+          ],
+          "paper": 0.71,
+          "height": 25
+        },
+        {
+          "text": "Neck Protections v. 26.1 12/13",
+          "conf_mean": 77.4,
+          "conf_min": 51,
+          "words": 5,
+          "uncertain": [
+            "Neck"
+          ],
+          "box": [
+            233,
+            3394,
+            2355,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 35,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "text": "9. Changelog\n\nBelow, we will keep track of all the changes made over the lifetime of this document. This way, all our\nmembers can see how the documents are changing over time.\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\n\nAdd: “1. Implementation” (and subsequent modification of all Title numbers in the document)\nClarification:\n\n- Split of “1. Definition and general requirements” in “2. Definition and description” and “3. General\nRequirements”. This split doesn’t have an impact on the content of the rules.\n\nFebruary-2025 (V2025.02)\n- formatting: overall grammar and formatting\n- add: 4.1 They are denied for 14th century and Transitional armors\n\nDecember-2024: Add\nDocument has been created\n\nNeck Protections v. 26.1 13/13",
+      "method": "ocr",
+      "figures": false,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 93.2,
+      "ocr_lines": [
+        {
+          "text": "9. Changelog",
+          "conf_mean": 94.6,
+          "conf_min": 92.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            828,
+            189,
+            1468,
+            279
+          ],
+          "paper": 0.69,
+          "height": 90,
+          "dropped": [
+            "="
+          ]
+        },
+        {
+          "text": "Below, we will keep track of all the changes made over the lifetime of this document. This way, all our",
+          "conf_mean": 96.5,
+          "conf_min": 95.6,
+          "words": 20,
+          "uncertain": [],
+          "box": [
+            223,
+            370,
+            2263,
+            413
+          ],
+          "paper": 0.75,
+          "height": 33
+        },
+        {
+          "text": "members can see how the documents are changing over time.",
+          "conf_mean": 96.3,
+          "conf_min": 95.2,
+          "words": 10,
+          "uncertain": [],
+          "box": [
+            611,
+            431,
+            1870,
+            474
+          ],
+          "paper": 0.74,
+          "height": 34
+        },
+        {
+          "text": "January - 2026 (V. 26.1)",
+          "conf_mean": 93.6,
+          "conf_min": 92.7,
+          "words": 5,
+          "uncertain": [],
+          "box": [
+            180,
+            576,
+            679,
+            619
+          ],
+          "paper": 0.64,
+          "height": 43
+        },
+        {
+          "text": "Formatting redone for consistency and readability. Except points listed below, no content changes.",
+          "conf_mean": 96.4,
+          "conf_min": 95.7,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            627,
+            2163,
+            670
+          ],
+          "paper": 0,
+          "height": 40
+        },
+        {
+          "text": "Add: “1. Implementation” (and subsequent modification of all Title numbers in the document)",
+          "conf_mean": 93.2,
+          "conf_min": 75.3,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            179,
+            678,
+            2042,
+            731
+          ],
+          "paper": 0.75,
+          "height": 34
+        },
+        {
+          "text": "Clarification:",
+          "conf_mean": 96.4,
+          "conf_min": 96.4,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            181,
+            748,
+            427,
+            782
+          ],
+          "paper": 0,
+          "height": 34
+        },
+        {
+          "text": "- Split of “1. Definition and general requirements” in “2. Definition and description” and “3. General",
+          "conf_mean": 95.2,
+          "conf_min": 86.4,
+          "words": 16,
+          "uncertain": [],
+          "box": [
+            180,
+            809,
+            2274,
+            852
+          ],
+          "paper": 0.76,
+          "height": 34
+        },
+        {
+          "text": "Requirements”. This split doesn’t have an impact on the content of the rules.",
+          "conf_mean": 95.8,
+          "conf_min": 88.3,
+          "words": 13,
+          "uncertain": [],
+          "box": [
+            183,
+            869,
+            1823,
+            912
+          ],
+          "paper": 0.7,
+          "height": 33
+        },
+        {
+          "text": "February-2025 (V2025.02)",
+          "conf_mean": 92.1,
+          "conf_min": 91.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            182,
+            974,
+            729,
+            1017
+          ],
+          "paper": 0.62,
+          "height": 43
+        },
+        {
+          "text": "- formatting: overall grammar and formatting",
+          "conf_mean": 95.4,
+          "conf_min": 92.8,
+          "words": 6,
+          "uncertain": [],
+          "box": [
+            180,
+            1022,
+            1069,
+            1065
+          ],
+          "paper": 0.54,
+          "height": 34
+        },
+        {
+          "text": "- add: 4.1 They are denied for 14th century and Transitional armors",
+          "conf_mean": 96.1,
+          "conf_min": 93.2,
+          "words": 12,
+          "uncertain": [],
+          "box": [
+            180,
+            1069,
+            1538,
+            1113
+          ],
+          "paper": 0.43,
+          "height": 34
+        },
+        {
+          "text": "December-2024: Add",
+          "conf_mean": 65.7,
+          "conf_min": 39.5,
+          "words": 2,
+          "uncertain": [
+            "Add"
+          ],
+          "box": [
+            182,
+            1160,
+            641,
+            1207
+          ],
+          "paper": 0.54,
+          "height": 47
+        },
+        {
+          "text": "Document has been created",
+          "conf_mean": 96,
+          "conf_min": 95.5,
+          "words": 4,
+          "uncertain": [],
+          "box": [
+            183,
+            1214,
+            752,
+            1247
+          ],
+          "paper": 0.65,
+          "height": 33
+        },
+        {
+          "text": "Neck Protections v. 26.1 13/13",
+          "conf_mean": 77.3,
+          "conf_min": 51,
+          "words": 5,
+          "uncertain": [
+            "Neck"
+          ],
+          "box": [
+            234,
+            3394,
+            2354,
+            3441
+          ],
+          "paper": 0.94,
+          "height": 34,
+          "dropped": [
+            "ME"
+          ]
+        }
+      ]
+    }
+  ]
+}

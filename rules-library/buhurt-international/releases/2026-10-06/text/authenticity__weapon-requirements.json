@@ -1,0 +1,152 @@
+{
+  "inventory_key": "authenticity/weapon-requirements",
+  "sha256": "97bad6993ab48b619730c443d36cda331bf766d831febf74529b5563c2d232fc",
+  "source_file": "Authenticity/Weapons requirements 26.4.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 14,
+    "title": "Weapons requirements 26.4",
+    "creator": null,
+    "producer": "Skia/PDF m148 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")BUBURT(Z\n\nVER. 26.4\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 72.1,
+      "ocr_lines": [
+        {
+          "text": ")BUBURT(Z",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            ")BUBURT(Z"
+          ],
+          "box": [
+            884,
+            182,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 115,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.4",
+          "conf_mean": 96.3,
+          "conf_min": 95.9,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            605,
+            1271,
+            1021,
+            1342
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 95.8,
+          "conf_min": 95.8,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            604,
+            1448,
+            1722,
+            1644
+          ],
+          "paper": 0,
+          "height": 196
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": "  Table of contents\n1. Introduction and Definitions​                               2\n    1.1. Equipment​                                            3\n    1.2. List​                                                 3\n    1.3. Categories​                                           3\n    1.4. Striking Edge / Non-striking Edge (of the Weapon)​    3\n    1.5. Historical Sources​                                   3\n2. Historical Consistency Requirements​                        4\n    2.1. Equipment from Historical Sources​                    4\n    2.2. Dates of Sources​                                     4\n    2.3. Prohibited Features​                                  4\n    2.4. Consistency in Equipment​                             4\n        2.4.1. Western Europe Style​                           4\n        2.4.2. Slavic Influence​                               4\n        2.4.3. Eastern Influence​                              4\n        2.4.4. Authorized Deviations​                          5\n3. General Requirements​                                       5\n    3.1. Competitor Responsibility​                            5\n    3.2. Quality Equipment​                                    5\n    3.3. Access to the List​                                   5\n4. Weapons Definitions​                                        6\n    4.1. Types of Weapons​                                     6\n        4.1.1. Bladed Weapons​                                 6\n        4.1.2. Hafted Weapons​                                 6\n    4.2. Subgenres of Weapons​                                 6\n        4.2.1. Duels​                                          6\n        4.2.2. Group (3v3,5v5 etc…)​                           6\n5. Safety Requirements​                                        7\n6. Authenticity Requirements​                                  7\n7. Specific Requirements​                                      8\n    7.1. Bladed Weapons​                                       8\n    7.2. Hafted Weapons​                                       8\n        7.2.1. Components​                                     8\n        7.2.2. Haft Requirements​                              9\n8. Duels Weapons​                                             11\n    8.1. Sword and Shield / Sword and Buckler Category​       11\n    8.2. Longsword category​                                  11\n    8.3. Polearm category​                                    11\n9. Outrance Weapons​                                          12\n    Point of Balance​                                         12\n10. Buhurt/Group Weapons​                                     13\n    10.1. Type 2 & 3 Bladed​                                  13\n    10.2. Type 2 & 3 Hafted​                                  13\n11. Changelog​                                                14\n\n\n\n\n   Technical Requirements for Weapons V. 26.4                 2/14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                  1.​ Introduction and Definitions\nThis document will display all requirements for armors, shields, and Weapons used in any category.\nEvery competitor is solely responsible for the quality of his/her equipment. Marshals and Authenticity\nOfficers are responsible for the correct application of this document.\n\n\n    1.1.​ Equipment\nArmors, clothes, shields and Weapons used by a competitor.\n\n    1.2.​ List\nPlace where the fights occur.\n\n    1.3.​ Categories\n    ●​ Duel\n       1v1 sword and shield, sword and buckler, longsword, polearm.\n    ●​ Buhurt\n       Group fight, 5v5, 12v12, 30v30.\n    ●​ Outrance\n\n\n    1.4.​ Striking Edge / Non-striking Edge (of the Weapon)\nStriking Edge is a part of the Weapon designed to hit an opponent.\nNon-striking edge is a part of the Weapon not designed to hit an opponent.​\n​\n\n​\n\n​\n​\n​\n​\n​\n\n                        Here are some examples with the striking edge being red\n\n    1.5.​ Historical Sources\nIt is the result of research to conclude the plausibility of the item had existed. Historical sources can be\nprimary (artifacts, museum originals…) or secondary (images, paintings, statues, description, writings…).\nAny historical source must be analyzed through criticism and logic.\n\n\n\n\n    Technical Requirements for Weapons V. 26.4                                                           3/14\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 4,
+      "text": "       2.​ Historical Consistency Requirements\n  2.1.​ Equipment from Historical Sources\nOnly Weapons derived from historical sources are permitted for use.\nWeapons must align with Authenticity Rules documents.\n\n\n  2.2.​ Dates of Sources\nWeapons must align with sources dating between the 14th (1300) and 17th (1600) centuries.\nFor safety considerations, reproductions of armors predating the 13th century are prohibited, as are\nWeapons of the same period.\n\n\n  2.3.​ Prohibited Features\nProhibited features encompass evident indications of modern materials or manufacturing techniques\nincluding: neon colors, obvious nylon cords, plastic ties, visible welded seams, heat-induced\ndiscoloration and other visible modern equipment.\n\n\n  2.4.​ Consistency in Equipment\nArmors, Shields and Weapons must consist of pieces from the same style. Distinct styles are defined in\nmodern-day terms as:\n\n    2.4.1.​   Western Europe Style\n  ●​ 14th century: from 1300 to 1380\n  ●​ Transitional: from 1380 to 1420\n  ●​ 15th century: from 1420 to 1500. 15th century style armor must be approved by the Authenticity\n     Committee. We recommended seeking approval before buying such armor.\nWestern Europe includes the following modern countries: Great Britain, Ireland, France, Portugal, Spain,\nGermany, Italy, Norway, Denmark, Sweden, Finland, Austria, Switzerland, Belgium, and the Netherlands\n\n    2.4.2.​   Slavic Influence\n  ●​ Central Europe 14th: from 1300 to 1400\n  ●​ Russian late armors: from 1500 to 1700\nSlavic Influence includes the following modern countries: Czech Republic, Romania, Hungary, Poland,\nSlovakia, Slovenia, Croatia, Latvia, Estonia, Moldova, Serbia, Ukraine, Russia, and Belarus.\n\n    2.4.3.​   Eastern Influence\n  ●​ Chinese style: from 1300 to 1600\n  ●​ Japanese samurai style: from 1400 to 1700\n  ●​ Middle-East style: from 1300 to 1700\nEastern influence includes the following modern countries: China, Japan, India, Korea, Iran, Iraq, Turkey,\nEgypt.\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                            4/14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 5,
+      "text": "    2.4.4.​   Authorized Deviations\nCompetitors may deviate from these specified styles if they provide sources supporting their equipment\nchoices.\n\nCompetitors   who     deviate     from   these     specified    styles    must    send    an   email   to\nauthenticity@buhurtinternational.com to obtain validation of their armor.\n\n\n\n\n                        3.​ General Requirements\n  3.1.​ Competitor Responsibility\nEvery competitor is responsible for the quality and the safety of his/her equipment. ​\n\n\n  3.2.​ Quality Equipment\nAll Weapon parts must be made of strong materials able to endure full contact fights.\n\nPoor quality equipment is not allowed in any category.\n\nPoor quality Weapon examples: loose guard, pommel or other element of a Weapon that may break,\ndented blade, cracks in metal part, etc...\n\nAll Weapons parts must not be dangerous for the other competitors. Dangerous equipment such as\npointed or spiky Weapons parts, sharp edges etc... are prohibited.\n\n\n  3.3.​ Access to the List\nMarshals are allowed to deny any competitor with clearly poor quality equipment to enter the list.\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                           5/14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 6,
+      "text": "                          4.​ Weapons Definitions\n  4.1.​ Types of Weapons\nThere are 2 types of Weapons:\n\n    4.1.1.​   Bladed Weapons\nWeapon with a long metal blade and a hilt with a hand guard.\nExamples of Bladed Weapons:\n  ●​   swords,\n  ●​   falchions,\n  ●​   longswords,\n  ●​   etc…\n\n    4.1.2.​   Hafted Weapons\nWeapon which the main fighting part of the Weapon is fitted to the end of a long shaft\nExamples of Hafted Weapons:\n  ●​   axe,\n  ●​   polearm,\n  ●​   glaive,\n  ●​   maces,\n\n\n  4.2.​ Subgenres of Weapons\n\n    4.2.1.​   Duels\n  ●​ Duels Sword\n  ●​ Duels Longsword\n  ●​ Duels Polearm\n\n    4.2.2.​   Group (3v3,5v5 etc…)\n  ●​   Type 1 Bladed\n  ●​   Type 2 Bladed\n  ●​   Type 3 Bladed\n  ●​   Type 1 Hafted (mace)\n  ●​   Type 2 Hafted (axe)\n  ●​   Type 3 Hafted\n  ●​   Type 4 Hafted\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                             6/14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 7,
+      "text": "                          5.​ Safety Requirements\nAll Weapons must be able to endure full contact fights.\nAll edges of all Weapons must be rebated in compliance with this document.\nThe edge of both striking and non-striking edges must be rebated and have a thickness of 2 mm or\nmore.\nThe radius of striking and non-striking edges must be more than 10 mm.\nWeapons constructed solely for stabbing are prohibited (spears for example)\nWeight permissible upward error for Weapons is 100 grams.\nAny heavier Weapon, including permissible upward error, is prohibited.\nIt is allowed to use leather thread to secure the Weapon in hand. Such leather thread must conform to\nthe “Textiles and Leather” document .\nEvery Weapon to be used at a tournament must be first approved for safety by the Marshals and\nAuthenticity Officers during Weapons check.​\n\n\n\n                   6.​ Authenticity Requirements\nAll Weapons must be based on historical sources and repeat the form of the original in all three\ndimensions.\nAll Weapons must match the style of the armor kit of the competitor.\nAll decorations on Weapons must be stylized in accordance with the style of the armor kit of the\ncompetitor.\nIt is prohibited to decorate Weapons with images that are clearly modern and/or offensive.\nAll decorations must conform to the “Armors and Weapons Aesthetics and Decorations” document .\nWeapons must conform to Authenticity Rules documents\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                       7/14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 8,
+      "text": "                          7.​ Specific Requirements\n  7.1.​ Bladed Weapons\nThe Bladed Weapon must be made of the following elements:\n  ●​ Blade: it is the main striking edge of the Weapon,\n  ●​ Hilt: it is composed of:\n         ○​ Pommel: it is a striking edge,\n         ○​ Handle: only place where you're allowed to hold the Weapon,\n         ○​ Guard: it is a striking edge.\nWhen holding the Bladed Weapon firmly, the guard is not allowed to extend the gauntlet of the bearer for\nmore than 3.5 cm.\n\n\n\n\n  7.2.​ Hafted Weapons\n\n    7.2.1.​   Components\nHafted Weapon must be made of the following elements:\n  ●​ Head: it is composed of:\n        ○​ Blade: it is the main striking edge of the Weapon,\n        ○​ Back of the head: it is a striking edge but hitting an opponent with this part is prohibited,\n  ●​ Haft: the main handle,\n  ●​ Bottom: the lower part of the haft. It is a striking edge.\n      Note: a mace does not have a back of the head. Each blade of a flanged mace is considered as a striking edge.\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                                          8/14\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 9,
+      "text": "The head of any Hafted Weapon must be secured to the haft by at least 2 different methods.\nAllowed methods are:\n  ●​   wedges,\n  ●​   straps,\n  ●​   glue,\n  ●​   rivets or nails,\n  ●​   langets.\nWeapons with sharp corners (Less than 90 degrees) and corners that can be considered dangerous are\nprohibited.\n\nAny point on the Striking Edge of the Weapon must have an angle more than 90 degrees.\n\nA Hafted Weapon may have a rebated hook or hammerhead on the non-striking part. Any strikes with\nthese elements are strictly prohibited.\n\nAny rebated hook or hammerhead must not present any sharp or pointed edge.\n\n    7.2.2.​    Haft Requirements\nHaft must be made of strong wood or modern material that replicate the wood’s properties in terms of\naspect, handling and stiffness.\n\nIt is forbidden to use soft or flexible material for haft, such as rattan.\n\nIt is forbidden to use metal haft for Hafted Weapons.\n\nIt is allowed to use a covering with the following materials:\n\n  ●​ neutral rope with glue,\n  ●​ linen thread with glue,\n  ●​ neutral color textile tape (I.E black, brown, grey).\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                      9/14\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 10,
+      "text": "Any covering with a clearly modern appearance are prohibited\n\nIt is not allowed to enter the list with a damaged covering.\n\nThe general appearance of the covering will be examined by Authenticity Officers.\n\nIt is allowed to decorate hafts with colored tape. Such decorations can not reproduce modern patterns.\nTeam or country flags colors are allowed.\n\nAny covering must conform with the “Textile and Leather” document.\n\n\n\nExamples:\n\n\n\n\n                                        Pictures from The Medieval Things ©\n\n\nLess than 50% of the colored tape can be yellow.\nThe combination of yellow and black is allowed, but yellow must represent less than 15% of the tape. It\nshould only be used as an accent when combined with black.\n\nThe bottom of the haft can be protected by a metal part. It must be rounded as per Striking Edge rules.\n\nHaft can be protected with metal plates. Such plates must be firmly attached to the haft and must not\npresent any sharp edge.\n\nWeapons with poorly secured heads are prohibited.\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                          10/14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 11,
+      "text": "                             8.​ Duels Weapons\nDuels Weapons are built with the intent of agility and swordsmanship vs striking and punishment.\nException: all Type 3 Hafted Weapons are permitted for Polearm Category. Any Weapons not shown\nbelow must be approved by Marshal and Authenticity Committee Representatives.\n​\n\n\n    8.1.​ Sword and Shield / Sword and Buckler Category\nAllowed Weapons: Type 1 Bladed\n\n\n\n\n    8.2.​ Longsword category\nAllowed Weapons: Type 2 Bladed​\n\n\n\n\n    8.3.​ Polearm category\nAllowed Weapons:\n    ●​ Type 3 Hafted\n    ●​ Type 4 Hafted​\n\n\n\n\n    Technical Requirements for Weapons V. 26.4                                               11/14\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 12,
+      "text": "                            9.​ Outrance Weapons\nOutrance Weapons are any Weapon that passes the measurement requirements from Duels or Buhurt\ncategories.\nWeapons used in outrance fights must respect their classification requirements (I.e: a sword must\nrespect the Bladed Weapons requirements).\n\n\nPoint of Balance\nThe Point of Balance of Outrance Bladed Weapons must be:\n  ●​ 15 cm from the top edge of the handle for men fights,\n  ●​ 10 cm from the top edge of the handle for women fights.\nPoint of Balance is the precise point on a blade where its weight is equally distributed to each side.​\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                              12/14\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 13,
+      "text": "                       10.​Buhurt/Group Weapons\nBuhurt/Group Weapons may use Duels specific Weapons and any shapes that are historically\ndocumentable to the timeframe of the sport. Please reference the “Weapons/Shield Chart” document for\nweights and sizing.\n\n\n\n 10.1.​ Type 2 & 3 Bladed\nThese are examples for type 2 & 3:\n  ●​   longswords,\n  ●​   2-handed falchions,\n  ●​   zweihanders,\n  ●​   etc.\n\n\n\n\n 10.2.​ Type 2 & 3 Hafted\nThese are examples:\n  ●​ Type 2 Hafted: Axe\n  ●​ Type 3 Hafted: Longaxe\n\n\n\n\n  Technical Requirements for Weapons V. 26.4                                                     13/14\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 14,
+      "text": "                                                        11.​Changelog\n                This will be the change log of this document. It will be updated regularly and we will\n                  display what has been removed/added/reworded/formatted. This way we keep\n                                transparent communication and clarity about the rules\n\nApril - 2026 (V. 26.4)\n\nAdd:\n-​ 3.2. Quality Equipment: “All Weapons parts must not be dangerous for the other competitors. Dangerous\n     equipment such as pointed or spiky Weapons parts, sharp edges etc. are prohibited.”\n-​ 7.2.2. Haft Requirements: “Less than 50% of the colored tape can be yellow. The combination of yellow and\n     black is allowed, but yellow must represent less than 15% of the tape. It should only be used as an accent when\n     combined with black.”\n\n\nJanuary - 2026 (V. 26.1)\nFormatting redone for consistency and readability. Except points listed below, no content changes.\nClarification:\n-​        Restructuration of the document to make it more easy to read,\n-​        Minor grammatical/formating corrections,\n-​        Those clarifications have no impact on the document content, except for those listed in this Changelog.\nReplace:\n-​        In 5.4.1 Components: An image has been changed\nSuppression:\n-​        In 5.4.2 Haft Requirements: “If a haft is not made of wood, it is mandatory to use a covering for the whole haft (from\nhead to bottom) one end must be exposed so it can be verified what the material is”\nAdd:\n-​        In 7.2.2. Haft Requirements:\n   -​ “It is allowed to decorate hafts with colored tape. Such decorations can not reproduce modern patterns. Team or country\n        flags colors are allowed. Any covering must conform with “Textile and Leather” document.”\n   -​ “Haft can be protected with metal plates. Such plates must be firmly attached to the haft and must not present any sharp\n        edge.”\nClarification:\n-​        Addition of a subsection about polearm in “Duel Weapons”.\n\n\n                                            (Version update from 2024.03 to 2024.12.13)\nUpdate date: December-2024\n- changed: Upwards weight error from 100,200,300 has been limited to 100 grams for all Weapons​\nAdded: ​\nThe subgenres of Weapons,Duels,Duels Sword,Duels Longsword,Duels Polearm,\nGroup: Type 1 Bladed, Type 2 Bladed, Type 3 Bladed, Type 1 Hafted (axe), Type 1 Hafted (mace), Type 2 Hafted, Type 3 hafte,\nRemoved: (Has been moved to document: (Weapon/Shield requirements excel)​\n4.4.1 Specific requirements\nRemoved (Has been moved to document: (Weapon/Shield requirements excel)​\n4.4.2 Weights and measurements\n\nUpdate date: March-2024\n- format: new design format, document will be used from now on.\n- Update document based on my document (16/05/2024)\n- Update document (format)\n\n\n\n\n   Technical Requirements for Weapons V. 26.4                                                                                 14/14\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}

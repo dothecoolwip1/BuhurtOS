@@ -1,0 +1,134 @@
+{
+  "inventory_key": "authenticity/perforated-visor-bascinets",
+  "sha256": "e1962ebf619e9bb67660282eaf6e3815c05a3b5d0cafdf733d8d097f1b9397cf",
+  "source_file": "Authenticity/Perforated Visor Bascinets 26.4.pdf",
+  "extractor": "pdftotext unknown -layout -enc UTF-8 + OCR (tesseract 5.3.4 psm4 300dpi) on 1 page(s) without a text layer",
+  "pdfinfo": {
+    "pages": 11,
+    "title": "Perforated Visor Bascinets 26.4",
+    "creator": null,
+    "producer": "Skia/PDF m148 Google Docs Renderer",
+    "created": null,
+    "modified": null
+  },
+  "pages": [
+    {
+      "page": 1,
+      "text": ")BUBURT(Z\n\nVER. 26.4\n\nAuthenticity",
+      "method": "ocr",
+      "figures": true,
+      "ocr_engine": "tesseract 5.3.4 psm4 300dpi",
+      "ocr_mean_conf": 72.1,
+      "ocr_lines": [
+        {
+          "text": ")BUBURT(Z",
+          "conf_mean": 0,
+          "conf_min": 0,
+          "words": 1,
+          "uncertain": [
+            ")BUBURT(Z"
+          ],
+          "box": [
+            884,
+            182,
+            1598,
+            297
+          ],
+          "paper": 0,
+          "height": 115,
+          "in_picture": "on a coloured or photographic background (paper 0%), confidence 0.0"
+        },
+        {
+          "text": "VER. 26.4",
+          "conf_mean": 96.2,
+          "conf_min": 95.6,
+          "words": 2,
+          "uncertain": [],
+          "box": [
+            605,
+            1274,
+            1021,
+            1345
+          ],
+          "paper": 0,
+          "height": 71
+        },
+        {
+          "text": "Authenticity",
+          "conf_mean": 96,
+          "conf_min": 96,
+          "words": 1,
+          "uncertain": [],
+          "box": [
+            604,
+            1451,
+            1721,
+            1647
+          ],
+          "paper": 0,
+          "height": 196
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "text": " Table of contents\n1. Implementation​                                                         3\n2. Definition​                                                             3\n3. Historical Sources and Datation​                                        4\n    3.1. Bascinets with perforated and forehead attached visor​            4\n    3.2. Bascinets with perforated side-pivoting attached visor​           5\n    3.3. Great Bascinets with perforated visor​                            6\n    3.4. Bicoques with perforated visor​                                   7\n4. Requirements​                                                           8\n    4.1. General Requirements​                                             8\n    4.2. Visor​                                                            8\n    4.3. Aventails​                                                        8\n    4.4. Others​                                                           8\n5. Examples of Approved Reproductions​                                     9\n6. Examples of Denied Reproductions​                                      10\n7. Changelog​                                                             11\n ​\n ​\n ​\n ​\n\n\n\n\n     Perforated Visor Bascinets V. 26.4                            2/11\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 3,
+      "text": "                               1.​ Implementation\nThe document has been created and approved by the General Assembly of 29.11.2025.\nThe document and its rules will be implemented from the 2029 season (01/01/2029).\nCompetitors will have 3 seasons to align their equipment with this document and its rules.\n\n\n\n\n                                      2.​ Definition\nBascinets with perforated visors are helmets with movable perforated visors. Such visors do not include\nEye slots.\nThis type of visor is depicted in some rare manuscripts in Western Europe from the late 14th century and\nearly 15th century. A handful of later designs showing this kind of visor still survive through the 15th\ncentury.\nThere is no consensus among armor experts where such manuscripts depict actual perforated visors or\nbadly drawn regular helmets (hundskulls for example).\nThose helmets use a solid metal visor to protect the face, attached by 2 different system:\n  ●​ Attached on the forehead by a movable piece of metal, similar to the “spoon” from Klappvisor,\n  ●​ Attached to the dome with hinges at the temples, similar to Pivoting visored Bascinets.\n\n\n\n\n  Perforated Visor Bascinets V. 26.4                                                              3/11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 4,
+      "text": "              3.​ Historical Sources and Datation\n   3.1.​ Bascinets with perforated and forehead attached visor\n\nThe term “Bascinets with perforated and forehead attached visor” will be abbreviated to “Perforated\nKlappvisor Bascinets” for the remainder of the document.\n\nPerforated Klappvisor Bascinets can be seen in a couple of manuscripts, from 1389 to 1420/1430.\n\nPerforated Klappvisor Bascinets can have a visor with a rounded profile or a sharp profile. The shape of\nthe profile does not change the approved and denied time periods.\n\nPerforated Klappvisor Bascinets are Approved for Transitional armors.\n\nPerforated Klappvisor Bascinets are Denied for 14th century armors.\n\nPerforated Klappvisor Bascinets can be Approved for 15th century armors with a coherent project.\nWe strongly recommend sending an email to authenticity@buhurtinternational.com before placing an\norder for such armor.\n\n\n\n\n     Vindobonensis 2762, Wenzel Bible - 1389 - Austria ​         ​         ​         Pal.lat.1888 - 1430 - Germany\n\n\n\n\n                                    Göttinger MS Philos. 63 Bellifortis - 1405 - Germany\n\n\n\n\n  Perforated Visor Bascinets V. 26.4                                                                                 4/11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 5,
+      "text": "   3.2.​ Bascinets with perforated side-pivoting attached visor\n\nThe term “Bascinets with perforated side-pivoting attached visor” will be abbreviated to “Side-pivoting\nPerforated Bascinets” for the remainder of the document.\n\nSide-pivoring Perforated Bascinets must have a visor with a rounded profile.\n\nSide-pivoring Perforated Bascinets are Approved for Transitional armors.\n\nSide-pivoting Perforated Bascinets are Denied for 14th century and 15th century armors.\n\n\n\n\n                            Vindobonensis 2762, Wenzel Bible - 1389 - Austria\n\n\n\n\n                                 Wenceslas Bible - 1390/1400 - Germany\n\n\n\n\n  Perforated Visor Bascinets V. 26.4                                                             5/11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 6,
+      "text": "   3.3.​ Great Bascinets with perforated visor\n\nLater during the 15th-century, a handful of contemporary designs show the use of perforated visors,\ndespite a great lack of representation in art.\n\nGreat Bascinets with perforated visors must have a visor with a rounded profile.\n\nGreat Bascinets with perforated visors are Approved for 15th century armors.\n\nGreat Bascinets with perforated visors are Denied for 14th century and Transitional armors.\n\n\n\n\n                                           German Great Bascinet, MET\n\n\n\n\n                     Grand Bacinet private collection - 1450/1475- southern Germany or Austria\n\n\n\n\n  Perforated Visor Bascinets V. 26.4                                                             6/11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 7,
+      "text": "   3.4.​ Bicoques with perforated visor\n\nLater during the 15th century, a handful of contemporary designs show the use of perforated visor,\ndespite a great lack of representation in art.\n\nBicoques with perforated visors must have a visor with a rounded profile.\n\nBicoques with perforated visors Approved for 15th century armors.\n\nBicoques with perforated visors are Denied for 14th century and Transitional armors.\n\n\n\n\n                              Bicoque ref_arm_1929_015 W1012 Goll - 1440-50\n\n\n\n\n  Perforated Visor Bascinets V. 26.4                                                        7/11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 8,
+      "text": "                                  4.​ Requirements\n   4.1.​ General Requirements\n\nReproductions must closely resemble the appearance and proportions of either bascinets, great\nbascinets or bicoque respective sources.\nAny metal part of the helmet must conform to the “Armors and Weapons Aesthetics and Decorations”\ndocument.\nAny textile or leather part of the helmet must conform to the “Textiles and Leather” document.\n\n\n   4.2.​ Visor\n\nThe visor must not be too long or too short, it must respect the proportions of historical sources.\nIt is allowed to add a metal plate to protect the throat. Such a plate must be strong enough to endure full\ncontact fight and must be concealed under the aventail.\nA leather strap can be used to secure the visor down.\nIt is permitted to weld the visor down. Welded visors must resemble a functional removable visor.\nThe hinge must be reproduced as per historical sources.\nBreath holes should be round and must not exceed a diameter of 10mm. Breath holes must not be so\nnumerous that they compromise the helm’s structural integrity. It is acceptable to mirror breath holes to\nboth sides.\nBreath holes of another shape must be documented by historical sources to be allowed.\n\n\nProfile of visors:\n  ●​ Sharp-profile visors\n     Visors with a sharp profile must clearly present a pointy profile.\n\n  ●​ Rounded-profile visors\n     Visors with a rounded profile must clearly present a globose profile.\n\n   4.3.​ Aventails\n\nBascinets with perforated visors must be worn with chainmail aventails, fabric aventails, or scales\naventails.\nGreat Bascinets and Bicoques can not be worn with chainmail aventails, fabric aventails or scales\naventails.\nAventails must conform to the “Aventails” document.\nAventails must be attached to the bascinet by a system of leather and vervelles.\nThe aventail must be fastened down to the edge of a padded pelerine attached to the helmet liner.\nAny additional protective plates covering the cervical spine must be hidden under the aventail.\n\n\n   4.4.​ Others\n\nAll helmets with perforated visors may be decorated in the spirit of medieval styles, such as orle, torse,\ndecorated aventails (with copper/brass chainmail rings), vervelle covers and coat of arms badges etc.\nSuch decoration must be made in coherence with historical sources.\nUsing modern and/or offensive imagery and slogans is prohibited.\n\n\n  Perforated Visor Bascinets V. 26.4                                                                  8/11\n",
+      "method": "text",
+      "figures": false
+    },
+    {
+      "page": 9,
+      "text": "  5.​ Examples of Approved Reproductions\n\n\n\n\n                                Pictures from The Medieval Things ©\n\n\n\nPerforated Visor Bascinets V. 26.4                                    9/11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 10,
+      "text": "           6.​ Examples of Denied Reproductions\n\n​      ​      ​       ​     ​        ​        ​        ​                Visor lack of pointiness\n           Visor lack of curvature ​          ​        ​               and leaf instead of a spoon\n\n\n\n\n                              Eyes holes do not match approved pattern\n\n\n\n\n​      ​\n\n\n\n\n                                         Pictures from The Medieval Things ©\n\n\n\n\n    Perforated Visor Bascinets V. 26.4                                                               10/11\n",
+      "method": "text",
+      "figures": true
+    },
+    {
+      "page": 11,
+      "text": "                                             7.​ Changelog\n  Below, we will keep track of all the changes made over the lifetime of this document. This way, all our\n                     members can see how the documents are changing over time.\n\n\n\nApril - 2026 (V. 26.4)\nChange:\n-​       “Side-hinged” to “Side-pivoting” in all the document.\n\nJanuary - 2026 (V. 26.1)\nAdd: Document has been created\n\n\n\n\n  Perforated Visor Bascinets V. 26.4                                                                11/11\n",
+      "method": "text",
+      "figures": false
+    }
+  ]
+}
