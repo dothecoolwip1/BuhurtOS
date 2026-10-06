@@ -224,13 +224,17 @@ insert into public.fighters (id, display_name) values ('00000000-0000-0000-0000-
 insert into public.entries (id, competition_id, fighter_id) values ('00000000-0000-0000-0000-00000000e002', current_setting('t.comp_ls')::uuid, '00000000-0000-0000-0000-00000000f001');
 insert into public.entries (id, competition_id, fighter_id) values ('00000000-0000-0000-0000-00000000e003', current_setting('t.comp_ls')::uuid, '00000000-0000-0000-0000-00000000f001') on conflict do nothing;
 select set_config('t.e1', (select id::text from public.entries where fighter_id <> '00000000-0000-0000-0000-00000000f001'), false);
-select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('organizer builds a final and a semifinal', format($q$
+-- Pack 24A0: the organizer no longer writes matches through the table; the harness lays the bracket out (build_schedule is covered by pack02_gate and pack24a0_gate)
+select t.as_admin();
+select t.expect_ok('a final and a semifinal are in place (laid out by the harness)', format($q$
   insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b) values ('00000000-0000-0000-0000-0000000000f1', %L, 'final', 'Final', 1, null, null);
   insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000f2', %L, 'elimination', 'Semifinal', 1, %L, '00000000-0000-0000-0000-00000000e002', '00000000-0000-0000-0000-0000000000f1', 'a')$q$,
   current_setting('t.comp_ls'), current_setting('t.comp_ls'), current_setting('t.e1')));
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_error('an organizer cannot write a result directly', $q$update public.matches set result = 'a', queue_state = 'final' where id = '00000000-0000-0000-0000-0000000000f2'$q$);
-select t.expect_error('an organizer cannot link a match to an entry from another competition', format($q$update public.matches set entry_a = %L where id = '00000000-0000-0000-0000-0000000000f1'$q$, gen_random_uuid()));
+select t.expect_error('an organizer cannot link a match to an entry from another competition (the table right is gone, Pack 24A0)', format($q$update public.matches set entry_a = %L where id = '00000000-0000-0000-0000-0000000000f1'$q$, gen_random_uuid()), '42501');
+select t.as_admin();
+select t.expect_error('... and the database still refuses it for anyone who could write (check_match_links)', format($q$update public.matches set entry_a = %L where id = '00000000-0000-0000-0000-0000000000f1'$q$, gen_random_uuid()), '23514');
 
 select t.as_anon();
 select t.expect_eq('anon can read matches', (select count(*) from public.matches), 2::bigint);
@@ -265,8 +269,8 @@ select t.expect_eq('reopening takes the winner back out of the final', (select e
 select t.as_admin();
 insert into public.fighters (id, display_name) values ('00000000-0000-0000-0000-00000000f002', 'Third Duellist');
 insert into public.entries (id, competition_id, fighter_id) values ('00000000-0000-0000-0000-00000000e004', current_setting('t.comp_ls')::uuid, '00000000-0000-0000-0000-00000000f002');
-select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('organizer adds a second semifinal and a third-place match', format($q$
+select t.as_admin();
+select t.expect_ok('a second semifinal and a third-place match are in place (laid out by the harness; the organizer no longer inserts matches, Pack 24A0)', format($q$
   insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000f3', %L, 'elimination', 'Semifinal', 2, '00000000-0000-0000-0000-00000000e004', %L, '00000000-0000-0000-0000-0000000000f1', 'b');
   insert into public.matches (id, competition_id, stage, round_label, position) values ('00000000-0000-0000-0000-0000000000f4', %L, 'third_place', 'Third place', 3)$q$,
   current_setting('t.comp_ls'), current_setting('t.e1'), current_setting('t.comp_ls')));
@@ -280,15 +284,16 @@ select t.expect_error('a null expected version is refused', $q$select public.fin
 select t.expect_eq('the refused result left the match open', (select queue_state from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'on_deck'::text);
 
 -- a third-place match that was already played blocks a semifinal result from feeding it
-select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('organizer sets the third-place sides by hand', $q$update public.matches set entry_a = '00000000-0000-0000-0000-00000000e002', entry_b = '00000000-0000-0000-0000-00000000e004' where id = '00000000-0000-0000-0000-0000000000f4'$q$);
+select t.as_admin();
+select t.expect_ok('the third-place sides are set (by the harness; the organizer no longer has this table right, Pack 24A0)', $q$update public.matches set entry_a = '00000000-0000-0000-0000-00000000e002', entry_b = '00000000-0000-0000-0000-00000000e004' where id = '00000000-0000-0000-0000-0000000000f4'$q$);
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
 select t.expect_ok('the third-place match is played', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f4', 'a', 3, 1, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f4'))$q$);
 select t.expect_error('a semifinal cannot feed a third-place match that is already final', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f2'))$q$, 'P0001');
 select t.expect_eq('the refused semifinal changed nothing', (select queue_state from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'on_deck'::text);
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_ok('organizer reopens the third-place match', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f4', 'resetting the bracket')$q$);
-select t.expect_ok('organizer clears the third-place sides', $q$update public.matches set entry_a = null, entry_b = null where id = '00000000-0000-0000-0000-0000000000f4'$q$);
+select t.as_admin();
+select t.expect_ok('the third-place sides are cleared (harness)', $q$update public.matches set entry_a = null, entry_b = null where id = '00000000-0000-0000-0000-0000000000f4'$q$);
 
 -- semifinal losers drop into the third-place match, first semifinal to slot a, second to slot b
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
@@ -311,19 +316,21 @@ select t.expect_ok('organizer reopens the second semifinal', $q$select public.re
 select t.expect_eq('reopening takes the second loser out of third place', (select entry_b is null from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), true);
 
 -- Deleting a match that another match leads into clears the link instead of failing the next_slot check (migration 20261001001700).
-select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('organizer builds a final and two semifinals that lead into it', format($q$
+select t.as_admin();
+select t.expect_ok('a final and two semifinals that lead into it are in place (harness)', format($q$
   insert into public.matches (id, competition_id, stage, round_label, position) values ('00000000-0000-0000-0000-0000000000d1', %L, 'final', 'Final', 11);
   insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000d2', %L, 'elimination', 'Semifinal', 11, %L, '00000000-0000-0000-0000-00000000e002', '00000000-0000-0000-0000-0000000000d1', 'a');
   insert into public.matches (id, competition_id, stage, round_label, position, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000d3', %L, 'elimination', 'Semifinal', 12, '00000000-0000-0000-0000-0000000000d1', 'b')$q$,
   current_setting('t.comp_ls'), current_setting('t.comp_ls'), current_setting('t.e1'), current_setting('t.comp_ls')));
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_ok('the first semifinal is finalized', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000d2', 'a', 3, 1, '{}'::jsonb, 0)$q$);
-select t.expect_ok('the organizer deletes the unfinished final that two semifinals lead into', $q$delete from public.matches where id = '00000000-0000-0000-0000-0000000000d1'$q$);
+select t.expect_error('the organizer can no longer delete a match through the table (Pack 24A0)', $q$delete from public.matches where id = '00000000-0000-0000-0000-0000000000d1'$q$, '42501');
+select t.as_admin();
+select t.expect_ok('deleting a match that others lead into (as the database owner, e.g. a rebuild) clears the links', $q$delete from public.matches where id = '00000000-0000-0000-0000-0000000000d1'$q$);
 select t.expect_eq('the final is gone', (select count(*) from public.matches where id = '00000000-0000-0000-0000-0000000000d1'), 0::bigint);
 select t.expect_eq('the unfinished semifinal lost both link columns together', (select next_match_id is null and next_slot is null from public.matches where id = '00000000-0000-0000-0000-0000000000d3'), true);
 select t.expect_eq('the finished semifinal lost both link columns and kept its result', (select next_match_id is null and next_slot is null and result = 'a' and queue_state = 'final' from public.matches where id = '00000000-0000-0000-0000-0000000000d2'), true);
 select t.expect_ok('the unfinished semifinal can be deleted', $q$delete from public.matches where id = '00000000-0000-0000-0000-0000000000d3'$q$);
-select t.as_admin();
 delete from public.matches where id in ('00000000-0000-0000-0000-0000000000d2', '00000000-0000-0000-0000-0000000000d3');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('a stranger sees no audit entries', (select count(*) from public.audit_log), 0::bigint);

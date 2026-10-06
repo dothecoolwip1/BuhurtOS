@@ -71,17 +71,20 @@ select public.set_entry_roster('dbc2c565-b035-5064-a891-8ad94e724511', '[{"fight
 select public.set_entry_roster('34f5fad9-33d8-506e-9018-0e2ee38ae1ee', '[{"fighter_id":"0e28a5bf-3ca5-50ce-bf11-142105c58181","role":"fighter"},{"fighter_id":"c2114868-da44-5a82-a1d3-f91f5326285f","role":"fighter"},{"fighter_id":"88d259b3-3d84-5796-bdcb-c2fdfd8b09ed","role":"fighter"}]'::jsonb) where exists (select 1 from public.competitions where id = '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1' and status <> 'finished');
 select public.set_entry_roster('73a17b06-720f-5c77-926b-7e9d5d9286a9', '[{"fighter_id":"b181793f-6729-5349-8392-78e65113b857","role":"fighter"},{"fighter_id":"695e3415-b6f8-5182-94d9-d8e4904c74e6","role":"fighter"},{"fighter_id":"8194d6b9-5987-5e8e-89eb-4daa5083284c","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1' and status <> 'finished');
 -- Male 5v5: round_robin, 3 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('d6536a9c-7c23-5ac7-8b17-379c7b85913a', 'e31a7e85-f33d-5f74-a8fa-0330a86b2d4e', 'round_robin', 'Round 1', 0, null, '14c7abb5-ab15-5f9b-bdac-ad94495d1659', 'da8f8be2-5be1-51db-b1f2-4a13eafc656a', 'Ring 1', (timestamp '2026-07-11 10:00' at time zone 'America/Edmonton'), 15),
   ('17994d33-95e0-5cdf-8062-664744603481', 'e31a7e85-f33d-5f74-a8fa-0330a86b2d4e', 'round_robin', 'Round 2', 0, null, 'da8f8be2-5be1-51db-b1f2-4a13eafc656a', '59737d9c-d3e2-5e1f-bc1c-fab23b9a73be', 'Ring 1', (timestamp '2026-07-11 10:17' at time zone 'America/Edmonton'), 15),
   ('fded4f54-3be1-59b5-b77d-7fabf0f1bb0e', 'e31a7e85-f33d-5f74-a8fa-0330a86b2d4e', 'round_robin', 'Round 3', 0, null, '59737d9c-d3e2-5e1f-bc1c-fab23b9a73be', '14c7abb5-ab15-5f9b-bdac-ad94495d1659', 'Ring 1', (timestamp '2026-07-11 10:34' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
+set local role authenticated;
 select public.finalize_match(m.id, 'a', 2, 0, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":0},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = 'd6536a9c-7c23-5ac7-8b17-379c7b85913a' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'b', 1, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":1,"b":2},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = '17994d33-95e0-5cdf-8062-664744603481' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = 'fded4f54-3be1-59b5-b77d-7fabf0f1bb0e' and m.queue_state <> 'final';
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = 'e31a7e85-f33d-5f74-a8fa-0330a86b2d4e' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('e31a7e85-f33d-5f74-a8fa-0330a86b2d4e') where tied group by part, rank loop perform public.record_tie_decision('e31a7e85-f33d-5f74-a8fa-0330a86b2d4e', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('e31a7e85-f33d-5f74-a8fa-0330a86b2d4e', 'tournament_structure') where exists (select 1 from public.competitions where id = 'e31a7e85-f33d-5f74-a8fa-0330a86b2d4e' and status <> 'finished');
 -- Male 3v3: round_robin, 4 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('7ddd4a76-cf52-5bbb-b2aa-217a37186b3e', '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1', 'round_robin', 'Round 1', 0, null, '34f5fad9-33d8-506e-9018-0e2ee38ae1ee', 'c3b75429-a065-5ec8-b4ac-22b239e68cbb', 'Ring 2', (timestamp '2026-07-11 10:00' at time zone 'America/Edmonton'), 15),
   ('1e0da221-75f7-5950-aab7-a6365efb7035', '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1', 'round_robin', 'Round 1', 1, null, '73a17b06-720f-5c77-926b-7e9d5d9286a9', 'dbc2c565-b035-5064-a891-8ad94e724511', 'Ring 2', (timestamp '2026-07-11 10:17' at time zone 'America/Edmonton'), 15),
@@ -90,6 +93,7 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('0f93c46b-a578-599e-b9b5-e00e13544895', '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1', 'round_robin', 'Round 3', 0, null, '34f5fad9-33d8-506e-9018-0e2ee38ae1ee', '73a17b06-720f-5c77-926b-7e9d5d9286a9', 'Ring 2', (timestamp '2026-07-11 11:08' at time zone 'America/Edmonton'), 15),
   ('70142e20-6d4e-52be-9cde-e7406dc9d29f', '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1', 'round_robin', 'Round 3', 1, null, 'dbc2c565-b035-5064-a891-8ad94e724511', 'c3b75429-a065-5ec8-b4ac-22b239e68cbb', 'Ring 2', (timestamp '2026-07-11 11:25' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
+set local role authenticated;
 select public.finalize_match(m.id, 'a', 2, 0, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":0},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '7ddd4a76-cf52-5bbb-b2aa-217a37186b3e' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":2,"b":1},"roundsPlayed":3}'::jsonb, m.version) from public.matches m where m.id = '1e0da221-75f7-5950-aab7-a6365efb7035' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'b', 0, 2, '{"kind":"group","roundsToWin":2,"roundsWon":{"a":0,"b":2},"roundsPlayed":2}'::jsonb, m.version) from public.matches m where m.id = '24138548-4393-5a25-8125-a0b4e91449c6' and m.queue_state <> 'final';
@@ -99,6 +103,7 @@ select public.finalize_match(m.id, 'a', 2, 1, '{"kind":"group","roundsToWin":2,"
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('15167fb9-8b0b-5992-9358-d9c7c4c1a1a1') where tied group by part, rank loop perform public.record_tie_decision('15167fb9-8b0b-5992-9358-d9c7c4c1a1a1', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('15167fb9-8b0b-5992-9358-d9c7c4c1a1a1', 'tournament_structure') where exists (select 1 from public.competitions where id = '15167fb9-8b0b-5992-9358-d9c7c4c1a1a1' and status <> 'finished');
 -- Male Longsword: elimination, 11 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('5bda08e5-5480-56b9-9ced-c667703b146c', '289f4aeb-1d3e-5e68-9cf6-45c0da240b65', 'elimination', 'Round of 16', 1, null, '9ad7349c-0d98-5e51-90b9-a87e1714713d', '7ce0be92-faab-59c5-a6f5-6105c14f1e34', 'Ring 3', (timestamp '2026-07-11 10:00' at time zone 'America/Edmonton'), 8),
   ('c2908dcb-16dd-5cd8-b2fa-95b9d5fb0ae7', '289f4aeb-1d3e-5e68-9cf6-45c0da240b65', 'elimination', 'Round of 16', 5, null, 'f73a7c07-83b3-5078-b091-01c11f6a86ae', '56e14bcf-9f0a-5a18-9b72-f909db9da8d6', 'Ring 3', (timestamp '2026-07-11 10:10' at time zone 'America/Edmonton'), 8),
@@ -123,6 +128,7 @@ update public.matches m set next_match_id = v.n, next_slot = v.s from (values
   ('e3cfec93-845d-5e7f-9870-540ee542dc9a'::uuid, '72c1a599-36f3-5190-81bd-00e6efb308f9'::uuid, 'a'),
   ('0cdb1d61-7a4c-5066-8e9d-fefba1de27f4'::uuid, '72c1a599-36f3-5190-81bd-00e6efb308f9'::uuid, 'b')
 ) v(id, n, s) where m.id = v.id and m.next_match_id is null;
+set local role authenticated;
 select public.finalize_match(m.id, 'b', 0, 9, '{"kind":"duel","rounds":{"a":[0,0],"b":[6,3]},"totals":{"a":0,"b":9}}'::jsonb, m.version) from public.matches m where m.id = '5bda08e5-5480-56b9-9ced-c667703b146c' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'b', 1, 8, '{"kind":"duel","rounds":{"a":[0,1],"b":[4,4]},"totals":{"a":1,"b":8}}'::jsonb, m.version) from public.matches m where m.id = 'c2908dcb-16dd-5cd8-b2fa-95b9d5fb0ae7' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'b', 1, 3, '{"kind":"duel","rounds":{"a":[0,1],"b":[3,0]},"totals":{"a":1,"b":3}}'::jsonb, m.version) from public.matches m where m.id = '0b66b1fb-c275-5329-bf27-4ab57d5f91e9' and m.queue_state <> 'final';
@@ -137,6 +143,7 @@ select public.finalize_match(m.id, 'a', 6, 2, '{"kind":"duel","rounds":{"a":[1,1
 do $$ declare g record; begin if exists (select 1 from public.competitions where id = '289f4aeb-1d3e-5e68-9cf6-45c0da240b65' and status <> 'finished') then for g in select part, array_agg(entry_id order by entry_id) as ents from public.pool_standings('289f4aeb-1d3e-5e68-9cf6-45c0da240b65') where tied group by part, rank loop perform public.record_tie_decision('289f4aeb-1d3e-5e68-9cf6-45c0da240b65', g.part, g.ents, 'Fictional dataset: tie settled by entry id'); end loop; end if; end $$;
 select public.finish_competition('289f4aeb-1d3e-5e68-9cf6-45c0da240b65', 'tournament_structure') where exists (select 1 from public.competitions where id = '289f4aeb-1d3e-5e68-9cf6-45c0da240b65' and status <> 'finished');
 -- Male Polearm: round_robin, 6 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('fb72bde9-769a-5d1b-92ec-2756480e7ea1', '6c980b90-8fa8-5c51-8bea-78c8da264236', 'round_robin', 'Round 1', 0, null, '33f1d27d-91d8-53e5-be21-8738359a1ced', 'b304a2e8-9f4d-53d6-bf67-8fcf2f65c10c', 'Ring 1', (timestamp '2026-07-11 10:51' at time zone 'America/Edmonton'), 8),
   ('685c5baa-eee9-5429-9329-42d63cc03b21', '6c980b90-8fa8-5c51-8bea-78c8da264236', 'round_robin', 'Round 1', 1, null, '08b4ae1e-26da-5366-ab14-15b22b57e099', 'c79816aa-b2be-586f-85e5-e4e3e88d963b', 'Ring 1', (timestamp '2026-07-11 11:01' at time zone 'America/Edmonton'), 8),
@@ -154,6 +161,7 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('786cabda-2b9a-50ac-9594-f362b99a9bd2', '6c980b90-8fa8-5c51-8bea-78c8da264236', 'round_robin', 'Round 5', 1, null, 'd1135075-8480-5c15-b9c3-804b4b85fa4d', 'b304a2e8-9f4d-53d6-bf67-8fcf2f65c10c', 'Ring 1', (timestamp '2026-07-11 13:01' at time zone 'America/Edmonton'), 8),
   ('657870ee-ff30-5327-a7bc-949519201045', '6c980b90-8fa8-5c51-8bea-78c8da264236', 'round_robin', 'Round 5', 2, null, '826ac709-faa5-5ec0-b50f-2e59152e7f3f', 'c79816aa-b2be-586f-85e5-e4e3e88d963b', 'Ring 1', (timestamp '2026-07-11 13:11' at time zone 'America/Edmonton'), 8)
 on conflict (id) do nothing;
+set local role authenticated;
 select public.finalize_match(m.id, 'a', 3, 1, '{"kind":"duel","rounds":{"a":[1,2],"b":[1,0]},"totals":{"a":3,"b":1}}'::jsonb, m.version) from public.matches m where m.id = 'fb72bde9-769a-5d1b-92ec-2756480e7ea1' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'a', 5, 0, '{"kind":"duel","rounds":{"a":[2,3],"b":[0,0]},"totals":{"a":5,"b":0}}'::jsonb, m.version) from public.matches m where m.id = '685c5baa-eee9-5429-9329-42d63cc03b21' and m.queue_state <> 'final';
 select public.finalize_match(m.id, 'a', 6, 2, '{"kind":"duel","rounds":{"a":[1,1,4],"b":[0,2,0]},"totals":{"a":6,"b":2}}'::jsonb, m.version) from public.matches m where m.id = 'c3da3554-e634-5aa6-bb12-f5afbca36532' and m.queue_state <> 'final';

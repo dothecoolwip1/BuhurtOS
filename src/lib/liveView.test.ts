@@ -100,6 +100,15 @@ describe('buildNowAndNext', () => {
     expect(out[0].items[1].nameA).toBe(TBD);
     expect(out[0].items[0].competition).toBe('Longsword');
   });
+  it('lists NOW, then ON DECK, then IN THE HOLE (Pack 23R: the public page had on deck and in the hole the wrong way round)', () => {
+    const list = [
+      m({ id: 'hole', field: 'Field 1', queueState: 'in_the_hole', scheduledAt: '2026-10-06T15:00:00Z' }),
+      m({ id: 'deck', field: 'Field 1', queueState: 'on_deck', scheduledAt: '2026-10-06T16:00:00Z' }),
+      m({ id: 'now', field: 'Field 1', queueState: 'active', scheduledAt: '2026-10-06T17:00:00Z' })
+    ];
+    expect(buildNowAndNext(list, names)[0].items.map(i => i.id)).toEqual(['now', 'deck', 'hole']);
+    expect(buildNowAndNext([...list].reverse(), names)[0].items.map(i => i.id)).toEqual(['now', 'deck', 'hole']);
+  });
   it('is empty when nothing is running', () => {
     expect(buildNowAndNext([m({ id: '1' })], names)).toEqual([]);
   });
