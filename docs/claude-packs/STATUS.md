@@ -735,7 +735,25 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Critical findings | no day boundary (Sunday fights called Saturday); no stable fight number; running order not durable (one move freezes the line, holds erased by Event day re-plan, filled bracket fights go to the end); `build_schedule('replace')` deletes an ACTIVE fight and its live score events; organizer table-API DELETE/PATCH on matches unaudited; secretary/head marshal have no running-order authority while any scorer can call any fight; no print view; public Now-and-next lists In the hole before On deck |
 | Recommended next pack | 24A0 Match integrity guards (new, small, server only), then 24A3 after the owner decides authored order vs live planner |
 
-## Pack 24A0: match safety guards (2026-10-06) — IMPLEMENTED ON BRANCH, LOCAL ONLY
+## Pack 24A0 + 24A1 reconciled onto main, with two audit follow-ups (2026-10-06): IMPLEMENTED IN REPOSITORY, NOT MERGED, NOT APPLIED TO HOSTED, NOT DEPLOYED
+
+Branch `claude/pack-24-safety-reconcile-grf0gg`, from `main` `643a62a`. This replaces the stranded branch `claude/focus-layout-tablet-safety-b40tc4`, which should not be merged. Full account: `PACK_24A0_MATCH_SAFETY_GUARDS.md` section 0 and the note at the top of `PACK_24A1_FOCUS_LAYOUT.md`. Evidence: `docs/reviews/assets/2026-10-06-pack24-reconcile/`.
+
+| Level | Status |
+| --- | --- |
+| P0 being fixed | `build_schedule('replace')` deletes an active fight and its score events / live score. Reproduced against `main`'s schema (negative control). **Live in production until these migrations are applied.** Hosted `matches` grants, policies and the 11 affected functions were checked read-only and are identical to `main`. |
+| Migrations created (additive) | `20261019000100_pack24a0_match_safety_guards` (was `20261015000100`, which collided with Pack 18.1), `20261019000200_pack24_test_fighter_propagation`, `20261019000300_result_revisions_search_path`. No remote branch has a migration later than `20261018001000`. Fingerprint regenerated. |
+| Reconciled with Pack 18.1 / 22 | `save_queue_plan` patched in place (keeps `can_adjust_queue`); `set_match_queue` authority unchanged (`can_score`), now audited; `set_match_hold` = `can_adjust_queue`; discipline reviews protect a fight; new guard on deleting or re-pointing an entrant of a protected fight |
+| Database gate | `run_all.sh` from zero: **DATABASE GATE PASSED, 49/49 steps** (`main` has 47; the 2 new gates are the difference). Includes `pack24a0_gate` **151** (80 fail on `main`'s schema) and `pack24_followups_gate` **28** (13 fail on `main`'s schema), every older gate, fingerprint, simulation, league verifier, and the concurrency suites |
+| Unit / typecheck / build | Vitest **1388 passed**, 6 skipped (the OBS Companion suites: their dependencies are not installed here); typecheck clean; production build clean |
+| Browser (local stack: Postgres from every migration, PostgREST 12.2.3, the built app, Chromium) | `pack24a1-live` **83/83** (390x844, 768x1024, 1024x768, 1280x900); `pack24a0-live` **40/40**; regressions `eventday-live` 78/78, `pack13-live` 88/88, `pack181-live` 176/176, `device-live` 82/82, `finalize-live` 126/126, `pack16-live` 66/66 (its check 1 read the desk counts before the first load in 1 of 3 runs; the check now waits for the load, then 66/66). `pack22-discipline-live` 55/56: check 14b fails identically on unmodified `main` `643a62a` (pre-existing, not from this branch) |
+| Applied to hosted Supabase | **NO** (deliberately; waits for the owner's review) |
+| Production data modified | **NO** (read-only queries only; `test-stuff-test` and `test-new-test` untouched) |
+| Deployed | **NO** |
+| Not verified | real Supabase Auth / Realtime; physical phones and tablets; iOS safe areas; temporary-device screens in a browser on this branch (unchanged code path; `pack181-live` passes) |
+| Owner decisions open | marshals calling waiting fights (the first 24A0 draft refused it, the Pack 18.1 matrix allows it; kept allowed); cleanup of the two published test events and whether to tag their fighters as test data (read-only query in 24A0 section 0.2) |
+
+## Pack 24A0: match safety guards (2026-10-06): stranded-branch record, superseded by the reconciliation entry above
 
 | Level | Status |
 | --- | --- |
@@ -750,7 +768,7 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Not verified | real Supabase Auth / realtime; Event day and Run at phone size; no hold UI exists to verify |
 | Remaining risks | Event day still saves its plan on open; no hold or bracket-fight-removal screen; `delete_event` of drafts/synthetic events ignores match history; hosted not migrated |
 
-## Pack 24A1: focus layout and tablet safety (2026-10-06) — IMPLEMENTED ON BRANCH, LOCAL ONLY
+## Pack 24A1: focus layout and tablet safety (2026-10-06): stranded-branch record, superseded by the reconciliation entry above
 
 | Level | Status |
 | --- | --- |

@@ -66,8 +66,11 @@ try {
   const desk = await open('phone', 'desk');
   await desk.goto(BASE + DESK);
   await desk.waitForSelector('.desk-counts', { timeout: 30000 });
+  // the counts render (as zeros) before the first read returns: wait for the read, then judge (a race in this check, seen once in three runs)
+  const loaded0 = (c) => /4 expected/.test(c) && /2 not here yet/.test(c) && /0 ready/.test(c);
+  await until(async () => loaded0(await text(desk, '.desk-counts')));
   const counts0 = await text(desk, '.desk-counts');
-  check('1. the desk opens for a check-in desk account with counts (4 expected, 2 not here yet, 0 ready)', /4 expected/.test(counts0) && /2 not here yet/.test(counts0) && /0 ready/.test(counts0), counts0);
+  check('1. the desk opens for a check-in desk account with counts (4 expected, 2 not here yet, 0 ready)', loaded0(counts0), counts0);
   check('2. the desk is phone-sized with no sideways scroll at 390x844', await noSideways(desk));
   await shot(desk, '01-desk-open');
   await desk.getByLabel(/Find a fighter/).fill('brann');

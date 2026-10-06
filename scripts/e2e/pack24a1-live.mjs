@@ -340,7 +340,9 @@ try {
     };
     note('api.refusals', Object.fromEntries(Object.entries(api).map(([k, v]) => [k, v.status])));
     check('the database still refuses: a stranger\'s clock command, check-in staff moving a fight, a scorekeeper or another event\'s desk checking someone in', Object.values(api).every(refused), JSON.stringify(api).slice(0, 600));
-    check('... and Pack 24A0 still holds: the scorekeeper cannot pull a waiting fight on deck', refused(await rpc('scorer', 'set_match_queue', { p_match: '00000000-0000-0000-0000-0000000fd003', p_state: 'on_deck', p_field: 'Field 1' })));
+    // Pack 24A0 (reconciled with Pack 18.1): calling a fight stays a scoring-staff power; what holds is that nobody deletes a fight through the table.
+    const del = await fetch(`${API}/rest/v1/matches?id=eq.00000000-0000-0000-0000-0000000fd003`, { method: 'DELETE', headers: { ...hdr('organizer'), prefer: 'return=representation' } });
+    check('... and Pack 24A0 still holds: not even the organizer can delete a fight through the table', refused({ status: del.status }) && sql(`select count(*) from public.matches where id = '00000000-0000-0000-0000-0000000fd003'`) === '1', String(del.status));
   }
 
   // ============================================================== 9. the normal site keeps its chrome (the focus layout is only where it was applied)

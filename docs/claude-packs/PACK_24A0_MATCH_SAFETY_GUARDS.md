@@ -1,6 +1,70 @@
 # Pack 24A0: Match safety guards
 
-Branch `ccr-1138edea-jygf5t`, on top of Pack 23R (`11f2263`). One additive migration, `20261015000100_pack24a0_match_safety_guards.sql`. **Local only: the migration is not applied to the hosted database and nothing is deployed.**
+Reconciled onto `main` (`643a62a`) on branch `claude/pack-24-safety-reconcile-grf0gg`. Additive migration `20261019000100_pack24a0_match_safety_guards.sql`. Two audit follow-ups, also additive: `20261019000200_pack24_test_fighter_propagation.sql` and `20261019000300_result_revisions_search_path.sql`. **Not applied to the hosted database and not deployed. Until this is merged and applied, the draw-rebuild hazard is live in production.**
+
+Sections 1 to 8 are the original report, written on the stranded branch `claude/focus-layout-tablet-safety-b40tc4` before Pack 18.1 and Pack 22 reached `main`. Wherever section 0 disagrees with them, section 0 wins.
+
+## 0. Reconciliation with main (2026-10-06)
+
+### 0.1 Why the stranded branch could not merge as it was
+
+| Problem | Resolution |
+| --- | --- |
+| Migration `20261015000100` was already taken on `main` and hosted by `pack181_event_sessions`. Pack 22 had been renumbered to `20261018*` and merged. | Renumbered to **`20261019000100`**, with follow-ups at `20261019000200` and `20261019000300`. No branch on the remote has a migration later than `20261018001000`. Hosted applies by name with apply-time versions, so no applied migration was touched. |
+| A full `create or replace` of `save_queue_plan` would have silently undone Pack 18.1's patch to it (`can_adjust_queue`, which lets the Secretary / Scorekeeper plan the queue). | `save_queue_plan` is now **patched in place with an anchor**, the Pack 18.1 technique. Only the hold line changes (`or m.hold_manual`). |
+| `set_match_queue` refused scorekeepers and marshals any call except opening or sending back a called fight. The owner-reviewed Pack 18.1 matrix gives "call fight" to every scoring role (`can_score`), and `pack181_roles_gate` asserts it for a Marshal device. | **Authority unchanged from `main` (`can_score`).** The function only gains the audit row `queue.state_set` (from, to, field before and after, `by` = the caller's role via `private.actor_role`). Narrowing it is listed in 0.5 as an owner decision. |
+| `set_match_hold` was organizer-only. | It uses Pack 18.1's `can_adjust_queue`: organizer, platform owner, organization admin, Secretary / Scorekeeper, Event Admin device. Holding is planning the line, and planning the line is that role. It is not on the device allow-list, so a device cannot call it until that list is deliberately changed. |
+| Pack 22 added `discipline_reviews.match_id ON DELETE RESTRICT`. A replace over such a fight would have failed with a raw foreign-key error. | `private.match_history_reason` adds "a discipline review was lodged about it". |
+| **New gap found while reconciling:** `matches.entry_a/entry_b` are `ON DELETE SET NULL`, and an organizer could still delete or re-point (competition, fighter, team) an `entries` row through the table API. That would blank or rewrite a side of a fight that has been fought. | New trigger `entries_history_guard` refuses it while the entrant is in a fight with protected history (P0001, a sentence an organizer can act on). It allows sanctioned server paths (`private.unlocked`, team merges via `bos.merging`, non-client sessions), seed, status changes and withdrawals. `delete_event` removes matches before entries, so it is unaffected. |
+
+Not changed from the original: protected-history rules, locking and atomic replace, bracket shape validation, table grants on `matches` (only `scheduled_at`, `field`, `duration_minutes` stay writable, and they are audited), holds surviving Event day, the Run tab messages and the public Now and Next order.
+
+Hosted was checked read-only on 2026-10-06. The 11 functions this branch replaces or patches have md5-identical definitions on hosted and in a scratch build of `main`. Hosted `matches` still has the insert, update and delete policies, the DELETE grant and 24 column grants, and has no `hold_manual` column. **So the hazard is live in production.**
+
+### 0.2 Audit follow-ups in the same branch
+
+- **Test fighters are test data** (`20261019000200`). `create_unclaimed_fighter` on a synthetic event now tags the new fighter with the event's own synthetic source. That is one `record_sources` row, the existing Pack 01 model; nothing new was added. It also skips the look-alike check and identity reviews against real fighters, and records `synthetic` in its audit row. `add_entrant_core` refuses a synthetic fighter in a real event. Real events are unchanged. An account's fighter is never marked as test data. **Existing fighters are not backfilled:** which fighters were created for `test-stuff-test` and `test-new-test` is part of the owner's cleanup decision. Read-only query to list them: `select a.subject from public.audit_log a join public.events e on e.id = a.event_id where a.action = 'fighter.created_by_organizer' and private.is_synthetic('event', e.id) and not private.is_synthetic('fighter', a.subject::uuid);`
+- **`private.result_revisions_append_only` search_path** (`20261019000300`). `alter function … set search_path = ''`, the same pattern as Pack 18.1's `camera_log_append_only` fix. The body only raises, so behaviour is unchanged. After it, no function in `public` or `private` lacks a fixed search_path (gate check). It is the only `function_search_path_mutable` finding on hosted today.
+
+### 0.3 Tests on the reconciled branch (local)
+
+| Check | Result |
+| --- | --- |
+| `pack24a0_gate.sql` | **PASSED 151 checks**. New: atomic refusal (same rows, draw settings, scoring and audit count after a refused replace that carried a new draw), the refusal message, discipline review protection, the entrant guard (allowed and refused cases), Scorekeeper and head-marshal calls audited with role, Scorekeeper hold and release, head marshal refused `save_queue_plan`. Soft mode against `main`'s schema: **80 of 151 fail**, including the replace over an active fight succeeding and deleting its score event and live score. See `docs/reviews/assets/2026-10-06-pack24-reconcile/`. |
+| `pack24_followups_gate.sql` (new) | **PASSED 28 checks**. Against `main`'s schema, 13 fail. |
+| Full database gate `run_all.sh` from zero | **DATABASE GATE PASSED, 49/49 steps** (`run_all-database-gate-passed-49.log`) |
+| Browser `scripts/e2e/pack24a0-live.sh` | **40/40** on the reconciled branch: Scorekeeper and head marshal calls expected and audited, Scorekeeper may hold |
+| Gates changed on purpose | `security_gate`, `pack02_gate`, `pack03_gate`, `pack09c_gate`, `simulate_tournament.sql`: the organizer no longer inserts, deletes or restructures matches through the table, so the harness lays out fixtures as the database owner. The draft's changes to `pack09a_gate` and `pack09d_gate`, and its Scorekeeper / marshal `set_match_queue` refusals in `security_gate` and the simulation, were **reverted to `main`'s assertions**. |
+
+### 0.4 Who may do what after the reconciliation (replaces the table in section 3)
+
+| Action | Organizer / org admin / owner | Secretary / Scorekeeper | Head marshal / marshal | Check-in, fighter, other event |
+| --- | --- | --- | --- | --- |
+| Build or replace a fresh draw | ✓ | ✗ | ✗ | ✗ |
+| Replace a draw with protected history | ✗ (refused for everyone, atomic) | – | – | – |
+| Insert, delete or restructure a match through the table | ✗ | ✗ | ✗ | ✗ |
+| Time, field, length through the table | ✓ audited | ✗ | ✗ | ✗ |
+| Delete or re-point an entrant of a protected fight through the table | ✗ | ✗ | ✗ | ✗ |
+| `set_match_queue` (call, reorder, send back, field) | ✓ audited | ✓ audited | ✓ audited (as on `main`) | ✗ |
+| `set_match_hold` | ✓ | ✓ | ✗ | ✗ |
+| `save_queue_plan` | ✓ | ✓ (Pack 18.1, preserved) | ✗ | ✗ |
+
+### 0.5 Owner decisions this leaves open
+
+1. Should marshals and the head marshal stop calling waiting fights by hand (the first 24A0 draft's rule)? Doing so contradicts the Pack 18.1 matrix, so it is not done here.
+2. Cleanup of `test-stuff-test` and `test-new-test`, including whether to tag the fighters created for them as test data (query in 0.2). Not touched.
+3. Applying the three migrations to hosted, after review.
+
+### 0.6 Applying to hosted (only after the owner authorizes it)
+
+Apply the committed files in this order, each by name: `20261019000100_pack24a0_match_safety_guards`, `20261019000200_pack24_test_fighter_propagation`, `20261019000300_result_revisions_search_path`. Each runs in one transaction. The two anchor patches (`save_queue_plan`, `add_entrant_core`) raise and roll back if hosted's body differs from the expected text. On 2026-10-06 both bodies were md5-identical to the repository. Afterwards:
+
+- `select polname from pg_policy where polrelid = 'public.matches'::regclass;` should return only `matches_read` and `matches_organizer_update`.
+- `select privilege_type, column_name from information_schema.column_privileges where table_schema = 'public' and table_name = 'matches' and grantee = 'authenticated' and privilege_type <> 'SELECT';` should return only UPDATE on `scheduled_at`, `field` and `duration_minutes`.
+- The security advisor should show no `function_search_path_mutable`.
+- Run `pack24a0_gate.sql` and `pack24_followups_gate.sql` on hosted inside a transaction that is rolled back, as was done for the Pack 18.1 gates.
+
+---
 
 The rule this pack enforces: *a live tournament match must not be silently destroyed, structurally corrupted, or materially changed through an unaudited shortcut.* It does not build the running order (24A3), the secretary role (24A2) or any UI beyond what the rules need.
 
