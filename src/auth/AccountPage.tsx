@@ -14,8 +14,11 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 import { useAuth } from './AuthContext';
 import { usePlatformRole } from './usePlatformRole';
 import { SignIn } from './SignIn';
+import { ChangePassword } from './AuthPages';
 import { NotificationSettings } from '../components/NotificationSettings';
 import { InstallCard } from '../components/InstallCard';
+
+const ROLE_CHIP: Record<string, string> = { head_marshal: 'Head marshal', marshal: 'Marshal', scorekeeper: 'Scorekeeper', medic: 'Medic', check_in: 'Check-in desk', inspector: 'Armour inspector' };
 
 const Chevron = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>;
 
@@ -93,7 +96,7 @@ function SignedIn({ session }: { session: Session }) {
           <p className="muted" style={{ overflowWrap: 'anywhere' }}>{email}</p>
           <p className="acct-roles">
             {isOwner && <Chip tone="brass">Super admin</Chip>}
-            {['head_marshal', 'marshal', 'scorekeeper', 'medic'].filter(r => myRoles.has(r)).map(r => <Chip key={r} tone="steel">{r === 'head_marshal' ? 'Head marshal' : r.charAt(0).toUpperCase() + r.slice(1)}</Chip>)}
+            {['head_marshal', 'marshal', 'scorekeeper', 'medic', 'check_in', 'inspector'].filter(r => myRoles.has(r)).map(r => <Chip key={r} tone="steel">{ROLE_CHIP[r] ?? r}</Chip>)}
             {isOrganizer && !isOwner && <Chip tone="steel">Organizer</Chip>}
             {orgAdmin.data && <Chip tone="steel">Organization admin</Chip>}
             {!isOwner && captainState === 'found' && <Chip>Captain</Chip>}
@@ -142,6 +145,10 @@ function SignedIn({ session }: { session: Session }) {
         <nav className="panel acct-list" aria-label="Account details">
           <Row to="/welcome?edit=1&next=%2Faccount" title="Profile details" sub="Your name, how you take part, where you are" />
         </nav>
+        <details className="panel acct-pw" id="password">
+          <summary><b>Password</b><span className="acct-sub">Change your password, or set one if you sign in with a code or Google</span></summary>
+          <ChangePassword email={email} />
+        </details>
       </section>
 
       <InstallCard />

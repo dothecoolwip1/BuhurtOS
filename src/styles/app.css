@@ -1241,3 +1241,27 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .ready-strip b{font-weight:700}
 .checkin-qr{display:grid;justify-items:center;gap:8px}
 .checkin-qr svg{width:min(220px,70vw);height:auto;background:#fff;padding:10px;border-radius:var(--r-sm)}
+
+/* Pack 18: sign-in, reset and change password (phone first) */
+.auth-card{max-width:440px;margin:24px auto;width:100%;min-width:0}
+.auth-form{display:grid;gap:12px;min-width:0}
+.auth-form .btn{min-height:48px}
+.auth-form input{font-size:16px}
+.pw-row{display:flex;gap:6px;align-items:stretch;min-width:0}
+.pw-row input{flex:1 1 auto;min-width:0}
+.pw-toggle{flex:none;min-width:64px;min-height:44px;border-radius:8px;border:1px solid var(--line);background:var(--raised);font-weight:600;font-size:14px;color:var(--ink)}
+.pw-toggle[aria-pressed="true"]{background:var(--ground)}
+.auth-forgot{justify-self:end;min-height:44px;padding:0 4px}
+.auth-switch{margin:0;text-align:center;font-size:15px}
+.auth-switch .linklike{min-height:44px;padding:0 4px}
+.auth-error{color:var(--live);font-weight:600;margin:0}
+.auth-other{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:14px;margin-top:4px}
+.auth-other .btn{min-height:48px}
+.auth-other p{margin:0;text-align:center;font-size:14px}
+.check-row{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted);min-height:44px}
+.check-row input{width:20px;height:20px;flex:none;margin-top:2px}
+.acct-pw{padding:0 18px 4px}
+.acct-pw>summary{display:grid;gap:2px;padding:15px 0;min-height:56px;cursor:pointer;list-style:none}
+.acct-pw>summary::-webkit-details-marker{display:none}
+.acct-pw[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
+.acct-pw .auth-form{padding-bottom:14px}

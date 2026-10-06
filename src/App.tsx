@@ -20,6 +20,7 @@ import { RulesPage } from './pages/RulesPage';
 import { RegisterPage } from './registration/RegisterPage';
 import { ManagePage } from './pages/ManagePage';
 import { AccountPage } from './auth/AccountPage';
+import { ResetPasswordPage, SignInPage } from './auth/AuthPages';
 import { ClaimProfilePage } from './pages/ClaimProfilePage';
 import { TestLoginPage } from './auth/TestLoginPage';
 import { WelcomePage } from './pages/WelcomePage';
@@ -82,6 +83,8 @@ export function App() {
         <Route path="platform/activity" element={<Navigate to="/platform/analytics" replace />} />
         <Route path="platform/bugs" element={<PlatformBugsPage />} />
         <Route path="account" element={<AccountPage />} />
+        <Route path="sign-in" element={<SignInPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
         <Route path="claim-profile" element={<ClaimProfilePage />} />
         <Route path="welcome" element={<WelcomePage />} />
         <Route path="test-login" element={<TestLoginPage />} />
