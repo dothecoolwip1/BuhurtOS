@@ -117,6 +117,10 @@ try {
   await own.getByText('How BuhurtOS knows this edition').click();
   check('H10. its provenance: why it is this edition, and both archive file names of the byte-identical pair, imported once',
     (await has(own, 'Duels Regulations V2024.12.pdf')) && (await has(own, 'Duels Regulations V2024.12(1).pdf')) && (await has(own, 'same edition (identical files), imported once')) && (await has(own, 'VER. 2024.12')));
+  const fileBtn = own.getByRole('link', { name: /Open the archived file of this edition/ });
+  check('H10b. its file button opens the ARCHIVED file of this edition (its Drive copy), never the current document',
+    (await fileBtn.count()) === 1 && /^https:\/\/drive\.google\.com\/file\/d\/[A-Za-z0-9_-]+\/view$/.test(await fileBtn.getAttribute('href') ?? '')
+    && (await fileBtn.getAttribute('href')) !== sql(`select source_url from public.ruleset_versions where id = '${verId('tournament/duel-regulations', '26.4')}'`), await fileBtn.getAttribute('href').catch(() => ''));
   check('H11. its contents flag what still needs checking against the archived page', (await own.locator('.rl-toc .chip', { hasText: 'Check' }).count()) >= 1);
   await shot(own, 'h02-earlier-edition', true);
   check('H12. no sideways scroll on the earlier edition', (await sideways(own)) <= 0);

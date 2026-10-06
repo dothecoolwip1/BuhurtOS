@@ -41,7 +41,7 @@ export function OfficialRulesetPicker({ competitionId, league, value, finished }
     .filter(x => x.d && (sample || !x.d.synthetic || x.v.id === current) && (x.d.applies_to.length === 0 || x.d.applies_to.includes(league)) && (x.d.kind === 'rules' || x.d.kind === 'regulations' || x.v.id === current))
     .sort((a, b) => a.d.name.localeCompare(b.d.name));
   if (!options.length && !current) return null;
-  const label = linked && linkedDoc ? `${linkedDoc.name} ${linked.version}` : null;
+  const label = linked && linkedDoc ? `${linkedDoc.name} ${linked.version}${linked.historical ? ' (earlier edition, not in force)' : ''}` : null;
   if (finished) return label || docList ? <>{label && <p className="src" style={{ margin: 0 }}>Fought under <Link className="lnk" to={`/rules/doc/${linkedDoc!.slug}?v=${linked!.id}`}>{label}</Link></p>}{docList}</> : null;
   const save = async (next: string | null) => {
     setBusy(true); setMsg(null);
@@ -53,7 +53,7 @@ export function OfficialRulesetPicker({ competitionId, league, value, finished }
     <label className="field-in" style={{ margin: 0 }}>Official ruleset in BuhurtOS (optional)
       <select value={current ?? ''} disabled={busy} onChange={e => void save(e.target.value || null)} aria-describedby={`rv-${competitionId}`}>
         <option value="">Not linked</option>
-        {options.map(({ v, d }) => <option key={v.id} value={v.id}>{d.name} · {v.version}{v.status !== 'published' ? ` (${v.status})` : ''}{d.synthetic ? ' · test' : ''}</option>)}
+        {options.map(({ v, d }) => <option key={v.id} value={v.id}>{d.name} · {v.version}{v.historical ? ' (earlier edition)' : v.status !== 'published' ? ` (${v.status})` : ''}{d.synthetic ? ' · test' : ''}</option>)}
       </select>
       <span id={`rv-${competitionId}`} className="src">{msg ?? (label ? <>Officials can open <Link className="lnk" to={`/rules/doc/${linkedDoc!.slug}?v=${linked!.id}`}>{label}</Link> from the rules. It is fixed once the competition is finished.</> : 'Links the competition to the exact rules text it is fought under.')}</span>
     </label>

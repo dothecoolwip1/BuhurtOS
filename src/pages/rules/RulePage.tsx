@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { appliesLabel, RuleRow, SourceNote, STATUS_WORD, statusWords, VersionChip } from '../../components/rules/RuleBits';
 import { RuleBody } from '../../components/rules/RuleBody';
-import { compareVersions, currentVersion, defaultVersion, fetchConflicts, fetchRevisions, isHistorical, officialLink, sameRuleElsewhere, type RuleEntry, type RulesIndex } from '../../data/rules';
+import { chronoCompare, currentVersion, defaultVersion, fetchConflicts, fetchRevisions, isHistorical, officialLink, sameRuleElsewhere, type RuleEntry, type RulesIndex } from '../../data/rules';
 import { sameWords, wordDiff } from '../../lib/rules/diff';
 import { useAsync } from '../../lib/useAsync';
 import { useRules } from '../../lib/rules/useRules';
@@ -30,8 +30,8 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
   const elsewhere = sameRuleElsewhere(idx, p);
   const inCurrent = cur && cur.id !== v.id ? elsewhere.find(x => x.version.id === cur.id) : null;
   // the current release's text of this rule (in force, or for the owner still in review): what an earlier edition is compared with first
-  const curText = defaultVersion(idx, e.doc.id);
-  const inCurText = curText && curText.id !== v.id && !isHistorical(curText) ? elsewhere.find(x => x.version.id === curText.id) ?? null : null;
+  const curText = defaultVersion(idx, e.doc.id);   // never a historical edition
+  const inCurText = curText && curText.id !== v.id ? elsewhere.find(x => x.version.id === curText.id) ?? null : null;
   const revisions = useAsync(() => fetchRevisions(p.id), [p.id]);
   const conflicts = useAsync(() => fetchConflicts([v.id]), [v.id]);
   const mine = (conflicts.data ?? []).filter(c => c.provision_a === p.id || c.provision_b === p.id || (!c.provision_a && !c.provision_b));
@@ -54,7 +54,7 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
       </nav>
 
       {isHistorical(v) && (
-        <p className="rl-banner rl-hist" role="note"><b>Earlier edition ({v.version}): not the rule in force.</b> {inCurText ? <>The current wording is in {curText!.version}: <Link className="lnk" to={`/rules/r/${inCurText.id}`}>open {inCurText.provision.number ?? 'it'}</Link>.</> : curText ? <>This rule number is not in the current version ({curText.version}).</> : null} {v.status === 'superseded' ? 'Kept so changes over time can be read.' : 'Not published: the platform owner sees it for review only.'}</p>
+        <p className="rl-banner rl-hist" role="note"><b>Earlier edition ({v.version}): not the rule in force.</b> {inCurText ? <>The current wording is in {curText!.version}: <Link className="lnk" to={`/rules/r/${inCurText.id}`}>open {inCurText.provision.number ?? 'it'}</Link>.</> : curText ? <>This rule number is not in the current version ({curText.version}).</> : <>The current version of this document is not published in BuhurtOS yet; check the official document.</>} {v.status === 'superseded' ? 'Kept so changes over time can be read.' : 'Not published: the platform owner sees it for review only.'}</p>
       )}
       {!isHistorical(v) && v.status === 'superseded' && (
         <p className="rl-banner" role="note"><b>Older version ({v.version}).</b> {inCurrent ? <>The wording in force is in {cur!.version}: <Link className="lnk" to={`/rules/r/${inCurrent.id}`}>open {inCurrent.provision.number ?? 'it'}</Link>.</> : cur ? <>This rule number is not in the version in force ({cur.version}).</> : null} Results decided under {v.version} keep this wording.</p>
@@ -68,7 +68,7 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
       </header>
       {(p.topics ?? []).includes('changelog') && <p className="rl-banner" role="note">This is the document's own change log (what changed between its versions). It is not a rule.</p>}
       {p.body ? <RuleBody body={p.body} />
-        : p.kind === 'figure' ? <p className="rl-banner" role="note"><b>{(p.topics ?? []).includes('cover') ? 'Cover page.' : 'Pictures only.'}</b> This page of the official document has pictures and no text to show here. {link ? 'Open the official document to see it.' : ''}</p>
+        : p.kind === 'figure' ? <p className="rl-banner" role="note"><b>{(p.topics ?? []).includes('cover') ? 'Cover page.' : 'Pictures only.'}</b> This page of the official document has pictures and no text to show here. {link ? (isHistorical(v) ? 'Open the archived file to see it.' : 'Open the official document to see it.') : ''}</p>
         : <p className="src">This heading has no text of its own; its rules are listed below.</p>}
       {p.body && p.has_figures && <p className="rl-banner" role="note"><b>The official {pages ?? 'page'} also {p.page_from && p.page_to && p.page_to !== p.page_from ? 'have' : 'has'} pictures</b> (examples, drawings or photos) that are not reproduced here. Check them in the official document.</p>}
       {p.review_status === 'needs_review' && <p className="rl-banner rl-warn" role="note"><b>Check the official document.</b> {p.review_note ?? 'This part could not be imported with confidence.'}</p>}
@@ -82,7 +82,7 @@ function RuleView({ idx, e }: { idx: RulesIndex; e: RuleEntry }) {
         <div><dt>Read from</dt><dd>{p.extraction === 'ocr' ? 'An image of the page (the official file has no text here), read by OCR and checked against the page image' : p.extraction === 'mixed' ? 'The official file’s text, and OCR of page images checked against them' : 'The official file’s own text'}</dd></div>
         <div><dt>Checked</dt><dd>{p.review_status === 'verified' ? `Compared with the official page during the import${p.review_note ? `: ${p.review_note}` : ''}` : p.review_status === 'needs_review' ? 'Needs checking against the official document' : p.review_note && /OCR corrections/.test(p.review_note) ? 'Imported from the official file; OCR misreadings corrected against the page image' : 'Imported from the official file; every line of the page is accounted for'}</dd></div>
       </dl>
-      {link && <a className="btn btn-line rl-official" href={link} target="_blank" rel="noopener noreferrer">Open the official document{pages ? ` at ${pages}` : ''} ↗</a>}
+      {link && <a className="btn btn-line rl-official" href={link} target="_blank" rel="noopener noreferrer">{isHistorical(v) ? `Open the archived file of this edition${pages ? ` (${pages})` : ''} ↗` : `Open the official document${pages ? ` at ${pages}` : ''} ↗`}</a>}
 
       {(revisions.data?.length ?? 0) > 0 && (
         <section className="rl-block" aria-labelledby="rl-corr">
@@ -135,7 +135,7 @@ function Compare({ e, others, preferred }: { e: RuleEntry; others: RuleEntry[]; 
   const [withId, setWithId] = useState<string>('');
   const other = others.find(x => x.id === withId) ?? null;
   if (!others.length) return null;
-  const [older, newer] = other && compareVersions(other.version, e.version) > 0 ? [other, e] : [e, other];
+  const [older, newer] = other && chronoCompare(other.version, e.version) < 0 ? [other, e] : [e, other];
   const text = (x: RuleEntry) => [x.provision.title, x.provision.body].filter(Boolean).join('\n');
   const parts = other ? wordDiff(text(older!), text(newer!)) : null;
   return (

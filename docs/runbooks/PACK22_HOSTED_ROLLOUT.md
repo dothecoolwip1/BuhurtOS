@@ -4,7 +4,7 @@ Project `mvbxlebznlgroptwwdsm`. Nothing below has been done. Apply only when the
 
 ## Order
 
-Apply the files in this order (nine Pack 22 migrations). Every file is additive.
+Apply the files in this order (ten Pack 22 migrations). Every file is additive.
 
 1. Confirm hosted already has `club_membership_dues_voting` and `club_fee_waiver_and_agm` (it did on 2026-10-06). Pack 22 does not depend on them,
    but its migration versions follow them.
@@ -38,6 +38,11 @@ Apply the files in this order (nine Pack 22 migrations). Every file is additive.
 10. `20261015000900_rules_bi_history_archive_2026_10_06.sql`: **about 970 KB of data**, the 37 earlier editions **in review** (1357 provisions).
     Same size caveat as the current release's data file (SQL Editor or `psql -f` if the migration tool rejects it). Idempotent: a second run
     reports "unchanged".
+11. `20261015001000_pack22_historical_qa_fixes.sql`: the QA fixes. Functions replaced only:
+    - the version guard (historical editions only through the controlled functions);
+    - both importers (duplicate checks);
+    - `publish_historical_version` (no successor; keeps the edition's note);
+    - the two competition guards and the two citation checks (an earlier edition can be neither a competition's ruleset nor cited).
 
 ## Read-only checks afterwards
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildRulesIndex, compareVersions, currentVersion, defaultVersion, inSearchScope, isCurrentText, sameRuleElsewhere, versionName, type RuleDocument, type RuleProvision, type RuleVersion, type RulesData } from './rules';
+import { buildRulesIndex, chronoCompare, compareVersions, officialLink, currentVersion, defaultVersion, inSearchScope, isCurrentText, sameRuleElsewhere, versionName, type RuleDocument, type RuleProvision, type RuleVersion, type RulesData } from './rules';
 
 // One document with its version in force, an older current-release version, and three earlier (historical) editions, one of them still in review.
 const doc: RuleDocument = {
@@ -65,8 +65,10 @@ describe('historical editions beside the current rules', () => {
     const owner = buildRulesIndex({ ...data, versions: [ver('h9', '2024.12', 'in_review', { historical: true, edition_seq: 1 }), ver('cr', '26.4', 'in_review')], provisions: [] });
     expect(currentVersion(owner, 'd1')).toBeNull();
     expect(defaultVersion(owner, 'd1')?.id).toBe('cr');
-    const onlyHistory = buildRulesIndex({ ...data, versions: [ver('h9', '2024.12', 'in_review', { historical: true, edition_seq: 1 })], provisions: [] });
-    expect(defaultVersion(onlyHistory, 'd1')?.id).toBe('h9');
+    // only earlier editions readable (e.g. published as historical while the current release is still in review): the page opens on none of them
+    const onlyHistory = buildRulesIndex({ ...data, versions: [ver('h9', '2024.12', 'superseded', { historical: true, edition_seq: 1 })], provisions: [] });
+    expect(defaultVersion(onlyHistory, 'd1')).toBeNull();
+    expect(currentVersion(onlyHistory, 'd1')).toBeNull();
   });
 
   it('rows from before historical editions existed (no historical field) still read as current', () => {
@@ -79,5 +81,24 @@ describe('historical editions beside the current rules', () => {
     const other: RuleDocument = { ...doc, id: 'd2', slug: 'other', name: 'Other body Duel Regulations', inventory_key: 'other/duel-regulations' };
     const withOther = buildRulesIndex({ ...data, documents: [doc, other], versions: [...versions, { ...ver('o1', '1.0', 'published'), ruleset_id: 'd2' }], provisions: [...data.provisions, prov('p-o1', 'o1', 'Another body’s rule with the same key.')] });
     expect(sameRuleElsewhere(withOther, withOther.provisionById.get('p-h1')!).map(e => e.version.id)).toEqual(['cur', 'old', 'h3', 'h2']);
+  });
+
+  it('compare names the OLDER side by what the versions are, not by how they are listed (withdrawn, in review, historical)', () => {
+    const older = (a: RuleVersion, b: RuleVersion) => (chronoCompare(a, b) < 0 ? a.version : b.version);
+    // a withdrawn earlier edition is still older than the next edition
+    expect(older(ver('w', '26.1', 'withdrawn', { historical: true, edition_seq: 3, withdrawn_reason: 'x' }), ver('h', '2025.03', 'superseded', { historical: true, edition_seq: 2 }))).toBe('2025.03');
+    // a withdrawn current version published after an older one is newer
+    expect(older(ver('c', '26.4', 'withdrawn', { published_at: '2026-09-01T00:00:00Z', withdrawn_reason: 'x' }), ver('o', '26.2', 'superseded', { published_at: '2026-03-01T00:00:00Z' }))).toBe('26.2');
+    // for the owner: the next version still in review is newer than the one in force
+    expect(older(ver('n', '26.5', 'in_review'), ver('p', '26.4', 'published', { published_at: '2026-09-01T00:00:00Z' }))).toBe('26.4');
+    // every historical edition is older than any current-release version
+    expect(older(ver('cr', '26.4', 'in_review'), ver('hx', '26.2', 'superseded', { historical: true, edition_seq: 9 }))).toBe('26.2');
+  });
+
+  it('an earlier edition links to its own archived file, never to the current document (and no page anchor on a Drive file)', () => {
+    const siteDoc = { ...doc, source_host: 'site_file' as const, official_url: 'https://example.org/current.pdf' };
+    expect(officialLink(siteDoc, ver('h', '2024.06', 'superseded', { historical: true, edition_seq: 1, source_url: 'https://drive.google.com/file/d/abc/view' }), 4)).toBe('https://drive.google.com/file/d/abc/view');
+    expect(officialLink(siteDoc, ver('h', '2024.06', 'superseded', { historical: true, edition_seq: 1, source_url: null }), 4)).toBeNull();
+    expect(officialLink(siteDoc, ver('c', '26.4', 'published', { source_url: 'https://example.org/current.pdf' }), 4)).toBe('https://example.org/current.pdf#page=4');
   });
 });

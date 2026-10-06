@@ -508,15 +508,67 @@ The same extraction, OCR, structuring and content hashes as the current release 
 - **Platform › Rules:** earlier editions are listed apart, with their own "Publish as earlier edition" and confirm step. "Publish all ready" never
   includes them.
 
+### Skeptical QA of the historical editions, and what it changed
+
+Two passes, both read-only, then fixes:
+- an independent review agent probed the database (`bos_hist`, every write rolled back), the source files, the importer and the UI code;
+- my own pass covered the browser side: cache, navigation, refresh and compare.
+
+All 11 confirmed findings are fixed. Each fix has a regression test, and each test was shown to fail without its fix.
+
+The fixes are in migration `20261015001000`, `history.ts`, the regenerated `20261015000900` (only each edition's `source_url` and `title`
+changed; all provisions are byte-identical) and the UI.
+
+| # | Severity | Finding | Fix |
+| --- | --- | --- | --- |
+| 1 | Medium | Earlier editions linked the **current** document's file (and, for a site PDF, the archive's page number inside the 2026 file) | Each edition links its own archived file (`https://drive.google.com/file/d/<id>/view`, from its first archive file); no page anchor; the button says "Open the archived file of this edition"; gate + unit + browser H10b |
+| 2 | Medium | A competition could be linked to a published earlier edition, shown only as "(superseded)" | Both competition guards refuse an earlier edition; the picker labels one "earlier edition" anyway; gate |
+| 3 | Medium-low | With no current version readable, a rule page called an earlier edition "the current version" | A document's default version is never historical; an honest message when no current text is readable; the document page lists the earlier editions to open on purpose; unit |
+| 4 | Low-medium | Compare could name the wrong side as older (withdrawn, or in review) | `chronoCompare`: editions by their order, every edition older than the current release, current versions by publication; unit |
+| 5 | Low-medium | Earlier-edition rules could be cited through the RPCs (sanctions, suspensions, findings, reviews, field tablet) without a label on every screen | `check_cited_provision` and `lyst_cite_rule` refuse an earlier edition; current citations are unchanged; gate |
+| 6 | Low | Publishing an edition stored a permanent successor that could point at an unpublished version; the publish note replaced the label evidence | No successor is recorded for an edition (order = `edition_seq`); the edition keeps its note, and the owner's note goes to the audit; gate |
+| 7 | Low | The "one file, one edition / one text, one version" rule was only partly enforced in the database | Both importers check every version: archive files shared across editions or documents, the source file among the edition's files, and current versus historical text; gate |
+| 8 | Low | The owner's direct table access could insert an edition, re-order one, or publish one past the review gates; published edition metadata was not frozen | Only the controlled functions can load, re-order or publish an edition (a transaction-local flag they set); a published edition is frozen entirely; gate |
+| 9 | Low | Docs said the archive was not imported; edition titles came from PDF metadata ("Weapons requirements V2024.12.13 - Google Docs") | Source README corrected; titles are the printed name and label; gate |
+| 10 | Medium (mine) | The rules library saved in the browser was not tied to the account: after the owner signed out on a shared tablet, the next person saw versions in review (current and historical) until the background refresh, which is skipped for a copy under a minute old | Saved copies are stamped with their account and shown only to it; unit + browser H15b–d (29/31 without the fix, 31/31 with it) |
+| 11 | Low (mine) | "This rule in other versions" and Compare matched by rule key only, which nothing guaranteed to be unique across documents | Same document only; unit |
+
+**Rejected or accepted, with evidence:**
+- **Cover labels where the content is newer** (Wolf Ribs 2025.02, Aventails 2025.02, Side-hinged 2025.02: their change logs head "V2025.03"):
+  - kept as printed on the cover; each disagreement is recorded on the edition (`note`, `edition_evidence`);
+  - choosing the change log's label instead is an owner decision, not a fix.
+- **The Weapons/Shield Chart "2024.12.13" is a mixed-state export** (its shields sheet reads V2025.03): labelled by its first sheet, as printed, with the
+  mixed state recorded. Same decision.
+- **No database check that a future archive edition is older than a superseded current version:** not needed for this archive, because every
+  edition is older than its document's current version (QA verified each). The next archive import is checked by `history.ts reconcile`, and the
+  order shown is `edition_seq`. Accepted.
+- **Owner direct table writes to current (non-historical) versions** can still skip the publish function: a pattern that predates the history work,
+  owner-only, and out of this pack's scope. Accepted and recorded.
+
+**Checked and sound by QA:**
+- **No path makes an earlier edition the version in force.**
+- **Visibility:** anon and strangers see nothing in review.
+- **Files:**
+  - the 42 archive PDFs match `SHA256SUMS.txt`;
+  - exactly 4 byte-identical pairs;
+  - the held file is word for word page 2 of the chart.
+- **Labels and mappings:**
+  - all 37 cover labels were re-read independently;
+  - every edition's best text match is its mapped document (Weapon requirements 0.98);
+  - edition order agrees with every change log, and every edition is older than its current version.
+- **Search and pickers:** default search, document defaults, the officials' picker and "Publish all ready" are current-only.
+- **Current release:** byte-identical; all 1281 provision hashes match.
+- **Determinism:** both generated migrations regenerate byte for byte.
+
 ### Evidence (historical editions)
 
 | Level | Result |
 | --- | --- |
 | Importer tests | `scripts/rules` 32/32, including decision and edition checks and reproducibility of all 37 editions |
-| Unit tests | Vitest **1052/1052**: rules history scope, order and defaults 6; word diff 5. Typecheck clean. Build OK |
-| Database gate | `run_all.sh` **DATABASE GATE PASSED**: `pack22_history_gate` **46**, `pack22_gate` 139, `pack22_discipline_gate` 119, `pack22_qa_fixes_gate` 43; fingerprint 2563 lines |
-| Browser (real Chromium, built app, real Postgres + PostgREST, 390×844 and desktop) | `pack22-history-live` **28/28**, `pack22-live` 71/71, `pack22-discipline-live` 56/56, `pack13-live` 88/88 |
-| Determinism | migration `20261015000900` regenerates byte for byte; `20261015000400` (current release) also unchanged |
+| Unit tests | Vitest **1057/1057** after QA: rules history 9, word diff 5, saved-copy viewer 2. Typecheck clean. Build OK |
+| Database gate | `run_all.sh` **DATABASE GATE PASSED** after QA: `pack22_history_gate` **64** (it fails on the schema without `20261015001000`), `pack22_gate` 139, `pack22_discipline_gate` 119, `pack22_qa_fixes_gate` 43; fingerprint 2563 lines |
+| Browser (real Chromium, built app, real Postgres + PostgREST, fresh databases and browser contexts, 390×844 and desktop) | after QA: `pack22-history-live` **32/32** (adds the shared-device cache and archived-file checks), `pack22-live` 71/71, `pack22-discipline-live` 56/56, `pack13-live` 88/88 |
+| Determinism | after QA, `20261015000900` regenerates byte for byte from the committed history files (regenerated once for finding 1; it has never been applied outside local throwaway databases), and `20261015000400` (current release) is unchanged |
 | Current release | fingerprint of the 42 current versions (document = label = content hash) `2ee64069ffe03f4d73876825ec7d32a8`, identical before and after history |
 | Hosted / published / deployed | **NO / NO / NO** |
 

@@ -130,11 +130,16 @@ select t.as_admin();
 select t.expect_error('an edition with provisions still to check cannot be published (Duel Regulations 2024.12 has open items)', $$select t.as_user(t.u(1)); select public.publish_historical_version(t.v('tournament/duel-regulations', '2024.12'), 'too early')$$, 'P0001');
 select t.as_admin();
 select t.as_user(t.u(1));
-select t.expect_eq('the owner publishes a reviewed edition AS HISTORICAL (Tournament Structure 2024.06, nothing open): it points at the current version',
-  (public.publish_historical_version(t.v('tournament/tournament-structure', '2024.06'), 'gate') ->> 'next')::uuid = t.v('tournament/tournament-structure', 'January 2026'), true);
-select t.expect_eq('… and an older edition points at the next edition, not the current one (Buhurt Rules 2024.12.13 → 2026.1.1)',
-  (public.publish_historical_version(t.v('marshal/buhurt-rules', '2024.12.13'), 'gate') ->> 'next')::uuid = t.v('marshal/buhurt-rules', '2026.1.1'), true);
+select t.expect_eq('the owner publishes a reviewed edition AS HISTORICAL (Tournament Structure 2024.06, nothing open)',
+  public.publish_historical_version(t.v('tournament/tournament-structure', '2024.06'), 'gate') ->> 'status', 'ok');
+select t.expect_eq('… and an older edition while the next one is still in review (Buhurt Rules 2024.12.13, 2026.1.1 in review)',
+  public.publish_historical_version(t.v('marshal/buhurt-rules', '2024.12.13'), 'gate note for the audit') ->> 'status', 'ok');
 select t.as_admin();
+select t.expect_eq('QA 6: a published edition records no successor (never a permanent pointer to an unpublished version), and keeps its own note (the label evidence)',
+  (select count(*) filter (where successor_version_id is null) || '/' || bool_and(note ~ 'VER\.') from public.ruleset_versions where id in (t.v('tournament/tournament-structure', '2024.06'), t.v('marshal/buhurt-rules', '2024.12.13'))),
+  '2/true');
+select t.expect_eq('QA 6: the owner''s publish note is kept in the audit instead', (select details ->> 'note' from public.audit_log where action = 'rules.historical_version_published' and subject = t.v('marshal/buhurt-rules', '2024.12.13')::text), 'gate note for the audit');
+select t.expect_error('QA 8: a published edition''s note can no longer be changed', $$update public.ruleset_versions set note = 'rewritten' where id = t.v('tournament/tournament-structure', '2024.06')$$, 'P0001');
 select t.expect_eq('published historical editions read as older versions (superseded, historical), audited',
   (select string_agg(status, ',' order by version) from public.ruleset_versions where id in (t.v('tournament/tournament-structure', '2024.06'), t.v('marshal/buhurt-rules', '2024.12.13')))
   || '/' || (select count(*) from public.audit_log where action = 'rules.historical_version_published'), 'superseded,superseded/2');
@@ -152,6 +157,8 @@ select t.expect_error('a published edition is never re-imported over', $$select 
 
 -- ---------------------------------------------------------------- 6. citations
 select t.expect_error('a rule from an edition still in review cannot be cited', $$select private.check_cited_provision(t.p('tournament/duel-regulations', '2024.12', 'duel-regulations:5.2'), null)$$, '22023');
+select t.expect_error('QA 5: nor a rule from a PUBLISHED earlier edition (sanctions, suspensions, findings and reviews cite the current release)',
+  $$select private.check_cited_provision((select id from public.rule_provisions where ruleset_version_id = t.v('marshal/buhurt-rules', '2024.12.13') and number is not null order by ordinal limit 1), null)$$, '22023');
 select t.expect_eq('a current rule is cited from the current version, as before', private.check_cited_provision(t.p('tournament/duel-regulations', '26.4', 'duel-regulations:5.2'), null), t.v('tournament/duel-regulations', '26.4'));
 -- a cited rule in the discipline log says when it is from an earlier edition
 insert into public.events (id, slug, name, status, starts_on, ends_on) values ('00000000-0000-0000-0000-0000000e7e01', 'p22h-e1', 'History Open', 'published', current_date, current_date);
@@ -171,6 +178,43 @@ select t.expect_eq('the discipline log names a cited historical rule as an earli
   (select string_agg((x ->> 'rule_version') || ':' || (x ->> 'rule_version_historical'), ',' order by x ->> 'rule_version') from jsonb_array_elements(public.event_discipline_log('00000000-0000-0000-0000-0000000e7e01')) x),
   '2024.12.13:true,26.4:false');
 select t.as_admin();
+
+-- ---------------------------------------------------------------- QA fixes (migration 20261015001000)
+select t.expect_error('QA 5: the field tablet cannot cite a published earlier edition either', $$select t.as_user(t.u(1)); select public.lyst_cite_rule(gen_random_uuid(), '00000000-0000-0000-0000-0000000b7b02',
+  (select id from public.rule_provisions where ruleset_version_id = t.v('marshal/buhurt-rules', '2024.12.13') and number is not null order by ordinal limit 1))$$, '22023');
+select t.as_admin();
+select t.expect_error('QA 2: a competition cannot be fought under an earlier edition (its ruleset)', $$update public.competitions set ruleset_version_id = t.v('marshal/buhurt-rules', '2024.12.13') where id = '00000000-0000-0000-0000-0000000c7c01'$$, '22023');
+select t.expect_error('QA 2: … nor have one among its documents', $$insert into public.competition_rulesets (competition_id, ruleset_version_id) values ('00000000-0000-0000-0000-0000000c7c01', t.v('marshal/buhurt-rules', '2024.12.13'))$$, '22023');
+select t.expect_eq('QA 1: every edition links its own archived file (a Drive file), never the current document''s file',
+  (select count(*) filter (where h.source_url ~ '^https://drive\.google\.com/file/d/[A-Za-z0-9_-]+/view$') || '/' || count(*) filter (where h.source_url = c.source_url)
+     from public.ruleset_versions h left join public.ruleset_versions c on c.ruleset_id = h.ruleset_id and not c.historical where h.historical), '37/0');
+select t.expect_eq('QA 1: the link is the edition''s first archive file', (select source_url = 'https://drive.google.com/file/d/' || (source_files -> 0 ->> 'drive_file_id') || '/view' from public.ruleset_versions where id = t.v('tournament/duel-regulations', '2024.12')), true);
+select t.expect_eq('QA 9: an edition''s title is the name it prints, with its label (not the file''s metadata)',
+  (select string_agg(title, ' | ' order by title) from public.ruleset_versions where id in (t.v('authenticity/weapon-requirements', '26.1'), t.v('authenticity/sabatons', '2025.01'))),
+  'Sabatons 2025.01 | Technical Requirements for Weapons 26.1');
+-- the owner's direct table access cannot do what only the controlled functions may
+select t.expect_error('QA 8: the owner cannot insert a historical edition directly', $$select t.as_user(t.u(1)); insert into public.ruleset_versions (ruleset_id, version, status, historical, edition_seq, edition_evidence, source_files)
+  values ((select ruleset_id from public.ruleset_versions where id = t.v('tournament/duel-regulations', '26.4')), 'x9', 'in_review', true, 77, 'direct insert attempt', '[{"file":"Tournament/Archive/x.pdf","sha256":"x"}]')$$, 'P0001');
+select t.as_admin();
+select t.expect_error('QA 8: … nor re-order an edition in review', $$select t.as_user(t.u(1)); update public.ruleset_versions set edition_seq = 77 where id = t.v('tournament/duel-regulations', '2025.03')$$, 'P0001');
+select t.as_admin();
+select t.expect_error('QA 8: … nor publish one past the review gates (Great Helms 2024.12 has an open item)', $$select t.as_user(t.u(1)); update public.ruleset_versions set status = 'superseded', published_at = now() where id = t.v('authenticity/great-helms', '2024.12')$$, 'P0001');
+select t.as_admin();
+-- one file is one edition anywhere; the same text is never two versions
+select t.expect_error('QA 7: a new edition reusing an archive file of another edition is refused', $$select private.rules_import_historical_version(jsonb_build_object('governing_body','Buhurt International','inventory_key','tournament/duel-regulations','history','x',
+  'version', jsonb_build_object('version','2099.8','historical',true,'edition_seq',8,'edition_evidence','reuses the 2025.03 file among its files','content_sha256',repeat('8',64),'source_sha256',repeat('8',64),
+  'source_files',jsonb_build_array(jsonb_build_object('file','Tournament/Archive/n.pdf','sha256',repeat('8',64)), jsonb_build_object('file','Tournament/Archive/Duels Regulations.pdf','sha256',(select source_sha256 from public.ruleset_versions where id = t.v('tournament/duel-regulations','2025.03')))),
+  'reconciliation',jsonb_build_object('ok',true,'provisions',0)),'provisions','[]'::jsonb))$$, 'P0001');
+select t.expect_error('QA 7: … also as an edition of a different document', $$select private.rules_import_historical_version(jsonb_build_object('governing_body','Buhurt International','inventory_key','marshal/duels-rules','history','x',
+  'version', jsonb_build_object('version','2099.9','historical',true,'edition_seq',9,'edition_evidence','the Duel Regulations 2024.12 file under another document','content_sha256',repeat('9',64),'source_sha256',(select source_sha256 from public.ruleset_versions where id = t.v('tournament/duel-regulations','2024.12')),
+  'source_files',jsonb_build_array(jsonb_build_object('file','Tournament/Archive/Duels Regulations V2024.12.pdf','sha256',(select source_sha256 from public.ruleset_versions where id = t.v('tournament/duel-regulations','2024.12')))),
+  'reconciliation',jsonb_build_object('ok',true,'provisions',0)),'provisions','[]'::jsonb))$$, 'P0001');
+select t.expect_error('QA 7: the source file must be one of the edition''s files', $$select private.rules_import_historical_version(jsonb_build_object('governing_body','Buhurt International','inventory_key','tournament/duel-regulations','history','x',
+  'version', jsonb_build_object('version','2099.7','historical',true,'edition_seq',7,'edition_evidence','source file not among its files','content_sha256',repeat('a',64),'source_sha256',repeat('b',64),
+  'source_files',jsonb_build_array(jsonb_build_object('file','Tournament/Archive/m.pdf','sha256',repeat('c',64))),'reconciliation',jsonb_build_object('ok',true,'provisions',0)),'provisions','[]'::jsonb))$$, '22023');
+select t.expect_error('QA 7: the current importer refuses a new current version with the text of a historical edition', $$select private.rules_import_version(jsonb_build_object('governing_body','Buhurt International','inventory_key','tournament/duel-regulations','release','x',
+  'version', jsonb_build_object('version','27.1','content_sha256',(select content_sha256 from public.ruleset_versions where id = t.v('tournament/duel-regulations','2025.03')),'source_sha256',repeat('d',64),'reconciliation',jsonb_build_object('ok',true,'provisions',0)),'provisions','[]'::jsonb))$$, 'P0001');
+select t.expect_eq('QA fixes changed no current version', t.current_fingerprint(), '2ee64069ffe03f4d73876825ec7d32a8');
 
 -- ---------------------------------------------------------------- 7. privileges
 select t.expect_eq('the historical importer is executable by neither anon nor authenticated; publishing history is not executable by anon',

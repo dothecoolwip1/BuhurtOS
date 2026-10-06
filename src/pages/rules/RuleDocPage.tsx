@@ -46,9 +46,9 @@ export function RuleDocPage() {
         {version && <div><dt>Version</dt><dd><VersionChip v={version} />{version.published_on && <span>dated {version.published_on}</span>}</dd></div>}
         {!doc.listed_on_page && <div><dt>Listing</dt><dd>No longer listed on the official rules page</dd></div>}
       </dl>
-      {link && <a className="btn btn-line rl-official" href={link} target="_blank" rel="noopener noreferrer">Open the official document ↗</a>}
+      {link && <a className="btn btn-line rl-official" href={link} target="_blank" rel="noopener noreferrer">{version && isHistorical(version) ? 'Open the archived file of this edition ↗' : 'Open the official document ↗'}</a>}
 
-      {versions.length > 1 && (
+      {(versions.length > 1 || (!version && earlierList.length > 0)) && (
         <div className="rl-versions-wrap">
           {currentList.length > 0 && <VersionButtons label={earlierList.length ? 'Current release' : 'Versions'} list={currentList} active={version} pick={pick} />}
           {earlierList.length > 0 && <VersionButtons label={`Earlier editions (${earlierList.length}), newest first`} list={earlierList} active={version} pick={pick} />}
@@ -66,7 +66,8 @@ export function RuleDocPage() {
 
       {!version && (
         <div className="panel rule rl-notext">
-          <h3>The text is not in BuhurtOS yet</h3>
+          <h3>{earlierList.length ? 'The current text is not in BuhurtOS yet' : 'The text is not in BuhurtOS yet'}</h3>
+          {earlierList.length > 0 && <p><b>Only earlier editions are here</b> (listed above): they are not the rules in force.</p>}
           <p>Read this document on {doc.governing_body ?? 'the governing body'}'s site. BuhurtOS will show its rules here, with their numbers and pages, once the official file has been imported and checked.</p>
           {doc.previously_cited_as && <p className="src">Earlier BuhurtOS summaries quote it as “{doc.previously_cited_as}”; that may not be the version linked today.</p>}
         </div>

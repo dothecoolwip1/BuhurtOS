@@ -168,11 +168,25 @@ export const isRuleText = (p: RuleProvision) => !(p.topics ?? []).some(t => t ==
 
 /** The version a document is currently governed by: the published one (a historical edition never is). */
 export const currentVersion = (idx: RulesIndex, docId: string): RuleVersion | null => (idx.versionsByDoc.get(docId) ?? []).find(v => v.status === 'published' && !isHistorical(v)) ?? null;
-/** The version a document page opens on: the one in force, else (for the owner) the current release in review, else the newest edition there is. */
+/**
+ * The version a document page opens on: the one in force, else (for the owner) the current release in review, else an older current-release version.
+ * Never an earlier (historical) edition: when no current text is readable the page says so and lists the earlier editions to open on purpose.
+ */
 export const defaultVersion = (idx: RulesIndex, docId: string): RuleVersion | null => {
   const list = idx.versionsByDoc.get(docId) ?? [];
-  return currentVersion(idx, docId) ?? list.find(isCurrentText) ?? list.find(v => !isHistorical(v) && v.status !== 'withdrawn') ?? list[0] ?? null;
+  return currentVersion(idx, docId) ?? list.find(isCurrentText) ?? list.find(v => !isHistorical(v) && v.status !== 'withdrawn') ?? null;
 };
+/**
+ * Which of two versions of a document is OLDER, by what they are, not by how they are listed: every historical edition is older than the current
+ * release; editions by their evidence-based order; current-release versions by when they were published (a version not yet published is the newest).
+ * Negative when a is older.
+ */
+export function chronoCompare(a: RuleVersion, b: RuleVersion): number {
+  if (isHistorical(a) !== isHistorical(b)) return isHistorical(a) ? -1 : 1;
+  if (isHistorical(a)) return (a.edition_seq ?? 0) - (b.edition_seq ?? 0);
+  const when = (v: RuleVersion) => (v.status === 'draft' || v.status === 'in_review' ? '9999' : v.published_at ?? v.imported_at ?? '');
+  return when(a).localeCompare(when(b)) || (a.imported_at ?? '').localeCompare(b.imported_at ?? '');
+}
 
 /** The same rule (same stable key) in the other versions of ITS document (never another document that happens to share a key), newest first. */
 export function sameRuleElsewhere(idx: RulesIndex, p: RuleProvision): RuleEntry[] {
@@ -182,6 +196,8 @@ export function sameRuleElsewhere(idx: RulesIndex, p: RuleProvision): RuleEntry[
 
 /** A link to the official file, at the page where the provision is printed when the file is the site's own PDF (Drive viewers ignore page anchors). */
 export function officialLink(doc: RuleDocument, version: RuleVersion | null, page: number | null): string | null {
+  // An earlier edition links to its own archived file (a Drive copy: no page anchors), never to the current document.
+  if (version && isHistorical(version)) return version.source_url ?? null;
   const url = version?.source_url ?? doc.official_url;
   if (!url) return null;
   return page && doc.source_host === 'site_file' && url.endsWith('.pdf') ? `${url}#page=${page}` : url;

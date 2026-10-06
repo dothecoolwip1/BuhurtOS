@@ -52,6 +52,8 @@ const writeJson = (p: string, v: unknown) => writeFileSync(p, JSON.stringify(v, 
 const sha256File = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
 /** File name of an edition: "tournament__duel-regulations@V2024.12". */
 export const editionFile = (id: string) => fileKey(id).replace(/[^A-Za-z0-9_.@-]/g, '_');
+/** The edition's own archived file (its Drive copy), never the current document's link; null when the file has no Drive id. */
+export const archiveLink = (driveFileId: string | null) => (driveFileId ? `https://drive.google.com/file/d/${driveFileId}/view` : null);
 export const isArchivePath = (p: string) => /^[^/]+\/Archive\/[^/]+\.pdf$/i.test(p);
 
 /** The archive files of a source drop, from its SHA256SUMS and fetch manifest, grouped by content (byte-identical copies together). */
@@ -200,7 +202,7 @@ function main(argv: string[]) {
         edition: e.id, inventory_key: e.inventory_key, seq: e.seq,
         version: {
           version: o.version ?? result.detected.version ?? 'unconfirmed', title: o.title ?? t.pdfinfo.title ?? d.label, published_on: o.published_on ?? null, effective_from: o.effective_from ?? null,
-          note: o.note ?? null, source_url: d.url, source_sha256: t.sha256, retrieved_at: null, page_count: t.pdfinfo.pages, extractor: t.extractor,
+          note: o.note ?? null, source_url: archiveLink(first.drive_file_id), source_sha256: t.sha256, retrieved_at: null, page_count: t.pdfinfo.pages, extractor: t.extractor,
           content_sha256: content, detected: result.detected, confirmed_by: o.version_confirmed_by ?? null,
           historical: true, edition_seq: e.seq, edition_evidence: e.evidence.slice(0, 1000),
           source_files: e.files.map(p => { const f = fileByPath.get(p)!; return { file: p, archive: f.archive, sha256: f.sha256, drive_file_id: f.drive_file_id }; }),

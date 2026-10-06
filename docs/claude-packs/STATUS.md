@@ -595,17 +595,17 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Published BI versions | **None** (all 42 wait in review for the owner) |
 | PR / merged / deployed / production verified | no / no / no / **NOT VERIFIED** |
 
-### Pack 22 historical editions (earlier versions from the archive) — 2026-10-06
+### Pack 22 historical editions (earlier versions from the archive) — 2026-10-06, after skeptical QA
 
 | Level | Status |
 | --- | --- |
-| Source files collected | **YES**: 42 archive PDFs (Tournament 10, Marshal 10, Authenticity 22) on `pack22-bi-sources` (`06b671d`), checksummed; merged into the Pack 22 branch |
-| Historical importer implemented | **YES**: `scripts/rules/history.ts` (separate from the current release workflow); migration `20261015000800` (historical flag, order, evidence, provenance; guard; historical importer; `publish_historical_version`) |
-| Mapped and reconciled | **YES**: 37 historical editions of 25 documents; 4 byte-identical pairs imported once; 0 semantic duplicates; 1 file held for review (one-sheet shields export); reconciliation PASSED; 44 provisions flagged for review (not resolved by guessing) |
-| Imported locally | **YES**: generated migration `20261015000900` loads the 37 editions in review (1357 provisions); regenerates byte for byte |
-| Locally verified | **YES**: history gate 46 checks; DATABASE GATE PASSED; Vitest 1052/1052; typecheck clean; build OK; browser history 28/28, rules 71/71, discipline 56/56, Pack 13 88/88 |
-| Current 2026-10-06 release changed | **NO** (fingerprint of its 42 versions unchanged; migration `20261015000400` byte-identical) |
-| Committed / pushed | see the final handoff (branch `ccr-321cc545-1coq4p`) |
+| Source files collected | **YES**: 42 archive PDFs (Tournament 10, Marshal 10, Authenticity 22) on `pack22-bi-sources` (`06b671d`), checksummed; merged into the Pack 22 branch (`db87dd3`) |
+| Implemented | **YES**: `scripts/rules/history.ts`; migrations `20261015000800` (model, guard, importer, historical publishing), `20261015000900` (data, generated), `20261015001000` (QA fixes) |
+| Mapped and reconciled | **YES**: 37 historical editions of 25 documents; 4 byte-identical pairs imported once (both file names kept); 0 semantic duplicates; 1 file held back (the one-sheet "Shields 2025.3" export, word for word page 2 of chart 2024.12.13); reconciliation PASSED; **44 provisions still need human review** |
+| Skeptical QA | **DONE**: 11 confirmed findings (3 medium, 1 medium-low, 2 low-medium, 4 low, 1 medium from my own pass), all fixed with regression tests; 4 interpretation points recorded as accepted or owner decisions |
+| Locally verified | **YES**: DATABASE GATE PASSED (history gate 64 checks); Vitest 1057/1057; typecheck clean; build OK; importer 32/32; browser history 32/32, rules 71/71, discipline 56/56, Pack 13 88/88; both generated migrations deterministic |
+| Current 2026-10-06 release changed | **NO** (42-version fingerprint `2ee64069…` unchanged; migration `20261015000400` byte-identical; migrations 100–800 untouched) |
+| Committed / pushed | **YES** / **YES**, branch `ccr-321cc545-1coq4p` (see the final handoff for the commit) |
 | Merged to main | **NO** |
 | Hosted database applied | **NO** |
 | Deployed | **NO** |
