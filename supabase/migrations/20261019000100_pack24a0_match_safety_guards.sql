@@ -246,7 +246,7 @@ grant execute on function public.set_match_hold(uuid, boolean, text) to authenti
 
 -- Event day saves the planner's order and holds every time it is open. A deliberate hold is not the planner's to change. Patched in place with an
 -- anchor (the Pack 18.1 technique) so the rest of the function, including Pack 18.1's can_adjust_queue check, is kept exactly as it is.
-create function pg_temp.bos_patch(p_fn regprocedure, p_from text, p_to text) returns void language plpgsql as $p$
+create or replace function pg_temp.bos_patch(p_fn regprocedure, p_from text, p_to text) returns void language plpgsql as $p$
 declare v_def text;
 begin
   v_def := pg_get_functiondef(p_fn);

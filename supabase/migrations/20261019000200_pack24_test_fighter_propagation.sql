@@ -64,7 +64,7 @@ begin
 end $$;
 
 -- 2. a test fighter stays out of real events (patched in place with an anchor, the Pack 18.1 technique; the rest of the function is kept as it is)
-create function pg_temp.bos_patch(p_fn regprocedure, p_from text, p_to text) returns void language plpgsql as $p$
+create or replace function pg_temp.bos_patch(p_fn regprocedure, p_from text, p_to text) returns void language plpgsql as $p$
 declare v_def text;
 begin
   v_def := pg_get_functiondef(p_fn);
