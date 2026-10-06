@@ -35,7 +35,7 @@ export function WaiverDocumentLink({ path, label = 'Open the PDF' }: { path: str
  */
 export function WaiverSection({ eventId, onAdded, values = {} }: { eventId: string; onAdded: () => void; values?: WaiverValues }) {
   const [key, setKey] = useState(0);
-  const versions = useAsync(() => fetchWaiverVersions(eventId), [eventId, key]);
+  const versions = useAsync(() => fetchWaiverVersions(eventId), [eventId], [key]);
   const w: Waiver | undefined = versions.data?.[0];
   const [choice, setChoice] = useState<WaiverChoice | null>(null);
   const [title, setTitle] = useState('');

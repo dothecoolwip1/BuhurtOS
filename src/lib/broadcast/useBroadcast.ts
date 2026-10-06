@@ -36,7 +36,7 @@ export interface BroadcastData {
  */
 export function useBroadcast(slug: string, fieldParam: string | null | undefined): BroadcastData {
   const [recordKey, setRecordKey] = useState(0);
-  const loaded = useAsync(() => fetchEvent(slug), [slug, recordKey]);
+  const loaded = useAsync(() => fetchEvent(slug), [slug], [recordKey]);
   const event = loaded.data?.event;
   useEventRecordWatch(event?.id, () => setRecordKey(k => k + 1));
   const competitions = useMemo(() => loaded.data?.competitions ?? [], [loaded.data]);

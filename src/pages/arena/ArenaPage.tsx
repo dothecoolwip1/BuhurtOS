@@ -22,7 +22,7 @@ export function ArenaPage() {
   const { eventId: slug = '', field: fieldParam } = useParams();
   const [search] = useSearchParams();
   const [recordKey, setRecordKey] = useState(0);
-  const loaded = useAsync(() => fetchEvent(slug), [slug, recordKey]);
+  const loaded = useAsync(() => fetchEvent(slug), [slug], [recordKey]);
   const event = loaded.data?.event;
   useEventRecordWatch(event?.id, () => setRecordKey(k => k + 1));
   const competitions = useMemo(() => loaded.data?.competitions ?? [], [loaded.data]);

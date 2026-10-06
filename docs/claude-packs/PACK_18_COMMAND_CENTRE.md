@@ -120,3 +120,31 @@ results. The Command Centre is the *read-only* "what needs me now" screen. It mu
 - With "Confirm email" OFF on the project, Supabase answers sign-up for an existing address with an error; the app words it neutrally, but the
   difference is Supabase's. Recommended: keep it ON.
 - Presence is not tracked: Staff shows assignments only.
+
+## 6. Live updates must not reset the view (added requirement)
+Reproduced first, on the real stack, with `scripts/e2e/live-stability.sh` (long screens at 390x844 and 1280x900, scrolled ~60 % down, transient UI
+state set, real server changes through the normal polling / record-watch channels, then a reconnect and focus refresh). On the unfixed code the
+public event page was **remounted and thrown back to the top** (root element replaced, scrollTop 1790 → 0 on a phone, 1271 → 0 on desktop),
+on every live change and after every reconnect.
+
+**Root cause 1 (the reset):** the shared `useAsync` hook could not tell "load something else" from "read the same thing again". Every live re-read
+(the event-record watch fires every 20 s as its polling fallback, plus on every competition / event change) set `loading: true`, and the event page
+rendered `if (loaded.loading) return <p>Loading…</p>`: the whole page was replaced by "Loading…" and mounted again, losing the scroll position, open
+sections and anything typed. A failed background re-read also threw the data away (so a moment without signal blanked the screen).
+**Fix:** `useAsync(load, deps, refreshDeps)` — `deps` say what is loaded, `refreshDeps` say when to re-read it. A refresh keeps the data on screen,
+never reports `loading`, and a failed refresh keeps the last good data (`refreshError`). Every live/background caller moved its refresh counter into
+`refreshDeps`: event page (event + my context), Arena, Broadcast overlay, Manage (event, registrations, clashes), Event day (roster, check-in flags,
+clashes, result conflicts, finalize checks), Command Centre, Field / Lyst queue, Official results, result review, announcements, People, Broadcast
+settings, Competitions, Fighters, Setup, Waivers, Run conflicts, Finalize, Review sheet, Run standings / claims. The event page's own guard is now
+`loading && !data` too.
+
+**Root cause 2 (content jumping under the reader):** the page entrance animation `.fade-in { animation: … both }` keeps an animated transform on
+the page root for ever, which switches off the browser's scroll anchoring for the whole page; so a live section appearing above the reader (e.g.
+"happening now" when a fight is called) pushed what they were reading down by hundreds of pixels. Verified in isolation in the same Chromium
+(insert 500 px above at scrollTop 2000: plain page → 2500, with the `both` fill → stays 2000, content jumps). **Fix:** fill mode `backwards` (same
+entrance effect, nothing left applied afterwards). The arena and broadcast stages also use `both` but are fixed full-screen views that do not scroll.
+
+Screens checked and not affected (no remount, view kept): Command Centre, check-in desk (Pack 16 already updated in place), Manage › Broadcast
+(including unsent input), Field / Lyst Control queue (short page: remount checked). Two-column desktop Event day: the browser keeps the reading
+position (top-left, the field boards) in place; when the left column changes height, content in the right column moves with it — standard scroll
+anchoring, not a reset.

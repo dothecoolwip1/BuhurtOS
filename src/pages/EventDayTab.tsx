@@ -42,10 +42,10 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
   const [tick, setTick] = useState(0);
   useEffect(() => { const t = window.setInterval(() => { if (!document.hidden) setTick(k => k + 1); }, 30_000); return () => window.clearInterval(t); }, []);
   useEffect(() => { if (live.updatedAt === null) return; const t = window.setTimeout(() => setTick(k => k + 1), 1500); return () => window.clearTimeout(t); }, [live.updatedAt]);
-  const roster = useAsync(() => fetchEventRoster(ids), [ids.join(','), tick]);
-  const regs = useAsync(() => fetchRegistrationFlags(event.id), [event.id, tick]);
-  const clashes = useAsync(() => fetchScheduleConflicts(event.id), [event.id, tick]);
-  const reviews = useAsync(() => fetchResultConflicts(event.id), [event.id, tick]);
+  const roster = useAsync(() => fetchEventRoster(ids), [ids.join(',')], [tick]);
+  const regs = useAsync(() => fetchRegistrationFlags(event.id), [event.id], [tick]);
+  const clashes = useAsync(() => fetchScheduleConflicts(event.id), [event.id], [tick]);
+  const reviews = useAsync(() => fetchResultConflicts(event.id), [event.id], [tick]);
 
   const sorts = useMemo(() => competitionSorts(competitions), [competitions]);
   const withdrawn = useMemo(() => withdrawnEntryIds(live.entries), [live.entries]);
@@ -55,7 +55,7 @@ export function EventDayTab({ event, competitions }: { event: LiveEvent; competi
   // The record state of each competition (official / ready / reopened ...). For the ones that are ready, the server says whether something still stands in the way.
   const records = useMemo(() => new Map(competitions.map(c => [c.id, recordState(c, live.matches.filter(m => m.competitionId === c.id))])), [competitions, live.matches]);
   const readyIds = useMemo(() => competitions.filter(c => records.get(c.id) === 'ready').map(c => c.id), [competitions, records]);
-  const checks = useAsync(async () => new Map(await Promise.all(readyIds.map(async id => [id, blockerLine(await fetchFinalizePreflight(id))] as const))), [readyIds.join(','), live.updatedAt]);
+  const checks = useAsync(async () => new Map(await Promise.all(readyIds.map(async id => [id, blockerLine(await fetchFinalizePreflight(id))] as const))), [readyIds.join(',')], [live.updatedAt]);
   const allOfficial = competitions.length > 0 && competitions.every(c => records.get(c.id) === 'official' || records.get(c.id) === 'no_draw') && competitions.some(c => records.get(c.id) === 'official');
   const names = useMemo(() => new Map(competitions.map(c => [c.id, c.name])), [competitions]);
   const gaps = useMemo(() => checkinGaps(boards, live.entries, roster.data ?? [], regs.data ?? []), [boards, live.entries, roster.data, regs.data]);

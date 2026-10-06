@@ -13,7 +13,7 @@ const EXAMPLES = ['Lyst 2 is running 20 minutes behind.', 'Lunch break ends at 1
  */
 export function AnnouncementPanel({ eventId, published }: { eventId: string; published: boolean }) {
   const [key, setKey] = useState(0);
-  const history = useAsync(() => fetchEventAnnouncements(eventId), [eventId, key]);
+  const history = useAsync(() => fetchEventAnnouncements(eventId), [eventId], [key]);
   const [text, setText] = useState('');
   const [audience, setAudience] = useState<AnnouncementAudience>('everyone');
   const [busy, setBusy] = useState(false);

@@ -84,8 +84,8 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
   const live = useEventDayData(ids);
   const lyst = useLystPublic(event.id, allowed);
   useEffect(() => { if (live.updatedAt === null) return; const t = window.setTimeout(() => void load(), 1500); return () => window.clearTimeout(t); }, [live.updatedAt, load]);
-  const conflicts = useAsync(() => (allowed ? fetchResultConflicts(event.id) : Promise.resolve([])), [allowed, event.id, tick]);
-  const clashes = useAsync(() => (allowed ? fetchScheduleConflicts(event.id) : Promise.resolve([])), [allowed, event.id, tick]);
+  const conflicts = useAsync(() => (allowed ? fetchResultConflicts(event.id) : Promise.resolve([])), [allowed, event.id], [tick]);
+  const clashes = useAsync(() => (allowed ? fetchScheduleConflicts(event.id) : Promise.resolve([])), [allowed, event.id], [tick]);
 
   const now = useNow(5000);
   const online = useOnline();

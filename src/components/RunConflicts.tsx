@@ -23,7 +23,7 @@ async function applyMoves(moves: readonly ResolveMove[], back = false): Promise<
 export function ConflictsPanel({ eventId, competitionNames, timeZone, reloadKey, onJump, autoFix, onFixed }: {
   eventId: string; competitionNames: Map<string, string>; timeZone: string; reloadKey: number; onJump: (matchId: string) => void; autoFix: boolean; onFixed: () => void;
 }) {
-  const res = useAsync(() => fetchScheduleConflicts(eventId), [eventId, reloadKey]);
+  const res = useAsync(() => fetchScheduleConflicts(eventId), [eventId], [reloadKey]);
   const groups = useMemo(() => groupConflictsByFighter(res.data ?? []), [res.data]);
   const name = (id: string) => competitionNames.get(id) ?? 'another competition';
   const [rest, setRest] = useState<number>(0);

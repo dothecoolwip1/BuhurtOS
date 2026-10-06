@@ -112,7 +112,9 @@ main{padding-block:28px 64px}
 .src{font:500 12.5px/1.45 var(--f-body);color:var(--muted)}
 .grid-2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px}
 @media (max-width:900px){.grid-2{grid-template-columns:minmax(0,1fr)}}
-.fade-in{animation:fadeIn .35s ease both}
+/* "backwards", not "both": a fill that outlives the animation keeps a transform on the page root, which switches OFF the browser's scroll
+   anchoring for the whole page, so live content added above the reader pushed what they were reading down the screen (Pack 18). */
+.fade-in{animation:fadeIn .35s ease backwards}
 @keyframes fadeIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 

@@ -18,7 +18,7 @@ const TONE: Record<InvitationState, '' | 'win' | 'brass' | 'steel' | 'live'> = {
  */
 export function FightersTab({ eventId, competitions, registrationMode, regs = [], slug }: { eventId: string; competitions: LiveCompetition[]; registrationMode: string; regs?: ManagedRegistration[]; slug?: string }) {
   const [key, setKey] = useState(0);
-  const list = useAsync(() => fetchEventInvitations(eventId), [eventId, key]);
+  const list = useAsync(() => fetchEventInvitations(eventId), [eventId], [key]);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);

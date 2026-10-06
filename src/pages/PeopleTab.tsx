@@ -16,7 +16,7 @@ const roleName = (r: string) => ROLES.find(([k]) => k === r)?.[1] ?? r;
 
 export function PeopleTab({ eventId, myUserId }: { eventId: string; myUserId: string | undefined }) {
   const [key, setKey] = useState(0);
-  const staff = useAsync(() => fetchStaff(eventId), [eventId, key]);
+  const staff = useAsync(() => fetchStaff(eventId), [eventId], [key]);
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<StaffMember['role']>('marshal');
   const [busy, setBusy] = useState(false);

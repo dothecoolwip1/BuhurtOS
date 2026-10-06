@@ -16,7 +16,7 @@ import type { Sponsor } from '../lib/broadcast/sponsors';
  */
 export function BroadcastTab({ event }: { event: LiveEvent }) {
   const [key, setKey] = useState(0);
-  const cfg = useAsync(() => fetchBroadcastConfig(event.id), [event.id, key]);
+  const cfg = useAsync(() => fetchBroadcastConfig(event.id), [event.id], [key]);
   const live = useBroadcast(event.slug, null);
   const fields = live.fields.length > 0 ? live.fields : ['Field 1'];
   const published = event.status === 'published';

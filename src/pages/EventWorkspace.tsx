@@ -168,11 +168,11 @@ export function EventWorkspace() {
   const synthetic = useSynthetic();
   const userId = session?.user.id;
   const [recordKey, setRecordKey] = useState(0);
-  const loaded = useAsync(() => fetchEvent(slug), [slug, recordKey]);
+  const loaded = useAsync(() => fetchEvent(slug), [slug], [recordKey]);
   const eventId = loaded.data?.event.id;
   useEventRecordWatch(eventId, () => setRecordKey(k => k + 1));
   const [mineKey, setMineKey] = useState(0);
-  const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId, mineKey]);
+  const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId], [mineKey]);
   const myFighter = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
   const invitation = useAsync(() => (eventId && myFighter.data ? fetchMyInvitation(eventId, myFighter.data) : Promise.resolve(null)), [eventId, myFighter.data, mineKey]);
   const meta = useAsync(() => (eventId ? fetchEventMetaById(eventId) : Promise.resolve(null)), [eventId]);
@@ -182,7 +182,7 @@ export function EventWorkspace() {
   const liveIds = showLive ? loaded.data!.competitions.map(c => c.id) : [];
   const live = useLiveMatches(liveIds);
 
-  if (loaded.loading) return <p className="muted">Loading…</p>;
+  if (loaded.loading && !loaded.data) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error, 'Could not load this event.')}</p>;
   if (!loaded.data) {
     if (!session) return <NotFoundPage />;

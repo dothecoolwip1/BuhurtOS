@@ -12,7 +12,7 @@ const word = (r: MatchResult, a: string, b: string) => (r === 'draw' ? 'Draw' : 
  */
 export function ResultConflicts({ eventId, onChanged }: { eventId: string; onChanged: () => void }) {
   const [version, setVersion] = useState(0);
-  const list = useAsync(() => fetchResultConflicts(eventId), [eventId, version]);
+  const list = useAsync(() => fetchResultConflicts(eventId), [eventId], [version]);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
