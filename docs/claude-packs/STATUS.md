@@ -671,6 +671,15 @@ The software is complete. Nothing in the two lists after COMPLETE is a Pack 18.1
 | Emails | The earlier runs signed up 14 test accounts at `buhurtos.ca`, which has no mail server; each confirmation email bounced to the owner. p1018e's three were confirmed directly in the database. **No email was sent by anything after the owner's report.** Rule from now on: fixed pre-confirmed test accounts only (see the runbook). No MX or email hosting was configured. |
 | Test data | p1018e: 3 auth accounts, 3 memberships (X, Y approved, Z pending, all now Removed with a note), 5 candidacy rows (4 withdrawn, 1 declined), 1 topic (withdrawn by the member), audit rows. The leftover pending p1018d-z membership was marked Removed. History is never deleted. |
 
+## Final cleanup (2026-10-06): officer wording, fixed test identities, old test accounts
+
+| Item | State |
+| --- | --- |
+| Officer wording | **Solved in the UI, not the database.** The database function is not wrong (it returns the label the owner's session chose), so it was left alone. One display function, `officerName()` in the club website, shows "Kedrixx (no currently active account)" as **"Kedrixx (account not currently linked)"**, and "Carmalee (account not currently linked)"; an office with no name at all shows the fallback name the same way, otherwise "not assigned". All four places that show an office holder use it (help, Executive Nominations, executive nominations dashboard). The hosted-only migration `20261006170132` is still not in the repository (open: add it, or leave as is). |
+| Fixed test identities | Prepared, **not created**: `scripts/e2e/smoke-accounts.sql` + the runbook section. The owner creates the three users in the Supabase dashboard (so the passwords are the owner's and no email is sent), runs section 1, and adds the nine repository secrets. Nothing was created in production and no secret was set or read by this session. |
+| Old test accounts | The 3 never-confirmed p1018c accounts were **deleted** after checking: never confirmed or signed in, no membership, no audit rows, no references except their blank auto-created profiles (removed with them). The 11 other test accounts remain (memberships and audit history). |
+| Checks | Local browser suite 125/125 (new wording, plus a test that rewrites the database's own label), the SQL helper run on a scratch database (idempotent; real member untouched; arm / disarm behave). No production smoke test was run. |
+
 ## Pack 22: rules, regulations, penalties and discipline (2026-10-06): IMPLEMENTED AND VERIFIED LOCALLY ON BRANCH, PUSHED, NOT MERGED, NOT DEPLOYED
 
 Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers membership) was merged in at `9d97be4`.

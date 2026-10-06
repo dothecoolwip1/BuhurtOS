@@ -626,13 +626,27 @@ let newId = null;
   await until(async () => (await m.locator('[data-testid=help-role-president]').count()) > 0 && (await m.locator('[data-testid=office-president]').count()) > 0);
   await m.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
   const roles = await text(m, '[data-testid=help-role-president]') + ' | ' + await text(m, '[data-testid=help-role-secretary]') + ' | ' + await text(m, '[data-testid=help-role-treasurer]');
-  check('G14 President shows "Kedrixx - no active account", the Secretary comes from the records, Treasurer shows "Carmalee - no active account"',
-    roles.includes('Currently: Kedrixx - no active account') && roles.includes('Currently: Carm Example') && roles.includes('Currently: Carmalee - no active account'), roles);
+  check('G14 President shows "Kedrixx (account not currently linked)", the Secretary comes from the records, Treasurer shows "Carmalee (account not currently linked)"',
+    roles.includes('Currently: Kedrixx (account not currently linked)') && roles.includes('Currently: Carm Example') && roles.includes('Currently: Carmalee (account not currently linked)'), roles);
   const nomBoard = await text(m, '[data-testid=agm-nominations]');
-  check('G15 the Executive Nominations list shows the same names', nomBoard.includes('Current Officer: Kedrixx - no active account') && nomBoard.includes('Current Officer: Carm Example') && nomBoard.includes('Current Officer: Carmalee - no active account'), nomBoard);
+  check('G15 the Executive Nominations list shows the same names', nomBoard.includes('Current Officer: Kedrixx (account not currently linked)') && nomBoard.includes('Current Officer: Carm Example') && nomBoard.includes('Current Officer: Carmalee (account not currently linked)'), nomBoard);
   check('G16 the fallback grants nothing: no officer record was created, and the databases still has no President or Treasurer', sql(`select count(*) from public.team_officers where team_id = '${REAVERS}' and ended_on is null and office in ('president','treasurer')`) === '0');
   await phoneCheck(m, 'site-agm-help-fallback-phone');
   sql(`update public.team_officers set ended_on = null where team_id = '${REAVERS}' and office in ('president', 'treasurer')`);
+  // the hosted database labels an office whose holder has no account itself ("Kedrixx (no currently active account)"): the page must show it cleanly
+  const lbl = await open('phone');
+  await lbl.route(/\/rpc\/club_agm_member_view/, async route => {
+    const res = await route.fetch(); const body = await res.json();
+    for (const b of body.board ?? []) { if (b.office === 'president') b.current_officer = 'Kedrixx (no currently active account)'; if (b.office === 'treasurer') b.current_officer = 'Carmalee (no currently active account)'; }
+    await route.fulfill({ response: res, json: body });
+  });
+  await siteSignIn(lbl, 'member@example.test'); await tab(lbl, '2026 AGM');
+  await until(async () => (await lbl.locator('[data-testid=help-role-president]').count()) > 0 && (await lbl.locator('[data-testid=office-president]').count()) > 0);
+  await lbl.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  const lblText = await text(lbl, '[data-testid=agm-help]') + ' | ' + await text(lbl, '[data-testid=agm-nominations]');
+  check('G20 the database\'s own label "(no currently active account)" is shown as "(account not currently linked)" in the help and in Executive Nominations (data unchanged)',
+    lblText.includes('Currently: Kedrixx (account not currently linked)') && lblText.includes('Currently: Carmalee (account not currently linked)') && lblText.includes('Current Officer: Kedrixx (account not currently linked)')
+    && lblText.includes('Current Officer: Carmalee (account not currently linked)') && !lblText.includes('no currently active account') && !lblText.includes('no active account'), lblText.slice(0, 600));
   // a signed-in person who has not joined: the help is still there, without names
   const nb = await open('phone');
   await siteSignIn(nb, 'newbie@example.test'); await tab(nb, '2026 AGM');
