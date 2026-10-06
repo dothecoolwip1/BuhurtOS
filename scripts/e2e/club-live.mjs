@@ -82,7 +82,7 @@ async function open(kind = 'phone') {
   await ctx.route(/posthog\.com|maps\.googleapis\.com|accounts\.google\.com|cdnjs\.cloudflare\.com|fonts\.googleapis\.com|fonts\.gstatic\.com/, r => r.abort('failed'));
   const page = await ctx.newPage();
   page.errors = [];
-  page.on('pageerror', e => page.errors.push(String(e).slice(0, 300)));
+  page.on('pageerror', e => { page.errors.push(String(e).slice(0, 300)); console.log('PAGE ERROR  ' + String(e).slice(0, 300)); });
   page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|WebSocket|realtime|net::ERR|Failed to fetch|40[0-9]|42501|\[BuhurtOS\]|AuthApiError|AuthPKCE|AuthRetryable/i.test(m.text())) page.errors.push('console: ' + m.text().slice(0, 300)); });
   pages.push(page);
   return page;
@@ -568,6 +568,137 @@ let newId = null;
   await tr.getByRole('button', { name: 'People and check-in', exact: true }).click();
   await until(async () => (await tr.locator('[data-testid=agm-summary]').count()) > 0);
   check('F34 the executive AGM dashboard still shows its counts and check-in buttons', (await text(tr, '[data-testid=agm-summary]')).includes('Total members') && (await tr.locator('.checkin').count()) > 0);
+}
+
+// ================================================================ G. "How the AGM Works" (member help on the AGM tab)
+{
+  const m = await open('phone');
+  await siteSignIn(m, 'member@example.test');
+  await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=agm-help]').count()) > 0 && (await m.locator('[data-testid=agm-nominations]').count()) > 0);
+  const titles = await m.locator('[data-testid=agm-help] summary').allInnerTexts();
+  check('G1 the AGM tab has "How the AGM Works" with six short headings, all closed until tapped',
+    (await text(m, '[data-testid=agm-help] h3')) === 'How the AGM Works' && titles.join('|') === 'Who can vote?|How to join|Executive roles|How nominations work|Submit an AGM topic|RSVP and proxy voting'
+    && (await m.locator('[data-testid=agm-help] details[open]').count()) === 0, titles.join('|'));
+  const helpBox = await m.locator('[data-testid=agm-help]').boundingBox();
+  const rsvpBox = await m.locator('[data-testid=agm-member]').boundingBox();
+  check('G2 the help sits directly under the AGM card and RSVP buttons (before the topic and nomination sections)', helpBox.y >= rsvpBox.y + rsvpBox.height - 2 && helpBox.y < (await m.locator('[data-testid=agm-topics]').boundingBox()).y);
+  check('G3 collapsed, the help is compact (six rows on a phone)', helpBox.height < 420, String(helpBox.height));
+  await phoneCheck(m, 'site-agm-help-closed-phone');
+  await m.locator('[data-testid=help-vote] summary').click();
+  const vote = await text(m, '[data-testid=help-vote]');
+  check('G4 Who can vote? says 18+, approved member, ELIGIBLE TO VOTE, the 2026 fee is waived (normal $20) and an account alone is not enough',
+    vote.includes('18 or older') && vote.includes('an approved Red Deer Reavers member') && vote.includes('ELIGIBLE TO VOTE') && vote.includes('Membership fees are waived for 2026. You do not need to pay the normal $20 fee to vote this year.')
+    && vote.includes('Making an account is not enough on its own. You also need an approved membership.'), vote);
+  await m.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  const helpText = await text(m, '[data-testid=agm-help]');
+  check('G5 How to join: same account (never two), sign in, Create account, Continue, Apply to join, wait for approval, fee waived, ELIGIBLE TO VOTE',
+    helpText.includes('same account') && helpText.includes('You never need two.') && helpText.includes('Already have a BuhurtOS account? Sign in with it.') && helpText.includes('“Create account”') && helpText.includes('“Continue”')
+    && helpText.includes('“Apply to join”') && helpText.includes('Wait for the executive to approve you.') && helpText.includes('The 2026 fee is waived, so there is nothing to pay.'), helpText.slice(0, 1200));
+  check('G6 Executive roles: three positions with the plain descriptions, and the holders come from the officer records',
+    /President Helps lead the society and meetings\. Currently: Kedrixx Streit/.test(helpText) && /Secretary Helps keep society records, meeting information and official paperwork organized\. Currently: Carm Example/.test(helpText)
+    && /Treasurer Helps manage the society's money and financial records\. Currently: Garrett Robson/.test(helpText), helpText.slice(0, 2000));
+  const g7 = [/A nomination does not give anyone the job\. The decision is made at the AGM election\. If nobody runs against the current officer, they stay in the position\./.test(helpText),
+    helpText.includes('\u201cNominate Myself\u201d'), helpText.includes('\u201cNominate Another Member\u201d'), helpText.includes('\u201cConfirm Nomination\u201d'),
+    helpText.includes('must accept before they are a confirmed candidate'), helpText.includes('They can also decline. You cannot accept for them.'), !/remov|removal/i.test(helpText)];
+  check('G7 Nominations: not automatic, decided at the AGM, current officer stays if nobody runs, self-nomination steps, nominate-another steps, nominee must accept and can decline', g7.every(Boolean), `failing clauses: ${g7.map((x, i) => x ? '' : i).join(',')} :: ${helpText.slice(helpText.indexOf('How nominations work'), helpText.indexOf('How nominations work') + 700)}`);
+  check('G8 AGM topic: examples, steps with the real button names, edit or withdraw rule, privacy', helpText.includes('“Submit AGM Concern / Topic”') && helpText.includes('“Submit for AGM”') && helpText.includes('an idea for the club')
+    && helpText.includes('Only you and the executive can see what you submit.') && helpText.includes('“Your AGM topics”'));
+  check('G9 RSVP and proxy: date, time and place come from the AGM record; the four real choices; proxy steps with the real button names',
+    helpText.includes('AGM: Sunday, October 18, 2026 at 5:30 PM, ') && helpText.includes('In Person') && helpText.includes('Video Call') && helpText.includes('Voting by Proxy') && helpText.includes('Not Attending')
+    && helpText.includes('Can\'t attend but still want your vote represented?') && helpText.includes('“Save my proxy”') && helpText.includes('“Change proxy”') && helpText.includes('“Cancel proxy”'));
+  // every button or heading the help quotes must really exist in the page's own code
+  const src = readFileSync(`${SITE_DIR}/assets/js/member-portal.js`, 'utf8'), html = readFileSync(`${SITE_DIR}/members.html`, 'utf8');
+  const outside = src.slice(0, src.indexOf('function agmHelp()')) + src.slice(src.indexOf('// ---- concerns / topics')) + html;
+  const quoted = [...new Set([...helpText.matchAll(/“([^”]+)”/g)].map(x => x[1]))];
+  const missing = quoted.filter(n => !(outside.includes(n) || outside.includes(n.replace(/'/g, "\\'"))));
+  check(`G10 every button or heading quoted in the help (${quoted.length}) is the real label used elsewhere on the site`, quoted.length >= 14 && missing.length === 0, `missing: ${missing.join(' | ')}`);
+  check('G11 the real buttons the help points to are on this tab right now', (await m.getByRole('button', { name: 'Nominate Myself' }).count()) === 1 && (await m.getByRole('button', { name: 'Nominate Another Member' }).count()) === 1
+    && (await m.getByRole('button', { name: 'Submit AGM Concern / Topic' }).count()) === 1 && (await m.getByRole('button', { name: 'Voting by Proxy', exact: true }).count()) === 1 && (await m.getByRole('button', { name: 'In Person', exact: true }).count()) === 1);
+  check('G12 the help with every section open fits a 390px phone', await noSideways(m));
+  await phoneCheck(m, 'site-agm-help-open-phone');
+  // nothing about taking an office away
+  check('G13 the help does not discuss removing executives', !/remov|vote out|replace the (president|secretary|treasurer)/i.test(helpText.replace('Treasurer','')), helpText);
+
+  // an office with no officer record (its holder has no account yet) shows the fallback; an office with a holder never does
+  sql(`update public.team_officers set ended_on = current_date where team_id = '${REAVERS}' and office in ('president', 'treasurer') and ended_on is null`);
+  await m.reload(); await until(async () => !(await m.locator('#signed-in').isHidden())); await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=help-role-president]').count()) > 0 && (await m.locator('[data-testid=office-president]').count()) > 0);
+  await m.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  const roles = await text(m, '[data-testid=help-role-president]') + ' | ' + await text(m, '[data-testid=help-role-secretary]') + ' | ' + await text(m, '[data-testid=help-role-treasurer]');
+  check('G14 President shows "Kedrixx - no active account", the Secretary comes from the records, Treasurer shows "Carmalee - no active account"',
+    roles.includes('Currently: Kedrixx - no active account') && roles.includes('Currently: Carm Example') && roles.includes('Currently: Carmalee - no active account'), roles);
+  const nomBoard = await text(m, '[data-testid=agm-nominations]');
+  check('G15 the Executive Nominations list shows the same names', nomBoard.includes('Current Officer: Kedrixx - no active account') && nomBoard.includes('Current Officer: Carm Example') && nomBoard.includes('Current Officer: Carmalee - no active account'), nomBoard);
+  check('G16 the fallback grants nothing: no officer record was created, and the databases still has no President or Treasurer', sql(`select count(*) from public.team_officers where team_id = '${REAVERS}' and ended_on is null and office in ('president','treasurer')`) === '0');
+  await phoneCheck(m, 'site-agm-help-fallback-phone');
+  sql(`update public.team_officers set ended_on = null where team_id = '${REAVERS}' and office in ('president', 'treasurer')`);
+  // a signed-in person who has not joined: the help is still there, without names
+  const nb = await open('phone');
+  await siteSignIn(nb, 'newbie@example.test'); await tab(nb, '2026 AGM');
+  await until(async () => (await nb.locator('[data-testid=agm-help]').count()) > 0);
+  await nb.locator('[data-testid=help-roles] summary').click();
+  const nbRoles = await text(nb, '[data-testid=help-roles]');
+  check('G17 someone who has not joined still sees the help; names are for members ("Members can see who holds each position here.")', nbRoles.includes('Members can see who holds each position here.') && !nbRoles.includes('Currently:'), nbRoles);
+  check('G18 ... and still sees the way to join', (await text(nb, '[data-testid=agm-member]')).includes('Only Red Deer Reavers members can register. Join first'));
+  // desktop
+  const dk = await open('desktop');
+  await siteSignIn(dk, 'member@example.test'); await tab(dk, '2026 AGM');
+  await until(async () => (await dk.locator('[data-testid=agm-help]').count()) > 0);
+  await dk.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  check('G19 the help is readable on desktop (no sideways scroll)', await noSideways(dk));
+  await shot(dk, 'site-agm-help-open-desktop');
+}
+
+// ================================================================ H. bylaws link on sign-up and join; Member / Admin sign-in buttons in every footer
+{
+  const BYLAWS = 'https://drive.google.com/file/d/1R9EDu7BpUZ1KM790BDNN0iIaXZYtUtCE/view?usp=drivesdk';
+  const pagesWithFooter = ['index.html', 'programs.html', 'steps.html', 'involved.html', 'contact.html', 'agm.html', 'members.html'];
+  const bad = pagesWithFooter.filter(f => { const h = readFileSync(`${SITE_DIR}/${f}`, 'utf8'); const foot = h.slice(h.indexOf('<footer')); return !(foot.includes('href="members.html"') && foot.includes('>Member Sign In<') && foot.includes('href="members.html?view=agm-admin"') && foot.includes('>Admin Sign In<')); });
+  check('H1 every page that has a footer (home, programs, steps, involved, contact, AGM, members) has Member Sign In and Admin Sign In buttons', bad.length === 0, bad.join(', '));
+  const ph = await open('phone');
+  await ph.goto(`${SITE}/index.html`);
+  const mBtn = ph.locator('footer .footer-signin a', { hasText: 'Member Sign In' }), aBtn = ph.locator('footer .footer-signin a', { hasText: 'Admin Sign In' });
+  await mBtn.scrollIntoViewIfNeeded();
+  const bb = await mBtn.boundingBox(), ab = await aBtn.boundingBox();
+  check('H2 on a 390px phone both footer buttons are visible, tappable (44px tall or more) and fit without sideways scrolling', bb.height >= 36 && ab.height >= 36 && bb.x >= 0 && ab.x + ab.width <= 390 && await noSideways(ph), JSON.stringify([bb, ab]));
+  await shot(ph, 'site-footer-buttons-phone');
+  await mBtn.click();
+  await until(async () => (await ph.locator('#signed-out').isVisible().catch(() => false)));
+  check('H3 Member Sign In opens the Members page sign-in', ph.url().endsWith('/members.html') && (await text(ph, '#signed-out')).includes('Member sign in') && (await ph.locator('#admin-note').isHidden()));
+  // sign-up: the bylaws link
+  await ph.locator('[data-auth-tab=signup]').click();
+  const su = ph.locator('[data-testid=bylaws-link-signup]');
+  check('H4 the Create account page links to the bylaws PDF (new tab, no referrer or opener) and says an account does not make you a member', (await su.getAttribute('href')) === BYLAWS && (await su.getAttribute('target')) === '_blank' && /noopener/.test(await su.getAttribute('rel'))
+    && (await text(ph, '[data-auth-panel=signup]')).includes('Creating an account does not make you a member.'));
+  await phoneCheck(ph, 'site-create-account-bylaws-phone');
+  // the join form
+  const nb = await open('phone');
+  await siteSignIn(nb, 'newbie@example.test');
+  await until(async () => (await nb.locator('[data-testid=apply-form]').count()) > 0);
+  const jl = nb.locator('[data-testid=bylaws-link-join]');
+  check('H5 the Join form links to the bylaws PDF right under the bylaws checkbox', (await jl.getAttribute('href')) === BYLAWS && (await jl.getAttribute('target')) === '_blank' && (await text(nb, '[data-testid=apply-form]')).includes('I agree to follow the Red Deer Reavers bylaws and team standards'));
+  await nb.locator('label.check', { hasText: 'bylaws' }).click();
+  check('H6 clicking the checkbox text still just ticks the box (the link is separate)', await nb.locator('#ap-bylaws').isChecked());
+  await phoneCheck(nb, 'site-join-bylaws-phone');
+  // Admin Sign In: one shared account; executives land on the AGM admin, everyone else on their own page
+  const ad = await open('desktop');
+  await ad.goto(`${SITE}/index.html`);
+  await ad.locator('footer .footer-signin a', { hasText: 'Admin Sign In' }).click();
+  await until(async () => (await ad.locator('#signed-out').isVisible().catch(() => false)));
+  check('H7 Admin Sign In opens the same sign-in page and says there is no separate admin login', ad.url().endsWith('/members.html?view=agm-admin') && (await text(ad, '#admin-note')).includes('There is no separate admin login.'));
+  await ad.locator('#email').fill('treas@example.test'); await ad.locator('#password').fill(PW); await ad.locator('#password-btn').click();
+  await until(async () => (await ad.locator('[data-testid=agm-summary]').count()) > 0);
+  check('H8 an executive signing in that way lands on the AGM admin dashboard', (await text(ad, '#tabs')).includes('AGM admin') && (await text(ad, '[data-testid=agm-summary]')).includes('Total members'));
+  const me = await open('desktop');
+  await me.goto(`${MEMBERS}?view=agm-admin`);
+  await me.locator('#email').fill('member@example.test'); await me.locator('#password').fill(PW); await me.locator('#password-btn').click();
+  await until(async () => !(await me.locator('#signed-in').isHidden()) && (await text(me, '#view')).length > 20);
+  check('H9 a regular member using Admin Sign In gets their own member page and a clear note that this account is not an executive (no admin tools, no error)',
+    !(await text(me, '#tabs')).includes('AGM admin') && (await text(me, '#status')).includes('not a current executive') && (await me.locator('[data-testid=my-membership]').count()) === 1);
+  // the static home page's menu script comes from the Materialize CDN, which this offline sandbox blocks ("M is not defined"); that is not a page error
+  for (const pg of [ph, ad]) pg.errors = pg.errors.filter(e => !/M is not defined/.test(e));
+  check('H10 the database still refuses a regular member the executive views (nothing about security changed)', refused(await rpc('member@example.test', 'club_meeting_dashboard', { p_meeting: MEETING })));
 }
 
 check('P1 every club-website screen fits a 390px phone without sideways scrolling', phoneOk, phoneBad.join(', '));

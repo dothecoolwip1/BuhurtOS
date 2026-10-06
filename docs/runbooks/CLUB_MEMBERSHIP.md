@@ -283,5 +283,15 @@ Secretary, Treasurer) change topic status; any current executive reads. All five
 Tests: `supabase/tests/club_agm_topics_gate.sql` (136 checks, in `run_all.sh`; includes the rules above, the officer-unchanged check, direct
 table access refused and records that cannot be removed or rewritten); `scripts/e2e/club-live.sh` (95 checks, section F drives the screens at 390x844
 with real tokens); `scripts/e2e/reavers-production-agm-extras-smoke.mjs` (39 checks, passed on production 2026-10-06; manual workflow `reavers-production-smoke.yml` with
-`suite = agm-extras`; it waits for an operator to confirm three test addresses and approve two test memberships, then drives the LIVE site).
-After a production run the operator withdraws the test topics and nominations and marks the test memberships Removed (nothing is deleted).
+`suite = agm-extras`; it drives the LIVE site with FIXED, PRE-CONFIRMED test accounts only).
+
+### Production smoke tests: fixed pre-confirmed accounts only (rule from 2026-10-06)
+Earlier production runs signed up new `reavers-smoke-<tag>-x/y/z@buhurtos.ca` accounts. `buhurtos.ca` has no mail server, so every sign-up
+confirmation email bounced to the owner (14 accounts that day). **Production tests must never sign anyone up or trigger an email.**
+- `reavers-production-agm-extras-smoke.mjs` signs in with three accounts that already exist (repository secrets `SMOKE_X_*`, `SMOKE_Y_*`,
+  `SMOKE_Z_*`: email, password, display name): X and Y approved voting TEST members, Z a pending TEST applicant. It refuses to run without them,
+  never fills a profile or applies to join, and withdraws the candidacies it created at the end.
+- `reavers-production-smoke.mjs` (creates accounts by sign-up) refuses to run.
+- The fixed accounts must be created once, deliberately, by the owner (confirmed in the Supabase dashboard so no email is sent), and their
+  memberships approved once. Nothing in this repository creates them.
+- Do not point `buhurtos.ca` mail anywhere as part of this; that is the owner's decision.

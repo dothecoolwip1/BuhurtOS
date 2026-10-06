@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       suite:
-        description: '"accounts" (default): account, membership and AGM flows. "agm-extras": AGM concerns and executive nominations'
+        description: 'Use "agm-extras" (fixed pre-confirmed test accounts from repository secrets; never signs anyone up or sends email). "accounts" is disabled: it created accounts and sent emails.'
         required: false
-        default: 'accounts'
+        default: 'agm-extras'
       tag:
         description: 'Short unique tag for the two test accounts (letters and digits)'
         required: true
@@ -39,6 +39,15 @@ jobs:
           WAIT_MINUTES: ${{ inputs.wait_minutes }}
           ONLY: ${{ inputs.only }}
           SUITE: ${{ inputs.suite }}
+          SMOKE_X_EMAIL: ${{ secrets.SMOKE_X_EMAIL }}
+          SMOKE_X_PASSWORD: ${{ secrets.SMOKE_X_PASSWORD }}
+          SMOKE_X_NAME: ${{ secrets.SMOKE_X_NAME }}
+          SMOKE_Y_EMAIL: ${{ secrets.SMOKE_Y_EMAIL }}
+          SMOKE_Y_PASSWORD: ${{ secrets.SMOKE_Y_PASSWORD }}
+          SMOKE_Y_NAME: ${{ secrets.SMOKE_Y_NAME }}
+          SMOKE_Z_EMAIL: ${{ secrets.SMOKE_Z_EMAIL }}
+          SMOKE_Z_PASSWORD: ${{ secrets.SMOKE_Z_PASSWORD }}
+          SMOKE_Z_NAME: ${{ secrets.SMOKE_Z_NAME }}
         run: |
           if [ "$SUITE" = "agm-extras" ]; then node scripts/e2e/reavers-production-agm-extras-smoke.mjs; else node scripts/e2e/reavers-production-smoke.mjs; fi
       - uses: actions/upload-artifact@v4
