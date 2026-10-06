@@ -92,6 +92,16 @@ select t.expect_eq('BI directory: still exactly 45 entries', (select count(*) fr
 \i supabase/migrations/20261015000400_rules_bi_2026_10_06.sql
 select t.expect_eq('BI release: loading the same release again changes nothing',
   (select count(*) from public.audit_log where action = 'rules.version_imported' and (details ->> 'release') = '2026-10-06')::int, 42);
+select t.expect_eq('BI conflicts: the tier points disagreement is recorded open, undecided, quoting both sides (League Structure 2.3.4/2.3.5 vs 3.3.2 and Tournament Structure 4.2)',
+  (select string_agg(pa.stable_key || '~' || pb.stable_key || ':' || c.status, ',' order by pa.stable_key, pb.stable_key)
+     from public.rule_conflicts c join public.rule_provisions pa on pa.id = c.provision_a join public.rule_provisions pb on pb.id = c.provision_b where c.governing_body = 'Buhurt International'),
+  'league-structure:2.3.4~league-structure:3.3.2:open,league-structure:2.3.4~tournament-structure:4.2:open,league-structure:2.3.5~league-structure:3.3.2:open');
+select t.expect_eq('BI conflicts: each recorded conflict is audited', (select count(*) from public.audit_log where action = 'rules.conflict_noted' and details ->> 'by' = 'Pack 22 import, release 2026-10-06')::int, 3);
+\i supabase/migrations/20261015000600_pack22_bi_rule_conflicts.sql
+select t.expect_eq('BI conflicts: running the conflicts migration again records nothing new', (select count(*) from public.rule_conflicts where governing_body = 'Buhurt International')::int, 3);
+select t.as_anon();
+select t.expect_eq('BI conflicts: not public while the documents are in review', (select count(*) from public.rule_conflicts where governing_body = 'Buhurt International')::int, 0);
+select t.as_admin();
 select t.expect_error('a rules document from the inventory is never deleted', $$delete from public.rulesets where inventory_key = 'marshal/buhurt-rules'$$, 'P0001');
 
 -- ---------------------------------------------------------------- 2. people and events
