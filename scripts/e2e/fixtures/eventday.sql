@@ -1,5 +1,6 @@
 -- Local fixture for scripts/e2e/eventday-live.mjs. LOCAL THROWAWAY DATABASE ONLY (loaded after the migrations).
--- An event like the hosted "Test stuff test": runs today and tomorrow, tagged as synthetic test data. Field 1 matches have NO field set (the default);
+-- An event like the hosted "Test stuff test": runs today and tomorrow (today IN THE EVENT'S TIME ZONE: the app judges "running" there, so a UTC
+-- current_date made Manage open on Event home instead of Event day every evening in Edmonton, after 18:00 MDT), tagged as synthetic test data. Field 1 matches have NO field set (the default);
 -- Field 2 is explicit. Users: a1 owner, a2 organizer, a4 scorekeeper, a7 stranger; f11..f14 are registered fighters.
 insert into auth.users (id, email) select ('00000000-0000-0000-0000-0000000000a' || n)::uuid, 'u' || n || '@example.test' from generate_series(1, 7) n;
 insert into auth.users (id, email) select ('00000000-0000-0000-0000-0000000001' || lpad(n::text, 2, '0'))::uuid, 'fighter' || n || '@example.test' from generate_series(1, 6) n;
@@ -8,7 +9,7 @@ insert into public.platform_roles (user_id, role) values ('00000000-0000-0000-00
 
 insert into public.sources (id, kind, title, citation, synthetic) values ('00000000-0000-0000-0000-0000000d0e01', 'submitted', 'Event day test data', 'local fixture', true);
 insert into public.events (id, slug, name, status, event_type, starts_on, ends_on, venue, timezone) values
-  ('00000000-0000-0000-0000-00000000ed01', 'test-stuff-test', 'Test stuff test', 'published', 'tournament', current_date, current_date + 1, 'Test Arena', 'America/Edmonton');
+  ('00000000-0000-0000-0000-00000000ed01', 'test-stuff-test', 'Test stuff test', 'published', 'tournament', (now() at time zone 'America/Edmonton')::date, (now() at time zone 'America/Edmonton')::date + 1, 'Test Arena', 'America/Edmonton');
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values ('00000000-0000-0000-0000-0000000d0e01', 'event', '00000000-0000-0000-0000-00000000ed01', 'unverified', 'fixture');
 insert into public.event_staff (event_id, user_id, role) values
   ('00000000-0000-0000-0000-00000000ed01', '00000000-0000-0000-0000-0000000000a2', 'organizer'),

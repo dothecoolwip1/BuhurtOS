@@ -11,7 +11,7 @@ insert into public.event_staff (event_id, user_id, role) values
   ('00000000-0000-0000-0000-00000000ed01', '00000000-0000-0000-0000-0000000000d1', 'check_in'),
   ('00000000-0000-0000-0000-00000000ed01', '00000000-0000-0000-0000-0000000000d2', 'inspector');
 insert into public.events (id, slug, name, status, event_type, starts_on, ends_on, venue, timezone) values
-  ('00000000-0000-0000-0000-00000000ed02', 'other-event', 'Other event', 'published', 'tournament', current_date, current_date, 'Elsewhere', 'America/Edmonton');
+  ('00000000-0000-0000-0000-00000000ed02', 'other-event', 'Other event', 'published', 'tournament', (now() at time zone 'America/Edmonton')::date, (now() at time zone 'America/Edmonton')::date, 'Elsewhere', 'America/Edmonton');
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values ('00000000-0000-0000-0000-0000000d0e01', 'event', '00000000-0000-0000-0000-00000000ed02', 'unverified', 'fixture');
 insert into public.event_staff (event_id, user_id, role) values ('00000000-0000-0000-0000-00000000ed02', '00000000-0000-0000-0000-0000000000d4', 'check_in');
 

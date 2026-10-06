@@ -142,7 +142,7 @@ export function ManagePage() {
   const [eventKey, setEventKey] = useState(0);
   const act = useAction(() => setReloadKey(k => k + 1));
 
-  const loaded = useAsync(() => fetchEvent(slug), [slug, eventKey]);
+  const loaded = useAsync(() => fetchEvent(slug), [slug], [eventKey]);
   const eventId = loaded.data?.event.id;
   // A competition becoming official, or the event closing, re-reads the event (realtime, with a slow poll behind it).
   useEventRecordWatch(eventId, () => setEventKey(k => k + 1));
@@ -154,8 +154,8 @@ export function ManagePage() {
   const [showMore, setShowMore] = useState(false);
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   const isOrganizer = mine.data?.isOrganizer === true;
-  const regs = useAsync(() => (eventId && isOrganizer ? fetchRegistrations(eventId) : Promise.resolve([] as ManagedRegistration[])), [eventId, isOrganizer, reloadKey]);
-  const clashes = useAsync(() => (eventId && isOrganizer ? fetchScheduleConflicts(eventId) : Promise.resolve([])), [eventId, isOrganizer, reloadKey, tab]);
+  const regs = useAsync(() => (eventId && isOrganizer ? fetchRegistrations(eventId) : Promise.resolve([] as ManagedRegistration[])), [eventId, isOrganizer], [reloadKey]);
+  const clashes = useAsync(() => (eventId && isOrganizer ? fetchScheduleConflicts(eventId) : Promise.resolve([])), [eventId, isOrganizer], [reloadKey, tab]);
   useDocumentTitle(loaded.data ? `Manage ${loaded.data.event.name}` : 'Manage');
 
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;

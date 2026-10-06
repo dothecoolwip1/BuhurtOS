@@ -4,6 +4,10 @@ import { supabase } from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
 import { disablePush } from '../lib/push';
 import { identifyUser, isNewAccount, markSignInStarted, resetUser, takeSignInStarted, trackEvent, wantOnboarding } from '../lib/analytics';
+import { authErrorMessage, isPerAddressLimit, siteUrl } from '../lib/authFlow';
+
+/** Absolute link back to a page of this deployment (for the emails Supabase sends). */
+const back = (path: string) => siteUrl(window.location.origin, import.meta.env.BASE_URL ?? '/', path);
 
 interface AuthValue {
   session: Session | null;
@@ -12,8 +16,14 @@ interface AuthValue {
   sendCode: (email: string) => Promise<string | null>;
   verifyCode: (email: string, code: string) => Promise<string | null>;
   signInWithGoogle: () => Promise<string | null>;
-  /** Only for the dedicated test accounts (see /test-login). */
+  /** Email + password through Supabase Auth (Pack 18). Null on success, otherwise words that never reveal whether the address has an account. */
   signInWithPassword: (email: string, password: string) => Promise<string | null>;
+  /** Create an account. `confirm` = Supabase asked the person to confirm their email first (no session yet). `next` = where the email link returns. */
+  signUpWithPassword: (email: string, password: string, next: string) => Promise<{ error: string | null; confirm: boolean }>;
+  /** Send the confirmation email again. Same answer for every address. */
+  resendConfirmation: (email: string, next: string) => Promise<string | null>;
+  /** Forgot password: Supabase emails a reset link IF the address has an account; the answer is the same either way. */
+  requestPasswordReset: (email: string, next: string) => Promise<string | null>;
   signOut: () => Promise<void>;
 }
 
@@ -55,7 +65,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithPassword = useCallback(async (email: string, password: string) => {
     markSignInStarted('password');
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    return error ? (error.message.toLowerCase().includes('invalid') ? 'That email and password do not match a test account.' : friendlyError(error)) : null;
+    return error ? authErrorMessage(error, 'sign_in') : null;
+  }, []);
+  const signUpWithPassword = useCallback(async (email: string, password: string, next: string) => {
+    markSignInStarted('password');
+    const { data, error } = await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: back(next) } });
+    if (error) return { error: authErrorMessage(error, 'sign_up'), confirm: false };
+    // With "Confirm email" on, Supabase returns no session (and, for an address that already has an account, a look-alike answer): say "check your email".
+    return { error: null, confirm: !data.session };
+  }, []);
+  const resendConfirmation = useCallback(async (email: string, next: string) => {
+    const { error } = await supabase.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: back(next) } });
+    if (error && isPerAddressLimit(error)) return null;   // same reason as the password reset below
+    return error ? authErrorMessage(error, 'resend') : null;
+  }, []);
+  const requestPasswordReset = useCallback(async (email: string, next: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: back(`/reset-password?next=${encodeURIComponent(next)}`) });
+    // Supabase limits emails per ADDRESS, so "too soon" only ever comes back for an address that has an account: answering it differently
+    // would tell anyone which addresses exist. A link went to that address moments ago, so the ordinary answer ("on its way, or sent a moment ago") stays true.
+    if (error && isPerAddressLimit(error)) return null;
+    return error ? authErrorMessage(error, 'reset_request') : null;
   }, []);
   const signInWithGoogle = useCallback(async () => {
     markSignInStarted('google');
@@ -65,7 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Alerts are removed (here and on the server) while still signed in, so a shared phone never keeps delivering this person's fights.
   const signOut = useCallback(async () => { await disablePush(session?.user.id ?? null).catch(() => undefined); await supabase.auth.signOut(); }, [session]);
 
-  const value = useMemo(() => ({ session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signOut }), [session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signOut]);
+  const value = useMemo(() => ({ session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signUpWithPassword, resendConfirmation, requestPasswordReset, signOut }),
+    [session, loading, sendCode, verifyCode, signInWithGoogle, signInWithPassword, signUpWithPassword, resendConfirmation, requestPasswordReset, signOut]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

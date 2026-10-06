@@ -20,7 +20,7 @@ export function OfficialResults({ competitions, version = 0, heading = 'Official
 }) {
   const official = useMemo(() => competitions.filter(c => c.status === 'finished'), [competitions]);
   const ids = official.map(c => c.id);
-  const rows = useAsync(() => fetchOfficialResults(ids), [ids.join(','), version]);
+  const rows = useAsync(() => fetchOfficialResults(ids), [ids.join(',')], [version]);
   if (official.length === 0) return emptyText ? <p className="muted">{emptyText}</p> : null;
   return (
     <section aria-labelledby={heading ? 'official-h' : undefined} className="ofc-wrap" style={{ display: 'grid', gap: 14 }}>

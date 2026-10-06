@@ -36,7 +36,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [factsKey, setFactsKey] = useState(0);
-  const facts = useAsync(() => fetchPublishFacts(event.id), [event.id, factsKey]);
+  const facts = useAsync(() => fetchPublishFacts(event.id), [event.id], [factsKey]);
   // The organizer's name for the waiver's [ORGANIZATION NAME]: the event's organization, when it has one.
   const orgs = useAsync(() => (event.organizationId ? fetchActiveOrganizations() : Promise.resolve([])), [event.organizationId]);
   const orgName = event.organizationId ? (orgs.data?.find(o => o.id === event.organizationId)?.name ?? null) : null;

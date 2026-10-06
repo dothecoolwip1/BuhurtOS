@@ -1,3 +1,4 @@
+import './lib/authUrl';   // first: keeps the address an email link opened before Supabase tidies it
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';

@@ -18,7 +18,7 @@ const toInput = (k: SetupCompetition): CompetitionInput => ({ name: k.name, cate
  */
 export function CompetitionsTab({ event, onChanged }: { event: LiveEvent; onChanged: () => void }) {
   const [key, setKey] = useState(0);
-  const list = useAsync(() => fetchSetupCompetitions(event.id), [event.id, key]);
+  const list = useAsync(() => fetchSetupCompetitions(event.id), [event.id], [key]);
   const cats = useAsync(fetchRefCategories, []);
   const tiers = useAsync(fetchTierNames, []);
   const [adding, setAdding] = useState(false);

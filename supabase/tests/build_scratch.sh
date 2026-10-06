@@ -8,7 +8,9 @@ if [ -n "${DATABASE_URL:-}" ] || [ -n "${SUPABASE_DB_URL:-}" ]; then echo "refus
 DB="${1:-bos_scratch}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export PGHOST
-psql -X -q -d postgres -v ON_ERROR_STOP=1 -c "drop database if exists $DB" -c "create database $DB"
+# SCRATCH_KEEP=1: the database already exists and must be kept (scripts/e2e/eventday-live.sh REAL_AUTH=1 lets the real Supabase Auth server lay out
+# its auth schema first); otherwise start from an empty database.
+[ -n "${SCRATCH_KEEP:-}" ] || psql -X -q -d postgres -v ON_ERROR_STOP=1 -c "drop database if exists $DB" -c "create database $DB"
 psql -X -q -d "$DB" -v ON_ERROR_STOP=1 -f "$ROOT/tests/local_stubs.sql" 2>&1 | grep -v 'wal_level\|HINT' || true
 for f in $(ls "$ROOT"/migrations/*.sql | sort); do
   case "$f" in *20261001001300*) continue;; esac   # needs pg_cron

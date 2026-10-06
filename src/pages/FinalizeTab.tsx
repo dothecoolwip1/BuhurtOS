@@ -28,7 +28,7 @@ const STATE_LABEL: Record<FinalizePreflight['state'], string> = { official: 'Off
 export function FinalizeTab({ event, competitions, onChanged }: { event: LiveEvent; competitions: LiveCompetition[]; onChanged: () => void }) {
   const [params, setParams] = useSearchParams();
   const [version, setVersion] = useState(0);
-  const closeout = useAsync(() => fetchClosePreflight(event.id), [event.id, version, event.closedAt, competitions.map(c => `${c.id}:${c.status}`).join(',')]);
+  const closeout = useAsync(() => fetchClosePreflight(event.id), [event.id], [version, event.closedAt, competitions.map(c => `${c.id}:${c.status}`).join(',')]);
   const list = closeout.data?.competitions ?? [];
   const wanted = params.get('competition');
   const picked = competitions.find(c => c.id === wanted) ?? competitions.find(c => list.find(l => l.id === c.id)?.state === 'ready') ?? competitions[0] ?? null;
@@ -64,7 +64,7 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, notice, onPick, o
 }) {
   const [source, setSource] = useState<MultiplierSource>('tournament_structure');
   const [reload, setReload] = useState(0);
-  const pre = useAsync(() => fetchFinalizePreflight(competition.id, source), [competition.id, source, reload]);
+  const pre = useAsync(() => fetchFinalizePreflight(competition.id, source), [competition.id, source], [reload]);
   const p = pre.data;
   useEffect(() => { if (p?.competition.multiplierSource && p.state === 'official') setSource(p.competition.multiplierSource); }, [p?.competition.multiplierSource, p?.state]);
   const [confirm, setConfirm] = useState<'finalize' | 'reopen' | null>(null);
@@ -75,7 +75,7 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, notice, onPick, o
   const action = p ? finalizeAction({ state: p.state, eventClosed }) : null;
   const unattributed = p ? unattributedFighters(p) : [];
   const medalTie = !!p?.blockers.some(b => b.code === 'medal_tie');
-  const standings = useAsync(() => (medalTie ? fetchPoolStandings(competition.id) : Promise.resolve([])), [medalTie, competition.id, reload]);
+  const standings = useAsync(() => (medalTie ? fetchPoolStandings(competition.id) : Promise.resolve([])), [medalTie, competition.id], [reload]);
   const ties = useMemo(() => tiesWithin(standings.data ?? [], 3), [standings.data]);
   const nameOf = (id: string) => p?.placements.find(e => e.entryId === id)?.name ?? 'Unknown entry';
 

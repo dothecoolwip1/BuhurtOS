@@ -18,7 +18,7 @@ import { boutLine, compareTwo, recordLine, reviewRows, winLossRecords, type Revi
  */
 export function ReviewSheet({ event, competition, onClose, onChanged }: { event: LiveEvent; competition: LiveCompetition; onClose: () => void; onChanged: () => void }) {
   const [reload, setReload] = useState(0);
-  const pre = useAsync(() => fetchFinalizePreflight(competition.id), [competition.id, reload]);
+  const pre = useAsync(() => fetchFinalizePreflight(competition.id), [competition.id], [reload]);
   const data = useAsync(async () => {
     const [entries, matches] = await Promise.all([fetchEntries(competition.id), fetchCompetitionMatches(competition.id)]);
     return { entries, matches };
@@ -26,7 +26,7 @@ export function ReviewSheet({ event, competition, onClose, onChanged }: { event:
   const p = pre.data;
   const rows = useMemo(() => (data.data && p ? reviewRows(winLossRecords(data.data.entries, data.data.matches), p.placements) : []), [data.data, p]);
   const medalTie = !!p?.blockers.some(b => b.code === 'medal_tie');
-  const standings = useAsync(() => (medalTie ? fetchPoolStandings(competition.id) : Promise.resolve([])), [medalTie, competition.id, reload]);
+  const standings = useAsync(() => (medalTie ? fetchPoolStandings(competition.id) : Promise.resolve([])), [medalTie, competition.id], [reload]);
   const ties = useMemo(() => tiesWithin(standings.data ?? [], 3), [standings.data]);
   const [open, setOpen] = useState<string | null>(null);
   const [picked, setPicked] = useState<string[]>([]);

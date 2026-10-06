@@ -52,7 +52,10 @@ export function CheckinDeskPage() {
 export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId: string; slug: string; name: string; roles: DeskRoles; pinned: string | null }) {
   const [rows, setRows] = useState<ReadinessRow[] | null>(null);
   const [loadError, setLoadError] = useState<unknown>(null);
-  const [filter, setFilter] = useState<ReadinessFilter>(pinned ? 'all' : 'not_ready');
+  // ?f=<filter> opens the desk on one list (the Command Centre links here); anything unknown falls back to the default
+  const [params] = useSearchParams();
+  const asked = params.get('f');
+  const [filter, setFilter] = useState<ReadinessFilter>(asked && asked in FILTER_LABEL ? asked as ReadinessFilter : pinned ? 'all' : 'not_ready');
   const [query, setQuery] = useState('');
   const [team, setTeam] = useState('');
   const [comp, setComp] = useState('');

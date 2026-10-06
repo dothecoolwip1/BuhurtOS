@@ -86,7 +86,7 @@ export function FieldPage() {
   const canScore = mine.data?.roles.some(r => SCORE_ROLES.includes(r)) === true;
   const canResolve = mine.data?.roles.some(r => RESOLVE_ROLES.includes(r)) === true;
   const comps = useAsync(() => (eventId && canScore ? fetchFieldCompetitions(eventId) : Promise.resolve([] as FieldCompetition[])), [eventId, canScore]);
-  const matches = useAsync(() => (comps.data?.length ? fetchEventMatches(comps.data) : Promise.resolve([] as CompetitionMatch[])), [comps.data, reloadKey]);
+  const matches = useAsync(() => (comps.data?.length ? fetchEventMatches(comps.data) : Promise.resolve([] as CompetitionMatch[])), [comps.data], [reloadKey]);
   useDocumentTitle(event ? `${field} · ${event.name}` : 'Field scoring');
 
   // Keep the queue fresh: poll, and reload when anybody changes a match (realtime is a nudge, polling is the safety net).

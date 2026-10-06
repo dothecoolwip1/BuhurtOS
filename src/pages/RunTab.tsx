@@ -232,7 +232,7 @@ function MatchCard({ m, onChanged, sched }: { m: CompetitionMatch; onChanged: ()
 
 function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition; matches: CompetitionMatch[]; entries: CompetitionEntry[]; onDone: () => void }) {
   const [version, setVersion] = useState(0);
-  const standings = useAsync(() => fetchPoolStandings(comp.id), [comp.id, matches, version]);
+  const standings = useAsync(() => fetchPoolStandings(comp.id), [comp.id], [matches, version]);
   const names = useMemo(() => new Map(entries.map(e => [e.id, e.name])), [entries]);
   const nameOf = (id: string) => names.get(id) ?? 'Unknown entry';
   const [open, setOpen] = useState(false);
@@ -295,7 +295,7 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
   const roster = useAsync(() => fetchCompetitionRoster(comp.id), [comp.id, reload]);
   const durations = useAsync(() => fetchMatchDurations(comp.id), [comp.id, reload]);
   const fighterIds = (entries.data ?? []).map(e => e.fighterId).filter((x): x is string => !!x);
-  const claims = useAsync(() => fetchClaimStates(fighterIds), [fighterIds.join(','), reload]);
+  const claims = useAsync(() => fetchClaimStates(fighterIds), [fighterIds.join(',')], [reload]);
   const unclaimed = useMemo(() => new Set(fighterIds.filter(id => claims.data?.get(id) === false)), [claims.data]); // eslint-disable-line react-hooks/exhaustive-deps
   const done = () => { setBuilding(false); setRedrawFor(null); setReload(k => k + 1); onScheduled(); };
 

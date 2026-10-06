@@ -22,8 +22,9 @@ sword & buckler, polearm). The organizer turns on the ones that run. The current
 closes **Nov 8** (assumed to open when the app launches).
 
 ## Accounts, roles, permissions (enforced in the database)
-* Sign-in: **6-digit email code plus Google**. No passwords. Until a domain is bought, email codes go out through the owner's
-  Gmail (app password SMTP). Buy a domain after the Rumble if it works.
+* Sign-in: **email + password** (owner decision, Pack 18, 2026-10-06; supersedes the earlier "no passwords"), plus the **6-digit email
+  code** and **Google**, all through Supabase Auth (no credentials in BuhurtOS tables). Until a domain is bought, emails go out through the
+  owner's Gmail (app password SMTP). Buy a domain after the Rumble if it works.
 * Public viewing needs no account.
 * The owner approves **organizers** once. Organizers create events and add their own marshals, scorekeepers and a medic by
   email; an event organizer may add another organizer to the same event. Roles are per event and should expire shortly after the event finishes. Designed to extend to organizations later.
