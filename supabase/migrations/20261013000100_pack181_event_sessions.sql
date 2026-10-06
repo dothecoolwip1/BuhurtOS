@@ -183,6 +183,29 @@ language sql security definer set search_path = '' as $$
 $$;
 revoke execute on function private.audit_as(uuid, uuid, text, text, jsonb) from public, anon, authenticated;
 
+-- A session id is a real uuid in event_sessions, so "signed in" (auth.uid() is set) is not enough for a device: an ENDED session (revoked, replaced,
+-- signed in again, expired) must have no authority at all, also in the functions that only ask "is this your own seat?". Raises 42501 for a dead session;
+-- ordinary accounts (never in event_sessions) are untouched.
+create function private.assert_session_alive() returns void language plpgsql stable security definer set search_path = '' as $$
+begin
+  if exists (select 1 from public.event_sessions s where s.id = auth.uid()) and not exists (select 1 from private.device_ctx()) then
+    raise exception 'this device session has ended' using errcode = '42501';
+  end if;
+end $$;
+revoke execute on function private.assert_session_alive() from public, anon, authenticated;
+-- put one statement at the very start of a plpgsql function body (anchor: the first `begin` line); the function keeps its grants
+create function pg_temp.bos_prepend(p_fn regprocedure, p_stmt text) returns void language plpgsql as $$
+declare v_def text; v_new text;
+begin
+  v_def := pg_get_functiondef(p_fn);
+  v_new := regexp_replace(v_def, E'\nbegin\n', E'\nbegin\n  ' || replace(p_stmt, '\', '\\') || E'\n');
+  if v_new = v_def then raise exception 'pack181 prepend anchor not found in %', p_fn; end if;
+  execute v_new;
+end $$;
+select pg_temp.bos_prepend(p.oid::regprocedure, 'perform private.assert_session_alive();')
+from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' and p.proname in ('request_counter_seat', 'counter_state', 'counter_record', 'counter_undo', 'counter_submit', 'end_counter_seat');
+
 -- 6. places that wrote the caller's id into a column tied to auth.users ------------------------------------------------------------------------------
 -- A counter seat is keyed by whoever holds it. A device session is not an auth.users row, so that foreign key goes; the unique "one open seat" index
 -- and the own-rows rule are unchanged, and a seat is short-lived (8 h) and ended explicitly, so nothing depends on the cascade.

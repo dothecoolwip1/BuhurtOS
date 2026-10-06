@@ -87,6 +87,24 @@ select t.expect_eq('the audit shows the Marshal device by name', (select count(*
 select t.expect_eq('... and the seat assignment names the Secretary device', (select count(*) from public.audit_log where action = 'lyst.counter_assigned' and details -> 'device' ->> 'label' = 'Secretary Tablet')::int, 1);
 select t.expect_eq('no device or session id appears as an auth account anywhere', (select count(*) from auth.users where id in (select sid from t.s))::int, 0);
 
+-- a DEAD session has no authority even in the functions that only ask "is this your own seat?" (revocation and expiry are immediate, not at seat expiry)
+select t.as_user(t.u(1));
+select public.revoke_event_credential(t.cred('counter1'));
+select t.as_device(t.sid('counter1'));
+select t.expect_error('a revoked Counter cannot keep counting on the seat it already held', format($$select public.counter_record(gen_random_uuid(), %L, 1, 1)$$, :'seat1'), '42501');
+select t.expect_error('... undo', format($$select public.counter_undo(gen_random_uuid(), %L, 1)$$, :'seat1'), '42501');
+select t.expect_error('... submit', format($$select public.counter_submit(%L, 1)$$, :'seat1'), '42501');
+select t.expect_error('... read its state', 'select public.counter_state()', '42501');
+select t.expect_error('... end the seat', format($$select public.end_counter_seat(%L, false)$$, :'seat1'), '42501');
+select t.expect_error('... or ask for a new seat with a fresh code', format($$select public.request_counter_seat(%L)$$, :'jcode'), '42501');
+select t.as_admin();
+select t.expect_eq('... the seat itself was not touched by any of that', (select status from public.lyst_counter_seats where id = :'seat1'), 'active');
+update public.events set starts_on = '2026-01-01', ends_on = '2026-01-01' where id = t.ev(1);
+select t.as_device(t.sid('counter2'));
+select t.expect_error('after the event + 24 h an expired Counter cannot ask for a seat either', format($$select public.request_counter_seat(%L)$$, :'jcode'), '42501');
+select t.as_admin();
+update public.events set starts_on = current_date, ends_on = current_date where id = t.ev(1);
+
 -- ---------------------------------------------------------------- the queue (the existing line only)
 select t.as_device(t.sid('secretary'));
 select t.expect_ok_undo('the Secretary / Scorekeeper may call a fight', format($$select public.set_match_queue(%L, 'on_deck', null)$$, t.m(2)));
