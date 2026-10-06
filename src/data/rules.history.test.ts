@@ -74,4 +74,10 @@ describe('historical editions beside the current rules', () => {
     delete (legacy as Partial<RuleVersion>).historical;
     expect(isCurrentText(legacy)).toBe(true);
   });
+
+  it('compare never pairs a rule with another document that happens to use the same key', () => {
+    const other: RuleDocument = { ...doc, id: 'd2', slug: 'other', name: 'Other body Duel Regulations', inventory_key: 'other/duel-regulations' };
+    const withOther = buildRulesIndex({ ...data, documents: [doc, other], versions: [...versions, { ...ver('o1', '1.0', 'published'), ruleset_id: 'd2' }], provisions: [...data.provisions, prov('p-o1', 'o1', 'Another body’s rule with the same key.')] });
+    expect(sameRuleElsewhere(withOther, withOther.provisionById.get('p-h1')!).map(e => e.version.id)).toEqual(['cur', 'old', 'h3', 'h2']);
+  });
 });

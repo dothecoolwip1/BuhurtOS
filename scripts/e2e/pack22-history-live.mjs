@@ -93,7 +93,7 @@ try {
   check('H3. anon: Duel Regulations opens on the version in force (26.4) and shows no earlier edition', (await has(an, '26.4 · In force')) && !(await has(an, 'Earlier edition')));
 
   // ================================================================ 2. the owner (sees editions in review): history only on purpose, always labelled
-  const { page: own } = await open('phone', 'owner');
+  const { ctx: ownCtx, page: own } = await open('phone', 'owner');
   await own.goto(BASE + '/rules?q=combatant');
   await own.waitForSelector('.rl-head', { timeout: 30000 }); await sleep(1500);
   check('H4. owner: by default, search still shows current text only (no earlier edition among the official results)', (await officialRows(own).count()) === 0, await body(own));
@@ -132,6 +132,21 @@ try {
     (await has(own, 'From 2024.12')) && (await has(own, 'to 26.4')) && ((await own.locator('.rl-diff ins, .rl-diff del').count()) > 0 || (await has(own, 'The wording is the same'))) && (await has(own, 'the version in force is the one that applies')));
   await shot(own, 'h03-compare', true);
   check('H15. no sideways scroll on the comparison', (await sideways(own)) <= 0);
+
+  // the same phone after the owner signs out: the library saved for the owner (with versions in review) is never shown to the next person
+  const saved = await ownCtx.storageState();
+  check('H15b. the owner\'s phone saved the library, stamped with the owner\'s account', saved.origins.some(o => o.localStorage.some(x => x.name === 'bos-rules-cache-v3' && JSON.parse(x.value).viewer === WHO.owner[0])));
+  saved.origins = saved.origins.map(o => ({ ...o, localStorage: o.localStorage.filter(x => x.name !== STORAGE_KEY) }));
+  const nextCtx = await browser.newContext({ ...VIEW.phone, serviceWorkers: 'block', locale: 'en-CA', timezoneId: 'America/Edmonton', storageState: saved });
+  const nx = await nextCtx.newPage(); nx.errors = []; nx.on('pageerror', e => nx.errors.push(String(e).slice(0, 300))); pageErrors.push(nx.errors);
+  await nx.goto(BASE + '/rules?q=combatant&old=1');
+  await nx.waitForSelector('.rl-head', { timeout: 30000 }); await sleep(2500);
+  check('H15c. signed out on that phone: no edition in review shows up, even with "older versions" asked for in the address (the saved copy is read again for the visitor)',
+    (await officialRows(nx).count()) === 0 && !(await has(nx, 'Earlier edition')) && !(await has(nx, 'in review')), await body(nx));
+  await nx.goto(BASE + `/rules/doc/${docSlug('tournament/duel-regulations')}`);
+  await waitText(nx, 'Duel', 30000); await sleep(1000);
+  check('H15d. … and its documents show no earlier edition in review', !(await has(nx, 'Earlier edition')) && (await has(nx, '26.4 · In force')));
+  await nextCtx.close();
 
   // ================================================================ 3. the platform rules desk keeps current and history apart
   const { page: desk } = await open('desktop', 'owner');

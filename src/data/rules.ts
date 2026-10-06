@@ -38,7 +38,12 @@ export interface RuleProvision {
   /** How the words were read: the PDF's text layer, OCR of a page image (checked against it), or both. */
   extraction: 'text' | 'ocr' | 'mixed';
 }
-export interface RulesData { documents: RuleDocument[]; versions: RuleVersion[]; provisions: RuleProvision[]; loadedAt: string }
+export interface RulesData {
+  documents: RuleDocument[]; versions: RuleVersion[]; provisions: RuleProvision[]; loadedAt: string;
+  /** The account the library was read for (null = signed out). What a person may read differs (the owner also sees versions in review), so a saved
+   *  copy is only ever shown to the account it was read for. */
+  viewer?: string | null;
+}
 
 const DOC_COLS = 'id, slug, name, governing_body, inventory_key, committee, committee_name, heading, kind, applies_to, relevance, official_url, source_host, listed_on_page, page_order, previously_cited_as, classification_note, synthetic';
 const VER_COLS = 'id, ruleset_id, version, title, status, published_on, effective_from, effective_to, source_url, source_sha256, source_retrieved_at, page_count, import_release, imported_at, published_at, successor_version_id, withdrawn_reason, synthetic, note, historical, edition_seq, edition_evidence, source_files';
@@ -46,6 +51,7 @@ const PROV_COLS = 'id, ruleset_version_id, parent_id, ordinal, depth, kind, numb
 const PAGE = 1000;
 
 export async function fetchRulesData(): Promise<RulesData> {
+  const viewer = (await supabase.auth.getSession()).data.session?.user.id ?? null;
   const [d, v] = await Promise.all([
     supabase.from('rulesets').select(DOC_COLS).order('committee', { nullsFirst: false }).order('page_order', { nullsFirst: false }).order('name'),
     supabase.from('ruleset_versions').select(VER_COLS).order('published_on', { ascending: false, nullsFirst: false })
@@ -64,7 +70,7 @@ export async function fetchRulesData(): Promise<RulesData> {
       if (!data || data.length < PAGE) break;
     }
   }
-  return { documents: (d.data ?? []) as RuleDocument[], versions, provisions, loadedAt: new Date().toISOString() };
+  return { documents: (d.data ?? []) as RuleDocument[], versions, provisions, loadedAt: new Date().toISOString(), viewer };
 }
 
 /* ---------------- the saved copy in this browser ---------------- */
@@ -168,9 +174,10 @@ export const defaultVersion = (idx: RulesIndex, docId: string): RuleVersion | nu
   return currentVersion(idx, docId) ?? list.find(isCurrentText) ?? list.find(v => !isHistorical(v) && v.status !== 'withdrawn') ?? list[0] ?? null;
 };
 
-/** The same rule (same stable key) in the other versions of its document, newest first. */
+/** The same rule (same stable key) in the other versions of ITS document (never another document that happens to share a key), newest first. */
 export function sameRuleElsewhere(idx: RulesIndex, p: RuleProvision): RuleEntry[] {
-  return idx.entries.filter(e => e.provision.stable_key === p.stable_key && e.provision.id !== p.id).sort((a, b) => compareVersions(a.version, b.version));
+  const doc = idx.versionById.get(p.ruleset_version_id)?.ruleset_id;
+  return idx.entries.filter(e => e.provision.stable_key === p.stable_key && e.provision.id !== p.id && e.version.ruleset_id === doc).sort((a, b) => compareVersions(a.version, b.version));
 }
 
 /** A link to the official file, at the page where the provision is printed when the file is the site's own PDF (Drive viewers ignore page anchors). */
