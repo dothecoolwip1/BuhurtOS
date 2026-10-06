@@ -14,6 +14,11 @@ Do not apply migrations, deploy the function or change Auth settings until each 
 | 4. Function secrets (`DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS`) and the trusted signing key | not done | **the owner**: no connector tool can set function secrets or import a JWT signing key (Supabase's docs: the private key is imported in the dashboard, or through the Management API with an access token) |
 | 5. Hosted proof (sign a device in, roles, revoke, expiry, Realtime) | not done | steps 1 to 4 **and** network access from the session to `*.supabase.co` (the session's network policy currently refuses it) |
 
+**Rollout session 2 (2026-10-06, later the same day):** still blocked at step 1. The connector lists the BuhurtOS organization but refuses every project-scoped call
+(`FGA Authentication Error. Unauthorized`), there is no `SUPABASE_ACCESS_TOKEN`, and `api.supabase.com` is refused by the session's network policy. Nothing was read from or
+changed on hosted; the next session must start with the read-only preflight (`list_migrations`: none of `20261015000100/200/300` present; `pg_roles` has no
+`bos_event_device`/`bos_controller`; no `event_credentials`/`event_sessions` tables) before applying anything.
+
 **The smallest owner effort, either way:**
 - **Option A (least work for Garrett):** (1) create a Supabase personal access token (dashboard, Account, Access Tokens); (2) in the Claude Code cloud environment, add it as a secret named `SUPABASE_ACCESS_TOKEN` and allow `api.supabase.com` and `*.supabase.co` under Network access. Then the session generates the key, imports and rotates it, sets the three secrets, deploys, and runs the hosted tests itself, and nothing secret is ever shown in chat.
 - **Option B (no tokens, about 10 minutes of dashboard work):** follow sections 2 and 3 below by hand (generate an ES256 key with `supabase gen signing-key --algorithm ES256`, import it as a standby key, rotate; set the three function secrets), then tell the session; it still needs the network allowance for the hosted tests.

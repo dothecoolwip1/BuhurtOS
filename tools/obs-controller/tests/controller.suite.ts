@@ -39,10 +39,13 @@ describe('connect, holding, fight ready, fight live (PLAN 18.5)', () => {
   it('connects, reads the scenes and the program scene, and reconciles to holding when nothing is on', async () => {
     await setup({ program: 'Lyst 3 Live' });
     await program('Holding');                                        // OBS was on Lyst 3: nothing is live, so holding
+    // the stand-in changes scene when the request ARRIVES; the Companion records it when OBS ANSWERS, so wait for that too
+    await waitFor(() => status().onAir?.scene === 'Holding', 3000, `the Companion to record Holding (has ${status().onAir?.scene})`);
     expect(status().obs).toMatchObject({ connected: true, version: '32.0.0' });
     expect(status().onAir).toMatchObject({ kind: 'holding', scene: 'Holding' });
     expect(h!.standin.count('GetSceneList')).toBeGreaterThan(0);
-    expect(h!.standin.count('GetCurrentProgramScene')).toBeGreaterThan(0);
+    // the reconcile timer can already switch from the scene list's current scene while the connect sequence is still reading; the read still happens
+    await waitFor(() => h!.standin.count('GetCurrentProgramScene') > 0, 3000, 'the connect sequence to read the program scene');
     expect(switches()).toBe(1);
   });
 
