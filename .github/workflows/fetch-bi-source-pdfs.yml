@@ -46,7 +46,7 @@ jobs:
             local url="$1"
             local out="$2"
             echo "Drive: $out"
-            gdown --fuzzy "$url" -O "$out"
+            gdown "$url" -O "$out"
             test -s "$out"
             head -c 4 "$out" | grep -q '%PDF'
           }
