@@ -680,13 +680,13 @@ The software is complete. Nothing in the two lists after COMPLETE is a Pack 18.1
 | Old test accounts | The 3 never-confirmed p1018c accounts were **deleted** after checking: never confirmed or signed in, no membership, no audit rows, no references except their blank auto-created profiles (removed with them). The 11 other test accounts remain (memberships and audit history). |
 | Checks | Local browser suite 125/125 (new wording, plus a test that rewrites the database's own label), the SQL helper run on a scratch database (idempotent; real member untouched; arm / disarm behave). No production smoke test was run. |
 
-## Pack 22: rules, regulations, penalties and discipline (2026-10-06): IMPLEMENTED AND VERIFIED LOCALLY ON BRANCH, PUSHED, NOT MERGED, NOT DEPLOYED
+## Pack 22: rules, regulations, penalties and discipline (2026-10-06): HOSTED DATABASE APPLIED AND VERIFIED, MERGED (PR #48), DEPLOYED (build 142); NOTHING PUBLISHED; OWNER-VIEW PRODUCTION CHECKS STILL OPEN
 
 Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers membership) was merged in at `9d97be4`.
 - Full record: `docs/claude-packs/PACK_22_RULES_DISCIPLINE.md`.
 - Per-document QA: `docs/claude-packs/PACK_22_SOURCE_QA.md`.
 - Update procedure: `rules-library/README.md`.
-- Hosted steps (not performed): `docs/runbooks/PACK22_HOSTED_ROLLOUT.md`.
+- Hosted steps and the 2026-10-06 rollout record: `docs/runbooks/PACK22_HOSTED_ROLLOUT.md`.
 
 | Level | Status |
 | --- | --- |
@@ -697,9 +697,11 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Skeptical QA | Independent agent: 12 confirmed + 3 plausible findings. All fixed (migration `000700` + UI) and covered by `pack22_qa_fixes_gate.sql` (43 checks, fails without the fix) |
 | Automated tests | typecheck clean; Vitest **1031/1031**; build OK; `run_all.sh` **DATABASE GATE PASSED** (`pack22_gate` 139, `pack22_discipline_gate` 119, `pack22_qa_fixes_gate` 43; fingerprint 2552 lines) |
 | Browser (real Chromium, built app, real Postgres + PostgREST; 390×844 and desktop) | `pack22-live` **71/71**; `pack22-discipline-live` **56/56**; with the real Supabase Auth server (REAL_AUTH) **57/57**. Regression after the fixes: `pack16-live` 66/66, `pack13-live` 88/88, `pack18-live` 67/67 (real Auth) |
-| Applied to hosted Supabase | **NO** (hosted database not touched) |
-| Published BI versions | **None** (all 42 wait in review for the owner) |
-| PR / merged / deployed / production verified | no / no / no / **NOT VERIFIED** |
+| Applied to hosted Supabase | **YES** (2026-10-06, before the merge): all ten migrations, in order, recorded on hosted as `20261006181442 pack22_rules_library` … `pack22_historical_qa_fixes`. Verified: every Pack 22 function byte-identical to the gated local build; table, column and function grants, RLS policies, triggers, constraints, columns and indexes identical (fingerprints equal); events, competitions, matches, entries, results, registrations, fighters, teams and match discipline unchanged (row hashes equal to the pre-rollout snapshot) |
+| Published BI versions | **None** (all 42 wait in review for the owner; hosted: 42 `in_review`, fingerprint `2ee64069…`, 1281 provisions, all content hashes valid, 3 conflicts open) |
+| PR / merged / deployed | PR **#48**, merge `702df15` (main); CI and Deploy run **142**: typecheck/unit/build, database gate, release policy, browser tests, Deploy GitHub Pages all **success**; live footer `v0.1.0 · build 142 · 702df15` |
+| Production verified (visitor view) | **YES, desktop and phone-sized (simulated 390×844 in Chromium), fresh contexts**: `scripts/e2e/pack22-production-check.mjs` **26/26** (run 37512748336). `/rules` loads with the four committees and no text (nothing published); the API returns no version and no provision to a visitor; direct addresses of an earlier edition and of the current release show no version and no text; an earlier edition's rule says "Rule not found"; search runs; the discipline page asks a visitor to sign in as an official; fits the phone; no page errors |
+| Production NOT verified | The owner's view (in-review text, earlier-edition labels, archived-file links, compare, search with earlier editions, citations, the Lyst rule picker, discipline and readiness screens as staff) and the sign-out/next-user cache check need an in-review-capable account: **not done** (no owner session in this environment). **No physical phone** was used |
 
 ### Pack 22 historical editions (earlier versions from the archive) — 2026-10-06, after skeptical QA
 
@@ -711,10 +713,10 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Skeptical QA | **DONE**: 11 confirmed findings (3 medium, 1 medium-low, 2 low-medium, 4 low, 1 medium from my own pass), all fixed with regression tests; 4 interpretation points recorded as accepted or owner decisions |
 | Locally verified | **YES**: DATABASE GATE PASSED (history gate 64 checks); Vitest 1057/1057; typecheck clean; build OK; importer 32/32; browser history 32/32, rules 71/71, discipline 56/56, Pack 13 88/88; both generated migrations deterministic |
 | Current 2026-10-06 release changed | **NO** (42-version fingerprint `2ee64069…` unchanged; migration `20261018000400` byte-identical; migrations 100–800 untouched) |
-| Committed / pushed | **YES** / **YES**, branch `ccr-321cc545-1coq4p` (see the final handoff for the commit) |
-| Merged to main | **NO** |
-| Hosted database applied | **NO** |
-| Deployed | **NO** |
+| Committed / pushed | **YES** / **YES**, branch `ccr-321cc545-1coq4p`; renumbered migrations merged from `ae77063` |
+| Merged to main | **YES** (PR #48, `702df15`) |
+| Hosted database applied | **YES**: 37 `in_review`, 25 documents, 1357 provisions (hashes valid), 44 review items open, 41 archive files of 37 unique SHA-256 as provenance, no duplicate label/content/source, the Shields 2025.3 sheet not imported |
+| Deployed | **YES** (build 142) |
 | Current rules published | **NO** (42 versions in review) |
 | Historical rules published | **NO** (37 editions in review) |
-| Production verified | **NOT VERIFIED** |
+| Production verified | **Visitor view only** (see above). Earlier editions cannot be seen in production until the owner publishes one; their labels, archived links and compare were verified locally (browser history 32/32) and on hosted in a rolled-back transaction, not in the production UI |
