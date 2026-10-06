@@ -650,6 +650,57 @@ let newId = null;
   await shot(dk, 'site-agm-help-open-desktop');
 }
 
+// ================================================================ H. bylaws link on sign-up and join; Member / Admin sign-in buttons in every footer
+{
+  const BYLAWS = 'https://drive.google.com/file/d/1R9EDu7BpUZ1KM790BDNN0iIaXZYtUtCE/view?usp=drivesdk';
+  const pagesWithFooter = ['index.html', 'programs.html', 'steps.html', 'involved.html', 'contact.html', 'agm.html', 'members.html'];
+  const bad = pagesWithFooter.filter(f => { const h = readFileSync(`${SITE_DIR}/${f}`, 'utf8'); const foot = h.slice(h.indexOf('<footer')); return !(foot.includes('href="members.html"') && foot.includes('>Member Sign In<') && foot.includes('href="members.html?view=agm-admin"') && foot.includes('>Admin Sign In<')); });
+  check('H1 every page that has a footer (home, programs, steps, involved, contact, AGM, members) has Member Sign In and Admin Sign In buttons', bad.length === 0, bad.join(', '));
+  const ph = await open('phone');
+  await ph.goto(`${SITE}/index.html`);
+  const mBtn = ph.locator('footer .footer-signin a', { hasText: 'Member Sign In' }), aBtn = ph.locator('footer .footer-signin a', { hasText: 'Admin Sign In' });
+  await mBtn.scrollIntoViewIfNeeded();
+  const bb = await mBtn.boundingBox(), ab = await aBtn.boundingBox();
+  check('H2 on a 390px phone both footer buttons are visible, tappable (44px tall or more) and fit without sideways scrolling', bb.height >= 36 && ab.height >= 36 && bb.x >= 0 && ab.x + ab.width <= 390 && await noSideways(ph), JSON.stringify([bb, ab]));
+  await shot(ph, 'site-footer-buttons-phone');
+  await mBtn.click();
+  await until(async () => (await ph.locator('#signed-out').isVisible().catch(() => false)));
+  check('H3 Member Sign In opens the Members page sign-in', ph.url().endsWith('/members.html') && (await text(ph, '#signed-out')).includes('Member sign in') && (await ph.locator('#admin-note').isHidden()));
+  // sign-up: the bylaws link
+  await ph.locator('[data-auth-tab=signup]').click();
+  const su = ph.locator('[data-testid=bylaws-link-signup]');
+  check('H4 the Create account page links to the bylaws PDF (new tab, no referrer or opener) and says an account does not make you a member', (await su.getAttribute('href')) === BYLAWS && (await su.getAttribute('target')) === '_blank' && /noopener/.test(await su.getAttribute('rel'))
+    && (await text(ph, '[data-auth-panel=signup]')).includes('Creating an account does not make you a member.'));
+  await phoneCheck(ph, 'site-create-account-bylaws-phone');
+  // the join form
+  const nb = await open('phone');
+  await siteSignIn(nb, 'newbie@example.test');
+  await until(async () => (await nb.locator('[data-testid=apply-form]').count()) > 0);
+  const jl = nb.locator('[data-testid=bylaws-link-join]');
+  check('H5 the Join form links to the bylaws PDF right under the bylaws checkbox', (await jl.getAttribute('href')) === BYLAWS && (await jl.getAttribute('target')) === '_blank' && (await text(nb, '[data-testid=apply-form]')).includes('I agree to follow the Red Deer Reavers bylaws and team standards'));
+  await nb.locator('label.check', { hasText: 'bylaws' }).click();
+  check('H6 clicking the checkbox text still just ticks the box (the link is separate)', await nb.locator('#ap-bylaws').isChecked());
+  await phoneCheck(nb, 'site-join-bylaws-phone');
+  // Admin Sign In: one shared account; executives land on the AGM admin, everyone else on their own page
+  const ad = await open('desktop');
+  await ad.goto(`${SITE}/index.html`);
+  await ad.locator('footer .footer-signin a', { hasText: 'Admin Sign In' }).click();
+  await until(async () => (await ad.locator('#signed-out').isVisible().catch(() => false)));
+  check('H7 Admin Sign In opens the same sign-in page and says there is no separate admin login', ad.url().endsWith('/members.html?view=agm-admin') && (await text(ad, '#admin-note')).includes('There is no separate admin login.'));
+  await ad.locator('#email').fill('treas@example.test'); await ad.locator('#password').fill(PW); await ad.locator('#password-btn').click();
+  await until(async () => (await ad.locator('[data-testid=agm-summary]').count()) > 0);
+  check('H8 an executive signing in that way lands on the AGM admin dashboard', (await text(ad, '#tabs')).includes('AGM admin') && (await text(ad, '[data-testid=agm-summary]')).includes('Total members'));
+  const me = await open('desktop');
+  await me.goto(`${MEMBERS}?view=agm-admin`);
+  await me.locator('#email').fill('member@example.test'); await me.locator('#password').fill(PW); await me.locator('#password-btn').click();
+  await until(async () => !(await me.locator('#signed-in').isHidden()) && (await text(me, '#view')).length > 20);
+  check('H9 a regular member using Admin Sign In gets their own member page and a clear note that this account is not an executive (no admin tools, no error)',
+    !(await text(me, '#tabs')).includes('AGM admin') && (await text(me, '#status')).includes('not a current executive') && (await me.locator('[data-testid=my-membership]').count()) === 1);
+  // the static home page's menu script comes from the Materialize CDN, which this offline sandbox blocks ("M is not defined"); that is not a page error
+  for (const pg of [ph, ad]) pg.errors = pg.errors.filter(e => !/M is not defined/.test(e));
+  check('H10 the database still refuses a regular member the executive views (nothing about security changed)', refused(await rpc('member@example.test', 'club_meeting_dashboard', { p_meeting: MEETING })));
+}
+
 check('P1 every club-website screen fits a 390px phone without sideways scrolling', phoneOk, phoneBad.join(', '));
 check('P2 no page errors on either website', pages.every(x => x.errors.length === 0), pages.flatMap(x => x.errors).join(' | '));
 await browser.close();

@@ -77,20 +77,28 @@ async function siteSignIn(p, w) {
   await p.locator('#email').fill(w.email); await p.locator('#password').fill(w.password); await p.locator('#password-btn').click();
   await until(async () => !(await p.locator('#signed-in').isHidden()) && (await text(p, '#view')).length > 20, 30000);
 }
-// sign in on the club website; first time: the profile step, then "Apply to join"
+// sign in on the club website; first time: the profile step, then "Apply to join". Strict: if a step does not happen, say so and stop (never skip silently).
 async function enter(w, kind = 'phone') {
   const p = await open(kind);
-  await siteSignIn(p, w);
-  if ((await p.locator('[data-testid=profile-setup]').count()) > 0) {
-    await p.locator('#pf-name').fill(w.name); await p.getByRole('button', { name: 'Continue' }).click();
-    await until(async () => (await p.locator('[data-testid=apply-form]').count()) > 0, 30000);
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    await siteSignIn(p, w);
+    const seen = await until(async () => (await p.locator('[data-testid=profile-setup], [data-testid=apply-form], [data-testid=my-membership]').count()) > 0, 30000);
+    if ((await p.locator('[data-testid=profile-setup]').count()) > 0) {
+      await p.locator('#pf-name').fill(w.name); await p.getByRole('button', { name: 'Continue' }).click();
+      await until(async () => (await p.locator('[data-testid=apply-form], [data-testid=my-membership]').count()) > 0, 30000);
+    }
+    if ((await p.locator('[data-testid=apply-form]').count()) > 0) {
+      const link = p.locator('[data-testid=bylaws-link-join]');
+      p.joinBylawsHref = (await link.count()) ? await link.getAttribute('href') : null;
+      await p.locator('label.check', { hasText: '18 or older' }).click(); await p.locator('label.check', { hasText: 'bylaws' }).click();
+      await p.getByRole('button', { name: 'Apply to join' }).click();
+      await until(async () => (await text(p, '#view')).includes('Membership Application Pending'), 30000);
+    }
+    if ((await text(p, '#view')).includes('Membership Application Pending') || (await p.locator('[data-testid=my-membership]').count()) > 0) return p;
+    note(`enter(${w.email}) attempt ${attempt}: neither the join form nor a membership appeared (profile/seen=${seen}); page says: ${(await text(p, '#view')).slice(0, 200)} | status: ${await text(p, '#status')}`);
+    await shot(p, `enter-${w.email.split('@')[0]}-${attempt}`);
   }
-  if ((await p.locator('[data-testid=apply-form]').count()) > 0) {
-    await p.locator('label.check', { hasText: '18 or older' }).click(); await p.locator('label.check', { hasText: 'bylaws' }).click();
-    await p.getByRole('button', { name: 'Apply to join' }).click();
-    await until(async () => (await text(p, '#view')).includes('Membership Application Pending'), 30000);
-  }
-  return p;
+  throw new Error(`could not get ${w.email} to the membership step on the live site`);
 }
 const openAgm = async (p) => { await tab(p, '2026 AGM'); await until(async () => (await p.locator('[data-testid=agm-nominations]').count()) > 0, 30000); };
 
@@ -156,6 +164,28 @@ try {
   await pd.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
   check('3k live: the help is readable on desktop (no sideways scroll)', await noSideways(pd) && (await text(pd, '[data-testid=agm-help]')).includes('How to join'));
   await shot(pd, 'n03c-help-open-desktop');
+  // ---- bylaws link, footer buttons and Admin Sign In on the live site
+  const BYLAWS = 'https://drive.google.com/file/d/1R9EDu7BpUZ1KM790BDNN0iIaXZYtUtCE/view?usp=drivesdk';
+  check('3l live: the Join form links to the bylaws PDF', py.joinBylawsHref === BYLAWS && px.joinBylawsHref === BYLAWS, `${px.joinBylawsHref} | ${py.joinBylawsHref}`);
+  const so = await open('phone');
+  await so.goto(SITE);
+  await so.locator('[data-auth-tab=signup]').click();
+  const sl = so.locator('[data-testid=bylaws-link-signup]');
+  check('3m live: the Create account page links to the bylaws PDF (new tab) and says an account does not make you a member', (await sl.getAttribute('href')) === BYLAWS && (await sl.getAttribute('target')) === '_blank' && (await text(so, '[data-auth-panel=signup]')).includes('Creating an account does not make you a member.'));
+  await shot(so, 'n03d-create-account-bylaws');
+  for (const pg of ['index.html', 'programs.html', 'contact.html', 'agm.html', 'members.html']) {
+    const fp = await open('phone');
+    await fp.goto(SITE.replace('members.html', pg));
+    const m1 = fp.locator('footer .footer-signin a', { hasText: 'Member Sign In' }), a1 = fp.locator('footer .footer-signin a', { hasText: 'Admin Sign In' });
+    check(`3n live: ${pg} has Member Sign In and Admin Sign In footer buttons that fit a 390px phone`, (await m1.getAttribute('href')) === 'members.html' && (await a1.getAttribute('href')) === 'members.html?view=agm-admin' && await noSideways(fp));
+    if (pg === 'index.html') { await m1.scrollIntoViewIfNeeded(); await shot(fp, 'n03e-footer-buttons'); }
+  }
+  const ap = await open('phone');
+  await ap.goto(SITE + '?view=agm-admin');
+  check('3o live: Admin Sign In shows the same sign-in and says there is no separate admin login', (await text(ap, '#admin-note')).includes('There is no separate admin login.'));
+  await ap.locator('#email').fill(X.email); await ap.locator('#password').fill(X.password); await ap.locator('#password-btn').click();
+  await until(async () => !(await ap.locator('#signed-in').isHidden()) && (await text(ap, '#view')).length > 20, 30000);
+  check('3p live: a regular member using Admin Sign In gets no admin tools, a clear note, and their own member page', !(await text(ap, '#tabs')).includes('AGM admin') && (await text(ap, '#status')).includes('not a current executive'), `${await text(ap, '#tabs')} | ${await text(ap, '#status')}`);
   for (const [btn, shown] of [['Video Call', 'Attending by Video Call'], ['Not Attending', 'Not Attending']]) {
     await px.getByRole('button', { name: btn, exact: true }).click();
     check(`4 the existing RSVP "${btn}" still works`, await until(async () => (await text(px, '[data-testid=rsvp-now]')).includes(shown), 20000));
