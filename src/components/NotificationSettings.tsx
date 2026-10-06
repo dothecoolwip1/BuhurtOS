@@ -242,6 +242,9 @@ export function NotificationSettingsRow() {
   );
 }
 
+/** Pages where the first-time popup may appear (exact paths only, so no event-day screen under /events/... qualifies). */
+const CALM_PAGE = /^\/(events|my-events|account|teams|fighters|rankings|calendar)?\/?$/;
+
 /**
  * After sign-in, once the account is set up: the small first-time popup, only where alerts can work here, not blocked, not already on, and not
  * declined within the last month ("Not now" is shared with the ask on My next fight). Nothing is requested from the browser until Enable.
@@ -251,7 +254,8 @@ export function NotificationOnboarding({ pathname }: { pathname: string }) {
   const userId = session?.user.id;
   const [show, setShow] = useState(false);
   const checked = useRef<string | null>(null);
-  const quiet = /^\/(welcome|sign-in|reset-password|test-login)(\/|$)/.test(pathname);
+  // Only on calm pages: never over scoring, the field queue, check-in, command or any event-day screen, where a popup could cost someone a fight.
+  const quiet = !CALM_PAGE.test(pathname);
   useEffect(() => {
     if (!userId || quiet || checked.current === userId) return;
     checked.current = userId;
