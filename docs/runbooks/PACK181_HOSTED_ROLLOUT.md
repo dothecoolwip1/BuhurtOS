@@ -4,6 +4,20 @@ Nothing here has been run against hosted Supabase. Everything in the pack was ve
 Do not apply migrations, deploy the function or change Auth settings until each step below is understood. The migrations are additive and Pack 18's
 `20261012000100_pack18_command_centre` must already be applied (it is: version `20261006015820`).
 
+## 0. Where the rollout stands (2026-10-06) and what each step needs
+| Step | Status | Needs |
+| --- | --- | --- |
+| Pull request `#42` (CI green: typecheck/unit/build, database gate, browser tests) | open, **NOT merged** | merge **after** step 1 (a merge deploys the app automatically; the new Command Centre panels would show errors on a database without the new functions) |
+| 1. Apply the three migrations (`20261015000100/200/300`) with `apply_migration`, in order | **NOT applied** (the Supabase connector lost authorization mid-session: `FGA Authentication Error. Unauthorized`; the first `apply_migration` call came back `cancelled`, nothing was applied) | re-connect the Supabase connector at https://claude.ai/customize/connectors, then start a new session |
+| 2. Role grants allowed on hosted | **checked read-only**: a rolled-back probe on the hosted database succeeded for `create role`, `grant anon to <role>` and `grant <role> to authenticator` | nothing |
+| 3. Deploy Edge Function `device-session` (`verify_jwt` off, like `send-push`) | not deployed | the connector (the function can be deployed with the `deploy_edge_function` tool) |
+| 4. Function secrets (`DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS`) and the trusted signing key | not done | **the owner**: no connector tool can set function secrets or import a JWT signing key (Supabase's docs: the private key is imported in the dashboard, or through the Management API with an access token) |
+| 5. Hosted proof (sign a device in, roles, revoke, expiry, Realtime) | not done | steps 1 to 4 **and** network access from the session to `*.supabase.co` (the session's network policy currently refuses it) |
+
+**The smallest owner effort, either way:**
+- **Option A (least work for Garrett):** (1) create a Supabase personal access token (dashboard, Account, Access Tokens); (2) in the Claude Code cloud environment, add it as a secret named `SUPABASE_ACCESS_TOKEN` and allow `api.supabase.com` and `*.supabase.co` under Network access. Then the session generates the key, imports and rotates it, sets the three secrets, deploys, and runs the hosted tests itself, and nothing secret is ever shown in chat.
+- **Option B (no tokens, about 10 minutes of dashboard work):** follow sections 2 and 3 below by hand (generate an ES256 key with `supabase gen signing-key --algorithm ES256`, import it as a standby key, rotate; set the three function secrets), then tell the session; it still needs the network allowance for the hosted tests.
+
 ## 1. What ships
 | Piece | What it is |
 | --- | --- |
