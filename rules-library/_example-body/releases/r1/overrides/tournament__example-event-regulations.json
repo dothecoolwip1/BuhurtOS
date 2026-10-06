@@ -6,7 +6,8 @@
   "review": {
     "example-event-regulations:p0001": {
       "status": "verified",
-      "note": "title page"
+      "note": "title page",
+      "content_sha256": "5c8dd190f23ce9d9d25cd01a7ec560b1aa6ba2cd0bfd98f56a9559064c7b248a"
     }
   },
   "keywords": {

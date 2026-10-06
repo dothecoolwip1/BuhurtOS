@@ -74,9 +74,9 @@ async function pickPerson(page, name) {
 
 try {
   if (REAL) check('REAL_AUTH: every role signed in through the real Supabase Auth server (password grant), sessions issued by Auth', realSessions.size === Object.keys(WHO).length && [...realSessions.values()].every(b => b.user?.aud === 'authenticated'));
-  check('fixture: the BI release is in the database (42 documents), 9 published for this run, and one yellow card against Brann carries its concept',
+  check('fixture: the BI release is in the database (42 documents), 11 published for this run, and one yellow card against Brann carries its concept',
     sql(`select count(*) from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International'`) === '42'
-    && sql(`select count(*) from public.ruleset_versions where status = 'published'`) === '9'
+    && sql(`select count(*) from public.ruleset_versions where status = 'published'`) === '11'
     && sql(`select card_key from public.match_discipline where id = '00000000-0000-0000-0000-00000000dd01'`) === 'yellow_card');
 
   // ================================================================ 1. the official text on a phone (anyone): search, tables, pictures, OCR
@@ -127,13 +127,19 @@ try {
   check('13. text read from an image of the page says so (OCR, checked against the page)', await has(ph, 'An image of the page'));
   check('14. a page with pictures says the pictures are not reproduced', await has(ph, 'also has pictures') || await has(ph, 'also have pictures'));
   await shot(ph, '03-ocr-rule', true);
+  const tierRule = sql(`select p.id from public.rule_provisions p join public.ruleset_versions v on v.id = p.ruleset_version_id join public.rulesets r on r.id = v.ruleset_id where r.inventory_key = 'tournament/league-structure' and p.stable_key = 'league-structure:3.3.2'`);
+  await ph.goto(BASE + `/rules/r/${tierRule}`);
+  await ph.waitForSelector('.rl-rhead', { timeout: 20000 });
+  check('14b. a disagreement between official documents is shown on the rule, open and undecided (League Structure 3.3.2 vs 2.3.4/2.3.5 and Tournament Structure 4.2)',
+    (await has(ph, 'Recorded conflict')) && (await has(ph, 'Points given 150 %')) && (await has(ph, 'BuhurtOS has not decided which applies')) && (await ph.locator('#rl-conf ~ .rl-banner').count()) === 2,
+    await ph.locator('main').innerText().catch(() => ''));
 
   // ================================================================ 2. the owner publishes from the platform rules desk (desktop)
   const { page: own } = await open('desktop', 'owner');
   await own.goto(BASE + '/platform/rules');
   await waitText(own, 'Waiting to be published', 30000);
   await waitFor(own, () => document.querySelectorAll('.dd-list li').length > 10, null, 30000);
-  check('15. the owner sees the 33 versions still in review, each with its reconciliation', (await own.locator('#pr-pub .mono').innerText()).trim() === '33' && await has(own, 'of the text accounted for'), (await own.locator('#pr-pub').innerText()));
+  check('15. the owner sees the 31 versions still in review, each with its reconciliation', (await own.locator('#pr-pub .mono').innerText()).trim() === '31' && await has(own, 'of the text accounted for'), (await own.locator('#pr-pub').innerText()));
   const gauntlets = own.locator('.dd-list li', { hasText: 'Gauntlets' });
   await gauntlets.getByRole('button', { name: 'Publish' }).click();
   await own.getByRole('button', { name: 'Yes, publish' }).click();
@@ -185,7 +191,7 @@ try {
   check('23. the green card is a green card (its own concept), one per competitor', await waitDb(() => sql(`select count(*) from public.event_sanctions where card_key = 'green_card' and status = 'active'`), '1') === '1');
   await shot(insp, '06-authenticity', true);
   const again = await rpc('inspector', 'issue_event_sanction', { p_command: crypto.randomUUID(), p_event: '00000000-0000-0000-0000-00000000ed01', p_kind: 'card', p_fighter: '00000000-0000-0000-0000-00000000f102', p_card_key: 'green_card', p_reason: 'second' });
-  check('24. a second green card at the same event is refused by the database', again.status >= 400 && /one per event/.test(JSON.stringify(again.body)), JSON.stringify(again));
+  check('24. a second green card while one is in force is refused by the database, citing Infractions 3 (one per tournament, and it follows the competitor)', again.status >= 400 && /green card in force/.test(JSON.stringify(again.body)) && /Infractions 3/.test(JSON.stringify(again.body)), JSON.stringify(again));
   const { page: sec } = await open('phone', 'secretary');
   await sec.goto(BASE + `/events/${SLUG}/discipline?tab=authenticity`);
   await waitText(sec, 'Authenticity', 30000);
@@ -197,12 +203,20 @@ try {
   await waitText(sec, 'Record an appeal', 30000);
   await sec.getByRole('button', { name: 'Record an appeal' }).click();
   const target = sheet(sec).getByLabel('What it is about');
+  check('25b. an appeal can be about a fight where nothing was recorded: the fought fight m2 is offered',
+    (await target.locator('optgroup[label="A fight (nothing was recorded)"] option').count()) >= 1 && (await target.locator('optgroup[label="A fight (nothing was recorded)"] option', { hasText: ' v ' }).count()) >= 1);
   await target.selectOption({ label: (await target.locator('option', { hasText: 'Brann Oakley' }).first().innerText()).trim() });
   await sheet(sec).getByLabel('Who appeals').fill('Captain of Iron Wolves');
   await sheet(sec).getByRole('button', { name: 'Record it' }).click();
   await waitText(sec, 'Captain of Iron Wolves');
   check('26. the appeal is recorded with its deadline (15 minutes after the fight)', (await has(sec, 'Deadline')) && sql(`select kind from public.discipline_reviews`) === 'event_appeal');
   check('27. the Secretary is not offered the decision', !(await sec.getByRole('button', { name: 'Record the decision' }).count()));
+  check('27b. the Secretary can record that the appeal was withdrawn', (await sec.getByRole('button', { name: 'Withdrawn' }).count()) === 1);
+  await insp.goto(BASE + `/events/${SLUG}/discipline?tab=appeals`);
+  await waitText(insp, 'Captain of Iron Wolves', 30000);
+  check('27c. the Authenticity Officer reads the appeal but is not offered to withdraw or decide it', !(await insp.getByRole('button', { name: 'Withdrawn' }).count()) && !(await insp.getByRole('button', { name: 'Record the decision' }).count()));
+  const sneakWithdraw = await rpc('inspector', 'withdraw_review', { p_id: sql(`select id from public.discipline_reviews`), p_reason: 'the captain changed their mind' });
+  check('27d. and a direct call to withdraw it is refused', sneakWithdraw.status >= 400 && /Secretary/.test(JSON.stringify(sneakWithdraw.body)), JSON.stringify(sneakWithdraw));
   await km.goto(BASE + `/events/${SLUG}/discipline?tab=appeals`);
   await waitText(km, 'Captain of Iron Wolves', 30000);
   await km.getByRole('button', { name: 'Record the decision' }).click();
@@ -263,6 +277,9 @@ try {
   await sheet(oa).getByRole('button', { name: /^Suspend$/ }).click();
   await sheet(oa).getByRole('button', { name: /^Yes, suspend$/ }).click();
   check('38. Org A\'s admin suspends Cael from Org A events for 40 days', await waitDb(() => sql(`select authority || ':' || scope from public.discipline_suspensions where fighter_id = '00000000-0000-0000-0000-00000000f103' and lifted_at is null`), 'organization:organization_events') === 'organization:organization_events');
+  check('38b. "until" is the day chosen, in Edmonton time too (stored as that whole day, not shifted to the next)',
+    sql(`select to_char(ends_at at time zone 'UTC', 'YYYY-MM-DD') from public.discipline_suspensions where fighter_id = '00000000-0000-0000-0000-00000000f103' and lifted_at is null`) === until
+    && await waitText(oa, `until ${until}`), `${until} | ${await body(oa)}`.slice(0, 600));
   await shot(oa, '09-org-suspension', true);
   await desk.reload(); await waitText(desk, 'Cael Rhodes', 30000);
   check('39. the event\'s desk sees Cael blocked (the label only, not the reason)', (await desk.locator('article.desk-card', { hasText: 'Cael Rhodes' }).locator('.desk-block').innerText()).includes('Suspended from Org A events until') && !(await has(desk, 'temporary ban')));
@@ -294,10 +311,10 @@ try {
   await od.goto(BASE + `/events/${SLUG}/manage?tab=competitions`);
   await waitText(od, 'Longsword (men)', 30000);
   await od.getByRole('button', { name: /Use the current Buhurt International documents/ }).first().click();
-  check('46. "use the current Buhurt International documents" attaches the published duels documents (from the classification)',
+  check('46. "use the current Buhurt International documents" attaches the published duels documents and the documents for every format (from the classification)',
     await waitDb(() => sql(`select string_agg(r.inventory_key, ',' order by r.inventory_key) from public.competition_rulesets cr join public.ruleset_versions v on v.id = cr.ruleset_version_id join public.rulesets r on r.id = v.ruleset_id where cr.competition_id = '00000000-0000-0000-0000-00000000cd01'`),
-      'authenticity/falchions,authenticity/gauntlets,authenticity/infractions,authenticity/tabards,marshal/duels-rules,marshal/weapon-shield-chart,tournament/duel-regulations')
-      === 'authenticity/falchions,authenticity/gauntlets,authenticity/infractions,authenticity/tabards,marshal/duels-rules,marshal/weapon-shield-chart,tournament/duel-regulations');
+      'authenticity/falchions,authenticity/gauntlets,authenticity/infractions,authenticity/tabards,marshal/duels-rules,marshal/weapon-shield-chart,tournament/duel-regulations,tournament/tournament-structure')
+      === 'authenticity/falchions,authenticity/gauntlets,authenticity/infractions,authenticity/tabards,marshal/duels-rules,marshal/weapon-shield-chart,tournament/duel-regulations,tournament/tournament-structure');
   check('47. and the duels rules become its primary rulebook', sql(`select r.inventory_key from public.competitions k join public.ruleset_versions v on v.id = k.ruleset_version_id join public.rulesets r on r.id = v.ruleset_id where k.id = '00000000-0000-0000-0000-00000000cd01'`) === 'marshal/duels-rules');
   await shot(od, '11-competition-documents');
 

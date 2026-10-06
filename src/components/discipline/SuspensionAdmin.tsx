@@ -5,9 +5,10 @@ import { changeSuspension, fetchManagedSuspensions, fetchRecordHistory, issueSus
 import { supabase } from '../../lib/supabase';
 import { friendlyError } from '../../lib/friendlyError';
 import { useAsync } from '../../lib/useAsync';
+import { dayOfUtc, endOfDayUtc, showDayUtc } from '../../lib/discipline/suspensionDates';
 
-const day = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' }) : null);
-const endOfDay = (d: string) => new Date(`${d}T23:59:59`).toISOString();
+const day = showDayUtc;
+const endOfDay = endOfDayUtc;
 
 /**
  * Pack 22: suspensions an organization (its admins) or the platform (the owner) decides, for example to record a Judiciary Committee ban. A
@@ -116,7 +117,7 @@ function AddLongSuspension({ organizationId, onClose, onDone }: { organizationId
 }
 
 function ChangeEnd({ s, onClose, onDone }: { s: ManagedSuspension; onClose: () => void; onDone: () => void }) {
-  const [until, setUntil] = useState(s.ends_at ? s.ends_at.slice(0, 10) : '');
+  const [until, setUntil] = useState(s.ends_at ? dayOfUtc(s.ends_at) : '');
   const [open, setOpen] = useState(!s.ends_at);
   const [reason, setReason] = useState('');
   const { busy, err, run } = useRun(onClose, onDone);

@@ -6,7 +6,8 @@
   "review": {
     "example-combat-rules:p0001": {
       "status": "verified",
-      "note": "title page"
+      "note": "title page",
+      "content_sha256": "2be77ce065be0c097d72dc9bab67cccabe43ff1e25270aa3edd7c2b910ce3089"
     }
   },
   "keywords": {

@@ -6,11 +6,13 @@
   "review": {
     "example-combat-rules:p0001": {
       "status": "verified",
-      "note": "title page: document name, version, date"
+      "note": "title page: document name, version, date",
+      "content_sha256": "da1b800b8f66397ee1f650ab8a2df77166d15bf2423a78ac4be75ce444b40fc2"
     },
     "example-combat-rules:4.2": {
       "status": "verified",
-      "note": "table checked against the PDF"
+      "note": "table checked against the PDF",
+      "content_sha256": "27c85e3f83d94c33d3eb811f35c499a066559f256a1670b47e80ea9cb7148a29"
     }
   },
   "keywords": {

@@ -218,4 +218,13 @@ Competitors   who   deviate   from   these   styles   must   ask.`)];
     expect(() => structureDocument(OCR, 'o', {}, { fix: { '1:1': { from: 'something else', to: 'x', reason: '' } } })).toThrow(/now reads/);
     expect(() => structureDocument(DOC, 'o', {}, { fix: { '1:1': { from: '1.1 Categories', to: 'x', reason: '' } } })).toThrow(/no such OCR line/);
   });
+
+  it('a verified review counts only for the exact text it checked (content_sha256 required and matching)', async () => {
+    const { applyOverrides } = await import('./release');
+    const [p] = structureDocument(DOC, 'o', {}, {}).provisions.filter(x => x.number === '1.1');
+    const status = (review: Record<string, unknown>) => applyOverrides([p], { review: { [p.stable_key]: review } } as never)[0].review_status;
+    expect(status({ status: 'verified', note: 'checked', content_sha256: p.content_sha256 })).toBe('verified');
+    expect(status({ status: 'verified', note: 'checked' })).toBe('needs_review');
+    expect(status({ status: 'verified', note: 'checked', content_sha256: 'f'.repeat(64) })).toBe('needs_review');
+  });
 });

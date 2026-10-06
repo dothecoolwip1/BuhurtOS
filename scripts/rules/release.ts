@@ -90,9 +90,12 @@ export function applyOverrides(provisions: Provision[], o: Overrides): Provision
   return provisions.map(p => {
     // A review is for the exact words that were checked: when it records the provision's content hash and the text has since changed, it no
     // longer applies and the provision goes back to needs_review.
+    // A "verified" review must name the hash it checked: without one it cannot go stale, so it does not count.
     const rec = o.review?.[p.stable_key];
+    const unbound = rec?.status === 'verified' && !rec.content_sha256;
     const stale = !!rec?.content_sha256 && rec.content_sha256 !== p.content_sha256;
-    const r = stale ? { status: 'needs_review' as const, note: `the text changed after it was reviewed: review it again (${p.review_note ?? 'no automatic flag'})` } : rec;
+    const r = unbound ? { status: 'needs_review' as const, note: `the review does not record the content_sha256 of the text it checked: review it again (${p.review_note ?? 'no automatic flag'})` }
+      : stale ? { status: 'needs_review' as const, note: `the text changed after it was reviewed: review it again (${p.review_note ?? 'no automatic flag'})` } : rec;
     return {
       ...p,
       review_status: r ? r.status : p.review_status,

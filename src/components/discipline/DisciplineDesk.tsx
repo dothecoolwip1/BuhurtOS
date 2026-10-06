@@ -5,7 +5,7 @@ import { RulePicker } from '../rules/RulesSheet';
 import {
   closeFinding, decideReview, endEventSanction, fetchCardTypes, fetchReviewRules, issueEventSanction, issueSuspension, liftSuspension, lodgeReview, newCommandId, recordFinding,
   OUTCOME_WORD, REVIEW_WORD, SANCTION_WORD, SEVERITY_WORD, withdrawReview,
-  type DisciplineOverview, type EventSanction, type Finding, type Review, type RuleRef, type SanctionKind
+  type DisciplineOverview, type EventFight, type EventSanction, type Finding, type Review, type RuleRef, type SanctionKind
 } from '../../data/discipline';
 import { fetchEventReadiness } from '../../data/readiness';
 import type { DisciplineLogRow } from '../../data/rules';
@@ -162,7 +162,7 @@ function GiveSanction({ eventId, competitions, onClose, onDone, greenOnly = fals
       {kind === 'card' && !greenOnly && (
         <label className="field-in">Card
           <select value={card} onChange={e => setCard(e.target.value)}>{cardOptions.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}</select>
-          {card === 'green_card' && <span className="src">A green card is an authenticity warning, not a yellow card. One per competitor at the event.</span>}
+          {card === 'green_card' && <span className="src">A green card is an authenticity warning, not a yellow card. A competitor gets one per tournament and it follows them into every tournament (Infractions 3, Tournament Structure 2), so one in force at the event.</span>}
         </label>
       )}
       <div className="field-in">{isTeam ? 'Team' : 'Fighter'}
@@ -275,7 +275,7 @@ function AppealsPanel({ o, log, onChanged }: { o: DisciplineOverview; log: Disci
   return (
     <section className="dd-panel" aria-labelledby="dd-app">
       <div className="dd-head"><h2 id="dd-app" className="rl-h2">Appeals</h2>{o.can.lodge_appeal && <button type="button" className="btn btn-ink btn-sm" onClick={() => setLodging(true)}>Record an appeal</button>}</div>
-      <p className="src">The captain (or the competitor's representative) tells the Secretary in person, within 15 minutes after the end of the fight and before the next phase starts. The Knight Marshal decides. <Link className="lnk" to="/rules?q=appeal">Read the appeal rules</Link>.</p>
+      <p className="src">The captain (or the competitor's representative) tells the Secretary in person, within 15 minutes after the end of the fight and before the next phase starts (Outrance: the Knight Marshal). The Knight Marshal decides. <Link className="lnk" to="/rules?q=appeal">Read the appeal rules</Link>.</p>
       {o.reviews.length === 0 && <p className="rl-none">No appeals at this event.</p>}
       <ul className="dd-list">
         {o.reviews.map(r => (
@@ -286,19 +286,30 @@ function AppealsPanel({ o, log, onChanged }: { o: DisciplineOverview; log: Disci
             {r.decision_note && <span className="dl-where">Decision: {r.decision_note}</span>}
             {r.status === 'lodged' && <span className="dd-btns">
               {o.can.decide_appeal && <button type="button" className="btn btn-ink btn-sm" onClick={() => setDeciding(r)}>Record the decision</button>}
-              <button type="button" className="btn btn-line btn-sm" onClick={() => setWithdrawing(r)}>Withdrawn</button>
+              {o.can.withdraw_appeal && <button type="button" className="btn btn-line btn-sm" onClick={() => setWithdrawing(r)}>Withdrawn</button>}
             </span>}
           </li>
         ))}
       </ul>
       {open.length > 0 && !o.can.decide_appeal && <p className="src">The Knight Marshal (head marshal) or an organizer records the decision.</p>}
-      {lodging && <LodgeAppeal log={log} sanctions={o.sanctions} onClose={() => setLodging(false)} onDone={onChanged} />}
+      {lodging && <LodgeAppeal fights={o.fights ?? []} log={log} sanctions={o.sanctions} onClose={() => setLodging(false)} onDone={onChanged} />}
       {deciding && <DecideAppeal r={deciding} onClose={() => setDeciding(null)} onDone={onChanged} />}
-      {withdrawing && <ActionSheet title="The appeal was withdrawn" onClose={() => setWithdrawing(null)} canSubmit submitLabel="Mark withdrawn" run={async () => { await withdrawReview(withdrawing.id, 'withdrawn by the appellant'); onChanged(); }}><p>{withdrawing.lodged_by_name} withdrew the appeal.</p></ActionSheet>}
+      {withdrawing && <WithdrawAppeal r={withdrawing} onClose={() => setWithdrawing(null)} onDone={onChanged} />}
     </section>
   );
 }
-function LodgeAppeal({ log, sanctions, onClose, onDone }: { log: DisciplineLogRow[]; sanctions: EventSanction[]; onClose: () => void; onDone: () => void }) {
+function WithdrawAppeal({ r, onClose, onDone }: { r: Review; onClose: () => void; onDone: () => void }) {
+  const [reason, setReason] = useState(`${r.lodged_by_name} withdrew it at the desk`);
+  return (
+    <ActionSheet title="The appeal was withdrawn" onClose={onClose} canSubmit={enough(reason)} submitLabel="Mark withdrawn" danger
+      confirmText="The appeal closes for good: it cannot be decided afterwards. It stays in the history, marked withdrawn, with your reason."
+      run={async () => { await withdrawReview(r.id, reason); onDone(); }}>
+      <p><b>{r.against ?? 'A fight'}</b> · appeal by {r.lodged_by_name}</p>
+      <Reason value={reason} onChange={setReason} label="Who withdrew it, and why" />
+    </ActionSheet>
+  );
+}
+function LodgeAppeal({ fights, log, sanctions, onClose, onDone }: { fights: EventFight[]; log: DisciplineLogRow[]; sanctions: EventSanction[]; onClose: () => void; onDone: () => void }) {
   const [target, setTarget] = useState('');
   const [by, setBy] = useState('');
   const [grounds, setGrounds] = useState('False implementation of a penalty');
@@ -315,7 +326,7 @@ function LodgeAppeal({ log, sanctions, onClose, onDone }: { log: DisciplineLogRo
         <select value={target} onChange={e => setTarget(e.target.value)}>
           <option value="">Choose…</option>
           <optgroup label="A record from a fight">{records.map(r => <option key={r.id} value={`m:${r.id}`}>{r.against ?? '?'} · {describeRow(r)} · {r.competition_name}{r.round_label ? ` · ${r.round_label}` : ''}</option>)}</optgroup>
-          <optgroup label="A fight (nothing was recorded)">{[...new Map(log.map(r => [r.match_id, r])).values()].map(r => <option key={r.match_id} value={`f:${r.match_id}`}>{r.competition_name}{r.round_label ? ` · ${r.round_label}` : ''}{r.field ? ` · ${r.field}` : ''}</option>)}</optgroup>
+          <optgroup label="A fight (nothing was recorded)">{fights.map(f => <option key={f.id} value={`f:${f.id}`}>{f.a ?? '?'} v {f.b ?? '?'} · {f.competition}{f.round_label ? ` · ${f.round_label}` : ''}{f.field ? ` · ${f.field}` : ''}</option>)}</optgroup>
           <optgroup label="A sanction outside a fight">{sanctions.filter(s => s.status === 'active').map(s => <option key={s.id} value={`s:${s.id}`}>{s.against} · {s.kind === 'card' ? s.label : SANCTION_WORD[s.kind]}</option>)}</optgroup>
         </select>
       </label>
@@ -387,7 +398,7 @@ function AddSuspension({ eventId, competitions, onClose, onDone }: { eventId: st
   const [reason, setReason] = useState('');
   return (
     <ActionSheet title="Suspend for this event" onClose={onClose} canSubmit={!!who && enough(reason)} submitLabel="Suspend" danger
-      confirmText={`${who?.name ?? 'They'} will be blocked from ${comp ? competitions.find(c => c.id === comp)?.name : 'the rest of this event'}: no check-in and no entry until it is lifted. ${team ? 'The team captain' : 'The fighter'} is notified.`}
+      confirmText={`${who?.name ?? 'They'} will be blocked from ${comp ? competitions.find(c => c.id === comp)?.name : 'the rest of this event'}: no check-in and no new entry until it is lifted (entries they already have stay until you withdraw them). ${team ? 'The team captain' : 'The fighter'} is notified.`}
       run={async () => { await issueSuspension({ authority: 'event', scope: comp ? 'competition' : 'remainder_of_event', reason, fighter: who?.fighterId, team: who?.teamId, event: eventId, competition: comp || null, provision: rule }); onDone(); }}>
       <div className="dd-seg" role="radiogroup" aria-label="Who">
         <button type="button" role="radio" aria-checked={!team} className={`btn btn-sm ${!team ? 'btn-ink' : 'btn-line'}`} onClick={() => { setTeam(false); setWho(null); }}>A fighter</button>

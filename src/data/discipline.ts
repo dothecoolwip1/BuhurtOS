@@ -30,9 +30,11 @@ export interface Review {
 export interface EventSuspension { id: string; scope: 'remainder_of_event' | 'competition'; competition: string | null; fighter_id: string | null; team_id: string | null; against: string | null; starts_at: string; lifted_at: string | null; label: string; reason: string | null; lift_reason: string | null }
 export interface Block { registration_id: string; fighter_id: string | null; name: string; message: string }
 export interface Tally { competition: string; against: string | null; fighter_id: string | null; team_id: string | null; cards: Record<string, number> }
+/** A fight of the event that has started or finished (an appeal can be about a fight where nothing was recorded). */
+export interface EventFight { id: string; competition: string; round_label: string | null; field: string | null; state: string; a: string | null; b: string | null }
 export interface DisciplineOverview {
-  sanctions: EventSanction[]; findings: Finding[]; reviews: Review[]; blocks: Block[]; event_suspensions: EventSuspension[]; tallies: Tally[];
-  can: { sanction: boolean; green_card: boolean; finding: boolean; suspend: boolean; lodge_appeal: boolean; decide_appeal: boolean };
+  sanctions: EventSanction[]; findings: Finding[]; reviews: Review[]; blocks: Block[]; event_suspensions: EventSuspension[]; tallies: Tally[]; fights?: EventFight[];
+  can: { sanction: boolean; green_card: boolean; finding: boolean; suspend: boolean; lodge_appeal: boolean; decide_appeal: boolean; withdraw_appeal?: boolean };
 }
 export const fetchDisciplineOverview = (eventId: string) => rpc<DisciplineOverview>('event_discipline_overview', { p_event: eventId });
 
@@ -101,6 +103,7 @@ export const SANCTION_WORD: Record<SanctionKind, string> = { warning: 'Warning',
 export const SEVERITY_WORD: Record<Finding['severity'], string> = { minor: 'Minor', moderate: 'Moderate', major: 'Major' };
 export const REVIEW_WORD: Record<ReviewKind, string> = { event_appeal: 'Appeal at the event', judiciary_red_card: 'Judiciary Committee: red card review', judiciary_application: 'Judiciary Committee: application' };
 export const OUTCOME_WORD: Record<string, string> = {
-  rematch_round: 'Rematch of the round', restart: 'Restart from a point', cards_imposed: 'Cards imposed', cards_withdrawn: 'Cards withdrawn', kept: 'Decision kept',
+  rematch_round: 'Rematch of the round', restart: 'Restart from a point', cards_imposed: 'Cards imposed', cards_withdrawn: 'Cards withdrawn',
+  point_deduction_imposed: 'Point deduction imposed', point_deduction_withdrawn: 'Point deduction withdrawn', kept: 'Appeal not approved: decision kept',
   revoked: 'Penalty revoked', increased: 'Penalty increased', reduced: 'Penalty reduced'
 };
