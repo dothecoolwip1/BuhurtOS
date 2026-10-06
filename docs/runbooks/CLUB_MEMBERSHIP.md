@@ -247,3 +247,41 @@ Every table: RLS on, no grants, functions only.
 `https://dothecoolwip1.github.io/**` is already listed, nothing is needed. Without it, Supabase sends confirmation, reset and Google sign-in links
 to the Site URL (BuhurtOS) instead of back to the club website. Because the origin is shared, the person still ends up signed in, but on the
 BuhurtOS page.
+
+## 13. Part 3 (2026-10-06): AGM concerns and executive nominations (club website only)
+
+Migration `20261017000100_club_agm_topics_nominations.sql` (additive). BuhurtOS has **no screens** for any of this; the Red Deer Reavers
+members page (`members.html`, 2026 AGM tab and the executive AGM admin) is the only UI. Nothing here changes membership, dues, eligibility,
+RSVP, proxies, check-in, the printable list, `team_officers` or sign-in.
+
+| Table | What it holds |
+| --- | --- |
+| `club_meeting_topics` + append-only `club_meeting_topic_history` | Member concerns / topics: subject (3 to 120 characters), details (up to 4000), status `submitted` / `on_agenda` / `addressed` / `withdrawn`. Every submission, edit, withdrawal and status change is kept in the history. Topics are never deleted. |
+| `club_meeting_nominations` | One row per member, office and AGM, status `awaiting_acceptance` / `accepted` / `declined` / `withdrawn`. A unique index allows **one live candidacy** per member, office and meeting; declined and withdrawn rows are kept. Offices: President, Secretary, Treasurer only (a check constraint; widening it is an additive migration). |
+| `club_meeting_nominators` | Everyone who put that member forward (a self-nomination lists the nominee as their own nominator). Five nominators of one member give ONE candidacy with five nominator rows. |
+| `club_meeting_nomination_history` (append-only) | nominated / also nominated / accepted / declined / withdrawn, with who and when. |
+
+Rules (all in the database functions; the screens only call them):
+- **Concerns:** any member who is not removed may submit until the meeting starts. The owner edits or withdraws their own topic until the meeting
+  starts and while it is Submitted or Added to Agenda (not once Addressed or Withdrawn). Nobody edits another member's topic.
+  President, Secretary and Treasurer set Submitted / Added to Agenda / Addressed (also during the meeting); any current executive can read the list.
+- **Nominating:** only a member who can vote today (the existing `club_vote_check`, counted on the meeting day) may nominate, until the meeting
+  starts. Yourself: accepted at once. Someone else: the nominee must be able to vote too, and stays *awaiting acceptance* until THAT member
+  accepts. Nobody can answer for someone else (checked against the nominee's own account). An accepted candidate can withdraw; the nominee
+  must still be able to vote to accept. After a decline, a new nomination starts a new candidacy (the declined one is kept).
+- **Nothing changes an officer.** No function touches `team_officers`. The election is held at the AGM; if nobody else stands, the current
+  officer stays. Gate checks compare the officer table before and after.
+- **What members see:** their own topics; nominations waiting for their answer (who nominated them, role, date); the board of current officers
+  with accepted candidates and, labelled, nominees awaiting acceptance. Declined and withdrawn candidacies, and candidates whose membership was
+  removed, are not shown to members. No e-mail addresses anywhere.
+- **What the executive sees (AGM admin, Concerns and Nominations):** every topic with member, details, time, edited flag and status; every
+  candidacy per office with status, self or member nomination and who nominated.
+
+Permissions summary: members act only on their own topics, their own nominations and nominations made for them; executives (President,
+Secretary, Treasurer) change topic status; any current executive reads. All five new tables have RLS on, no policies and no grants.
+
+Tests: `supabase/tests/club_agm_topics_gate.sql` (136 checks, in `run_all.sh`; includes the rules above, the officer-unchanged check, direct
+table access refused and records that cannot be removed or rewritten); `scripts/e2e/club-live.sh` (95 checks, section F drives the screens at 390x844
+with real tokens); `scripts/e2e/reavers-production-agm-extras-smoke.mjs` (39 checks; manual workflow `reavers-production-smoke.yml` with
+`suite = agm-extras`; it waits for an operator to confirm three test addresses and approve two test memberships, then drives the LIVE site).
+After a production run the operator withdraws the test topics and nominations and marks the test memberships Removed (nothing is deleted).

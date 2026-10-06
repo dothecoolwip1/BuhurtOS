@@ -4,6 +4,10 @@ name: Reavers production smoke (manual)
 on:
   workflow_dispatch:
     inputs:
+      suite:
+        description: '"accounts" (default): account, membership and AGM flows. "agm-extras": AGM concerns and executive nominations'
+        required: false
+        default: 'accounts'
       tag:
         description: 'Short unique tag for the two test accounts (letters and digits)'
         required: true
@@ -34,7 +38,9 @@ jobs:
           TAG: ${{ inputs.tag }}
           WAIT_MINUTES: ${{ inputs.wait_minutes }}
           ONLY: ${{ inputs.only }}
-        run: node scripts/e2e/reavers-production-smoke.mjs
+          SUITE: ${{ inputs.suite }}
+        run: |
+          if [ "$SUITE" = "agm-extras" ]; then node scripts/e2e/reavers-production-agm-extras-smoke.mjs; else node scripts/e2e/reavers-production-smoke.mjs; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
