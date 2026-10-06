@@ -1,23 +1,24 @@
 # Pack 18.1 hosted rollout (NOT performed by the build; the owner does this, in this order, after review)
 
-Nothing here has been run against hosted Supabase. Everything in the pack was verified locally; the items in "Only provable on hosted" below are the open risks.
+Steps 1 to 3 below are done on hosted (2026-10-06); the signing key / function secrets, the hosted device proof, the merge and production are not. Everything else was verified locally; the items in "Only provable on hosted" below are the open risks.
 Do not apply migrations, deploy the function or change Auth settings until each step below is understood. The migrations are additive and Pack 18's
 `20261012000100_pack18_command_centre` must already be applied (it is: version `20261006015820`).
 
-## 0. Where the rollout stands (2026-10-06) and what each step needs
+## 0. Where the rollout stands (2026-10-06, rollout session 3) and what each step needs
 | Step | Status | Needs |
 | --- | --- | --- |
-| Pull request `#42` (CI green: typecheck/unit/build, database gate, browser tests) | open, **NOT merged** | merge **after** step 1 (a merge deploys the app automatically; the new Command Centre panels would show errors on a database without the new functions) |
-| 1. Apply the three migrations (`20261015000100/200/300`) with `apply_migration`, in order | **NOT applied** (the Supabase connector lost authorization mid-session: `FGA Authentication Error. Unauthorized`; the first `apply_migration` call came back `cancelled`, nothing was applied) | re-connect the Supabase connector at https://claude.ai/customize/connectors, then start a new session |
-| 2. Role grants allowed on hosted | **checked read-only**: a rolled-back probe on the hosted database succeeded for `create role`, `grant anon to <role>` and `grant <role> to authenticator` | nothing |
-| 3. Deploy Edge Function `device-session` (`verify_jwt` off, like `send-push`) | not deployed | the connector (the function can be deployed with the `deploy_edge_function` tool) |
-| 4. Function secrets (`DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS`) and the trusted signing key | not done | **the owner**: no connector tool can set function secrets or import a JWT signing key (Supabase's docs: the private key is imported in the dashboard, or through the Management API with an access token) |
-| 5. Hosted proof (sign a device in, roles, revoke, expiry, Realtime) | not done | steps 1 to 4 **and** network access from the session to `*.supabase.co` (the session's network policy currently refuses it) |
+| Pull request `#42` | open, **NOT merged**; CI green on `a18f353` | merge only after step 5 (a merge deploys the app automatically) |
+| 1. The three migrations `20261015000100/200/300` | **APPLIED** on hosted: `20261006081036 pack181_event_sessions`, `20261006081056 pack181_roles_camera`, `20261006081102 pack181_broadcast_control` (from the committed files at `a18f353`). Verified read-only against a scratch database built from the repository: all 62 Pack 18.1 functions identical (one comment-only difference in `request_counter_seat`, pre-existing), roles / allow-list / table privileges / RLS exactly as section 5 requires | nothing |
+| 1a. Follow-up `20261016000100_pack181_camera_log_search_path` | **APPLIED** (`20261006082002`): fixes the advisor's `function_search_path_mutable` on `private.camera_log_append_only` | nothing |
+| 2. Role grants allowed on hosted | **done** (the first migration's `grant anon to ...` and `grant ... to authenticator` succeeded) | nothing |
+| 3. Deploy Edge Function `device-session` (`verify_jwt` off) | **DEPLOYED** (version 1, ACTIVE); answers `503 not configured` until step 4 | nothing |
+| 4. Function secrets (`DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS`) and the trusted signing key | **NOT done.** JWKS shows only the project's own Supabase-managed ES256 key | **the owner**: no connector tool can set function secrets or import a JWT signing key (Option A or B below) |
+| 4a. Hosted permission tests (the three Pack 18.1 gates, each one rolled-back transaction) | prepared and passing locally (119 / 113 / 104); **not run on hosted**: the Supabase tool holds SQL containing `delete`/`drop` for the owner's confirmation and timed out | the owner approves the confirmation prompt while the session runs them |
+| 5. Hosted proof (sign a device in, Data API with the custom role, Realtime, CORS, refresh, revoke) | not done | step 4 **and** network access from the session to `*.supabase.co` (refused by the session's network policy) |
+| 6. Production check | not done | the merge, and network access to `dothecoolwip1.github.io` |
 
-**Rollout session 2 (2026-10-06, later the same day):** still blocked at step 1. The connector lists the BuhurtOS organization but refuses every project-scoped call
-(`FGA Authentication Error. Unauthorized`), there is no `SUPABASE_ACCESS_TOKEN`, and `api.supabase.com` is refused by the session's network policy. Nothing was read from or
-changed on hosted; the next session must start with the read-only preflight (`list_migrations`: none of `20261015000100/200/300` present; `pg_roles` has no
-`bos_event_device`/`bos_controller`; no `event_credentials`/`event_sessions` tables) before applying anything.
+Leaked Password Protection stays **disabled**: it is only available on Supabase Pro plans and is not available on the current BuhurtOS plan (a known, accepted plan
+limitation, not a Pack 18.1 regression and not a release blocker). It can be enabled if the project moves to a plan that includes it.
 
 **The smallest owner effort, either way:**
 - **Option A (least work for Garrett):** (1) create a Supabase personal access token (dashboard, Account, Access Tokens); (2) in the Claude Code cloud environment, add it as a secret named `SUPABASE_ACCESS_TOKEN` and allow `api.supabase.com` and `*.supabase.co` under Network access. Then the session generates the key, imports and rotates it, sets the three secrets, deploys, and runs the hosted tests itself, and nothing secret is ever shown in chat.

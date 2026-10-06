@@ -139,6 +139,8 @@ select t.expect_eq('audit: camera off by the Marshal Phone, released by the Even
 select t.expect_eq('the camera log has both entries with who and role', (select string_agg(action || ':' || by_label || ':' || by_role, ',' order by id) from public.event_camera_log where event_id = t.ev(1)), 'activated:Marshal Phone:marshal,released:Event Admin Tablet:temporary_organizer');
 select t.expect_error('the camera log is append-only (update)', $$update public.event_camera_log set by_label = 'x'$$, '42501');
 select t.expect_error('... (delete)', $$delete from public.event_camera_log$$, '42501');
+select t.expect_eq('... and its trigger function has a fixed, empty search_path (20261016000100)',
+  (select array_to_string(proconfig, ',') from pg_proc where oid = 'private.camera_log_append_only()'::regprocedure), 'search_path=""');
 select t.as_user(t.u(1));
 select t.expect_error('not even the organizer can write the state table directly', format($$update public.event_camera_state set active = false where event_id = %L$$, t.ev(1)), '42501');
 select t.as_device(t.sid('admin'));
