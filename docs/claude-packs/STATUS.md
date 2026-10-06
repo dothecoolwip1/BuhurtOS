@@ -574,7 +574,7 @@ Not verified: the real domains (buhurtos.ca, the GitHub Pages club site): sign-i
 | Automated tests | `club_agm_gate.sql` **78 checks** + `club_membership_gate.sql` 101; `run_all.sh` DATABASE GATE PASSED; Vitest 965; typecheck |
 | Real-auth browser scenario | `scripts/e2e/club-live.sh` **61/61** (real Supabase Auth with default link-only emails; both sites on ONE origin like production; 390x844 + 1280x900) |
 
-## Pack 18.1: temporary event devices, Announcer view, Camera Off, OBS Broadcast Companion (2026-10-06) — HOSTED BACKEND LIVE AND VERIFIED; MERGE / PRODUCTION RECORDED BELOW
+## Pack 18.1: temporary event devices, Announcer view, Camera Off, OBS Broadcast Companion (2026-10-06) — HOSTED BACKEND LIVE AND VERIFIED, MERGED, DEPLOYED TO PRODUCTION (browser and hardware checks still open)
 
 Branch `pack18-1-event-ops` from `main` `e880e09` (Pack 18 merged, PR #38). Everything: `docs/claude-packs/PACK_18_1_EVENT_OPS.md` (architecture, final permission matrix, evidence ladder, known failures, what is not verified). Owner steps (not performed): `docs/runbooks/PACK181_HOSTED_ROLLOUT.md`. Event day: `PACK181_DEVICES.md`, `PACK181_EVENT_LAPTOP.md`.
 
@@ -590,7 +590,7 @@ Branch `pack18-1-event-ops` from `main` `e880e09` (Pack 18 merged, PR #38). Ever
 | Not verified | hosted Supabase (custom-role JWT, signing key, function secrets/CORS), real OBS, ducking, PA routing, cameras/mic, Windows/macOS launchers, firewall, Realtime sockets, installed iOS PWA, physical phones/tablets |
 | Release pass 2026-10-06 | reconciled with main `56b1d8a`; migrations renumbered `20261015*`; device reliability scenario 24/24; hosted rollout **blocked** (Supabase connector authorization lost; function secrets / signing key need the owner; session network policy blocks `*.supabase.co`): see `PACK181_HOSTED_ROLLOUT.md` section 0 |
 | For Pack 24 | `live-stability` desktop Command Centre scroll anchoring (position-sensitive, also fails on Pack 18 main at other scroll points); `pack15-live` check 33 stale since the notification popup (PR #39); arena-live 2, pack09d-live 1, rumble-live 2 (identical on Pack 18 main) |
-| PR / merged / deployed / production verified | PR #42: hosted verification passed (rows below); merge, Pages deployment and production checks happen AFTER this commit and are recorded in a follow-up entry. Production browser verification: **not possible from the session** (network policy) |
+| PR / merged / deployed / production verified | PR #42 merged 2026-10-06 14:05 UTC as `8b25e67` (merge commit; head `83b0ac0`; CI green on that head; hosted backend verified first). Main run #130 on `8b25e67`: typecheck/unit/build, database gate, browser tests, release policy (not frozen) and **Deploy GitHub Pages: success** (14:10:55 UTC). Live check (fetched from the hosted database with pg_net, since the session cannot reach github.io): `https://dothecoolwip1.github.io/BuhurtOS/` 200, last modified 14:10:50 UTC, bundle `index-BkrTK4mD.js` reports **`v0.1.0 · build 130 · 8b25e67 · 2026-10-06 14:06 UTC`**, contains the `/device` route and `functions/v1/device-session`, and points only at `mvbxlebznlgroptwwdsm.supabase.co`. **Production browser verification at phone/tablet sizes: NOT DONE** (no browser can reach the site from the session) |
 | CI on PR #42 | head `5eb588c` was **red** (a race in the Companion TEST `controller.suite.ts`, not in the Companion: reproduced 5/116 under CPU load, 0/144 after the fix); `a18f353` all green (typecheck/unit/build, database gate, browser tests, release policy) |
 | Hosted database (2026-10-06, rollout session 3) | **APPLIED.** Hosted history: `20261006081036 pack181_event_sessions`, `20261006081056 pack181_roles_camera`, `20261006081102 pack181_broadcast_control` (applied by the owner from the committed files at `a18f353`), and the follow-up `20261006082002 pack181_camera_log_search_path` (this session). All 62 functions created or patched by Pack 18.1 are md5-identical to a scratch database built from the repository, except `request_counter_seat`, which differs by one code comment the hosted Pack 13 body never had (behaviour identical). Roles `bos_event_device` / `bos_controller`: no login, not superuser, no BYPASSRLS, NOT members of `authenticated` or `service_role`, granted to `authenticator`. Device-executable functions beyond anon = exactly the 56 of `device_allowlist.txt` (same md5); controller = exactly `broadcast_controller_heartbeat`, `controller_state`; anon = the pinned 14. No table privilege beyond anon for either role; the 7 new tables have RLS on, no client grants, no policies |
 | Security advisor | `function_search_path_mutable` on `private.camera_log_append_only` was valid (the only Pack 18.1 function without `set search_path`); fixed by the additive migration `20261016000100_pack181_camera_log_search_path` (`alter function ... set search_path = ''`; the body only raises, so behaviour is unchanged; gate check added, negative control fails without it). After it, compared with the advisor run BEFORE Pack 18.1: no new ERROR, no new anon finding; `function_search_path_mutable` back to the single pre-existing `private.result_revisions_append_only` (Pack 02); +12 `authenticated_security_definer_function_executable` = the Pack 18.1 RPCs a signed-in caller must reach (each checks authority inside, the accepted pattern of the other 186); +7 `rls_enabled_no_policy` = the 7 new tables (intended: only definer functions touch them). **Leaked Password Protection: disabled. It is only available on Supabase Pro plans and is not available on the current BuhurtOS plan (accepted plan limitation, not a Pack 18.1 regression, not a release blocker); it can be enabled if the project moves to a plan that includes it** |
@@ -601,5 +601,47 @@ Branch `pack18-1-event-ops` from `main` `e880e09` (Pack 18 merged, PR #38). Ever
 | Realtime with a device token | **NOT VERIFIED** (WebSocket; not possible from inside the database and the session has no network to *.supabase.co). Check on a phone: a Command Centre / Announcer change appears on the device without reloading |
 | Test data left on hosted | 3 synthetic draft events `pack181-hosted-test-a/b/c` (record_sources -> the synthetic source; all device codes revoked; event A keeps its append-only camera log and audit rows, which is why the events are not deleted); the test organizer, BANNED with no live refresh tokens; `private.p181_live` (request numbers only, no client access); pg_net responses 16 to 71 (expired/revoked tokens; pg_net removes them after 6 hours). The cleanup DELETE was cancelled by the SQL tool: the owner may delete the test account and the staging table from the SQL editor |
 | Hardening note (not Pack 18.1) | `anon` / `authenticated` hold SELECT on `net._http_response` (pg_net default). Not reachable from outside: the Data API exposes only `public` and `graphql_public` (checked: `Accept-Profile: net` → 406) |
-| Production deployment and browser verification | see the follow-up entry after the merge |
+| Production deployment and browser verification | deployment: verified (row above). Browser at phone/tablet sizes (device sign-in, persistence through refresh, sign-out, Command Centre, Announcer view, Secretary permissions, Camera Off activate/release, broadcast controls, event isolation, device-mode navigation, bottom navigation, dialogs): **NOT VERIFIED on production**; covered locally by device-live, device-reliability-live, cc181-live, announcer-live and pack181-live (Chromium, phone/tablet viewports, real Postgres/PostgREST). Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md` on real phones/tablets |
 | Physical / hardware | **NOT VERIFIED**: real OBS, cameras, microphone, PA, ducking, venue network, laptop firewall, physical phones/tablets, iPhone home-screen app (Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md`) |
+
+### Pack 18.1 final status (2026-10-06)
+
+The software is complete. Nothing in the two lists after COMPLETE is a Pack 18.1 software blocker: they are manual / physical checks and owner housekeeping.
+
+**COMPLETE** (evidence in the table above)
+- Hosted migrations: `pack181_event_sessions`, `pack181_roles_camera`, `pack181_broadcast_control` applied; Pack 18.1 functions match the repository
+- Security / search_path fix: `20261016000100_pack181_camera_log_search_path` applied; advisor finding cleared
+- Signing key setup: imported ES256 key `de2891ff…` is the current key; `DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS` set
+- Edge Function: `device-session` deployed with the committed code
+- 336 hosted permission checks (sessions 119, roles 113, broadcast 104), rolled back
+- Real hosted device sign-in (Supabase Auth organizer, codes minted by the function, devices signed in)
+- Data API authorization with device tokens (role, allow-list, table access, forged signature refused)
+- Refresh
+- Sign-out
+- Revoke
+- Expiry (server-side, event end + 24 h; ended event refused)
+- Rate limiting (per-address lockout; global breaker in the gate)
+- Cross-event isolation
+- Camera Off (activate by marshal/announcer roles, release only by head marshal / organizer / Temporary Organizer)
+- Production merge: PR #42 → `8b25e67`
+- GitHub Pages deployment: run #130 success
+- Production build verification: live bundle reports `v0.1.0 · build 130 · 8b25e67`
+
+**REMAINING MANUAL / PHYSICAL VERIFICATION** (Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md`)
+- Realtime using a real device token
+- Phone browser check
+- Tablet browser check
+- Installed iPhone / PWA check
+- Real OBS
+- Real cameras
+- Microphone
+- PA
+- Music ducking
+- Venue network
+
+**OWNER CLEANUP**
+- Inspect Dashboard → JWT Keys and document what `027f29ee…` is
+- Confirm `bfe4ac4e…` is "Previously used" rather than revoked, if possible
+- Delete the banned test organizer `pack181-hosted-test@example.test` when convenient (Authentication → Users)
+- Remove `private.p181_live` when convenient (Table Editor)
+- Leave the three synthetic draft events `pack181-hosted-test-a/b/c`: their append-only camera log and audit history prevent deletion, by design
