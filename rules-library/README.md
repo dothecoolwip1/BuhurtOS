@@ -29,7 +29,7 @@ rules-library/
 ## Current release: Buhurt International 2026-10-06
 
 All 42 documents imported, 3 archive folders excluded, reconciliation PASSED (`releases/2026-10-06/reconciliation.md`; per-document table in
-`docs/claude-packs/PACK_22_SOURCE_QA.md`). Loaded by migration `20261015000400_rules_bi_2026_10_06.sql` as versions **in review**; the platform owner
+`docs/claude-packs/PACK_22_SOURCE_QA.md`). Loaded by migration `20261018000400_rules_bi_2026_10_06.sql` as versions **in review**; the platform owner
 publishes them from Platform › Rules (`/platform/rules`).
 
 The files came from the official links through a one-shot GitHub Actions workflow (provenance in `release.json` → `source_drop` and in
@@ -39,7 +39,7 @@ node scripts/rules/release.ts register-drop rules-library/buhurt-international 2
 node scripts/rules/release.ts extract   rules-library/buhurt-international 2026-10-06        # pdftotext + OCR (tesseract, pdftoppm) for pages without text
 node scripts/rules/release.ts structure rules-library/buhurt-international 2026-10-06
 node scripts/rules/release.ts reconcile rules-library/buhurt-international 2026-10-06
-node scripts/rules/release.ts sql       rules-library/buhurt-international 2026-10-06 supabase/migrations/20261015000400_rules_bi_2026_10_06.sql
+node scripts/rules/release.ts sql       rules-library/buhurt-international 2026-10-06 supabase/migrations/20261018000400_rules_bi_2026_10_06.sql
 ```
 Structuring is reproducible from the committed `text/` and `overrides/`: a unit test re-structures every document of this release and compares it with
 the committed `structured/` files. OCR output depends on the tesseract version (5.3.4 here), which is why `text/` is committed rather than regenerated
@@ -140,7 +140,7 @@ Run every command from the repository root. The examples use release name `2026-
    Publishing refuses while any provision still needs review. The previous version becomes *superseded*: it stays readable, and every competition
    and disciplinary record that points at it keeps its meaning.
 
-## Guarantees enforced by the database (migrations `20261015000100` and `20261015000300`)
+## Guarantees enforced by the database (migrations `20261018000100` and `20261018000300`)
 
 - A published version's text, title, version label, file checksum and pages never change. A changed official file is a **new version**.
 - Corrections of extraction mistakes go through `correct_rule_provision` with a reason; the old words stay in `rule_provision_revisions`.

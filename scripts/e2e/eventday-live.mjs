@@ -233,7 +233,8 @@ try {
   await score.goto(BASE + MANAGE); await score.waitForSelector('text=This area is for organizers', { timeout: 20000 });
   check('a scorekeeper does not get the Event day screen', (await score.locator('section.eventday').count()) === 0);
   const denied = await rpc('scorekeeper', 'move_match_in_queue', { p_match: mid(6), p_action: 'first' });
-  check('... and the database refuses their reorder', denied.status >= 400 && /organizer/i.test(JSON.stringify(denied.body)), JSON.stringify(denied));
+  // Pack 18.1 (owner decision): the Secretary / Scorekeeper may reorder the queue, so the database no longer refuses on permission; this match is final, so it refuses for that reason instead.
+  check('... the database lets the scorekeeper reach the queue rules (refuses only because this fight is already final, not for permission)', denied.status >= 400 && /already final/i.test(JSON.stringify(denied.body)) && !/not allowed|organizer|permission/i.test(JSON.stringify(denied.body)), JSON.stringify(denied));
   const okAdvance = await rpc('scorekeeper', 'advance_field_queue', { p_event: '00000000-0000-0000-0000-00000000ed01', p_field: 'Field 1', p_start: false });
   check('... but they can still start the next match (they could already run the queue)', okAdvance.status === 200, JSON.stringify(okAdvance));
   const stranger = await rpc('stranger', 'advance_field_queue', { p_event: '00000000-0000-0000-0000-00000000ed01', p_field: 'Field 1', p_start: true });

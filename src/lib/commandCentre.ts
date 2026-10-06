@@ -18,7 +18,9 @@ export interface FightWarning { matchId: string; side: 'a' | 'b'; fighterId: str
 export interface CommandSnapshot {
   serverNow: string;
   event: { id: string; slug: string; name: string; status: string; timezone: string; startsOn: string; endsOn: string; closed: boolean };
-  viewer: { organizer: boolean };
+  /** What the database says this viewer may do (the page only reflects it): the permanent organizer, announcing, running the day (organizer or Temporary Organizer),
+   *  Camera Off on / back on, and OBS-level broadcast control. */
+  viewer: { organizer: boolean; announce: boolean; operator: boolean; cameraOff: boolean; cameraRelease: boolean; broadcast: boolean };
   readiness: CommandReadiness;
   notReady: NotReadyFighter[];
   overrides: { registrationId: string; name: string; reason: string | null }[];

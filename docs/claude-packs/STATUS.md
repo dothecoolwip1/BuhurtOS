@@ -574,6 +574,103 @@ Not verified: the real domains (buhurtos.ca, the GitHub Pages club site): sign-i
 | Automated tests | `club_agm_gate.sql` **78 checks** + `club_membership_gate.sql` 101; `run_all.sh` DATABASE GATE PASSED; Vitest 965; typecheck |
 | Real-auth browser scenario | `scripts/e2e/club-live.sh` **61/61** (real Supabase Auth with default link-only emails; both sites on ONE origin like production; 390x844 + 1280x900) |
 
+## Pack 18.1: temporary event devices, Announcer view, Camera Off, OBS Broadcast Companion (2026-10-06) — HOSTED BACKEND LIVE AND VERIFIED, MERGED, DEPLOYED TO PRODUCTION (browser and hardware checks still open)
+
+Branch `pack18-1-event-ops` from `main` `e880e09` (Pack 18 merged, PR #38). Everything: `docs/claude-packs/PACK_18_1_EVENT_OPS.md` (architecture, final permission matrix, evidence ladder, known failures, what is not verified). Owner steps (not performed): `docs/runbooks/PACK181_HOSTED_ROLLOUT.md`. Event day: `PACK181_DEVICES.md`, `PACK181_EVENT_LAPTOP.md`.
+
+| Level | Status |
+| --- | --- |
+| Implemented in repository | event sessions for eight devices (12-character code + QR, server-side expiry final day + 24 h, revoke / replace / sign-out-all), `device-session` Edge Function, device client + shell, Announcer view, Camera Off (latched, audited), Secretary/Scorekeeper powers, Temporary Organizer/Event Admin, Command Centre device/broadcast/staff panels, OBS Broadcast Companion, music policy |
+| Migrations created | `20261015000100_pack181_event_sessions`, `20261015000200_pack181_roles_camera`, `20261015000300_pack181_broadcast_control` (additive) |
+| Applied locally | yes (scratch databases; `run_all.sh` DATABASE GATE PASSED again on 2026-10-06 with the follow-up migration below) |
+| Unit / DB | Vitest 1354/1354; Companion 186/186; `run_all.sh` DATABASE GATE PASSED (new gates 119 + 113 + 103 checks; fingerprint regenerated) |
+| Real stack + Chromium | pack181-live 176/176, device-live 82/82, cc181-live 148/148, announcer-live 181/181; REAL_AUTH pack18-live 68/68; regressions pack13/14/15/16, eventday, finalize, pack10, represented-team, broadcast-realtime, five CI mocked suites all pass |
+| OBS | stand-in only: `obs-live` 119/119 (**NOT real OBS**) |
+| Known failures not from 18.1 (same on `e880e09`) | arena-live 2, pack09d-live 1, rumble-live 2; live-stability desktop Command Centre scroll check is position-sensitive (46/47 here at 60 %; fails on `e880e09` at 50 %/70 %) |
+| Not verified | hosted Supabase (custom-role JWT, signing key, function secrets/CORS), real OBS, ducking, PA routing, cameras/mic, Windows/macOS launchers, firewall, Realtime sockets, installed iOS PWA, physical phones/tablets |
+| Release pass 2026-10-06 | reconciled with main `56b1d8a`; migrations renumbered `20261015*`; device reliability scenario 24/24; hosted rollout **blocked** (Supabase connector authorization lost; function secrets / signing key need the owner; session network policy blocks `*.supabase.co`): see `PACK181_HOSTED_ROLLOUT.md` section 0 |
+| For Pack 24 | `live-stability` desktop Command Centre scroll anchoring (position-sensitive, also fails on Pack 18 main at other scroll points); `pack15-live` check 33 stale since the notification popup (PR #39); arena-live 2, pack09d-live 1, rumble-live 2 (identical on Pack 18 main) |
+| PR / merged / deployed / production verified | PR #42 merged 2026-10-06 14:05 UTC as `8b25e67` (merge commit; head `83b0ac0`; CI green on that head; hosted backend verified first). Main run #130 on `8b25e67`: typecheck/unit/build, database gate, browser tests, release policy (not frozen) and **Deploy GitHub Pages: success** (14:10:55 UTC). Live check (fetched from the hosted database with pg_net, since the session cannot reach github.io): `https://dothecoolwip1.github.io/BuhurtOS/` 200, last modified 14:10:50 UTC, bundle `index-BkrTK4mD.js` reports **`v0.1.0 · build 130 · 8b25e67 · 2026-10-06 14:06 UTC`**, contains the `/device` route and `functions/v1/device-session`, and points only at `mvbxlebznlgroptwwdsm.supabase.co`. **Production browser verification at phone/tablet sizes: NOT DONE** (no browser can reach the site from the session) |
+| CI on PR #42 | head `5eb588c` was **red** (a race in the Companion TEST `controller.suite.ts`, not in the Companion: reproduced 5/116 under CPU load, 0/144 after the fix); `a18f353` all green (typecheck/unit/build, database gate, browser tests, release policy) |
+| Hosted database (2026-10-06, rollout session 3) | **APPLIED.** Hosted history: `20261006081036 pack181_event_sessions`, `20261006081056 pack181_roles_camera`, `20261006081102 pack181_broadcast_control` (applied by the owner from the committed files at `a18f353`), and the follow-up `20261006082002 pack181_camera_log_search_path` (this session). All 62 functions created or patched by Pack 18.1 are md5-identical to a scratch database built from the repository, except `request_counter_seat`, which differs by one code comment the hosted Pack 13 body never had (behaviour identical). Roles `bos_event_device` / `bos_controller`: no login, not superuser, no BYPASSRLS, NOT members of `authenticated` or `service_role`, granted to `authenticator`. Device-executable functions beyond anon = exactly the 56 of `device_allowlist.txt` (same md5); controller = exactly `broadcast_controller_heartbeat`, `controller_state`; anon = the pinned 14. No table privilege beyond anon for either role; the 7 new tables have RLS on, no client grants, no policies |
+| Security advisor | `function_search_path_mutable` on `private.camera_log_append_only` was valid (the only Pack 18.1 function without `set search_path`); fixed by the additive migration `20261016000100_pack181_camera_log_search_path` (`alter function ... set search_path = ''`; the body only raises, so behaviour is unchanged; gate check added, negative control fails without it). After it, compared with the advisor run BEFORE Pack 18.1: no new ERROR, no new anon finding; `function_search_path_mutable` back to the single pre-existing `private.result_revisions_append_only` (Pack 02); +12 `authenticated_security_definer_function_executable` = the Pack 18.1 RPCs a signed-in caller must reach (each checks authority inside, the accepted pattern of the other 186); +7 `rls_enabled_no_policy` = the 7 new tables (intended: only definer functions touch them). **Leaked Password Protection: disabled. It is only available on Supabase Pro plans and is not available on the current BuhurtOS plan (accepted plan limitation, not a Pack 18.1 regression, not a release blocker); it can be enabled if the project moves to a plan that includes it** |
+| Edge Function `device-session` | **DEPLOYED** to the BuhurtOS project (version 1, ACTIVE, `verify_jwt` false as the runbook requires; `index.ts` + `_shared/deviceSession.ts` + `deno.json` exactly as committed, read back). Called from the hosted database through `pg_net`: answers `503 {"error":"not configured"}`, i.e. it runs and fails closed until its secrets exist |
+| Signing key and secrets | **CONFIGURED by the owner (2026-10-06).** Current JWT signing key: imported ES256 `kid de2891ff-872c-4287-a58d-c2ead48aa36c` (the hosted JWKS publishes it with a second key `027f29ee…`; the original Supabase-managed key `bfe4ac4e…` seen earlier the same day is no longer published: owner to confirm it was moved to "previously used", not revoked). Function secrets set: `DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS=https://dothecoolwip1.github.io` (names only; values never seen by the session). Supabase Auth now issues user tokens with `kid de2891ff…` (ES256), checked on a real password sign-in |
+| Hosted permission tests | **PASSED on hosted, 336 checks**: the three Pack 18.1 gates, each as one transaction ended by a deliberate error so nothing is kept (verified: no test schema or rows left). Roles 113/113 (every role allowed/denied; Camera Off activate/release split; broadcast control; queue adjustment; announcements; staff management; result correction/voiding with revision history; announcer read-only; cross-event isolation); sessions 119/119 (revoke, replace, last sign-in wins, per-address lockout and global breaker, exact expiry incl. time zones and the clock change, sessions are not accounts, the 56-function allow-list, no table access); broadcast 104/104 (incl. the camera-log search_path fix). The Supabase SQL tool refuses (cancels) SQL containing DELETE/DROP even inside a rolled-back test, so the sessions run aged its own rate-limit rows (`update ... where ip_hash like 'ip-%'`) instead of deleting them and left the probe function to the rollback; same 119 checks locally |
+| Hosted end-to-end device flow (real Supabase Auth, the deployed Edge Function, the Data API; driven from inside the database with pg_net because the session cannot reach *.supabase.co) | **PASSED.** A synthetic test organizer (`pack181-hosted-test@example.test`) signed in (200, ES256 `kid de2891ff…`) and minted 5 codes through `device-session` (200; no sign-in: 401). Sign-in: 200 for the marshal/announcer on event A and the marshal on event B, token = ES256 `kid de2891ff…`, role `bos_event_device`, `sub` = session id, claims `aud/exp/iat/role/session_id/sub` only, 600 s, CORS only for `https://dothecoolwip1.github.io` (another origin: 403); event C ended 3 days ago: 401; wrong code: 401 (same message). Data API with the device token: `device_whoami` 200 (marshal; announcer); Camera Off on its own event 200, on event B 403; event B device reading A 403; marshal and announcer release 403, organizer release 200; announcer announcement 403; `close_event` / `my_fighter_id` 403 (not on the allow-list); `event_credentials` / `event_staff` tables 403; public read 200; forged signature 401. Refresh: 200 with a new token, bogus secret 401. Sign-out: 200, then the old token 403 "this device session has ended" and refresh 401. Revoke (organizer through the Data API): 200, then the revoked token 403 and refresh 401. Lockout: 10 wrong codes from one address, then a VALID code from it 401; other devices unaffected. No session became an auth user or profile; the audit trail names each device and holds no code, secret or token; function logs hold only boot/shutdown, edge logs only method/status/URL |
+| Realtime with a device token | **NOT VERIFIED** (WebSocket; not possible from inside the database and the session has no network to *.supabase.co). Check on a phone: a Command Centre / Announcer change appears on the device without reloading |
+| Test data left on hosted | 3 synthetic draft events `pack181-hosted-test-a/b/c` (record_sources -> the synthetic source; all device codes revoked; event A keeps its append-only camera log and audit rows, which is why the events are not deleted); the test organizer, BANNED with no live refresh tokens; `private.p181_live` (request numbers only, no client access); pg_net responses 16 to 71 (expired/revoked tokens; pg_net removes them after 6 hours). The cleanup DELETE was cancelled by the SQL tool: the owner may delete the test account and the staging table from the SQL editor |
+| Hardening note (not Pack 18.1) | `anon` / `authenticated` hold SELECT on `net._http_response` (pg_net default). Not reachable from outside: the Data API exposes only `public` and `graphql_public` (checked: `Accept-Profile: net` → 406) |
+| Production deployment and browser verification | deployment: verified (row above). Browser at phone/tablet sizes (device sign-in, persistence through refresh, sign-out, Command Centre, Announcer view, Secretary permissions, Camera Off activate/release, broadcast controls, event isolation, device-mode navigation, bottom navigation, dialogs): **NOT VERIFIED on production**; covered locally by device-live, device-reliability-live, cc181-live, announcer-live and pack181-live (Chromium, phone/tablet viewports, real Postgres/PostgREST). Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md` on real phones/tablets |
+| Physical / hardware | **NOT VERIFIED**: real OBS, cameras, microphone, PA, ducking, venue network, laptop firewall, physical phones/tablets, iPhone home-screen app (Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md`) |
+
+### Pack 18.1 final status (2026-10-06)
+
+The software is complete. Nothing in the two lists after COMPLETE is a Pack 18.1 software blocker: they are manual / physical checks and owner housekeeping.
+
+**COMPLETE** (evidence in the table above)
+- Hosted migrations: `pack181_event_sessions`, `pack181_roles_camera`, `pack181_broadcast_control` applied; Pack 18.1 functions match the repository
+- Security / search_path fix: `20261016000100_pack181_camera_log_search_path` applied; advisor finding cleared
+- Signing key setup: imported ES256 key `de2891ff…` is the current key; `DEVICE_JWT_PRIVATE_JWK`, `DEVICE_CODE_PEPPER`, `DEVICE_ALLOWED_ORIGINS` set
+- Edge Function: `device-session` deployed with the committed code
+- 336 hosted permission checks (sessions 119, roles 113, broadcast 104), rolled back
+- Real hosted device sign-in (Supabase Auth organizer, codes minted by the function, devices signed in)
+- Data API authorization with device tokens (role, allow-list, table access, forged signature refused)
+- Refresh
+- Sign-out
+- Revoke
+- Expiry (server-side, event end + 24 h; ended event refused)
+- Rate limiting (per-address lockout; global breaker in the gate)
+- Cross-event isolation
+- Camera Off (activate by marshal/announcer roles, release only by head marshal / organizer / Temporary Organizer)
+- Production merge: PR #42 → `8b25e67`
+- GitHub Pages deployment: run #130 success
+- Production build verification: live bundle reports `v0.1.0 · build 130 · 8b25e67`
+
+**REMAINING MANUAL / PHYSICAL VERIFICATION** (Garrett: `docs/runbooks/PACK181_REHEARSAL_CHECKLIST.md`)
+- Realtime using a real device token
+- Phone browser check
+- Tablet browser check
+- Installed iPhone / PWA check
+- Real OBS
+- Real cameras
+- Microphone
+- PA
+- Music ducking
+- Venue network
+
+**OWNER CLEANUP**
+- Inspect Dashboard → JWT Keys and document what `027f29ee…` is
+- Confirm `bfe4ac4e…` is "Previously used" rather than revoked, if possible
+- Delete the banned test organizer `pack181-hosted-test@example.test` when convenient (Authentication → Users)
+- Remove `private.p181_live` when convenient (Table Editor)
+- Leave the three synthetic draft events `pack181-hosted-test-a/b/c`: their append-only camera log and audit history prevent deletion, by design
+
+## Reavers AGM concerns and executive nominations (2026-10-06)
+
+| Item | State |
+| --- | --- |
+| Code | Migration `20261017000100_club_agm_topics_nominations.sql`, gate `club_agm_topics_gate.sql` (136 checks, in `run_all.sh`), local browser suite section F (`club-live.sh` 95/95), manual production suite `reavers-production-agm-extras-smoke.mjs` (workflow input `suite = agm-extras`). Club website: BuhurtOS PR #44 (database, tests, docs), Red-deer-reavers PR #2 (screens). No BuhurtOS UI changes. |
+| Merged | BuhurtOS #44 and Red-deer-reavers #2, both merged to `main`. CI on #44 green (typecheck/unit/build, database gate, browser tests, release policy). |
+| Hosted database | **APPLIED** (`club_agm_topics_nominations`). All 14 new function bodies compared with the repository: identical md5. `anon` cannot execute any; private helpers not executable by any app role; the 5 new tables have RLS on and no grants. Security advisor: only the two by-design findings (RLS on, no policy; checked functions callable by signed-in users). |
+| Frontend | Club website Pages build succeeded; the live files were read back by the production run (members.html, config, member-portal.js with the new code, all HTTP 200). BuhurtOS was not changed. |
+| Production verification | **Run 37497774762: 39/39 on the real club website and live Supabase** with three TEST accounts (two voting, one pending): topic submit / edit / withdraw, another member refused, self-nomination for all three offices, nominate another member, nominator cannot answer, accept, decline, duplicate nomination makes one candidacy, pending member cannot nominate, officers unchanged, existing RSVP and proxy still work, 390px phone, no page errors. |
+| Executive screens | **NOT driven in a browser on production** (no executive account was used). Checked on the live database as the real Treasurer inside a rolled-back transaction (topic list, set Added to Agenda / Addressed, nomination dashboard with current officers and self / member nominations; a regular member refused all three) and in the local browser suite (section F, desktop and phone). |
+| An unexplained failure | The first production attempt (run 37496736100, ~11 minutes after the site deploy) failed before any check: the live members page did not initialise (`window.BUHURTOS` undefined, sign-in form never shown). An identical rerun minutes later loaded normally (config HTTP 200, defines `window.BUHURTOS`). The cause was not identified (suspected stale or partial CDN response right after a deploy; not proven). If a member ever sees a blank members page, reload and tell the owner. |
+| Operator steps in the test | The test mailboxes are not readable, so an operator confirmed the three test addresses and approved the two voting test memberships by SQL (status note + audit rows). |
+| Cleanup | Test candidacies withdrawn (history + audit rows) and the three test memberships marked Removed with a note; nothing deleted. No live test candidacy or topic remains. Real data untouched (officers: only the Treasurer is assigned; one real pending application exists). |
+| Not done | Video link is not set; President and Secretary not assigned; a real executive has not yet used the Concerns / Nominations tabs in a browser. |
+
+## Reavers help, footer buttons and the p1018e production run (2026-10-06)
+
+| Item | State |
+| --- | --- |
+| Shipped (club website, Red-deer-reavers #3, #4, #5) | "How the AGM Works" help under the AGM controls; bylaws PDF link on Create account and the Join form; Member Sign In and Admin Sign In buttons in the footer of the home, programs, steps, involved, contact, AGM and members pages (about.html has no footer). Admin Sign In is the same shared sign-in (no separate admin login); executives land on the AGM admin. Local browser suite 124/124. |
+| Production run p1018e | **55/57 passed** on the live site: help, bylaws links, footer buttons and Admin Sign In on five live pages, Admin Sign In note and member behaviour, topics, nominations (all three offices, nominate another, accept, decline, no duplicates, non-voting refused, officers unchanged), RSVP and proxy, 390px fit, no page errors. **2 failed: 3d and 3f**, the officer wording (see next row). |
+| Officer wording mismatch | The hosted database holds a migration `20261006170132 show_reavers_officers_without_accounts` (applied at 17:01 UTC, **not in this repository**) that makes `private.club_current_officer_name` return "Kedrixx (no currently active account)" and "Carmalee (no currently active account)" for the Reavers when an office has no record. The site shows what the database returns, so the live page still says the old wording, not "Kedrixx - no active account". Open: change that database function (additive migration, add it to the repository) or add a display rule on the site. |
+| Emails | The earlier runs signed up 14 test accounts at `buhurtos.ca`, which has no mail server; each confirmation email bounced to the owner. p1018e's three were confirmed directly in the database. **No email was sent by anything after the owner's report.** Rule from now on: fixed pre-confirmed test accounts only (see the runbook). No MX or email hosting was configured. |
+| Test data | p1018e: 3 auth accounts, 3 memberships (X, Y approved, Z pending, all now Removed with a note), 5 candidacy rows (4 withdrawn, 1 declined), 1 topic (withdrawn by the member), audit rows. The leftover pending p1018d-z membership was marked Removed. History is never deleted. |
+
 ## Pack 22: rules, regulations, penalties and discipline (2026-10-06): IMPLEMENTED AND VERIFIED LOCALLY ON BRANCH, PUSHED, NOT MERGED, NOT DEPLOYED
 
 Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers membership) was merged in at `9d97be4`.
@@ -587,7 +684,7 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Official source | All **42** Buhurt International PDFs, from the official links (one-shot workflow, branch `pack22-bi-sources`, `SHA256SUMS.txt`) |
 | Import (repository) | Release `2026-10-06`: 42 imported, 3 archive folders excluded with reason, 0 missing; reconciliation **PASSED**. 1281 provisions in official numbering; 15 tables transcribed (merged cells kept); 24 picture-only pages; 210 OCR pages; 37 OCR corrections checked against the page image; 0 provisions left to review. Version labels were read from each document. Reviews were made by Claude Code against page images; publishing is the owner's act |
 | Implemented in repository | Rules library (search, document and rule pages, tables, picture/OCR notices, quick questions, Lyst Rules sheet, rule citations) · competition documents chosen from the classification (not hardcoded to BI) · BI card vocabulary with sources (green ≠ yellow) · match records carry the card concept and ruleset version · event-level sanctions · authenticity infractions and green cards · appeals and Judiciary reviews with official windows and outcomes · suspensions (event / organization / platform authority, scope, supersede, lift) · eligibility blocks at acceptance, check-in, entry, roster and readiness (no override) · discipline desk, organization/platform suspension admin, fighter's own record, Platform › Rules publishing · recorded document conflicts (tier points) · notifications reuse Pack 15 |
-| Migrations | `20261015000100` … `20261015000700` (seven, additive; `000400` is the 950 KB data load) |
+| Migrations | `20261018000100` … `20261018000700` (seven, additive; `000400` is the 950 KB data load) |
 | Skeptical QA | Independent agent: 12 confirmed + 3 plausible findings. All fixed (migration `000700` + UI) and covered by `pack22_qa_fixes_gate.sql` (43 checks, fails without the fix) |
 | Automated tests | typecheck clean; Vitest **1031/1031**; build OK; `run_all.sh` **DATABASE GATE PASSED** (`pack22_gate` 139, `pack22_discipline_gate` 119, `pack22_qa_fixes_gate` 43; fingerprint 2552 lines) |
 | Browser (real Chromium, built app, real Postgres + PostgREST; 390×844 and desktop) | `pack22-live` **71/71**; `pack22-discipline-live` **56/56**; with the real Supabase Auth server (REAL_AUTH) **57/57**. Regression after the fixes: `pack16-live` 66/66, `pack13-live` 88/88, `pack18-live` 67/67 (real Auth) |
@@ -600,11 +697,11 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Level | Status |
 | --- | --- |
 | Source files collected | **YES**: 42 archive PDFs (Tournament 10, Marshal 10, Authenticity 22) on `pack22-bi-sources` (`06b671d`), checksummed; merged into the Pack 22 branch (`db87dd3`) |
-| Implemented | **YES**: `scripts/rules/history.ts`; migrations `20261015000800` (model, guard, importer, historical publishing), `20261015000900` (data, generated), `20261015001000` (QA fixes) |
+| Implemented | **YES**: `scripts/rules/history.ts`; migrations `20261018000800` (model, guard, importer, historical publishing), `20261018000900` (data, generated), `20261018001000` (QA fixes) |
 | Mapped and reconciled | **YES**: 37 historical editions of 25 documents; 4 byte-identical pairs imported once (both file names kept); 0 semantic duplicates; 1 file held back (the one-sheet "Shields 2025.3" export, word for word page 2 of chart 2024.12.13); reconciliation PASSED; **44 provisions still need human review** |
 | Skeptical QA | **DONE**: 11 confirmed findings (3 medium, 1 medium-low, 2 low-medium, 4 low, 1 medium from my own pass), all fixed with regression tests; 4 interpretation points recorded as accepted or owner decisions |
 | Locally verified | **YES**: DATABASE GATE PASSED (history gate 64 checks); Vitest 1057/1057; typecheck clean; build OK; importer 32/32; browser history 32/32, rules 71/71, discipline 56/56, Pack 13 88/88; both generated migrations deterministic |
-| Current 2026-10-06 release changed | **NO** (42-version fingerprint `2ee64069…` unchanged; migration `20261015000400` byte-identical; migrations 100–800 untouched) |
+| Current 2026-10-06 release changed | **NO** (42-version fingerprint `2ee64069…` unchanged; migration `20261018000400` byte-identical; migrations 100–800 untouched) |
 | Committed / pushed | **YES** / **YES**, branch `ccr-321cc545-1coq4p` (see the final handoff for the commit) |
 | Merged to main | **NO** |
 | Hosted database applied | **NO** |

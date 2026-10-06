@@ -6,6 +6,13 @@
 //   operator to confirm the test address (the test mailboxes are not readable from here) and says so in its output. Membership approval of the
 //   test accounts is also done by an operator (the Treasurer), which the script waits for. It never touches any real person's data.
 // Afterwards the operator marks the test memberships Removed (records are never deleted).
+// DISABLED BY DEFAULT: this suite creates new test accounts by sign-up, which sends real confirmation emails to addresses that cannot receive
+// mail (they bounced to the owner on 2026-10-06). Production tests must use fixed pre-confirmed test accounts only (see
+// reavers-production-agm-extras-smoke.mjs). It only runs if ALLOW_ACCOUNT_CREATION is set to the exact phrase below, which nobody should do.
+if (process.env.ALLOW_ACCOUNT_CREATION !== 'yes-send-real-confirmation-emails') {
+  console.error('REFUSING TO RUN: this suite creates accounts and sends confirmation emails. Use the fixed-account suite (suite = agm-extras).');
+  process.exit(2);
+}
 import { mkdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const { chromium } = createRequire(import.meta.url)('playwright-core');

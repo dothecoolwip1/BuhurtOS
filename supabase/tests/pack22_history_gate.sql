@@ -1,4 +1,4 @@
--- Pack 22 historical editions gate (migrations 20261015000800 and 20261015000900).
+-- Pack 22 historical editions gate (migrations 20261018000800 and 20261018000900).
 --   * the archive history is loaded as HISTORICAL versions in review: 37 editions of 25 documents, provenance kept, byte-identical files once
 --   * the current 2026-10-06 release is unchanged (fingerprint of its 42 content hashes), and stays the current version after history is added
 --   * a historical edition can never become the version in force; it is published only as historical, by the owner, after review
@@ -79,7 +79,7 @@ select t.expect_eq('current: the 2026-10-06 release is exactly the committed one
 select t.expect_eq('current: still 1281 provisions, none of them historical', (select count(*) from public.rule_provisions p join public.ruleset_versions v on v.id = p.ruleset_version_id join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International' and not v.historical)::int, 1281);
 select t.expect_eq('current: the recorded conflicts still point only at current versions', (select count(*) || '/' || count(*) filter (where c.status = 'open') from public.rule_conflicts c join public.ruleset_versions a on a.id = c.version_a join public.ruleset_versions b on b.id = c.version_b where not a.historical and not b.historical and c.governing_body = 'Buhurt International'), '3/3');
 create temp table snap as select t.current_rows() as rows, t.current_fingerprint() as fp;
-\i supabase/migrations/20261015000900_rules_bi_history_archive_2026_10_06.sql
+\i supabase/migrations/20261018000900_rules_bi_history_archive_2026_10_06.sql
 select t.expect_eq('reload: loading the history again changes nothing (no new import, current rows identical)',
   (select count(*) from public.audit_log where action = 'rules.historical_version_imported')::int || '/' || (t.current_rows() = (select rows from snap))::text, '37/true');
 
@@ -179,7 +179,7 @@ select t.expect_eq('the discipline log names a cited historical rule as an earli
   '2024.12.13:true,26.4:false');
 select t.as_admin();
 
--- ---------------------------------------------------------------- QA fixes (migration 20261015001000)
+-- ---------------------------------------------------------------- QA fixes (migration 20261018001000)
 select t.expect_error('QA 5: the field tablet cannot cite a published earlier edition either', $$select t.as_user(t.u(1)); select public.lyst_cite_rule(gen_random_uuid(), '00000000-0000-0000-0000-0000000b7b02',
   (select id from public.rule_provisions where ruleset_version_id = t.v('marshal/buhurt-rules', '2024.12.13') and number is not null order by ordinal limit 1))$$, '22023');
 select t.as_admin();

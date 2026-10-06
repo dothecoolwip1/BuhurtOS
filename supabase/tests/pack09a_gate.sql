@@ -29,6 +29,11 @@ begin
   if got is distinct from want then raise exception 'FAIL (% <> %): %', got, want, label; end if;
   insert into t.log (name) values (label);
 end $$;
+create function t.expect_ok_undo(label text, stmt text) returns void language plpgsql as $$
+begin
+  begin execute stmt; raise exception 'undo' using errcode = 'P0042'; exception when sqlstate 'P0042' then null; end;   -- allowed; its effect is rolled back so later checks see the same world
+  insert into t.log (name) values (label);
+end $$;
 grant usage on schema t to anon, authenticated;
 grant all on t.log to anon, authenticated;
 grant usage on all sequences in schema t to anon, authenticated;
@@ -153,7 +158,7 @@ select t.as_anon();
 select t.expect_error('anonymous visitors cannot call either function', $q$select public.advance_field_queue('00000000-0000-0000-0000-00000000e101', null, true)$q$, '42501');
 select t.expect_error('... the reorder either', $q$select public.move_match_in_queue(t.m(1), 'first')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
-select t.expect_error('a scorekeeper cannot reorder the line (organizers only)', $q$select public.move_match_in_queue(t.m(1), 'first')$q$, '42501');
+select t.expect_ok_undo('a scorekeeper (the secretary) may reorder the line (Pack 18.1: Secretary and Scorekeeper are one role)', $q$select public.move_match_in_queue(t.m(1), 'first')$q$);
 select t.as_user('00000000-0000-0000-0000-0000000000a3');
 select t.expect_error('a head marshal cannot reorder either; they keep setting a match''s state', $q$select public.move_match_in_queue(t.m(1), 'first')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a2');

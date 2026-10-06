@@ -1,4 +1,6 @@
 import { supabase } from '../lib/supabase';
+import { deviceRoles, isDeviceMode, storedWhoami } from '../lib/deviceSession';
+import { isOperatorRole } from '../lib/deviceRoutes';
 
 export type LeagueKey = 'buhurt' | 'duels' | 'outrance' | 'hacsa';
 export interface LiveCompetition {
@@ -82,6 +84,15 @@ export async function fetchEvent(slug: string): Promise<{ event: LiveEvent; comp
 
 /** What the signed-in person is to this event. Each query is limited by the database to what they may see. */
 export async function fetchMyEventContext(eventId: string, userId: string): Promise<MyEventContext> {
+  // A temporary event device (Pack 18.1) has no staff rows, platform role or registration, and the database refuses those tables to it. What it is
+  // comes from its own session: its roles on ITS event only (display; the database decides every action). A Temporary Organizer also counts as an
+  // 'operator' (organizer powers on this event) but is never an organizer.
+  if (isDeviceMode()) {
+    const w = storedWhoami();
+    const mine = w && w.event.id === eventId;
+    const roles = mine ? [...deviceRoles(w), ...(isOperatorRole(w.role) ? ['operator'] : [])] : [];
+    return { roles, isOrganizer: false, registration: null, pendingRegistrations: null };
+  }
   const [staff, platform, reg] = await Promise.all([
     supabase.from('event_staff').select('role').eq('event_id', eventId).eq('user_id', userId),
     supabase.from('platform_roles').select('role').eq('user_id', userId),

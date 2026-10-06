@@ -49,22 +49,27 @@ const text = async (page, sel) => (await page.locator(sel).first().innerText().c
 async function settle(page, rootSel) {
   await page.locator(rootSel).first().waitFor({ timeout: 30000 });
   await sleep(1500);
-  return page.evaluate((rootSel) => {
+  return page.evaluate(([rootSel, frac]) => {
     const se = document.scrollingElement, max = se.scrollHeight - window.innerHeight;
-    window.scrollTo(0, Math.max(0, Math.round(max * 0.6)));
+    window.scrollTo(0, Math.max(0, Math.round(max * frac)));
     const root = document.querySelector(rootSel);
     root.__stable = 'same-node';
     // the anchor: the reading position, i.e. the smallest block at the top-left of the content area under the sticky header, which is
     // what the browser's own scroll anchoring keeps in place (first visible content in reading order)
     const content = document.querySelector('main.wrap')?.getBoundingClientRect();
-    let anchor = document.elementFromPoint(Math.max(20, (content?.left ?? 0) + 24), 160);
+    // Pack 18.1: if the point lands on a big container (its padding or a gap between rows), step down until a small block is hit. Otherwise the
+    // "anchor" is a whole section, and rows that are legitimately removed ABOVE the visible rows inside that same section (a fighter becoming
+    // ready leaves the Not ready list) move the container while the browser correctly keeps the row the reader was looking at in place.
+    const ax = Math.max(20, (content?.left ?? 0) + 24);
+    let anchor = document.elementFromPoint(ax, 160);
+    for (let yy = 160; yy <= 420 && anchor && anchor.getBoundingClientRect().height > 220; yy += 10) anchor = document.elementFromPoint(ax, yy) ?? anchor;
     while (anchor && anchor.parentElement && anchor.parentElement !== root && anchor.parentElement.getBoundingClientRect().height <= 220) anchor = anchor.parentElement;
     if (anchor) anchor.__anchor = true;
     window.__anchorEl = anchor;
     window.__heights = [...root.children].map(c => [c.tagName + (c.id ? '#' + c.id : '') + '.' + (c.className || '').toString().split(' ')[0] + ':' + (c.getAttribute('aria-labelledby') || c.getAttribute('aria-label') || ''), Math.round(c.getBoundingClientRect().height)]);
     window.__anchorDesc = anchor ? anchor.tagName + '.' + anchor.className + ' "' + (anchor.textContent || '').slice(0, 40) + '"' : null;
     return { y: se.scrollTop, max, top: anchor?.getBoundingClientRect().top ?? null };
-  }, rootSel);
+  }, [rootSel, Number(process.env.STAB_SCROLL) || 0.6]);
 }
 /** Same root node? Same scroll? The anchor still at the same place? */
 const after = (page, rootSel) => page.evaluate((rootSel) => {

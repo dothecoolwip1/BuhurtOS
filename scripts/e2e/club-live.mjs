@@ -82,7 +82,7 @@ async function open(kind = 'phone') {
   await ctx.route(/posthog\.com|maps\.googleapis\.com|accounts\.google\.com|cdnjs\.cloudflare\.com|fonts\.googleapis\.com|fonts\.gstatic\.com/, r => r.abort('failed'));
   const page = await ctx.newPage();
   page.errors = [];
-  page.on('pageerror', e => page.errors.push(String(e).slice(0, 300)));
+  page.on('pageerror', e => { page.errors.push(String(e).slice(0, 300)); console.log('PAGE ERROR  ' + String(e).slice(0, 300)); });
   page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|WebSocket|realtime|net::ERR|Failed to fetch|40[0-9]|42501|\[BuhurtOS\]|AuthApiError|AuthPKCE|AuthRetryable/i.test(m.text())) page.errors.push('console: ' + m.text().slice(0, 300)); });
   pages.push(page);
   return page;
@@ -407,6 +407,298 @@ let newId = null;
   check('E9 President and Secretary can also record check-in', (await rpc('pres@example.test', 'set_club_meeting_attendance', { p_meeting: MEETING, p_membership: MEM(8), p_status: 'absent' })).status < 300
     && (await rpc('sec@example.test', 'set_club_meeting_attendance', { p_meeting: MEETING, p_membership: MEM(8), p_status: 'present_video' })).status < 300);
   check('E10 anonymous callers read nothing', refused(await api(null, 'GET', 'club_meetings?select=id')) && refused(await rpc(null, 'club_meeting_member_view', { p_team: REAVERS })));
+}
+
+// ================================================================ F. AGM concerns and executive nominations (club website only)
+{
+  const officersBefore = sql(`select string_agg(office || ':' || user_id || ':' || coalesce(ended_on::text, '-'), ',' order by office, user_id) from public.team_officers where team_id = '${REAVERS}'`);
+  const m = await open('phone');
+  await siteSignIn(m, 'member@example.test');
+  await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=agm-topics]').count()) > 0);
+  const pageText = await text(m, '#view');
+  check('F1 the AGM page keeps the RSVP and adds "Something you want discussed?" and Executive Nominations',
+    pageText.includes('Not Attending') && pageText.includes('Change how you will participate') && pageText.includes('Voting by Proxy'), pageText.slice(0, 200));
+  check('F2 the concern wording is the friendly one from the club', pageText.includes('Something you want discussed?') && pageText.includes('If there is a concern, question, idea or topic you would like brought up at the AGM, submit it here.') && pageText.includes('Executive Nominations'));
+  await phoneCheck(m, 'site-agm-extras-phone');
+  await m.getByRole('button', { name: 'Submit AGM Concern / Topic' }).click();
+  await m.locator('#topic-subject').fill('Hall rental costs');
+  await m.locator('#topic-details').fill('The hall costs more next year.\nCan we talk about a second location?');
+  await m.getByRole('button', { name: 'Submit for AGM' }).click();
+  await until(async () => (await m.locator('[data-testid=topic-received]').count()) > 0);
+  check('F3 submitting a topic confirms it was received and lists it with its date and status Submitted',
+    (await text(m, '[data-testid=topic-received]')).includes('Received') && (await text(m, '[data-testid=my-topic]')).includes('Hall rental costs') && (await text(m, '[data-testid=my-topic]')).includes('Submitted'), await text(m, '#agm-topics'));
+  check('F4 the topic is stored against the member\'s own membership', sql(`select m.full_name || '|' || t.status from public.club_meeting_topics t join public.club_memberships m on m.id = t.membership_id where t.subject = 'Hall rental costs'`) === 'Morgan Member|submitted');
+  await m.getByRole('button', { name: 'Edit', exact: true }).click();
+  await m.locator('#topic-subject').fill('Hall rental costs and a second location');
+  await m.getByRole('button', { name: 'Save changes' }).click();
+  await until(async () => (await text(m, '[data-testid=my-topic]')).includes('second location'));
+  check('F5 the member can edit their own topic (the history keeps both versions)', sql(`select count(*) from public.club_meeting_topic_history h join public.club_meeting_topics t on t.id = h.topic_id where t.subject like 'Hall rental costs and%'`) === '2');
+  // another member cannot touch it
+  const topicId = sql(`select id from public.club_meeting_topics where subject like 'Hall rental costs%'`);
+  check('F6 another member cannot edit or withdraw it, and cannot read the table', refused(await rpc('john@example.test', 'update_club_agm_topic', { p_topic: topicId, p_subject: 'Changed by John', p_details: 'x' }).catch(() => ({ status: 400 })))
+    && refused(await rpc('john@example.test', 'withdraw_club_agm_topic', { p_topic: topicId })) && refused(await api('john@example.test', 'GET', 'club_meeting_topics?select=id')));
+  // the executive sees it and updates its status
+  const tr = await open('phone');
+  await siteSignIn(tr, 'treas@example.test');
+  await tab(tr, 'AGM admin');
+  await until(async () => (await tr.locator('[data-testid=agm-row]').count()) > 0);
+  await tr.getByRole('button', { name: 'Concerns', exact: true }).click();
+  await until(async () => (await tr.locator('[data-testid=topic-row]').count()) > 0);
+  const row = await text(tr, '[data-testid=topic-row]');
+  check('F7 the Treasurer sees the concern with the member, subject, details, time and status',
+    row.includes('Hall rental costs and a second location') && row.includes('Morgan Member') && row.includes('Can we talk about a second location?') && row.includes('Submitted') && row.includes('edited'), row);
+  await phoneCheck(tr, 'site-concerns-admin-phone');
+  await tr.getByRole('button', { name: 'Add to agenda' }).click();
+  await until(async () => sql(`select status from public.club_meeting_topics where id = '${topicId}'`) === 'on_agenda');
+  await m.reload(); await until(async () => !(await m.locator('#signed-in').isHidden())); await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=my-topic]').count()) > 0);
+  check('F8 the member sees "Added to Agenda" and can still edit it', (await text(m, '[data-testid=my-topic]')).includes('Added to Agenda') && (await m.getByRole('button', { name: 'Edit', exact: true }).count()) === 1);
+  const vp = await open('desktop');
+  await siteSignIn(vp, 'vp@example.test'); await tab(vp, 'AGM admin'); await until(async () => (await vp.locator('[data-testid=agm-row]').count()) > 0);
+  await vp.getByRole('button', { name: 'Concerns', exact: true }).click();
+  await until(async () => (await vp.locator('[data-testid=topic-row]').count()) > 0);
+  check('F9 the Vice President can read the concerns but has no status buttons', (await vp.getByRole('button', { name: 'Add to agenda' }).count()) === 0 && refused(await rpc('vp@example.test', 'set_club_agm_topic_status', { p_topic: topicId, p_status: 'addressed' })));
+  check('F10 a regular member cannot open the executive concerns list or set a status', refused(await rpc('member@example.test', 'club_agm_topics_admin', { p_meeting: MEETING })) && refused(await rpc('member@example.test', 'set_club_agm_topic_status', { p_topic: topicId, p_status: 'addressed' })));
+  m.once('dialog', d => d.accept());
+  await m.getByRole('button', { name: 'Withdraw', exact: true }).click();
+  await until(async () => (await text(m, '[data-testid=my-topic]')).includes('Withdrawn'));
+  check('F11 the member can withdraw their topic: it stays (status Withdrawn), no longer editable; the executive sees it withdrawn', sql(`select status from public.club_meeting_topics where id = '${topicId}'`) === 'withdrawn'
+    && (await m.getByRole('button', { name: 'Edit', exact: true }).count()) === 0);
+  await tr.getByRole('button', { name: 'Nominations', exact: true }).click(); await tr.getByRole('button', { name: 'Concerns', exact: true }).click();
+  await until(async () => (await text(tr, '#view')).includes('Withdrawn'));
+  check('F12 the executive list shows the withdrawn topic and says the member withdrew it', (await text(tr, '[data-testid=topic-row]')).includes('The member withdrew this topic.'));
+
+  // ---- nominations: yourself, three offices
+  const nom = m.locator('[data-testid=nominate-form]');
+  const rolePick = (page, r) => page.locator('[data-testid=nominate-form]').getByRole('button', { name: r, exact: true }).click();
+  await nom.getByRole('button', { name: 'Nominate Myself' }).click();
+  await rolePick(m, 'President');
+  const conf = await text(m, '[data-testid=nomination-confirm]');
+  check('F13 nominating yourself asks to confirm: "You are nominating yourself for President at the 2026 Red Deer Reavers AGM."', conf.includes('You are nominating yourself for President at the 2026 Red Deer Reavers AGM.'), conf);
+  await phoneCheck(m, 'site-nominate-phone');
+  await m.getByRole('button', { name: 'Confirm Nomination' }).click();
+  await until(async () => (await text(m, '[data-testid=office-president]')).includes('Morgan Member'));
+  check('F14 a self-nomination is accepted at once and shows as an accepted candidate', sql(`select o.office || ':' || n.status from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id join (select 'president' as office) o on true where c.full_name = 'Morgan Member' and n.office = 'president'`) === 'president:accepted'
+    && (await text(m, '[data-testid=office-president]')).includes('Accepted Candidates: Morgan Member'));
+  for (const r of ['Secretary', 'Treasurer']) {
+    await m.locator('[data-testid=nominate-form]').getByRole('button', { name: 'Nominate Myself' }).click();
+    await rolePick(m, r);
+    await m.getByRole('button', { name: 'Confirm Nomination' }).click();
+    await until(async () => (await text(m, `[data-testid=office-${r.toLowerCase()}]`)).includes('Morgan Member'));
+  }
+  check('F15 the same member can stand for Secretary and Treasurer too', sql(`select count(*) from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'Morgan Member' and n.status = 'accepted'`) === '3');
+  const board = await text(m, '[data-testid=agm-nominations]');
+  check('F16 the candidate section shows the current officer for each role (from the officer records) and no e-mail addresses',
+    board.includes('Current Officer: Kedrixx Streit') && board.includes('Current Officer: Garrett Robson') && board.includes('2026 Executive Nominations') && !/@/.test(board), board.slice(0, 500));
+  check('F17 Secretary has no officer with a membership name yet it still names the current officer from the officer record', /Secretary Current Officer: (Carm Example|not assigned)/.test(board), board);
+
+  // ---- nominate another member; the nominee answers
+  await m.locator('[data-testid=nominate-form]').getByRole('button', { name: 'Nominate Another Member' }).click();
+  await m.locator('#nominee').selectOption({ label: 'John Smith' });
+  await rolePick(m, 'Secretary');
+  const conf2 = await text(m, '[data-testid=nomination-confirm]');
+  check('F18 nominating another member shows who and for what, and that they must accept', conf2.includes('You are nominating John Smith for Secretary') && conf2.includes('must accept'), conf2);
+  const offered = await m.locator('#nominee option').allInnerTexts();
+  check('F19 only members who can currently vote are offered (not pending Jane, not under-18 Kit, not yourself)', offered.includes('John Smith') && offered.includes('Kedrixx Streit') && !offered.includes('Jane Smith') && !offered.includes('Kit Young') && !offered.includes('Morgan Member'), offered.join(','));
+  await m.getByRole('button', { name: 'Confirm Nomination' }).click();
+  await until(async () => (await text(m, '[data-testid=nomination-notice]')).includes('Nomination sent'));
+  check('F20 the nominee is "awaiting acceptance" and NOT yet a confirmed candidate', sql(`select n.status from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'John Smith' and n.office = 'secretary'`) === 'awaiting_acceptance'
+    && /awaiting acceptance: John Smith/.test(await text(m, '[data-testid=office-secretary]')) && !/Accepted Candidates:[^A-Z]*John/.test((await text(m, '[data-testid=office-secretary]')).replace(/Morgan Member/, '')));
+  const nomId = sql(`select n.id from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'John Smith' and n.office = 'secretary'`);
+  check('F21 the nominator cannot accept or decline on the nominee\'s behalf', refused(await rpc('member@example.test', 'respond_to_club_nomination', { p_nomination: nomId, p_response: 'accept' })) && refused(await rpc('member@example.test', 'respond_to_club_nomination', { p_nomination: nomId, p_response: 'decline' })));
+  // a second nominator of the same person and office: still ONE candidacy
+  const dup = await rpc('pres@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'secretary', p_nominee: MEM(6) });
+  check('F22 five people nominating the same member for the same office still make ONE candidacy (both nominators are kept)',
+    dup.status < 300 && String(dup.body).replaceAll('"', '') === nomId && sql(`select count(*) from public.club_meeting_nominations where id = '${nomId}'`) === '1' && sql(`select count(*) from public.club_meeting_nominators where nomination_id = '${nomId}'`) === '2'
+    && sql(`select count(*) from public.club_meeting_nominations n join public.club_memberships c on c.id = n.nominee_membership_id where c.full_name = 'John Smith' and n.office = 'secretary' and n.status in ('awaiting_acceptance','accepted')`) === '1', JSON.stringify(dup.body));
+  const jo = await open('phone');
+  await siteSignIn(jo, 'john@example.test', 'John-new-pass-26');
+  await until(async () => (await jo.locator('[data-testid=nominated-banner]').count()) > 0);
+  check('F23 signing in, the nominee sees "You\'ve Been Nominated" straight away', (await text(jo, '[data-testid=nominated-banner]')).includes('You\'ve Been Nominated') && (await text(jo, '[data-testid=nominated-banner]')).includes('You have been nominated for Secretary for the 2026 Red Deer Reavers AGM.'));
+  await shot(jo, 'site-nominated-banner-phone');
+  await tab(jo, '2026 AGM');
+  await until(async () => (await jo.locator('[data-testid=nominated-card]').count()) > 0);
+  const card = await text(jo, '[data-testid=nominated-card]');
+  check('F24 the nomination shows who nominated, the role and the date, with Accept and Decline', card.includes('Nominated by') && card.includes('Morgan Member') && card.includes('Kedrixx Streit') && card.includes('Role Secretary') && /Date \w+ \d+, \d{4}/.test(card)
+    && (await jo.getByRole('button', { name: 'Accept Nomination' }).count()) === 1 && (await jo.getByRole('button', { name: 'Decline Nomination' }).count()) === 1, card);
+  await phoneCheck(jo, 'site-nominated-card-phone');
+  await jo.getByRole('button', { name: 'Accept Nomination' }).click();
+  await until(async () => sql(`select status from public.club_meeting_nominations where id = '${nomId}'`) === 'accepted');
+  await until(async () => (await text(jo, '[data-testid=office-secretary]')).includes('Accepted Candidates: John Smith'));
+  check('F25 accepting makes them an accepted candidate; the original nomination and nominators are kept', (await text(jo, '[data-testid=office-secretary]')).includes('John Smith')
+    && sql(`select count(*) from public.club_meeting_nominators where nomination_id = '${nomId}'`) === '2' && sql(`select string_agg(action, ',' order by id) from public.club_meeting_nomination_history where nomination_id = '${nomId}'`) === 'nominated,also_nominated,accepted');
+  // decline
+  const nd = await rpc('member@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'treasurer', p_nominee: MEM(1) });
+  const pr = await open('phone');
+  await siteSignIn(pr, 'pres@example.test');
+  await until(async () => (await pr.locator('[data-testid=nominated-banner]').count()) > 0);
+  await tab(pr, '2026 AGM');
+  await until(async () => (await pr.locator('[data-testid=nominated-card]').count()) > 0);
+  pr.once('dialog', d => d.accept());
+  await pr.getByRole('button', { name: 'Decline Nomination' }).click();
+  await until(async () => sql(`select status from public.club_meeting_nominations where id = '${String(nd.body).replaceAll('"', '')}'`) === 'declined');
+  await until(async () => (await pr.locator('[data-testid=nominated-card]').count()) === 0);
+  check('F26 declining records the nomination as declined (kept, not deleted) and removes it from the member board', nd.status < 300 && sql(`select count(*) from public.club_meeting_nominations where status = 'declined'`) === '1'
+    && !(await text(pr, '[data-testid=office-treasurer]')).includes('Kedrixx Streit Accepted') && !/awaiting acceptance: Kedrixx/.test(await text(pr, '[data-testid=office-treasurer]')));
+  // who may nominate
+  const jn = await open('phone');
+  await siteSignIn(jn, 'jane@example.test');
+  await tab(jn, '2026 AGM');
+  await until(async () => (await jn.locator('[data-testid=agm-nominations]').count()) > 0);
+  check('F27 a member who cannot vote can read the nominations but cannot nominate, and is told why', (await jn.locator('[data-testid=nominate-form]').count()) === 0
+    && (await text(jn, '[data-testid=nominate-blocked]')).includes('Only members who can currently vote can nominate') && (await text(jn, '[data-testid=nominate-blocked]')).includes('Membership pending approval'), await text(jn, '[data-testid=agm-nominations]'));
+  check('F28 the database refuses a non-voting member (pending Jane, under-18 Kit)', refused(await rpc('jane@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president' }))
+    && refused(await rpc('kid@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president' })) && refused(await rpc('newbie@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president' })));
+  check('F29 nobody can read or write nominations directly, or nominate for another office, or an ineligible member',
+    refused(await api('member@example.test', 'GET', 'club_meeting_nominations?select=id')) && refused(await api('member@example.test', 'POST', 'club_meeting_nominations', { meeting_id: MEETING, office: 'president', nominee_membership_id: MEM(6), status: 'accepted' }))
+    && refused(await rpc('member@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'director' })) && refused(await rpc('member@example.test', 'nominate_for_club_office', { p_meeting: MEETING, p_office: 'president', p_nominee: MEM(7) })));
+  check('F30 nominations never change the officers', sql(`select string_agg(office || ':' || user_id || ':' || coalesce(ended_on::text, '-'), ',' order by office, user_id) from public.team_officers where team_id = '${REAVERS}'`) === officersBefore);
+  // executive nomination dashboard
+  await tr.getByRole('button', { name: 'Nominations', exact: true }).click();
+  await until(async () => (await tr.locator('[data-testid=nomination-row]').count()) > 0);
+  const adm = await text(tr, '#view');
+  check('F31 the executive nomination dashboard shows each role, its current officer, every nominee with status, who nominated them and self / member nomination',
+    adm.includes('Current Officer: Kedrixx Streit') && /President[\s\S]*Morgan Member[\s\S]*Accepted[\s\S]*Self nomination/.test(adm) && /John Smith[\s\S]*Accepted[\s\S]*Member nomination[\s\S]*Nominated by Kedrixx Streit, Morgan Member|John Smith[\s\S]*Accepted[\s\S]*Member nomination[\s\S]*Nominated by Morgan Member, Kedrixx Streit/.test(adm)
+    && /Kedrixx Streit[\s\S]*Declined[\s\S]*Member nomination[\s\S]*Nominated by Morgan Member/.test(adm) && /Accepted 1 · Awaiting acceptance 0 · Declined 1 · Withdrawn 0/.test(adm), adm);
+  await phoneCheck(tr, 'site-nominations-admin-phone');
+  check('F32 a regular member and another club\'s Treasurer cannot open the executive nomination dashboard', refused(await rpc('member@example.test', 'club_agm_nominations_admin', { p_meeting: MEETING })) && refused(await rpc('other@example.test', 'club_agm_nominations_admin', { p_meeting: MEETING })));
+  check('F33 the original AGM RSVP is untouched: Morgan is still "Not Attending" and the existing executive People view still works',
+    sql(`select response from public.club_meeting_rsvps where membership_id = '${MEM(5)}'`) === 'not_attending' && (await text(m, '[data-testid=agm-member]')).includes('Not Attending'));
+  await tr.getByRole('button', { name: 'People and check-in', exact: true }).click();
+  await until(async () => (await tr.locator('[data-testid=agm-summary]').count()) > 0);
+  check('F34 the executive AGM dashboard still shows its counts and check-in buttons', (await text(tr, '[data-testid=agm-summary]')).includes('Total members') && (await tr.locator('.checkin').count()) > 0);
+}
+
+// ================================================================ G. "How the AGM Works" (member help on the AGM tab)
+{
+  const m = await open('phone');
+  await siteSignIn(m, 'member@example.test');
+  await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=agm-help]').count()) > 0 && (await m.locator('[data-testid=agm-nominations]').count()) > 0);
+  const titles = await m.locator('[data-testid=agm-help] summary').allInnerTexts();
+  check('G1 the AGM tab has "How the AGM Works" with six short headings, all closed until tapped',
+    (await text(m, '[data-testid=agm-help] h3')) === 'How the AGM Works' && titles.join('|') === 'Who can vote?|How to join|Executive roles|How nominations work|Submit an AGM topic|RSVP and proxy voting'
+    && (await m.locator('[data-testid=agm-help] details[open]').count()) === 0, titles.join('|'));
+  const helpBox = await m.locator('[data-testid=agm-help]').boundingBox();
+  const rsvpBox = await m.locator('[data-testid=agm-member]').boundingBox();
+  check('G2 the help sits directly under the AGM card and RSVP buttons (before the topic and nomination sections)', helpBox.y >= rsvpBox.y + rsvpBox.height - 2 && helpBox.y < (await m.locator('[data-testid=agm-topics]').boundingBox()).y);
+  check('G3 collapsed, the help is compact (six rows on a phone)', helpBox.height < 420, String(helpBox.height));
+  await phoneCheck(m, 'site-agm-help-closed-phone');
+  await m.locator('[data-testid=help-vote] summary').click();
+  const vote = await text(m, '[data-testid=help-vote]');
+  check('G4 Who can vote? says 18+, approved member, ELIGIBLE TO VOTE, the 2026 fee is waived (normal $20) and an account alone is not enough',
+    vote.includes('18 or older') && vote.includes('an approved Red Deer Reavers member') && vote.includes('ELIGIBLE TO VOTE') && vote.includes('Membership fees are waived for 2026. You do not need to pay the normal $20 fee to vote this year.')
+    && vote.includes('Making an account is not enough on its own. You also need an approved membership.'), vote);
+  await m.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  const helpText = await text(m, '[data-testid=agm-help]');
+  check('G5 How to join: same account (never two), sign in, Create account, Continue, Apply to join, wait for approval, fee waived, ELIGIBLE TO VOTE',
+    helpText.includes('same account') && helpText.includes('You never need two.') && helpText.includes('Already have a BuhurtOS account? Sign in with it.') && helpText.includes('“Create account”') && helpText.includes('“Continue”')
+    && helpText.includes('“Apply to join”') && helpText.includes('Wait for the executive to approve you.') && helpText.includes('The 2026 fee is waived, so there is nothing to pay.'), helpText.slice(0, 1200));
+  check('G6 Executive roles: three positions with the plain descriptions, and the holders come from the officer records',
+    /President Helps lead the society and meetings\. Currently: Kedrixx Streit/.test(helpText) && /Secretary Helps keep society records, meeting information and official paperwork organized\. Currently: Carm Example/.test(helpText)
+    && /Treasurer Helps manage the society's money and financial records\. Currently: Garrett Robson/.test(helpText), helpText.slice(0, 2000));
+  const g7 = [/A nomination does not give anyone the job\. The decision is made at the AGM election\. If nobody runs against the current officer, they stay in the position\./.test(helpText),
+    helpText.includes('\u201cNominate Myself\u201d'), helpText.includes('\u201cNominate Another Member\u201d'), helpText.includes('\u201cConfirm Nomination\u201d'),
+    helpText.includes('must accept before they are a confirmed candidate'), helpText.includes('They can also decline. You cannot accept for them.'), !/remov|removal/i.test(helpText)];
+  check('G7 Nominations: not automatic, decided at the AGM, current officer stays if nobody runs, self-nomination steps, nominate-another steps, nominee must accept and can decline', g7.every(Boolean), `failing clauses: ${g7.map((x, i) => x ? '' : i).join(',')} :: ${helpText.slice(helpText.indexOf('How nominations work'), helpText.indexOf('How nominations work') + 700)}`);
+  check('G8 AGM topic: examples, steps with the real button names, edit or withdraw rule, privacy', helpText.includes('“Submit AGM Concern / Topic”') && helpText.includes('“Submit for AGM”') && helpText.includes('an idea for the club')
+    && helpText.includes('Only you and the executive can see what you submit.') && helpText.includes('“Your AGM topics”'));
+  check('G9 RSVP and proxy: date, time and place come from the AGM record; the four real choices; proxy steps with the real button names',
+    helpText.includes('AGM: Sunday, October 18, 2026 at 5:30 PM, ') && helpText.includes('In Person') && helpText.includes('Video Call') && helpText.includes('Voting by Proxy') && helpText.includes('Not Attending')
+    && helpText.includes('Can\'t attend but still want your vote represented?') && helpText.includes('“Save my proxy”') && helpText.includes('“Change proxy”') && helpText.includes('“Cancel proxy”'));
+  // every button or heading the help quotes must really exist in the page's own code
+  const src = readFileSync(`${SITE_DIR}/assets/js/member-portal.js`, 'utf8'), html = readFileSync(`${SITE_DIR}/members.html`, 'utf8');
+  const outside = src.slice(0, src.indexOf('function agmHelp()')) + src.slice(src.indexOf('// ---- concerns / topics')) + html;
+  const quoted = [...new Set([...helpText.matchAll(/“([^”]+)”/g)].map(x => x[1]))];
+  const missing = quoted.filter(n => !(outside.includes(n) || outside.includes(n.replace(/'/g, "\\'"))));
+  check(`G10 every button or heading quoted in the help (${quoted.length}) is the real label used elsewhere on the site`, quoted.length >= 14 && missing.length === 0, `missing: ${missing.join(' | ')}`);
+  check('G11 the real buttons the help points to are on this tab right now', (await m.getByRole('button', { name: 'Nominate Myself' }).count()) === 1 && (await m.getByRole('button', { name: 'Nominate Another Member' }).count()) === 1
+    && (await m.getByRole('button', { name: 'Submit AGM Concern / Topic' }).count()) === 1 && (await m.getByRole('button', { name: 'Voting by Proxy', exact: true }).count()) === 1 && (await m.getByRole('button', { name: 'In Person', exact: true }).count()) === 1);
+  check('G12 the help with every section open fits a 390px phone', await noSideways(m));
+  await phoneCheck(m, 'site-agm-help-open-phone');
+  // nothing about taking an office away
+  check('G13 the help does not discuss removing executives', !/remov|vote out|replace the (president|secretary|treasurer)/i.test(helpText.replace('Treasurer','')), helpText);
+
+  // an office with no officer record (its holder has no account yet) shows the fallback; an office with a holder never does
+  sql(`update public.team_officers set ended_on = current_date where team_id = '${REAVERS}' and office in ('president', 'treasurer') and ended_on is null`);
+  await m.reload(); await until(async () => !(await m.locator('#signed-in').isHidden())); await tab(m, '2026 AGM');
+  await until(async () => (await m.locator('[data-testid=help-role-president]').count()) > 0 && (await m.locator('[data-testid=office-president]').count()) > 0);
+  await m.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  const roles = await text(m, '[data-testid=help-role-president]') + ' | ' + await text(m, '[data-testid=help-role-secretary]') + ' | ' + await text(m, '[data-testid=help-role-treasurer]');
+  check('G14 President shows "Kedrixx - no active account", the Secretary comes from the records, Treasurer shows "Carmalee - no active account"',
+    roles.includes('Currently: Kedrixx - no active account') && roles.includes('Currently: Carm Example') && roles.includes('Currently: Carmalee - no active account'), roles);
+  const nomBoard = await text(m, '[data-testid=agm-nominations]');
+  check('G15 the Executive Nominations list shows the same names', nomBoard.includes('Current Officer: Kedrixx - no active account') && nomBoard.includes('Current Officer: Carm Example') && nomBoard.includes('Current Officer: Carmalee - no active account'), nomBoard);
+  check('G16 the fallback grants nothing: no officer record was created, and the databases still has no President or Treasurer', sql(`select count(*) from public.team_officers where team_id = '${REAVERS}' and ended_on is null and office in ('president','treasurer')`) === '0');
+  await phoneCheck(m, 'site-agm-help-fallback-phone');
+  sql(`update public.team_officers set ended_on = null where team_id = '${REAVERS}' and office in ('president', 'treasurer')`);
+  // a signed-in person who has not joined: the help is still there, without names
+  const nb = await open('phone');
+  await siteSignIn(nb, 'newbie@example.test'); await tab(nb, '2026 AGM');
+  await until(async () => (await nb.locator('[data-testid=agm-help]').count()) > 0);
+  await nb.locator('[data-testid=help-roles] summary').click();
+  const nbRoles = await text(nb, '[data-testid=help-roles]');
+  check('G17 someone who has not joined still sees the help; names are for members ("Members can see who holds each position here.")', nbRoles.includes('Members can see who holds each position here.') && !nbRoles.includes('Currently:'), nbRoles);
+  check('G18 ... and still sees the way to join', (await text(nb, '[data-testid=agm-member]')).includes('Only Red Deer Reavers members can register. Join first'));
+  // desktop
+  const dk = await open('desktop');
+  await siteSignIn(dk, 'member@example.test'); await tab(dk, '2026 AGM');
+  await until(async () => (await dk.locator('[data-testid=agm-help]').count()) > 0);
+  await dk.evaluate(() => document.querySelectorAll('.help-item').forEach(d => { d.open = true; }));
+  check('G19 the help is readable on desktop (no sideways scroll)', await noSideways(dk));
+  await shot(dk, 'site-agm-help-open-desktop');
+}
+
+// ================================================================ H. bylaws link on sign-up and join; Member / Admin sign-in buttons in every footer
+{
+  const BYLAWS = 'https://drive.google.com/file/d/1R9EDu7BpUZ1KM790BDNN0iIaXZYtUtCE/view?usp=drivesdk';
+  const pagesWithFooter = ['index.html', 'programs.html', 'steps.html', 'involved.html', 'contact.html', 'agm.html', 'members.html'];
+  const bad = pagesWithFooter.filter(f => { const h = readFileSync(`${SITE_DIR}/${f}`, 'utf8'); const foot = h.slice(h.indexOf('<footer')); return !(foot.includes('href="members.html"') && foot.includes('>Member Sign In<') && foot.includes('href="members.html?view=agm-admin"') && foot.includes('>Admin Sign In<')); });
+  check('H1 every page that has a footer (home, programs, steps, involved, contact, AGM, members) has Member Sign In and Admin Sign In buttons', bad.length === 0, bad.join(', '));
+  const ph = await open('phone');
+  await ph.goto(`${SITE}/index.html`);
+  const mBtn = ph.locator('footer .footer-signin a', { hasText: 'Member Sign In' }), aBtn = ph.locator('footer .footer-signin a', { hasText: 'Admin Sign In' });
+  await mBtn.scrollIntoViewIfNeeded();
+  const bb = await mBtn.boundingBox(), ab = await aBtn.boundingBox();
+  check('H2 on a 390px phone both footer buttons are visible, tappable (44px tall or more) and fit without sideways scrolling', bb.height >= 36 && ab.height >= 36 && bb.x >= 0 && ab.x + ab.width <= 390 && await noSideways(ph), JSON.stringify([bb, ab]));
+  await shot(ph, 'site-footer-buttons-phone');
+  await mBtn.click();
+  await until(async () => (await ph.locator('#signed-out').isVisible().catch(() => false)));
+  check('H3 Member Sign In opens the Members page sign-in', ph.url().endsWith('/members.html') && (await text(ph, '#signed-out')).includes('Member sign in') && (await ph.locator('#admin-note').isHidden()));
+  // sign-up: the bylaws link
+  await ph.locator('[data-auth-tab=signup]').click();
+  const su = ph.locator('[data-testid=bylaws-link-signup]');
+  check('H4 the Create account page links to the bylaws PDF (new tab, no referrer or opener) and says an account does not make you a member', (await su.getAttribute('href')) === BYLAWS && (await su.getAttribute('target')) === '_blank' && /noopener/.test(await su.getAttribute('rel'))
+    && (await text(ph, '[data-auth-panel=signup]')).includes('Creating an account does not make you a member.'));
+  await phoneCheck(ph, 'site-create-account-bylaws-phone');
+  // the join form
+  const nb = await open('phone');
+  await siteSignIn(nb, 'newbie@example.test');
+  await until(async () => (await nb.locator('[data-testid=apply-form]').count()) > 0);
+  const jl = nb.locator('[data-testid=bylaws-link-join]');
+  check('H5 the Join form links to the bylaws PDF right under the bylaws checkbox', (await jl.getAttribute('href')) === BYLAWS && (await jl.getAttribute('target')) === '_blank' && (await text(nb, '[data-testid=apply-form]')).includes('I agree to follow the Red Deer Reavers bylaws and team standards'));
+  await nb.locator('label.check', { hasText: 'bylaws' }).click();
+  check('H6 clicking the checkbox text still just ticks the box (the link is separate)', await nb.locator('#ap-bylaws').isChecked());
+  await phoneCheck(nb, 'site-join-bylaws-phone');
+  // Admin Sign In: one shared account; executives land on the AGM admin, everyone else on their own page
+  const ad = await open('desktop');
+  await ad.goto(`${SITE}/index.html`);
+  await ad.locator('footer .footer-signin a', { hasText: 'Admin Sign In' }).click();
+  await until(async () => (await ad.locator('#signed-out').isVisible().catch(() => false)));
+  check('H7 Admin Sign In opens the same sign-in page and says there is no separate admin login', ad.url().endsWith('/members.html?view=agm-admin') && (await text(ad, '#admin-note')).includes('There is no separate admin login.'));
+  await ad.locator('#email').fill('treas@example.test'); await ad.locator('#password').fill(PW); await ad.locator('#password-btn').click();
+  await until(async () => (await ad.locator('[data-testid=agm-summary]').count()) > 0);
+  check('H8 an executive signing in that way lands on the AGM admin dashboard', (await text(ad, '#tabs')).includes('AGM admin') && (await text(ad, '[data-testid=agm-summary]')).includes('Total members'));
+  const me = await open('desktop');
+  await me.goto(`${MEMBERS}?view=agm-admin`);
+  await me.locator('#email').fill('member@example.test'); await me.locator('#password').fill(PW); await me.locator('#password-btn').click();
+  await until(async () => !(await me.locator('#signed-in').isHidden()) && (await text(me, '#view')).length > 20);
+  check('H9 a regular member using Admin Sign In gets their own member page and a clear note that this account is not an executive (no admin tools, no error)',
+    !(await text(me, '#tabs')).includes('AGM admin') && (await text(me, '#status')).includes('not a current executive') && (await me.locator('[data-testid=my-membership]').count()) === 1);
+  // the static home page's menu script comes from the Materialize CDN, which this offline sandbox blocks ("M is not defined"); that is not a page error
+  for (const pg of [ph, ad]) pg.errors = pg.errors.filter(e => !/M is not defined/.test(e));
+  check('H10 the database still refuses a regular member the executive views (nothing about security changed)', refused(await rpc('member@example.test', 'club_meeting_dashboard', { p_meeting: MEETING })));
 }
 
 check('P1 every club-website screen fits a 390px phone without sideways scrolling', phoneOk, phoneBad.join(', '));

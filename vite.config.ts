@@ -17,5 +17,5 @@ export default defineConfig(({ command }) => ({
   define: { __APP_VERSION__: JSON.stringify(APP_VERSION) },
   plugins: [react(), swPrecachePlugin()],
   build: { target: 'es2022', sourcemap: false },
-  test: { environment: 'node', include: ['src/**/*.test.ts', 'scripts/**/*.test.ts', 'supabase/functions/**/*.test.ts'] }
+  test: { environment: 'node', include: ['src/**/*.test.ts', 'scripts/**/*.test.ts', 'supabase/functions/**/*.test.ts', 'tools/**/*.test.ts'] }
 }));

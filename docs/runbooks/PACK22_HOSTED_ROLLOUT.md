@@ -8,7 +8,7 @@ Apply the files in this order (ten Pack 22 migrations). Every file is additive.
 
 1. Confirm hosted already has `club_membership_dues_voting` and `club_fee_waiver_and_agm` (it did on 2026-10-06). Pack 22 does not depend on them,
    but its migration versions follow them.
-2. `20261015000100_pack22_rules_library.sql`
+2. `20261018000100_pack22_rules_library.sql`
    - new columns on `rulesets` / `ruleset_versions`;
    - four new tables;
    - functions and triggers;
@@ -17,28 +17,28 @@ Apply the files in this order (ten Pack 22 migrations). Every file is additive.
 
    The importer function body contains a `delete` limited to unpublished provisions. If the hosted migration tool cancels statements containing
    DELETE (as it once did for Pack 02), run the file in the SQL Editor instead.
-3. `20261015000200_pack22_bi_document_inventory.sql`: data, the 45 directory entries and one `sources` row. Re-runnable ("unchanged").
-4. `20261015000300_pack22_provision_layout.sql`: two provision columns, a content check that allows picture-only pages, and the guard and importer
+3. `20261018000200_pack22_bi_document_inventory.sql`: data, the 45 directory entries and one `sources` row. Re-runnable ("unchanged").
+4. `20261018000300_pack22_provision_layout.sql`: two provision columns, a content check that allows picture-only pages, and the guard and importer
    updated.
-5. `20261015000400_rules_bi_2026_10_06.sql`: **about 950 KB of data**, the 42 Buhurt International versions **in review** with 1281 provisions.
+5. `20261018000400_rules_bi_2026_10_06.sql`: **about 950 KB of data**, the 42 Buhurt International versions **in review** with 1281 provisions.
    - The Supabase migration tool and MCP may reject a statement this large. If so, run it in the SQL Editor, or with `psql -f` against the
      connection string.
    - It is idempotent: a second run reports "unchanged" for every version.
-6. `20261015000500_pack22_discipline.sql`: the discipline domain. It patches `private.readiness_rows` and the Pack 15 notification functions in place
+6. `20261018000500_pack22_discipline.sql`: the discipline domain. It patches `private.readiness_rows` and the Pack 15 notification functions in place
    and asserts its anchors. If hosted has drifted from the repository in those functions, the migration **stops with an error** instead of
    guessing. Compare the function bodies with the repository first if that happens.
-7. `20261015000600_pack22_bi_rule_conflicts.sql`: data, the three tier-points conflicts. Re-runnable.
-8. `20261015000700_pack22_discipline_fixes.sql`: the fixes from the QA pass. It replaces discipline functions, adds three triggers (event
+7. `20261018000600_pack22_bi_rule_conflicts.sql`: data, the three tier-points conflicts. Re-runnable.
+8. `20261018000700_pack22_discipline_fixes.sql`: the fixes from the QA pass. It replaces discipline functions, adds three triggers (event
    suspension participants, delete guards on teams and fighters) and column grants (no `*_by` account ids by direct read), and corrects the BI
    event-appeal rule row.
 
-9. `20261015000800_pack22_historical_versions.sql`: historical editions. Four columns on `ruleset_versions`, the version guard extended (a
+9. `20261018000800_pack22_historical_versions.sql`: historical editions. Four columns on `ruleset_versions`, the version guard extended (a
    historical edition is never the version in force), the current importer refusing historical rows, `rules_import_historical_version`,
    `publish_historical_version`, and one extra field in `event_discipline_log`.
-10. `20261015000900_rules_bi_history_archive_2026_10_06.sql`: **about 970 KB of data**, the 37 earlier editions **in review** (1357 provisions).
+10. `20261018000900_rules_bi_history_archive_2026_10_06.sql`: **about 970 KB of data**, the 37 earlier editions **in review** (1357 provisions).
     Same size caveat as the current release's data file (SQL Editor or `psql -f` if the migration tool rejects it). Idempotent: a second run
     reports "unchanged".
-11. `20261015001000_pack22_historical_qa_fixes.sql`: the QA fixes. Functions replaced only:
+11. `20261018001000_pack22_historical_qa_fixes.sql`: the QA fixes. Functions replaced only:
     - the version guard (historical editions only through the controlled functions);
     - both importers (duplicate checks);
     - `publish_historical_version` (no successor; keeps the edition's note);

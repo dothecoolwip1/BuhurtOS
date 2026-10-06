@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { currentlyAllowed, onPreferenceChange } from './analyticsConsent';
+import { isDeviceMode } from './deviceSession';
 
 /**
  * The one place the app talks to analytics. Pages call trackPageView / trackEvent / identifyUser / resetUser and never a provider.
@@ -210,7 +211,7 @@ function loadPostHog(): void {
 
 /** Called once at start-up. PostHog is loaded only when a project key was built in and analytics are allowed. */
 export function initAnalytics(): void {
-  if (started) return;
+  if (started || isDeviceMode()) return;   // a temporary event device is never tracked: the tracking calls write the caller's id into account-linked columns, which a device does not have
   started = true;
   sinks.length = 0; sinks.push(...sinksNow());
   if (currentlyAllowed()) loadPostHog();
@@ -232,10 +233,10 @@ let errors = 0;
 }
 
 /** A page opened (path only, query and anchor removed). Also used as the minute heartbeat that measures time on site. */
-export function trackPageView(path: string): void { if (!currentlyAllowed()) return; const p = stripUrl(path) || '/'; sinks.forEach(s => s.pageView(p)); }
+export function trackPageView(path: string): void { if (isDeviceMode() || !currentlyAllowed()) return; const p = stripUrl(path) || '/'; sinks.forEach(s => s.pageView(p)); }
 /** A product action. Unknown or unsafe names and properties are dropped before anything leaves the browser. */
 export function trackEvent(name: string, props?: Record<string, unknown>): void {
-  if (!validEventName(name) || !currentlyAllowed()) return;
+  if (isDeviceMode() || !validEventName(name) || !currentlyAllowed()) return;
   const clean = sanitizeProps(props);
   sinks.forEach(s => s.event(name, clean));
 }
@@ -244,7 +245,7 @@ let currentUser: string | null = null;
 /** Links this browser's anonymous history to the account (account id only). Safe to call on every load. Does nothing while analytics are off. */
 export function identifyUser(userId: string): void {
   currentUser = userId;
-  if (!currentlyAllowed() || identified === userId) return;
+  if (isDeviceMode() || !currentlyAllowed() || identified === userId) return;
   identified = userId;
   sinks.forEach(s => s.identify(userId));
 }

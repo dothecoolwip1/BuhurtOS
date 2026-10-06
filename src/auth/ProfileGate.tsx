@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation } from 'react-router-dom';
 import { fetchMyProfile } from '../data/profile';
 import { clearOnboarding, onboardingWanted } from '../lib/analytics';
 import { useAsync } from '../lib/useAsync';
+import { isDeviceMode } from '../lib/deviceSession';
 import { useAuth } from './AuthContext';
 
 /** Accounts that finished the first-sign-in step in this tab, so the gate does not wait for a reload. */
@@ -18,6 +19,11 @@ export const ACCOUNT_PATH = /^\/(account|my-events|team-manager|platform)(\/|$)|
  * If the profile cannot be read (for example the database is not updated yet) nobody is blocked.
  */
 export function ProfileGate() {
+  // A temporary event device is not a person: no setup, no reminder (Pack 18.1). Constant for the life of the page.
+  return isDeviceMode() ? null : <PersonProfileGate />;
+}
+
+function PersonProfileGate() {
   const { session } = useAuth();
   const { pathname, search } = useLocation();
   const userId = session?.user.id;

@@ -20,7 +20,7 @@ How to read the columns:
   output exactly or the import fails.
 - **Reconciliation**: every non-empty source line is in exactly one provision or recorded as furniture (table of contents, page footers, repeated
   headers, picture lettering); coverage = provision characters / source characters (table layout marks excluded).
-- **DB state**: loaded by migration `20261015000400_rules_bi_2026_10_06.sql` as versions **in review**. Nothing is published until the platform owner
+- **DB state**: loaded by migration `20261018000400_rules_bi_2026_10_06.sql` as versions **in review**. Nothing is published until the platform owner
   publishes (Platform › Rules and suspensions). The hosted database is unchanged.
 
 | Document | Source file | Committee · kind | Version | sha256 | Pages · read by | Structure | Review | Reconciliation | DB state |

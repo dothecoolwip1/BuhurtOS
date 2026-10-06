@@ -1,4 +1,4 @@
--- Pack 22 discipline gate (migration 20261015000500): penalties, suspensions, appeals, authenticity infractions, eligibility.
+-- Pack 22 discipline gate (migration 20261018000500): penalties, suspensions, appeals, authenticity infractions, eligibility.
 --   * vocabulary and review windows are traced to provisions that exist in the imported Buhurt International release
 --   * competition documents: organizers only, published versions only, chosen from the classification (not hardcoded), frozen when finished
 --   * match records snapshot the ruleset and the card concept (a green card is never a yellow card) and stay void-only

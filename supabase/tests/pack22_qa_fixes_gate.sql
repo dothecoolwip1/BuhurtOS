@@ -1,4 +1,4 @@
--- Pack 22 QA fixes gate (migration 20261015000700): one block per finding of the skeptical QA pass over the discipline domain.
+-- Pack 22 QA fixes gate (migration 20261018000700): one block per finding of the skeptical QA pass over the discipline domain.
 --   1 history keeps reasons from the subject · 2 a suspended fighter is not put back into a competition · 3 a team suspension blocks check-in and roster
 --   4 an event appeal's deadline cannot be set by hand · 5 only the Secretary or a decider withdraws an appeal, with a reason, audited
 --   6 an event suspension only for participants · 7 eligibility per subject · 8 a team with disciplinary records is kept when merging

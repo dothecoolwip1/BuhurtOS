@@ -407,17 +407,19 @@ try {
   check('B18. organizer: the Pack 15 announcement panel is here (reused, not rebuilt)', (await org.locator('#cc-announce').count()) === 1 && /announcement|140/i.test(await text(org, '#cc-announce')));
 
   // permissions, directly against the database with real sessions
-  const who = ['scorekeeper', 'stranger', 'brann', 'captain', 'desk', 'inspector', 'otherDesk'];
+  const who = ['stranger', 'brann', 'captain', 'desk', 'inspector', 'otherDesk'];
   tokens.set('stranger', (await token(EM.stranger, 'Changed-pass-2')).token);
   const rs = await Promise.all(who.map(async w => [w, (await rpc(w, 'event_command_snapshot', { p_event: EVENT })).status]));
-  check('B19. refused by the database: scorekeeper, unrelated user, fighter, captain, check-in desk, inspector, other event\'s staff', rs.every(([, s]) => s >= 400 && s < 500), JSON.stringify(rs));
+  check('B19. refused by the database: unrelated user, fighter, captain, check-in desk, inspector, other event\'s staff', rs.every(([, s]) => s >= 400 && s < 500), JSON.stringify(rs));
   check('B20. refused for anonymous callers', refused(await rpc(null, 'event_command_snapshot', { p_event: EVENT })));
   check('B21. the organizer is refused for an event they do not run (no cross-event leak)', refused(await rpc('organizer', 'event_command_snapshot', { p_event: OTHER })));
   const sk = await open('phone'); pages.push(sk);
   await sk.goto(BASE + CMD); await signInHere(sk, EM.scorekeeper);
-  check('B22. a scorekeeper opening the address sees "for this event\'s organizers and head marshal" and no event data', await until(async () => /organizers and head marshal/.test(await text(sk)), 20000)
-    && (await sk.locator('.cc-item, .cc-field, .cc-tile').count()) === 0);
-  await shot(sk, '15-command-refused-phone', false);
+  // Pack 18.1 (owner decision): the Secretary / Scorekeeper reads the Command Centre (read only): event data, no organizer-only panels or links.
+  check('B22. a scorekeeper opening the address sees the read-only Command Centre: event data, no devices or broadcast controls, no organizer links', await until(async () => (await sk.locator('#cc-attention').count()) === 1, 20000)
+    && (await sk.locator('#cc-devices, #cc-broadcast button, .cmd-centre a[href*="/manage"]').count()) === 0);
+  check('B22a. the database now lets the scorekeeper read the snapshot (owner decision, Pack 18.1) and flags them as not an organizer', await (async () => { const r = await rpc('scorekeeper', 'event_command_snapshot', { p_event: EVENT }); const v = r.body && r.body.viewer; return r.status === 200 && v && v.organizer === false && v.announce === true && v.broadcast === false; })());
+  await shot(sk, '15-command-scorekeeper-phone', false);
   const empty = await open('phone'); pages.push(empty);
   await empty.goto(BASE + '/account'); await signInHere(empty, EM.otherDesk); await until(async () => /Sign out/.test(await text(empty)));
   await empty.goto(BASE + '/events/other-event/command'); await empty.locator('.cmd-centre').waitFor({ timeout: 30000 });

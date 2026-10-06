@@ -1,4 +1,4 @@
--- Pack 22 gate: rules library, ruleset versions, rule citations on discipline records (migrations 20261015000100, 20261015000200).
+-- Pack 22 gate: rules library, ruleset versions, rule citations on discipline records (migrations 20261018000100, 20261018000200).
 --   * the Buhurt International document directory matches the source inventory (42 documents + 3 archive folders), and re-running it changes nothing
 --   * imports never overwrite published text; drafts and versions in review are owner-only; publishing supersedes, never deletes
 --   * published text, versions and history are immutable except through the owner's audited functions (corrections keep the old words)
@@ -43,7 +43,7 @@ grant all on t.log to anon, authenticated, service_role;
 grant usage on all sequences in schema t to anon, authenticated, service_role;
 grant execute on all functions in schema t to anon, authenticated, service_role;
 
--- ---------------------------------------------------------------- 1. the Buhurt International document directory (migration 20261015000200)
+-- ---------------------------------------------------------------- 1. the Buhurt International document directory (migration 20261018000200)
 select t.expect_eq('BI directory: 45 entries from the inventory', (select count(*) from public.rulesets where governing_body = 'Buhurt International')::int, 45);
 select t.expect_eq('BI directory: 42 documents and 3 archive folders', (select count(*) filter (where source_host <> 'drive_folder') || '+' || count(*) filter (where source_host = 'drive_folder') from public.rulesets where governing_body = 'Buhurt International'), '42+3');
 select t.expect_eq('BI directory: per committee 8 / 6 / 5 / 23 documents',
@@ -57,8 +57,8 @@ select t.expect_eq('BI directory: every entry is classified and traced to the pa
 select t.expect_eq('BI directory: the core rulebooks are there with the format they apply to',
   (select string_agg(inventory_key || ':' || array_to_string(applies_to, '+'), ',' order by inventory_key) from public.rulesets where inventory_key in ('marshal/buhurt-rules', 'marshal/duels-rules', 'marshal/outrance-rules')),
   'marshal/buhurt-rules:buhurt,marshal/duels-rules:duels,marshal/outrance-rules:outrance');
--- The official text (migration 20261015000400, generated from rules-library/buhurt-international/releases/2026-10-06): 42 documents, reconciled.
--- (The earlier editions loaded by 20261015000900 are checked in pack22_history_gate.sql; these checks are about the current release.)
+-- The official text (migration 20261018000400, generated from rules-library/buhurt-international/releases/2026-10-06): 42 documents, reconciled.
+-- (The earlier editions loaded by 20261018000900 are checked in pack22_history_gate.sql; these checks are about the current release.)
 select t.expect_eq('BI release: one version for each of the 42 documents, none for the archive folders',
   (select count(*) || '/' || count(distinct r.id) || '/' || count(*) filter (where r.source_host = 'drive_folder') from public.ruleset_versions rv join public.rulesets r on r.id = rv.ruleset_id where r.governing_body = 'Buhurt International' and not rv.historical), '42/42/0');
 select t.expect_eq('BI release: every version reconciled, in review (waiting for the owner to publish), from release 2026-10-06, not synthetic',
@@ -86,11 +86,11 @@ select t.expect_eq('BI release: versions still in review are not public', (selec
 select t.expect_eq('BI release: their provisions are not public either', (select count(*) from public.rule_provisions where ruleset_version_id = (select t.ver('marshal/buhurt-rules', '26.4.1')))::int, 0);
 select t.as_admin();
 select t.as_admin();
-\i supabase/migrations/20261015000200_pack22_bi_document_inventory.sql
+\i supabase/migrations/20261018000200_pack22_bi_document_inventory.sql
 select t.expect_eq('BI directory: importing the same inventory again changes nothing',
   (select details ->> 'unchanged' || '/' || (details ->> 'new') || '/' || (details ->> 'changed') from public.audit_log where action = 'rules.inventory_imported' and subject = 'Buhurt International' order by id desc limit 1), '45/0/0');
 select t.expect_eq('BI directory: still exactly 45 entries', (select count(*) from public.rulesets where governing_body = 'Buhurt International')::int, 45);
-\i supabase/migrations/20261015000400_rules_bi_2026_10_06.sql
+\i supabase/migrations/20261018000400_rules_bi_2026_10_06.sql
 select t.expect_eq('BI release: loading the same release again changes nothing',
   (select count(*) from public.audit_log where action = 'rules.version_imported' and (details ->> 'release') = '2026-10-06')::int, 42);
 select t.expect_eq('BI conflicts: the tier points disagreement is recorded open, undecided, quoting both sides (League Structure 2.3.4/2.3.5 vs 3.3.2 and Tournament Structure 4.2)',
@@ -98,7 +98,7 @@ select t.expect_eq('BI conflicts: the tier points disagreement is recorded open,
      from public.rule_conflicts c join public.rule_provisions pa on pa.id = c.provision_a join public.rule_provisions pb on pb.id = c.provision_b where c.governing_body = 'Buhurt International'),
   'league-structure:2.3.4~league-structure:3.3.2:open,league-structure:2.3.4~tournament-structure:4.2:open,league-structure:2.3.5~league-structure:3.3.2:open');
 select t.expect_eq('BI conflicts: each recorded conflict is audited', (select count(*) from public.audit_log where action = 'rules.conflict_noted' and details ->> 'by' = 'Pack 22 import, release 2026-10-06')::int, 3);
-\i supabase/migrations/20261015000600_pack22_bi_rule_conflicts.sql
+\i supabase/migrations/20261018000600_pack22_bi_rule_conflicts.sql
 select t.expect_eq('BI conflicts: running the conflicts migration again records nothing new', (select count(*) from public.rule_conflicts where governing_body = 'Buhurt International')::int, 3);
 select t.as_anon();
 select t.expect_eq('BI conflicts: not public while the documents are in review', (select count(*) from public.rule_conflicts where governing_body = 'Buhurt International')::int, 0);

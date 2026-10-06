@@ -9,8 +9,9 @@ case "${PGHOST:-}" in /*|localhost|127.0.0.1) ;; *) echo "refusing: PGHOST must 
 if [ -n "${DATABASE_URL:-}" ] || [ -n "${SUPABASE_DB_URL:-}" ]; then echo "refusing: a database URL is set" >&2; exit 2; fi
 : "${POSTGREST_BIN:?set POSTGREST_BIN to a PostgREST binary}"
 cd "$(dirname "$0")/../.."
+REST_PORT="${REST_PORT:-3000}"; STACK_PORT="${STACK_PORT:-54321}"; APP_PORT="${APP_PORT:-4182}"; TMPD="${E2E_TMP:-/tmp}"; mkdir -p "$TMPD"; export STACK_PORT POSTGREST_URL="http://127.0.0.1:$REST_PORT"
 DB="${E2E_DB:-bos_ed}"; export JWT_SECRET="local-event-day-secret-0123456789-abcdef"
-SHOTS="${1:-${E2E_SHOTS:-/tmp/eventday-shots}}"; mkdir -p "$SHOTS"
+SHOTS="${1:-${E2E_SHOTS:-$TMPD/eventday-shots}}"; mkdir -p "$SHOTS"
 PIDS=(); cleanup() { for p in "${PIDS[@]}"; do kill "$p" 2>/dev/null; done; }; trap cleanup EXIT
 
 if [ -n "${REAL_AUTH:-}" ]; then
@@ -46,16 +47,16 @@ db-schemas = "public"
 db-anon-role = "anon"
 jwt-secret = "$JWT_SECRET"
 server-host = "127.0.0.1"
-server-port = 3000
+server-port = $REST_PORT
 db-pool = 8
 CFG
-"$POSTGREST_BIN" "$CONF" > /tmp/postgrest.log 2>&1 & PIDS+=($!)
-node scripts/e2e/localstack.mjs > /tmp/localstack.log 2>&1 & PIDS+=($!)
+"$POSTGREST_BIN" "$CONF" > "$TMPD/postgrest.log" 2>&1 & PIDS+=($!)
+node scripts/e2e/localstack.mjs > "$TMPD/localstack.log" 2>&1 & PIDS+=($!)
 
-VITE_BASE=/ VITE_SUPABASE_URL=http://localhost:54321 VITE_SUPABASE_PUBLISHABLE_KEY=local-publishable-key npx vite build --outDir /tmp/e2e-live > /tmp/e2e-live-build.log 2>&1 || { tail -5 /tmp/e2e-live-build.log; exit 1; }
-npx vite preview --outDir /tmp/e2e-live --port 4182 > /tmp/e2e-live-preview.log 2>&1 & PIDS+=($!)
-for i in $(seq 1 40); do curl -sf -o /dev/null localhost:3000/ && curl -sf -o /dev/null localhost:4182/ && { [ -z "${REAL_AUTH:-}" ] || curl -sf -o /dev/null localhost:9999/health; } && break; sleep 0.5; done
-curl -sf -o /dev/null "localhost:54321/rest/v1/events?select=id" || { echo "the local API did not come up"; tail -5 /tmp/postgrest.log; exit 1; }
+VITE_BASE=/ VITE_SUPABASE_URL=http://localhost:$STACK_PORT VITE_SUPABASE_PUBLISHABLE_KEY=local-publishable-key npx vite build --outDir "$TMPD/e2e-live" > "$TMPD/e2e-live-build.log" 2>&1 || { tail -5 "$TMPD/e2e-live-build.log"; exit 1; }
+npx vite preview --outDir "$TMPD/e2e-live" --port $APP_PORT > "$TMPD/e2e-live-preview.log" 2>&1 & PIDS+=($!)
+for i in $(seq 1 40); do curl -sf -o /dev/null localhost:$REST_PORT/ && curl -sf -o /dev/null localhost:$APP_PORT/ && { [ -z "${REAL_AUTH:-}" ] || curl -sf -o /dev/null localhost:9999/health; } && break; sleep 0.5; done
+curl -sf -o /dev/null "localhost:$STACK_PORT/rest/v1/events?select=id" || { echo "the local API did not come up"; tail -5 "$TMPD/postgrest.log"; exit 1; }
 
-if [ -n "${STACK_ONLY:-}" ]; then echo "stack ready (STACK_ONLY): app :4182, API :54321, database $DB"; wait; fi
-E2E_BASE=http://localhost:4182 E2E_API=http://localhost:54321 E2E_SHOTS="$SHOTS" MAILSINK="${MAILSINK:-}" JWT_SECRET="$JWT_SECRET" PGDATABASE=$DB node "${E2E_SCRIPT:-scripts/e2e/eventday-live.mjs}"
+if [ -n "${STACK_ONLY:-}" ]; then echo "stack ready (STACK_ONLY): app :$APP_PORT, API :$STACK_PORT, database $DB"; wait; fi
+E2E_BASE=http://localhost:$APP_PORT E2E_API=http://localhost:$STACK_PORT E2E_SHOTS="$SHOTS" MAILSINK="${MAILSINK:-}" JWT_SECRET="$JWT_SECRET" PGDATABASE=$DB node "${E2E_SCRIPT:-scripts/e2e/eventday-live.mjs}"

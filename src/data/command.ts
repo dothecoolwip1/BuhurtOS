@@ -4,7 +4,7 @@ import type { CommandSnapshot } from '../lib/commandCentre';
 type SnapDb = {
   server_now: string;
   event: { id: string; slug: string; name: string; status: string; timezone: string | null; starts_on: string; ends_on: string; closed: boolean };
-  viewer: { organizer: boolean };
+  viewer: { organizer: boolean; announce?: boolean; operator?: boolean; camera_off?: boolean; camera_release?: boolean; broadcast?: boolean };
   readiness: Record<string, number>;
   not_ready: { registration_id: string; fighter_id: string; name: string; team: string | null; attendance: string; inspection: string; reasons: string[] | null }[];
   overrides: { registration_id: string; name: string; reason: string | null }[];
@@ -25,7 +25,10 @@ export async function fetchCommandSnapshot(eventId: string): Promise<CommandSnap
   return {
     serverNow: d.server_now,
     event: { id: d.event.id, slug: d.event.slug, name: d.event.name, status: d.event.status, timezone: d.event.timezone ?? 'America/Edmonton', startsOn: d.event.starts_on, endsOn: d.event.ends_on, closed: d.event.closed },
-    viewer: { organizer: d.viewer.organizer === true },
+    viewer: {
+      organizer: d.viewer.organizer === true, announce: d.viewer.announce === true, operator: d.viewer.operator === true,
+      cameraOff: d.viewer.camera_off === true, cameraRelease: d.viewer.camera_release === true, broadcast: d.viewer.broadcast === true
+    },
     readiness: {
       fighters: r.fighters ?? 0, volunteers: r.volunteers ?? 0, missing: r.missing ?? 0, arrived: r.arrived ?? 0, checkedIn: r.checked_in ?? 0, ready: r.ready ?? 0,
       notReady: r.not_ready ?? 0, needsInspection: r.needs_inspection ?? 0, needsCorrection: r.needs_correction ?? 0, failed: r.failed ?? 0, overrides: r.overrides ?? 0,

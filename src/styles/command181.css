@@ -1,0 +1,90 @@
+/* Pack 18.1: Command Centre panels (Event devices, Broadcast, Staff, the device code sheet). Phone first; status is always words, never colour alone. */
+
+.cc-camera{grid-column:1 / -1;min-width:0}
+.cc-camera:empty{display:none}
+.err{color:var(--live);margin:0}
+.dev-ok{color:var(--win);margin:0}
+
+/* ---------------------------------------------------------------- Event devices */
+.dev-bar{display:grid;gap:6px}
+.dev-form{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--raised)}
+.dev-form h3,.staff-add h3{margin:0;font-size:15px}
+.dev-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.dev-row{display:grid;gap:4px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--raised);min-width:0}
+.dev-row.s-revoked,.dev-row.s-expired{opacity:.8}
+.dev-main{display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-width:0}
+.dev-name{overflow-wrap:anywhere}
+.dev-sub{margin:0;font-size:13.5px;color:var(--muted)}
+.dev-warn{margin:0;font-size:14px;font-weight:700;color:var(--brass)}
+.dev-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.dev-actions .btn{flex:1 1 120px;min-height:44px}
+.dev-past>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600}
+.dev-past .dev-list{margin-top:6px}
+
+/* ---------------------------------------------------------------- the code sheet (shown once; printable) */
+.dev-sheet{display:grid;gap:12px;min-width:0}
+.dev-once{margin:0;padding:10px 12px;border:2px solid var(--live);border-radius:var(--r-sm);background:var(--live-soft)}
+.dev-notes{margin:0;padding-left:18px;font-size:14px}
+.dev-print-title{display:none;margin:0;font:800 20px var(--f-display)}
+.dev-cards{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.dev-card{display:grid;gap:6px;justify-items:center;text-align:center;padding:14px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);min-width:0}
+.dev-card-label{margin:0;font-size:18px;overflow-wrap:anywhere}
+.dev-card-role{margin:0;color:var(--muted);font-size:14px}
+.dev-code{margin:4px 0;font:800 clamp(26px,8vw,38px)/1.1 var(--f-data,ui-monospace,monospace);letter-spacing:.06em;user-select:all;overflow-wrap:anywhere}
+.dev-qr{width:min(100%,200px);background:#fff;padding:4px;border-radius:6px;line-height:0}
+.dev-qr svg{width:100%;height:auto;display:block}
+.dev-how{margin:0;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.dev-ends{margin:0;font-size:13px;font-weight:600}
+.dev-noprint{min-width:0}
+.dev-card .dev-noprint .btn{white-space:normal;text-align:center}
+@media (min-width:720px){
+  .dlg:has(.dev-sheet.is-set){width:min(100%,880px)}
+  .dev-sheet.is-set .dev-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* printing the codes: nothing but the sheet, black on white, one card never split across pages */
+@media print{
+  body.printing-codes>*:not(.dlg-bg){display:none !important}
+  body.printing-codes{background:#fff !important;color:#000 !important;overflow:visible !important}
+  body.printing-codes .dlg-bg{position:static !important;display:block !important;background:none !important;padding:0 !important}
+  body.printing-codes .dlg{width:auto !important;max-height:none !important;height:auto !important;overflow:visible !important;border:0 !important;box-shadow:none !important;background:#fff !important;color:#000 !important;padding:0 !important}
+  body.printing-codes .dlg-head,body.printing-codes .dlg-body{padding-inline:0 !important}
+  body.printing-codes .dlg-head h2{display:none}
+  body.printing-codes .dlg-body{overflow:visible !important}
+  body.printing-codes .dev-noprint,body.printing-codes .dev-once,body.printing-codes .dev-notes,body.printing-codes .dlg-head .icon-btn{display:none !important}
+  body.printing-codes .dev-print-title{display:block}
+  body.printing-codes .dev-cards{grid-template-columns:repeat(2,1fr);gap:10mm}
+  body.printing-codes .dev-card{break-inside:avoid;border:1px solid #000;background:#fff;color:#000;padding:6mm}
+  body.printing-codes .dev-card-role,body.printing-codes .dev-how{color:#000}
+  body.printing-codes .dev-qr{width:42mm;padding:0}
+}
+
+/* ---------------------------------------------------------------- Broadcast */
+.bc-ctl{margin:0;display:grid;gap:2px;padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--raised);border-left:4px solid var(--win)}
+.bc-ctl.tone-bad{border-left-color:var(--live)}
+.bc-ctl.tone-warn{border-left-color:var(--brass)}
+.bc-lines{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.bc-lines.is-stale{opacity:.6}
+.bc-line{display:grid;gap:2px;padding:8px 10px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--raised);min-width:0}
+.bc-line dt{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.bc-line dd{margin:0;overflow-wrap:anywhere;font-size:15px}
+.bc-line.tone-bad{border-color:var(--live)}
+.bc-line.tone-bad dd b::before{content:"⚠ "}
+.bc-line.tone-warn{border-color:var(--brass)}
+.bc-line.tone-warn dd b::before{content:"⚠ "}
+.bc-line.tone-ok dd b::before{content:"✓ ";color:var(--win)}
+.bc-also{margin:0;font-weight:600}
+.bc-problems{margin:0;padding-left:18px;color:var(--live);font-weight:600}
+.bc-controls{display:grid;gap:10px;padding-top:4px;border-top:1px solid var(--line)}
+.bc-group{display:flex;flex-wrap:wrap;gap:8px}
+.bc-btn{flex:1 1 130px;min-height:52px;white-space:normal;text-align:center}
+.bc-btn[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.bc-return{width:100%}
+@media (min-width:720px){.bc-lines{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* ---------------------------------------------------------------- Staff */
+.staff-names{display:grid;gap:12px}
+.staff-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.staff-list li{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--raised)}
+.staff-who{display:grid;min-width:0;overflow-wrap:anywhere}
+.staff-add{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--raised)}
