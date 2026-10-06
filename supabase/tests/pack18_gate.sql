@@ -104,7 +104,7 @@ select t.expect_error('a captain of a team in this event: refused', $$select pub
 select t.as_user(t.u(3));
 select t.expect_error('a marshal: refused', $$select public.event_command_snapshot(t.ev(1))$$, '42501');
 select t.as_user(t.u(4));
-select t.expect_error('a scorekeeper does not become an organizer: refused', $$select public.event_command_snapshot(t.ev(1))$$, '42501');
+select t.expect_eq('a scorekeeper (the secretary) may read the Command Centre (Pack 18.1); it does not become an organizer', (select public.event_command_snapshot(t.ev(1)) -> 'viewer' ->> 'organizer'), 'false');
 select t.as_user(t.u(5));
 select t.expect_error('the check-in desk: refused (it has the desk)', $$select public.event_command_snapshot(t.ev(1))$$, '42501');
 select t.as_user(t.u(6));
