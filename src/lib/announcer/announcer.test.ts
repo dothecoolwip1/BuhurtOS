@@ -363,6 +363,20 @@ describe('fighter / team info', () => {
     expect(buildEntryInfo({ side, competition: null, matches: [], competitions: COMPS, career: null, eventIsTest: true }).test).toBe(true);
     expect(buildEntryInfo({ side, competition: null, matches: [], competitions: COMPS, career: null }).event.text).toBe('No fights finished yet');
   });
+  it('a fighter entered in two competitions: the card shows the whole day (all that fighter\'s entries), not just the entry on screen', () => {
+    // X fights longsword as entry X and sword-and-shield as entry X2: the fights of X2 are X's earlier fights too
+    const two = [
+      m(1, { queueState: 'final', result: 'a', winnerEntryId: 'X2', entryA: 'X2', nameA: 'Xavier', entryB: 'Y', nameB: 'Yara', scoreA: 9, scoreB: 3, finalizedAt: '2026-10-06T09:00:00Z', competitionId: 'ss' }),
+      m(2, { queueState: 'final', result: 'b', winnerEntryId: 'Z', entryA: 'Q', nameA: 'Quin', entryB: 'Z', nameB: 'Zed', scoreA: 1, scoreB: 6, finalizedAt: '2026-10-06T10:00:00Z' }),
+      m(3, { queueState: 'final', result: 'b', winnerEntryId: 'Z', entryA: 'W', nameA: 'Wren', entryB: 'Z', nameB: 'Zed', scoreA: 1, scoreB: 6, finalizedAt: '2026-10-06T11:00:00Z' })
+    ];
+    expect(earlierFights('X', two, COMPS)).toEqual([]);
+    expect(earlierFights(['X', 'X2'], two, COMPS).map(x => [x.opponent, x.outcome])).toEqual([['Yara', 'Won']]);
+    const side = buildAnnouncerView(input([m(2, { queueState: 'on_deck', entryA: 'X', nameA: 'Xavier' })], { sides: { X: fighter('X', 'Xavier') } })).lysts[0].next!.a;
+    const info = buildEntryInfo({ side, competition: 'Longsword (men)', matches: two, competitions: COMPS, career: null, entryIds: ['X2'] });
+    expect(info.event).toMatchObject({ wins: 1, losses: 0, text: '1-0' });
+    expect(buildEntryInfo({ side, competition: null, matches: two, competitions: COMPS, career: null }).event.text).toBe('No fights finished yet');
+  });
   it('career total ignores per-discipline lines', () => {
     expect(careerTotal([{ context: 'official', scope: 'career', kind: 'individual', category: 'longsword', wins: 9, losses: 9, draws: 9, matches: 27, events: 1 }])).toBeNull();
     expect(careerTotal(null)).toBeNull();

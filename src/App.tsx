@@ -37,6 +37,7 @@ import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
 import { CommandCentrePage } from './pages/CommandCentrePage';
+import { AnnouncerPage } from './pages/AnnouncerPage';
 
 export function App() {
   const { pathname, search } = useLocation();
@@ -47,6 +48,8 @@ export function App() {
       {/* The venue display lives outside the site chrome: no header, menus or footer on a screen beside the list. */}
       <Route path="events/:eventId/arena" element={<ArenaPage />} />
       <Route path="events/:eventId/arena/:field" element={<ArenaPage />} />
+      {/* The announcer's screen: read-only, no site chrome (Pack 18.1). */}
+      <Route path="events/:eventId/announcer" element={<AnnouncerPage />} />
       {/* The broadcast overlay (OBS browser source): public, read-only, no site chrome. */}
       <Route path="broadcast/:eventId" element={<BroadcastPage />} />
       <Route path="broadcast/:eventId/:field" element={<BroadcastPage />} />
