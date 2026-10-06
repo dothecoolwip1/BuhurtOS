@@ -128,7 +128,8 @@ begin
 end $$;
 
 -- Insert the planned matches (two passes, like src/data/matches.ts generateMatches: rows first, then the next_match links).
-create function sim.insert_plan(p_comp uuid) returns int language plpgsql as $$
+-- Pack 24A0: the organizer no longer writes matches through the table, so the harness lays the planned matches out as the database owner
+create function sim.insert_plan(p_comp uuid) returns int language plpgsql security definer set search_path = '' as $$
 declare n int;
 begin
   insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b)
@@ -560,10 +561,13 @@ select sim.section('marshal');
 select sim.as_user('00000000-0000-0000-0000-00000000f002');
 select sim.ok('a marshal can read the matches', (select count(*) from public.matches where competition_id = :'roles_c'::uuid) = 4);
 select sim.expect_error('a marshal cannot build matches', format('insert into public.matches (competition_id, stage) values (%L, ''pool'')', :'roles_c'), '42501');
-delete from public.matches where competition_id = :'roles_c'::uuid;
-select sim.ok('a marshal cannot delete matches (policy hides them from delete)', (select count(*) from public.matches where competition_id = :'roles_c'::uuid) = 4);
+select sim.expect_error('a marshal cannot delete matches', format('delete from public.matches where competition_id = %L', :'roles_c'), '42501');
+select sim.ok('... and all four are still there', (select count(*) from public.matches where competition_id = :'roles_c'::uuid) = 4);
+select sim.expect_error('a marshal cannot call a waiting match (Pack 24A0: running-order authority is the organizer''s)', format('select public.set_match_queue(%L, ''on_deck'', ''Field 1'')', (select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination')), '42501');
+select sim.as_user('00000000-0000-0000-0000-00000000f001');
 select public.set_match_queue((select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'on_deck', 'Field 1');
-select sim.ok('a marshal can queue a match', (select queue_state from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination') = 'on_deck');
+select sim.ok('the organizer can queue a match', (select queue_state from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination') = 'on_deck');
+select sim.as_user('00000000-0000-0000-0000-00000000f002');
 select sim.ok('a marshal can record a score event', public.record_score_event(gen_random_uuid(), (select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'point', '{"side":"a"}', now()));
 select public.finalize_match((select id from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'), 'a', 2, 0, '{}',
   (select version from public.matches where competition_id = :'roles_c'::uuid and position = 0 and stage = 'elimination'));  -- linking the bracket bumps the version, so read the current one
@@ -575,11 +579,11 @@ select sim.expect_error('a marshal cannot edit a result column directly', format
 select sim.as_user('00000000-0000-0000-0000-00000000f001');
 select sim.section('replace an unfinished schedule');
 select sim.ok('the finalized semifinal sent its winner to the final and its loser to third place', (select count(*) from public.matches where competition_id = :'roles_c'::uuid and stage in ('final', 'third_place') and (entry_a is not null or entry_b is not null)) = 2);
-delete from public.matches where competition_id = :'roles_c'::uuid and queue_state = 'final';
-select sim.ok('the policy hides final matches from delete, so the final one survived', (select count(*) from public.matches where competition_id = :'roles_c'::uuid and queue_state = 'final') = 1);
-delete from public.matches where competition_id = :'roles_c'::uuid and stage = 'final';
-select sim.ok('deleting the unfinished final that a finished semifinal leads into clears that link (migration 20261001001700)', (select count(*) from public.matches where competition_id = :'roles_c'::uuid and stage = 'final') = 0
-  and (select next_match_id is null and next_slot is null from public.matches where id = :'roles_m0'::uuid));
+select sim.expect_error('the organizer cannot delete matches through the table any more (Pack 24A0); a replacement goes through build_schedule', format('delete from public.matches where competition_id = %L and queue_state = ''final''', :'roles_c'), '42501');
+select sim.ok('... so the final one survived', (select count(*) from public.matches where competition_id = :'roles_c'::uuid and queue_state = 'final') = 1);
+select sim.expect_error('... nor the unfinished final that a finished semifinal leads into', format('delete from public.matches where competition_id = %L and stage = ''final''', :'roles_c'), '42501');
+select sim.ok('... which is still there, with its feeder link intact', (select count(*) from public.matches where competition_id = :'roles_c'::uuid and stage = 'final') = 1
+  and (select next_match_id is not null from public.matches where id = :'roles_m0'::uuid));
 
 -- ---------------------------------------------------------------- the seeded competitions, full tournament
 select sim.as_user('00000000-0000-0000-0000-00000000f001');

@@ -327,7 +327,9 @@ select t.expect_eq('on deck = the first planned fight (q4), the held fight q2 is
 select t.expect_eq('in the hole = the next planned fight (q3)', (select queue_state from public.matches where id = t.gu('m:q3')), 'in_the_hole');
 select t.expect_eq('the held fight waits', (select queue_state from public.matches where id = t.gu('m:q2')), 'scheduled');
 select t.as_user(t.uid(4));
-select t.expect_ok('an organizer or scorekeeper can still call the held fight by hand', $$select public.set_match_queue(t.gu('m:q2'), 'in_the_hole', null)$$);
+select t.expect_error('a scorekeeper cannot call the held fight by hand (Pack 24A0)', $$select public.set_match_queue(t.gu('m:q2'), 'in_the_hole', null)$$, '42501');
+select t.as_user(t.uid(2));
+select t.expect_ok('an organizer can still call the held fight by hand', $$select public.set_match_queue(t.gu('m:q2'), 'in_the_hole', null)$$);
 select t.as_admin();
 update public.matches set queue_state = 'scheduled', plan_order = null, plan_hold = false where competition_id = t.id('d903') and queue_state <> 'active';
 -- manual order beats the plan

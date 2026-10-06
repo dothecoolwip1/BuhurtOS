@@ -136,12 +136,15 @@ select public.set_entry_roster('d9b6a8f0-8780-5d37-ada4-964b1c196fe5', '[{"fight
 select public.set_entry_roster('394ad05d-50d4-54d4-887c-ff566541a859', '[{"fighter_id":"0b508c1f-b0a2-524e-b471-331960200135","role":"fighter"},{"fighter_id":"d5185702-fa37-5db8-8a4d-2cb114461bcf","role":"mercenary"},{"fighter_id":"14aed5cd-7ebd-5bd5-a88c-b122058d9b5b","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = '584515f1-8f45-531f-97a8-5503a3015c33' and status <> 'finished');
 select public.set_entry_roster('9135e0b8-fce3-5879-9217-3052956fa270', '[{"fighter_id":"9b130d30-471b-5ccf-9192-7e0c04af836e","role":"fighter"},{"fighter_id":"8d260975-f09a-5c86-83cb-b57714387355","role":"mercenary"},{"fighter_id":"27a1672b-da85-5cb1-b3d2-29f1d968da7a","role":"mercenary"}]'::jsonb) where exists (select 1 from public.competitions where id = '584515f1-8f45-531f-97a8-5503a3015c33' and status <> 'finished');
 -- Male 5v5: round_robin, 3 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('fb75f84d-8247-5b7e-bec8-0b1f6e327290', '2f4043cc-ea99-58b3-94e4-4232766d2a61', 'round_robin', 'Round 1', 0, null, '683228ad-efa6-5b89-a68b-981674f2eb39', '8e151246-6fcd-5246-92b1-f21283fd941e', 'Ring 1', (timestamp '2026-11-14 10:00' at time zone 'America/Edmonton'), 15),
   ('9db37ff6-4967-5db4-947c-2d32d72080d3', '2f4043cc-ea99-58b3-94e4-4232766d2a61', 'round_robin', 'Round 2', 0, null, '8e151246-6fcd-5246-92b1-f21283fd941e', '05fb2f2c-4fb2-5425-8796-c0f291952606', 'Ring 1', (timestamp '2026-11-14 10:17' at time zone 'America/Edmonton'), 15),
   ('87f96945-18b7-5b45-bab9-e2e028c5c243', '2f4043cc-ea99-58b3-94e4-4232766d2a61', 'round_robin', 'Round 3', 0, null, '05fb2f2c-4fb2-5425-8796-c0f291952606', '683228ad-efa6-5b89-a68b-981674f2eb39', 'Ring 1', (timestamp '2026-11-14 10:34' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
+set local role authenticated;
 -- Male 3v3: round_robin, 5 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('8b9e5f5c-95d3-5bc0-a2be-b3651782ddcf', 'edfb5380-b9ee-5aa2-a43e-4e18883ccc4b', 'round_robin', 'Round 1', 0, null, '91742a1b-f7a2-5d4f-bc63-07c29a0f85ad', 'e2205a70-3e65-5918-a60b-54259c5782c2', 'Ring 2', (timestamp '2026-11-14 10:00' at time zone 'America/Edmonton'), 15),
   ('511677d6-ebdd-56a9-97a0-995befbc5411', 'edfb5380-b9ee-5aa2-a43e-4e18883ccc4b', 'round_robin', 'Round 1', 1, null, '32964b70-30ab-55f8-94fe-234a861119ca', 'ec1b7cce-8f5a-5bac-83fd-4be700b61ba4', 'Ring 2', (timestamp '2026-11-14 10:17' at time zone 'America/Edmonton'), 15),
@@ -154,13 +157,17 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('e7a8e8eb-4ecd-5fb4-8a6c-541161039ec3', 'edfb5380-b9ee-5aa2-a43e-4e18883ccc4b', 'round_robin', 'Round 5', 0, null, '8befac48-73f6-5910-a8b1-f0baa1b7d204', '91742a1b-f7a2-5d4f-bc63-07c29a0f85ad', 'Ring 2', (timestamp '2026-11-14 12:16' at time zone 'America/Edmonton'), 15),
   ('243685f1-15a1-5ca4-8d88-61ac366727b5', 'edfb5380-b9ee-5aa2-a43e-4e18883ccc4b', 'round_robin', 'Round 5', 1, null, 'ec1b7cce-8f5a-5bac-83fd-4be700b61ba4', 'e2205a70-3e65-5918-a60b-54259c5782c2', 'Ring 2', (timestamp '2026-11-14 12:33' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
+set local role authenticated;
 -- Female 3v3: round_robin, 3 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('f48c8b38-d832-5596-a823-f948c33eef46', '584515f1-8f45-531f-97a8-5503a3015c33', 'round_robin', 'Round 1', 0, null, 'd9b6a8f0-8780-5d37-ada4-964b1c196fe5', '9135e0b8-fce3-5879-9217-3052956fa270', 'Ring 3', (timestamp '2026-11-14 10:00' at time zone 'America/Edmonton'), 15),
   ('30a1012e-4a8f-5187-bf11-fa489d46dbca', '584515f1-8f45-531f-97a8-5503a3015c33', 'round_robin', 'Round 2', 0, null, '9135e0b8-fce3-5879-9217-3052956fa270', '394ad05d-50d4-54d4-887c-ff566541a859', 'Ring 3', (timestamp '2026-11-14 10:17' at time zone 'America/Edmonton'), 15),
   ('441dc25a-ec9b-555b-b0dc-38575cb516db', '584515f1-8f45-531f-97a8-5503a3015c33', 'round_robin', 'Round 3', 0, null, '394ad05d-50d4-54d4-887c-ff566541a859', 'd9b6a8f0-8780-5d37-ada4-964b1c196fe5', 'Ring 3', (timestamp '2026-11-14 10:34' at time zone 'America/Edmonton'), 15)
 on conflict (id) do nothing;
+set local role authenticated;
 -- Male Longsword: pools_elimination, 10 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('daef513c-6f3f-510f-82cd-5952c1e73881', 'f740597c-14d2-5c45-aa89-0689ca393ba5', 'pool', 'Round 1', 0, 'A', '79c6ce28-16d2-5ddb-b3bb-689f3e521c13', 'cb2c46fe-c051-5473-920d-6318c3a6f552', 'Ring 4', (timestamp '2026-11-14 10:00' at time zone 'America/Edmonton'), 8),
   ('e97133b1-4bb9-503d-894e-867ddd1b51d5', 'f740597c-14d2-5c45-aa89-0689ca393ba5', 'pool', 'Round 1', 1, 'A', '1f711525-6960-5358-b610-5fdd72d70697', '09ad83b3-708c-579d-aaf3-7e6ea3c85446', 'Ring 4', (timestamp '2026-11-14 10:10' at time zone 'America/Edmonton'), 8),
@@ -183,7 +190,9 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('2e42e3e4-22f8-5e9f-b3c3-7ead9224c39f', 'f740597c-14d2-5c45-aa89-0689ca393ba5', 'pool', 'Round 5', 0, 'B', 'a5bbc330-d371-53f2-b24a-cc71a43f7b83', 'ba541b51-4102-5a0c-8055-b127fd66fae3', 'Ring 4', (timestamp '2026-11-14 13:00' at time zone 'America/Edmonton'), 8),
   ('d6b38da9-6e27-5c5d-97ce-5b57f45cd55c', 'f740597c-14d2-5c45-aa89-0689ca393ba5', 'pool', 'Round 5', 1, 'B', 'a867aaa7-59ae-584b-b9df-5628e2dd4e4a', 'ced1ba68-c417-58af-b33f-f464192fa863', 'Ring 4', (timestamp '2026-11-14 13:10' at time zone 'America/Edmonton'), 8)
 on conflict (id) do nothing;
+set local role authenticated;
 -- Female Longsword: round_robin, 5 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('086f8cfe-8030-5669-bc52-b01e3f23e6ce', 'd66f498a-8671-54bd-89d8-b1afc8e53c42', 'round_robin', 'Round 1', 0, null, '9d4f8f33-feab-5088-a76d-3d9060a60506', 'a84c611f-1907-5902-a5da-b60fbf5b2b22', 'Ring 1', (timestamp '2026-11-14 10:51' at time zone 'America/Edmonton'), 8),
   ('7eb04412-5aaf-5218-b5d8-f0357fd8d044', 'd66f498a-8671-54bd-89d8-b1afc8e53c42', 'round_robin', 'Round 1', 1, null, '8ba04c96-e749-577e-87a5-f8048bd306f7', '8dc0547a-136a-546b-909f-8f983e8bfb2d', 'Ring 1', (timestamp '2026-11-14 11:01' at time zone 'America/Edmonton'), 8),
@@ -196,7 +205,9 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('f0fdd13f-32ad-5213-b73e-7c22e7639888', 'd66f498a-8671-54bd-89d8-b1afc8e53c42', 'round_robin', 'Round 5', 0, null, 'e1988a14-353e-5760-ae45-34127f69992a', '9d4f8f33-feab-5088-a76d-3d9060a60506', 'Ring 1', (timestamp '2026-11-14 12:11' at time zone 'America/Edmonton'), 8),
   ('0dfe6294-b267-5042-827b-967e34eeccf6', 'd66f498a-8671-54bd-89d8-b1afc8e53c42', 'round_robin', 'Round 5', 1, null, '8dc0547a-136a-546b-909f-8f983e8bfb2d', 'a84c611f-1907-5902-a5da-b60fbf5b2b22', 'Ring 1', (timestamp '2026-11-14 12:21' at time zone 'America/Edmonton'), 8)
 on conflict (id) do nothing;
+set local role authenticated;
 -- Male Sword & Shield: elimination, 10 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('9804d21a-2965-5238-951b-8b9fedbbbbd6', 'bdec4c06-d380-579f-bae2-bb03c9af9d65', 'elimination', 'Round of 16', 1, null, '59986544-606b-5305-817c-55f7cf626ab2', 'ca798811-1390-557e-98aa-9c4e9dcc78d4', 'Ring 2', (timestamp '2026-11-14 12:50' at time zone 'America/Edmonton'), 8),
   ('6ce081e2-12d0-5e91-92f7-b794111c8269', 'bdec4c06-d380-579f-bae2-bb03c9af9d65', 'elimination', 'Round of 16', 5, null, 'e418358c-daed-505f-9c40-25ebac4533da', 'aaba1357-be06-5181-9371-2d8e984e5472', 'Ring 2', (timestamp '2026-11-14 13:00' at time zone 'America/Edmonton'), 8),
@@ -219,7 +230,9 @@ update public.matches m set next_match_id = v.n, next_slot = v.s from (values
   ('bbfaf162-afdd-5032-a5c8-f95eb2c50447'::uuid, '16a54dec-9592-579f-a065-ed6ea62ff753'::uuid, 'a'),
   ('0e6f032d-5956-5b20-90f7-8141c99ce842'::uuid, '16a54dec-9592-579f-a065-ed6ea62ff753'::uuid, 'b')
 ) v(id, n, s) where m.id = v.id and m.next_match_id is null;
+set local role authenticated;
 -- Female Sword & Shield: round_robin, 5 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('3b83f767-1c66-5c3d-aba5-43572259eb64', 'f966f6f1-6d28-5cb6-b239-c9bbfb9f7741', 'round_robin', 'Round 1', 0, null, '600fcb04-9381-5696-87ca-4146d0c9bf74', 'dc164fb5-8f82-5ab3-8fe7-383bbf73a4e9', 'Ring 3', (timestamp '2026-11-14 10:51' at time zone 'America/Edmonton'), 8),
   ('5591fb68-ef87-5c5c-ab56-78a13780ada5', 'f966f6f1-6d28-5cb6-b239-c9bbfb9f7741', 'round_robin', 'Round 1', 1, null, '9d0c3a88-d503-50f0-9160-550af1aa614d', 'd092ae5a-3e1d-5baf-92a5-b618a12ba220', 'Ring 3', (timestamp '2026-11-14 11:01' at time zone 'America/Edmonton'), 8),
@@ -232,7 +245,9 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('e175cafa-8f7d-5a98-8640-526b7b1c049f', 'f966f6f1-6d28-5cb6-b239-c9bbfb9f7741', 'round_robin', 'Round 5', 0, null, 'bec229a9-5d85-5c1d-8311-f8057ac51dad', '600fcb04-9381-5696-87ca-4146d0c9bf74', 'Ring 3', (timestamp '2026-11-14 12:11' at time zone 'America/Edmonton'), 8),
   ('ce55c158-0827-507f-9491-44d72c38dd1f', 'f966f6f1-6d28-5cb6-b239-c9bbfb9f7741', 'round_robin', 'Round 5', 1, null, 'd092ae5a-3e1d-5baf-92a5-b618a12ba220', 'dc164fb5-8f82-5ab3-8fe7-383bbf73a4e9', 'Ring 3', (timestamp '2026-11-14 12:21' at time zone 'America/Edmonton'), 8)
 on conflict (id) do nothing;
+set local role authenticated;
 -- Male Polearm: elimination, 9 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('5083a6bd-16a6-58ae-a902-ac8d522086b1', 'd76b8420-3b6b-543b-93ca-231798c80093', 'elimination', 'Round of 16', 1, null, 'a1583246-8de2-5edd-82a8-f1eed84607da', '037dd95c-e61b-5893-99ff-f403e44ed79c', 'Ring 4', (timestamp '2026-11-14 13:20' at time zone 'America/Edmonton'), 8),
   ('f15c1493-58fa-5651-9d5f-2bf0ba59adc6', 'd76b8420-3b6b-543b-93ca-231798c80093', 'elimination', 'Quarterfinal', 0, null, '3cccdb6f-baa9-5cad-8ea5-c04d1e9929ba', null, 'Ring 4', (timestamp '2026-11-14 13:30' at time zone 'America/Edmonton'), 8),
@@ -253,7 +268,9 @@ update public.matches m set next_match_id = v.n, next_slot = v.s from (values
   ('4ae091a0-32ff-50f3-9c19-bbf551d38aec'::uuid, 'd49e0b9c-7f2b-52ba-9cbb-9765f77cbd70'::uuid, 'a'),
   ('1855101c-50a9-5cf2-8af9-30d20980f62d'::uuid, 'd49e0b9c-7f2b-52ba-9cbb-9765f77cbd70'::uuid, 'b')
 ) v(id, n, s) where m.id = v.id and m.next_match_id is null;
+set local role authenticated;
 -- Female Polearm: round_robin, 4 entries
+reset role;
 insert into public.matches (id, competition_id, stage, round_label, position, pool, entry_a, entry_b, field, scheduled_at, duration_minutes) values
   ('4a61e170-7cf4-5225-b314-fadccfdf1b9f', 'd357e371-d496-5d50-bc74-9237fc88bd4e', 'round_robin', 'Round 1', 0, null, 'ff051577-267c-5d35-acb9-2b658263ebb0', '5b6fa6b8-8b9c-53a1-8313-8e2d989454fd', 'Ring 1', (timestamp '2026-11-14 12:31' at time zone 'America/Edmonton'), 8),
   ('984f8add-a6b5-5185-b767-887d81e3442c', 'd357e371-d496-5d50-bc74-9237fc88bd4e', 'round_robin', 'Round 1', 1, null, 'f907e108-c6a9-5a2d-a5b9-9edde4edc833', '2e13aec6-dd91-565e-bab1-946626c046ce', 'Ring 1', (timestamp '2026-11-14 12:41' at time zone 'America/Edmonton'), 8),
@@ -262,6 +279,7 @@ insert into public.matches (id, competition_id, stage, round_label, position, po
   ('dd910fb2-0663-5520-9d5e-d73fef03093b', 'd357e371-d496-5d50-bc74-9237fc88bd4e', 'round_robin', 'Round 3', 0, null, 'ff051577-267c-5d35-acb9-2b658263ebb0', 'f907e108-c6a9-5a2d-a5b9-9edde4edc833', 'Ring 1', (timestamp '2026-11-14 13:11' at time zone 'America/Edmonton'), 8),
   ('26e6f28a-6d6b-5fff-83a4-161c0b76d560', 'd357e371-d496-5d50-bc74-9237fc88bd4e', 'round_robin', 'Round 3', 1, null, '2e13aec6-dd91-565e-bab1-946626c046ce', '5b6fa6b8-8b9c-53a1-8313-8e2d989454fd', 'Ring 1', (timestamp '2026-11-14 13:21' at time zone 'America/Edmonton'), 8)
 on conflict (id) do nothing;
+set local role authenticated;
 reset role; select set_config('request.jwt.claims', '', true);
 insert into public.record_sources (source_id, entity_type, entity_id, status, note) values
   ('ac7ebfbe-8866-5e61-918e-0f3ae9fafab8', 'competition', '2f4043cc-ea99-58b3-94e4-4232766d2a61', 'unverified', 'NACL-test fictional dataset'),
