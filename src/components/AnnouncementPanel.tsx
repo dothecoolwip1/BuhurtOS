@@ -19,6 +19,8 @@ export function AnnouncementPanel({ eventId, published }: { eventId: string; pub
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const left = ANNOUNCEMENT_MAX - text.trim().length;
+  // The secretary may SEND but is not shown the history (the database refuses it, 42501): that is not an error, the panel is simply send-only.
+  const historyRefused = (history.error as { code?: string } | null)?.code === '42501';
 
   const send = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +65,7 @@ export function AnnouncementPanel({ eventId, published }: { eventId: string; pub
           </ul>
         </div>
       )}
-      {history.error != null && <p role="alert" className="src" style={{ margin: 0 }}>{friendlyError(history.error, 'Could not load sent announcements.')}</p>}
+      {history.error != null && !historyRefused && <p role="alert" className="src" style={{ margin: 0 }}>{friendlyError(history.error, 'Could not load sent announcements.')}</p>}
     </section>
   );
 }
