@@ -54,17 +54,21 @@ function Log({ eventId, slug, name, competitions }: { eventId: string; slug: str
   const rows = log.data ?? [];
   const groups = useMemo(() => groupDiscipline(rows, filter, voided, q), [rows, filter, voided, q]);
   const active = rows.filter(r => !r.voided_at);
-  const refused = (log.error as { code?: string } | null)?.code === '42501';
+  // The cards log is for the officials who score; the desk sections are also for the check-in desk and the authenticity officer (inspector).
+  const logRefused = (log.error as { code?: string } | null)?.code === '42501';
+  const refused = logRefused && (overview.error as { code?: string } | null)?.code === '42501';
+  const tabs = logRefused ? TABS.filter(([k]) => k !== 'cards') : TABS;
+  const shown: Tab = logRefused && tab === 'cards' ? 'authenticity' : tab;
 
   if (refused) return <><PageHead eyebrow="Discipline" title={name} /><p role="alert">Only this event's officials can read its discipline log.</p></>;
   return (
     <section className="fade-in dl-page">
       <div><p className="eyebrow">Discipline · {name}</p><h1 style={{ fontSize: 'clamp(32px,6vw,56px)', marginTop: 6 }}>Cards and penalties</h1></div>
-      <Seg label="Section" value={tab} options={TABS} onChange={pick} scroll />
-      {tab !== 'cards' && (overview.data
-        ? <DisciplineDesk tab={tab} eventId={eventId} competitions={competitions} overview={overview.data} log={rows} onChanged={() => setTick(n => n + 1)} />
+      <Seg label="Section" value={shown} options={tabs} onChange={pick} scroll />
+      {shown !== 'cards' && (overview.data
+        ? <DisciplineDesk tab={shown} eventId={eventId} competitions={competitions} overview={overview.data} log={rows} onChanged={() => setTick(n => n + 1)} />
         : overview.error != null ? <p role="alert">{friendlyError(overview.error, 'Could not load the discipline desk.')}</p> : <p className="src" role="status">Loading…</p>)}
-      {tab === 'cards' && <>
+      {shown === 'cards' && <>
       <p className="src">Recorded on the field tablets from the marshal's call. Voided records stay, with their reason, and are never counted. What a number of cards means is decided by the rules and the head marshal, not by BuhurtOS.</p>
       {log.loading && !log.data && <p className="src" role="status">Loading…</p>}
       {log.error != null && !log.data && <p role="alert">{friendlyError(log.error, 'Could not load the discipline log.')}</p>}

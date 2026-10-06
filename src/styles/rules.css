@@ -149,3 +149,6 @@
 .dd-record{display:grid;gap:10px}
 /* the check-in desk: a suspension is a block, not a reason to override */
 .desk-block{margin:0;padding:10px 12px;border-radius:var(--r-sm);background:#FEE4E2;color:#7A271A;border:1px solid #FDA29B}
+/* official words keep their printed case: no global table-heading styling inside a rule's table */
+.rl-table th{text-transform:none;letter-spacing:0;font-family:var(--f-body);font-size:15px;color:var(--ink)}
+.dd-actions .dd-confirm{flex:1 1 100%;margin:0}

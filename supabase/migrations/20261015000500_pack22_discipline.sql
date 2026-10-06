@@ -896,6 +896,19 @@ create trigger entries_discipline_check before insert or update on public.entrie
 drop trigger if exists entry_fighters_discipline_check on public.entry_fighters;
 create trigger entry_fighters_discipline_check before insert or update on public.entry_fighters for each row execute function private.entry_discipline_check();
 
+-- A readiness override is for exceptions in readiness, never for a suspension: refused while one applies (so none is left behind after a lift).
+create or replace function private.override_discipline_check() returns trigger language plpgsql security definer set search_path = '' as $$
+declare v_r public.registrations; v_why text;
+begin
+  select * into v_r from public.registrations where id = new.registration_id;
+  v_why := private.discipline_block_reason(v_r.fighter_id, v_r.event_id, v_r.team_id);
+  if v_why is not null and not v_r.is_volunteer then raise exception 'a suspension cannot be overridden: % (lift it instead)', v_why using errcode = 'P0001'; end if;
+  return new;
+end $$;
+revoke execute on function private.override_discipline_check() from public, anon, authenticated;
+drop trigger if exists registration_overrides_discipline_check on public.registration_overrides;
+create trigger registration_overrides_discipline_check before insert on public.registration_overrides for each row execute function private.override_discipline_check();
+
 -- Readiness (Pack 16, the one readiness rule): a block is a reason no override clears. Extended in place; each anchor is asserted.
 do $do$
 declare v_def text; v_new text;

@@ -226,9 +226,9 @@ select t.expect_eq('the head marshal suspends Fighter 3 for the rest of the even
 select t.as_admin();
 select t.expect_eq('readiness: blocked, with the reason in plain words', t.ready(t.r(5)), 'NOT READY: Not checked in, Armour inspection required, Suspended for the rest of this event');
 select t.as_user(t.u(1));
-select public.set_readiness_override(t.r(5), 'Organizer override attempt');
+select t.expect_error('a readiness override is refused for a suspended fighter (lift the suspension instead)', $$select public.set_readiness_override(t.r(5), 'Organizer override attempt')$$, 'P0001');
 select t.as_admin();
-select t.expect_eq('a readiness override does NOT clear a suspension', left(t.ready(t.r(5)), 9), 'NOT READY');
+select t.expect_eq('still NOT READY: no override clears a suspension', left(t.ready(t.r(5)), 9), 'NOT READY');
 select t.as_user(t.u(7));
 select t.expect_error('the check-in desk cannot check a suspended fighter in', $$select public.set_attendance(t.r(5), 'checked_in')$$, 'P0001');
 select t.expect_eq('the desk sees why on the discipline desk (the label, not the private reason)',

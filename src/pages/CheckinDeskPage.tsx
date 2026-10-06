@@ -110,7 +110,7 @@ export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId:
       <div style={{ display: 'grid', gap: 10 }}>
         {shown.map(r => <DeskCard key={r.registrationId} row={r} roles={roles} pinned={r.registrationId === pinned} onSaved={async () => { setTouched(t => new Set(t).add(r.registrationId)); await load(); }} />)}
       </div>
-      <p className="src">Readiness is a warning for the lists and the Lyst screen. It never stops or reorders a fight. <Link to={`/events/${slug}`}>Back to the event</Link></p>
+      <p className="src">Readiness is a warning for the lists and the Lyst screen. It never stops or reorders a fight. A suspension is different: it blocks check-in until it is lifted. <Link to={`/events/${slug}/discipline?tab=authenticity`}>Authenticity and discipline</Link> · <Link to={`/events/${slug}`}>Back to the event</Link></p>
     </section>
   );
 }

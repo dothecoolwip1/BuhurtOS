@@ -84,9 +84,9 @@ function ActionSheet({ title, onClose, children, canSubmit, submitLabel, danger 
       <div className="dd-form">
         {children}
         {err && <p role="alert" className="dd-err">{err}</p>}
-        {confirming && confirmText && <p className="rl-banner rl-warn" role="alert"><b>Check before you confirm.</b> {confirmText}</p>}
         <div className="dd-actions">
-          <button type="button" className={`btn ${danger ? 'btn-danger' : 'btn-primary'}`} disabled={!canSubmit || busy} onClick={() => void go()}>{busy ? 'Saving…' : confirming ? `Yes, ${submitLabel.toLowerCase()}` : submitLabel}</button>
+          {confirming && confirmText && <p className="rl-banner rl-warn dd-confirm" role="alert"><b>Check before you confirm.</b> {confirmText}</p>}
+          <button type="button" className={`btn ${danger ? 'btn-danger' : 'btn-ink'}`} disabled={!canSubmit || busy} onClick={() => void go()}>{busy ? 'Saving…' : confirming ? `Yes, ${submitLabel.toLowerCase()}` : submitLabel}</button>
           <button type="button" className="btn btn-line" disabled={busy} onClick={confirming ? () => setConfirming(false) : onClose}>{confirming ? 'Go back' : 'Cancel'}</button>
         </div>
       </div>
@@ -111,7 +111,7 @@ function SanctionsPanel({ eventId, competitions, o, onChanged }: { eventId: stri
   const ended = o.sanctions.filter(s => s.status !== 'active');
   return (
     <section className="dd-panel" aria-labelledby="dd-sanc">
-      <div className="dd-head"><h2 id="dd-sanc" className="rl-h2">Sanctions outside a fight</h2>{o.can.sanction && <button type="button" className="btn btn-primary btn-sm" onClick={() => setGiving(true)}>Give a sanction</button>}</div>
+      <div className="dd-head"><h2 id="dd-sanc" className="rl-h2">Sanctions outside a fight</h2>{o.can.sanction && <button type="button" className="btn btn-ink btn-sm" onClick={() => setGiving(true)}>Give a sanction</button>}</div>
       <p className="src">Given by the Knight Marshal (head marshal) or an organizer at event level: a card outside a fight, a removal, a team disqualification. Cards given in a fight are on the field tablet and in the cards log.</p>
       {!o.can.sanction && <p className="src">You can read these; the head marshal or an organizer gives them.</p>}
       {active.length === 0 && ended.length === 0 && <p className="rl-none">No sanctions outside a fight at this event.</p>}
@@ -201,7 +201,7 @@ function AuthenticityPanel({ eventId, o, onChanged }: { eventId: string; o: Disc
   return (
     <section className="dd-panel" aria-labelledby="dd-auth">
       <div className="dd-head"><h2 id="dd-auth" className="rl-h2">Authenticity</h2>
-        {o.can.finding && <span className="dd-btns"><button type="button" className="btn btn-primary btn-sm" onClick={() => setAdding(true)}>Record an infraction</button><button type="button" className="btn btn-line btn-sm" onClick={() => setGreen(true)}>Give a green card</button></span>}</div>
+        {o.can.finding && <span className="dd-btns"><button type="button" className="btn btn-ink btn-sm" onClick={() => setAdding(true)}>Record an infraction</button><button type="button" className="btn btn-line btn-sm" onClick={() => setGreen(true)}>Give a green card</button></span>}</div>
       <p className="src">The authenticity officer (inspector role) records infractions as the official Infractions document classifies them: minor, moderate or major. What that means for a tournament (a green card, not allowed in the list) is decided by the officer and the document: BuhurtOS does not compute it. <Link className="lnk" to="/rules?q=infraction">Read the classification</Link>.</p>
       <h3 className="dd-sub">Green cards <span className="mono">{greens.filter(g => g.status === 'active').length}</span></h3>
       {greens.length === 0 ? <p className="rl-none">No green cards at this event.</p> : (
@@ -240,7 +240,7 @@ function AddFinding({ eventId, onClose, onDone }: { eventId: string; onClose: ()
       <div className="field-in">Fighter{people.loading ? <span className="src">Loading…</span> : <PersonPicker people={people.data ?? []} value={who} onChange={setWho} />}</div>
       <div className="field-in">Classification
         <div className="dd-seg" role="radiogroup" aria-label="Classification">
-          {(['minor', 'moderate', 'major'] as const).map(s => <button key={s} type="button" role="radio" aria-checked={severity === s} className={`btn btn-sm ${severity === s ? 'btn-primary' : 'btn-line'}`} onClick={() => setSeverity(s)}>{SEVERITY_WORD[s]}</button>)}
+          {(['minor', 'moderate', 'major'] as const).map(s => <button key={s} type="button" role="radio" aria-checked={severity === s} className={`btn btn-sm ${severity === s ? 'btn-ink' : 'btn-line'}`} onClick={() => setSeverity(s)}>{SEVERITY_WORD[s]}</button>)}
         </div>
       </div>
       <label className="field-in">Item<input value={item} maxLength={120} onChange={e => setItem(e.target.value)} placeholder="For example: gauntlets" /></label>
@@ -258,8 +258,8 @@ function CloseFinding({ f, onClose, onDone }: { f: Finding; onClose: () => void;
       run={async () => { await closeFinding(f.id, status, reason || null); onDone(); }}>
       <p><b>{f.name}</b> · {SEVERITY_WORD[f.severity]} · {f.item}</p>
       <div className="dd-seg" role="radiogroup" aria-label="How it closes">
-        <button type="button" role="radio" aria-checked={status === 'corrected'} className={`btn btn-sm ${status === 'corrected' ? 'btn-primary' : 'btn-line'}`} onClick={() => setStatus('corrected')}>Corrected</button>
-        <button type="button" role="radio" aria-checked={status === 'voided'} className={`btn btn-sm ${status === 'voided' ? 'btn-primary' : 'btn-line'}`} onClick={() => setStatus('voided')}>Recorded by mistake</button>
+        <button type="button" role="radio" aria-checked={status === 'corrected'} className={`btn btn-sm ${status === 'corrected' ? 'btn-ink' : 'btn-line'}`} onClick={() => setStatus('corrected')}>Corrected</button>
+        <button type="button" role="radio" aria-checked={status === 'voided'} className={`btn btn-sm ${status === 'voided' ? 'btn-ink' : 'btn-line'}`} onClick={() => setStatus('voided')}>Recorded by mistake</button>
       </div>
       <Reason value={reason} onChange={setReason} required={status === 'voided'} />
     </ActionSheet>
@@ -274,7 +274,7 @@ function AppealsPanel({ o, log, onChanged }: { o: DisciplineOverview; log: Disci
   const open = o.reviews.filter(r => r.status === 'lodged');
   return (
     <section className="dd-panel" aria-labelledby="dd-app">
-      <div className="dd-head"><h2 id="dd-app" className="rl-h2">Appeals</h2>{o.can.lodge_appeal && <button type="button" className="btn btn-primary btn-sm" onClick={() => setLodging(true)}>Record an appeal</button>}</div>
+      <div className="dd-head"><h2 id="dd-app" className="rl-h2">Appeals</h2>{o.can.lodge_appeal && <button type="button" className="btn btn-ink btn-sm" onClick={() => setLodging(true)}>Record an appeal</button>}</div>
       <p className="src">The captain (or the competitor's representative) tells the Secretary in person, within 15 minutes after the end of the fight and before the next phase starts. The Knight Marshal decides. <Link className="lnk" to="/rules?q=appeal">Read the appeal rules</Link>.</p>
       {o.reviews.length === 0 && <p className="rl-none">No appeals at this event.</p>}
       <ul className="dd-list">
@@ -285,7 +285,7 @@ function AppealsPanel({ o, log, onChanged }: { o: DisciplineOverview; log: Disci
             {r.status === 'lodged' && <span className={`dl-where ${r.late ? 'dd-late' : ''}`}>{r.late ? `Lodged after the deadline (${when(r.due_by)}): the Knight Marshal decides whether to hear it.` : `Deadline ${when(r.due_by)}`}</span>}
             {r.decision_note && <span className="dl-where">Decision: {r.decision_note}</span>}
             {r.status === 'lodged' && <span className="dd-btns">
-              {o.can.decide_appeal && <button type="button" className="btn btn-primary btn-sm" onClick={() => setDeciding(r)}>Record the decision</button>}
+              {o.can.decide_appeal && <button type="button" className="btn btn-ink btn-sm" onClick={() => setDeciding(r)}>Record the decision</button>}
               <button type="button" className="btn btn-line btn-sm" onClick={() => setWithdrawing(r)}>Withdrawn</button>
             </span>}
           </li>
@@ -390,8 +390,8 @@ function AddSuspension({ eventId, competitions, onClose, onDone }: { eventId: st
       confirmText={`${who?.name ?? 'They'} will be blocked from ${comp ? competitions.find(c => c.id === comp)?.name : 'the rest of this event'}: no check-in and no entry until it is lifted. ${team ? 'The team captain' : 'The fighter'} is notified.`}
       run={async () => { await issueSuspension({ authority: 'event', scope: comp ? 'competition' : 'remainder_of_event', reason, fighter: who?.fighterId, team: who?.teamId, event: eventId, competition: comp || null, provision: rule }); onDone(); }}>
       <div className="dd-seg" role="radiogroup" aria-label="Who">
-        <button type="button" role="radio" aria-checked={!team} className={`btn btn-sm ${!team ? 'btn-primary' : 'btn-line'}`} onClick={() => { setTeam(false); setWho(null); }}>A fighter</button>
-        <button type="button" role="radio" aria-checked={team} className={`btn btn-sm ${team ? 'btn-primary' : 'btn-line'}`} onClick={() => { setTeam(true); setWho(null); }}>A team</button>
+        <button type="button" role="radio" aria-checked={!team} className={`btn btn-sm ${!team ? 'btn-ink' : 'btn-line'}`} onClick={() => { setTeam(false); setWho(null); }}>A fighter</button>
+        <button type="button" role="radio" aria-checked={team} className={`btn btn-sm ${team ? 'btn-ink' : 'btn-line'}`} onClick={() => { setTeam(true); setWho(null); }}>A team</button>
       </div>
       <div className="field-in">{team ? 'Team' : 'Fighter'}{people.loading ? <span className="src">Loading…</span> : <PersonPicker people={people.data ?? []} value={who} onChange={setWho} teams={team} />}</div>
       <label className="field-in">From

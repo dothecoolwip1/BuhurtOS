@@ -61,8 +61,10 @@ const pageErrors = [];
 try {
   const exSlug = sql(`select slug from public.rulesets where inventory_key = 'marshal/example-combat-rules'`);
   const biSlug = sql(`select slug from public.rulesets where inventory_key = 'marshal/buhurt-rules'`);
-  check('fixture: the Buhurt International directory (45 entries) and the example rulesets (V.1.0 superseded, V.1.1 and V.2.0 published) are in the database',
-    sql(`select count(*) from public.rulesets where governing_body = 'Buhurt International'`) === '45' && sql(`select string_agg(version || ':' || status, ',' order by version) from public.ruleset_versions`) === 'V.1.0:superseded,V.1.1:published,V.2.0:published');
+  check('fixture: the Buhurt International directory (45 entries, its 42 documents imported and waiting in review) and the example rulesets (V.1.0 superseded, V.1.1 and V.2.0 published) are in the database',
+    sql(`select count(*) from public.rulesets where governing_body = 'Buhurt International'`) === '45'
+    && sql(`select count(*) from public.ruleset_versions v join public.rulesets r on r.id = v.ruleset_id where r.governing_body = 'Buhurt International' and v.status = 'in_review'`) === '42'
+    && sql(`select string_agg(version || ':' || status, ',' order by version) from public.ruleset_versions where synthetic`) === 'V.1.0:superseded,V.1.1:published,V.2.0:published');
 
   // ================================================================ 1. anonymous visitor on a phone, sample mode OFF: the real directory, no test rules
   const { page: anon } = await open('phone', null);
@@ -134,7 +136,7 @@ try {
   const detail = (await body(ph)).toLowerCase();
   check('20. the rule page shows the number, the title and the full text', (await ph.locator('.rl-bignum').innerText()) === '2.1' && (await ph.locator('.rl-rhead h1').innerText()).toLowerCase() === 'prohibited targets' && detail.includes('strikes to the back of the knee, the neck, the groin and the feet are prohibited.'), detail.slice(0, 400));
   check('21. it shows its source: governing body and committee, document, version in force, section and page', detail.includes('example body (test) · example marshal committee') && detail.includes('v.1.1 · in force') && /rule 2\.1 in 2 prohibited actions · page 1/.test(detail) && detail.includes('applies to duels'), detail);
-  check('22. it says how it was checked and links to the official document at the page', detail.includes('imported from the official file; not yet compared line by line') && (await ph.getByRole('link', { name: /Open the official document at page 1/ }).getAttribute('href')) === 'https://example.invalid/files/example-combat-rules.pdf#page=1');
+  check('22. it says how it was checked and links to the official document at the page', detail.includes('imported from the official file; every line of the page is accounted for') && detail.includes('the official file’s own text') && (await ph.getByRole('link', { name: /Open the official document at page 1/ }).getAttribute('href')) === 'https://example.invalid/files/example-combat-rules.pdf#page=1');
   check('23. it links to the rules it refers to (1.2) and to the same rule in the older version', (await ph.locator('.rl-block', { hasText: 'Rules it refers to' }).locator('.rl-num').textContent()) === '1.2' && (await ph.locator('.rl-block', { hasText: 'This rule in other versions' }).locator('.rl-doc').textContent()).includes('V.1.0 · Older version'));
   check('24. the breadcrumb leads back to the document and its section', (await ph.locator('.rl-crumbs a').allInnerTexts()).join(' > ').startsWith('Rules > Example Combat Rules > 2'));
   check('25. no sideways scroll on the rule page', (await sideways(ph)) <= 0);

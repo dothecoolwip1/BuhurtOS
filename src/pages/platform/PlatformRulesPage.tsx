@@ -90,7 +90,7 @@ function Publish() {
     <section className="dd-panel" aria-labelledby="pr-pub">
       <div className="dd-head">
         <h2 id="pr-pub" className="rl-h2">Waiting to be published <span className="mono">{rows.length}</span></h2>
-        {okRows.length > 1 && <button type="button" className="btn btn-primary btn-sm" disabled={busy} onClick={() => setConfirm(okRows)}>Publish all {okRows.length} ready</button>}
+        {okRows.length > 1 && <button type="button" className="btn btn-ink btn-sm" disabled={busy} onClick={() => setConfirm(okRows)}>Publish all {okRows.length} ready</button>}
       </div>
       <p className="src">Each version was imported from the official file and reconciled line by line (see <code>rules-library/…/reconciliation.md</code> in the repository). Open one to read it before publishing; drafts and versions in review are visible to you only.</p>
       {done && <p role="status" className="rl-banner">{done}</p>}
@@ -115,7 +115,7 @@ function Publish() {
             <p>Published text becomes the version in force for everyone and is never edited again: corrections keep the old words, a new official file becomes a new version.</p>
             {confirm.length > 1 && <ul className="src" style={{ maxHeight: 220, overflow: 'auto', margin: 0 }}>{confirm.map(w => <li key={w.id}>{w.doc.name} {w.version}</li>)}</ul>}
             <div className="dd-actions">
-              <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void publish(confirm)}>{busy ? 'Publishing…' : 'Yes, publish'}</button>
+              <button type="button" className="btn btn-ink" disabled={busy} onClick={() => void publish(confirm)}>{busy ? 'Publishing…' : 'Yes, publish'}</button>
               <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirm(null)}>Cancel</button>
             </div>
           </div>

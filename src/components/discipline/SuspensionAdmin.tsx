@@ -93,8 +93,8 @@ function AddLongSuspension({ organizationId, onClose, onDone }: { organizationId
   return (
     <Sheet title="Suspend" onClose={onClose} busy={busy} err={err}>
       <div className="dd-seg" role="radiogroup" aria-label="Who">
-        <button type="button" role="radio" aria-checked={!team} className={`btn btn-sm ${!team ? 'btn-primary' : 'btn-line'}`} onClick={() => { setTeam(false); setWho(null); }}>A fighter</button>
-        <button type="button" role="radio" aria-checked={team} className={`btn btn-sm ${team ? 'btn-primary' : 'btn-line'}`} onClick={() => { setTeam(true); setWho(null); }}>A team</button>
+        <button type="button" role="radio" aria-checked={!team} className={`btn btn-sm ${!team ? 'btn-ink' : 'btn-line'}`} onClick={() => { setTeam(false); setWho(null); }}>A fighter</button>
+        <button type="button" role="radio" aria-checked={team} className={`btn btn-sm ${team ? 'btn-ink' : 'btn-line'}`} onClick={() => { setTeam(true); setWho(null); }}>A team</button>
       </div>
       {who ? <div className="rl-picked"><span className="chip steel">{who.name}</span><button type="button" className="btn btn-line btn-sm" onClick={() => setWho(null)}>Change</button></div> : (
         <div className="rl-pick">
@@ -106,8 +106,8 @@ function AddLongSuspension({ organizationId, onClose, onDone }: { organizationId
       <label className="rl-check"><input type="checkbox" checked={open} onChange={e => setOpen(e.target.checked)} /> No end date (for example a permanent ban decided by the governing body)</label>
       <div className="field-in">Rule (optional)<RulePicker value={rule} onChange={setRule} /></div>
       <label className="field-in">Reason (stays with you)<textarea rows={3} maxLength={500} value={reason} onChange={e => setReason(e.target.value)} placeholder="For example: Judiciary Committee decision of 12 October" /></label>
-      {confirm && <p className="rl-banner rl-warn" role="alert"><b>Check before you confirm.</b> {who?.name} will be blocked from {scopeWord} {open ? 'with no end date' : `until ${until}`}: no acceptance, no check-in, no entry.</p>}
       <div className="dd-actions">
+        {confirm && <p className="rl-banner rl-warn dd-confirm" role="alert"><b>Check before you confirm.</b> {who?.name} will be blocked from {scopeWord} {open ? 'with no end date' : `until ${until}`}: no acceptance, no check-in, no entry.</p>}
         <button type="button" className="btn btn-danger" disabled={!ok || busy} onClick={() => (confirm ? void run(() => issueSuspension({ authority: organizationId ? 'organization' : 'platform', scope: organizationId ? 'organization_events' : 'all_events', organization: organizationId, fighter: team ? null : who!.id, team: team ? who!.id : null, endsAt: open ? null : endOfDay(until), provision: rule, reason })) : setConfirm(true))}>{busy ? 'Saving…' : confirm ? 'Yes, suspend' : 'Suspend'}</button>
         <button type="button" className="btn btn-line" disabled={busy} onClick={confirm ? () => setConfirm(false) : onClose}>{confirm ? 'Go back' : 'Cancel'}</button>
       </div>
@@ -128,7 +128,7 @@ function ChangeEnd({ s, onClose, onDone }: { s: ManagedSuspension; onClose: () =
       <label className="rl-check"><input type="checkbox" checked={open} onChange={e => setOpen(e.target.checked)} /> No end date</label>
       <label className="field-in">Reason<textarea rows={2} maxLength={500} value={reason} onChange={e => setReason(e.target.value)} /></label>
       <div className="dd-actions">
-        <button type="button" className="btn btn-primary" disabled={busy || reason.trim().length < 3 || (!open && !until)} onClick={() => void run(() => changeSuspension(s.id, open ? null : endOfDay(until), reason))}>{busy ? 'Saving…' : 'Record the change'}</button>
+        <button type="button" className="btn btn-ink" disabled={busy || reason.trim().length < 3 || (!open && !until)} onClick={() => void run(() => changeSuspension(s.id, open ? null : endOfDay(until), reason))}>{busy ? 'Saving…' : 'Record the change'}</button>
         <button type="button" className="btn btn-line" disabled={busy} onClick={onClose}>Cancel</button>
       </div>
     </Sheet>
@@ -143,8 +143,8 @@ function Lift({ s, onClose, onDone }: { s: ManagedSuspension; onClose: () => voi
     <Sheet title="Lift the suspension" onClose={onClose} busy={busy} err={err}>
       <p><b>{s.against}</b> · {s.label}</p>
       <label className="field-in">Reason<textarea rows={2} maxLength={500} value={reason} onChange={e => setReason(e.target.value)} /></label>
-      {confirm && <p className="rl-banner rl-warn" role="alert">They can be accepted, checked in and entered again. The suspension stays in the history.</p>}
       <div className="dd-actions">
+        {confirm && <p className="rl-banner rl-warn dd-confirm" role="alert">They can be accepted, checked in and entered again. The suspension stays in the history.</p>}
         <button type="button" className="btn btn-danger" disabled={busy || reason.trim().length < 3} onClick={() => (confirm ? void run(() => liftSuspension(s.id, reason)) : setConfirm(true))}>{busy ? 'Saving…' : confirm ? 'Yes, lift it' : 'Lift it'}</button>
         <button type="button" className="btn btn-line" disabled={busy} onClick={confirm ? () => setConfirm(false) : onClose}>{confirm ? 'Go back' : 'Cancel'}</button>
       </div>
