@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
+import { FocusLayout } from './components/FocusLayout';
 import { FieldPage } from './pages/FieldPage';
 import { EventRoute } from './pages/EventRoute';
 import { EventsPage } from './pages/EventsPage';
@@ -72,6 +73,11 @@ function SiteApp() {
       <Route path="lyst/counter" element={<CounterPage />} />
       {/* A temporary event device signs in here once with its code (or a QR that opens /device#c=...). Chrome-less; the fragment is removed at start-up. */}
       <Route path="device" element={<DeviceSignInPage />} />
+      {/* Live event operation (Pack 24A1): field scoring and the Lyst, the check-in and armour desk. Same URLs; no site chrome, a compact event header with Exit. */}
+      <Route element={<FocusLayout />}>
+        <Route path="events/:eventId/field/:field" element={<FieldPage />} />
+        <Route path="events/:eventId/checkin" element={<CheckinDeskPage />} />
+      </Route>
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />
@@ -90,9 +96,7 @@ function SiteApp() {
         <Route path="team-manager" element={<TeamManagerPage />} />
         <Route path="events/:eventId" element={<EventRoute />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
-        <Route path="events/:eventId/field/:field" element={<FieldPage />} />
         <Route path="events/:eventId/manage" element={<ManagePage />} />
-        <Route path="events/:eventId/checkin" element={<CheckinDeskPage />} />
         <Route path="events/:eventId/command" element={<CommandCentrePage />} />
         <Route path="events/:eventId/discipline" element={<DisciplineLogPage />} />
         <Route path="organizations" element={<OrganizationsPage />} />

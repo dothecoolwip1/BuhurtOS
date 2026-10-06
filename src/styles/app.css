@@ -1388,7 +1388,33 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .dues-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .dues-opt{display:flex;gap:8px;align-items:center;min-height:48px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-sm);font-weight:600;cursor:pointer}
 .dues-opt.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+/* ---------- Pack 24A1: focus layout for live event operation (field scoring and the Lyst, the check-in and armour desk) ----------
+   No site header, bottom bar or footer. Nothing is fixed over the screen: the header scrolls away, and the only things that stick are the
+   screen's own (the lyst clock at the top, the round's primary action at the bottom, the desk's search at the top). Safe areas respected. */
+.focus{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--ground)}
+.focus-top{display:flex;align-items:center;gap:10px;min-width:0;padding:calc(8px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 8px max(12px,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--line)}
+.focus-exit{flex:none;min-height:44px;padding:0 14px 0 10px;gap:4px;font-size:15px}
+.focus-id{flex:1 1 auto;min-width:0;display:grid;gap:2px;line-height:1.2}
+.focus-ctx{font:700 13px/1.2 var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.focus-event{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.focus-conn{flex:none;height:28px}
+main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:12px max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+@media (min-width:700px){main.focus-main{padding-inline:max(20px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-left,0px));padding-top:16px}}
+/* the round's primary action stays reachable while the score and tools scroll under it */
+.focus-main .ly-act{position:sticky;bottom:0;z-index:6;margin-inline:-4px;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));background:var(--ground)}
+/* ... and the lyst clock (sticky at the top) never slides under it on a short screen (tablet landscape): it stops just above the action row */
+.focus-main .ly:has(> .ly-act) > .ly-timer{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.ly-act-two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+/* the desk: search pinned at the top, a compact summary, Undo quieter than Check in */
+.desk-find{position:sticky;top:0;z-index:6;margin-inline:-4px;padding:calc(4px + env(safe-area-inset-top,0px)) 4px 8px;background:var(--ground)}
+.desk-find input{height:52px;font-size:18px}
+.focus-main .desk-counts{gap:6px}
+.focus-main .desk-counts button{min-height:48px;padding:6px 10px;gap:0}
+.focus-main .desk-counts b{font-size:20px}
+.focus-main .desk-counts span{font-size:12px;line-height:1.25}
+.desk-row .desk-undo{flex:0 0 auto;margin-left:auto;min-height:44px;background:transparent;border:1px solid transparent;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.desk-row .desk-undo:hover{color:var(--ink)}
 @media print{
-  .top,.bottom,footer,.no-print,.mockflag,.more-sheet{display:none!important}
+  .top,.bottom,footer,.focus-top,.no-print,.mockflag,.more-sheet{display:none!important}
   body,main{background:#fff!important;color:#000!important}
 }

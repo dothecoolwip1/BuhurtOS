@@ -734,3 +734,35 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Hosted DB / deployment | not touched / not deployed |
 | Critical findings | no day boundary (Sunday fights called Saturday); no stable fight number; running order not durable (one move freezes the line, holds erased by Event day re-plan, filled bracket fights go to the end); `build_schedule('replace')` deletes an ACTIVE fight and its live score events; organizer table-API DELETE/PATCH on matches unaudited; secretary/head marshal have no running-order authority while any scorer can call any fight; no print view; public Now-and-next lists In the hole before On deck |
 | Recommended next pack | 24A0 Match integrity guards (new, small, server only), then 24A3 after the owner decides authored order vs live planner |
+
+## Pack 24A0: match safety guards (2026-10-06) — IMPLEMENTED ON BRANCH, LOCAL ONLY
+
+| Level | Status |
+| --- | --- |
+| Report | `docs/claude-packs/PACK_24A0_MATCH_SAFETY_GUARDS.md` (findings verified first, protected-history definition, grant classification, role matrix, risks, deferrals) |
+| Implemented in repository | draw rebuild refuses protected history (`private.match_history_reason`) and validates bracket shape; organizer's raw INSERT / DELETE / structural UPDATE on `matches` removed (only `scheduled_at`, `field`, `duration_minutes` remain, audited); `set_match_queue` limited to called fights for scoring staff, audited; `set_match_hold` + durable deliberate holds; public Now and Next order fixed; Run tab explains a blocked rebuild |
+| Migration created | `20261015000100_pack24a0_match_safety_guards.sql` (additive; schema fingerprint updated) |
+| Applied to hosted Supabase | **NO**. A read-only query showed hosted `matches` still has the pre-migration grants and policies and no `hold_manual` column, so the Pack 23R hazards are live there until it is applied |
+| Deployed | **NO** |
+| Automated tests | `pack24a0_gate.sql` **128 checks** (68 of 125 fail against the unmodified schema); full database gate **PASSED, 39/39**; Vitest 87 files / **1045** tests; typecheck; build |
+| Browser (local stack, real Chromium) | `scripts/e2e/pack24a0-live.sh` **41/41**: real client draws accepted, hold survives Event day (1280 and 768), public order NOW → ON DECK → IN THE HOLE (390 and 1280), blocked rebuild messages, scorekeeper field screen (768), Set time audited, raw API writes 403 |
+| Touched outside the pack's own files | six older gates and the simulation updated to the new rules; NACL seed generator + 17 regenerated seed files (matches laid out as the loader) |
+| Not verified | real Supabase Auth / realtime; Event day and Run at phone size; no hold UI exists to verify |
+| Remaining risks | Event day still saves its plan on open; no hold or bracket-fight-removal screen; `delete_event` of drafts/synthetic events ignores match history; hosted not migrated |
+
+## Pack 24A1: focus layout and tablet safety (2026-10-06) — IMPLEMENTED ON BRANCH, LOCAL ONLY
+
+| Level | Status |
+| --- | --- |
+| Report | `docs/claude-packs/PACK_24A1_FOCUS_LAYOUT.md` (before/after, routes, layout, deferrals) |
+| Branch | `claude/focus-layout-tablet-safety-b40tc4`, on top of Pack 24A0 (`38f195e`); 24A0 protections unchanged |
+| Implemented in repository | new `FocusLayout` (compact header: Exit, context, event name, sync/offline chip; no site header, bottom bar, footer, bug button, theme switch or notification prompt; safe areas). Routes `/events/:id/field/:field` and `/events/:id/checkin` (armour inspection lives here too) moved into it, same URLs. Lyst: the round's primary action is a sticky row at the bottom, and the clock stops above it on short screens. Desk: search first and sticky, compact counts, quieter Undo |
+| Not moved | Manage (Event day, Run), Command Centre, event page, arena/broadcast/counter (already outside the site chrome) |
+| Migration / hosted Supabase | **none** (UI only) / **not applied, not touched** |
+| Deployed | **NO** |
+| Automated tests | Vitest 87 files / **1045**; typecheck; build |
+| Browser (local stack, real Chromium) | new `scripts/e2e/pack24a1-live.sh` **83/83** at 390x844, 768x1024, 1024x768, 1280x900; regression `pack16-live` **66/66**, `pack13-live` **88/88**, `pack24a0-live` **41/41** |
+| Before | reproduced: at 390 and 768 the site bottom bar covered Start round / Back to the queue when scrolled, and at 390 and 1024 the sticky lyst clock slid behind the site header |
+| Not verified | physical phone/tablet, iOS Safari safe areas and keyboard (keyboard simulated by a smaller viewport), real Supabase Auth/realtime, landscape phone |
+| Left for later packs | field queue title and sync wording duplicated by the header; tall readiness strip on phones; desk filter row scrolls sideways on phones; whether Event day/Run/secretary controller become focus screens (24A4) |
+

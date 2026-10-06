@@ -16,6 +16,7 @@ import {
 } from '../lib/readiness';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { useFocusBar } from '../components/FocusLayout';
 
 const REFRESH_MS = 20_000;
 
@@ -33,6 +34,8 @@ export function CheckinDeskPage() {
   const event = ev.data?.event;
   const roles = useAsync(() => (event && session ? fetchMyDeskRoles(event.id) : Promise.resolve(null)), [event?.id, session?.user.id]);
   useDocumentTitle(event ? `Check-in · ${event.name}` : 'Check-in');
+  const desk = roles.data?.detail ? roles.data : null;
+  useFocusBar({ eventName: event?.name, context: desk && desk.inspect && !desk.checkIn ? 'Armour inspection' : desk?.inspect ? 'Check-in and armour' : 'Check-in', exit: { to: `/events/${slug}`, label: 'Event' } });
 
   if (!session) return <><PageHead eyebrow="Event day" title="Check-in desk" /><SignIn reason="Sign in with the account you use as event staff." /></>;
   if (ev.loading || (event && roles.loading)) return <p className="muted">Loading…</p>;
@@ -84,7 +87,13 @@ export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId:
 
   return (
     <section style={{ display: 'grid', gap: 12 }} className="desk">
-      <PageHead eyebrow="Event day" title="Check-in desk" lede={name} />
+      <h1 className="sr-only">Check-in desk · {name}</h1>
+      {/* The search comes first and stays at the top while the list scrolls (Pack 24A1): a long list never pushes it out of reach. */}
+      <div className="desk-find">
+        <label className="field-in">Find a fighter (name, team or competition)
+          <input type="search" inputMode="search" autoComplete="off" enterKeyHint="search" value={query} onChange={e => setQuery(e.target.value)} />
+        </label>
+      </div>
       <div className="desk-counts" aria-live="polite">
         <button type="button" onClick={() => setFilter('all')}><b>{counts.expected}</b><span>expected</span></button>
         <button type="button" onClick={() => setFilter('missing')}><b>{counts.missing}</b><span>not here yet</span></button>
@@ -94,9 +103,6 @@ export function ReadinessDesk({ eventId, slug, name, roles, pinned }: { eventId:
         <button type="button" onClick={() => setFilter('ready')}><b>{counts.ready}</b><span>ready</span></button>
       </div>
       {pinned && !pinnedRow && rows && <p role="alert" className="panel info">That check-in code is not a registration for this event.</p>}
-      <label className="field-in">Find a fighter (name, team or competition)
-        <input type="search" inputMode="search" autoComplete="off" value={query} onChange={e => setQuery(e.target.value)} style={{ minHeight: 52, fontSize: 18 }} />
-      </label>
       <Seg scroll label="Show" value={filter} onChange={setFilter} options={(Object.keys(FILTER_LABEL) as ReadinessFilter[]).map(k => [k, FILTER_LABEL[k]] as const)} />
       {(options.teams.length > 0 || options.competitions.length > 0) && (
         <div className="desk-menus">
@@ -152,7 +158,7 @@ function DeskCard({ row: r, roles, pinned, onSaved }: { row: ReadinessRow; roles
           <span className="desk-state">{ATTENDANCE_LABEL[r.attendance]}</span>
           {r.attendance === 'expected' && <button type="button" className="btn btn-line" disabled={!!busy} onClick={() => run('arrived', () => setAttendance(r.registrationId, 'arrived'))}>{busy === 'arrived' ? 'Saving…' : 'Arrived'}</button>}
           {r.attendance !== 'checked_in' && !blocked && <button type="button" className="btn btn-ink" disabled={!!busy} onClick={() => run('in', () => setAttendance(r.registrationId, 'checked_in'))}>{busy === 'in' ? 'Saving…' : 'Check in'}</button>}
-          {r.attendance !== 'expected' && <button type="button" className="btn btn-line" disabled={!!busy} onClick={() => run('undo', () => setAttendance(r.registrationId, r.attendance === 'checked_in' ? 'arrived' : 'expected'))}>{busy === 'undo' ? 'Saving…' : 'Undo'}</button>}
+          {r.attendance !== 'expected' && <button type="button" className="btn btn-sm desk-undo" disabled={!!busy} onClick={() => run('undo', () => setAttendance(r.registrationId, r.attendance === 'checked_in' ? 'arrived' : 'expected'))}>{busy === 'undo' ? 'Saving…' : 'Undo'}</button>}
         </div>
       )}
       {!roles.checkIn && <p className="desk-state" style={{ margin: 0 }}>{ATTENDANCE_LABEL[r.attendance]}</p>}
