@@ -1,0 +1,22 @@
+{
+  "name": "buhurtos-broadcast-companion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BuhurtOS Broadcast Companion: a small local process that follows the real fight and puts the right OBS scene on air. It never starts or stops the stream.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "../../node_modules/.bin/tsc -p tsconfig.json",
+    "start": "node dist/companion.mjs",
+    "test": "../../node_modules/.bin/vitest run --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
+    "ws": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "esbuild": "^0.28.2"
+  }
+}
