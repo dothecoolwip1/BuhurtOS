@@ -7,9 +7,9 @@ Do not apply migrations, deploy the function or change Auth settings until each 
 ## 1. What ships
 | Piece | What it is |
 | --- | --- |
-| `20261013000100_pack181_event_sessions.sql` | `event_credentials`, `event_sessions`, `device_code_attempts`; roles `bos_event_device` and `bos_controller`; `has_event_role` device branch; device-aware `private.audit`; the counter-seat changes (FK removed, own-event rule, dead-session guard); credential RPCs; the session RPCs the Edge Function calls |
-| `20261013000200_pack181_roles_camera.sql` | `announcer` staff role; Scorekeeper (Secretary) event-day powers; Temporary Organizer via `is_event_operator`; Camera Off tables and RPCs; `announcer_readiness` |
-| `20261013000300_pack181_broadcast_control.sql` | broadcast control + controller status tables; `set_broadcast_control`, `broadcast_control_state`, `controller_state`, `broadcast_controller_heartbeat`; the EXECUTE allow-list for the two session roles |
+| `20261015000100_pack181_event_sessions.sql` | `event_credentials`, `event_sessions`, `device_code_attempts`; roles `bos_event_device` and `bos_controller`; `has_event_role` device branch; device-aware `private.audit`; the counter-seat changes (FK removed, own-event rule, dead-session guard); credential RPCs; the session RPCs the Edge Function calls |
+| `20261015000200_pack181_roles_camera.sql` | `announcer` staff role; Scorekeeper (Secretary) event-day powers; Temporary Organizer via `is_event_operator`; Camera Off tables and RPCs; `announcer_readiness` |
+| `20261015000300_pack181_broadcast_control.sql` | broadcast control + controller status tables; `set_broadcast_control`, `broadcast_control_state`, `controller_state`, `broadcast_controller_heartbeat`; the EXECUTE allow-list for the two session roles |
 | `supabase/functions/device-session` | the door: sign in with a code, refresh, sign out, mint codes for organizers |
 | App | `/device`, the device shell, the Announcer view, Command Centre Event Devices + Broadcast panels, Camera Off control |
 | Local controller | `tools/obs-controller` (runs on the stream laptop; nothing is deployed to Supabase for it) |
@@ -37,7 +37,7 @@ Either way the private key / secret exists ONLY as an Edge Function secret (belo
 4. **App build:** `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` are unchanged. The device pages call `${VITE_SUPABASE_URL}/functions/v1/device-session`.
 
 ## 4. Release order (after the PR is reviewed and CI is green)
-1. `apply_migration` for `20261013000100`, `…200`, `…300` in that order (the repository's established process; if it is cancelled or fails, stop and report: no `execute_sql` workaround).
+1. `apply_migration` for the three `20261015000100`, `…200`, `…300` pack181 migrations (after the already-applied club migrations) in that order (the repository's established process; if it is cancelled or fails, stop and report: no `execute_sql` workaround).
    The first migration creates the roles and runs `GRANT anon TO bos_event_device` and, if the `authenticator` role exists, `GRANT bos_event_device, bos_controller TO authenticator`. **If the migration role is not allowed to
    grant `anon` or to grant to `authenticator`, the migration fails at that statement: stop, and ask Supabase support / use a Supabase branch to find the permitted way. Do not weaken the design (e.g. by adding the roles to `authenticated`).**
 2. Verify the database (read-only; section 5).

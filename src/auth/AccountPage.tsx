@@ -15,7 +15,7 @@ import { useAuth } from './AuthContext';
 import { usePlatformRole } from './usePlatformRole';
 import { SignIn } from './SignIn';
 import { ChangePassword } from './AuthPages';
-import { NotificationSettings } from '../components/NotificationSettings';
+import { NotificationSettingsRow } from '../components/NotificationSettings';
 import { InstallCard } from '../components/InstallCard';
 
 const ROLE_CHIP: Record<string, string> = { head_marshal: 'Head marshal', marshal: 'Marshal', scorekeeper: 'Scorekeeper', medic: 'Medic', check_in: 'Check-in desk', inspector: 'Armour inspector', announcer: 'Announcer' };
@@ -152,7 +152,7 @@ function SignedIn({ session }: { session: Session }) {
       </section>
 
       <InstallCard />
-      <NotificationSettings />
+      <NotificationSettingsRow />
 
       <section aria-labelledby="acct-ev">
         <h2 id="acct-ev" className="acct-h">Events</h2>

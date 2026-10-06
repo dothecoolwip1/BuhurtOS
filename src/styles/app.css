@@ -654,6 +654,17 @@ ul.roster .s{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .dlg-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .dlg-actions.sticky{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom,0px));margin:0 -20px -20px;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:var(--surface,var(--raised));border-top:1px solid var(--line)}
 .dlg-actions .btn{flex:1 1 140px}
+.ndlg-list{border:0;margin:0;padding:0;min-width:0;display:grid;gap:4px}
+.ndlg-row{width:100%;justify-content:space-between;min-height:52px}
+.ndlg-text{display:grid;min-width:0;flex:1 1 auto}
+.ndlg-text .src{font-weight:400}
+.ndlg-state{font-size:13px;font-weight:700;color:var(--faint);min-width:24px;text-align:right}
+.ndlg-row:has(input:checked) .ndlg-state{color:var(--win)}
+.dlg-actions.ndlg-actions{flex-wrap:nowrap}
+.ndlg-actions .btn{flex:1 1 auto;padding-inline:12px;white-space:nowrap}
+.ndlg-actions .btn-line{flex:0 1 auto;min-width:96px}
+.ndlg-manage{justify-self:start;min-height:44px;padding:0}
+button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-align:left;cursor:pointer}
 .dlg-bg.drawer{place-items:end center;padding:0}
 .dlg-bg.drawer .dlg{width:100%;max-height:88dvh;border-radius:var(--r) var(--r) 0 0}
 @media (min-width:700px){
@@ -1338,3 +1349,46 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .camoff-title { font-size: 1.4rem; letter-spacing: .08em; }
 .camoff-on { justify-self: start; margin-top: 6px; background: #fff; color: #7a0e1c; }
 .camoff-stale { font-size: .85rem; color: var(--faint, #666); }
+/* ---------------------------------------------------------------- club membership, dues and AGM voting (ClubMembershipPage) */
+.vote-banner{display:grid;gap:4px;padding:14px 16px;border-radius:var(--r-sm);border:2px solid}
+.vote-banner b{font:900 20px/1.1 var(--f-display);letter-spacing:.02em}
+.vote-banner span{font-weight:600;font-size:15px}
+.vote-banner.yes{background:var(--win-soft);color:var(--win);border-color:var(--win)}
+.vote-banner.no{background:var(--live-soft);color:var(--live);border-color:var(--live)}
+.club-facts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 14px;margin:0;font-size:15px}
+.club-facts dt{color:var(--muted)} .club-facts dd{margin:0}
+.club-facts small,.club-list small{color:var(--muted)}
+.checkline{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.35;min-height:44px;padding-top:10px}
+.checkline input{width:20px;height:20px;flex:none;margin-top:0}
+.club-list{display:grid;gap:8px;margin:0;padding:0;list-style:none;font-size:14.5px}
+.club-list li.officer{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line)}
+.club-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (min-width:760px){.club-tiles{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.club-tile{display:grid;gap:2px;justify-items:start;text-align:left;padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface);min-height:64px}
+.club-tile b{font:800 26px/1 var(--f-display)} .club-tile span{font-size:12.5px;color:var(--muted);line-height:1.2}
+.club-tile.yes b{color:var(--win)} .club-tile.no b{color:var(--live)} .club-tile.warn b{color:var(--brass)}
+.club-search{height:44px;border-radius:8px;border:1px solid var(--line);background:var(--raised);color:var(--ink);font:500 16px var(--f-body);padding:0 12px;width:100%;max-width:360px}
+.dues-chip,.vote-chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap}
+.dues-chip.paid,.dues-chip.waived,.dues-chip.gear_contribution{background:var(--win-soft);color:var(--win)}
+.dues-chip.unpaid{background:var(--live);color:#fff}
+.vote-chip.yes{background:var(--win);color:#fff} .vote-chip.no{background:var(--live-soft);color:var(--live)}
+.club-rows{display:grid;gap:8px}
+.club-row{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"who who who acts" "st du . ." "vote vote vote vote";gap:8px 8px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.club-row.head{display:none}
+.club-row .who{grid-area:who;display:grid;min-width:0} .club-row .who small{color:var(--muted);font-size:12.5px}
+.club-row>span:nth-child(2){grid-area:st} .club-row>span:nth-child(3){grid-area:du}
+.club-row .vote{grid-area:vote;display:flex;gap:8px;align-items:center;flex-wrap:wrap} .club-row .vote small{color:var(--live);font-weight:600;font-size:13px}
+.club-row .acts{grid-area:acts;display:flex;gap:6px}
+.club-row.pending{border-color:var(--brass);box-shadow:inset 4px 0 0 var(--brass)}
+@media (min-width:760px){
+  .club-row,.club-row.head{display:grid;grid-template-columns:minmax(0,2fr) 110px 150px minmax(0,2fr) auto;grid-template-areas:none;padding:10px 14px}
+  .club-row>span{grid-area:auto!important}
+  .club-row.head{background:none;border:0;font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding-block:0}
+}
+.dues-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dues-opt{display:flex;gap:8px;align-items:center;min-height:48px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-sm);font-weight:600;cursor:pointer}
+.dues-opt.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+@media print{
+  .top,.bottom,footer,.no-print,.mockflag,.more-sheet{display:none!important}
+  body,main{background:#fff!important;color:#000!important}
+}

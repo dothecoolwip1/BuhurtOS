@@ -1,6 +1,6 @@
 # Pack 18.1 contracts (what is built, exactly: the parts the UI, the announcer and the OBS controller all rely on)
 
-This is the interface the database (migrations `20261013000100/200/300`) and the Edge Function expose. The plan is `PACK_18_1_PLAN.md`; where the two differ, **this file and the migrations are the truth** (the plan is reconciled at the end).
+This is the interface the database (migrations `20261015000100/200/300`) and the Edge Function expose. The plan is `PACK_18_1_PLAN.md`; where the two differ, **this file and the migrations are the truth** (the plan is reconciled at the end).
 
 ## 1. Architecture in one paragraph
 A temporary device (or the stream controller) is an **event session**, not a person. The organizer creates a *credential* (label + role, one per device). The device enters a 12-character code **once**; the Edge Function `device-session` verifies it (HMAC verifier, throttled), opens a *session* and returns a short-lived (10 min) JWT whose database role is `bos_event_device` (or `bos_controller`) and whose `sub` is the **session id** (not an `auth.users` id), plus a long-lived **session secret** the device keeps. The device refreshes the JWT with the secret. Authority is never in the token: the database looks the session up on every call (`private.device_ctx()`), so revocation and expiry (event's final `ends_on` day in its time zone + 24 h) bite immediately. The roles are not members of `authenticated`; they can execute only the functions in `supabase/tests/device_allowlist.txt`.

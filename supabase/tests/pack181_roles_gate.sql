@@ -1,4 +1,4 @@
--- Pack 18.1 gate 2: who may do what (migration 20261013000200), tested on the SERVER for every caller.
+-- Pack 18.1 gate 2: who may do what (migration 20261015000200), tested on the SERVER for every caller.
 --   * one role: Secretary = Scorekeeper. It gains queue adjustment, announcements, a read-only Command Centre and Camera Off, and nothing else.
 --   * the Temporary Organizer is NOT an organizer: event-day powers (results, staff below organizer, announcements, broadcast control), nothing platform-wide
 --   * the Announcer is read-only (plus Camera Off); a Counter can only count; Marshal is today's marshal

@@ -22,12 +22,13 @@ if [ -n "${REAL_AUTH:-}" ]; then
   psql -X -q -d $DB -v ON_ERROR_STOP=1 -c "do \$\$ begin if not exists (select 1 from pg_roles where rolname = 'anon') then create role anon nologin; end if; if not exists (select 1 from pg_roles where rolname = 'authenticated') then create role authenticated nologin; end if; if not exists (select 1 from pg_roles where rolname = 'service_role') then create role service_role nologin bypassrls; end if; end \$\$" \
     -c "create schema if not exists auth" -c "create schema if not exists extensions" -c "create extension if not exists pgcrypto with schema extensions" || exit 1
   export GOTRUE_DB_DRIVER=postgres DB_NAMESPACE=auth; AUTH_DB_URL="postgres://${PGUSER:-postgres}:${PGPASSWORD:-postgres}@${PGHOST}:${PGPORT:-5432}/$DB?sslmode=disable&search_path=auth"
-  export API_EXTERNAL_URL=http://localhost:54321/auth/v1 GOTRUE_API_HOST=127.0.0.1 PORT=9999 GOTRUE_SITE_URL=http://localhost:4182 GOTRUE_URI_ALLOW_LIST="http://localhost:4182/**"
+  export API_EXTERNAL_URL=http://localhost:54321/auth/v1 GOTRUE_API_HOST=127.0.0.1 PORT=9999 GOTRUE_SITE_URL="${AUTH_SITE_URL:-http://localhost:4182}" GOTRUE_URI_ALLOW_LIST="${AUTH_ALLOW_LIST:-http://localhost:4182/**}"
   export GOTRUE_JWT_SECRET="$JWT_SECRET" GOTRUE_JWT_EXP=3600 GOTRUE_JWT_AUD=authenticated GOTRUE_JWT_DEFAULT_GROUP_NAME=authenticated GOTRUE_JWT_ADMIN_ROLES=service_role
   export GOTRUE_EXTERNAL_EMAIL_ENABLED=true GOTRUE_MAILER_AUTOCONFIRM="${AUTH_AUTOCONFIRM:-false}" GOTRUE_EXTERNAL_PHONE_ENABLED=false GOTRUE_PASSWORD_MIN_LENGTH=8
   export GOTRUE_SMTP_HOST=127.0.0.1 GOTRUE_SMTP_PORT=2500 GOTRUE_SMTP_ADMIN_EMAIL=noreply@buhurtos.test GOTRUE_SMTP_SENDER_NAME=BuhurtOS GOTRUE_SMTP_MAX_FREQUENCY=1s
   export GOTRUE_MAILER_URLPATHS_CONFIRMATION=/auth/v1/verify GOTRUE_MAILER_URLPATHS_RECOVERY=/auth/v1/verify GOTRUE_MAILER_URLPATHS_INVITE=/auth/v1/verify GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE=/auth/v1/verify
-  export GOTRUE_MAILER_TEMPLATES_MAGIC_LINK=http://127.0.0.1:2580/tpl/magic GOTRUE_MAILER_TEMPLATES_CONFIRMATION=http://127.0.0.1:2580/tpl/confirm
+  # AUTH_DEFAULT_TEMPLATES=1: keep Supabase Auth's own default emails (links only, like a project whose templates were never edited).
+  [ -n "${AUTH_DEFAULT_TEMPLATES:-}" ] || export GOTRUE_MAILER_TEMPLATES_MAGIC_LINK=http://127.0.0.1:2580/tpl/magic GOTRUE_MAILER_TEMPLATES_CONFIRMATION=http://127.0.0.1:2580/tpl/confirm
   export GOTRUE_RATE_LIMIT_EMAIL_SENT=1000 GOTRUE_RATE_LIMIT_TOKEN_REFRESH=10000 GOTRUE_RATE_LIMIT_VERIFY=10000 GOTRUE_RATE_LIMIT_OTP=10000 GOTRUE_RATE_LIMIT_HEADER=
   export GOTRUE_SECURITY_UPDATE_PASSWORD_REQUIRE_REAUTHENTICATION="${AUTH_SECURE_PASSWORD_CHANGE:-true}" GOTRUE_LOG_LEVEL=warn
   DATABASE_URL="$AUTH_DB_URL" "$AUTH_BIN" migrate > /tmp/auth-migrate.log 2>&1 || { tail -20 /tmp/auth-migrate.log; exit 1; }

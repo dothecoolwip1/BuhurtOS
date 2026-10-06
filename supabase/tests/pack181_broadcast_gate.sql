@@ -1,4 +1,4 @@
--- Pack 18.1 gate 3: Camera Off, broadcast control, and the stream controller (migrations 20261013000200 / 20261013000300).
+-- Pack 18.1 gate 3: Camera Off, broadcast control, and the stream controller (migrations 20261015000200 / 20261015000300).
 --   * Camera Off ACTIVATE: marshal, head marshal, scorekeeper (secretary), announcer, Temporary Organizer, organizer, owner. Nobody else.
 --   * Camera Off RELEASE: head marshal, Temporary Organizer, organizer, owner. Marshal, secretary and announcer can protect but never restore.
 --   * latched: only camera_off_release clears it; nothing the tournament does (fights, queue, results) can; every change is audited and logged append-only

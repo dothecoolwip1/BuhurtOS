@@ -1,4 +1,4 @@
--- Pack 18.1 gate 1: temporary event devices as event sessions (migration 20261013000100).
+-- Pack 18.1 gate 1: temporary event devices as event sessions (migration 20261015000100).
 --   * a device is an event session: not an auth user, one event, one role, individually revocable, attributable
 --   * expiry is server-side and exact: the event's final ends_on day (in the event's time zone) + 24 h; end+23:59 valid, end+24:00 refused
 --   * deny by default: the session roles can execute exactly the checked-in allow-list (supabase/tests/device_allowlist.txt), nothing else
