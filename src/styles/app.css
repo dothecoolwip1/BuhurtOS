@@ -1405,6 +1405,8 @@ main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:
 /* ... and the lyst clock (sticky at the top) never slides under it on a short screen (tablet landscape): it stops just above the action row */
 .focus-main .ly:has(> .ly-act) > .ly-timer{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .ly-act-two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+/* the build label at the very end of a focus screen (below every control; it never sticks or overlays anything) */
+.focus-version{margin:24px 0 0;text-align:center;font-size:12px;color:var(--muted)}
 /* the desk: search pinned at the top, a compact summary, Undo quieter than Check in */
 .desk-find{position:sticky;top:0;z-index:6;margin-inline:-4px;padding:calc(4px + env(safe-area-inset-top,0px)) 4px 8px;background:var(--ground)}
 .desk-find input{height:52px;font-size:18px}

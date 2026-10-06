@@ -93,6 +93,8 @@ export function FocusLayout() {
         <FocusCtx.Provider value={setBar}>
           <ErrorBoundary resetKey={pathname + search}><Outlet /></ErrorBoundary>
         </FocusCtx.Provider>
+        {/* the build this device runs (the site footer shows it elsewhere): staff and the update banner refer to it, and it is how a device is checked */}
+        <p className="focus-version"><span className="mono" data-testid="app-version">{__APP_VERSION__}</span></p>
       </main>
     </div>
   );
