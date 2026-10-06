@@ -26,6 +26,15 @@ describe('auth wording never reveals whether an account exists', () => {
   });
 });
 
+describe('the per-address email limit is not an enumeration leak', () => {
+  it('is recognised (and only that code)', async () => {
+    const { isPerAddressLimit } = await import('./authFlow');
+    expect(isPerAddressLimit({ code: 'over_email_send_rate_limit', status: 429 })).toBe(true);
+    expect(isPerAddressLimit({ code: 'over_request_rate_limit', status: 429 })).toBe(false);
+    expect(isPerAddressLimit(null)).toBe(false);
+  });
+});
+
 describe('passwords and addresses', () => {
   it('new password: length and match', () => {
     expect(newPasswordProblem('short')).toMatch(/at least 8/);

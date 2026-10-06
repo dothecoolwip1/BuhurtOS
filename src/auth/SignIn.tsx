@@ -16,7 +16,7 @@ export function PasswordInput({ label, value, onChange, autoComplete, id, hint }
       <label htmlFor={id}>{label}</label>
       <div className="pw-row">
         <input id={id} type={shown ? 'text' : 'password'} autoComplete={autoComplete} value={value} onChange={e => onChange(e.target.value)}
-          autoCapitalize="none" autoCorrect="off" spellCheck={false} required minLength={autoComplete === 'new-password' ? MIN_PASSWORD : undefined} />
+          autoCapitalize="none" autoCorrect="off" spellCheck={false} required />
         <button type="button" className="pw-toggle" aria-pressed={shown} aria-controls={id} aria-label={shown ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`} onClick={() => setShown(s => !s)}>
           {shown ? 'Hide' : 'Show'}
         </button>
@@ -121,7 +121,7 @@ export function SignIn({ reason, next: nextProp, startIn = 'password' }: { reaso
 
       {mode === 'forgot_sent' && (
         <div className="auth-form" role="status">
-          <p><b>Check your email.</b> If <b style={{ overflowWrap: 'anywhere' }}>{email.trim()}</b> has a BuhurtOS account, a link to choose a new password is on its way. Open it on this device; it works once and expires.</p>
+          <p><b>Check your email.</b> If <b style={{ overflowWrap: 'anywhere' }}>{email.trim()}</b> has a BuhurtOS account, a link to choose a new password is on its way (or was sent a moment ago). Open the newest one on this device; it works once and expires.</p>
           <p className="src">Nothing after a few minutes? Check spam, or ask again.</p>
           <p className="auth-switch"><button type="button" className="linklike" onClick={() => go('forgot')}>Ask again</button> · <button type="button" className="linklike" onClick={() => go('password')}>Back to sign in</button></p>
         </div>

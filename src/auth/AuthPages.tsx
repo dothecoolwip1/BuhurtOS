@@ -34,7 +34,7 @@ function NewLinkForm({ next }: { next: string }) {
     setBusy(false);
     if (err) setError(err); else setSent(true);
   };
-  if (sent) return <p role="status"><b>Check your email.</b> If <b style={{ overflowWrap: 'anywhere' }}>{email.trim()}</b> has a BuhurtOS account, a new link is on its way. Open it in this browser.</p>;
+  if (sent) return <p role="status"><b>Check your email.</b> If <b style={{ overflowWrap: 'anywhere' }}>{email.trim()}</b> has a BuhurtOS account, a new link is on its way (or was sent a moment ago). Open the newest one in this browser.</p>;
   return (
     <form onSubmit={e => void submit(e)} className="auth-form" aria-label="Send a new reset link">
       <label className="field-in">Email
@@ -105,7 +105,7 @@ export function ResetPasswordPage() {
     );
   } else {
     const why = linkError ? linkErrorMessage(linkError)
-      : hadCode ? 'This link has expired, was already used, or was opened in a different browser from the one you asked in. Ask for a new one below.'
+      : hadCode ? 'This link has expired, was already used, was replaced by a newer link, or was opened in a different browser from the one you asked in. Use the newest email in this browser, or ask for a new one below.'
       : 'Open the link from the reset email to choose a new password. No email, or it expired? Ask for a new one below.';
     body = (
       <div className="auth-form">

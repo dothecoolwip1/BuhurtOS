@@ -46,6 +46,9 @@ export function authErrorMessage(error: unknown, context: AuthContextName): stri
   return 'Something went wrong. Please try again.';
 }
 
+/** Supabase's "this address was emailed too recently" (per-address frequency limit), as opposed to a general overload. */
+export const isPerAddressLimit = (error: unknown): boolean => (error as AuthLikeError | null)?.code === 'over_email_send_rate_limit';
+
 /** Client-side check before asking Supabase (Supabase checks again). Null = fine. */
 export function newPasswordProblem(password: string, confirm?: string): string | null {
   if (password.length < MIN_PASSWORD) return `Use at least ${MIN_PASSWORD} characters.`;

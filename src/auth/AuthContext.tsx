@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { friendlyError } from '../lib/friendlyError';
 import { disablePush } from '../lib/push';
 import { identifyUser, isNewAccount, markSignInStarted, resetUser, takeSignInStarted, trackEvent, wantOnboarding } from '../lib/analytics';
-import { authErrorMessage, siteUrl } from '../lib/authFlow';
+import { authErrorMessage, isPerAddressLimit, siteUrl } from '../lib/authFlow';
 
 /** Absolute link back to a page of this deployment (for the emails Supabase sends). */
 const back = (path: string) => siteUrl(window.location.origin, import.meta.env.BASE_URL ?? '/', path);
@@ -76,10 +76,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
   const resendConfirmation = useCallback(async (email: string, next: string) => {
     const { error } = await supabase.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: back(next) } });
+    if (error && isPerAddressLimit(error)) return null;   // same reason as the password reset below
     return error ? authErrorMessage(error, 'resend') : null;
   }, []);
   const requestPasswordReset = useCallback(async (email: string, next: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: back(`/reset-password?next=${encodeURIComponent(next)}`) });
+    // Supabase limits emails per ADDRESS, so "too soon" only ever comes back for an address that has an account: answering it differently
+    // would tell anyone which addresses exist. A link went to that address moments ago, so the ordinary answer ("on its way, or sent a moment ago") stays true.
+    if (error && isPerAddressLimit(error)) return null;
     return error ? authErrorMessage(error, 'reset_request') : null;
   }, []);
   const signInWithGoogle = useCallback(async () => {

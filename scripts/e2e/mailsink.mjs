@@ -48,7 +48,10 @@ net.createServer((sock) => {
   sock.on('error', () => undefined);
 }).listen(SMTP_PORT, '127.0.0.1');
 
+// Email templates for the local Auth server (like the hosted project's customised ones): the link AND the 6-digit code.
+const TEMPLATE = '<h2>BuhurtOS</h2><p><a href="{{ .ConfirmationURL }}">Open BuhurtOS</a></p><p>Your code: {{ .Token }}</p>';
 http.createServer((req, res) => {
+  if (req.url?.startsWith('/tpl/')) { res.writeHead(200, { 'content-type': 'text/html' }); return res.end(TEMPLATE); }
   if (req.method === 'DELETE') { messages.length = 0; res.writeHead(204); return res.end(); }
   res.writeHead(200, { 'content-type': 'application/json' });
   res.end(JSON.stringify(messages));
