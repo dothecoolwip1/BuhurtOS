@@ -73,7 +73,7 @@ try {
   await anon.goto(BASE + '/rules');
   await anon.waitForSelector('#rl-docs', { timeout: 30000 });
   check('1. /rules opens on a phone with one search box and the official documents by committee', (await anon.getByRole('searchbox', { name: 'Search rules' }).count()) === 1 && (await anon.locator('#rl-docs ~ .rl-groups > details.rl-group').count()) === 4, await body(anon));
-  check('2. it says plainly that the official text is not imported yet, and that search covers the summaries only', await has(anon, 'The official rule text is not in BuhurtOS yet'));
+  check('2. it says plainly that the official text is not published yet, and that search covers the summaries only', await has(anon, 'The official rule text is not published in BuhurtOS yet'));
   check('3. the four Buhurt International committees are listed with their document counts (8, 6, 5, 23)', (await anon.locator('#rl-docs ~ .rl-groups summary .rl-count').allInnerTexts()).map(s => s.trim()).sort().join(',') === '23,5,6,8', (await anon.locator('#rl-docs ~ .rl-groups summary').allInnerTexts()).join(' | '));
   check('4. test rulesets are hidden outside sample mode', !(await has(anon, 'Example Combat Rules')));
   check('5. no sideways scroll at 390 px', (await sideways(anon)) <= 0, String(await sideways(anon)));

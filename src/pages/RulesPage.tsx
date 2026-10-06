@@ -149,7 +149,7 @@ function Browse({ idx, docs, textCount }: { idx: RulesIndex; docs: RuleDocument[
   return (
     <section className="rl-block" aria-labelledby="rl-docs">
       <h2 id="rl-docs" className="rl-h2">Official documents</h2>
-      {textCount === 0 && <p className="src rl-notice">The official rule text is not in BuhurtOS yet, so search covers the BuhurtOS summaries only. Every official document is listed here and opens on the governing body's own site.</p>}
+      {textCount === 0 && <p className="src rl-notice">The official rule text is not published in BuhurtOS yet, so search covers the BuhurtOS summaries only. Every official document is listed here and opens on the governing body's own site.</p>}
       <div className="rl-groups">
         {[...groups.values()].map(g => (
           <details key={g.name} className="rl-group" open={g.name === openFirst || groups.size <= 2}>
