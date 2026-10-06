@@ -1,8 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { SignIn } from '../auth/SignIn';
 import { AnnouncementPanel } from '../components/AnnouncementPanel';
+import { CameraOffControl } from '../components/CameraOffControl';
+import { BroadcastPanel } from '../components/command/BroadcastPanel';
+import { CommandSection as Section } from '../components/command/CommandSection';
+import { DevicesPanel } from '../components/command/DevicesPanel';
+import { StaffNamesPanel } from '../components/command/StaffNamesPanel';
 import { Chip, PageHead } from '../components/ui';
 import { fetchEvent, type LiveCompetition, type LiveEvent } from '../data/api';
 import { fetchCommandSnapshot } from '../data/command';
@@ -12,6 +17,7 @@ import {
   commandAttention, deskHref, eventProgress, FIELD_STATE_LABEL, fieldHref, fieldSummaries, fightsOverview, freshness, manageHref, overallState, ROLE_NAMES,
   unassignedRoles, type CommandItem, type CommandSnapshot, type FightWarning
 } from '../lib/commandCentre';
+import { hasDeviceSession } from '../lib/devices';
 import { buildFieldBoards, competitionProgress, competitionSorts, matchTitle, withdrawnEntryIds } from '../lib/eventDay';
 import { friendlyError } from '../lib/friendlyError';
 import { useLystPublic } from '../lib/lyst/useLystPublic';
@@ -25,8 +31,11 @@ const SNAPSHOT_MS = 20_000;
 /**
  * Pack 18: the Organizer Command Centre. "If I am running the tournament, what needs my attention right now?"
  * Read-only by design: it reads the authoritative event-day state (queue, Lyst Control, readiness, result conflicts) and links to the existing
- * screen that fixes each thing. It never writes, never runs a clock, never scores, never reorders a queue. Organizers and the head marshal only;
- * the database decides that (event_command_snapshot refuses everyone else).
+ * screen that fixes each thing. The situational part never writes, never runs a clock, never scores, never reorders a queue. Who may open it: organizers,
+ * the head marshal, the Secretary / Scorekeeper and a Temporary Organizer device; the database decides that (event_command_snapshot refuses everyone
+ * else) and `viewer` says what each may do here (announce, run the day, Camera Off, broadcast control). Pack 18.1 adds the panels that DO act, each
+ * through its own controlled database function: Camera Off, Broadcast control, Staff, Event devices. A device has no account: this page reads only
+ * public data and allow-listed functions, never a table that needs a person.
  */
 export function CommandCentrePage() {
   const { eventId: slug = '' } = useParams();
@@ -36,7 +45,8 @@ export function CommandCentrePage() {
   if (authLoading || (ev.loading && !ev.data)) return <p className="muted" role="status">Loading…</p>;
   if (ev.error != null) return <p role="alert">{friendlyError(ev.error, 'Could not load this event.')}</p>;
   if (!ev.data) return <><PageHead eyebrow="Command Centre" title="Event not found" /><p>This event does not exist, or is not visible to you.</p></>;
-  if (!session) return <><PageHead eyebrow="Command Centre" title={ev.data.event.name} /><SignIn reason="Sign in with the account that organizes this event, or as its head marshal." /></>;
+  // a temporary device is signed in without an account: it has a device session in this browser instead
+  if (!session && !hasDeviceSession()) return <><PageHead eyebrow="Command Centre" title={ev.data.event.name} /><SignIn reason="Sign in with the account that organizes this event, or as its head marshal or secretary." /></>;
   return <Command key={ev.data.event.id} event={ev.data.event} competitions={ev.data.competitions} />;
 }
 
@@ -106,7 +116,7 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
     return (
       <section className="panel info" role="status" style={{ display: 'grid', gap: 10 }}>
         <PageHead eyebrow="Command Centre" title={event.name} />
-        <p><b>The Command Centre is for this event's organizers and head marshal.</b> Your account does not have either role here.</p>
+        <p><b>The Command Centre is for this event's organizers, head marshal and secretary.</b> You do not have any of those roles here.</p>
         <p><Link className="btn btn-line" to={`/events/${event.slug}`}>Back to the event</Link></p>
       </section>
     );
@@ -119,6 +129,8 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
 
   const tz = snap.event.timezone;
   const organizer = snap.viewer.organizer;
+  const viewer = snap.viewer;
+  const fieldNames = boards.map(b => b.name);
   const overall = overallState(items);
   const clockText = new Intl.DateTimeFormat('en-CA', { timeZone: tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(now));
   const stamp = lastOk ? new Intl.DateTimeFormat('en-CA', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).format(new Date(lastOk)) : '—';
@@ -142,6 +154,9 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
           {fresh !== 'live' && <button type="button" className="linklike" onClick={() => void load()}>Try now</button>}
         </p>
       </header>
+
+      {/* Camera Off: the safety control, for everyone who may protect the broadcast; it hides itself for anyone who may not even read the state */}
+      <div className="cc-camera"><CameraOffControl eventId={event.id} /></div>
 
       <Section id="cc-attention" title="Needs attention" count={items.filter(i => i.urgency !== 'info').length} open>
         {items.length === 0 ? <p className="cc-empty">Nothing needs you right now. Fights, check-in and armour are in order.</p> : (
@@ -196,6 +211,8 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
         <FightList title="Coming up" rows={fights.later} warn={warnByMatch} tz={tz} empty="Nothing else is ready to run." />
       </Section>
 
+      <BroadcastPanel eventId={event.id} slug={event.slug} fieldNames={fieldNames} configured={snap.broadcast.configured} organizer={organizer} refreshKey={tick} />
+
       <Section id="cc-progress" title="Progress" count={prog.final} countLabel={`of ${prog.total} fights`}>
         <p><b>{prog.final}</b> of <b>{prog.total}</b> fights scored · <b>{prog.remaining}</b> to go</p>
         <p className="src">Competitions: {prog.done} done · {prog.running} under way · {prog.notStarted} not started{prog.noDraw ? ` · ${prog.noDraw} without a draw` : ''}. No finish time is estimated: the data cannot support one honestly.</p>
@@ -204,21 +221,20 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
 
       <Section id="cc-staff" title="Staff" count={snap.staff.reduce((n, s) => n + s.names.length, 0)} countLabel="assigned">
         <p className="src">Who is assigned to this event. BuhurtOS does not know who is physically here.</p>
-        <dl className="cc-staff">{snap.staff.map(s => <div key={s.role}><dt>{ROLE_NAMES[s.role] ?? s.role}</dt><dd>{s.names.join(', ')}</dd></div>)}</dl>
+        {viewer.operator
+          ? <StaffNamesPanel eventId={event.id} viewerIsOrganizer={organizer} refreshKey={tick} />
+          : <dl className="cc-staff">{snap.staff.map(s => <div key={s.role}><dt>{ROLE_NAMES[s.role] ?? s.role}</dt><dd>{s.names.join(', ')}</dd></div>)}</dl>}
         {unassigned.length > 0 && <p className="src">Nobody assigned as: {unassigned.map(x => ROLE_NAMES[x] ?? x).join(', ')}.</p>}
         {organizer && <p><Link className="btn btn-line cc-btn" to={manageHref(event.slug, 'people')}>Manage people and roles</Link></p>}
       </Section>
 
-      {organizer && (
+      {viewer.announce && (
         <Section id="cc-announce" title="Announcements">
           <AnnouncementPanel eventId={event.id} published={event.status === 'published'} />
         </Section>
       )}
 
-      <Section id="cc-broadcast" title="Broadcast">
-        <p>{snap.broadcast.configured ? 'A livestream address is set for this event.' : 'No livestream address is set.'}</p>
-        {organizer ? <p><Link className="btn btn-line cc-btn" to={manageHref(event.slug, 'broadcast')}>Manage › Broadcast</Link></p> : <p className="src">Organizers manage the broadcast.</p>}
-      </Section>
+      {organizer && <DevicesPanel eventId={event.id} eventName={event.name} timezone={tz} refreshKey={tick} />}
 
       <nav className="cc-quick" aria-label="Quick actions">
         <h2 className="cc-h">Quick actions</h2>
@@ -226,7 +242,8 @@ function Command({ event, competitions }: { event: LiveEvent; competitions: Live
           <Link className="btn btn-line" to={deskHref(event.slug)}>Check-in desk</Link>
           {fields.map(f => <Link key={f.key} className="btn btn-line" to={fieldHref(event.slug, f.name)}>Lyst Control · {f.name}</Link>)}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'eventday')}>Event day (call fights, results)</Link>}
-          {organizer && <a className="btn btn-line" href="#cc-announce">Send an announcement</a>}
+          {viewer.announce && <a className="btn btn-line" href="#cc-announce">Send an announcement</a>}
+          {organizer && <button type="button" className="btn btn-line" onClick={() => { const d = document.getElementById('cc-devices') as HTMLDetailsElement | null; if (d) { d.open = true; d.scrollIntoView({ block: 'start' }); } }}>Event devices (phones and tablets)</button>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'review')}>Registrations</Link>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'people')}>People and roles</Link>}
           {organizer && <Link className="btn btn-line" to={manageHref(event.slug, 'broadcast')}>Broadcast</Link>}
@@ -251,15 +268,6 @@ function soonestWarnings(warnings: readonly FightWarning[], boards: readonly imp
   const best = new Map<string, { w: FightWarning; rank: number; field: string | null }>();
   for (const w of warnings) { const p = where(w.matchId); const cur = best.get(w.fighterId); if (!cur || p.rank < cur.rank) best.set(w.fighterId, { w, ...p }); }
   return [...best.values()].sort((a, b) => a.rank - b.rank || a.w.name.localeCompare(b.w.name)).map(x => ({ w: x.w, slot: SLOTS[x.rank], field: x.field }));
-}
-
-function Section({ id, title, count, countLabel, open, children }: { id: string; title: string; count?: number; countLabel?: string; open?: boolean; children: ReactNode }) {
-  return (
-    <details className="cc-sec panel" id={id} open={open}>
-      <summary><h2 className="cc-h">{title}</h2>{count !== undefined && <span className="cc-count">{count}{countLabel ? ` ${countLabel}` : ''}</span>}</summary>
-      <div className="cc-body">{children}</div>
-    </details>
-  );
 }
 
 const URGENCY_WORD: Record<CommandItem['urgency'], string> = { now: 'Now', soon: 'Soon', later: 'Later', info: 'FYI' };

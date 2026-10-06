@@ -38,8 +38,17 @@ import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
 import { CommandCentrePage } from './pages/CommandCentrePage';
+import { AnnouncerPage } from './pages/AnnouncerPage';
+import { DeviceSignInPage } from './pages/DeviceSignInPage';
+import { DeviceApp } from './DeviceApp';
+import { isDeviceMode } from './lib/deviceSession';
 
+/** A temporary event device (Pack 18.1) runs its own small app; a person's account runs the site. Chosen once per page load: switching is a full page load. */
 export function App() {
+  return isDeviceMode() ? <DeviceApp /> : <SiteApp />;
+}
+
+function SiteApp() {
   const { pathname, search } = useLocation();
   // Last line of defence for the screens outside the site chrome (venue display, broadcast overlay, counter phone); the chrome has its own.
   return (
@@ -48,6 +57,8 @@ export function App() {
       {/* The venue display lives outside the site chrome: no header, menus or footer on a screen beside the list. */}
       <Route path="events/:eventId/arena" element={<ArenaPage />} />
       <Route path="events/:eventId/arena/:field" element={<ArenaPage />} />
+      {/* The announcer's screen: read-only, no site chrome (Pack 18.1). */}
+      <Route path="events/:eventId/announcer" element={<AnnouncerPage />} />
       {/* The broadcast overlay (OBS browser source): public, read-only, no site chrome. */}
       <Route path="broadcast/:eventId" element={<BroadcastPage />} />
       <Route path="broadcast/:eventId/:field" element={<BroadcastPage />} />
@@ -55,6 +66,8 @@ export function App() {
       <Route path="lyst/join" element={<CounterPage />} />
       <Route path="lyst/join/:code" element={<CounterPage />} />
       <Route path="lyst/counter" element={<CounterPage />} />
+      {/* A temporary event device signs in here once with its code (or a QR that opens /device#c=...). Chrome-less; the fragment is removed at start-up. */}
+      <Route path="device" element={<DeviceSignInPage />} />
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="events" element={<EventsPage />} />

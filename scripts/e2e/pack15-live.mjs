@@ -139,12 +139,11 @@ try {
 
   // ================================================================ 8. nobody else can message or read the private tables
   const tries = await Promise.all([
-    rpc('scorekeeper', 'send_event_announcement', { p_event: EVENT, p_message: 'Scorekeeper message.' }),
     rpc('aldric', 'send_event_announcement', { p_event: EVENT, p_message: 'Fighter message.' }),
     rpc('stranger', 'send_event_announcement', { p_event: EVENT, p_message: 'Stranger message.' }),
     rpc(null, 'send_event_announcement', { p_event: EVENT, p_message: 'Anonymous message.' })
   ]);
-  check('28. a scorekeeper, a fighter, a stranger and anonymous cannot send announcements', tries.every(r => r.status >= 400) && sql(`select count(*) from public.event_announcements`) === '1', JSON.stringify(tries.map(r => r.status)));
+  check('28. a fighter, a stranger and anonymous cannot send announcements (Pack 18.1: the Secretary / Scorekeeper now can, covered by pack181_roles_gate)', tries.every(r => r.status >= 400) && sql(`select count(*) from public.event_announcements`) === '1', JSON.stringify(tries.map(r => r.status)));
   const reads = await Promise.all([rest('aldric', 'GET', 'notifications?select=*'), rest('aldric', 'GET', 'push_subscriptions?select=*'), rest(null, 'GET', 'event_announcements?select=*'), rest('aldric', 'GET', 'event_announcements?select=*')]);
   check('29. no client reads notifications, subscriptions or announcements tables directly', reads.every(r => r.status >= 400 || (Array.isArray(r.body) && r.body.length === 0)), JSON.stringify(reads.map(r => r.status)));
   const feed = await rpc('aldric', 'my_notification_feed', { p_limit: 200 });

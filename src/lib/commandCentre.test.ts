@@ -16,7 +16,7 @@ const lyst = (match_id: string, timer_status: LystPublic['timer_status'], round 
 });
 const snap = (over: Partial<CommandSnapshot> = {}): CommandSnapshot => ({
   serverNow: NOW.toISOString(), event: { id: 'e', slug: 'rumble', name: 'Rumble', status: 'published', timezone: 'America/Edmonton', startsOn: '2026-10-10', endsOn: '2026-10-10', closed: false },
-  viewer: { organizer: true },
+  viewer: { organizer: true, announce: true, operator: true, cameraOff: true, cameraRelease: true, broadcast: true },
   readiness: { fighters: 0, volunteers: 0, missing: 0, arrived: 0, checkedIn: 0, ready: 0, notReady: 0, needsInspection: 0, needsCorrection: 0, failed: 0, overrides: 0, adminBlocked: 0, pendingRegistrations: 0 },
   notReady: [], overrides: [], fightWarnings: [], staff: [], broadcast: { configured: false }, ...over
 });
@@ -64,7 +64,7 @@ describe('attention: only real, actionable problems', () => {
     expect(overallState(items)).toEqual({ tone: 'urgent', headline: '6 things need attention (2 now)' });
   });
   it('the head marshal is sent to the field screen, never to organizer-only pages', () => {
-    const s = snap({ viewer: { organizer: false }, readiness: { ...snap().readiness, pendingRegistrations: 3 } });
+    const s = snap({ viewer: { organizer: false, announce: false, operator: false, cameraOff: true, cameraRelease: true, broadcast: false }, readiness: { ...snap().readiness, pendingRegistrations: 3 } });
     const items = commandAttention(input([m('m1', { queueState: 'scheduled' }), m('m2', { field: 'Field 2', queueState: 'active' })], s, [lyst('m2', 'running')], [{ matchId: 'm2', competitionName: 'Longsword' }]));
     expect(items.find(i => i.id === 'result-conflicts')?.href).toBe('/events/rumble/field/Field%202');
     expect(items.some(i => i.href.includes('/manage'))).toBe(false);

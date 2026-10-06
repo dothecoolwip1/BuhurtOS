@@ -35,6 +35,11 @@ begin
   if got is distinct from want then raise exception 'FAIL (% <> %): %', got, want, label; end if;
   insert into t.log (name) values (label);
 end $$;
+create function t.expect_ok_undo(label text, stmt text) returns void language plpgsql as $$
+begin
+  begin execute stmt; raise exception 'undo' using errcode = 'P0042'; exception when sqlstate 'P0042' then null; end;   -- allowed; its effect is rolled back so later checks see the same world
+  insert into t.log (name) values (label);
+end $$;
 create function t.uid(n int) returns uuid language sql immutable as $$ select ('00000000-0000-0000-0000-0000000000e' || n)::uuid $$;
 create function t.id(p text) returns uuid language sql immutable as $$ select ('00000000-0000-0000-0000-00000000' || p)::uuid $$;
 create function t.gu(k text) returns uuid language sql stable as $$ select v::uuid from t.nx where k = $1 $$;
@@ -308,7 +313,7 @@ select t.mkm('q1', t.id('d903'), 'round_robin', 'Round 1', 1, 'p1', 'p2'), t.mkm
 update public.matches set queue_state = 'active' where id = t.gu('m:q1');
 select t.put('ver', (select string_agg(version::text, ',' order by id) from public.matches where competition_id = t.id('d903')));
 select t.as_user(t.uid(4));
-select t.expect_error('a scorekeeper cannot save a plan', $$select public.save_queue_plan(t.id('d9e3'), array[t.gu('m:q4')], '{}')$$, '42501');
+select t.expect_ok_undo('a scorekeeper (the secretary) may save a plan (Pack 18.1)', $$select public.save_queue_plan(t.id('d9e3'), array[t.gu('m:q4')], '{}')$$);
 select t.as_anon();
 select t.expect_error('anon cannot save a plan', $$select public.save_queue_plan(t.id('d9e3'), array[t.gu('m:q4')], '{}')$$);
 select t.as_user(t.uid(3));
@@ -338,7 +343,7 @@ select t.as_admin();
 select t.expect_eq('hand-made order first, then the plan', (select string_agg(x::text, ',') from private.queue_ordered(t.id('d9e3'), 'field 1', array['scheduled']) x),
   concat_ws(',', t.gu('m:q2'), t.gu('m:q4'), t.gu('m:q3')));
 select t.as_user(t.uid(4));
-select t.expect_error('a scorekeeper cannot clear the hand-made order', $$select public.clear_manual_queue(t.id('d9e3'), 'Field 1')$$, '42501');
+select t.expect_ok_undo('a scorekeeper (the secretary) may clear the hand-made order (Pack 18.1)', $$select public.clear_manual_queue(t.id('d9e3'), 'Field 1')$$);
 select t.as_user(t.uid(2));
 select t.expect_eq('the organizer lets BuhurtOS plan the field again', (public.clear_manual_queue(t.id('d9e3'), 'Field 1') ->> 'changed')::int, 3);
 select t.as_admin();
