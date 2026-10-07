@@ -115,6 +115,17 @@ try {
   check('14. the organizer sees ONE staff door: Event Control', await until(async () => (await o.page.getByTestId('open-control').count()) === 1), await body(o.page));
   await o.page.getByTestId('open-control').click();
   check('15. Event Control opens on Live ops while the event runs', await until(async () => (await attr(o.page, 'event-control', 'data-mode')) === 'live'), await body(o.page));
+  {
+    // Pack 25.3: the summary card at the top names what needs attention and jumps to the list (or says all is good)
+    const headline = await o.page.locator('.cc-overall').innerText().catch(() => '');
+    const glanceN = await o.page.getByTestId('cc-glance').locator('li').count();
+    let jumped = /all good/i.test(headline);
+    if (!jumped && glanceN > 0) {
+      await o.page.getByTestId('cc-glance').locator('a').first().click();
+      jumped = await until(async () => o.page.locator('#cc-attention').evaluate(el => { const r = el.getBoundingClientRect(); return r.top >= -4 && r.top < innerHeight; }), 5000);
+    }
+    check('16a. the top card names what needs attention and a tap lands on the list (or says all is good)', jumped && (glanceN > 0 || /all good/i.test(headline)), `${headline} | glance ${glanceN}`);
+  }
   check('16. Live ops has attention, the fields, workstations and the Counter QR', await until(async () => await has(o.page, 'needs attention') && await has(o.page, 'workstations') && (await o.page.getByTestId('counter-qr').count()) === 1, 20000), await body(o.page));
   check('17. nothing scrolls sideways in Live ops at 390', (await noSideways(o.page))[0] <= (await noSideways(o.page))[1], JSON.stringify(await noSideways(o.page)));
   await shot(o.page, 'control-live-390');
