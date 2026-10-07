@@ -4,6 +4,7 @@ import { useAuth } from '../../auth/AuthContext';
 import { SignIn } from '../../auth/SignIn';
 import { CounterQrCard } from '../../components/command/CounterQrCard';
 import { DevicesPanel } from '../../components/command/DevicesPanel';
+import { DeviceSessions } from '../../components/command/DeviceSessions';
 import { Chip, PageHead, Seg } from '../../components/ui';
 import { fetchEvent, fetchMyEventContext } from '../../data/api';
 import { fetchRegistrations, type ManagedRegistration } from '../../data/manage';
@@ -127,6 +128,10 @@ export function EventControlPage() {
       {tool?.key === 'devices' && (
         <div style={{ display: 'grid', gap: 14 }}>
           <CounterQrCard eventId={event.id} />
+          <section className="panel info" style={{ display: 'grid', gap: 10 }} aria-labelledby="ds-h">
+            <h2 id="ds-h" className="ed-h">Phones and tablets signed in</h2>
+            <DeviceSessions eventId={event.id} fieldCount={event.fieldCount} />
+          </section>
           <DevicesPanel eventId={event.id} eventName={event.name} timezone={event.timezone ?? 'America/Edmonton'} refreshKey={eventKey} />
         </div>
       )}

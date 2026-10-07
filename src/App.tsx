@@ -38,6 +38,7 @@ import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
 import { PlatformRulesPage } from './pages/platform/PlatformRulesPage';
+import { PlatformDevicesPage } from './pages/platform/PlatformDevicesPage';
 import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
@@ -115,6 +116,7 @@ function SiteApp() {
         <Route path="platform/activity" element={<Navigate to="/platform/analytics" replace />} />
         <Route path="platform/bugs" element={<PlatformBugsPage />} />
         <Route path="platform/rules" element={<PlatformRulesPage />} />
+        <Route path="platform/devices" element={<PlatformDevicesPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="sign-in" element={<SignInPage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />
