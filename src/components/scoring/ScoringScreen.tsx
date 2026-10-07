@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DuelBoard, GroupBoard, MarathonBoard, ProBoard, SeriesBoard } from '../ScoreBoards';
+import { GroupCounterRounds } from './GroupCounterRounds';
 import type { FieldCompetition } from '../../data/field';
 import { submitMatchResult, type CompetitionMatch } from '../../data/matches';
 import { clearBoard, loadBoard, saveBoard } from '../../lib/boardStore';
@@ -263,6 +264,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
         </div>
       )}
       {board.mode === 'group' && <GroupBoard state={board.s} onChange={s => change({ mode: 'group', s })} record={rec} names={names} />}
+      {board.mode === 'group' && <GroupCounterRounds matchId={match.id} eventId={eventId} fieldName={fieldName} board={board.s} />}
       {board.mode === 'duel' && <DuelBoard headless state={board.s} onChange={s => change({ mode: 'duel', s })} record={rec} names={names} />}
       {board.mode === 'pro' && <ProBoard headless state={board.s} onChange={s => change({ mode: 'pro', s })} record={rec} names={names} />}
       {board.mode === 'marathon' && <MarathonBoard headless state={board.s} onChange={s => change({ mode: 'marathon', s })} record={rec} names={names} stage={match.stage} />}

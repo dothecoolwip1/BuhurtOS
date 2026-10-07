@@ -37,7 +37,7 @@ export function CounterEvidence({ seats, names, round, compact = false }: { seat
     <div className="ly-evidence">
       {(['a', 'b'] as const).map(side => (
         <div key={side} className="ly-evidence-side">
-          <b className={`ly-corner-h ly-corner-${side}`}>{sideLabel(side)} · {names[side]}</b>
+          <b className={`ly-corner-h ly-corner-h-${side}`}>{sideLabel(side)} · {names[side]}</b>
           {bySide(side).length === 0 ? <p className="src">No counter on {sideLabel(side).toLowerCase()}.</p> : <ul className="ly-list">{bySide(side).map(row)}</ul>}
         </div>
       ))}

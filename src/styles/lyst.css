@@ -175,9 +175,11 @@
 .cp-op{font-weight:600;font-size:14px;color:var(--muted);overflow-wrap:anywhere}
 .cp-ctx,.cp-vs{margin:0}
 .cp-fighter-wait{color:var(--muted)}
-.cp-on-a .cp-count:not(.is-two){background:#B42318;box-shadow:0 8px 0 #7a1710}
-.cp-on-b .cp-count:not(.is-two){background:#2C4A8C;box-shadow:0 8px 0 #1b2f5c}
-.cp-on-a .cp-count:not(.is-two):active,.cp-on-b .cp-count:not(.is-two):active{box-shadow:0 2px 0 rgba(0,0,0,.5)}
+.cp-on-a .cp-count{background:#B42318;box-shadow:0 8px 0 #7a1710}
+.cp-on-b .cp-count{background:#2C4A8C;box-shadow:0 8px 0 #1b2f5c}
+.cp-on-a .cp-count.is-two{background:#7a1710;box-shadow:0 8px 0 #4a0d09}
+.cp-on-b .cp-count.is-two{background:#1b2f5c;box-shadow:0 8px 0 #0f1b38}
+.cp-on-a .cp-count:active,.cp-on-b .cp-count:active{box-shadow:0 2px 0 rgba(0,0,0,.5)}
 .cp-count.is-down{font-size:clamp(34px,11vw,64px);line-height:1.05;padding:0 12px}
 .cp-count:disabled{background:var(--faint)!important;box-shadow:none!important}
 .cp-links{display:flex;gap:4px 14px;flex-wrap:wrap;justify-content:center}
@@ -187,8 +189,8 @@
 .ly-evidence{display:grid;gap:12px}
 .ly-evidence-side{display:grid;gap:6px}
 .ly-corner-h{font:700 12px/1.3 var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.ly-corner-h.ly-corner-a{color:#B42318}
-.ly-corner-h.ly-corner-b{color:var(--steel)}
+.ly-corner-h-a{color:#B42318}
+.ly-corner-h-b{color:var(--steel)}
 .ly-corner{font:800 11px/1 var(--f-data);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:999px;color:#fff;background:var(--faint);min-width:44px;text-align:center}
 .ly-corner-a{background:#B42318}
 .ly-corner-b{background:#2C4A8C}
@@ -199,3 +201,10 @@
 .ly-evidence-strip .ly-seat{padding:4px 8px;grid-template-columns:auto minmax(0,1fr) auto auto}
 .ly-evidence-strip .ly-seat-n{font-size:18px}
 .ly-evidence-strip .ly-corner-h{font-size:11px}
+/* team fights: the counters strip beside the group board (Pack 25) */
+.gc-rounds{gap:10px}
+.gc-head{display:grid;gap:2px}
+.gc-clock-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.gc-round{font:700 13px var(--f-data);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.gc-clock{font:900 28px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.gc-clock-row .btn{min-height:48px}

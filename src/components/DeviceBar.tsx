@@ -39,8 +39,10 @@ export function DeviceBar() {
   }, []);
   if (!w) return null;
   const out = async () => { setBusy(true); await mgr.signOut(); };
+  // a counter phone is one screen with one job: the bar is one short line, and the sign-out hides behind a small link
+  const compact = w.role === 'counter';
   return (
-    <header ref={ref} className="device-bar" data-testid="device-bar" aria-label="Temporary device">
+    <header ref={ref} className={`device-bar${compact ? ' is-compact' : ''}`} data-testid="device-bar" aria-label="Temporary device">
       <div className="db-row">
         <svg className="db-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{ICON[w.role] ?? ICON.marshal}</svg>
         <b className="db-event" data-testid="device-event">{w.event.name}</b>
@@ -55,7 +57,9 @@ export function DeviceBar() {
       </p>
       <div className="db-actions">
         {canActivateCameraOff(w.role) && <CameraOffControl eventId={w.event.id} compact />}
-        <button type="button" className="btn btn-line btn-sm db-out" onClick={() => setConfirm(true)}>Sign out this device</button>
+        {compact
+          ? <button type="button" className="linklike db-out-link" onClick={() => setConfirm(true)}>Sign out</button>
+          : <button type="button" className="btn btn-line btn-sm db-out" onClick={() => setConfirm(true)}>Sign out this device</button>}
       </div>
       {confirm && (
         <Dialog title="Sign out this device?" variant="drawer" busy={busy} onClose={() => setConfirm(false)}>
