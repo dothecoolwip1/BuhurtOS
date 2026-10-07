@@ -183,6 +183,11 @@ export function staffRoleChoices(viewerIsOrganizer: boolean): string[] {
 
 /** The browser key the device sign-in page keeps its session under (Pack 18.1 contract section 5). Only used to tell "a device is signed in" from "nobody is". */
 export const DEVICE_SESSION_KEY = 'bos-device-session';
+/** True when an access token is an event-device token (its database role), whatever storage it sits in. Never trusts it: the database decides. */
+export function isDeviceToken(token: string | null | undefined): boolean {
+  if (!token) return false;
+  try { const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); return payload?.role === 'bos_event_device'; } catch { return false; }
+}
 export function hasDeviceSession(storage: Pick<Storage, 'getItem'> | null = typeof localStorage === 'undefined' ? null : localStorage): boolean {
   try {
     const raw = storage?.getItem(DEVICE_SESSION_KEY);

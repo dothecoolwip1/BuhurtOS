@@ -71,7 +71,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
     if (loading.current) return;
     loading.current = true;
     try { const s = await fetchCommandSnapshot(event.id); setSnap(s); setSnapError(null); setLastOk(Date.now()); setTick(k => k + 1); }
-    catch (e) { if ((e as { code?: string } | null)?.code === '42501') setRefused(true); setSnapError(e); }
+    catch (e) { const code = (e as { code?: string } | null)?.code; if (code === '42501' || code === '28000' || code === 'PGRST301') setRefused(true); setSnapError(e); }
     finally { loading.current = false; }
   }, [event.id]);
   useEffect(() => {

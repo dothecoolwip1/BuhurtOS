@@ -10,7 +10,7 @@ import { fetchEvent, fetchMyEventContext } from '../../data/api';
 import { fetchRegistrations, type ManagedRegistration } from '../../data/manage';
 import { TOOLS, modesFor, toolFor } from '../../lib/eventControl';
 import { MODE_WORD, PHASE_TONE, PHASE_WORD, controlPath, defaultModeFor, eventPath, eventPhaseOf, isControlMode, type ControlMode } from '../../lib/eventPhaseView';
-import { hasDeviceSession } from '../../lib/devices';
+import { hasDeviceSession, isDeviceToken } from '../../lib/devices';
 import { friendlyError } from '../../lib/friendlyError';
 import { useAsync } from '../../lib/useAsync';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
@@ -49,7 +49,9 @@ export function EventControlPage() {
   const eventId = loaded.data?.event.id;
   // a competition becoming official, or the event closing, re-reads the event (realtime, with a slow poll behind it)
   useEventRecordWatch(eventId, () => setEventKey(k => k + 1));
-  const mine = useAsync(() => (eventId && (userId || hasDeviceSession()) ? fetchMyEventContext(eventId, userId ?? '') : Promise.resolve(undefined)), [eventId, userId]);
+  // a device (the device app, or a device token in the ordinary session) has no staff row or registration: those tables are never asked for it
+  const deviceToken = isDeviceToken(session?.access_token);
+  const mine = useAsync(() => (eventId && userId && !deviceToken ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId, deviceToken]);
   const organizer = mine.data?.isOrganizer === true;
   const regs = useAsync(() => (eventId && organizer ? fetchRegistrations(eventId) : Promise.resolve([] as ManagedRegistration[])), [eventId, organizer], [regsKey]);
   const event = loaded.data?.event;
@@ -63,7 +65,7 @@ export function EventControlPage() {
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted" role="status">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error, 'Could not load this event.')}</p>;
   if (!loaded.data || !event) return <NotFoundPage />;
-  const device = !session && hasDeviceSession();
+  const device = (!session && hasDeviceSession()) || deviceToken;
   if (!session && !device) return <><PageHead eyebrow="Event Control" title={event.name} /><SignIn reason="Sign in with the account that organizes this event, or as its head marshal or secretary." /></>;
   if (mine.loading && !mine.data) return <p className="muted" role="status">Loading…</p>;
   // A signed-in person with no role here is told so at once. A device (no account) or a person whose roles could not be read is not pre-judged:
