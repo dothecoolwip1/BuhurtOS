@@ -804,3 +804,23 @@ Merged into `main` (`e483476`). Read `PACK_25_EVENT_CONTROL_AND_COUNTERS.md` (th
 | Production check (live site, read-only, Actions workflow "Pack 25 production check (read-only)") | baseline before the rollout: run 37614327158 (old build, function v6 refusals PASS); after the rollout on build 166: run 37620682029 195/208 (13 check faults, fixed in `7bb752e`), run 37621098100 **208/208** |
 | Screenshots | local: `docs/reviews/assets/2026-10-07-pack25/` (`p25-*.png`); hosted (from the live site, committed by the workflow): `docs/reviews/assets/2026-10-07-pack25-hosted/after-rollout/` and `…/live-fields/` |
 | Not verified | physical phones and tablets, iOS Safari, a real camera scanning the QR; signed-in hosted journeys (Event Control as the organizer, a real Counter QR scan): no account exists for this session |
+
+## Pack 26: full Rumble rehearsal, event-day hardening and product polish (2026-10-07)
+
+On branch `ccr-ba2f7d4b-7bn1n5`, PR open (not merged). Read `PACK_26_RUMBLE_REHEARSAL.md` (the work log: §3 the 18 problems with root cause, fix and regression test; §6 every test run; §9 owner questions) and `PACK_26_UIUX_MATRIX.md` (31 personas, every route, five viewports, interaction cost).
+
+| | |
+| --- | --- |
+| Status | REPO COMPLETE ON THE BRANCH. **HOSTED NOT TOUCHED**: no migration applied, no function deployed, no hosted row written, nothing deployed. The one migration (`20261021000100_pack26_test_push.sql`, additive) waits for the owner's rollout. |
+| What it is | A synthetic rehearsal of the whole Rumble (2 Lysts, 8 competitions incl. a 5v5 and a 3v3, 41 accepted fighters, 10 teams, volunteers, a mercenary, staff of every role, a withdrawn fighter, a no-show, a failed inspection, byes, pools, three counter phones and a trainee, offline phones and tablets, a stale second tablet, a result conflict, a reopened result, a corrected placing, close and reopen) run end to end in the real built app against a real local Postgres + PostgREST + the device-session function, by `scripts/e2e/pack26-live.sh` (15 phases, 178 checks, 64 screenshots at 390 / 768 / 1280 / 1920). The problems it reproduced were fixed within the established Pack 25 decisions. |
+| Migrations added | `20261021000100_pack26_test_push.sql`: "Send me a test" always pushes; `private.field_label`; alert text says Lyst. `supabase/schema.fingerprint.txt` regenerated. **Not applied to hosted.** |
+| Hosted database | not touched (inspected read-only only) |
+| Deployment | none |
+| Automated tests | `npm run typecheck` clean; `npx vitest run` «VITEST»; `npm run build` «BUILD»; `supabase/tests/run_all.sh` DATABASE GATE PASSED (50 ok; `pack26_gate` 18 checks new; pack12 / pack15 gates with the Lyst wording) |
+| Browser verification (local real stack) | `pack26-live` run 16: «RUN16»; the other suites re-run on the branch: «SIDE2» (details and the superseded suites in the work log §6) |
+| Screenshots | `docs/reviews/assets/2026-10-07-pack26/` (`p26-NN-*.png`, run 16) |
+| Fixed (P1) | the Register page after the close time; team-fight numbers read as fighters standing on the big screen and Live; a second Lyst tablet that kept scoring after another device finished the fight |
+| Fixed (P2) | Field / Lyst naming in 20 places and in the alert text; the Lyst count in Event settings; stale Pack 25 wording; the Registrations review on a phone; the test push blocked by the BuhurtOS switch; My events hiding a test event the person is in; "pools done, bracket needs building" folded away and read as "all scored" |
+| Fixed (P3) | notification hints; the idle-Lyst attention link; counter Lyst order; duplicate Register button; "Field" in Build tournament and the Lyst queue page; the export above the review list |
+| Owner questions (nothing changed) | who may take an injured fighter out (organizer only today); Camera Off first on Live ops at an event with no camera; moving an event's dates after registration holds every fight; Review-before-Build with one straggler |
+| Not verified | physical phones and tablets, iOS Safari, a real camera on the QR, hosted Realtime, the hosted rollout of the migration |
