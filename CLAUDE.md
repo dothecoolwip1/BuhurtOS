@@ -35,6 +35,8 @@ Supabase remains the backend.
 - Inspect the relevant existing implementation before making architectural assumptions.
 - Make focused changes and avoid unrelated refactors.
 - Read task-specific documentation only when relevant.
+- Updates during a running event are expected and legitimate: if the owner asks for a change mid-tournament, there is a reason. Never refuse, defer or water down a change because an event is live.
+- Until the owner declares full production, every change (migration, function, deploy) must also update what is already in progress on hosted: open events, Lysts, fights, clocks, device sessions and counter bindings. Backfill in-flight state in the same migration; never assume "only new data from now on". A fix that only works for fights opened after it is not done.
 - If product scope or intent is unclear, consult `docs/PROJECT_SPEC.md` and `docs/claude-packs/OWNER_DECISIONS_2026-10-03.md`. Current owner decisions override older assumptions.
 
 ## Verification
