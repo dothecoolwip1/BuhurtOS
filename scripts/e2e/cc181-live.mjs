@@ -506,7 +506,9 @@ try {
   await openSection(org, '#cc-announce');
   const draft = 'Unsent draft: Lyst 2 will start late';
   await org.locator('#cc-announce textarea').fill(draft);
-  await org.locator('#cc-fighters > summary').click();                              // the organizer closes the Fighters section on purpose
+  await openSection(org, '#cc-fighters');                                            // Pack 25: Fighters starts folded; open it, then the organizer closes it on purpose
+  await org.locator('#cc-fighters > summary').click();
+  await until(async () => !(await org.locator('#cc-fighters').evaluate(el => el.open)));
   const fightersClosed = !(await org.locator('#cc-fighters').evaluate(el => el.open));
   await org.evaluate(() => window.scrollTo(0, 1100));
   await sleep(500);
@@ -574,7 +576,7 @@ try {
   // =================================================================== 8. refused: a stranger, another event's organizer, a signed-out visitor
   const st = await open('phone', 'stranger'); pages.push(st);
   await st.goto(BASE + CMD); await st.waitForLoadState('networkidle').catch(() => undefined); await sleep(1500);
-  check('8.1 a stranger is told the Command Centre is for organizers, head marshal and secretary: no panels, no controls', /people who run this event|for this event's organizers, head marshal and secretary/.test(await text(st)) && (await st.locator('#cc-broadcast, #cc-devices, [data-testid="camera-off"]').count()) === 0, await text(st));
+  check('8.1 a stranger is told the Command Centre is for organizers, head marshal and secretary: no panels, no controls', /people who run this event|for this event's organizers, head marshal and secretary/i.test(await text(st)) && (await st.locator('#cc-broadcast, #cc-devices, [data-testid="camera-off"]').count()) === 0, await text(st));
   const oo = await rpc('otherOrg', 'list_event_credentials', { p_event: EV });
   check('8.2 another event\'s organizer is refused this event\'s devices and broadcast state by the database', refused(oo) && refused(await rpc('otherOrg', 'broadcast_control_state', { p_event: EV })) && refused(await rpc('otherOrg', 'set_broadcast_control', { p_event: EV, p_expected_rev: 0, p_patch: { mode: 'auto' } })));
   const anon = await open('phone', null); pages.push(anon);
