@@ -1102,13 +1102,13 @@ try {
     // wrong code, revoked code, expired code: one plain answer
     const bad = (await open('phone')).page;
     await go(bad, '/device#c=000000000000');
-    check('181. a code that cannot exist is refused with one plain message and the fragment is gone', await until(async () => await has(bad, 'not valid') || await has(bad, 'check the code') || await has(bad, 'ended'), 30000) && !bad.url().includes('#c='), (await body(bad)).slice(0, 200) + ' ' + bad.url());
+    check('181. a code that cannot exist is refused with one plain message and the fragment is gone', await until(async () => await has(bad, 'did not work') || await has(bad, 'not valid') || await has(bad, 'check it') || await has(bad, 'ended'), 30000) && !bad.url().includes('#c='), (await body(bad)).slice(0, 200) + ' ' + bad.url());
     await shot(bad, 'device-bad-code');
     const maCred = sql(`select id from public.event_credentials where event_id = '${EV}' and label = 'Marshal Phone'`);
     const rev = await rpc('organizer', 'revoke_event_credential', { p_credential: maCred, p_reason: 'TEST: phone lost' });
     check('182. REVOKED: the organizer revokes the lost Marshal Phone; its screen ends within the check interval', rev.status === 200 && await until(async () => await has(map.page, 'ended') || map.page.url().includes('/device'), 60000), outcome(rev) + ' ' + map.page.url());
     const whoamiRevoked = await rpc(null, 'device_whoami', {});
-    sql(`update public.event_sessions set expires_at = now() - interval '1 minute' where credential_id = (select id from public.event_credentials where label = 'Announcer Tablet' and event_id = '${EV}')`);
+    sql(`update public.event_credentials set expires_at = now() - interval '1 minute' where label = 'Announcer Tablet' and event_id = '${EV}'`);   // the access window is on the credential
     check('183. EXPIRED: an expired device session is refused by the database on its next check', await until(async () => await has(anp.page, 'ended') || anp.page.url().includes('/device'), 60000), anp.page.url());
     // isolation: another event's device cannot read this event
     const otherCode = await fn('otherOrg', 'create', { event: OTHER, kind: 'device', label: 'Other Tablet', role: 'temporary_organizer' });
