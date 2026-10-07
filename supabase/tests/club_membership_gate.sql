@@ -270,5 +270,26 @@ select t.as_user(t.u(6));
 select public.set_club_dues(t.id('m6'), 'paid');
 select t.expect_eq('the other team''s dues use their own amount', (select dues_amount_cents from public.club_member_roster(t.o(), t.y())), 5000);
 
+-- ================================================================ 10. member profile links (migration 20261018001100) and a member's own link
+-- Only the club's executive sees which memberships have a fighter profile; a member learns only their own (my_fighter_id, auth.uid() only).
+select t.as_admin();
+insert into public.fighters (id, display_name) values ('00000000-0000-0000-0000-0000000c1bf5', 'Regular Member Fighter');
+insert into public.fighter_accounts (fighter_id, user_id) values ('00000000-0000-0000-0000-0000000c1bf5', t.u(5));
+select t.as_anon();
+select t.expect_error('anonymous callers cannot read member profile links', format($q$select * from public.club_member_profile_links(%L, %s)$q$, t.r(), t.y()), '42501');
+select t.as_user(t.u(5));
+select t.expect_error('a regular member cannot read member profile links', format($q$select * from public.club_member_profile_links(%L, %s)$q$, t.r(), t.y()), '42501');
+select t.expect_eq('a member learns their own fighter profile', public.my_fighter_id(), '00000000-0000-0000-0000-0000000c1bf5'::uuid);
+select t.expect_eq('a member sees only their own account link row', (select count(*) from public.fighter_accounts), 1::bigint);
+select t.as_user(t.u(7));
+select t.expect_eq('a member without a fighter profile gets none (never someone else''s)', public.my_fighter_id(), null::uuid);
+select t.expect_eq('a member without a fighter profile sees no account link rows', (select count(*) from public.fighter_accounts), 0::bigint);
+select t.as_user(t.u(6));
+select t.expect_error('another team''s treasurer cannot read this club''s profile links', format($q$select * from public.club_member_profile_links(%L, %s)$q$, t.r(), t.y()), '42501');
+select t.as_user(t.u(3));
+select t.expect_eq('the treasurer sees the linked member''s fighter profile', (select fighter_id from public.club_member_profile_links(t.r(), t.y()) where membership_id = t.id('m5')), '00000000-0000-0000-0000-0000000c1bf5'::uuid);
+select t.expect_eq('the treasurer sees no fighter profile for an unlinked member', (select fighter_id from public.club_member_profile_links(t.r(), t.y()) where membership_id = t.id('m7')), null::uuid);
+select t.expect_eq('profile links cover exactly the roster', (select count(*) from public.club_member_profile_links(t.r(), t.y())), (select count(*) from public.club_member_roster(t.r(), t.y())));
+
 do $$ declare n integer; begin select count(*) into n from t.log; raise notice 'CLUB MEMBERSHIP GATE PASSED % checks', n; end $$;
 rollback;
