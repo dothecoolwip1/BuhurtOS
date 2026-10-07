@@ -1,0 +1,69 @@
+FAILED 68 of 125 checks (soft mode)
+1 | ... and the rebuild is on the audit trail with how many fights it replaced | 
+2 | a draw cannot be replaced while one of its fights is active | expected an error
+3 | ... the active fight is still there, still active | scheduled <> active
+4 | ... its scoring events survive | 0 <> 1
+5 | ... and its live score survives | 0 <> 1
+6 | a draw with a scored fight (scoring events, fight not final) cannot be replaced | expected an error
+7 | ... the scoring events survive | 0 <> 1
+8 | ... and the draw STILL cannot be replaced: the result proposal history stays (history is corrected, never deleted) | expected an error
+9 | ... the match and its proposal survive | 0 <> 1
+10 | a plain waiting fight has no history | 
+11 | ... an untouched fight of another competition has none | 
+12 | none of the refused attempts left a rebuild on the audit trail | 1 <> 0
+13 | the organizer cannot insert a match through the table | expected an error
+14 | ... cannot delete a match through the table | expected an error
+15 | ... cannot change an entrant | expected an error
+16 | ... cannot change the other entrant | expected an error
+17 | ... cannot relink a match | expected an error
+18 | ... cannot change next_slot | expected an error
+19 | ... cannot change the position | expected an error
+20 | ... cannot change the stage | expected an error
+21 | ... cannot change the round label | expected an error
+22 | ... cannot change the pool | expected an error
+23 | none of that changed the fight | 
+24 | ... the change took | 
+25 | ... including the old and new field | 
+26 | ... the actor is recorded | 
+27 | ... audited | false <> true
+28 | ... the time is unchanged | 
+29 | a semifinal cannot be deleted through the table (that would leave the final with one feeder) | expected an error
+30 | ... the final still has both feeders | 1 <> 2
+31 | a plan whose final has an unfed slot is refused (one feeder only) | expected an error
+32 | a plan with two feeders into the same slot is refused | expected an error
+33 | a plan whose feeder collides with a side already filled is refused | expected an error
+34 | a plan that links a match to itself is refused | expected an error
+35 | ... none of those touched the existing bracket | 1 <> 4
+36 | the organizer calls a fight on deck, another in the hole | unexpected error P0002 match not found
+37 | ... each call is on the audit trail | false <> true
+38 | ... with the previous and new state | 
+39 | a scorekeeper cannot pull a waiting fight on deck | expected an error
+40 | ... nor in the hole | expected an error
+41 | ... nor straight to active | expected an error
+42 | ... nor reorder the called fights (in the hole to on deck) | wrong error P0002 instead of 42501
+43 | ... nor move a called fight to another field | expected an error
+44 | the head marshal cannot pull a waiting fight on deck either | expected an error
+45 | the refused attempts changed nothing | 
+46 | ... and opens the one in the hole | unexpected error P0002 match not found
+47 | ... and sends an active fight back to the line | unexpected error P0002 match not found
+48 | ... the audit trail names the scorekeeper's own calls | 0 <> 3
+49 | ... and the field change is audited once, by the queue call (not twice by the schedule trigger) | 0 <> 1
+50 | the organizer holds a waiting fight with a reason | unexpected error 42883 function public.set_match_hold(unknown, boolean, unknown) does not exist
+51 | ... it is held | false <> true
+52 | ... the hold is on the audit trail with the reason | 
+53 | ... and the deliberate hold is still there | false <> true
+54 | ... the planner's own hold went, the deliberate one stayed | 
+55 | the held fight (first in the plan) was skipped; the next one is active | on_deckin_the_hole <> scheduledactive
+56 | a scorekeeper cannot release a hold | wrong error 42883 instead of 42501
+57 | the head marshal cannot | wrong error 42883 instead of 42501
+58 | a fighter cannot | wrong error 42883 instead of 42501
+59 | another event's organizer cannot | wrong error 42883 instead of 42501
+60 | another organization's administrator cannot | wrong error 42883 instead of 42501
+61 | a held fight needs a reason | wrong error 42883 instead of 22023
+62 | a fight being fought cannot be held (send it back first) | wrong error 42883 instead of P0001
+63 | the organizer releases the hold | unexpected error 42883 function public.set_match_hold(unknown, boolean) does not exist
+64 | ... it is no longer held | false/missing <> false/false
+65 | ... the release is audited once, by the organizer | 0 <> 1
+66 | ... and the refused attempts were not | 0 <> 1
+67 | ... it does | false <> true
+68 | a match of another event cannot be held by this organizer | wrong error 42883 instead of 42501

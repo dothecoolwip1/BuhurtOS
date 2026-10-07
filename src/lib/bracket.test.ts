@@ -117,3 +117,46 @@ describe('buildPoolsThenBracket', () => {
     expect([...q].sort()).toEqual(['a1', 'a2', 'b1', 'b2', 'c1', 'c2']);
   });
 });
+
+/**
+ * The shape rule the database enforces on every planned bracket (private.check_plan_structure, Pack 24A0): a match that others feed into has both its
+ * sides covered, exactly once, either by a feeder or by a side already filled (a bye); the third-place match is filled by the server and is exempt; no
+ * match feeds itself. Every bracket this generator can produce must pass it, or build_schedule would refuse an honest plan.
+ */
+function structureProblem(plan: readonly ReturnType<typeof buildSingleElimination>[number][]): string | null {
+  const byKey = new Map(plan.map(p => [p.key, p]));
+  for (const p of plan) {
+    if (p.nextKey === p.key) return `${p.key} feeds itself`;
+    if (p.nextKey && !byKey.has(p.nextKey)) return `${p.key} feeds a match that is not in the plan`;
+    if (p.nextKey && p.nextSlot !== 'a' && p.nextSlot !== 'b') return `${p.key} has no slot`;
+  }
+  for (const t of plan) {
+    const feeders = plan.filter(f => f.nextKey === t.key);
+    if (feeders.length === 0 || t.stage === 'third_place') continue;
+    for (const slot of ['a', 'b'] as const) {
+      const fed = feeders.filter(f => f.nextSlot === slot).length;
+      const filled = t[slot] ? 1 : 0;
+      if (fed + filled !== 1) return `${t.key} side ${slot} is covered ${fed + filled} times`;
+    }
+  }
+  return null;
+}
+
+describe('every generated bracket satisfies the structure rule the server enforces', () => {
+  for (let n = 2; n <= 40; n++) {
+    for (const thirdPlace of [false, true]) {
+      it(`single elimination of ${n}${thirdPlace ? ' with a third-place fight' : ''}`, () => {
+        expect(structureProblem(buildSingleElimination(ids(n), { seed: 3, thirdPlace }))).toBeNull();
+      });
+    }
+  }
+  it('the rule rejects a final with one feeder, two feeders into one side, a self-link and a collision with a filled side', () => {
+    const base = buildSingleElimination(ids(4), { seed: 1 });
+    const sf = base.filter(x => x.stage === 'elimination');
+    const fin = base.find(x => x.stage === 'final')!;
+    expect(structureProblem([sf[0], { ...sf[1], nextKey: undefined, nextSlot: undefined }, fin])).toMatch(/covered 0 times/);
+    expect(structureProblem([sf[0], { ...sf[1], nextSlot: sf[0].nextSlot }, fin])).toMatch(/covered/);
+    expect(structureProblem([{ ...sf[0], nextKey: sf[0].key }, sf[1], fin])).toMatch(/feeds itself/);
+    expect(structureProblem([sf[0], sf[1], { ...fin, a: 'e1' }])).toMatch(/covered 2 times/);
+  });
+});

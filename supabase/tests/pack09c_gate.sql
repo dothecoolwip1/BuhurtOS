@@ -240,12 +240,12 @@ select t.expect_eq('the fighter ranking counts the official result (Bob gold, 9 
 
 -- ================================================================ 4. an official competition is locked (server side)
 select t.as_user(t.uid(2));
-select t.expect_error('no new fight can be added to an official competition', format($$insert into public.matches (competition_id, stage, round_label, position, entry_a, entry_b) values (%L, 'round_robin', 'Extra', 9, %L, %L)$$, t.id('c901'), t.gu('e:f0'), t.gu('e:f1')), 'P0001');
+select t.expect_error('no new fight can be added to an official competition (the organizer has no insert right at all since Pack 24A0)', format($$insert into public.matches (competition_id, stage, round_label, position, entry_a, entry_b) values (%L, 'round_robin', 'Extra', 9, %L, %L)$$, t.id('c901'), t.gu('e:f0'), t.gu('e:f1')), '42501');
 select t.expect_ok('a plain write to a final fight is a no-op under the existing row rule (final rows are not the organizer''s to edit)', format($$update public.matches set field = 'Field 9' where id = %L$$, t.gu('m:a06')));
 select t.expect_eq('... the fight is unchanged', (select coalesce(field, 'none') from public.matches where id = t.gu('m:a06')), 'none');
-select t.expect_ok('a plain delete of a final fight is a no-op too', format($$delete from public.matches where id = %L$$, t.gu('m:a06')));
+select t.expect_error('a plain delete of a fight is refused outright (Pack 24A0)', format($$delete from public.matches where id = %L$$, t.gu('m:a06')), '42501');
 select t.expect_eq('... it is still there', (select count(*) from public.matches where id = t.gu('m:a06')), 1::bigint);
-select t.expect_error('a fight that is NOT final cannot be added into an official competition through the organizer''s normal update path either (new row)', format($$insert into public.matches (competition_id, stage, round_label, position) values (%L, 'round_robin', 'Extra', 10)$$, t.id('c901')), 'P0001');
+select t.expect_error('a fight that is NOT final cannot be added into an official competition through the organizer''s normal update path either (new row)', format($$insert into public.matches (competition_id, stage, round_label, position) values (%L, 'round_robin', 'Extra', 10)$$, t.id('c901')), '42501');
 select t.expect_error('nor scored again', format($$select public.finalize_match(%L, 'b', 1, 5, '{}'::jsonb, (select version from public.matches where id = %L))$$, t.gu('m:a06'), t.gu('m:a06')), 'P0001');
 select t.expect_error('no entrant can be withdrawn by a plain write', format($$update public.entries set status = 'withdrawn' where id = %L$$, t.gu('e:f3')), 'P0001');
 select t.expect_error('no entrant can be added', format($$select public.add_entrant(%L, %L, null)$$, t.id('c901'), t.id('c9d0')), 'P0001');
@@ -360,7 +360,7 @@ select t.expect_eq('the organizer closes the event', t.czs(t.id('c9e1')) || '/' 
 select t.cz(t.id('c9e1'));
 select t.expect_eq('closing again: already_closed, no second audit', t.czs(t.id('c9e1')) || '/' || t.audits('event.closed', t.id('c9e1')), 'already_closed/1');
 -- closed = history
-select t.expect_error('no fight changes in a closed event (a new fight)', format($$insert into public.matches (competition_id, stage, round_label, position) values (%L, 'round_robin', 'Late', 11)$$, t.id('c907')), 'P0001');
+select t.expect_error('no fight changes in a closed event (a new fight: the organizer has no insert right at all since Pack 24A0)', format($$insert into public.matches (competition_id, stage, round_label, position) values (%L, 'round_robin', 'Late', 11)$$, t.id('c907')), '42501');
 select t.expect_error('no entrant changes', format($$update public.entries set status = 'withdrawn' where id = %L$$, t.gu('e:h1')), 'P0001');
 select t.expect_error('no new competition', format($$insert into public.competitions (event_id, name, category, gender, structure) values (%L, 'Late', 'longsword', 'men', 'round_robin')$$, t.id('c9e1')), 'P0001');
 select t.expect_error('no competition reopen while the event is closed', format($$select public.reopen_competition(%L, 'late')$$, t.id('c901')), 'P0001');

@@ -25,7 +25,8 @@ const NAV = [
   { to: '/rules', label: 'Rules', end: false, icon: <><path d="M5 4h11l3 3v13H5Z" /><path d="M9 11h6M9 15h6" /></> }
 ];
 
-function useTheme() {
+/** The stored light or dark choice, applied to the page; returns the switch. FocusLayout applies the same choice without offering the switch. */
+export function useTheme() {
   const [theme, setTheme] = useState<'light' | 'dark' | undefined>(() => {
     try { const t = localStorage.getItem('bos-theme'); return t === 'light' || t === 'dark' ? t : undefined; } catch { return undefined; }
   });

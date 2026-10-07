@@ -1,0 +1,197 @@
+
+== build bos_gate from every migration
+ok   migrations apply from zero
+
+== security_gate
+ PASSED 709 checks
+ok   security_gate
+
+== captain_gate
+ PASSED 65 checks
+ok   captain_gate
+
+== team_admin_gate
+ PASSED 69 checks
+ok   team_admin_gate
+
+== activity_gate
+ PASSED 90 checks
+ok   activity_gate
+
+== pack01_gate
+ PASSED 70 checks
+ok   pack01_gate
+
+== pack02_gate
+ PASSED 69 checks
+ok   pack02_gate
+
+== pack03_gate
+ PASSED 67 checks
+ok   pack03_gate
+
+== pack05_gate
+ PASSED 43 checks
+ok   pack05_gate
+
+== pack07_gate
+ PASSED 109 checks
+ok   pack07_gate
+
+== pack1_gate
+ PACK1 GATE PASSED: 49 checks
+ok   pack1_gate
+
+== pack07_pack1_reconcile_gate
+ PASSED 54 checks
+ok   pack07_pack1_reconcile_gate
+
+== pack08_gate
+ PASSED 122 checks
+ok   pack08_gate
+
+== synthetic_org_rankings_gate
+ PASSED 37 checks
+ok   synthetic_org_rankings_gate
+
+== pack09a_gate
+ PASSED 107 checks
+ok   pack09a_gate
+
+== pack09b_gate
+ PASSED 47 checks
+ok   pack09b_gate
+
+== team_discipline_rankings_gate
+ PASSED 53 checks
+ok   team_discipline_rankings_gate
+
+== pack09c_gate
+ PASSED 136 checks
+ok   pack09c_gate
+
+== pack09d_gate
+ PACK09D GATE PASSED 149 checks
+ok   pack09d_gate
+
+== pack10_gate
+ PACK10 GATE PASSED 104 checks
+ok   pack10_gate
+
+== pack11_gate
+ PASSED 28 checks
+ok   pack11_gate
+
+== pack12_gate
+ PACK12 GATE PASSED 122 checks
+ok   pack12_gate
+
+== pack13_gate
+ PACK13 GATE PASSED 220 checks
+ok   pack13_gate
+
+== pack14_gate
+ PACK14 GATE PASSED 69 checks
+ok   pack14_gate
+
+== pack15_gate
+psql:supabase/tests/pack15_gate.sql:238: NOTICE:  PACK15 GATE PASSED 61 checks
+ok   pack15_gate
+
+== pack16_gate
+psql:supabase/tests/pack16_gate.sql:256: NOTICE:  PACK16 GATE PASSED 90 checks
+ok   pack16_gate
+
+== pack18_gate
+psql:supabase/tests/pack18_gate.sql:180: NOTICE:  PACK18 GATE PASSED 36 checks
+ok   pack18_gate
+
+== pack181_sessions_gate
+psql:supabase/tests/pack181_sessions_gate.sql:259: NOTICE:  PACK181 SESSIONS GATE PASSED 119 checks
+ok   pack181_sessions_gate
+
+== pack181_roles_gate
+psql:supabase/tests/pack181_roles_gate.sql:225: NOTICE:  PACK181 ROLES GATE PASSED 113 checks
+ok   pack181_roles_gate
+
+== pack181_broadcast_gate
+psql:supabase/tests/pack181_broadcast_gate.sql:246: NOTICE:  PACK181 BROADCAST GATE PASSED 104 checks
+ok   pack181_broadcast_gate
+
+== club_membership_gate
+psql:supabase/tests/club_membership_gate.sql:273: NOTICE:  CLUB MEMBERSHIP GATE PASSED 101 checks
+ok   club_membership_gate
+
+== club_agm_gate
+psql:supabase/tests/club_agm_gate.sql:252: NOTICE:  CLUB AGM GATE PASSED 78 checks
+ok   club_agm_gate
+
+== club_agm_topics_gate
+psql:supabase/tests/club_agm_topics_gate.sql:343: NOTICE:  CLUB AGM TOPICS GATE PASSED 136 checks
+ok   club_agm_topics_gate
+
+== pack22_gate
+psql:supabase/tests/pack22_gate.sql:397: NOTICE:  PACK22 GATE PASSED 139 checks
+ok   pack22_gate
+
+== pack22_discipline_gate
+psql:supabase/tests/pack22_discipline_gate.sql:375: NOTICE:  PACK22 DISCIPLINE GATE PASSED 119 checks
+ok   pack22_discipline_gate
+
+== pack22_qa_fixes_gate
+psql:supabase/tests/pack22_qa_fixes_gate.sql:242: NOTICE:  PACK22 QA FIXES GATE PASSED 43 checks
+ok   pack22_qa_fixes_gate
+
+== pack22_history_gate
+psql:supabase/tests/pack22_history_gate.sql:227: NOTICE:  PACK22 HISTORY GATE PASSED 64 checks
+ok   pack22_history_gate
+
+== pack22_review_visibility_gate
+psql:supabase/tests/pack22_review_visibility_gate.sql:68: NOTICE:  PACK22 REVIEW VISIBILITY GATE PASSED 14 checks
+ok   pack22_review_visibility_gate
+
+== pack24a0_gate
+ PASSED 151 checks
+ok   pack24a0_gate
+
+== pack24_followups_gate
+ PASSED 28 checks
+ok   pack24_followups_gate
+
+== shared test vectors (SQL vs TypeScript league points)
+psql:supabase/tests/vectors_gate.sql:20: NOTICE:  VECTORS OK: all 12 league-points vectors agree between SQL and TypeScript
+ok   vectors agree
+
+== schema fingerprint (repository drift)
+SCHEMA FINGERPRINT OK (2820 objects)
+ok   fingerprint matches supabase/schema.fingerprint.txt
+
+== tournament simulation
+SIMULATION PASSED
+ok   simulation
+
+== fictional league verifier
+     68 |      0 |    68
+ok   league verifier
+
+== two organizers build the same schedule at once
+CONCURRENCY OK
+ok   concurrency
+
+== event-day field queue under real commits and two sessions
+PACK09A CONCURRENCY OK
+ok   pack09a concurrency
+
+== finalize, reopen and close under two sessions
+PACK09C CONCURRENCY OK
+ok   pack09c concurrency
+
+== push notifications under real commits and two sessions
+PACK12 COMMIT OK
+ok   pack12 commit
+
+== lyst control under real commits and parallel sessions
+PACK13 COMMIT OK
+ok   pack13 commit
+
+DATABASE GATE PASSED

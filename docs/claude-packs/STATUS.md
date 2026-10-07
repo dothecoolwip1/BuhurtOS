@@ -721,3 +721,66 @@ Branch `ccr-321cc545-1coq4p`, from `main` `532fbab`. `main` (`56b1d8a`, Reavers 
 | Current rules published | **NO** (42 versions in review) |
 | Historical rules published | **NO** (37 editions in review) |
 | Production verified | **Visitor view only** (see above). Earlier editions cannot be seen in production until the owner publishes one; their labels, archived links and compare were verified locally (browser history 32/32) and on hosted in a rolled-back transaction, not in the production UI |
+
+## Pack 23R: Red Deer Rumble rehearsal and gap analysis (2026-10-06) — DISCOVERY ONLY
+
+| Level | Status |
+| --- | --- |
+| Report | `docs/claude-packs/PACK_23R_RUMBLE_REHEARSAL.md` (gap matrix, permissions, formats, paper/TV, scale, pack order, owner decisions) |
+| Added (test only) | `scripts/e2e/fixtures/pack23r.sql` (TEST, synthetic, local only), `scripts/e2e/pack23r-rehearsal.{sh,mjs}`, evidence + 13 screenshots in `docs/reviews/assets/2026-10-06-pack23r/` |
+| Production source / migrations | **none changed** |
+| Rehearsal | local Postgres 16 from all migrations + PostgREST 12.2.3 + built app + Chromium; 50 fighters, 10 categories over 2 days on 1 lyst, 99 fights built, 109 by the end; 390 / 768 / 1024 / 1280 (+1920 arena); run 3 reported, 4/4 run checks, 140 evidence items |
+| Tests | Vitest 87 files / 965 passed; typecheck clean; build clean; `run_all.sh` DATABASE GATE PASSED |
+| Hosted DB / deployment | not touched / not deployed |
+| Critical findings | no day boundary (Sunday fights called Saturday); no stable fight number; running order not durable (one move freezes the line, holds erased by Event day re-plan, filled bracket fights go to the end); `build_schedule('replace')` deletes an ACTIVE fight and its live score events; organizer table-API DELETE/PATCH on matches unaudited; secretary/head marshal have no running-order authority while any scorer can call any fight; no print view; public Now-and-next lists In the hole before On deck |
+| Recommended next pack | 24A0 Match integrity guards (new, small, server only), then 24A3 after the owner decides authored order vs live planner |
+
+## Pack 24A0 + 24A1 reconciled onto main, with two audit follow-ups (2026-10-06): IMPLEMENTED IN REPOSITORY, NOT MERGED, NOT APPLIED TO HOSTED, NOT DEPLOYED
+
+Branch `claude/pack-24-safety-reconcile-grf0gg`, from `main` `643a62a`. This replaces the stranded branch `claude/focus-layout-tablet-safety-b40tc4`, which should not be merged. Full account: `PACK_24A0_MATCH_SAFETY_GUARDS.md` section 0 and the note at the top of `PACK_24A1_FOCUS_LAYOUT.md`. Evidence: `docs/reviews/assets/2026-10-06-pack24-reconcile/`.
+
+| Level | Status |
+| --- | --- |
+| P0 being fixed | `build_schedule('replace')` deletes an active fight and its score events / live score. Reproduced against `main`'s schema (negative control). **Live in production until these migrations are applied.** Hosted `matches` grants, policies and the 11 affected functions were checked read-only and are identical to `main`. |
+| Migrations created (additive) | `20261019000100_pack24a0_match_safety_guards` (was `20261015000100`, which collided with Pack 18.1), `20261019000200_pack24_test_fighter_propagation`, `20261019000300_result_revisions_search_path`. No remote branch has a migration later than `20261018001000`. Fingerprint regenerated. |
+| Reconciled with Pack 18.1 / 22 | `save_queue_plan` patched in place (keeps `can_adjust_queue`); `set_match_queue` authority unchanged (`can_score`), now audited; `set_match_hold` = `can_adjust_queue`; discipline reviews protect a fight; new guard on deleting or re-pointing an entrant of a protected fight |
+| Database gate | `run_all.sh` from zero: **DATABASE GATE PASSED, 49/49 steps** (`main` has 47; the 2 new gates are the difference). Includes `pack24a0_gate` **151** (80 fail on `main`'s schema) and `pack24_followups_gate` **28** (13 fail on `main`'s schema), every older gate, fingerprint, simulation, league verifier, and the concurrency suites |
+| Unit / typecheck / build | Vitest **1388 passed**, 6 skipped (the OBS Companion suites: their dependencies are not installed here); typecheck clean; production build clean |
+| Browser (local stack: Postgres from every migration, PostgREST 12.2.3, the built app, Chromium) | `pack24a1-live` **83/83** (390x844, 768x1024, 1024x768, 1280x900); `pack24a0-live` **40/40**; regressions `eventday-live` 78/78, `pack13-live` 88/88, `pack181-live` 176/176, `device-live` 82/82, `finalize-live` 126/126, `pack16-live` 66/66 (its check 1 read the desk counts before the first load in 1 of 3 runs; the check now waits for the load, then 66/66). `pack22-discipline-live` 55/56: check 14b fails identically on unmodified `main` `643a62a` (pre-existing, not from this branch) |
+| Applied to hosted Supabase | **NO** (deliberately; waits for the owner's review) |
+| Production data modified | **NO** (read-only queries only; `test-stuff-test` and `test-new-test` untouched) |
+| Deployed | **NO** |
+| Not verified | real Supabase Auth / Realtime; physical phones and tablets; iOS safe areas; temporary-device screens in a browser on this branch (unchanged code path; `pack181-live` passes) |
+| Owner decisions open | marshals calling waiting fights (the first 24A0 draft refused it, the Pack 18.1 matrix allows it; kept allowed); cleanup of the two published test events and whether to tag their fighters as test data (read-only query in 24A0 section 0.2) |
+
+## Pack 24A0: match safety guards (2026-10-06): stranded-branch record, superseded by the reconciliation entry above
+
+| Level | Status |
+| --- | --- |
+| Report | `docs/claude-packs/PACK_24A0_MATCH_SAFETY_GUARDS.md` (findings verified first, protected-history definition, grant classification, role matrix, risks, deferrals) |
+| Implemented in repository | draw rebuild refuses protected history (`private.match_history_reason`) and validates bracket shape; organizer's raw INSERT / DELETE / structural UPDATE on `matches` removed (only `scheduled_at`, `field`, `duration_minutes` remain, audited); `set_match_queue` limited to called fights for scoring staff, audited; `set_match_hold` + durable deliberate holds; public Now and Next order fixed; Run tab explains a blocked rebuild |
+| Migration created | `20261015000100_pack24a0_match_safety_guards.sql` (additive; schema fingerprint updated) |
+| Applied to hosted Supabase | **NO**. A read-only query showed hosted `matches` still has the pre-migration grants and policies and no `hold_manual` column, so the Pack 23R hazards are live there until it is applied |
+| Deployed | **NO** |
+| Automated tests | `pack24a0_gate.sql` **128 checks** (68 of 125 fail against the unmodified schema); full database gate **PASSED, 39/39**; Vitest 87 files / **1045** tests; typecheck; build |
+| Browser (local stack, real Chromium) | `scripts/e2e/pack24a0-live.sh` **41/41**: real client draws accepted, hold survives Event day (1280 and 768), public order NOW → ON DECK → IN THE HOLE (390 and 1280), blocked rebuild messages, scorekeeper field screen (768), Set time audited, raw API writes 403 |
+| Touched outside the pack's own files | six older gates and the simulation updated to the new rules; NACL seed generator + 17 regenerated seed files (matches laid out as the loader) |
+| Not verified | real Supabase Auth / realtime; Event day and Run at phone size; no hold UI exists to verify |
+| Remaining risks | Event day still saves its plan on open; no hold or bracket-fight-removal screen; `delete_event` of drafts/synthetic events ignores match history; hosted not migrated |
+
+## Pack 24A1: focus layout and tablet safety (2026-10-06): stranded-branch record, superseded by the reconciliation entry above
+
+| Level | Status |
+| --- | --- |
+| Report | `docs/claude-packs/PACK_24A1_FOCUS_LAYOUT.md` (before/after, routes, layout, deferrals) |
+| Branch | `claude/focus-layout-tablet-safety-b40tc4`, on top of Pack 24A0 (`38f195e`); 24A0 protections unchanged |
+| Implemented in repository | new `FocusLayout` (compact header: Exit, context, event name, sync/offline chip; no site header, bottom bar, footer, bug button, theme switch or notification prompt; safe areas). Routes `/events/:id/field/:field` and `/events/:id/checkin` (armour inspection lives here too) moved into it, same URLs. Lyst: the round's primary action is a sticky row at the bottom, and the clock stops above it on short screens. Desk: search first and sticky, compact counts, quieter Undo |
+| Not moved | Manage (Event day, Run), Command Centre, event page, arena/broadcast/counter (already outside the site chrome) |
+| Migration / hosted Supabase | **none** (UI only) / **not applied, not touched** |
+| Deployed | **NO** |
+| Automated tests | Vitest 87 files / **1045**; typecheck; build |
+| Browser (local stack, real Chromium) | new `scripts/e2e/pack24a1-live.sh` **83/83** at 390x844, 768x1024, 1024x768, 1280x900; regression `pack16-live` **66/66**, `pack13-live` **88/88**, `pack24a0-live` **41/41** |
+| Before | reproduced: at 390 and 768 the site bottom bar covered Start round / Back to the queue when scrolled, and at 390 and 1024 the sticky lyst clock slid behind the site header |
+| Not verified | physical phone/tablet, iOS Safari safe areas and keyboard (keyboard simulated by a smaller viewport), real Supabase Auth/realtime, landscape phone |
+| Left for later packs | field queue title and sync wording duplicated by the header; tall readiness strip on phones; desk filter row scrolls sideways on phones; whether Event day/Run/secretary controller become focus screens (24A4) |
+

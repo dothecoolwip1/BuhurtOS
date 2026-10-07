@@ -69,7 +69,8 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
   const problem = drawProblem(choice);
   const plan = useMemo(() => (problem ? null : planDraw({ format, entryIds: order, mode, seed, thirdPlace, poolCount })), [problem, format, order, mode, seed, thirdPlace, poolCount]);
   const groups = useMemo(() => (plan ? describePlan(plan.matches, nameOf) : []), [plan]); // eslint-disable-line react-hooks/exhaustive-deps
-  const hasFinal = existing.some(m => m.queueState === 'final');
+  // the server is the authority (it also protects fights with scoring or result history this list cannot see); this only stops the obvious case early
+  const hasFinal = existing.some(m => m.queueState === 'final' || m.queueState === 'active');
   const replacing = existing.length > 0;
 
   const confirm = async () => {
@@ -144,7 +145,7 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
       )}
 
       {replacing && !hasFinal && <p className="src">This competition already has {existing.length} matches. The new draw is created first, then these are removed once it succeeds.</p>}
-      {hasFinal && <p role="alert" style={errorStyle}>Some matches already have final results. Reopen them first, then you can build a new draw.</p>}
+      {hasFinal && <p role="alert" style={errorStyle}>Some fights have started or have a result, so a new draw would erase them. Fights with a result or scoring are never deleted. If a fight was only set going by mistake and nothing was scored, send it back to the line first.</p>}
       {error && <p role="alert" style={errorStyle}>{error}</p>}
 
       {!confirming && (
@@ -347,7 +348,7 @@ function CompetitionRun({ comp, eventId, timeZone, jumpId, eventDay, onScheduled
 
       {all.length > 0 && (
         <Withdrawals entries={all} unclaimed={unclaimed} matches={list} eventDay={eventDay} onChanged={() => { setReload(k => k + 1); onScheduled(); }}
-          onRedraw={name => { if (list.some(m => m.queueState === 'final')) return; setRedrawFor(name); setBuilding(true); }} />
+          onRedraw={name => { if (list.some(m => m.queueState === 'final' || m.queueState === 'active')) return; setRedrawFor(name); setBuilding(true); }} />
       )}
 
       {canBuildBracketFromPools(list) && <PoolBracket comp={comp} matches={list} entries={all} onDone={done} />}

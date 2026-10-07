@@ -85,7 +85,8 @@ export function championOf(matches: readonly CompetitionMatch[]): string | null 
 
 export interface NowItem { id: string; state: 'active' | 'in_the_hole' | 'on_deck'; competition: string; round: string; nameA: string; nameB: string }
 export interface FieldNow { field: string; items: NowItem[] }
-const NOW_RANK = { active: 0, in_the_hole: 1, on_deck: 2 } as const;
+/** The order the field calls them in: the fight now, the one on deck (next), then the one in the hole (after that). */
+const NOW_RANK = { active: 0, on_deck: 1, in_the_hole: 2 } as const;
 export const NOW_LABEL: Record<NowItem['state'], string> = { active: 'Now', in_the_hole: 'In the hole', on_deck: 'On deck' };
 
 /** Matches that are running or queued, grouped by field (fields sorted by name, matches by state then scheduled time). */

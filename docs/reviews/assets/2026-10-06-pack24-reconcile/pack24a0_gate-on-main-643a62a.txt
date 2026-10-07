@@ -1,0 +1,1333 @@
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+                                                                                                           set_config                                                                                                            
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ {229cddaa-4ac8-47db-bbb4-eb7958a342f7,299d43ca-9f33-4562-a342-d3f685355ba3,655c7908-21a9-4e6c-9b54-941dc4cb7fcb,72db39b2-2a9a-44d1-89b7-417234d302d3,7c0b50ac-2a25-48c0-a1c7-2d3508ef3006,fd87b068-5fc3-4133-919b-a44db17b5805}
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ result 
+--------
+(0 rows)
+
+               result                
+-------------------------------------
+ FAILED 80 of 151 checks (soft mode)
+(1 row)
+
+ n  |                                                               name                                                                |                                                                                                                                                                                                                                why                                                                                                                                                                                                                                 
+----+-----------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  1 | ... and the rebuild is on the audit trail with how many fights it replaced                                                        | 
+  2 | a draw cannot be replaced while one of its fights is active                                                                       | expected an error
+  3 | ... the active fight is still there, still active                                                                                 | scheduled <> active
+  4 | ... its scoring events survive                                                                                                    | 0 <> 1
+  5 | ... and its live score survives                                                                                                   | 0 <> 1
+  6 | a draw with a scored fight (scoring events, fight not final) cannot be replaced                                                   | expected an error
+  7 | ... the scoring events survive                                                                                                    | 0 <> 1
+  8 | ... and the draw STILL cannot be replaced: the result proposal history stays (history is corrected, never deleted)                | expected an error
+  9 | ... the match and its proposal survive                                                                                            | 0 <> 1
+ 10 | a plain waiting fight has no history                                                                                              | 
+ 11 | ... an untouched fight of another competition has none                                                                            | 
+ 12 | none of the refused attempts left a rebuild on the audit trail                                                                    | 1 <> 0
+ 13 | the organizer cannot insert a match through the table                                                                             | expected an error
+ 14 | ... cannot delete a match through the table                                                                                       | expected an error
+ 15 | ... cannot change an entrant                                                                                                      | expected an error
+ 16 | ... cannot change the other entrant                                                                                               | expected an error
+ 17 | ... cannot relink a match                                                                                                         | expected an error
+ 18 | ... cannot change next_slot                                                                                                       | expected an error
+ 19 | ... cannot change the position                                                                                                    | expected an error
+ 20 | ... cannot change the stage                                                                                                       | expected an error
+ 21 | ... cannot change the round label                                                                                                 | expected an error
+ 22 | ... cannot change the pool                                                                                                        | expected an error
+ 23 | none of that changed the fight                                                                                                    | 
+ 24 | ... the change took                                                                                                               | 
+ 25 | ... including the old and new field                                                                                               | 
+ 26 | ... the actor is recorded                                                                                                         | 
+ 27 | ... audited                                                                                                                       | false <> true
+ 28 | ... the time is unchanged                                                                                                         | 
+ 29 | a semifinal cannot be deleted through the table (that would leave the final with one feeder)                                      | expected an error
+ 30 | ... the final still has both feeders                                                                                              | 1 <> 2
+ 31 | a plan whose final has an unfed slot is refused (one feeder only)                                                                 | expected an error
+ 32 | a plan with two feeders into the same slot is refused                                                                             | expected an error
+ 33 | a plan whose feeder collides with a side already filled is refused                                                                | expected an error
+ 34 | a plan that links a match to itself is refused                                                                                    | expected an error
+ 35 | ... none of those touched the existing bracket                                                                                    | 1 <> 4
+ 36 | the organizer calls a fight on deck, another in the hole                                                                          | unexpected error P0002 match not found
+ 37 | ... each call is on the audit trail                                                                                               | false <> true
+ 38 | ... with the previous and new state                                                                                               | 
+ 39 | ... each of those calls is on the audit trail with the caller's role                                                              | 
+ 40 | the refused attempts changed nothing                                                                                              | 
+ 41 | ... and opens the one in the hole                                                                                                 | unexpected error P0002 match not found
+ 42 | ... and sends an active fight back to the line                                                                                    | unexpected error P0002 match not found
+ 43 | ... the audit trail names the scorekeeper's own calls (2 above, 3 here; the repeat wrote none)                                    | 0 <> 5
+ 44 | ... and the field change is audited once, by the queue call (not twice by the schedule trigger)                                   | 0 <> 1
+ 45 | the organizer holds a waiting fight with a reason                                                                                 | unexpected error 42883 function public.set_match_hold(unknown, boolean, unknown) does not exist
+ 46 | ... it is held                                                                                                                    | false <> true
+ 47 | ... the hold is on the audit trail with the reason                                                                                | 
+ 48 | ... and the deliberate hold is still there                                                                                        | false <> true
+ 49 | ... the planner's own hold went, the deliberate one stayed                                                                        | 
+ 50 | the held fight (first in the plan) was skipped and stays waiting                                                                  | on_deck <> scheduled
+ 51 | the head marshal cannot release a hold (holds follow Pack 18.1 can_adjust_queue: organizer, Secretary / Scorekeeper, Event Admin) | wrong error 42883 instead of 42501
+ 52 | check-in staff cannot                                                                                                             | wrong error 42883 instead of 42501
+ 53 | a fighter cannot                                                                                                                  | wrong error 42883 instead of 42501
+ 54 | another event's organizer cannot                                                                                                  | wrong error 42883 instead of 42501
+ 55 | another organization's administrator cannot                                                                                       | wrong error 42883 instead of 42501
+ 56 | a held fight needs a reason                                                                                                       | wrong error 42883 instead of 22023
+ 57 | a fight being fought cannot be held (send it back first)                                                                          | wrong error 42883 instead of P0001
+ 58 | the organizer releases the hold                                                                                                   | unexpected error 42883 function public.set_match_hold(unknown, boolean) does not exist
+ 59 | ... it is no longer held                                                                                                          | false/missing <> false/false
+ 60 | ... the release is audited once, by the organizer                                                                                 | 0 <> 1
+ 61 | ... and the refused attempts were not                                                                                             | 0 <> 1
+ 62 | ... it does                                                                                                                       | false <> true
+ 63 | the Secretary / Scorekeeper may hold a waiting fight (Pack 18.1 queue adjustment)                                                 | unexpected error 42883 function public.set_match_hold(unknown, boolean, unknown) does not exist
+ 64 | ... still held                                                                                                                    | false <> true
+ 65 | ... and may release it                                                                                                            | unexpected error 42883 function public.set_match_hold(unknown, boolean) does not exist
+ 66 | a match of another event cannot be held by this organizer                                                                         | wrong error 42883 instead of 42501
+ 67 | replacing a draw over an active fight is refused with a message an organizer can act on (not a raw database error)                | 
+ 68 | ... every fight of the draw is the same row as before, the untouched future fights included                                       | {1f83df97-7784-4e5b-b2e8-4f8178e2ece1,83f5d265-6df2-4a7c-a6ee-bb58930c37d9,a61f6c4b-fcaa-4d69-b2f7-cdd5b95398da,ad9309d5-181a-46fa-8b34-8f6ac64cc81a,d9e407c4-ce0e-4e65-ab13-7085e2920698,db324ef4-47bd-41ea-bc9f-afa13d9d6cb7} <> {0bc0ddef-5181-46a3-9c85-6f823861a5db,1f28c676-78f2-4f32-b938-274ef6cfcaa0,404c1fee-beb1-4eab-b1bf-61d688534032,54e837fa-8ba9-4d09-8310-cf9a7c378bce,d4872377-e2f0-4999-95f7-21aaf9c357b1,e3fd67a1-5cc4-4820-a48f-bde4ee5fd5c4}
+ 69 | ... the draw settings did not change                                                                                              | (7,random,x,"2026-10-06 21:06:09.138858+00",round_robin) <> (,,,,round_robin)
+ 70 | ... and nothing was written to the audit trail                                                                                    | 113 <> 112
+ 71 | a bracket plan that is malformed AND targets a protected draw is refused too, writing nothing                                     | expected an error
+ 72 | ... still the same rows                                                                                                           | {3a0801e7-4b7e-4758-92b1-8c46f5b97e9d} <> {0bc0ddef-5181-46a3-9c85-6f823861a5db,1f28c676-78f2-4f32-b938-274ef6cfcaa0,404c1fee-beb1-4eab-b1bf-61d688534032,54e837fa-8ba9-4d09-8310-cf9a7c378bce,d4872377-e2f0-4999-95f7-21aaf9c357b1,e3fd67a1-5cc4-4820-a48f-bde4ee5fd5c4}
+ 73 | the two-fighter final of comp 8 is untouched so far                                                                               | 
+ 74 | a discipline review lodged about it protects it                                                                                   | MISSING private.match_history_reason <> a discipline review was lodged about it
+ 75 | ... so its draw cannot be replaced, with the clear refusal (P0001), not a foreign-key error                                       | 23503 <> P0001
+ 76 | the organizer cannot delete an entrant of a scored fight through the table                                                        | expected an error
+ 77 | ... cannot point that entrant at another team                                                                                     | expected an error
+ 78 | ... cannot move it to another competition                                                                                         | expected an error
+ 79 | ... and cannot delete the entrant of the ACTIVE fight in comp 3 either                                                            | expected an error
+ 80 | ... both fights still have both sides, with the same entrant and team                                                             | 
+(80 rows)
+

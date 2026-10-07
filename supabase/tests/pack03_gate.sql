@@ -101,8 +101,8 @@ select t.as_admin();
 select t.expect_eq('the refused commands left no proposal rows', (select count(*) from public.result_proposals where match_id = t.m(2)), 0::bigint);
 
 -- ================================================================ stale participant/version
-select t.as_user('00000000-0000-0000-0000-0000000000a2');
-select t.expect_ok('the organizer replaces an entrant of match 2 after device A opened it', $q$update public.matches set entry_b = '00000000-0000-0000-0000-00000000e102' where id = t.m(2) $q$);
+select t.as_admin();
+select t.expect_ok('an entrant of match 2 is replaced after device A opened it (by the harness; the organizer no longer has the table right, Pack 24A0)', $q$update public.matches set entry_b = '00000000-0000-0000-0000-00000000e102' where id = t.m(2) $q$);
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('a stale command is refused safely (status stale, not applied)', public.submit_match_result(t.cmd(2), t.m(2), 'a', 5, 3, '{}'::jsonb, 0, 1) ->> 'status', 'stale');
 select t.as_admin();

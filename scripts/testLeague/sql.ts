@@ -120,9 +120,13 @@ on conflict (id) do nothing;`);
 function compMatches(ev: EventDef, s: CompSim, played: boolean): string[] {
   const o: string[] = [`-- ${s.comp.name}: ${s.structure}, ${s.comp.entries.length} entries`];
   for (const phase of s.phases) {
+    // Pack 24A0: an organizer no longer writes matches through the table (only build_schedule does, with random ids). The dataset keeps its fixed ids, so the
+    // loader (the database owner, still carrying the owner's claims) lays the planned matches out, then the owner session carries on with the real RPCs.
+    o.push('reset role;');
     o.push(matchRows(ev, s.comp.id, phase));
     const l = linkRows(phase);
     if (l) o.push(l);
+    o.push('set local role authenticated;');
     if (played) for (const m of phase) o.push(finalizeSql(m));
   }
   if (played) {

@@ -1,0 +1,231 @@
+ as_user 
+---------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_user 
+---------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ as_admin 
+----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ expect_ok 
+-----------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_eq 
+-----------
+ 
+(1 row)
+
+ result 
+--------
+(0 rows)
+
+               result               
+------------------------------------
+ FAILED 13 of 28 checks (soft mode)
+(1 row)
+
+ n  |                                              name                                              |                                                                 why                                                                 
+----+------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------
+  1 | a fighter the organizer creates on a TEST event is marked test data (private.is_synthetic)     | false <> true
+  2 | ... through the existing model: one record_sources row naming the event's own synthetic source | null <> 00000000-0000-0000-0000-00000000245e
+  3 | ... it is listed with the other test records (the "Test" label reads this view)                | false <> true
+  4 | ... and the audit row says it is test data                                                     | null <> true
+  5 | on a TEST event, a fighter named like a real fighter needs no "different person" confirmation  | unexpected error 22023 1 fighter(s) named Pat Genuine-Person already exist; pick one of them, or confirm this is a different person
+  6 | ... and is test data too                                                                       | false <> true
+  7 | a test fighter does not appear in the claimable-profile search                                 | 1 <> 0
+  8 | ... and cannot be claimed by a real account                                                    | expected an error
+  9 | ... and cannot be entered in a REAL event (closing a direct call; the search already hides it) | expected an error
+ 10 | ... the real competition has no entry for it                                                   | true <> false
+ 11 | ... the audit row says it is not test data                                                     | null <> false
+ 12 | private.result_revisions_append_only has a fixed, empty search_path                            | null <> search_path=""
+ 13 | no function in public or private is left without a fixed search_path                           | 1 <> 0
+(13 rows)
+
