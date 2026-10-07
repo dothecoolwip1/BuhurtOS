@@ -170,7 +170,7 @@ try {
   for (const [name, who, side] of [['ash', 'Counter Ash', 'RED'], ['birch', 'Counter Birch', 'RED'], ['cedar', 'Counter Cedar', 'BLUE'], ['dune', 'Counter Dune', 'BLUE']]) {
     const { page } = await open('phone');           // an event phone: no account, the Counter QR is its only credential
     await page.goto(`${BASE}/device#c=${code}`);
-    await page.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
+    await page.getByText(/Who.s counting/i).waitFor({ timeout: 30000 });
     await page.fill('#cp-name', who);
     await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
@@ -180,7 +180,7 @@ try {
   {
     const { page } = await open('phone', 'elm');     // the learner: their own phone and account, the training QR
     await page.goto(`${BASE}/lyst/train/${train}`);
-    await page.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
+    await page.getByText(/Who.s counting/i).waitFor({ timeout: 30000 });
     await page.fill('#cp-tname', 'Counter Elm');
     await page.getByRole('button', { name: /RED/ }).click();
     await page.getByRole('button', { name: 'Start counting' }).click();

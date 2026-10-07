@@ -19,4 +19,11 @@ describe('friendlyError', () => {
   it('explains rate limiting', () => {
     expect(friendlyError({ message: 'email rate limit exceeded', status: 429 })).toContain('Too many');
   });
+  it('a counter phone\'s own refusals are explained before the generic permission text (Pack 27A)', () => {
+    expect(friendlyError({ code: '42501', message: 'this phone is not counting on that fight' })).toMatch(/not counting on that fight any more/i);
+    expect(friendlyError({ code: 'P0001', message: 'this phone is not counting now: choose your Lyst and side again' })).toMatch(/not counting right now/i);
+    expect(friendlyError({ code: '42501', message: 'this device session has ended' })).toMatch(/counter session has ended/i);
+    expect(friendlyError({ code: '42501', message: 'that is not your counter seat' })).not.toMatch(/seat/i);
+    expect(friendlyError({ code: '42501', message: 'only an organizer of this event can see its device codes' })).toBe('You do not have permission to do that.');
+  });
 });

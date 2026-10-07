@@ -11,11 +11,12 @@ export function friendlyError(error: unknown, fallback = 'Something went wrong. 
   console.error('[BuhurtOS]', error);
   if (typeof navigator !== 'undefined' && navigator.onLine === false) return 'You are offline. Your changes are not lost; try again when you have signal.';
   if (e.code && SAFE_CODES.has(e.code) && e.message) {
+    // the counter phone's own refusals come first: a 42501 here is "this phone's place moved on", not a staff permission
+    if (/this device session has ended/i.test(e.message)) return 'This counter session has ended. Scan the Counter QR again to keep counting.';
+    if (/not counting on that fight|not your counter seat/i.test(e.message)) return 'This phone is not counting on that fight any more. Choose your Lyst and side again.';
+    if (/not counting now|counter seat is not active/i.test(e.message)) return 'This phone is not counting right now. Choose your Lyst and side again.';
     if (e.code === '42501') return 'You do not have permission to do that.';
     if (e.code === '28000') return 'Please sign in first.';
-    // the database's counter messages name the "seat"; the person holding the phone knows a Lyst and a side
-    if (/not your counter seat/i.test(e.message)) return 'This phone is not counting on that fight any more. Choose your Lyst and side again.';
-    if (/counter seat is not active/i.test(e.message)) return 'This phone is no longer counting. Choose your Lyst and side again.';
     return capitalise(e.message);
   }
   const m = (e.message ?? '').toLowerCase();

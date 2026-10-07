@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_PRESETS, ServerClock, formatClock, nextMode, presetOf, remainingMs, timerFor, timerTone, timerWord, type LystTimer } from './timer';
 import { leadRule, roundSeconds, activeDiscipline, allRoundsConfirmed, bump, clampScore, currentRound, describeDiscipline, disciplineCounts, entryStart, hasDq, isChange, officialTotals, resultSupportedByTotals, type LystRound } from './rounds';
-import { DEFAULT_SIDES, JOIN_CODE_LENGTH, TapQueue, counterBanner, counterInputFor, fightLine, flushTaps, inkFor, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, trainingUrl, type CountAction } from './counters';
+import { DEFAULT_SIDES, JOIN_CODE_LENGTH, TapQueue, counterBanner, counterInputFor, fightLine, flushTaps, inkFor, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, trainingUrl, type CountAction, EXIT_PATH, dropStaleQueues, rememberOperator, rememberedOperator, tapsKey } from './counters';
 
 const T0 = Date.parse('2026-10-07T12:00:00.000Z');
 const timer = (o: Partial<LystTimer> = {}): LystTimer => ({ event_id: 'e', field_key: 'field 1', match_id: 'm', round_no: 1, mode: 'fight', status: 'running', duration_ms: 60000, remaining_ms: 60000, started_at: new Date(T0).toISOString(), rev: 1, ...o });
@@ -233,11 +233,46 @@ describe('counter phone', () => {
     expect(counterBanner({ seat: null })).toMatch(/choose your lyst and side/i);
     expect(counterBanner({ seat: null, binding: { field_key: 'field 1', side: null } })).toMatch(/red or blue/i);
     expect(counterBanner({ seat: { status: 'expired' } })).toMatch(/run out/i);
+    expect(counterBanner({ seat: { status: 'expired' } })).not.toMatch(/seat|place/i);
     expect(counterBanner({ seat: { status: 'active' }, waiting: true })).toMatch(/waiting for the next fight/i);
     expect(counterBanner({ seat: { status: 'active' }, final: true })).toMatch(/finished/i);
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'confirming' } })).toMatch(/confirming/i);
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'running' }, can_count: true })).toMatch(/tap count/i);
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'running' }, can_count: true, counter_input: 'standing' })).toMatch(/fighter down/i);
+  });
+});
+
+describe('Pack 27A: the phone remembers its counter, tidies old fights, exits to the ordinary site', () => {
+  const mem = () => { const m = new Map<string, string>(); return { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => { m.set(k, v); }, removeItem: (k: string) => { m.delete(k); }, key: (i: number) => [...m.keys()][i] ?? null, get length() { return m.size; }, m }; };
+  it('offers the last name typed on this phone again (trimmed, bounded), and forgets an empty one', () => {
+    const st = mem();
+    expect(rememberedOperator(st)).toBe('');
+    rememberOperator(st, '  Garrett Robson ');
+    expect(rememberedOperator(st)).toBe('Garrett Robson');
+    rememberOperator(st, 'x'.repeat(100));
+    expect(rememberedOperator(st).length).toBe(80);
+    rememberOperator(st, '   ');
+    expect(rememberedOperator(st)).toBe('');
+    expect(rememberedOperator(null)).toBe('');
+    expect(() => rememberOperator({ setItem: () => { throw new Error('blocked'); }, removeItem: () => undefined }, 'A')).not.toThrow();
+  });
+  it('removes the queues of fights the phone is no longer on, keeps the current one, and counts what was still waiting', () => {
+    const st = mem();
+    st.setItem(tapsKey('seat-old'), JSON.stringify([{ kind: 'tap', id: '1', weight: 1, round: 1 }, { kind: 'undo', id: '2', round: 1 }]));
+    st.setItem(tapsKey('seat-older'), 'not json');
+    st.setItem(tapsKey('seat-now'), JSON.stringify([{ kind: 'tap', id: '3', weight: 1, round: 2 }]));
+    st.setItem('bos-counter-name', 'Garrett');
+    expect(dropStaleQueues(st, 'seat-now')).toBe(2);
+    expect(st.getItem(tapsKey('seat-now'))).not.toBeNull();
+    expect(st.getItem(tapsKey('seat-old'))).toBeNull();
+    expect(st.getItem(tapsKey('seat-older'))).toBeNull();
+    expect(st.getItem('bos-counter-name')).toBe('Garrett');
+    expect(dropStaleQueues(st, null)).toBe(1);
+    expect(st.length).toBe(1);
+    expect(dropStaleQueues(null, 'x')).toBe(0);
+  });
+  it('an exit goes back to the ordinary site, not the device sign-in page', () => {
+    expect(EXIT_PATH).toBe('/');
   });
 });
 

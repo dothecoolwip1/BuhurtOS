@@ -3,17 +3,18 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { SignIn } from '../../auth/SignIn';
 import { counterBind, counterLeave, counterRecord, counterSetOperator, counterSubmit, counterUndo, joinTrainingCounter, leaveSeat, type CounterField, type CounterState } from '../../data/lyst';
-import { isDeviceMode, storedWhoami } from '../../lib/deviceSession';
+import { deviceManager, isDeviceMode, storedWhoami } from '../../lib/deviceSession';
+import { Dialog } from '../../components/Dialog';
 import { classifyRpcError } from '../../lib/scoreSender';
 import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
-import { DEFAULT_SIDES, TapQueue, counterBanner, fightLine, flushTaps, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, type CountAction, type CounterSend, type CounterStep } from '../../lib/lyst/counters';
+import { DEFAULT_SIDES, EXIT_PATH, TapQueue, counterBanner, dropStaleQueues, fightLine, flushTaps, mergeSides, nextStep, onlyField, parseJoinCode, rememberOperator, rememberedOperator, sideLabel, sideVars, standingLeft, tapsKey, type CountAction, type CounterSend, type CounterStep } from '../../lib/lyst/counters';
 import { formatClock, remainingMs } from '../../lib/lyst/timer';
 import { useCounterState, useNow } from '../../lib/lyst/useLystState';
 
 const TRAIN_CODE_KEY = 'bos-lyst-train-code';
-const tapsKey = (seat: string) => `bos-lyst-taps:${seat}`;
+const local = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch { return null; } };
 const store = {
   get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },
   set: (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* the taps still work for this session */ } },
@@ -69,6 +70,7 @@ function DeviceCounter() {
   const saveOperator = (name: string) => {
     const operator = name.trim();
     if (operator.length < 1) return;
+    rememberOperator(local(), operator);   // offered again on this phone's next scan: a name, never a sign-in
     setDraft(d => ({ ...d, operator }));
     if (binding?.field_key && binding.side) return run(() => counterSetOperator(operator));   // a handoff: the tally carries on
     if (binding?.operator) return run(() => counterSetOperator(operator));
@@ -87,6 +89,14 @@ function DeviceCounter() {
     if (!field || !operator) { setEditing(!operator ? 'operator' : 'field'); return; }
     void run(() => counterBind(field, side, operator));
   };
+  // Exit Counter: this phone stops being event equipment. Its place on the Lyst ends (evidence kept), the session is signed out, and the phone goes
+  // back to the ordinary site. A person's own account, if one was signed in before the scan, is untouched: it lived under its own key all along.
+  const exit = async () => {
+    setBusy(true);
+    try { await counterLeave(); } catch { /* the server ends the binding with the session anyway */ }
+    dropStaleQueues(local(), null);
+    await deviceManager().signOut(EXIT_PATH);
+  };
 
   if (step === 'loading') {
     return <main className="cp" style={vars}><p className="muted" role="status">{cs.error != null ? friendlyError(cs.error, 'Could not reach the event.') : 'Loading…'}</p></main>;
@@ -101,7 +111,7 @@ function DeviceCounter() {
     return (
       <main className="cp cp-setup" style={vars} aria-label="Who is counting">
         {head}
-        <OperatorForm initial={binding?.operator ?? ''} busy={busy} problem={problem} onSave={saveOperator} onCancel={editing && binding?.operator ? () => setEditing(null) : undefined} />
+        <OperatorForm initial={binding?.operator ?? rememberedOperator(local())} busy={busy} problem={problem} onSave={saveOperator} onCancel={editing && binding?.operator ? () => setEditing(null) : undefined} />
       </main>
     );
   }
@@ -109,7 +119,7 @@ function DeviceCounter() {
     return (
       <main className="cp cp-setup" style={vars} aria-label="Which Lyst">
         {head}
-        <h1 className="cp-q">Which Lyst?</h1>
+        <h1 className="cp-q">Choose your Lyst</h1>
         {fields.length === 0 && <p className="cp-msg">This event has no Lysts yet. Ask the organizer, then try again.</p>}
         <div className="cp-choices">
           {fields.map(f => <FieldButton key={f.key} f={f} current={binding?.field_key === f.key} onPick={() => chooseField(f.key)} busy={busy} />)}
@@ -125,7 +135,7 @@ function DeviceCounter() {
     return (
       <main className="cp cp-setup" style={vars} aria-label="Which side">
         {head}
-        <h1 className="cp-q">Which side on {whichLyst}?</h1>
+        <h1 className="cp-q">Choose your side on {whichLyst}</h1>
         {chosen?.now ? <p className="src cp-now" data-testid="cp-side-now">Now fighting: {chosen.now.a ?? 'Side A'} vs {chosen.now.b ?? 'Side B'}</p> : <p className="src cp-now">Nothing is on {whichLyst} yet. Your side follows the next fight.</p>}
         <div className="cp-sides">
           <button type="button" className="cp-side cp-side-a" disabled={busy} onClick={() => chooseSide('a')} aria-pressed={binding?.side === 'a'} data-testid="cp-pick-a"><span>{sides.a.name.toUpperCase()}</span><small>{chosen?.now?.a ?? 'Side A'}</small></button>
@@ -140,7 +150,7 @@ function DeviceCounter() {
   return (
     <CountScreen state={state!} cs={cs} training={false} busy={busy} problem={problem}
       onChangeOperator={() => setEditing('operator')} onChangeSide={() => setEditing('side')} onChangeField={fields.length > 1 ? () => setEditing('field') : undefined}
-      onLeave={() => run(() => counterLeave())} />
+      onLeave={exit} />
   );
 }
 
@@ -152,7 +162,7 @@ function FieldButton({ f, current, onPick, busy }: { f: CounterField; current: b
   );
 }
 
-function OperatorForm({ initial, busy, problem, onSave, onCancel, title = 'Who is counting?' }: { initial: string; busy: boolean; problem: string | null; onSave: (name: string) => unknown; onCancel?: () => void; title?: string }) {
+function OperatorForm({ initial, busy, problem, onSave, onCancel, title = "Who's counting?" }: { initial: string; busy: boolean; problem: string | null; onSave: (name: string) => unknown; onCancel?: () => void; title?: string }) {
   const [name, setName] = useState(initial);
   const submit = (e: FormEvent) => { e.preventDefault(); void onSave(name); };
   return (
@@ -251,6 +261,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   const round = state.round?.no ?? 0;
   const seatId = seat?.id ?? '';
   const [notice, setNotice] = useState<string | null>(null);
+  const [leaving, setLeaving] = useState(false);
   const [tick, setTick] = useState(0);
   const [serverTotal, setServerTotal] = useState(0);
   const [offline, setOffline] = useState(false);
@@ -263,6 +274,9 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     if (!seatId) return;
     const raw = store.get(tapsKey(seatId));
     try { queue.current.load(raw ? (JSON.parse(raw) as CountAction[]) : []); } catch { queue.current.load([]); }
+    // queues of fights this phone is no longer on can never count: they go, and the phone says so once if anything was still waiting in them
+    const gone = dropStaleQueues(local(), seatId);
+    if (gone > 0) setNotice(`${gone} tap${gone === 1 ? '' : 's'} from an earlier fight ${gone === 1 ? 'was' : 'were'} still waiting on this phone and ${gone === 1 ? 'was' : 'were'} not counted.`);
     setServerTotal(0); setTick(t => t + 1);
   }, [seatId]);
   const persist = useCallback(() => { if (seatId) store.set(tapsKey(seatId), JSON.stringify(queue.current.pending)); }, [seatId]);
@@ -380,17 +394,28 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
       <footer>
         <div className="cp-foot">
           <button type="button" className="btn btn-line" disabled={!canCount || shown <= 0} onClick={undo}>{standing ? 'Undo (back up)' : 'Undo last'}</button>
-          <button type="button" className="btn btn-line" disabled={!seat || seat.status !== 'active' || !round || !!state.waiting} onClick={() => void done()}>Done with round</button>
+          <button type="button" className="btn btn-line" disabled={!seat || seat.status !== 'active' || !round || !!state.waiting || !!state.submitted} onClick={() => void done()}>{state.submitted ? `Round ${round} sent ✓` : 'Done with round'}</button>
         </div>
         <p className="cp-sync" role="status">{waiting > 0 ? `${waiting} tap${waiting === 1 ? '' : 's'} saved on this phone, sending…` : seat?.status === 'active' && !state.waiting ? 'All taps sent.' : ''}</p>
         <nav className="cp-links" aria-label="Change">
-          <button type="button" className="ly-link" disabled={busy} onClick={onChangeOperator}>{training ? 'Change name' : 'New counter'}</button>
+          <button type="button" className="ly-link" disabled={busy} onClick={onChangeOperator}>{training ? 'Change name' : 'Change counter'}</button>
           {onChangeSide && <button type="button" className="ly-link" disabled={busy} onClick={onChangeSide}>Change side</button>}
           {onChangeField && <button type="button" className="ly-link" disabled={busy} onClick={onChangeField}>Change Lyst</button>}
-          <button type="button" className="ly-link" disabled={busy} onClick={() => void onLeave()}>{training ? 'Leave' : 'Stop counting'}</button>
+          {training
+            ? <button type="button" className="ly-link" disabled={busy} onClick={() => void onLeave()}>Leave</button>
+            : <button type="button" className="ly-link" disabled={busy} onClick={() => setLeaving(true)}>Exit Counter</button>}
         </nav>
         {training && state.event && <Link className="ly-link" to={`/events/${state.event.slug}`}>Back to the event</Link>}
       </footer>
+      {leaving && (
+        <Dialog title="Exit Counter?" variant="drawer" busy={busy} onClose={() => setLeaving(false)}>
+          <p style={{ marginTop: 0 }}>This phone stops counting{waiting > 0 ? ` (${waiting} tap${waiting === 1 ? '' : 's'} not sent yet would be lost)` : ''} and goes back to the ordinary BuhurtOS site. Your counts so far stay with the fight. To count again, scan the Counter QR.</p>
+          <div style={{ display: 'grid', gap: 8 }}>
+            <button type="button" className="btn btn-ink" data-autofocus disabled={busy} onClick={() => void onLeave()} data-testid="cp-exit">Yes, exit Counter</button>
+            <button type="button" className="btn btn-line" disabled={busy} onClick={() => setLeaving(false)}>Keep counting</button>
+          </div>
+        </Dialog>
+      )}
     </main>
   );
 }

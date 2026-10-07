@@ -618,10 +618,10 @@ try {
     const phone = async (name, who) => { const p = (await open('phone', who)).page; p.name = name; return p; };
     const bind = async (p, operator, fieldName, side) => {
       await go(p, `/device#c=${poolCode}`);
-      await until(async () => await has(p, 'who is counting'), 30000);
+      await until(async () => await has(p, "who's counting"), 30000);
       await p.fill('#cp-name', operator); await p.getByRole('button', { name: 'Continue' }).click();
-      await until(async () => await has(p, 'which lyst'), 15000); await p.getByRole('button', { name: new RegExp(fieldName.replace('Field', 'Lyst')) }).click();
-      await until(async () => await has(p, 'which side'), 15000); await p.getByRole('button', { name: new RegExp(side) }).click();
+      await until(async () => await has(p, 'choose your lyst'), 15000); await p.getByRole('button', { name: new RegExp(fieldName.replace('Field', 'Lyst')) }).click();
+      await until(async () => await has(p, 'choose your side'), 15000); await p.getByRole('button', { name: new RegExp(side) }).click();
       return until(async () => await has(p, names[side === 'RED' ? 0 : 1].toLowerCase()), 20000);
     };
     const r1 = await phone('r1'), r2 = await phone('r2'), b1 = await phone('b1');
@@ -639,7 +639,7 @@ try {
     await tab.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
     const tr = await phone('trainee', 'volunteer');
     await go(tr, `/lyst/train/${train}`);
-    await until(async () => await has(tr, 'who is counting'), 30000);
+    await until(async () => await has(tr, "who's counting"), 30000);
     await tr.fill('#cp-tname', 'Trainee Vee'); await tr.getByRole('button', { name: /RED/ }).click(); await tr.getByRole('button', { name: 'Start counting' }).click();
     check('93. a trainee scans the TRAINING QR with their own account: name, side, counting, told it is practice', await until(async () => await has(tr, 'practice') && await has(tr, names[0].toLowerCase()), 20000) && sql(`select role from public.lyst_counter_seats where display_name = 'Trainee Vee' and status = 'active'`) === 'learning', (await body(tr)).slice(0, 300));
     await shot(tr, 'training-counter');
@@ -657,8 +657,8 @@ try {
     check('94. every phone\'s taps are its own evidence on the server: Ash 5, Birch 3, Cedar 4, trainee 4', await untilDb(() => [tot('Counter Ash'), tot('Counter Birch'), tot('Counter Cedar'), tot('Trainee Vee')].join(','), '5,3,4,4') === '5,3,4,4', [tot('Counter Ash'), tot('Counter Birch'), tot('Counter Cedar'), tot('Trainee Vee')].join(','));
     await shot(r1, 'counter-active');
     // handoff on r1: the tally carries on, both names on the taps
-    await r1.getByRole('button', { name: 'New counter' }).click();
-    await until(async () => await has(r1, 'who is counting'));
+    await r1.getByRole('button', { name: 'Change counter' }).click();
+    await until(async () => await has(r1, "who's counting"));
     await r1.fill('#cp-name', 'Counter Dune'); await r1.getByRole('button', { name: 'Continue' }).click();
     check('95. HANDOFF: the new counter takes the phone, same Lyst and side, the tally still 5 (nothing reset)', await until(async () => await has(r1, 'counter dune') && (await r1.locator('.cp-total output').innerText().catch(() => '')) === '5', 15000), (await body(r1)).slice(0, 200));
     await tapOne(r1);
@@ -763,10 +763,10 @@ try {
     const p3 = (await open('phone')).page, p4 = (await open('phone')).page;
     for (const [p, nm, side] of [[p3, 'Counter Elm', 'RED'], [p4, 'Counter Fir', 'BLUE']]) {
       await go(p, `/device#c=${poolCode}`);
-      await until(async () => await has(p, 'who is counting'), 30000);
+      await until(async () => await has(p, "who's counting"), 30000);
       await p.fill('#cp-name', nm); await p.getByRole('button', { name: 'Continue' }).click();
-      await until(async () => await has(p, 'which lyst')); await p.getByRole('button', { name: /Lyst 2/ }).click();
-      await until(async () => await has(p, 'which side')); await p.getByRole('button', { name: new RegExp(side) }).click();
+      await until(async () => await has(p, 'choose your lyst')); await p.getByRole('button', { name: /Lyst 2/ }).click();
+      await until(async () => await has(p, 'choose your side')); await p.getByRole('button', { name: new RegExp(side) }).click();
     }
     check('118. two phones bind to Field 2 (red and blue) and wait for the round', await until(async () => await has(p3, tn[0].toLowerCase()) || await has(p3, 'waiting'), 20000) && await until(async () => await has(p4, tn[1].toLowerCase()) || await has(p4, 'waiting'), 20000));
     await tab2.getByRole('button', { name: /Start round 1 for counters/ }).click();

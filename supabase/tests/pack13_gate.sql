@@ -472,7 +472,7 @@ select t.expect_eq('... and it comes back to Field 1 red, a fresh seat on m1, ro
 -- an expired seat cannot count
 select t.as_admin();
 update public.lyst_counter_seats set expires_at = now() - interval '1 minute' where user_id = t.u(24) and status = 'active';
-select t.expect_msg('an expired counter seat cannot count', $$select t.cr(24, 2)$$, 'not active');
+select t.expect_msg('an expired counter cannot count', $$select t.cr(24, 2)$$, 'not counting now');
 update public.lyst_counter_seats set expires_at = now() + interval '1 hour' where user_id = t.u(24) and status = 'active';
 -- a lost phone: the organizer signs that one phone out; the other phones and the QR keep working; a replacement phone just scans the QR
 select t.as_user(t.u(90));

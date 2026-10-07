@@ -22,7 +22,8 @@ export function CounterEvidence({ seats, names, round, compact = false, sides }:
     return (
       <li key={s.id} className={`ly-seat ly-seat-${s.side ?? 'none'}${s.role === 'learning' ? ' is-learning' : ''}`} data-testid="counter-row" data-side={s.side ?? ''} data-role={s.role}>
         <span className={`ly-corner ly-corner-${s.side ?? 'none'}`}>{s.side ? sideLabel(s.side, sides) : '–'}</span>
-        <span className="ly-seat-main"><b>{s.name}</b>{!compact && <span className="src">{s.side ? (s.side === 'a' ? names.a : names.b) : 'no side yet'}{s.role === 'learning' ? ' · training' : ''}</span>}</span>
+        <span className="ly-seat-main"><b>{s.name}</b>{!compact && <span className="src">{s.side ? (s.side === 'a' ? names.a : names.b) : 'no side yet'}{s.role === 'learning' ? ' · training' : ''}</span>}
+          {(t?.operators?.length ?? 0) > 1 && <span className="src ly-seat-ops" data-testid="counter-operators">{t!.operators!.map(o => `${o.name} ${o.total}`).join(' · ')}</span>}</span>
         <span className="ly-seat-n mono" aria-label={`Round ${round} count ${t?.total ?? 0}${t?.submitted ? ', done' : ''}`}>{t?.total ?? 0}{t?.submitted ? ' ✓' : ''}</span>
         <span className={`ly-online${s.device ? (s.online ? ' is-on' : ' is-off') : ''}`}>{s.device ? (s.online ? 'online' : 'offline') : 'own phone'}</span>
       </li>
@@ -57,8 +58,9 @@ export function CountersPanel({ state, names, round, eventId, fieldName, busy, o
   const code = state.join_code;
   const trainUrl = code ? trainingUrl(window.location.origin, import.meta.env.BASE_URL, code.code) : '';
   const bound = state.field_counters ?? [];
-  const onFight = new Set(state.seats.filter(s => s.status === 'active').map(s => s.name));
-  const waitingPhones = bound.filter(b => b.operator && !onFight.has(b.operator));
+  // a phone is matched to its seat by its session (Pack 27A), never by the operator's name (two phones may carry the same name)
+  const onFight = new Set(state.seats.filter(s => s.status === 'active' && s.session_id).map(s => s.session_id));
+  const waitingPhones = bound.filter(b => b.operator && !onFight.has(b.session_id));
   return (
     <Dialog title="Counters" variant="drawer" onClose={onClose}>
       <div className="ly-counters">

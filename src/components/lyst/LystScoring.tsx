@@ -354,7 +354,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
       {st && st.seats.some(s => s.status === 'active') && zone !== 'loading' && (
         <section className="ly-evidence-strip" aria-label="Counters on this fight" data-testid="counter-evidence">
-          <CounterEvidence seats={st.seats} names={names} round={cur?.round_no ?? 1} compact />
+          <CounterEvidence seats={st.seats} names={names} round={cur?.round_no ?? 1} compact sides={sides} />
         </section>
       )}
 

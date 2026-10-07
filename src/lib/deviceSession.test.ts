@@ -221,6 +221,14 @@ describe('sign out and whoami', () => {
     expect(t.note.map.has(ENDED_NOTE_KEY)).toBe(false);
     expect(t.left).toEqual(['/device']);
   });
+  it('a counter phone that EXITS goes back to the ordinary site (Pack 27A): its device key is gone, an account\'s own key is never touched', async () => {
+    const t = setup({ stored: stored(), handler: () => json(200, { ok: true }) });
+    t.local.map.set('sb-localhost-auth-token', '{"access_token":"a-person"}');
+    await t.mgr.signOut('/');
+    expect(t.local.map.has(DEVICE_STORAGE_KEY)).toBe(false);
+    expect(t.local.map.get('sb-localhost-auth-token')).toBe('{"access_token":"a-person"}');
+    expect(t.left).toEqual(['/']);
+  });
   it('signs out locally even when the server cannot be reached', async () => {
     const t = setup({ stored: stored(), handler: () => { throw new Error('offline'); } });
     await t.mgr.signOut();

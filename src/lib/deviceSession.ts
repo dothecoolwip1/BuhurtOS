@@ -110,15 +110,15 @@ export function createDeviceManager(deps: DeviceDeps) {
     timer = deps.setTimeout(() => { void refresh(); }, msUntilRefresh(current.expires_at, deps.now()));
   };
 
-  /** The session is over (revoked, expired, replaced, signed out elsewhere): forget it here, leave a one-time note, load the sign-in page. */
-  function endLocally(withNote = true): void {
+  /** The session is over (revoked, expired, replaced, signed out elsewhere): forget it here, leave a one-time note, load the sign-in page (or `to`). */
+  function endLocally(withNote = true, to = '/device'): void {
     if (ending) return;
     ending = true;
     if (timer !== null) { deps.clearTimeout(timer); timer = null; }
     current = null; wipe();
     if (withNote) { try { deps.noteStorage()?.setItem(ENDED_NOTE_KEY, '1'); } catch { /* the page still loads */ } }
     emit();
-    deps.leave('/device');
+    deps.leave(to);
   }
 
   function accept(body: unknown, previous: DeviceWhoami | null, secret: string): StoredDeviceSession | null {
@@ -213,13 +213,17 @@ export function createDeviceManager(deps: DeviceDeps) {
     },
     /** The server said this session has ended (device_whoami refused it). */
     endLocally,
-    /** Sign out on purpose: tell the server (best effort), forget it here, load the sign-in page. No "ended" note. */
-    async signOut(): Promise<void> {
+    /**
+     * Sign out on purpose: tell the server (best effort), forget it here, load the sign-in page. No "ended" note.
+     * Pack 27A: a counter phone that EXITS goes back to the ordinary site instead (`to`), where a signed-in person's own account is untouched: the
+     * device session lived under its own storage key and never replaced the account's.
+     */
+    async signOut(to = '/device'): Promise<void> {
       const s = current;
       if (s) {
         try { await Promise.race([post({ action: 'signout', session_secret: s.secret }), new Promise(r => deps.setTimeout(() => r(null), 4000))]); } catch { /* signed out here regardless */ }
       }
-      endLocally(false);
+      endLocally(false, to);
     },
     /** The one-time "access has ended" note for the sign-in page. */
     takeEndedNote(): boolean {
