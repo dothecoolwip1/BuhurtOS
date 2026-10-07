@@ -185,3 +185,19 @@ Levels kept apart. **Hosted database: not touched. Deployment: none.**
 | The other real-stack suites (final state) | `pack181` 176/176 · `pack10` 135/135 · `pack22` 71/71 · `pack22-history` 32/32 · `pack22-discipline` 56/56 · `pack22-review` 13/13 · `pack24a1` 83/83 · `pack24a0` 22/22 (then the superseded public block) · `device` 82/82 · `cc181` 148/148 · `pack14` 63/63 · `pack25` 81/81 · `pack13` 89/89 · `broadcast-realtime` 15/15 · `pack15` 41/42 (check 34 wanted "2 fights away" in the hint: the hint now says it; not re-run on the rebuilt app) · `arena` 50/51 (the superseded classic-scoreboard tail) · `announcer` 180/181 (its own `counter_state` expectation) · `pack16` 30/33, `live-stability` 42/45 (two follow-up findings, §9), `finalize`, `pack09d`, `rumble`, `eventday`, `represented-team`: superseded screens (§6, §9) |
 | Browser evidence | `docs/reviews/assets/2026-10-07-pack26/`: 64 phase screenshots, the device and matrix screenshots, the phone-width sweep screenshots, `evidence.json`, `permission-matrix.json`, `viewport-sweep.json` (run 21, 217 / 217; 256-colour PNGs; the sweep screenshots kept at phone width, the sweep data covers every size) |
 | Hosted | inspected read-only earlier in the pack (`notification_text` body compared); nothing written; the migration is **not applied**; nothing deployed |
+
+## 11. Rollout (2026-10-07)
+
+Levels kept apart. Filled in as each step completed; nothing below was written before it happened.
+
+| Step | Result |
+| --- | --- |
+| Pre-merge inspection | PR #58 head `2692c95`: CI job "Browser tests" red on `pack12-app.mjs` (it clicked the old row name "Notification Settings"; Pack 26 renamed the row to "Notifications"), every other job green, no review threads, branch 0 behind `main`, fingerprint matching (CI database gate green). Fixed in `718d7b4` (the suite and `pack24-production-check.mjs` open the "Notifications" row from the More sheet); `pack12-app` 78/78 locally against a CI-style mocked build. Migration filename `20261021000100` kept (§4: the repository's sequence numbering, not a date). |
+| CI on `718d7b4` | «CI» |
+| Merge | «MERGE» |
+| Hosted before | functions `public.push_claim` md5 `46244c9d…`, `private.notification_text` md5 `6c4fcfcc…`, `private.push_ttl` md5 `bb0d2d89…`, `private.field_label` absent; 21 events, 24 notifications, 0 pending pushes, 3 push subscriptions, 857 matches, 106 policies, 2257 table grants, 1182 routine grants, 533 functions in public+private; ledger last `20261007133633 pack25_sides`, no Pack 26 row |
+| Hosted migration | «APPLY» |
+| Hosted after | «AFTER» |
+| Deployment | «DEPLOY» |
+| Production checks | «PROD» |
+| Follow-up (reading position on live refresh) | «FOLLOWUP» |
