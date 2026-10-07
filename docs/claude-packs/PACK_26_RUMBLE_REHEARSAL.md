@@ -58,6 +58,8 @@ Durable work log of Pack 26. Levels are kept apart on purpose: **repository**, *
 | 13 | Lyst Control queue page said "Field" | P3 | probe on run 13's database: "FIELD 1 · Matches for this field · Other fields: Field 2" | raw stored names | "Lyst 1", "Fights on this Lyst", "Other Lysts" (the route and key keep the stored name) | `src/pages/FieldPage.tsx` | `pack1-live` 13c accepts either; the queue page is in the run 14 screenshots |
 | 14 | My events hides a test event the person is in | P2 | run 13 check 138: a fighter registered for the rehearsal event opened My events and saw "No events match … Test events show only with Show test data" | the test-data rule ran before the "mine" rule | an event the person takes part in is listed whatever the toggle says, labelled Test; browsing (Events) still hides test events without the toggle. Matters on hosted: real people rehearse on test events before the Rumble | `src/lib/eventFilters.ts`, `src/pages/MyEventsPage.tsx` | `eventFilters.test.ts` ("My events lists a test event the person takes part in"); `pack26-live` 138 |
 | 15 | "Pools are finished, the bracket needs building" folded away | P2 | run 13 check 159: with the Longsword pools done and Lyst 1 idle, Live ops showed two "later" items (fees, a fighter not here) and "3 more"; the bracket item was behind the fold | the item was ranked `later` | it is a `soon` item: the Lyst stands still until the bracket exists | `src/lib/eventDay.ts` | `eventDay.test.ts` ("points at the next step when pools are finished") |
+| 17 | A second Lyst tablet after another device finished the fight | P1 | run 14 check 112 (`p26-41-lyst-second-tablet-after-finish-768.png`): the head marshal's tablet, opened on the running fight, still showed the clock, "Start round 4" and "Finish match" after the scorer's tablet had saved the result; the server refused anything it sent, the screen did not say | the Lyst page kept the fight as it was when opened; the scoring board never looked at the fresh match row | when the fresh row says final and this device did not finish it, the board is replaced by "This fight is final" with the official result, the next fight and a way back | `src/pages/FieldPage.tsx` | `pack26-live` 112 |
+| 18 | "Pools, then a bracket" with every pool fight scored read as "All matches scored" | P2 | run 13 check 165 / run 14 check 159: Set up offered "Review wins & losses" for Men Longsword while the bracket did not exist; the database refused ("Pool play is done but the bracket has not been built"); no attention item said what to do | `competitionProgress` returned all-scored before looking for a missing bracket, because the client did not know the competition's structure | the live competition carries `structure`; pools-then-bracket with all pool fights final and no bracket is "Pools complete, bracket needs building" (soon item, Build the bracket) | `src/data/api.ts`, `src/lib/eventDay.ts` | `eventDay.test.ts` (pools owed a bracket); `pack26-live` 159–160 |
 | 16 | Review list: the export in the way | P3 | run 11 `p26-10`: the CSV export sat above the first pending card | – | the export sits below the list | `src/pages/control/RegistrationsTool.tsx` | – |
 
 ## 4. Migrations
@@ -70,7 +72,44 @@ None. The new private function is revoked from `anon` and `authenticated` (teste
 
 ## 6. Tests
 
-(exact commands and results, filled as they run)
+All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12.2.3, the local API front with the real device-session handler, the built app in Chromium 1194). Nothing touched hosted.
+
+### Unit, types, build (final state of the branch)
+
+| Command | Result |
+| --- | --- |
+| `npm run typecheck` | clean |
+| `npx vitest run` | see §10 (final numbers) |
+| `npm run build` | see §10 |
+| `supabase/tests/run_all.sh` | see §10 (`pack26_gate` 18 checks added to the list) |
+
+### The rehearsal (`scripts/e2e/pack26-live.sh`, 15 phases, 178 checks + 2 run-level checks)
+
+| Run | Result | What it found |
+| --- | --- | --- |
+| 9–12 (building the script) | reached Live ops; partial phases | the register-after-close P1, the team-fight score P1, the field-naming P2 (§3 1–3) |
+| 13 | 161 / 174 | the organizer-only withdrawal rule (script assumption), pool ties never decided before the bracket (script), My events hiding the person's own test event (§3 14), the bracket attention item folded away (§3 15), the big-screen check reading the unit as part of the number (script), the stale second tablet (§3 17) |
+| 14 | 173 / 178 | the stale tablet after the finish (§3 17, fixed), "all scored" before the bracket exists (§3 18, fixed), the review sheet checked before it had loaded (script), "Reopen the event…" matched two buttons (script) |
+| 15 | see §10 | one check misread a fighter's surname (Cedar) as a counter's name (script) |
+
+### The other real-stack suites, re-run on the branch (`/var/tmp/p26/side`, side ports, one at a time)
+
+| Suite | Result | Notes |
+| --- | --- | --- |
+| `pack181-live` | 176 / 176 PASSED | |
+| `pack10-live` | 135 / 135 | |
+| `pack22-live` / `pack22-history-live` / `pack22-discipline-live` | 71 / 71, 32 / 32, 56 / 56 | |
+| `pack13-live`, `pack25-live` | 89 / 89, 81 / 81 (before the Lyst wording change; the two suites' "Field 1" button lookups then updated to accept "Lyst 1") | re-run in §10 |
+| `pack24a0-live` | 11 / 11, then an exception on the old `section[aria-label="Event day"]` | selector updated to the Pack 25 `Fields` section; re-run in §10 |
+| `pack24a1-live` | 73 / 82 | the 9 failures were the suite's old words ("Lyst · Field 1") and Exit landing on `/live`; expectations updated; re-run in §10 |
+| `device-live` | 55 / 56 | the counter phone's "Field 1" button is "Lyst 1"; updated; re-run in §10 |
+| `cc181-live` | 104 / 113 | Camera Off hidden without a configured broadcast (Pack 26 change) broke the Pack 18.1 behaviour: reverted (§9 owner question 2); re-run in §10 |
+| `announcer-live` | 180 / 181 | check 9 expects `counter_state` to answer `seat, server_now` only; since Pack 25 it also answers `kind: training`; the suite's expectation, not the product (left as is, recorded) |
+| `pack14-live` | 62 / 63 | the broadcast setup link moved to Set up › Broadcast in Pack 25; check updated; re-run in §10 |
+| `pack15-live` | 14 / 21 | the alert wording is now "Lyst" (this pack's migration) and the Announcements section folds; expectations updated; re-run in §10 |
+| `pack16-live` | 30 / 33 | the captain's team panel and the check-in code are on the Overview view; the suite opens the bare event address, which is the Live view on the day: not rewritten (recorded) |
+| `arena-live` | 4 / 7 | "Field 1" words and the `Event day` section; updated; re-run in §10 |
+| `finalize-live`, `pack09d-live`, `rumble-live`, `live-stability`, `eventday-live` | stopped on Pack 09A–09D / 18 screens that Pack 25 replaced (`?tab=finalize`, `?tab=home`, `section.eventday`) | the obvious addresses were updated where one line did it; these suites are superseded by `pack25-live` and `pack26-live` for those screens and are recorded as such (§9) |
 
 ## 7. Browser verification, screenshots, viewports
 

@@ -59,9 +59,9 @@ try {
   const start = await rpc('organizer', 'advance_field_queue', { p_event: EVENT, p_field: null, p_start: true });
   check('1. the organizer starts Field 1 through the existing queue (Aldric v Brann now, Cael v Dara on deck, Edric v Fenna in the hole)',
     start.status === 200 && sql(`select string_agg(queue_state, ',' order by position, round_label) from public.matches where id in ('${mid(1)}','${mid(2)}','${mid(3)}')`) !== '', JSON.stringify(start));
-  check('2. Edric (in the hole) is told "You\'re 2 fights away" with the field', (await words('edric', 'fight_called')) === 'You\'re 2 fights away | Start getting ready for Longsword (men) on Field 1.', await words('edric', 'fight_called'));
-  check('3. Cael and Dara (on deck) are told "You\'re up next · Report to Field 1"', (await words('cael', 'fight_called')) === 'You\'re up next | Report to Field 1 and be ready to fight.' && (await words('dara', 'fight_called')).startsWith('You\'re up next'), await words('cael', 'fight_called'));
-  check('4. Aldric and Brann (on the field) are told "Your fight is ready · Report to Field 1 now"', (await words('aldric', 'fight_called')) === 'Your fight is ready | Report to Field 1 now.' && (await words('brann', 'fight_called')).startsWith('Your fight is ready'), await words('aldric', 'fight_called'));
+  check('2. Edric (in the hole) is told "You\'re 2 fights away" with the Lyst', (await words('edric', 'fight_called')) === 'You\'re 2 fights away | Start getting ready for Longsword (men) on Lyst 1.', await words('edric', 'fight_called'));
+  check('3. Cael and Dara (on deck) are told "You\'re up next · Report to Lyst 1"', (await words('cael', 'fight_called')) === 'You\'re up next | Report to Lyst 1 and be ready to fight.' && (await words('dara', 'fight_called')).startsWith('You\'re up next'), await words('cael', 'fight_called'));
+  check('4. Aldric and Brann (on the field) are told "Your fight is ready · Report to Lyst 1 now"', (await words('aldric', 'fight_called')) === 'Your fight is ready | Report to Lyst 1 now.' && (await words('brann', 'fight_called')).startsWith('Your fight is ready'), await words('aldric', 'fight_called'));
   check('5. each alert opens My next fight; this is a TEST event, so alerts stay in the app and are never pushed to a lock screen', sql(`select bool_and(route = '/events/test-stuff-test#my-next-fight') and not bool_or(push) from public.notifications where kind = 'fight_called'`) === 't');
   check('5b. the same alert for a real (non-test) event is pushed: the push decision is the database\'s, per event', sql(`select private.notification_pushable('fight_called') and not private.notification_is_synthetic('{"event_slug":"no-such-event"}'::jsonb)`) === 't');
 
@@ -100,9 +100,9 @@ try {
   await fighter.ctx.setOffline(false);
   await sleep(2500);
   const moved = await words('edric', 'fight_moved');
-  check('15. while Edric was offline his fight changed field: one "Your fight changed field · It is now on Field 2"', moved === 'Your fight changed field | It is now on Field 2. Report there.' && alerts(U(5), 'fight_moved') === 1, moved);
+  check('15. while Edric was offline his fight changed field: one "Your fight changed Lyst · It is now on Lyst 2"', moved === 'Your fight changed Lyst | It is now on Lyst 2. Report there.' && alerts(U(5), 'fight_moved') === 1, moved);
   const bell2 = await bellText(fighter);
-  check('16. back online: the offline notice is gone and the bell shows the change without a refresh', !/you are offline/i.test(await text(fighter)) && /changed field/i.test(bell2), bell2.slice(0, 200));
+  check('16. back online: the offline notice is gone and the bell shows the change without a refresh', !/you are offline/i.test(await text(fighter)) && /changed lyst/i.test(bell2), bell2.slice(0, 200));
   check('17. reconnecting created no duplicate', alerts(U(5), 'fight_moved') === 1);
   await shot(fighter, '02-after-reconnect');
 
@@ -116,6 +116,7 @@ try {
   // ================================================================ 7. organizer announcement from the phone (Manage › Event day)
   const org = await open('organizer');
   await org.goto(`${BASE}/events/test-stuff-test/control?mode=live`);
+  if (await org.locator('#cc-announce summary').count()) await org.locator('#cc-announce summary').click();   // Pack 25: the Announcements section of Live ops folds
   await org.getByRole('heading', { name: /Announce to the event/i }).waitFor({ timeout: 30000 });
   const box = org.getByLabel(/Message/);
   await box.fill('Lyst 2 is running 20 minutes behind.');

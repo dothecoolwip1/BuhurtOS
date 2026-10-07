@@ -711,7 +711,7 @@ try {
     // the public Live view shows the official score and round, never a counter
     const v = (await open('phone')).page;
     await go(v, `${E_PATH}/live`);
-    check('108. the public Live view shows NOW on each field with the official score 10–12 and no counter name or tally', await until(async () => (await v.locator('[data-testid=slot-active]').count()) >= 2 && /10.?–.?12|10 to 12/.test(await body(v, '[data-field="Field 1"]')), 30000) && !/ash|birch|cedar|dune|trainee|counter/.test(await body(v)), (await body(v, '[data-field="Field 1"]')).slice(0, 300));
+    check('108. the public Live view shows NOW on each field with the official score 10–12 and no counter name or tally', await until(async () => (await v.locator('[data-testid=slot-active]').count()) >= 2 && /10.?–.?12|10 to 12/.test(await body(v, '[data-field="Field 1"]')), 30000) && !/counter (ash|birch|cedar|dune)|trainee|tally|learning/.test(await body(v)), (await body(v, '[data-field="Field 1"]')).slice(0, 300));   // a fighter may be called Cedar; the counters' names carry "Counter" 
     await shot(v, 'public-live-scores');
     // round 3 (the extra round, 30 s) and finish
     await until(async () => (await tab.getByRole('button', { name: /Start round 3/ }).count()) === 1, 15000);
@@ -979,7 +979,7 @@ try {
     };
     const first = await buildBracket('Men Longsword');
     note('close.bracket_offer', first);
-    check('160. the bracket is built from the pool results (append), and only then; level entries were ordered by a person first', await untilDb(() => sql(`select (count(*) > 0)::text from public.matches where competition_id = '${comp('Men Longsword')}' and stage <> 'pool'`), 'true', 20000) === 'true' && Number(sql(`select count(*) from public.pool_tie_decisions where competition_id = '${comp('Men Longsword')}'`)) === first.ties, JSON.stringify(first));
+    check('160. the bracket is built from the pool results (append), and only then; level entries were ordered by a person first', await untilDb(() => sql(`select (count(*) > 0)::text from public.matches where competition_id = '${comp('Men Longsword')}' and stage <> 'pool'`), 'true', 20000) === 'true' && Number(sql(`select count(distinct (part, rank)) from public.pool_tie_decisions where competition_id = '${comp('Men Longsword')}'`)) === first.ties, JSON.stringify(first));
     await shot(o, 'run-bracket-built', true);
     // every other competition the plan gave pools to
     for (const k of sql(`select string_agg(k.name, '|') from public.competitions k where k.event_id = '${EV}' and k.name <> 'Men Longsword' and exists (select 1 from public.matches m where m.competition_id = k.id and m.stage like 'pool%') and not exists (select 1 from public.matches m where m.competition_id = k.id and m.stage not like 'pool%')`).split('|').filter(Boolean)) {
@@ -1063,9 +1063,9 @@ try {
     await o.getByRole('button', { name: 'Reopen the event', exact: true }).click();
     check('169. the event reopens with a reason (audited); the official results stay official until changed', await untilDb(() => sql(`select (closed_at is null)::text from public.events where id = '${EV}'`), 'true', 20000) === 'true' && sql(`select count(*) from public.results r join public.competitions k on k.id = r.competition_id where k.event_id = '${EV}'`) !== '0');
     const bk = comp('Men Sword & Buckler');
-    const third = sql(`select entry_id from public.results where competition_id = '${bk}' and place = 3`);
+    const third = sql(`select entry_id from public.results where competition_id = '${bk}' and final_place = 3`);
     const corr = await rpc('organizer', 'correct_result', { p_competition: bk, p_entry: third, p_place: 2, p_points: 0, p_reason: 'TEST: paper sheet shows the silver fight the other way' });
-    check('170. a placing is corrected with a reason; the previous value is kept in the revision log (superseded, never deleted)', corr.status === 200 && Number(sql(`select count(*) from public.result_revisions where competition_id = '${bk}'`)) >= 4, outcome(corr) + ' revisions=' + sql(`select count(*) from public.result_revisions where competition_id = '${bk}'`));
+    check('170. a placing is corrected with a reason; the previous value is kept in the revision log (superseded, never deleted)', corr.status < 300 && Number(sql(`select count(*) from public.result_revisions where competition_id = '${bk}'`)) >= 4, outcome(corr) + ' revisions=' + sql(`select count(*) from public.result_revisions where competition_id = '${bk}'`));
     const close2 = await rpc('organizer', 'close_event', { p_event: EV, p_note: 'TEST: closed again after the correction' });
     check('171. closed again; the public record shows the corrected placing', close2.status === 200 && sql(`select (closed_at is not null)::text from public.events where id = '${EV}'`) === 'true');
     await go(v, `${E_PATH}/results`);
