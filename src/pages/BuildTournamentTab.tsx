@@ -89,7 +89,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
     return (
       <section className="panel info bt-done" role="status" style={{ display: 'grid', gap: 10 }}>
         <h2 style={{ margin: 0 }}>{done.built > 0 ? 'Tournament built' : 'Nothing was built'}</h2>
-        <p>{done.built > 0 ? `${done.built} competition${done.built === 1 ? '' : 's'}, ${done.fights} fights. The fight order is planned for rest; Event day keeps it up to date as results come in.` : 'No competition could be built.'}</p>
+        <p>{done.built > 0 ? `${done.built} competition${done.built === 1 ? '' : 's'}, ${done.fights} fights. The fight order is planned for rest; Live ops keeps it up to date as results come in.` : 'No competition could be built.'}</p>
         {problems.length > 0 && <ul role="alert" style={{ color: 'var(--live)', margin: 0, paddingLeft: 18 }}>{problems.map(p => <li key={p}>{p}</li>)}</ul>}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <Link className="btn btn-ink eh-primary" to={`/events/${event.slug}/control?mode=live`}><span>Open Live ops</span><small>Who fights next, on every field</small></Link>

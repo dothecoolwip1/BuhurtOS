@@ -883,9 +883,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .reprteam-form{display:grid;gap:10px}
 
 /* ---- Event day (Manage > Event day): the organizer's screen while a tournament runs. What is fighting NOW dominates; the rest is quieter. */
-.ed-title{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 14px}
-.ed-title h1{font-size:clamp(22px,5vw,36px);margin:0;overflow-wrap:anywhere}
-.ed-title-tag{font:600 11px/1 var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:6px;vertical-align:middle}
 .ed-status{display:flex;gap:6px 12px;flex-wrap:wrap;align-items:center;font-size:13px}
 .ed-live{font:600 12px/1 var(--f-data);color:var(--muted)}
 .ed-live.on{color:var(--win)}
@@ -924,14 +921,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .ed-lower{display:grid;gap:16px}
 .ed-h{font-size:20px;display:flex;gap:10px;align-items:center}
 .ed-calm{color:var(--muted);margin:0}
-.ed-att-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.ed-att{display:flex;gap:10px 12px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-left-width:4px;border-radius:10px}
-.ed-att.now{border-left-color:var(--live)}
-.ed-att.soon{border-left-color:var(--brass)}
-.ed-att.later{border-left-color:var(--steel)}
-.ed-att>div{display:grid;gap:2px;min-width:0;flex:1 1 220px}
-.ed-att .src,.ed-att b{overflow-wrap:anywhere}
-.ed-att .btn{min-height:44px}
 .ed-prog-list{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 .ed-prog-list li{display:grid;gap:6px}
 .ed-prog-head{display:flex;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;align-items:baseline}
@@ -984,8 +973,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 @media (prefers-reduced-motion:reduce){.fade-in,.ar-enter,.fz-state{animation:none;transition:none}}
 .ed-bar{height:8px;border-radius:999px;background:var(--ground);overflow:hidden;border:1px solid var(--line)}
 .ed-bar i{display:block;height:100%;background:var(--steel)}
-.ed-links{display:grid;gap:8px}
-.ed-links div{display:flex;gap:8px;flex-wrap:wrap}
 @media (min-width:900px){
   .ed-fields{grid-template-columns:repeat(auto-fit,minmax(400px,1fr));align-items:start}
   .ed-field-wrap{display:block}
@@ -1090,12 +1077,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .eh-more-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
 .eh-more-list a{display:grid;gap:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;min-height:44px;background:var(--surface)}
 .eh-more-list a:hover{border-color:var(--steel)}
-.mg-more{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
-.mg-more .seg{flex:1 1 auto;min-width:0}
-.mg-more > .btn{flex:none}
-.mg-more-panel{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr))}
-.mg-more-panel a{min-height:44px;display:flex;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;background:var(--surface);font-weight:600}
-.mg-more-panel a[aria-current="page"]{border-color:var(--ink);background:var(--ink);color:var(--ground)}
 
 /* ---------------------------------------------------------------- Pack 09D: Review wins & losses */
 .rw-lede{margin:0;font-weight:600}
@@ -1152,7 +1133,7 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .ed-held{margin:0;border-left:4px solid var(--brass)}
 .ed-manual{margin:0}
 /* Pack 09D: the organizer's main controls are full-size tap targets (44 px) */
-.mg-more .seg button,.mg-more .btn,.qs-bulk .btn,.ed-status .btn,.ed-prog-list .btn,.eh-secondary .btn,.ed-next .btn,.lc .btn,.lc-fighter .btn,.lc-roster .btn{min-height:44px}
+.qs-bulk .btn,.ed-status .btn,.ed-prog-list .btn,.eh-secondary .btn,.ed-next .btn,.lc .btn,.lc-fighter .btn,.lc-roster .btn{min-height:44px}
 .lc-roster summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 .lc-roster ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
 .lc-roster li{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
@@ -1334,11 +1315,8 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .cc-staff{margin:0;display:grid;gap:6px}
 .cc-staff div{display:grid;grid-template-columns:minmax(110px,40%) 1fr;gap:8px;font-size:14px}
 .cc-staff dt{color:var(--muted)} .cc-staff dd{margin:0;overflow-wrap:anywhere}
-.cc-quick{display:grid;gap:8px}
-.cc-quick>div{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-.cc-quick .btn{min-height:48px;justify-content:center;text-align:center;white-space:normal}
 @media (min-width:720px){.cc-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}.cc-item{grid-template-columns:auto minmax(0,1fr) auto}.cc-act{grid-column:auto;justify-self:end}}
-@media (min-width:1100px){.cmd-centre{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}.cc-head,.cc-quick,#cc-attention{grid-column:1 / -1}}
+@media (min-width:1100px){.cmd-centre{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}.cc-head,#cc-attention,.lo-fields,.lo-stations{grid-column:1 / -1}}
 
 /* Pack 18.1: Camera Off (a safety control: loud, large, one-handed) */
 .camoff { display: grid; gap: 8px; }
