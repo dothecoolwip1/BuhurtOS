@@ -107,14 +107,17 @@ try {
       check(`1 [${view}] ${phase}: the header and the three views fit in the first viewport (views bottom ${hb?.bottom} of ${hb?.vh})`, !!hb && hb.bottom <= hb.vh * 0.6, JSON.stringify(hb));
       const body = await text(p);
       check(`1 [${view}] ${phase}: three destinations only (Overview, Live, Results), no staff door for a visitor, none of the old wording`, (await p.locator('.ev-view').count()) === 3 && (await p.locator('[data-testid=open-control]').count()) === 0 && !OLD_WORDS.test(body), body.match(OLD_WORDS)?.[0] ?? '');
-      check(`1 [${view}] ${phase}: status word matches the phase`, phase === 'upcoming' ? /Upcoming/.test(body) : phase === 'live' ? /Live/.test(body) : /Complete/.test(body), body.slice(0, 120));
+      check(`1 [${view}] ${phase}: status word matches the phase`, phase === 'upcoming' ? /upcoming/i.test(body) : phase === 'live' ? /\blive\b/i.test(body) : /complete/i.test(body), body.slice(0, 120));   // the status chip is upper-cased by CSS, so innerText is upper case
       check(`1 [${view}] ${phase}: no sideways scroll`, await noSideways(p));
       await shot(p, `event-${phase}-${view}`);
       if (phase === 'live') {
         // the Live view: per-field NOW / ON DECK / IN THE HOLE, or an honest quiet state; never counter numbers
-        const hasFields = (await p.locator('[data-testid=live-field]').count()) > 0, quiet = (await p.locator('[data-testid=live-quiet]').count()) > 0;
-        check(`1 [${view}] live: the Live view shows the fields (NOW / ON DECK / IN THE HOLE) or says plainly that nothing is on`, hasFields || quiet, body.slice(0, 200));
-        check(`1 [${view}] live: no counter names or tallies on the public page`, !/counter|tally|operator/i.test(body));
+        // the fields come from the live-state query after the event itself: wait for them (or the honest quiet state) instead of reading "Loading the fields…"
+        const fieldsLoaded = await until(async () => (await p.locator('[data-testid=live-field]').count()) > 0 || (await p.locator('[data-testid=live-quiet]').count()) > 0, 20000);
+        const liveBody = await text(p);
+        check(`1 [${view}] live: the Live view shows the fields (NOW / ON DECK / IN THE HOLE) or says plainly that nothing is on`, fieldsLoaded, liveBody.slice(0, 200));
+        check(`1 [${view}] live: no counter names or tallies on the public page`, !/counter|tally|operator/i.test(liveBody));
+        await shot(p, `event-live-fields-${view}`);
       }
       // -------------------------------------------------------------- 2. the other two views, one tap away
       for (const v of ['view-overview', 'view-live', 'view-results']) {
