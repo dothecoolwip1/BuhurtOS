@@ -1420,3 +1420,60 @@ main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:
   .top,.bottom,footer,.focus-top,.no-print,.mockflag,.more-sheet{display:none!important}
   body,main{background:#fff!important;color:#000!important}
 }
+
+/* ── Pack 25: the public event page — header, three destinations, live fields ── */
+.ev-head{display:grid;gap:10px}
+.ev-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ev-status{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ev-control{min-height:40px;padding:0 14px;font-size:14px;margin-left:auto}
+.ev-title{margin:0;font-size:clamp(26px,7vw,40px);line-height:1.08;letter-spacing:-.01em;overflow-wrap:anywhere}
+.ev-facts{margin:0;display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--muted);font-size:15px}
+.ev-facts .ev-when{color:var(--ink);font-weight:600}
+.ev-conn{font:500 12.5px/1.4 var(--f-data);color:var(--faint)}
+.ev-conn.is-live{color:var(--win)}
+.ev-cta{margin:2px 0 0}
+.ev-cta .btn{width:100%}
+.ev-views{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:3px;border-radius:999px;background:var(--surface);border:1px solid var(--line);position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);z-index:5}
+.ev-view{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 10px;border-radius:999px;font-weight:600;font-size:15px;color:var(--muted);text-align:center}
+.ev-view:hover{color:var(--ink)}
+.ev-view.is-active{color:var(--ink);background:var(--ground);box-shadow:inset 0 0 0 1px var(--line)}
+.ev-dot{width:8px;height:8px;border-radius:50%;background:var(--live);animation:pulse 1.6s ease-in-out infinite}
+.ev-lede{margin:0;font-size:17px;line-height:1.5;white-space:pre-line}
+.ev-tools{display:flex;flex-wrap:wrap;gap:8px}
+.ev-quiet{display:grid;gap:8px;justify-items:start}
+.ev-quiet h2{margin:0;font-size:20px}
+.ev-bracket summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;list-style:none}
+.ev-bracket summary::-webkit-details-marker{display:none}
+.ev-bracket summary::before{content:"▸";color:var(--muted);font-size:14px}
+.ev-bracket[open] summary::before{content:"▾"}
+@media (min-width:700px){
+  .ev-cta .btn{width:auto}
+  .ev-views{position:static;max-width:520px}
+}
+
+/* per field: NOW, ON DECK, IN THE HOLE */
+.lf{display:grid;gap:12px}
+.lf-field{padding:12px 14px 14px;display:grid;gap:10px}
+.lf-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lf-name{margin:0;font-size:19px}
+.lf-arena{font:600 13px/1 var(--f-data);color:var(--muted);text-decoration:underline;text-underline-offset:3px;min-height:32px;display:inline-flex;align-items:center}
+.lf-slots{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.lf-slot{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:start;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--raised)}
+.lf-slot.is-active{border-color:var(--live);background:color-mix(in oklab,var(--live-soft) 55%,var(--raised))}
+.lf-slot.is-mine{box-shadow:inset 0 0 0 2px var(--brass)}
+.lf-k{font:700 11px/1.2 var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.lf-slot.is-active .lf-k{color:var(--live)}
+.lf-body{display:grid;gap:4px;min-width:0}
+.lf-names{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-size:17px;line-height:1.25}
+.lf-names i{font-style:normal;color:var(--faint);font-size:13px}
+.lf-slot.is-active .lf-names{font-size:19px}
+.lf-ctx{font-size:13px;color:var(--muted)}
+.lf-lyst{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:2px}
+.lf-score{font-size:22px;font-weight:700;letter-spacing:.04em}
+.lf-score i{font-style:normal;color:var(--faint);margin:0 2px}
+.lf-phase{font:600 12px/1 var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lf-clock{font-size:18px;font-weight:700;color:var(--muted)}
+.lf-clock.is-running{color:var(--ink)}
+@media (min-width:860px){
+  .lf{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
+}

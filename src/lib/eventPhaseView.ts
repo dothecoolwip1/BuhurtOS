@@ -49,8 +49,9 @@ export const MODE_WORD: Record<ControlMode, string> = { setup: 'Set up', live: '
 export const isPublicView = (v: unknown): v is PublicView => v === 'overview' || v === 'live' || v === 'results';
 export const isControlMode = (v: unknown): v is ControlMode => v === 'setup' || v === 'live' || v === 'results';
 
-/** The address of a public view: the overview is the bare event address; Live and Results have their own. */
-export const viewPath = (slug: string, view: PublicView): string => (view === 'overview' ? `/events/${slug}` : `/events/${slug}/${view}`);
+/** The address of a public view. The bare event address leads with the view its phase needs; each view also has its own address. */
+export const viewPath = (slug: string, view: PublicView): string => `/events/${slug}/${view}`;
+export const eventPath = (slug: string): string => `/events/${slug}`;
 export const controlPath = (slug: string, mode?: ControlMode, tool?: string): string => {
   const q = new URLSearchParams();
   if (mode) q.set('mode', mode);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { controlPath, defaultModeFor, defaultViewFor, eventPhaseOf, legacyManageTarget, todayIn, viewPath } from './eventPhaseView';
+import { controlPath, eventPath, defaultModeFor, defaultViewFor, eventPhaseOf, legacyManageTarget, todayIn, viewPath } from './eventPhaseView';
 
 const at = (iso: string) => new Date(iso);
 const ev = (o: Partial<Parameters<typeof eventPhaseOf>[0]> = {}) => ({ status: 'published' as const, startsOn: '2026-10-10', endsOn: '2026-10-11', timezone: 'America/Edmonton', closedAt: null, archivedAt: null, ...o });
@@ -27,8 +27,9 @@ describe('the event phase', () => {
     expect(defaultViewFor('live')).toBe('live'); expect(defaultViewFor('completed')).toBe('results');
     expect(defaultModeFor('upcoming')).toBe('setup'); expect(defaultModeFor('live')).toBe('live'); expect(defaultModeFor('completed')).toBe('results');
   });
-  it('addresses: the overview is the bare event; Live and Results have their own; Event Control carries its mode and tool', () => {
-    expect(viewPath('rumble', 'overview')).toBe('/events/rumble');
+  it('addresses: the bare event leads with its phase; each view has its own; Event Control carries its mode and tool', () => {
+    expect(eventPath('rumble')).toBe('/events/rumble');
+    expect(viewPath('rumble', 'overview')).toBe('/events/rumble/overview');
     expect(viewPath('rumble', 'live')).toBe('/events/rumble/live');
     expect(controlPath('rumble')).toBe('/events/rumble/control');
     expect(controlPath('rumble', 'live')).toBe('/events/rumble/control?mode=live');

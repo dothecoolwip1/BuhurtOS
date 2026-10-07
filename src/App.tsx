@@ -97,6 +97,9 @@ function SiteApp() {
         <Route path="rankings" element={<RankingsPage />} />
         <Route path="team-manager" element={<TeamManagerPage />} />
         <Route path="events/:eventId" element={<EventRoute />} />
+        <Route path="events/:eventId/overview" element={<EventRoute view="overview" />} />
+        <Route path="events/:eventId/live" element={<EventRoute view="live" />} />
+        <Route path="events/:eventId/results" element={<EventRoute view="results" />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
         <Route path="events/:eventId/manage" element={<ManagePage />} />
         <Route path="events/:eventId/command" element={<CommandCentrePage />} />
