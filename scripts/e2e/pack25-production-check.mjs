@@ -15,6 +15,7 @@ const SHOTS = process.env.SHOTS ?? '/tmp/p25-prod-shots';
 const EXPECT_BUILD = process.env.EXPECT_BUILD ?? '', EXPECT_COMMIT = process.env.EXPECT_COMMIT ?? '';
 const UP = process.env.EVENT_UPCOMING ?? 'red-deer-rumble-test', LIVE = process.env.EVENT_LIVE ?? 'testing-stuff-v3', DONE = process.env.EVENT_COMPLETED ?? 'rocky-mountain-rumble-test';
 const PHASES = (process.env.PHASES ?? 'upcoming,live,completed').split(',');   // the local stack has one event: PHASES=live
+const SECTIONS = (process.env.SECTIONS ?? 'fn,ui').split(',');   // fn = the deployed function directly (seconds); ui = the browser journeys (minutes)
 fs.mkdirSync(SHOTS, { recursive: true });
 
 const results = [];
@@ -64,7 +65,34 @@ try {
   check('0b the live bundle is Pack 25 (Event Control, the Counter QR, the three views) and points at the hosted project', bundle.includes('event-control') && bundle.includes('counter-qr') && bundle.includes('ev-view') && bundle.includes('event-header') && (!BASE.includes('github.io') || bundle.includes('mvbxlebznlgroptwwdsm')));
   check('0c the live bundle holds no trace of the old ceremony (request_counter_seat, assign_counter_seat, carry_counter_seats, CommandCentrePage)', !/request_counter_seat|assign_counter_seat|carry_counter_seats|cmd-centre-page/.test(bundle));
 
-  for (const [view, opts] of VIEWS) {
+  // ================================================================ 6. the deployed device-session function, directly (first: it takes seconds and never depends on the build)
+  if (SECTIONS.includes('fn')) {
+  const fn = `${API}/functions/v1/device-session`;
+  const post = async (body, headers = {}) => { const t0 = Date.now(); const r = await fetch(fn, { method: 'POST', headers: { 'content-type': 'application/json', origin: 'https://dothecoolwip1.github.io', ...headers }, body: JSON.stringify(body) }); return { status: r.status, ms: Date.now() - t0, acao: r.headers.get('access-control-allow-origin'), body: await r.json().catch(() => null) }; };
+  const pre = await fetch(fn, { method: 'OPTIONS', headers: { origin: 'https://dothecoolwip1.github.io', 'access-control-request-method': 'POST' } });
+  check('6a CORS preflight from the app origin: 204 with the origin echoed', pre.status === 204 && pre.headers.get('access-control-allow-origin') === 'https://dothecoolwip1.github.io', `${pre.status} ${pre.headers.get('access-control-allow-origin')}`);
+  const evil = await fetch(fn, { method: 'POST', headers: { 'content-type': 'application/json', origin: 'https://evil.example' }, body: '{"action":"signin","code":"ZZZZ-ZZZZ-ZZZZ"}' });
+  check('6b a browser call from another origin is refused (403) and gets no useful CORS header', evil.status === 403 && evil.headers.get('access-control-allow-origin') !== 'https://evil.example', `${evil.status} ${evil.headers.get('access-control-allow-origin')}`);
+  const bad = await post({ action: 'signin', code: 'ZZZZ-ZZZZ-ZZZZ' });
+  check('6c a code that cannot exist: 401 with the one plain message, after the minimum delay, no detail', bad.status === 401 && /did not work/i.test(bad.body?.error ?? '') && bad.ms >= 300 && Object.keys(bad.body ?? {}).join() === 'error', JSON.stringify(bad));
+  const garbage = await post({ action: 'signin', code: 'not a code at all' });
+  check('6d garbage is the same 401 (no distinction between a wrong code and a non-code)', garbage.status === 401 && garbage.body?.error === bad.body?.error, JSON.stringify(garbage));
+  const refresh = await post({ action: 'refresh', session_secret: 'x'.repeat(40) });
+  check('6e an unknown session secret cannot refresh (an ended or never-existing session): 401', refresh.status === 401, JSON.stringify(refresh));
+  const signout = await post({ action: 'signout', session_secret: 'x'.repeat(40) });
+  check('6f sign-out of an unknown secret is idempotent (ok, nothing leaks)', signout.status === 200 && signout.body?.ok === true, JSON.stringify(signout));
+  const create = await post({ action: 'create', event: '00000000-0000-0000-0000-000000000000', kind: 'counter_pool' });
+  check('6g making a Counter QR without an organizer sign-in is refused (401)', create.status === 401, JSON.stringify(create));
+  const createAnon = await post({ action: 'create', event: '00000000-0000-0000-0000-000000000000', kind: 'counter_pool' }, { authorization: 'Bearer not.a.jwt' });
+  check('6h making a Counter QR with a token that is not a person is refused by the database (403/400), never created', createAnon.status === 403 || createAnon.status === 400, JSON.stringify(createAnon));
+  const unknown = await post({ action: 'teleport' });
+  check('6i an unknown action is 400', unknown.status === 400, JSON.stringify(unknown));
+  const get = await fetch(fn, { method: 'GET', headers: { origin: 'https://dothecoolwip1.github.io' } });
+  check('6j GET is 405', get.status === 405, String(get.status));
+  check('6k no response carried a code, a secret or a token', ![bad, garbage, refresh, signout, create, createAnon, unknown].some(r => /access_token|session_secret|code_hash|[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4}/.test(JSON.stringify(r.body))));
+  }
+
+  for (const [view, opts] of (SECTIONS.includes('ui') ? VIEWS : [])) {
     const p = await freshPage(opts);
     const phone = opts.viewport.width < 500;
     for (const phase of PHASES) {
@@ -148,30 +176,6 @@ try {
     await p.context().close();
   }
 
-  // ================================================================ 6. the deployed device-session function, directly
-  const fn = `${API}/functions/v1/device-session`;
-  const post = async (body, headers = {}) => { const t0 = Date.now(); const r = await fetch(fn, { method: 'POST', headers: { 'content-type': 'application/json', origin: 'https://dothecoolwip1.github.io', ...headers }, body: JSON.stringify(body) }); return { status: r.status, ms: Date.now() - t0, acao: r.headers.get('access-control-allow-origin'), body: await r.json().catch(() => null) }; };
-  const pre = await fetch(fn, { method: 'OPTIONS', headers: { origin: 'https://dothecoolwip1.github.io', 'access-control-request-method': 'POST' } });
-  check('6a CORS preflight from the app origin: 204 with the origin echoed', pre.status === 204 && pre.headers.get('access-control-allow-origin') === 'https://dothecoolwip1.github.io', `${pre.status} ${pre.headers.get('access-control-allow-origin')}`);
-  const evil = await fetch(fn, { method: 'POST', headers: { 'content-type': 'application/json', origin: 'https://evil.example' }, body: '{"action":"signin","code":"ZZZZ-ZZZZ-ZZZZ"}' });
-  check('6b a browser call from another origin is refused (403) and gets no useful CORS header', evil.status === 403 && evil.headers.get('access-control-allow-origin') !== 'https://evil.example', `${evil.status} ${evil.headers.get('access-control-allow-origin')}`);
-  const bad = await post({ action: 'signin', code: 'ZZZZ-ZZZZ-ZZZZ' });
-  check('6c a code that cannot exist: 401 with the one plain message, after the minimum delay, no detail', bad.status === 401 && /did not work/i.test(bad.body?.error ?? '') && bad.ms >= 300 && Object.keys(bad.body ?? {}).join() === 'error', JSON.stringify(bad));
-  const garbage = await post({ action: 'signin', code: 'not a code at all' });
-  check('6d garbage is the same 401 (no distinction between a wrong code and a non-code)', garbage.status === 401 && garbage.body?.error === bad.body?.error, JSON.stringify(garbage));
-  const refresh = await post({ action: 'refresh', session_secret: 'x'.repeat(40) });
-  check('6e an unknown session secret cannot refresh (an ended or never-existing session): 401', refresh.status === 401, JSON.stringify(refresh));
-  const signout = await post({ action: 'signout', session_secret: 'x'.repeat(40) });
-  check('6f sign-out of an unknown secret is idempotent (ok, nothing leaks)', signout.status === 200 && signout.body?.ok === true, JSON.stringify(signout));
-  const create = await post({ action: 'create', event: '00000000-0000-0000-0000-000000000000', kind: 'counter_pool' });
-  check('6g making a Counter QR without an organizer sign-in is refused (401)', create.status === 401, JSON.stringify(create));
-  const createAnon = await post({ action: 'create', event: '00000000-0000-0000-0000-000000000000', kind: 'counter_pool' }, { authorization: 'Bearer not.a.jwt' });
-  check('6h making a Counter QR with a token that is not a person is refused by the database (403/400), never created', createAnon.status === 403 || createAnon.status === 400, JSON.stringify(createAnon));
-  const unknown = await post({ action: 'teleport' });
-  check('6i an unknown action is 400', unknown.status === 400, JSON.stringify(unknown));
-  const get = await fetch(fn, { method: 'GET', headers: { origin: 'https://dothecoolwip1.github.io' } });
-  check('6j GET is 405', get.status === 405, String(get.status));
-  check('6k no response carried a code, a secret or a token', ![bad, garbage, refresh, signout, create, createAnon, unknown].some(r => /access_token|session_secret|code_hash|[0-9A-Z]{4}-[0-9A-Z]{4}-[0-9A-Z]{4}/.test(JSON.stringify(r.body))));
 } catch (e) {
   check('the run completed without an unexpected error', false, e && e.stack ? e.stack : String(e));
 } finally {

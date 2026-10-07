@@ -19,6 +19,9 @@ on:
       event_live:
         description: 'Slug of a published event that is live now'
         default: 'testing-stuff-v3'
+      sections:
+        description: 'fn = the deployed function only (seconds); fn,ui = also the browser journeys (minutes; on a pre-Pack-25 build every wait times out, so allow 40)'
+        default: 'fn,ui'
       shots_label:
         description: 'If set, the screenshots are committed to docs/reviews/assets/2026-10-07-pack25-hosted/<label>/ on this branch (the Actions artifact is kept either way)'
         default: ''
@@ -27,7 +30,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,6 +48,7 @@ jobs:
           EXPECT_COMMIT: ${{ github.event.inputs.expect_commit }}
           PHASES: ${{ github.event.inputs.phases || 'upcoming,live,completed' }}
           EVENT_LIVE: ${{ github.event.inputs.event_live || 'testing-stuff-v3' }}
+          SECTIONS: ${{ github.event.inputs.sections || 'fn,ui' }}
         run: node scripts/e2e/pack25-production-check.mjs
       - name: Keep the hosted screenshots
         if: always()
