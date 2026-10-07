@@ -58,21 +58,43 @@ Security that stays: counter writes only through its own live seat; a device's s
 | # | Item | State | Evidence |
 | --- | --- | --- | --- |
 | 1 | Progress document | done | this file |
-| 2 | Migration `20261020000100_pack25_counter_pool.sql` | planned | |
-| 3 | Edge Function + device client for the pool | planned | |
-| 4 | Counter phone rewrite | planned | |
-| 5 | Lyst counters evidence panel, Counter QR, Training QR | planned | |
-| 6 | Public event redesign | planned | |
-| 7 | Event Control (Setup / Live Ops / Results), redirects, Exit | planned | |
-| 8 | Platform device management | planned | |
-| 9 | Tests (unit, gates, allow-list, fingerprint, browser) | planned | |
-| 10 | Docs, cleanup, STATUS, handoff | planned | |
+| 2 | Migration `20261020000100_pack25_counter_pool.sql` | done | `supabase/tests/run_all.sh` (section 6) |
+| 3 | Edge Function + device client for the pool | done | `supabase/functions/_shared/deviceSession.test.ts`, `src/data/devices.ts` |
+| 4 | Counter phone rewrite | done | `src/pages/lyst/CounterPage.tsx`; browser journeys 42–59, 67–72 |
+| 5 | Lyst counters evidence panel, Counter QR, Training QR | done | `src/components/lyst/CountersPanel.tsx`, `CounterQrCard.tsx`; journeys 54–56 |
+| 6 | Public event redesign | done | `src/pages/EventWorkspace.tsx`, `src/pages/event/*`; journeys 1–13 |
+| 7 | Event Control (Set up / Live ops / Results), redirects, Exit | done | `src/pages/control/*`; journeys 14–34 |
+| 8 | Device management (event tool + Platform › Devices) | done | `src/components/command/DeviceSessions.tsx`; journeys 60–66 |
+| 9 | Tests (unit, gates, allow-list, fingerprint, browser) | done | section 6 |
+| 10 | Docs, cleanup, STATUS, handoff | done | section 10, `STATUS.md`, `docs/runbooks/PACK25_EVENT_CONTROL_AND_COUNTERS.md` |
 
 ## 4. Migrations
-(filled in as they are written)
+One additive migration, `supabase/migrations/20261020000100_pack25_counter_pool.sql`, after `20261019000300`:
+
+- `event_credentials`: kind `counter_pool` (role `counter`), plaintext `pool_code` (the QR is not a secret: it can only count), one open pool per event (`event_credentials_pool_open`). `create_event_credential` gains `p_pool_code`; `replace_event_credential` refuses a pool; `list_event_credentials` reports `open_sessions`.
+- `event_sessions.multi`: a pool credential opens a session per scan and never signs the others out (`event_sessions_one_open` applies to single-session credentials only). `device_open_session` / `device_refresh_session` patched; `private.device_ctx()` maps the pool to a device.
+- `lyst_field_current` (one current match per field, written by `lyst_open` under an advisory lock, cleared when the match is final), `counter_bindings` (session → field, side, operator), `counter_operator_log` (append-only, guarded by trigger), `lyst_counts.operator_name`.
+- `lyst_matches.counter_input` accepts `standing`; `private.lyst_per_side` (5v5 → 5); `counter_record` bounds standing taps by the side size.
+- Phone functions (allow-listed for `bos_event_device`): `counter_bind(p_field, p_side, p_operator)`, `counter_set_operator(p_name)`, `counter_leave()`, `counter_state()`; `join_training_counter(p_code, p_name, p_side)` for a signed-in trainee; the join code is a training code (12 h).
+- Staff functions: `counter_pool_code(p_event)` (anyone who may score; `can_create` for the organizer), `list_event_device_sessions`, `platform_device_sessions` (owner), `move_counter_session`, `end_event_session`, `device_session_preview` (read only), `counter_operator_history`.
+- Dropped: `request_counter_seat`, `assign_counter_seat`, `carry_counter_seats`. `lyst_state` adds `field_current`, `per_side`, seats with `device`/`online`, `field_counters`; `private.lyst_counter_snapshot` adds `operator`, `device`, `submitted`.
+- `supabase/tests/device_allowlist.txt` regenerated (76 entries); `supabase/schema.fingerprint.txt` updated.
 
 ## 5. Routes
-(filled in as they change)
+| Address | What |
+| --- | --- |
+| `/events/:slug` | the public event, on the view its phase needs (Overview before, Live during, Results after) |
+| `/events/:slug/overview`, `/live`, `/results` | the three public views |
+| `/events/:slug/control?mode=setup\|live\|results&tool=…` | Event Control; tools: `competitions`, `registrations`, `entrants`, `build`, `run`, `settings`, `staff`, `teams`, `broadcast`, `devices`, `checkin` |
+| `/events/:slug/manage?tab=…` | redirects into Event Control (`legacyManageTarget`), keeping `match`, `competition`, `focus`, `closeout`, `created`, `notes` |
+| `/events/:slug/command` | redirects to `control?mode=live` (the device app too) |
+| `/events/:slug/field/:field?from=control`, `/checkin?from=control` | workstations whose Exit returns to Live ops |
+| `/lyst/counter` | the counter phone (device app); `/lyst/join*` and `/lyst/train*` on a device redirect there |
+| `/lyst/train/:code` | a signed-in trainee's counter |
+| `/platform/devices` | the platform owner's cross-event device list |
+| `/device#c=<pool code>` | a phone scanning the Counter QR |
+
+Removed pages: `ManagePage`, `CommandCentrePage`, `EventHomeTab`, `EventDayTab`, `CommandEntry`. Device landing for a scorekeeper or Event Admin tablet is `control?mode=live`.
 
 ## 6. Tests
 (exact commands and results)
@@ -81,7 +103,10 @@ Security that stays: counter writes only through its own live seat; a device's s
 (journeys, viewports, paths under `docs/reviews/assets/2026-10-07-pack25/`)
 
 ## 8. Unresolved problems
-(kept honest)
+- The Arena (public big screen) prefers Lyst official totals once a round exists; for group fights the confirmed rounds equal rounds won, so a 5v5 shows rounds, not fighters standing. Accepted for this pack.
+- `private.event_field_keys` is the server's field list for a move; the Move sheet offers `Field 1..field_count` plus fields seen on other phones and a free-text field. A typo is refused by the database with a plain message.
+- The local-only live scripts other than `pack25`, `pack13`, `device`, `pack181`, `cc181` and `pack18` had their addresses rewritten mechanically (`/manage?tab=…` → Event Control) but were not re-run in this pack.
+- Nothing here was tried on a physical phone, iOS Safari or the hosted stack.
 
 ## 9. Hosted database and deployment
 Not applied, not deployed. The migration is additive and must be applied in order after `20261019000300`. The Edge Function `device-session` must be redeployed (it learns the `counter_pool` kind).

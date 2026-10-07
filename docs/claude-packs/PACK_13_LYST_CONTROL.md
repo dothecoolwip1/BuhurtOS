@@ -1,5 +1,7 @@
 # Pack 13: Lyst Control, timing, counter scoring and marshal authority (2026-10-07)
 
+> **Counters changed by Pack 25 (2026-10-07):** the join code → seat request → operator seating ceremony is gone. A counter phone scans the event's Counter QR, names its operator, picks the Lyst and RED/BLUE and follows the field's current fight by itself (`lyst_field_current`, `counter_bindings`, `counter_operator_log`); `request_counter_seat`, `assign_counter_seat` and `carry_counter_seats` are dropped. Seats, counts, rounds, snapshots, undo, submit, idempotency and the offline queue are kept. The Lyst join code is now the **training** QR only. See `PACK_25_EVENT_CONTROL_AND_COUNTERS.md`.
+
 Read with `STATUS.md` (Pack 13 section), `docs/runbooks/PACK13_HOSTED_ROLLOUT.md` and `docs/runbooks/PACK13_REAL_DEVICE_CHECKLIST.md`.
 
 ## The rule everything else follows

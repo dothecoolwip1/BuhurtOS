@@ -5,6 +5,7 @@ import { CameraOffControl } from '../../components/CameraOffControl';
 import { BroadcastPanel } from '../../components/command/BroadcastPanel';
 import { CommandSection as Section } from '../../components/command/CommandSection';
 import { CounterQrCard } from '../../components/command/CounterQrCard';
+import { DevicesPanel } from '../../components/command/DevicesPanel';
 import { StaffNamesPanel } from '../../components/command/StaffNamesPanel';
 import { FieldBoardView, type BoardActions } from '../../components/eventday/FieldBoardView';
 import { NextFight } from '../../components/eventday/NextFight';
@@ -345,8 +346,10 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
 
       <Section id="cc-counters" title="Counter QR" open={fieldNames.length > 0}>
         <CounterQrCard eventId={event.id} compact />
-        {organizer && <p><Link className="btn btn-line cc-btn" to={controlPath(slug, 'live', 'devices')}>All counters and devices</Link></p>}
+        {organizer && <p><Link className="btn btn-line cc-btn" to={controlPath(slug, 'live', 'devices')}>Phones signed in, move or sign one out</Link></p>}
       </Section>
+      {/* the organizer's device codes (Pack 18.1), folded: the day's phones are managed from the Counters and devices tool */}
+      {organizer && <DevicesPanel eventId={event.id} eventName={event.name} timezone={tz} refreshKey={tick} />}
 
       {r && (
         <Section id="cc-fighters" title="Fighters" count={r.notReady} countLabel="not ready">

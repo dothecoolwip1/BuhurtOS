@@ -1,5 +1,7 @@
 # Pack 18.1: Command Centre panels (Event devices, Broadcast, Staff, Camera Off)
 
+> **Superseded by Pack 25 (2026-10-07):** the Command Centre is **Event Control › Live ops**; the Event devices panel lives under the **Counters and devices** tool (and folded in Live ops). Counter phones use the one Counter QR. See `PACK_25_EVENT_CONTROL_AND_COUNTERS.md`.
+
 Extends the Pack 18 Command Centre (`/events/<slug>/command`) in place. Read with `PACK_18_1_CONTRACTS.md` (the RPC and Edge Function contracts) and `PACK_18_COMMAND_CENTRE.md` (section 6: live updates must not reset the view).
 The database decides everything; the page only reflects `event_command_snapshot().viewer` = `{organizer, announce, operator, camera_off, camera_release, broadcast}`.
 

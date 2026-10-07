@@ -1,11 +1,13 @@
 # Event devices: the day-of crib sheet (Pack 18.1)
 
+> **Pack 25 (2026-10-07):** counter phones no longer get a code each. They scan the event's one **Counter QR** (Event Control › Live ops › Counter QR) and bind themselves to a Lyst and a side; see `PACK25_EVENT_CONTROL_AND_COUNTERS.md`. "Command Centre" below is now **Event Control › Live ops** and "Event devices" is **Counters and devices**; the old addresses redirect.
+
 For Garrett (or whoever runs the event). No developer tools needed. Eight phones/tablets can work the tournament **without personal BuhurtOS accounts**.
 
 ## The eight devices (the Red Deer Rumble set)
 | Device | Role you pick | It opens on | It can do | It can NOT do |
 | --- | --- | --- | --- | --- |
-| Counter Phone 1-4 | Counter | the counter screen | count taps for its own fight, privately | anything else; never sees other counters |
+| Any counter phone (scans the **Counter QR**, Pack 25) | Counter | the counter screen: who is counting, which Lyst, Red or Blue, count | count taps for the fight on its Lyst and side, privately; change its name, side or Lyst | anything else; never sees other counters |
 | Secretary / Scorekeeper Tablet | Secretary / Scorekeeper | Command Centre (read only) | score and run the Lyst, call fights, move the running order, send announcements, turn the cameras OFF | build the schedule, fix results, change settings, turn cameras back ON, run the broadcast |
 | Marshal Phone | Marshal | its Lyst screens | run its Lyst, call fights, turn the cameras OFF | reorder the queue, announce, read the Command Centre, turn cameras back ON |
 | Announcer Tablet | Announcer | the Announcer screen | read live fights, scores, up next, results; turn the cameras OFF | everything else (it is read only) |

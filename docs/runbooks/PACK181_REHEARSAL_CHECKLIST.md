@@ -3,7 +3,7 @@
 Use a **test event** with today's date through tomorrow, published. You need: your phone (organizer), three spare phones or tablets, one more tablet, and the OBS laptop. Tick each box; if a box fails, write down what you saw on the screen and tell me.
 
 ## 1. Organizer phone: make the devices (5 minutes)
-1. Sign in to BuhurtOS as yourself. Open the event → **Command Centre** → tap **Event devices (phones and tablets)**.
+1. Sign in to BuhurtOS as yourself. Open the event → **Event Control** → **Live ops** (the old Command Centre) → **Counters and devices** (the old Event devices; counter phones now scan the one Counter QR instead, Pack 25) → tap **Event devices (phones and tablets)**.
 2. Tap **Add the usual set for an event**. A sheet of codes with QR pictures appears. Screenshot it or print it.
    - [ ] All eight stations have a name, a role and a code. (Counter Phone 1 to 4, Secretary Tablet, Marshal Phone, Announcer Tablet, Event Admin Tablet.)
 3. Close the sheet.

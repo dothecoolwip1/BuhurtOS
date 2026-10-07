@@ -151,30 +151,46 @@ try {
   await waitFor(tab2, () => /running/i.test(document.querySelector('.ly-word')?.textContent ?? ''), null, 10000);
   check('18. FIELD 2 starts its own clock; Field 1 is untouched (still running, its own revision)', /^running:/.test(timerRow('field 2')) && /^running:fight:1:/.test(timerRow('field 1')) && sql(`select count(*) from public.lyst_timer where event_id = '${EVENT}'`) === '2', `${timerRow('field 1')} / ${timerRow('field 2')}`);
 
-  // ================================================================ 4. counters join with a QR code and the operator seats them
+  // ================================================================ 4. counters: the event's ONE Counter QR; each phone binds itself to this Lyst and a side; a trainee uses the training QR (Pack 25)
+  const made = await fetch(`${API}/functions/v1/device-session`, { method: 'POST', headers: { 'content-type': 'application/json', apikey: 'x', authorization: `Bearer ${session(WHO.organizer).access_token}` }, body: JSON.stringify({ action: 'create', event: EVENT, kind: 'counter_pool' }) }).then(async r => ({ status: r.status, body: await r.json() }));
+  const pool = (made.body?.code ?? '').replace(/-/g, '');
   await tab.getByRole('button', { name: /^Counters/ }).click();
-  await tab.getByRole('dialog').getByRole('button', { name: 'Show join code' }).click();
-  await tab.getByRole('dialog').locator('.ly-code').waitFor({ timeout: 15000 });
-  const code = (await tab.getByRole('dialog').locator('.ly-code').innerText()).trim();
-  check('19. the tablet shows a join code and a QR image for the field', /^[A-Z0-9]{10}$/.test(code) && (await tab.getByRole('dialog').locator('.ly-qr svg').count()) === 1, code);
+  await tab.getByTestId('counters-tab-qr').click();
+  await tab.getByRole('dialog').getByTestId('counter-qr-code').waitFor({ timeout: 15000 });
+  const code = (await tab.getByRole('dialog').getByTestId('counter-qr-code').innerText()).replace(/-/g, '').trim();
+  check('19. the tablet shows the event\'s Counter QR (one code for every counter phone) and its QR image', /^[A-Z0-9]{12}$/.test(code) && code === pool && (await tab.getByRole('dialog').locator('.ly-qr svg').count()) === 1, code);
   await shot(tab, '04-counters-code');
+  await tab.getByTestId('counters-tab-training').click();
+  await tab.getByRole('dialog').getByRole('button', { name: /Show training QR|New training code/ }).click();
+  await tab.getByRole('dialog').getByTestId('training-qr').locator('.ly-code').waitFor({ timeout: 15000 });
+  const train = (await tab.getByRole('dialog').getByTestId('training-qr').locator('.ly-code').innerText()).trim();
+  check('19b. the Lyst also has a TRAINING QR of its own (learning only, kept apart)', /^[A-Z0-9]{8,12}$/.test(train), train);
+  await tab.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
   const phones = {};
-  for (const [name, who] of [['ash', 'ash'], ['birch', 'birch'], ['cedar', 'cedar'], ['dune', 'dune'], ['elm', 'elm']]) {
-    const { page } = await open('phone', who);
-    await page.goto(`${BASE}/lyst/join/${code}`);
-    await page.getByText(/Waiting for the lyst to seat you/).waitFor({ timeout: 30000 });
+  for (const [name, who, side] of [['ash', 'Counter Ash', 'RED'], ['birch', 'Counter Birch', 'RED'], ['cedar', 'Counter Cedar', 'BLUE'], ['dune', 'Counter Dune', 'BLUE']]) {
+    const { page } = await open('phone');           // an event phone: no account, the Counter QR is its only credential
+    await page.goto(`${BASE}/device#c=${code}`);
+    await page.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
+    await page.fill('#cp-name', who);
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await page.getByRole('button', { name: /Field 1/ }).click();
+    await page.getByRole('button', { name: new RegExp(side) }).click();
     phones[name] = page;
   }
-  check('20. five people scanned the code: each is only PENDING (a code grants nothing by itself)', sql(`select count(*) from public.lyst_counter_seats where status = 'pending' and match_id is null and side is null`) === '5');
-  await tab.getByRole('dialog').getByText(/Waiting to be seated \(5\)/).waitFor({ timeout: 20000 });
-  const seat = async (who, label) => { await tab.getByRole('group', { name: `Seat ${who}` }).getByRole('button', { name: label }).click(); await sleep(700); };
-  await seat('Counter Ash', 'Counts Aldric Stone'); await seat('Counter Birch', 'Counts Aldric Stone');
-  await seat('Counter Cedar', 'Counts Brann Oakley'); await seat('Counter Dune', 'Counts Brann Oakley');
-  await seat('Counter Elm', 'Learning · Aldric Stone');
-  check('21. the operator seated 4 official counters (A,B on Aldric; C,D on Brann) and 1 learner (L1) who is NOT limited to the four devices', sql(`select string_agg(slot || ':' || role, ',' order by slot) from public.lyst_counter_seats where status = 'active'`) === 'A:official,B:official,C:official,D:official,L1:learning', sql(`select string_agg(slot || ':' || role, ',' order by slot) from public.lyst_counter_seats where status = 'active'`));
-  await tab.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
-  for (const p of Object.values(phones)) await p.getByText(/^(Counting|Learning) · /).first().waitFor({ timeout: 30000 });
-  check('22. a counter\'s phone: the fighter, their slot, and a huge COUNT button', (await has(phones.ash, 'Aldric Stone')) && (await has(phones.ash, 'Counting · A')) && (await has(phones.elm, 'Learning · L1')) && (await has(phones.elm, 'never changes any score')), (await body(phones.ash)) + ' || ' + (await body(phones.elm)));
+  {
+    const { page } = await open('phone', 'elm');     // the learner: their own phone and account, the training QR
+    await page.goto(`${BASE}/lyst/train/${train}`);
+    await page.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
+    await page.fill('#cp-tname', 'Counter Elm');
+    await page.getByRole('button', { name: /RED/ }).click();
+    await page.getByRole('button', { name: 'Start counting' }).click();
+    phones.elm = page;
+  }
+  const seatRows = () => sql(`select string_agg(display_name || ':' || side || ':' || role, ',' order by display_name) from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}'`);
+  check('20. four phones scanned the one QR and chose Red or Blue themselves; nobody is pending, nobody was seated by hand', await waitDb(seatRows, 'Counter Ash:a:official,Counter Birch:a:official,Counter Cedar:b:official,Counter Dune:b:official,Counter Elm:a:learning', 30000) === 'Counter Ash:a:official,Counter Birch:a:official,Counter Cedar:b:official,Counter Dune:b:official,Counter Elm:a:learning' && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '0', seatRows());
+  check('21. 4 official counters (Ash, Birch on Aldric; Cedar, Dune on Brann) and 1 learner on the same fight; every one is its own evidence', sql(`select count(*) from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}' and role = 'official'`) === '4' && sql(`select count(*) from public.event_sessions where ended_at is null and multi`) === '4');
+  for (const p of Object.values(phones)) await p.getByText(/Aldric Stone|Brann Oakley/).first().waitFor({ timeout: 30000 });
+  check('22. a counter\'s phone: the fighter, their side in words, who is counting, and a huge COUNT button', (await has(phones.ash, 'Aldric Stone')) && (await has(phones.ash, 'Counting')) && (await has(phones.ash, 'Red')) && (await has(phones.ash, 'Counter Ash')) && (await has(phones.elm, 'never changes a score')), (await body(phones.ash)) + ' || ' + (await body(phones.elm)));
   const big = await phones.ash.getByRole('button', { name: 'Count one point, arm leg or hand' }).boundingBox();
   check('23. the COUNT button is big (at least 150 px tall) and in thumb reach', big && big.height >= 150 && big.y + big.height > 450, JSON.stringify(big));
   await shot(phones.ash, '05-counter-phone');
@@ -189,7 +205,8 @@ try {
   await taps(phones.cedar, 2, 1);    // 5
   await taps(phones.dune, 1, 2);     // 4
   await taps(phones.elm, 4, 1);      // 9 (practice)
-  const tot = (n, r = 1) => sql(`select coalesce((select private.lyst_seat_total(s.id, ${r}) from public.lyst_counter_seats s where s.slot = '${n}' and s.status = 'active' and s.match_id = '${mid(1)}'), 0)`);
+  const NAME = { A: 'Counter Ash', B: 'Counter Birch', C: 'Counter Cedar', D: 'Counter Dune', L1: 'Counter Elm' };
+  const tot = (n, r = 1, m = mid(1)) => sql(`select coalesce((select private.lyst_seat_total(s.id, ${r}) from public.lyst_counter_seats s where s.display_name = '${NAME[n]}' and s.status = 'active' and s.match_id = '${m}'), 0)`);
   await waitDb(() => tot('A'), '6');
   check('24. taps are provisional evidence on the server: A 6, B 6, C 5, D 4, learner 9', [tot('A'), tot('B'), tot('C'), tot('D'), tot('L1')].join(',') === '6,6,5,4,9', [tot('A'), tot('B'), tot('C'), tot('D'), tot('L1')].join(','));
   check('25. the phone shows the count at once', (await textOf(phones.ash, '.cp-total output')) === '6', await textOf(phones.ash, '.cp-total'));
@@ -226,7 +243,7 @@ try {
   const footBox = await tv.locator('.ar-next').boundingBox(), mainBox = await tv.locator('.ar-fight').boundingBox();
   check('33b. [tv] at 1080p the official clock fits with the fight: the On deck / In the hole footer is still fully on screen', footBox && footBox.y + footBox.height <= 1080 && mainBox && mainBox.y + mainBox.height <= footBox.y + 2, JSON.stringify({ footBox, mainBox }));
   const hintTexts = (await tab.locator('.ly-hints').allInnerTexts()).join(' | ').replace(/\s+/g, ' ');
-  check('34. the tablet shows each counter\'s tally separately beside the marshal\'s entry (A 6, B 6 | C 5, D 4), never a combined number, and the learner is not offered', /A · 6.*B · 6/.test(hintTexts) && /C · 5.*D · 4/.test(hintTexts) && !/L1/.test(hintTexts), hintTexts);
+  check('34. the tablet shows each counter\'s tally separately beside the marshal\'s entry (Ash 6, Birch 6 | Cedar 5, Dune 4), never a combined number, and the learner is not offered', /Counter Ash · 6/.test(hintTexts) && /Counter Birch · 6/.test(hintTexts) && /Counter Cedar · 5/.test(hintTexts) && /Counter Dune · 4/.test(hintTexts) && !/Elm/.test(hintTexts), hintTexts);
   check('35. the entry starts from nothing chosen (no pre-filled score) and CONFIRM is not possible yet', (await tab.locator('.ly-pick-val').allInnerTexts()).join(',') === '–,–' && (await tab.getByRole('button', { name: 'Choose both scores' }).isDisabled()));
   await shot(tab, '07-confirm-entry'); await shot(tv, '21-tv-confirming');
   await act(() => pick('Aldric Stone', 6).click());
@@ -240,7 +257,7 @@ try {
   const stressMs = Date.now() - tStress;
   check(`37. THE 30-SECOND BREAK: end round, enter the marshal's score, confirm and start the next round took ${interactions} taps and ${(stressMs / 1000).toFixed(1)} s (target: 5 taps, inside the 30 s break)`, interactions === 5 && stressMs < 30000 && breakLeft > 0, `${interactions} taps ${stressMs} ms, break had ${breakLeft}s left at the last tap, entry shown after ${tEntryShown} ms`);
   console.log(`(measure) break workflow: ${interactions} interactions, ${(stressMs / 1000).toFixed(1)} s wall time (entry screen after ${tEntryShown} ms; break clock had ${breakLeft}s left when round 2 started)`);
-  check('38. the evidence is frozen with the confirmation: every counter\'s tally (learner marked as learning) is in the revision; the marshal\'s call is not derived from it', sql(`select string_agg((c ->> 'slot') || ':' || (c ->> 'role') || ':' || (c ->> 'total'), ',' order by c ->> 'slot') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.match_id = '${mid(1)}' and r.round_no = 1`) === 'A:official:6,B:official:6,C:official:5,D:official:4,L1:learning:9');
+  check('38. the evidence is frozen with the confirmation: every counter\'s tally (learner marked as learning) is in the revision; the marshal\'s call is not derived from it', sql(`select string_agg((c ->> 'operator') || ':' || (c ->> 'role') || ':' || (c ->> 'total'), ',' order by c ->> 'operator') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.match_id = '${mid(1)}' and r.round_no = 1`) === 'Counter Ash:official:6,Counter Birch:official:6,Counter Cedar:official:5,Counter Dune:official:4,Counter Elm:learning:9', sql(`select r.counters::text from public.lyst_round_revisions r where r.match_id = '${mid(1)}' and r.round_no = 1`));
   check('39. [tv] the display shows the official 6–5 and round 2 running', await waitFor(tv, () => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()).join('-') === '6-5' && /round 2/i.test(document.querySelector('.ar-main')?.innerText ?? ''), null, 30000), await arenaText());
   await shot(tab, '08-round-2');
   // the counters carry on in round 2, separately from round 1
@@ -326,12 +343,12 @@ try {
   await shot(tab, '11-official'); await shot(tv, '23-tv-result');
   check('61. the counters\' phone says the fight is finished and COUNT is disabled', await waitFor(phones.ash, () => /finished/i.test(document.querySelector('.cp-msg')?.textContent ?? '') && document.querySelector('.cp-weighted button')?.disabled === true, null, 20000), await body(phones.ash));
 
-  // ================================================================ 10. NEXT FIGHT: the counters carry over (same field), the operator can still change any seat
+  // ================================================================ 10. NEXT FIGHT: the phones follow the Lyst by themselves (bound to the field and side, never to a fighter)
   await tab.getByRole('button', { name: /Next fight on Field 1/ }).click();
   await tab.waitForSelector('.ly-timer', { timeout: 30000 });
-  check('62. NEXT FIGHT opens the next match on the field in Lyst Control and carries the counters\' seats to it', await waitDb(() => sql(`select count(distinct match_id) || ':' || count(*) from public.lyst_counter_seats where status = 'active'`), '1:5') === '1:5' && sql(`select count(*) from public.lyst_counter_seats where match_id = '${mid(2)}' and status = 'active'`) === '5');
+  check('62. NEXT FIGHT opens the next match on the field in Lyst Control and every phone on the field follows it (one open match per field)', await waitDb(() => sql(`select count(distinct match_id) || ':' || count(*) from public.lyst_counter_seats where status = 'active'`), '1:5', 20000) === '1:5' && sql(`select count(*) from public.lyst_counter_seats where match_id = '${mid(2)}' and status = 'active'`) === '5' && sql(`select count(*) from public.lyst_field_current where event_id = '${EVENT}' and field_key = 'field 1' and match_id = '${mid(2)}'`) === '1');
   check('63. the counters\' phones follow to the new fighters without scanning again', await waitFor(phones.ash, () => /Cael Rhodes/i.test(document.body.innerText), null, 25000), await body(phones.ash));
-  check('64. the new fight\'s tally is separate: the carried counter starts at zero', tot('A', 1).length > 0 && sql(`select private.lyst_seat_total(id, 1) from public.lyst_counter_seats where slot = 'A' and status = 'active'`) === '0');
+  check('64. the new fight\'s tally is separate: the counter starts at zero', tot('A', 1, mid(2)) === '0');
 
   // ================================================================ 11. no signal: the clock cannot be changed, the marshal's call is saved on the device and sent later
   await tab.getByRole('button', { name: /Start round 1/ }).click();
@@ -351,13 +368,13 @@ try {
   await shot(tab, '12-after-offline');
 
   // ================================================================ 12. security, from the browser's side
-  const dis = await rpc('ash', 'lyst_confirm_round', { p_command: crypto.randomUUID(), p_match: mid(2), p_round: 1, p_awarded_a: 9, p_awarded_b: 0, p_expected_rev: 1, p_recommended_a: null, p_recommended_b: null, p_reason: 'x1x' });
+  const dis = await rpc('elm', 'lyst_confirm_round', { p_command: crypto.randomUUID(), p_match: mid(2), p_round: 1, p_awarded_a: 9, p_awarded_b: 0, p_expected_rev: 1, p_recommended_a: null, p_recommended_b: null, p_reason: 'x1x' });
   check('69. a counter cannot change an official score (403)', dis.status === 403 && official(2) === '3-2', JSON.stringify(dis));
-  const dis2 = await rpc('ash', 'lyst_timer_command', { p_event: EVENT, p_field: 'Field 1', p_match: mid(2), p_expected_rev: 1, p_command: crypto.randomUUID(), p_action: 'pause', p_mode: null, p_duration_ms: null, p_round: null, p_delta_ms: 0 });
+  const dis2 = await rpc('elm', 'lyst_timer_command', { p_event: EVENT, p_field: 'Field 1', p_match: mid(2), p_expected_rev: 1, p_command: crypto.randomUUID(), p_action: 'pause', p_mode: null, p_duration_ms: null, p_round: null, p_delta_ms: 0 });
   check('70. a counter cannot touch the clock (403)', dis2.status === 403, JSON.stringify(dis2));
-  const seatsAsCounter = await rest('ash', 'GET', 'lyst_counter_seats?select=id,user_id');
-  check('71. a counter can read only their own seat (not the other counters\' seats or tallies)', seatsAsCounter.status === 200 && seatsAsCounter.body.length >= 1 && seatsAsCounter.body.every(r => r.user_id === C(3)), JSON.stringify(seatsAsCounter.body).slice(0, 300));
-  const countsAsCounter = await rest('ash', 'GET', 'lyst_counts?select=seat_id');
+  const seatsAsCounter = await rest('elm', 'GET', 'lyst_counter_seats?select=id,user_id');
+  check('71. a counter can read only their own seat (not the other counters\' seats or tallies)', seatsAsCounter.status === 200 && seatsAsCounter.body.length >= 1 && seatsAsCounter.body.every(r => r.user_id === C(7)), JSON.stringify(seatsAsCounter.body).slice(0, 300));
+  const countsAsCounter = await rest('elm', 'GET', 'lyst_counts?select=seat_id');
   check('72. ... and only their own tally rows', countsAsCounter.status === 200 && (new Set(countsAsCounter.body.map(r => r.seat_id))).size <= 2, String((new Set((countsAsCounter.body ?? []).map(r => r.seat_id))).size));
   const strangerSeats = await rest('stranger', 'GET', 'lyst_counter_seats?select=id');
   check('73. a signed-in stranger sees no seats, tallies or revisions of this event', strangerSeats.status === 200 && strangerSeats.body.length === 0 && (await rest('stranger', 'GET', 'lyst_counts?select=id')).body.length === 0 && (await rest('stranger', 'GET', 'lyst_round_revisions?select=id')).body.length === 0);
