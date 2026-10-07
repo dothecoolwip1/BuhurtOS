@@ -219,6 +219,12 @@ export function overallState(items: readonly CommandItem[]): { tone: 'ok' | 'att
   return { tone: now > 0 ? 'urgent' : 'attention', headline: `${plural(act, 'thing needs', 'things need')} attention${now ? ` (${now} now)` : ''}` };
 }
 
+/** The few lines worth showing at the very top: the most urgent items, by urgency then as listed, never the FYIs. */
+export function glance(items: readonly CommandItem[], max = 3): { shown: CommandItem[]; more: number } {
+  const act = items.filter(i => i.urgency !== 'info').slice().sort((x, y) => URGENCY_RANK[x.urgency] - URGENCY_RANK[y.urgency]);
+  return { shown: act.slice(0, max), more: Math.max(0, act.length - max) };
+}
+
 /** Factual progress only: fights scored out of fights drawn, competitions by phase. No finish-time estimate (not defensible from this data). */
 export function eventProgress(progress: readonly CompetitionProgress[]) {
   const total = progress.reduce((n, p) => n + p.total, 0), final = progress.reduce((n, p) => n + p.final, 0);

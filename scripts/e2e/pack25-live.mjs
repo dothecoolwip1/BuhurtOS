@@ -115,6 +115,17 @@ try {
   check('14. the organizer sees ONE staff door: Event Control', await until(async () => (await o.page.getByTestId('open-control').count()) === 1), await body(o.page));
   await o.page.getByTestId('open-control').click();
   check('15. Event Control opens on Live ops while the event runs', await until(async () => (await attr(o.page, 'event-control', 'data-mode')) === 'live'), await body(o.page));
+  {
+    // Pack 25.3: the summary card at the top names what needs attention and jumps to the list (or says all is good)
+    const headline = await o.page.locator('.cc-overall').innerText().catch(() => '');
+    const glanceN = await o.page.getByTestId('cc-glance').locator('li').count();
+    let jumped = /all good/i.test(headline);
+    if (!jumped && glanceN > 0) {
+      await o.page.getByTestId('cc-glance').locator('a').first().click();
+      jumped = await until(async () => o.page.locator('#cc-attention').evaluate(el => { const r = el.getBoundingClientRect(); return r.top >= -4 && r.top < innerHeight; }), 5000);
+    }
+    check('16a. the top card names what needs attention and a tap lands on the list (or says all is good)', jumped && (glanceN > 0 || /all good/i.test(headline)), `${headline} | glance ${glanceN}`);
+  }
   check('16. Live ops has attention, the fields, workstations and the Counter QR', await until(async () => await has(o.page, 'needs attention') && await has(o.page, 'workstations') && (await o.page.getByTestId('counter-qr').count()) === 1, 20000), await body(o.page));
   check('17. nothing scrolls sideways in Live ops at 390', (await noSideways(o.page))[0] <= (await noSideways(o.page))[1], JSON.stringify(await noSideways(o.page)));
   await shot(o.page, 'control-live-390');
@@ -206,9 +217,11 @@ try {
   await p1.fill('#cp-name', 'Garrett Robson');
   await p1.getByRole('button', { name: 'Continue' }).click();
   check('43. then which Lyst (the event has more than one field)', await until(async () => await has(p1, 'which lyst')), await body(p1));
+  check('43a. each Lyst in the chooser says who is fighting there (Pack 25.2)', await until(async () => await has(p1, 'aldric stone vs brann oakley')), await body(p1));
   await shot(p1, 'counter-02-lyst-390');
   await p1.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
   check('44. then RED or BLUE, in words not just colour', await until(async () => await has(p1, 'which side on lyst 1') && await has(p1, 'red') && await has(p1, 'blue')), await body(p1));
+  check('44a. the side buttons name the fighter on each side, and the fight on now', await until(async () => /aldric stone/i.test(await p1.getByTestId('cp-pick-a').innerText().catch(() => '')) && /brann oakley/i.test(await p1.getByTestId('cp-pick-b').innerText().catch(() => '')) && /now fighting/i.test(await p1.getByTestId('cp-side-now').innerText().catch(() => ''))), await body(p1));
   await shot(p1, 'counter-03-side-390');
   await p1.getByRole('button', { name: /RED/ }).click();
   check('45. the phone is on the fight (Aldric, red) waiting for the round; no fighter was assigned by hand', await until(async () => await has(p1, 'aldric stone') && await has(p1, 'waiting for the round')), await body(p1));
@@ -252,6 +265,20 @@ try {
   await tab.page.getByRole('button', { name: /^Counters/ }).click();
   check('55. the Counters sheet lists each phone on its own: never summed, averaged or voted', await until(async () => (await tab.page.getByTestId('counter-row').count()) >= 2 && await has(tab.page, 'evidence only')), await body(tab.page));
   await shot(tab.page, 'lyst-counters-sheet-768');
+  // the sides: the secretary turns side A yellow from the Counters sheet; the Lyst's tag and every phone follow at once (Pack 25.2)
+  await tab.page.getByTestId('counters-tab-sides').click();
+  await tab.page.getByTestId('swatch-a-yellow').click();
+  await tab.page.getByTestId('sides-save').click();
+  check('55a. the secretary sets side A to Yellow: the Lyst tag says Yellow', await until(async () => (await tab.page.getByTestId('sk-tag-a').innerText().catch(() => '')).trim() === 'Yellow', 20000), await body(tab.page));
+  check('55b. the counter phone on side A says YELLOW, in yellow with dark ink', await until(async () => (await p1.locator('.cp-corner').innerText().catch(() => '')).trim() === 'YELLOW'
+    && (await p1.locator('.cp-corner').evaluate(el => getComputedStyle(el).backgroundColor).catch(() => '')) === 'rgb(242, 178, 51)'
+    && (await p1.locator('.cp-corner').evaluate(el => getComputedStyle(el).color).catch(() => '')) === 'rgb(17, 17, 17)', 20000), await body(p1));
+  check('55c. the other side is untouched (BLUE)', (await p2.locator('.cp-corner').innerText().catch(() => '')).trim() === 'BLUE', await body(p2));
+  check('55d. the change is audited as the sides', sql(`select count(*) from public.audit_log where event_id = '${EVENT}' and action = 'lyst.sides'`) === '1');
+  await tab.page.getByTestId('counters-tab-sides').click();   // the sheet stays open after a save (it goes back to This fight)
+  await tab.page.getByTestId('swatch-a-red').click();
+  await tab.page.getByTestId('sides-save').click();
+  check('55e. and back to Red', await until(async () => (await tab.page.getByTestId('sk-tag-a').innerText().catch(() => '')).trim() === 'Red' && (await p1.locator('.cp-corner').innerText().catch(() => '')).trim() === 'RED', 20000), await body(p1));
   await tab.page.getByTestId('counters-tab-qr').click();
   check('56. the Lyst shows the Counter QR for the next phone', await until(async () => (await tab.page.getByTestId('counter-qr-code').innerText().catch(() => '')).replace(/-/g, '') === poolCode), await body(tab.page));
   await tab.page.keyboard.press('Escape');

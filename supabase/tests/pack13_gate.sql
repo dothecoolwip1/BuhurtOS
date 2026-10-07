@@ -616,5 +616,29 @@ select t.expect_eq('... and the bound phone was seated on it again', (select cou
 select t.expect_eq('the clock on a finished fight changes nothing', (select count(*) from public.lyst_field_current where match_id = t.m(4)), 0::bigint);
 select t.expect_eq('the new trigger and helpers are private (no client role may call them)', (select count(*) from pg_proc p where p.pronamespace = 'private'::regnamespace and p.proname in ('field_fights', 'lyst_timer_field_current', 'field_current_match') and (has_function_privilege('authenticated', p.oid, 'execute') or has_function_privilege('anon', p.oid, 'execute'))), 0::bigint);
 
+-- ================================================================ 15. the sides' names and colours (Pack 25.2): anyone who runs the Lyst may set them; phones and the Lyst read them
+select t.as_user(t.u(1));
+select t.expect_error('a fighter cannot change the side colours', format($$select public.set_event_sides(%L, '{"a": {"name": "Yellow", "color": "#F2B233"}}')$$, t.e1()), '42501');
+select t.as_user(t.u(70));
+select t.expect_error('the other event''s organizer cannot change this event''s side colours', format($$select public.set_event_sides(%L, '{"a": {"name": "Yellow", "color": "#F2B233"}}')$$, t.e1()), '42501');
+select t.as_user(t.u(87));
+select t.expect_error('a side colour must be a hex colour', format($$select public.set_event_sides(%L, '{"a": {"name": "Yellow", "color": "yellow"}}')$$, t.e1()), '22023');
+select t.expect_error('a side name is 1 to 20 characters', format($$select public.set_event_sides(%L, '{"a": {"name": "This side name is far too long to fit", "color": "#F2B233"}}')$$, t.e1()), '22023');
+select t.expect_error('an empty change is refused', format($$select public.set_event_sides(%L, '{}')$$, t.e1()), '22023');
+select t.expect_eq('a marshal sets side A to yellow (the colour is kept upper-case)', public.set_event_sides(t.e1(), '{"a": {"name": "Yellow", "color": "#f2b233"}}') -> 'a' ->> 'color', '#F2B233');
+select t.as_user(t.u(88));
+select t.expect_eq('the secretary sets side B to green; side A keeps yellow', (select (x -> 'a' ->> 'name') || '|' || (x -> 'b' ->> 'name') from public.set_event_sides(t.e1(), '{"b": {"name": "Green", "color": "#1B7F3B"}}') x), 'Yellow|Green');
+select t.as_user(t.u(90));
+select t.expect_eq('the organizer sees the sides in the Lyst state (settings.sides)', (public.lyst_state(t.m(6)) -> 'settings' -> 'sides' -> 'a' ->> 'name') || '/' || (public.lyst_state(t.m(6)) -> 'settings' -> 'sides' -> 'b' ->> 'color'), 'Yellow/#1B7F3B');
+select t.expect_eq('the other settings survived the colour change (presets still there)', jsonb_typeof(public.lyst_state(t.m(6)) -> 'settings' -> 'presets'), 'array');
+select t.expect_eq('the sides are audited', (select count(*) from public.audit_log where event_id = t.e1() and action = 'lyst.sides'), 2::bigint);
+select t.as_device(t.u(26));
+select t.expect_eq('a counter phone gets the names and colours', (public.counter_state() -> 'sides' -> 'a' ->> 'name') || ' ' || (public.counter_state() -> 'sides' -> 'a' ->> 'color') || ' / ' || (public.counter_state() -> 'sides' -> 'b' ->> 'name'), 'Yellow #F2B233 / Green');
+select t.expect_eq('... and each Lyst in the chooser says who is fighting there', (select (f -> 'now' ->> 'a') || ' vs ' || (f -> 'now' ->> 'b') from jsonb_array_elements(public.counter_state() -> 'fields') f where f ->> 'key' = 'field 3'), 'Fighter 5 vs Fighter 6');
+select t.expect_eq('... every Lyst in the chooser carries its now (names, or null when nothing is on)', (select bool_and(f ? 'now') from jsonb_array_elements(public.counter_state() -> 'fields') f), true);
+select t.expect_error('a counter phone cannot change the side colours', format($$select public.set_event_sides(%L, '{"a": {"name": "X", "color": "#000000"}}')$$, t.e1()), '42501');
+select t.as_admin();
+select t.expect_eq('the other event has its own default sides', (private.event_sides(t.e2()) -> 'a' ->> 'name') || '/' || (private.event_sides(t.e2()) -> 'b' ->> 'name'), 'Red/Blue');
+
 select 'PACK13 GATE PASSED ' || count(*) || ' checks' from t.log;
 rollback;

@@ -20,8 +20,7 @@ import { fetchFinalizePreflight } from '../../data/finalization';
 import { fetchResultConflicts, setQueue, type CompetitionMatch } from '../../data/matches';
 import {
   commandAttention, deskHref, eventProgress, FIELD_STATE_LABEL, fieldHref, fieldSummaries, fightsOverview, freshness, overallState, ROLE_NAMES, unassignedRoles,
-  type CommandItem, type CommandSnapshot, type FightWarning
-} from '../../lib/commandCentre';
+  type CommandItem, type CommandSnapshot, type FightWarning, glance } from '../../lib/commandCentre';
 import { controlPath, eventPath } from '../../lib/eventPhaseView';
 import { buildFieldBoards, checkinGaps, competitionProgress, competitionSorts, fieldLabel, matchTitle, planAdvance, withdrawnEntryIds, type FieldBoard } from '../../lib/eventDay';
 import { heldMatches, planEvent, planIsSaved } from '../../lib/eventPlan';
@@ -247,6 +246,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
 
   const viewer = snap?.viewer ?? { organizer, announce: organizer, operator: organizer, cameraOff: false, cameraRelease: false, broadcast: false };
   const overall = overallState(items);
+  const top = glance(items);
   const warnByMatch = new Map<string, FightWarning[]>();
   for (const w of snap?.fightWarnings ?? []) warnByMatch.set(w.matchId, [...(warnByMatch.get(w.matchId) ?? []), w]);
   const fights = fightsOverview(boards);
@@ -258,7 +258,13 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
   return (
     <section className="cmd-centre lo" aria-label="Live ops" data-testid="control-live">
       <header className={`cc-head tone-${overall.tone}`}>
-        <p className="cc-overall" role="status" aria-live="polite">{overall.tone === 'ok' ? '✓ ' : '⚠ '}{overall.headline}</p>
+        <p className="cc-overall" role="status" aria-live="polite">{overall.tone === 'ok' ? '✓ ' : '⚠ '}{top.shown.length > 0 ? <a href="#cc-attention" className="cc-overall-link" data-testid="cc-overall-link">{overall.headline} ›</a> : overall.headline}</p>
+        {top.shown.length > 0 && (
+          <ul className="cc-glance" aria-label="What needs attention" data-testid="cc-glance">
+            {top.shown.map(i => <li key={i.id} className={`u-${i.urgency}`}><a href="#cc-attention"><b>{i.what}</b>{i.where ? <span className="src"> · {i.where}</span> : null}</a></li>)}
+            {top.more > 0 && <li><a href="#cc-attention" className="src">and {top.more} more ›</a></li>}
+          </ul>
+        )}
         <p className="cc-meta ed-status">
           {live.connection === 'live' && <span className="ed-live on" role="status">● Live</span>}
           {live.connection === 'polling' && <span className="ed-live" role="status">Refreshing every few seconds</span>}
