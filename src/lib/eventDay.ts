@@ -182,11 +182,16 @@ const isPoolStage = (s: string) => s === 'pool' || s === 'round_robin';
 const countText = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /** Operational progress from real match state only. Nothing here says a competition is "complete" in the record sense; that is a later pack. */
-export function competitionProgress(comp: { id: string; name: string }, matches: readonly CompetitionMatch[]): CompetitionProgress {
+export function competitionProgress(comp: { id: string; name: string; structure?: string | null }, matches: readonly CompetitionMatch[]): CompetitionProgress {
   const total = matches.length, final = matches.filter(m => m.queueState === 'final').length;
   const percent = total === 0 ? 0 : Math.round((final / total) * 100);
   const base = { id: comp.id, name: comp.name, total, final, percent, needsBracket: false };
   if (total === 0) return { ...base, phase: 'no_draw', label: 'No draw yet', detail: null };
+  // "Pools, then a bracket" with every pool fight scored and no bracket drawn yet: the bracket is still owed (the database refuses to make such a
+  // competition official for the same reason), so this is the organizer's next step, not "all scored".
+  if (final === total && comp.structure === 'pools_elimination' && matches.some(m => m.stage === 'pool') && !matches.some(m => !isPoolStage(m.stage))) {
+    return { ...base, phase: 'pools_done', label: 'Pools complete, bracket needs building', detail: `${final} of ${total} pool fights scored`, needsBracket: true };
+  }
   if (final === total) return { ...base, phase: 'all_scored', label: 'All matches scored', detail: `${total} of ${total} fights` };
   const live = matches.some(m => (LIVE_STATES as readonly string[]).includes(m.queueState));
   const pools = matches.filter(m => isPoolStage(m.stage)), bracket = matches.filter(m => !isPoolStage(m.stage));

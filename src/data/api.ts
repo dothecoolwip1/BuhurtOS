@@ -8,6 +8,8 @@ export interface LiveCompetition {
   /** Running order of the event's competitions (the Sort column). */ sort?: number;
   /** Pack 09C: when the placings became official; when an official result was last reopened (null: never / not applicable). */
   finalizedAt?: string | null; reopenedAt?: string | null;
+  /** How the competition is fought: round robin, pools then a bracket, or a bracket (Pack 26: the progress rule needs it to know a bracket is still owed). */
+  structure?: 'round_robin' | 'pools_elimination' | 'elimination' | null;
 }
 export interface LiveEvent {
   id: string; slug: string; name: string; description: string; eventType: string; status: 'draft' | 'published' | 'cancelled';
@@ -77,10 +79,10 @@ export async function fetchEvent(slug: string): Promise<{ event: LiveEvent; comp
   if (error) throw error;
   if (!data) return null;
   const row = data as unknown as EventRow;
-  const c = await supabase.from('competitions').select('id,name,category,gender,ruleset,status,sort,finalized_at,reopened_at,ref_categories(league)').eq('event_id', row.id).order('sort');
+  const c = await supabase.from('competitions').select('id,name,category,gender,ruleset,status,sort,finalized_at,reopened_at,structure,ref_categories(league)').eq('event_id', row.id).order('sort');
   if (c.error) throw c.error;
-  type CRow = { id: string; name: string; category: string; gender: LiveCompetition['gender']; ruleset: string | null; status: string; sort?: number; finalized_at?: string | null; reopened_at?: string | null; ref_categories: Ref };
-  const competitions = (c.data as unknown as CRow[]).map(k => ({ id: k.id, name: k.name, category: k.category, gender: k.gender, ruleset: k.ruleset, status: k.status, sort: k.sort ?? 0, league: leagueOf(k.ref_categories), finalizedAt: k.finalized_at ?? null, reopenedAt: k.reopened_at ?? null }));
+  type CRow = { id: string; name: string; category: string; gender: LiveCompetition['gender']; ruleset: string | null; status: string; sort?: number; finalized_at?: string | null; reopened_at?: string | null; structure?: LiveCompetition['structure']; ref_categories: Ref };
+  const competitions = (c.data as unknown as CRow[]).map(k => ({ id: k.id, name: k.name, category: k.category, gender: k.gender, ruleset: k.ruleset, status: k.status, sort: k.sort ?? 0, league: leagueOf(k.ref_categories), finalizedAt: k.finalized_at ?? null, reopenedAt: k.reopened_at ?? null, structure: k.structure ?? null }));
   return { event: toEvent(row, [...new Set(competitions.map(k => k.league))], competitions.length), competitions };
 }
 

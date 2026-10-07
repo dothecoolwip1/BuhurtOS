@@ -76,18 +76,18 @@ try {
   await tv.goto(BASE + ARENA); await tv.waitForSelector('.arena .ar-main', { timeout: 30000 });
   await tv.waitForFunction(() => !/loading…/i.test(document.querySelector('.ar-main')?.innerText ?? ''), null, { timeout: 30000 });
   check('[tv] the display is its own page: no site header, no bottom navigation, no sign-in', (await tv.locator('header.top, nav.bottom, nav.nav').count()) === 0 && !(await has(tv, 'sign in')));
-  check('[tv] with no field in the address it shows Field 1 (the blank default), with nothing fighting yet it says so', /^field 1/.test(await stageText(tv)) && /waiting for the next fight|next fight coming up|stand by/.test(await stageText(tv)), await stageText(tv));
-  check('[tv] both fields are offered, Field 1 first', (await tv.locator('.ar-fields a').allTextContents()).join('|') === 'Field 1|Field 2', (await tv.locator('.ar-fields a').allTextContents()).join('|'));
+  check('[tv] with no field in the address it shows Lyst 1 (the blank default), with nothing fighting yet it says so', /^lyst 1/.test(await stageText(tv)) && /waiting for the next fight|next fight coming up|stand by/.test(await stageText(tv)), await stageText(tv));
+  check('[tv] both Lysts are offered, Lyst 1 first', (await tv.locator('.ar-fields a').allTextContents()).join('|') === 'Lyst 1|Lyst 2', (await tv.locator('.ar-fields a').allTextContents()).join('|'));
   check('[tv] the status says how it is kept fresh (polling here: the local stack has no realtime socket)', /updating every few seconds|live|connecting/.test((await tv.locator('.ar-live').innerText()).toLowerCase()));
   check('[tv] no fabricated time: nothing like a countdown or a clock is shown', !/\b\d{1,2}:\d{2}\b/.test(await stageText(tv)), await stageText(tv));
   await shot(tv, '1-tv-idle');
 
   // ================================================================ 2. the organizer calls Field 1 from Event day, on a desktop
   const { ctx: dctx, page: org } = await open('desktop', 'organizer');
-  await org.goto(BASE + MANAGE); await org.waitForSelector('section.ed-field[aria-label="Field 1"]', { timeout: 30000 });
+  await org.goto(BASE + MANAGE); await org.waitForSelector('section.ed-field[aria-label="Lyst 1"]', { timeout: 30000 });
   check('Event day offers the big-screen display', (await org.getByRole('link', { name: /Live display/ }).count()) >= 1);
-  await org.locator('section.ed-field[aria-label="Field 1"]').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).click();
-  await waitText(org, 'section.ed-field[aria-label="Field 1"] .ed-now', 'Aldric Stone');
+  await org.locator('section.ed-field[aria-label="Lyst 1"]').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).click();
+  await waitText(org, 'section.ed-field[aria-label="Lyst 1"] .ed-now', 'Aldric Stone');
   check('Field 1 is called: 1 active, 2 on deck, 3 in the hole (no field written: the default stays blank)', states(1, 2, 3) === '1:active,2:on_deck,3:in_the_hole' && sql(`select count(*) from public.matches where field is null`) === '10', states(1, 2, 3));
   const sawNow = await waitText(tv, '.ar-main', 'Now fighting');
   check('[tv] the display picks it up by itself: NOW FIGHTING Aldric Stone vs Brann Oakley', sawNow && /aldric stone.*brann oakley/.test(await stageText(tv)), await stageText(tv));
@@ -137,7 +137,7 @@ try {
   await ph.getByText('Official: saved on the server').waitFor({ timeout: 20000 });
   check('[phone] OFFICIAL, with the winner', (await has(ph, 'Official: saved on the server')) && (await has(ph, 'Winner: Aldric Stone')), await body(ph));
   check('the database: match 1 final 4-0 to A, the queue advanced, the running score was cleared by the server', sql(`select queue_state || result || score_a || '-' || score_b from public.matches where id = '${mid(1)}'`) === 'finala4-0' && states(2, 3, 4) === '2:active,3:on_deck,4:in_the_hole' && live(1) === 'none', `${states(1, 2, 3, 4)} live=${live(1)}`);
-  check('[phone] after OFFICIAL the next fight on this field is one tap away, and so is Event day', (await ph.getByRole('button', { name: /Next fight on Field 1/ }).count()) === 1 && (await has(ph, 'Cael Rhodes vs Dara Voss')) && (await ph.getByRole('link', { name: 'Back to Event day' }).count()) === 1, await body(ph));
+  check('[phone] after OFFICIAL the next fight on this field is one tap away, and so is Event day', (await ph.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).count()) === 1 && (await has(ph, 'Cael Rhodes vs Dara Voss')) && (await ph.getByRole('link', { name: 'Back to Event day' }).count()) === 1, await body(ph));
   await shot(ph, '3-phone-official');
   // the display: result, then the next fight
   const sawResult = await waitText(tv, '.ar-main', 'Winner: Aldric Stone');
@@ -146,10 +146,10 @@ try {
   await shot(tv, '3-tv-result');
   const sawNext = await waitText(tv, '.ar-main', 'Cael Rhodes', 70000);
   check('[tv] after the result hold the next fight is NOW FIGHTING (Cael Rhodes vs Dara Voss), On deck moved up', sawNext && /now fighting/.test(await stageText(tv)) && /on deck.*edric hale.*in the hole.*aldric stone/.test(await nextText(tv)), `${await stageText(tv)} || ${await nextText(tv)}`);
-  check('[organizer desktop] Event day moved on without a reload', await waitText(org, 'section.ed-field[aria-label="Field 1"] .ed-now', 'Cael Rhodes'), await body(org));
+  check('[organizer desktop] Event day moved on without a reload', await waitText(org, 'section.ed-field[aria-label="Lyst 1"] .ed-now', 'Cael Rhodes'), await body(org));
 
   // ================================================================ 4. next fight from the OFFICIAL screen; a reload and a fresh screen show the server's score, not the device's
-  await ph.getByRole('button', { name: /Next fight on Field 1/ }).click();
+  await ph.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).click();
   await ph.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
   check('[phone] "Next fight" opens the scoring screen for Cael Rhodes vs Dara Voss', (await has(ph, 'Cael Rhodes')) && (await has(ph, 'Dara Voss')) && (await nums(ph)) === '0-0', await body(ph));
   await tap(ph, 'Head or torso +2');
@@ -191,7 +191,7 @@ try {
   check('[tv] the display shows the official 6-0 result (the score it last heard was 4-0: the result wins)', (await waitText(tv, '.ar-main', 'Winner: Cael Rhodes')) && (await scores(tv)).join('-') === '6-0', await stageText(tv));
 
   // ================================================================ 6. a result two devices disagree about: the display shows the official one, the scorer is told
-  await ph.getByRole('button', { name: /Next fight on Field 1/ }).click();
+  await ph.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).click();
   await ph.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
   check('[phone] scoring Edric Hale vs Fenna Crow', (await has(ph, 'Edric Hale')) && (await has(ph, 'Fenna Crow')));
   await tap(ph, 'Head or torso +2');
@@ -236,7 +236,7 @@ try {
   check('a scorekeeper reports a running score on Field 2 (3-1)', rep12.body?.status === 'ok' && live(12) === '3-1 Round 1 of 2', JSON.stringify(rep12));
   const rep4 = await report('organizer', 4, 1, 1, 'Round 2 of 2');
   check('and the organizer reports one on Field 1 (1-1)', rep4.body?.status === 'ok', JSON.stringify(rep4));
-  await tv.locator('.ar-fields a', { hasText: 'Field 2' }).click();
+  await tv.locator('.ar-fields a', { hasText: /Lyst 2|Field 2/ }).click();
   await tv.waitForURL(/arena\/Field%202/, { timeout: 10000 });
   const f2 = await tv.waitForFunction(() => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()).join('-') === '3-1', null, { timeout: 40000 }).then(() => true, () => false);
   check('[tv] Field 2: Hale Morrow vs Ivor Penn at 3-1, On deck Aldric Stone vs Hale Morrow, In the hole Aldric Stone vs Garrick Fell', f2 && /^field 2.*hale morrow.*ivor penn/.test(await stageText(tv)) && /on deck.*aldric stone.*hale morrow.*in the hole.*aldric stone.*garrick fell/.test(await nextText(tv)), `${await stageText(tv)} || ${await nextText(tv)}`);

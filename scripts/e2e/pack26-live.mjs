@@ -999,7 +999,8 @@ try {
     await prog.getByRole('button', { name: 'Review wins & losses' }).click();
     await o.getByRole('dialog').waitFor({ timeout: 15000 });
     note('close.review_sheet_text', (await body(o, '[role=dialog]')).slice(0, 500));
-    check('161. Review wins & losses lists every competitor with their fights, and asks to confirm (plain words, no "finalize")', /every competitor/.test(await body(o, '[role=dialog]')) && (await o.getByRole('dialog').getByRole('button', { name: 'Confirm results' }).count()) === 1);
+    await until(async () => /check who won|fights are done|results are official/.test(await body(o, '[role=dialog]')), 30000);
+    check('161. Review wins & losses lists every competitor with their fights, and asks to confirm (plain words, no "finalize")', /check who won/.test(await body(o, '[role=dialog]')) && !/finali[sz]e/.test(await body(o, '[role=dialog]')) && (await o.locator('[role=dialog] [aria-label="Every competitor"] li').count()) >= 3 && (await o.getByRole('dialog').getByRole('button', { name: 'Confirm results' }).count()) === 1, (await body(o, '[role=dialog]')).slice(0, 300));
     await shot(o, 'review-sheet');
     await o.getByRole('dialog').getByRole('button', { name: 'Confirm results' }).click();
     await o.getByRole('dialog').getByRole('button', { name: 'Yes, confirm results' }).click();
@@ -1059,7 +1060,7 @@ try {
     // reopen with a reason, correct one placing with a reason, re-finalize, close again
     await o.locator('[aria-label="Event closed"] button', { hasText: 'Reopen the event…' }).click();
     await o.locator('input[placeholder*="contested"]').fill('TEST: a placing was contested after closing');
-    await o.getByRole('button', { name: 'Reopen the event' }).click();
+    await o.getByRole('button', { name: 'Reopen the event', exact: true }).click();
     check('169. the event reopens with a reason (audited); the official results stay official until changed', await untilDb(() => sql(`select (closed_at is null)::text from public.events where id = '${EV}'`), 'true', 20000) === 'true' && sql(`select count(*) from public.results r join public.competitions k on k.id = r.competition_id where k.event_id = '${EV}'`) !== '0');
     const bk = comp('Men Sword & Buckler');
     const third = sql(`select entry_id from public.results where competition_id = '${bk}' and place = 3`);

@@ -96,7 +96,7 @@ try {
     await shot(page, 'quick-review-390');
     await layout(page, 'quick review 390');
     await page.getByRole('button', { name: 'Create event' }).click();
-    await page.waitForURL(/manage\?tab=home/, { timeout: 30000 });
+    await page.waitForURL(/manage\?tab=home|\/control(\?mode=setup)?(?!.*tool=)/, { timeout: 30000 });   // Pack 25: Event Control › Set up
     await page.locator('section[aria-label="Event home"]').waitFor({ timeout: 30000 });
     const ev = sql(`select id || '|' || status || '|' || field_count || '|' || (select count(*) from public.competitions k where k.event_id = e.id) from public.events e where slug = 'red-deer-rumble-2027'`).split('|');
     check('the event exists as a draft with 2 fields and 15 competitions', ev[1] === 'draft' && ev[2] === '2' && ev[3] === '15', ev.join('|'));
@@ -130,7 +130,7 @@ try {
     await waitText(page, '.eh-next', 'build tournament');
     check('registration ready: the one next step is Build tournament', /Build tournament/.test(await text(page, '.eh-primary')), await text(page, '.eh-next'));
     await page.locator('.eh-primary').click();
-    await page.waitForURL(/tab=build/); await page.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 30000 });
+    await page.waitForURL(/tab=build|tool=build/); await page.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 30000 });
     await waitText(page, 'section[aria-label="Build tournament"]', 'tournament plan ready');
     const plan = await text(page, 'section[aria-label="Build tournament"]');
     check('the plan names fighters, competitions, fights and fields', /Tournament plan ready/i.test(plan) && /\b4\b competitions/.test(plan) && /\b2\b fields/.test(plan), plan.slice(0, 500));
@@ -162,7 +162,7 @@ try {
     built = { ok: true };
     await shot(page, 'build-done-1280');
     await page.getByRole('link', { name: /Open Event day/ }).click();
-    await page.waitForURL(/tab=eventday/);
+    await page.waitForURL(/tab=eventday|mode=live/);
     check('Plan accepted → Event day', page.url().includes('tab=eventday'));
     check('no errors on the page', page.errors.length === 0, page.errors.join(' | '));
     await ctx.close();

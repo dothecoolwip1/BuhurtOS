@@ -207,7 +207,7 @@ try {
   await p1.getByRole('button', { name: 'Continue' }).click();
   check('43. then which Lyst (the event has more than one field)', await until(async () => await has(p1, 'which lyst')), await body(p1));
   await shot(p1, 'counter-02-lyst-390');
-  await p1.getByRole('button', { name: /Field 1/ }).click();
+  await p1.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
   check('44. then RED or BLUE, in words not just colour', await until(async () => await has(p1, 'which side on field 1') && await has(p1, 'red') && await has(p1, 'blue')), await body(p1));
   await shot(p1, 'counter-03-side-390');
   await p1.getByRole('button', { name: /RED/ }).click();
@@ -237,7 +237,7 @@ try {
   await go(p2, `/device#c=${poolCode}`);
   await until(async () => await has(p2, 'who is counting'), 30000);
   await p2.fill('#cp-name', 'Taylor'); await p2.getByRole('button', { name: 'Continue' }).click();
-  await until(async () => await has(p2, 'which lyst')); await p2.getByRole('button', { name: /Field 1/ }).click();
+  await until(async () => await has(p2, 'which lyst')); await p2.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
   await until(async () => await has(p2, 'which side')); await p2.getByRole('button', { name: /BLUE/ }).click();
   check('52. a second phone on the SAME QR counts blue: no fixed number of phones', await until(async () => await has(p2, 'brann oakley')) && sql(`select count(*) from public.event_sessions where ended_at is null and multi`) === '2', await body(p2));
   await shot(p2, 'counter-07-blue-390');
@@ -293,7 +293,7 @@ try {
   await go(p3, `/device#c=${poolCode}`);
   await until(async () => await has(p3, 'who is counting'), 30000);
   await p3.fill('#cp-name', 'Morgan'); await p3.getByRole('button', { name: 'Continue' }).click();
-  await until(async () => await has(p3, 'which lyst')); await p3.getByRole('button', { name: /Field 2/ }).click();
+  await until(async () => await has(p3, 'which lyst')); await p3.getByRole('button', { name: /Lyst 2|Field 2/ }).click();
   await until(async () => await has(p3, 'which side')); await p3.getByRole('button', { name: /RED/ }).click();
   check('68. the phone binds to Field 2 red and waits for the round', await until(async () => await has(p3, 'ankle biters') || await has(p3, 'waiting'), 20000), await body(p3));
   await tab.page.getByRole('button', { name: /Start round 1 for counters/ }).click();

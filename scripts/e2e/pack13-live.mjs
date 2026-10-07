@@ -173,7 +173,7 @@ try {
     await page.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
     await page.fill('#cp-name', who);
     await page.getByRole('button', { name: 'Continue' }).click();
-    await page.getByRole('button', { name: /Field 1/ }).click();
+    await page.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
     await page.getByRole('button', { name: new RegExp(side) }).click();
     phones[name] = page;
   }

@@ -197,7 +197,11 @@ describe('competition progress', () => {
     const done = competitionProgress(comp, [pool(1, 'final'), pool(2, 'final')]);
     expect(done).toMatchObject({ phase: 'all_scored' });
     const needs = competitionProgress({ id: 'k', name: 'K' }, [pool(1, 'final'), pool(2, 'final'), m(3, { stage: 'elimination', queueState: 'final' })].slice(0, 2).concat([]));
-    expect(needs.phase).toBe('all_scored');   // every existing match is scored: nothing says a bracket was ever planned until it exists
+    expect(needs.phase).toBe('all_scored');   // without the structure nothing says a bracket was ever planned until it exists
+    const owed = competitionProgress({ id: 'k', name: 'K', structure: 'pools_elimination' }, [pool(1, 'final'), pool(2, 'final')]);
+    expect(owed).toMatchObject({ phase: 'pools_done', needsBracket: true, label: 'Pools complete, bracket needs building' });   // Pack 26: pools-then-bracket with every pool fight scored owes a bracket
+    expect(competitionProgress({ id: 'k', name: 'K', structure: 'round_robin' }, [pool(1, 'final'), pool(2, 'final')]).phase).toBe('all_scored');
+    expect(competitionProgress({ id: 'k', name: 'K', structure: 'pools_elimination' }, [pool(1, 'final'), pool(2, 'final'), m(3, { stage: 'final', queueState: 'final' })]).phase).toBe('all_scored');
     const bracketNeeded = competitionProgress(comp, [pool(1, 'final'), pool(2, 'final'), m(9, { stage: 'round_robin', queueState: 'scheduled' })]);
     expect(bracketNeeded.phase).not.toBe('pools_done');
     const bracket = competitionProgress(comp, [pool(1, 'final'), m(2, { stage: 'elimination', queueState: 'scheduled' }), m(3, { stage: 'final', queueState: 'scheduled' })]);
