@@ -346,14 +346,14 @@ try {
   await P.counter2.evaluate(() => window.dispatchEvent(new Event('focus')));
   check('72. the SAME code signed in elsewhere: the first device is signed out within one check (a copied code cannot quietly run two devices)', again.status === 200 && (await until(async () => path(P.counter2) === '/device' && ENDED.test(await text(P.counter2)), 30000)), `${again.status} ${path(P.counter2)} ${(await text(P.counter2)).slice(0, 200)}`);
   // sign out on purpose
-  await P.counter3.getByRole('button', { name: 'Sign out this device' }).click();
+  await P.counter3.getByRole('button', { name: /^Sign out/ }).click();   // Pack 25: the counter's compact bar says "Sign out"
   const dlg = P.counter3.getByRole('dialog');
   await dlg.waitFor({ timeout: 10000 });
   const dlgText = (await dlg.innerText()).replace(/\s+/g, ' ');
   check('73. SIGN OUT asks first ("Sign out this device?") and says what happens', /sign out this device\?/i.test(dlgText) && /new code/i.test(dlgText), dlgText);
   await dlg.getByRole('button', { name: /No, stay signed in/ }).click();
   check('74. "No, stay signed in" changes nothing', (await P.counter3.locator('[data-testid="device-bar"]').count()) === 1 && (await stored(P.counter3)) !== null);
-  await P.counter3.getByRole('button', { name: 'Sign out this device' }).click();
+  await P.counter3.getByRole('button', { name: /^Sign out/ }).click();   // Pack 25: the counter's compact bar says "Sign out"
   await P.counter3.getByRole('dialog').getByRole('button', { name: /Yes, sign out/ }).click();
   check('75. "Yes, sign out": the device ends on the server, forgets itself and shows the plain sign-in page (no "ended" warning)', await until(async () => path(P.counter3) === '/device' && (await P.counter3.locator('#ds-code').count()) === 1) && (await stored(P.counter3)) === null && !ENDED.test(await text(P.counter3)) && sql(`select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where c.label = 'Counter Phone 3' and s.ended_at is not null`) !== '0');
 

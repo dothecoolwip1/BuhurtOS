@@ -272,7 +272,8 @@ export function deviceManager(): DeviceManager {
     storage: () => guard(() => (typeof localStorage === 'undefined' ? null : localStorage)),
     noteStorage: () => guard(() => (typeof sessionStorage === 'undefined' ? null : sessionStorage)),
     now: () => Date.now(),
-    leave: path => { const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, ''); window.location.replace(`${base}${path}`); },
+    // Leaving for the sign-in page keeps a code the QR just carried (a signed-out phone scanning the Counter QR again signs in at once).
+    leave: path => { const base = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, ''); const c = path === '/device' ? takePendingCode() : null; window.location.replace(`${base}${path}${c ? `#c=${c}` : ''}`); },
     setTimeout: (f, ms) => window.setTimeout(f, ms),
     clearTimeout: t => window.clearTimeout(t as number)
   });

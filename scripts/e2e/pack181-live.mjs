@@ -165,20 +165,19 @@ try {
   // ------------------------------------------------------------------ 5. a real fight: marshal runs it, counters count privately, secretary assigns
   check('5. the Marshal Phone opens the fight and starts the clock', ok(await rpc(tok('marshal'), 'lyst_open', { p_match: M1, p_counter_input: 'simple' })) &&
     (await rpc(tok('marshal'), 'lyst_timer_command', { p_event: ED1, p_field: 'Field 1', p_match: M1, p_expected_rev: 0, p_command: crypto.randomUUID(), p_action: 'start', p_mode: 'fight', p_duration_ms: 60000, p_round: 1, p_delta_ms: 0 })).body?.status === 'ok');
-  const jc = await rpc(tok('marshal'), 'create_lyst_join_code', { p_event: ED1, p_field: 'Field 1' });
-  const jcode = jc.body?.code ?? jc.body?.[0]?.code ?? sql(`select code from public.lyst_join_codes where event_id = '${ED1}' and revoked_at is null limit 1`);
-  check('5. the Marshal Phone makes a join code for the Lyst', !!jcode, jc.text);
-  for (const n of ['counter1', 'counter2']) { const r = await rpc(tok(n), 'request_counter_seat', { p_code: jcode }); check(`5. ${sessions[n].whoami.label} joins the Lyst with the code: pending, nothing granted yet`, ok(r) && r.body.status === 'pending', r.text); }
+  // Pack 25: no join code and no seating. A counter device binds ITSELF to a Lyst and a side; scoring staff may move it; nobody approves anything.
+  const qr = await rpc(tok('marshal'), 'counter_pool_code', { p_event: ED1 });
+  check('5. the Marshal Phone may ask for the event\'s Counter QR (none made yet: it says so, and a device cannot make one)', ok(qr) && qr.body.code === null && qr.body.can_create === false, qr.text);
+  for (const [n, side] of [['counter1', 'a'], ['counter2', 'b']]) { const r = await rpc(tok(n), 'counter_bind', { p_field: 'Field 1', p_side: side, p_operator: sessions[n].whoami.label }); check(`5. ${sessions[n].whoami.label} binds itself to Field 1 ${side === 'a' ? 'red' : 'blue'}: on the fight at once, nothing pending`, ok(r) && r.body.seat?.status === 'active' && r.body.seat?.side === side, r.text); }
   const seatId = (n) => sql(`select id from public.lyst_counter_seats where user_id = '${sessions[n].whoami.session_id}' and status in ('pending','active')`);
-  check('5. the seats carry the device names (no person behind them)', sql(`select string_agg(display_name, ',' order by display_name) from public.lyst_counter_seats`) === 'Counter Phone 1,Counter Phone 2');
-  const e2join = await rpc(tok('e2counter'), 'request_counter_seat', { p_code: jcode });
-  check('5. an Event 2 counter with Event 1\'s code is told it is not valid (no hint it exists)', ok(e2join) && e2join.body.status === 'invalid', e2join.text);
-  const secJoin = await rpc(tok('secretary'), 'request_counter_seat', { p_code: jcode });
-  check('5. a Secretary device cannot be a counter either', ok(secJoin) && secJoin.body.status === 'invalid', secJoin.text);
-  const counterAssign = await rpc(tok('counter3'), 'assign_counter_seat', { p_seat: seatId('counter1'), p_match: M1, p_side: 'a', p_role: 'official', p_slot: 'A' });
-  check('5. a Counter cannot assign anyone to a corner', refused(counterAssign), counterAssign.text);
-  check('5. the Secretary / Scorekeeper assigns Counter Phone 1 and 2 to corners', ok(await rpc(tok('secretary'), 'assign_counter_seat', { p_seat: seatId('counter1'), p_match: M1, p_side: 'a', p_role: 'official', p_slot: 'A' })) &&
-    ok(await rpc(tok('secretary'), 'assign_counter_seat', { p_seat: seatId('counter2'), p_match: M1, p_side: 'b', p_role: 'official', p_slot: 'B' })));
+  check('5. the seats carry the names the phones gave (the device labels; no person behind them)', sql(`select string_agg(display_name, ',' order by display_name) from public.lyst_counter_seats where event_id = '${ED1}'`) === 'Counter Phone 1,Counter Phone 2');
+  const e2join = await rpc(tok('e2counter'), 'counter_bind', { p_field: 'Field 1', p_side: 'a', p_operator: 'Other' });
+  check('5. an Event 2 counter binds on ITS OWN event only: never on Event 1\'s fight', ok(e2join) && e2join.body.event?.slug === 'other-event' && (e2join.body.seat?.match_id ?? null) === null && sql(`select count(*) from public.lyst_counter_seats where event_id = '${ED1}' and user_id = '${sessions.e2counter.whoami.session_id}'`) === '0', e2join.text);
+  const secJoin = await rpc(tok('secretary'), 'counter_bind', { p_field: 'Field 1', p_side: 'a', p_operator: 'Sec' });
+  check('5. a Secretary device cannot be a counter either', refused(secJoin), secJoin.text);
+  const counterMove = await rpc(tok('counter3'), 'move_counter_session', { p_session: sessions.counter1.whoami.session_id, p_field: 'Field 1', p_side: 'b' });
+  check('5. a Counter cannot move another phone', refused(counterMove), counterMove.text);
+  check('5. the Secretary / Scorekeeper may move a phone (Counter Phone 2 to blue, where it is; the binding is the server\'s)', ok(await rpc(tok('secretary'), 'move_counter_session', { p_session: sessions.counter2.whoami.session_id, p_field: 'Field 1', p_side: 'b' })) && sql(`select side from public.counter_bindings where session_id = '${sessions.counter2.whoami.session_id}'`) === 'b');
   check('5. Counter Phone 1 counts on its own seat', ok(await rpc(tok('counter1'), 'counter_record', { p_id: crypto.randomUUID(), p_seat: seatId('counter1'), p_round: 1, p_weight: 1 })));
   check('5. Counter Phone 2 cannot count on Counter Phone 1\'s seat', refused(await rpc(tok('counter2'), 'counter_record', { p_id: crypto.randomUUID(), p_seat: seatId('counter1'), p_round: 1, p_weight: 1 })));
   const state = await rpc(tok('counter1'), 'counter_state');
@@ -223,8 +222,8 @@ try {
   const revoked = await rpc(person('organizer'), 'revoke_event_credential', { p_credential: sql(`select id from public.event_credentials where label = 'Counter Phone 3'`), p_reason: 'phone missing' });
   check('8. the organizer revokes Counter Phone 3 only', ok(revoked) && revoked.body.status === 'revoked', revoked.text);
   const r3 = await rpc(tok('counter3'), 'device_whoami');
-  const r3b = await rpc(tok('counter3'), 'request_counter_seat', { p_code: jcode });
-  check('8. Counter Phone 3\'s token has no authority from the very next call (not even to ask for a seat)', refused(r3) && refused(r3b), `${r3.text} | ${r3b.status} ${r3b.text}`);
+  const r3b = await rpc(tok('counter3'), 'counter_bind', { p_field: 'Field 1', p_side: 'a', p_operator: 'x' });
+  check('8. Counter Phone 3\'s token has no authority from the very next call (not even to bind to a Lyst)', refused(r3) && refused(r3b), `${r3.text} | ${r3b.status} ${r3b.text}`);
   check('8. a revoked counter that already held an ACTIVE seat can no longer count (revocation is immediate, not at seat expiry)', await (async () => {
     const r1 = await rpc(person('organizer'), 'revoke_event_credential', { p_credential: sql(`select id from public.event_credentials where label = 'Counter Phone 2'`), p_reason: 'test' });
     const a2 = await rpc(tok('counter2'), 'counter_record', { p_id: crypto.randomUUID(), p_seat: seatId('counter2'), p_round: 1, p_weight: 1 });

@@ -66,8 +66,10 @@ export function EventControlPage() {
   const device = !session && hasDeviceSession();
   if (!session && !device) return <><PageHead eyebrow="Event Control" title={event.name} /><SignIn reason="Sign in with the account that organizes this event, or as its head marshal or secretary." /></>;
   if (mine.loading && !mine.data) return <p className="muted" role="status">Loading…</p>;
-  const staff = organizer || (mine.data?.roles.some(r => CONTROL_ROLES.includes(r)) ?? false);
-  if (!staff) {
+  // A signed-in person with no role here is told so at once. A device (no account) or a person whose roles could not be read is not pre-judged:
+  // Live ops asks the database (event_command_snapshot), which refuses anyone who may not run the day, and says so in the same words.
+  const noRole = !!session && !device && mine.data !== undefined && !organizer && !mine.data?.roles.some(r => CONTROL_ROLES.includes(r));
+  if (noRole) {
     return (
       <section style={{ display: 'grid', gap: 14 }}>
         <PageHead eyebrow="Event Control" title="This is for the people who run this event" lede="Its organizers, head marshal and secretary open Event Control. If that should be you, ask the event's organizer to add your account." />
