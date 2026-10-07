@@ -165,6 +165,9 @@ try {
   // ================================================================ 10. notification settings on a phone: the two switches apart
   const acct = await open('aldric');
   await acct.goto(`${BASE}/account#notifications`);
+  if (!(await acct.getByTestId('ns-perm').isVisible().catch(() => false))) {   // Pack 26: the settings are a small sheet behind the Account row "Notifications"
+    await acct.getByRole('button', { name: /^Notifications/ }).first().click({ timeout: 30000 }).catch(() => acct.getByRole('link', { name: /^Notifications/ }).first().click({ timeout: 30000 }));
+  }
   await acct.getByTestId('ns-perm').waitFor({ timeout: 30000 });
   await acct.waitForFunction(() => /^(On|Off)$/.test(document.querySelector('[data-testid="ns-device"]')?.textContent?.trim() ?? ''), null, { timeout: 15000 }).catch(() => undefined);
   check('33. Settings show the browser permission and the BuhurtOS switch separately', (await acct.getByTestId('ns-perm').innerText()).length > 0 && /^(On|Off)$/.test((await acct.getByTestId('ns-device').innerText()).trim()), `${await acct.getByTestId('ns-perm').innerText()} / ${await acct.getByTestId('ns-device').innerText()}`);
