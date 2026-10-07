@@ -1,5 +1,7 @@
 # BuhurtOS phone test plan (before Nov 1, 2026)
 
+> **Superseded in part (2026-10-07, Pack 26).** This plan was written on 2026-10-01 against the app of that day. Its addresses and screen names have since changed: the organizer area is **Event Control** (`/events/<event>/control`, modes Set up / Live ops / Results; the old `/manage` and `/command` addresses redirect there), the field screen is **Lyst Control**, counters use the event's one **Counter QR**, and the "not yet tested" caveats of Part G no longer hold (every journey below has been run on a real local stack; see `docs/claude-packs/PACK_26_RUMBLE_REHEARSAL.md`). For the day itself use `docs/runbooks/PACK25_EVENT_CONTROL_AND_COUNTERS.md`, `PACK181_DEVICES.md` and `PACK13_REAL_DEVICE_CHECKLIST.md`. The steps below are kept as the phone-testing method and the report template.
+
 For the owner and a few teammates, on real phones. Plain language. Written 2026-10-01 from what is in this repo today, not from what was hoped for. Each step says where the answer comes from so you can check me.
 
 ## How to use this

@@ -71,7 +71,7 @@ const day = (n) => sql(`select ('${today}'::date + ${n})::text`);
 const setDates = (start, end) => {
   const from = sql(`select starts_on::text from public.events where id = '${EV}'`);
   sql(`update public.events set starts_on = '${start}', ends_on = '${end}' where id = '${EV}'`);
-  if (from && from !== start) sql(`update public.registrations set attend_dates = array(select (d::date + ('${start}'::date - '${from}'::date))::text from unnest(attend_dates) d) where event_id = '${EV}' and attend_dates is not null and array_length(attend_dates, 1) > 0`);
+  if (from && from !== start) sql(`update public.registrations set attend_dates = array(select (d + ('${start}'::date - '${from}'::date))::date from unnest(attend_dates) d) where event_id = '${EV}' and attend_dates is not null and array_length(attend_dates, 1) > 0`);
 };
 
 const browser = await chromium.launch({ executablePath: process.env.CHROME ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--proxy-bypass-list=127.0.0.1;localhost'] });

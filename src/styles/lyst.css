@@ -108,12 +108,9 @@
 .ly-list{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:8px}
 .ly-seat{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:var(--raised);border:1px solid var(--line)}
 .ly-seat.is-learning{border-style:dashed;background:var(--ground)}
-.ly-slot{font-weight:800;min-width:2ch;text-align:center}
 .ly-seat-main{display:grid;min-width:0}
 .ly-seat-main b{overflow-wrap:anywhere}
 .ly-seat-n{font:800 22px var(--f-display)}
-.ly-request{display:grid;gap:8px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--raised)}
-.ly-assign{display:flex;gap:8px;flex-wrap:wrap}
 .btn-sm{min-height:40px;padding:0 12px;font-size:13px}
 .ly-log-row{display:grid;gap:4px;padding:8px 10px;border-radius:10px;background:var(--raised);border:1px solid var(--line)}
 .ly-log-row.is-void{opacity:.65;text-decoration:line-through}

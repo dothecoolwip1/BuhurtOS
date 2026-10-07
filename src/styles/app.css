@@ -583,10 +583,6 @@ main :where(div, section, article, label) { min-width: 0; }
 
 /* ---------- live results on the event page ---------- */
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.live-fields{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
-.live-field ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
-.live-field .slot{grid-template-columns:84px minmax(0,1fr)}
-.live-field .slot .t{overflow-wrap:anywhere}
 .live-results{display:grid;gap:14px}
 .live-comp{display:grid;gap:12px;min-width:0}
 .live-comp h3{font-size:22px}
@@ -918,7 +914,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .ed-fill{width:100%}
 .ed-waiting summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--muted)}
 .ed-waiting ul{margin:4px 0 0;padding-left:18px;display:grid;gap:4px}
-.ed-lower{display:grid;gap:16px}
 .ed-h{font-size:20px;display:flex;gap:10px;align-items:center}
 .ed-calm{color:var(--muted);margin:0}
 .ed-prog-list{list-style:none;margin:0;padding:0;display:grid;gap:14px}
@@ -977,7 +972,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
   .ed-fields{grid-template-columns:repeat(auto-fit,minmax(400px,1fr));align-items:start}
   .ed-field-wrap{display:block}
   .ed-picker{display:none}
-  .ed-lower{grid-template-columns:1fr 1fr;align-items:start}
 }
 
 /* ---- Field-side scoring (Pack 09B): the sides and the score dominate; one status banner says where the result stands. */
@@ -1266,7 +1260,6 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .cc-head.tone-attention{border-left-color:var(--brass)}
 .cc-head.tone-urgent{border-left-color:var(--live)}
 .cc-head .eyebrow{margin:0}
-.cc-title{margin:0;font:800 clamp(26px,7vw,40px)/1.05 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere}
 .cc-meta{margin:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:14px}
 .cc-overall{margin:0;font-size:18px;font-weight:700}
 .cc-fresh{margin:0;font-size:13.5px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
