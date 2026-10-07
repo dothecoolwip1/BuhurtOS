@@ -23,7 +23,7 @@ const sql = (q) => execFileSync('psql', ['-X', '-At', '-d', DB, '-c', q], { enco
 const E1 = '00000000-0000-0000-0000-00000000ed01', E2 = '00000000-0000-0000-0000-00000000ed02';
 const mid = (n) => `00000000-0000-0000-0000-0000000fd${String(n).padStart(3, '0')}`;
 const SLUG = 'test-stuff-test';
-const HOME = `/events/${SLUG}`, COMMAND = `${HOME}/command`, ANNOUNCER = `${HOME}/announcer`, CHECKIN = `${HOME}/checkin`, FIELD1 = `${HOME}/field/Field%201`, FIELD2 = `${HOME}/field/Field%202`;
+const HOME = `/events/${SLUG}`, COMMAND = `${HOME}/control`, ANNOUNCER = `${HOME}/announcer`, CHECKIN = `${HOME}/checkin`, FIELD1 = `${HOME}/field/Field%201`, FIELD2 = `${HOME}/field/Field%202`;
 
 // ---------------------------------------------------------------- the database starts from the fixture every time (this script may be re-run on the same stack)
 sql(`delete from public.event_sessions; delete from public.event_credentials; delete from public.device_code_attempts;
@@ -160,10 +160,10 @@ try {
   const landed = {};
   for (const [key, want] of Object.entries(LANDING)) landed[key] = await until(async () => path(P[key]) === want && (await P[key].locator('[data-testid="device-bar"]').count()) === 1, 45000);
   check('15. every valid code lands on the right screen with no fighter onboarding: counters on the counter screen', ['counter1', 'counter2', 'counter3', 'counter4'].every(k => landed[k]), JSON.stringify(landed));
-  check('16. ... Secretary / Scorekeeper on the Command Centre (QR link, nothing typed)', landed.secretary, path(P.secretary));
+  check('16. ... Secretary / Scorekeeper on Event Control › Live ops (QR link, nothing typed)', landed.secretary, path(P.secretary));
   check('17. ... Marshal on the event home with the field picker', landed.marshal && (await until(async () => /Field 1/.test(await text(P.marshal, '[data-testid="device-home"]')))), await text(P.marshal));
   check('18. ... Announcer on the announcer view', landed.announcer, path(P.announcer));
-  check('19. ... Event Admin / Temporary Organizer on the Command Centre', landed.admin, path(P.admin));
+  check('19. ... Event Admin / Temporary Organizer on Event Control › Live ops', landed.admin, path(P.admin));
   check('20. QR link: the fragment is gone and the page is signed in; the code reached the network only in the sign-in POST body', !P.secretary.url().includes('#') && !net.filter(n => n.who === 'secretary').some(n => n.url.includes(norm(dev.secretary.code)) || n.url.includes(dev.secretary.code) || JSON.stringify(n.headers).includes(norm(dev.secretary.code))), P.secretary.url());
   check('21. no device went through onboarding or a profile page', Object.values(P).every(p => !/\/welcome|\/account|\/claim-profile/.test(path(p))));
   await shot(P.marshal, '02-marshal-home'); await shot(P.secretary, '03-secretary-command'); await shot(P.admin, '04-admin-command'); await shot(P.announcer, '05-announcer'); await shot(P.counter1, '06-counter');
@@ -216,18 +216,18 @@ try {
   // ------------------------------------------------------------ 6. what each role may open (route restrictions: only what is OFFERED; the database refuses the rest, checked below)
   const goes = async (page, to, want, wait = 15000) => { await page.goto(BASE + to); return until(async () => path(page) === want, wait); };
   check('34. a Marshal who opens /account lands back on its own screen', await goes(P.marshal, '/account', HOME));
-  check('35. a Marshal who opens the Command Centre is sent home (it is not a marshal tool)', await goes(P.marshal, COMMAND, HOME));
+  check('35. a Marshal who opens Event Control is sent home (it is not a marshal tool)', await goes(P.marshal, COMMAND, HOME));
   check('36. a Counter who opens a field screen lands on the counter screen', await goes(P.counter4, FIELD1, '/lyst/counter'));
   check('37. an Announcer who opens a field screen or the desk lands on the announcer view', (await goes(P.announcer, FIELD1, ANNOUNCER)) && (await goes(P.announcer, CHECKIN, ANNOUNCER)));
-  check('38. a Secretary who opens the check-in desk or Manage lands on the Command Centre', (await goes(P.secretary, CHECKIN, COMMAND)) && (await goes(P.secretary, `${HOME}/manage`, COMMAND)));
-  check('39. another event\'s tools never open: the admin opening /events/other-event/command is sent to its own Command Centre', await goes(P.admin, '/events/other-event/command', COMMAND));
+  check('38. a Secretary who opens the check-in desk or an organizer page lands on Live ops', (await goes(P.secretary, CHECKIN, COMMAND)) && (await goes(P.secretary, `${HOME}/register`, COMMAND)));
+  check('39. another event\'s tools never open: the admin opening /events/other-event/control is sent to its own Live ops', await goes(P.admin, '/events/other-event/control?mode=live', COMMAND));
   check('40. public pages stay readable by a device (rules, the venue display of its event)', (await goes(P.marshal, '/rules', '/rules')) && (await goes(P.marshal, `${HOME}/arena/Field%201`, `${HOME}/arena/Field%201`)));
   await P.marshal.goto(BASE + HOME);
 
-  // ------------------------------------------------------------ 7. the Command Centre (read only) and the check-in desk
+  // ------------------------------------------------------------ 7. Event Control › Live ops (read only for the secretary) and the check-in desk
   await P.secretary.goto(BASE + COMMAND);
-  check('41. the Secretary / Scorekeeper device opens the Command Centre for its event (read only)', await until(async () => /command centre/i.test(await text(P.secretary, '.cmd-centre')) && /test stuff test/i.test(await text(P.secretary, '.cmd-centre')), 30000), await text(P.secretary));
-  check('42. the Event Admin device opens the Command Centre too', await (async () => { await P.admin.goto(BASE + COMMAND); return until(async () => /command centre/i.test(await text(P.admin, '.cmd-centre')), 30000); })(), await text(P.admin));
+  check('41. the Secretary / Scorekeeper device opens Live ops for its event (read only)', await until(async () => /needs attention/i.test(await text(P.secretary, '.cmd-centre')) && /test stuff test/i.test(await text(P.secretary, '[data-testid="event-control"]')), 30000), await text(P.secretary));
+  check('42. the Event Admin device opens Live ops too', await (async () => { await P.admin.goto(BASE + COMMAND); return until(async () => /needs attention/i.test(await text(P.admin, '.cmd-centre')), 30000); })(), await text(P.admin));
   await P.admin.goto(BASE + CHECKIN);
   await P.admin.waitForSelector('.desk-counts', { timeout: 30000 }).catch(() => undefined);
   const counts = await text(P.admin, '.desk-counts');

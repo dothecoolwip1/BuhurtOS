@@ -99,7 +99,7 @@ try {
     check(`4 [${view}] check-in desk: no sideways scroll`, await noSideways(p));
 
     // ---------------------------------------------------------------- 5. Command Centre (normal site layout, signed out)
-    await p.goto(`${BASE}/events/${EVENT}/command`, { waitUntil: 'domcontentloaded' });
+    await p.goto(`${BASE}/events/${EVENT}/control?mode=live`, { waitUntil: 'domcontentloaded' });
     const ccOk = await until(async () => /sign in/i.test(await text(p)) && (await p.locator('[data-testid=focus-header]').count()) === 0);
     check(`5 [${view}] Command Centre loads in the normal site layout and asks a visitor to sign in`, ccOk, (await text(p)).slice(0, 200));
 

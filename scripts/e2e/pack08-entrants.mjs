@@ -39,7 +39,7 @@ const countChip = async (id) => ((await comp(id).locator('.chip').first().textCo
 try {
   await go('/');
   await signIn(IDS.organizer, 'orla@example.test');
-  await go('/events/red-deer-rumble/manage?tab=run');
+  await go('/events/red-deer-rumble/control?mode=setup&tool=run');
   await comp(IDS.c1).waitFor();
 
   // ---- 1. the action is there, in the Run area

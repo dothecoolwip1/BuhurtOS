@@ -93,11 +93,11 @@ try {
     screens.push({ kind, name: 'public event page', page: ev, root: 'section.fade-in' });
 
     const ed = await open(kind, 'organizer'); pages.push(ed);
-    await ed.goto(BASE + `/events/${SLUG}/manage?tab=eventday`);
+    await ed.goto(BASE + `/events/${SLUG}/control?mode=live`);
     screens.push({ kind, name: 'Event day (Manage)', page: ed, root: 'section.eventday', typeInto: { sel: 'textarea', value: `Unsent note ${kind}` } });
 
     const cc = await open(kind, 'organizer'); pages.push(cc);
-    await cc.goto(BASE + `/events/${SLUG}/command`);
+    await cc.goto(BASE + `/events/${SLUG}/control?mode=live`);
     screens.push({ kind, name: 'Command Centre', page: cc, root: 'section.cmd-centre', openDetails: '#cc-fights', typeInto: { sel: '#cc-announce textarea', value: `Unsent announcement ${kind}`, openFirst: '#cc-announce' } });
 
     const desk = await open(kind, 'desk'); pages.push(desk);
@@ -109,7 +109,7 @@ try {
     screens.push({ kind, name: 'Field 1 queue (Lyst Control entry)', page: field, root: 'section.marshal' });
 
     const bc = await open(kind, 'organizer'); pages.push(bc);
-    await bc.goto(BASE + `/events/${SLUG}/manage?tab=broadcast`);
+    await bc.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=broadcast`);
     screens.push({ kind, name: 'Manage › Broadcast', page: bc, root: 'main.wrap > *', noLiveData: true, typeInto: { sel: 'input[type="url"], input[name*="stream" i], input', value: 'https://www.youtube.com/watch?v=unsaved' } });
   }
 

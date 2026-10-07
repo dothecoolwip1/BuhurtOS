@@ -83,7 +83,8 @@ function Row({ s, now, busy, onSheet }: { s: DeviceSession; now: number; busy: b
   return (
     <li className={`dev-row s-${s.status}`} data-testid="session-row" data-label={s.label} data-status={s.status} data-online={s.online}>
       <div className="dev-main">
-        <b className="dev-name">{s.label}</b>
+        <b className="dev-name">{counter && s.binding?.operator ? s.binding.operator : s.label}</b>
+        {counter && s.binding?.operator && <span className="src">{s.label}</span>}
         {active ? <Chip tone={s.online ? 'win' : ''}>{s.online ? 'Online' : 'Offline'}</Chip> : <Chip tone={s.status === 'expired' ? 'brass' : ''}>{s.status === 'ended' ? 'Signed out' : s.status === 'revoked' ? 'Revoked' : 'Expired'}</Chip>}
         {s.binding?.side && <span className={`ly-corner ly-corner-${s.binding.side}`} aria-label={`${SIDE_WORD[s.binding.side]} corner`}>{SIDE_WORD[s.binding.side].toUpperCase()}</span>}
       </div>

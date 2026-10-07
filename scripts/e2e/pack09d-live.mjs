@@ -126,7 +126,7 @@ try {
   let built = {};
   {
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + '/events/build-rumble/manage?tab=home'); await page.locator('section[aria-label="Event home"]').waitFor({ timeout: 30000 });
+    await page.goto(BASE + '/events/build-rumble/control?mode=setup'); await page.locator('section[aria-label="Event home"]').waitFor({ timeout: 30000 });
     await waitText(page, '.eh-next', 'build tournament');
     check('registration ready: the one next step is Build tournament', /Build tournament/.test(await text(page, '.eh-primary')), await text(page, '.eh-next'));
     await page.locator('.eh-primary').click();
@@ -171,7 +171,7 @@ try {
   // ============================================================== 3. Event day: recommended next fight, run it, results, stability, re-planning, override
   {
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + '/events/build-rumble/manage?tab=eventday'); await page.locator('section.eventday').waitFor({ timeout: 30000 });
+    await page.goto(BASE + '/events/build-rumble/control?mode=live'); await page.locator('section.eventday').waitFor({ timeout: 30000 });
     const card1 = page.locator('article[aria-label="Next recommended on Field 1"]');
     await card1.waitFor({ timeout: 30000 });
     const c1 = await text(page, 'article[aria-label="Next recommended on Field 1"]');
@@ -230,7 +230,7 @@ try {
   // ============================================================== 4. Short rest is said out loud (phone), then Review wins & losses and Confirm results
   {
     const { ctx, page } = await open('phone', 'organizer');
-    await page.goto(BASE + '/events/short-rest-cup/manage?tab=eventday'); await page.locator('section.eventday').waitFor({ timeout: 30000 });
+    await page.goto(BASE + '/events/short-rest-cup/control?mode=live'); await page.locator('section.eventday').waitFor({ timeout: 30000 });
     const card = page.locator('article[aria-label="Next recommended on Field 1"]');
     await card.waitFor({ timeout: 30000 });
     const t = await text(page, 'article[aria-label="Next recommended on Field 1"]');
@@ -279,7 +279,7 @@ try {
     const base = bobStats();
     check('baseline: the closed Old Cup counts for Bob', /career:1:1/.test(base), base);
     const { ctx, page } = await open('desktop', 'owner');
-    await page.goto(BASE + '/events/old-cup/manage?tab=setup'); await page.locator('#lifecycle').waitFor({ timeout: 30000 });
+    await page.goto(BASE + '/events/old-cup/control?mode=setup&tool=settings'); await page.locator('#lifecycle').waitFor({ timeout: 30000 });
     check('the lifecycle actions are in Event settings, not on Event day', /Archive and statistics/i.test(await text(page, '#lifecycle')));
     await shot(page, 'lifecycle-1280');
     await page.getByRole('button', { name: 'Archive event…' }).click();
@@ -300,7 +300,7 @@ try {
     check('restore from archive', sql(`select archived_at is null from public.events where id = '${OLD}'`) === 't' && bobStats() === base);
     // a plain organizer is refused by the database
     const org = await open('desktop', 'organizer');
-    await org.page.goto(BASE + '/events/old-cup/manage?tab=setup'); await org.page.locator('#lifecycle').waitFor({ timeout: 30000 });
+    await org.page.goto(BASE + '/events/old-cup/control?mode=setup&tool=settings'); await org.page.locator('#lifecycle').waitFor({ timeout: 30000 });
     await org.page.getByRole('button', { name: 'Exclude from statistics…' }).click();
     await org.page.getByLabel('Reason (required)').fill('trying it');
     await org.page.locator('[role="dialog"]').getByRole('button', { name: 'Exclude from statistics' }).click();
@@ -393,7 +393,7 @@ try {
   // ============================================================== 8. Tablet look at the main new screens
   {
     const { ctx, page } = await open('tablet', 'organizer');
-    for (const [path, name, sel] of [['/events/new', 'quick-setup-768', '.qs-cats'], ['/events/build-rumble/manage?tab=home', 'home-768', 'section[aria-label="Event home"]'], ['/events/build-rumble/manage?tab=eventday', 'eventday-768', 'section.eventday'], ['/events/old-cup/manage?tab=setup', 'settings-768', '#lifecycle']]) {
+    for (const [path, name, sel] of [['/events/new', 'quick-setup-768', '.qs-cats'], ['/events/build-rumble/control?mode=setup', 'home-768', 'section[aria-label="Event home"]'], ['/events/build-rumble/control?mode=live', 'eventday-768', 'section.eventday'], ['/events/old-cup/control?mode=setup&tool=settings', 'settings-768', '#lifecycle']]) {
       await page.goto(BASE + path); await page.locator(sel).first().waitFor({ timeout: 30000 }).catch(() => undefined); await sleep(1500);
       await shot(page, name);
       check(`[${name}] no sideways scrolling`, !(await sideways(page)));

@@ -68,7 +68,7 @@ try {
   // ============================================================== 1. Build tournament: every draw the real client plans is accepted by the new bracket validation
   {
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=build`);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=build`);
     await page.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 45000 });
     await waitText(page, 'section[aria-label="Build tournament"]', 'tournament plan ready', 60000);
     const row = (nm) => page.locator('.bt-list li', { has: page.locator('b', { hasText: new RegExp(`^${nm.replace(/[&()]/g, '\\$&')}$`) }) });
@@ -98,7 +98,7 @@ try {
     }
     check('the 24 Longsword pool fights are finished by the scorekeeper', ok === 24, `${ok}`);
     const { ctx, page } = await open('tabletP', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`);
     const ls = page.locator('section[aria-label="Men Longsword"]');
     await ls.waitFor({ timeout: 45000 });
     await ls.getByRole('button', { name: 'Build bracket from pool results' }).click({ timeout: 30000 });
@@ -123,7 +123,7 @@ try {
     for (const kind of ['desktop', 'tabletP']) {
       sql(`update public.matches m set plan_order = null from public.competitions k where k.id = m.competition_id and k.event_id = '${EV}' and m.queue_state = 'scheduled'`);
       const { ctx, page } = await open(kind, 'organizer');
-      await page.goto(BASE + `/events/${SLUG}/manage?tab=eventday`);
+      await page.goto(BASE + `/events/${SLUG}/control?mode=live`);
       await page.locator('section[aria-label="Event day"]').waitFor({ timeout: 45000 });
       await sleep(7000);   // the page saves its plan about a second after it has loaded it
       const planned = Number(sql(`select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state = 'scheduled' and m.plan_order is not null`));
@@ -135,7 +135,7 @@ try {
     const rel = await rpc('organizer', 'set_match_hold', { p_match: H, p_held: false });
     check('the organizer releases it explicitly', rel.status === 200 && sql(`select plan_hold || '/' || hold_manual from public.matches where id = '${H}'`) === 'false/false', JSON.stringify(rel));
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=eventday`); await page.locator('section[aria-label="Event day"]').waitFor({ timeout: 45000 }); await sleep(5000);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=live`); await page.locator('section[aria-label="Event day"]').waitFor({ timeout: 45000 }); await sleep(5000);
     check('... and opening Event day does not hold it again by itself', sql(`select plan_hold::text || '/' || hold_manual::text from public.matches where id = '${H}'`) === 'false/false');
     await ctx.close();
     note('hold.audit', sql(`select string_agg(action || ' by ' || coalesce((select email from auth.users where id = actor), '?'), ', ' order by id) from public.audit_log where subject = '${H}' and action like 'queue.hold%'`));
@@ -173,7 +173,7 @@ try {
   {
     const live = sql(`select k.name from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state = 'active' limit 1`);
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`);
     const sec = page.locator(`section[aria-label="${live}"]`);
     await sec.waitFor({ timeout: 45000 });
     // (a) the screen can see the fight is being fought: the control is off and says why
@@ -252,7 +252,7 @@ try {
   // ============================================================== 7. Run > Set time still works and is audited
   {
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`);
     const sec = page.locator('section[aria-label="Men Long Axe (Polearm)"]');
     await sec.waitFor({ timeout: 45000 });
     const card = sec.locator('button', { hasText: /^Set time$/ }).first();

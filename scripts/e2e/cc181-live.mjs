@@ -33,7 +33,7 @@ const WHO = { organizer: [U('a2'), 'u2@example.test'], scorekeeper: [U('a4'), 'u
 const STORAGE_KEY = 'sb-localhost-auth-token';
 const EV = '00000000-0000-0000-0000-00000000ed01', OTHER_EV = '00000000-0000-0000-0000-00000000ed02';
 const GATE_SESSION = '00000000-0000-0000-0000-0000000e5d01';
-const SLUG = 'test-stuff-test', CMD = `/events/${SLUG}/command`;
+const SLUG = 'test-stuff-test', CMD = `/events/${SLUG}/control?mode=live`;
 const sql = (q) => execFileSync('psql', ['-X', '-At', '-d', DB, '-c', q], { encoding: 'utf8' }).trim().split('\n').at(-1) ?? '';   // the last line: "SET" lines from a leading set timezone are dropped
 const count = (q) => Number(sql(q));
 const orgToken = jwt(...WHO.organizer);

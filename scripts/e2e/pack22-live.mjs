@@ -296,7 +296,7 @@ try {
   // ================================================================ 7. the organizer links a competition to the version it is fought under
   const { page: org } = await open('phone', 'organizer', { sample: true });
   pageErrors.push(org.errors);
-  await org.goto(BASE + '/events/test-stuff-test/manage?tab=competitions');
+  await org.goto(BASE + '/events/test-stuff-test/control?mode=setup&tool=competitions');
   await waitFor(org, () => document.body.innerText.includes('Official ruleset in BuhurtOS'), null, 20000);
   const picker = org.getByRole('combobox', { name: /Official ruleset in BuhurtOS/ }).first();
   const optionTexts = await picker.locator('option').allInnerTexts();

@@ -191,6 +191,122 @@ try {
     await shot(q.page, `control-setup-${name}`);
     check(`37. no page errors at ${name}`, p.page.errors.length === 0 && q.page.errors.length === 0, [...p.page.errors, ...q.page.errors].join(' | '));
   }
+
+  // ═════════════ PART 2: COUNTERS — one Counter QR, phones bind themselves to a Lyst and a side, operators are logged, staff manage the phones
+  const made = await fetch(`${API}/functions/v1/device-session`, { method: 'POST', headers: { 'content-type': 'application/json', apikey: 'x', authorization: `Bearer ${session(WHO.organizer).access_token}` }, body: JSON.stringify({ action: 'create', event: EVENT, kind: 'counter_pool' }) }).then(async r => ({ status: r.status, body: await r.json() }));
+  const poolCode = (made.body?.code ?? sql(`select pool_code from public.event_credentials where event_id = '${EVENT}' and kind = 'counter_pool' and revoked_at is null limit 1`)).replace(/-/g, '');
+  check('40. the event has ONE Counter QR (made through the device-session function, or already there)', /^[0-9A-Z]{12}$/.test(poolCode), JSON.stringify(made));
+  const opened = await rpc('scorekeeper', 'lyst_open', { p_match: mid(1), p_counter_input: 'weighted' });
+  check('41. the Lyst opens the fight on Field 1', opened.status === 200, JSON.stringify(opened));
+  const phone = async (name) => { const c = await open('phone'); c.page.name = name; return c.page; };
+  const p1 = await phone('p1');
+  await go(p1, `/device#c=${poolCode}`);
+  check('42. scan → the phone asks who is counting (no seat request, no approval)', await until(async () => await has(p1, 'who is counting'), 30000), await body(p1));
+  await shot(p1, 'counter-01-who-390');
+  await p1.fill('#cp-name', 'Garrett Robson');
+  await p1.getByRole('button', { name: 'Continue' }).click();
+  check('43. then which Lyst (the event has more than one field)', await until(async () => await has(p1, 'which lyst')), await body(p1));
+  await shot(p1, 'counter-02-lyst-390');
+  await p1.getByRole('button', { name: /Field 1/ }).click();
+  check('44. then RED or BLUE, in words not just colour', await until(async () => await has(p1, 'which side on field 1') && await has(p1, 'red') && await has(p1, 'blue')), await body(p1));
+  await shot(p1, 'counter-03-side-390');
+  await p1.getByRole('button', { name: /RED/ }).click();
+  check('45. the phone is on the fight (Aldric, red) waiting for the round; no fighter was assigned by hand', await until(async () => await has(p1, 'aldric stone') && await has(p1, 'waiting for the round')), await body(p1));
+  await shot(p1, 'counter-04-waiting-390');
+  const t1 = await rpc('scorekeeper', 'lyst_timer_command', { p_event: EVENT, p_field: 'Field 1', p_match: mid(1), p_expected_rev: 0, p_command: crypto.randomUUID(), p_action: 'start', p_mode: 'fight', p_duration_ms: 60000, p_round: 1, p_delta_ms: 0 });
+  check('46. round 1 starts on the Lyst', t1.body?.status === 'ok', JSON.stringify(t1));
+  check('47. COUNT is live on the phone', await until(async () => p1.getByRole('button', { name: 'Count two points, head or torso' }).isEnabled().catch(() => false), 20000), await body(p1));
+  await p1.getByRole('button', { name: 'Count two points, head or torso' }).click();
+  await p1.getByRole('button', { name: 'Count two points, head or torso' }).click();
+  await p1.getByRole('button', { name: 'Count one point, arm leg or hand' }).click();
+  const tally = () => sql(`select coalesce((select private.lyst_seat_total(s.id, 1) from public.lyst_counter_seats s where s.status = 'active' and s.match_id = '${mid(1)}' and s.side = 'a' and s.role = 'official' order by s.id limit 1), 0)`);
+  check('48. the taps land as this phone\'s own evidence: 5', await until(async () => tally() === '5'), tally());
+  await shot(p1, 'counter-05-counting-390');
+  // handoff: a new operator, the tally carries on, both names on the taps
+  await p1.getByRole('button', { name: 'New counter' }).click();
+  await until(async () => await has(p1, 'who is counting'));
+  await p1.fill('#cp-name', 'Nathan Toth');
+  await p1.getByRole('button', { name: 'Continue' }).click();
+  check('49. handoff: Nathan takes the phone, same Lyst and side, the tally still 5', await until(async () => await has(p1, 'nathan toth') && (await p1.locator('.cp-total output').innerText().catch(() => '')) === '5'), await body(p1));
+  await p1.getByRole('button', { name: 'Count one point, arm leg or hand' }).click();
+  check('50. the next tap carries Nathan\'s name: every tap is attributed', await until(async () => sql(`select string_agg(distinct operator_name, ',' order by operator_name) from public.lyst_counts where match_id = '${mid(1)}'`) === 'Garrett Robson,Nathan Toth'), sql(`select string_agg(distinct operator_name, ',') from public.lyst_counts`));
+  check('51. the operator log has both, Garrett\'s turn closed', sql(`select count(*) from public.counter_operator_log where event_id = '${EVENT}' and ended_at is not null and operator_name = 'Garrett Robson'`) === '1' && sql(`select count(*) from public.counter_operator_log where event_id = '${EVENT}' and ended_at is null and operator_name = 'Nathan Toth'`) === '1');
+  await shot(p1, 'counter-06-handoff-390');
+  // a second phone, same QR, blue
+  const p2 = await phone('p2');
+  await go(p2, `/device#c=${poolCode}`);
+  await until(async () => await has(p2, 'who is counting'), 30000);
+  await p2.fill('#cp-name', 'Taylor'); await p2.getByRole('button', { name: 'Continue' }).click();
+  await until(async () => await has(p2, 'which lyst')); await p2.getByRole('button', { name: /Field 1/ }).click();
+  await until(async () => await has(p2, 'which side')); await p2.getByRole('button', { name: /BLUE/ }).click();
+  check('52. a second phone on the SAME QR counts blue: no fixed number of phones', await until(async () => await has(p2, 'brann oakley')) && sql(`select count(*) from public.event_sessions where ended_at is null and multi`) === '2', await body(p2));
+  await shot(p2, 'counter-07-blue-390');
+  await p1.reload();
+  check('53. a refresh comes back on the same fight with the same tally (6)', await until(async () => await has(p1, 'aldric stone') && (await p1.locator('.cp-total output').innerText().catch(() => '')) === '6', 20000), await body(p1));
+  // the Lyst: evidence, never a score
+  const tab = await open('tablet', 'scorekeeper');
+  await go(tab.page, `${E}/field/Field%201?open=${mid(1)}&from=control`);
+  await tab.page.waitForSelector('.ly-timer', { timeout: 30000 });
+  check('54. the Lyst shows the counters as evidence: operator, side, online', await until(async () => await has(tab.page, 'nathan toth') && await has(tab.page, 'taylor') && await has(tab.page, 'online'), 20000), await body(tab.page));
+  await shot(tab.page, 'lyst-evidence-768');
+  await tab.page.getByRole('button', { name: /^Counters/ }).click();
+  check('55. the Counters sheet lists each phone on its own: never summed, averaged or voted', await until(async () => (await tab.page.getByTestId('counter-row').count()) >= 2 && await has(tab.page, 'evidence only')), await body(tab.page));
+  await shot(tab.page, 'lyst-counters-sheet-768');
+  await tab.page.getByTestId('counters-tab-qr').click();
+  check('56. the Lyst shows the Counter QR for the next phone', await until(async () => (await tab.page.getByTestId('counter-qr-code').innerText().catch(() => '')).replace(/-/g, '') === poolCode), await body(tab.page));
+  await tab.page.keyboard.press('Escape');
+  // the next fight: the phones follow by themselves
+  const o2 = await rpc('scorekeeper', 'lyst_open', { p_match: mid(2), p_counter_input: 'weighted' });
+  check('57. the Lyst opens the next fight on Field 1', o2.status === 200, JSON.stringify(o2));
+  check('58. both phones follow to the new fight (Cael / Dara) by themselves, same sides', await until(async () => await has(p1, 'cael rhodes') && await has(p2, 'dara voss'), 20000), (await body(p1)).slice(0, 200));
+  await shot(p1, 'counter-08-next-fight-390');
+  check('59. a field never binds counters to two open matches', sql(`select count(*) from public.lyst_field_current where event_id = '${EVENT}' and field_key = 'field 1'`) === '1' && sql(`select count(distinct match_id) from public.lyst_counter_seats where status = 'active' and field_key = 'field 1' and role = 'official'`) === '1');
+
+  // ───────────── device management: the organizer's tool and the platform owner's page
+  await go(o.page, `${E}/control?mode=live&tool=devices`);
+  check('60. the devices tool lists the two counter phones with Lyst, side and operator', await until(async () => (await o.page.getByTestId('session-row').count()) >= 2 && await has(o.page, 'nathan toth') && await has(o.page, 'field 1 · blue · taylor'), 20000), await body(o.page));
+  await shot(o.page, 'devices-tool-390');
+  await o.page.getByTestId('session-preview').first().click();
+  check('61. device preview is read only and shows what the phone shows', await until(async () => (await o.page.getByTestId('device-preview').count()) === 1 && await has(o.page, 'read only')), await body(o.page));
+  await shot(o.page, 'devices-preview-390');
+  await o.page.keyboard.press('Escape');
+  const own = await open('phone', 'owner');
+  await go(own.page, '/platform/devices');
+  check('62. the platform owner sees every phone signed in, across events', await until(async () => (await own.page.getByTestId('session-row').count()) >= 2, 20000), await body(own.page));
+  await shot(own.page, 'platform-devices-390');
+  const blueRow = own.page.locator('[data-testid=session-row]', { hasText: 'Taylor' }).first();
+  await blueRow.getByTestId('session-move').click();
+  await own.page.getByRole('button', { name: 'RED' }).click();
+  await own.page.getByRole('button', { name: 'Move', exact: true }).click();
+  check('63. the owner moves Taylor\'s phone to RED; the phone follows at once', await until(async () => await has(p2, 'cael rhodes') && (await p2.locator('.cp-on-a').count()) >= 1, 20000), await body(p2));
+  check('64. the move is written, not impersonated: the binding changed, the operator did not', sql(`select side || ':' || operator_name from public.counter_bindings b join public.event_sessions s on s.id = b.session_id where b.operator_name = 'Taylor'`) === 'a:Taylor');
+  await blueRow.getByTestId('session-end').click();
+  await own.page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  check('65. the owner signs ONE phone out; the other keeps counting', await until(async () => sql(`select count(*) from public.event_sessions where ended_at is null and multi`) === '1', 10000) && await until(async () => await has(p2, 'signed out') || !(await has(p2, 'cael rhodes')), 20000), await body(p2));
+  check('66. the phone that was signed out can simply scan the QR again', (await go(p2, `/device#c=${poolCode}`), await until(async () => await has(p2, 'who is counting'), 30000)), await body(p2));
+
+  // ───────────── a team fight: standing count, evidence only
+  await rpc('organizer', 'set_match_queue', { p_match: mid(41), p_state: 'active', p_order: null });
+  await go(tab.page, `${E}/field/Field%202?open=${mid(41)}&from=control`);
+  check('67. the group board offers counters for this fight (standing count)', await until(async () => (await tab.page.getByTestId('group-counter-rounds').count()) === 1, 30000), await body(tab.page));
+  const p3 = await phone('p3');
+  await go(p3, `/device#c=${poolCode}`);
+  await until(async () => await has(p3, 'who is counting'), 30000);
+  await p3.fill('#cp-name', 'Morgan'); await p3.getByRole('button', { name: 'Continue' }).click();
+  await until(async () => await has(p3, 'which lyst')); await p3.getByRole('button', { name: /Field 2/ }).click();
+  await until(async () => await has(p3, 'which side')); await p3.getByRole('button', { name: /RED/ }).click();
+  check('68. the phone binds to Field 2 red and waits for the round', await until(async () => await has(p3, 'ankle biters') || await has(p3, 'waiting'), 20000), await body(p3));
+  await tab.page.getByRole('button', { name: /Start round 1 for counters/ }).click();
+  check('69. standing count: RED 5 STANDING (5v5 is five a side) with FIGHTER DOWN', await until(async () => (await p3.getByTestId('cp-standing').innerText().catch(() => '')) === '5' && (await p3.getByRole('button', { name: 'Fighter down' }).isEnabled().catch(() => false)), 20000), await body(p3));
+  await shot(p3, 'team-standing-390');
+  await p3.getByRole('button', { name: 'Fighter down' }).click();
+  check('70. one down → 4 standing; UNDO brings it back to 5', await until(async () => (await p3.getByTestId('cp-standing').innerText().catch(() => '')) === '4', 10000) && (await p3.getByRole('button', { name: /Undo/ }).click(), await until(async () => (await p3.getByTestId('cp-standing').innerText().catch(() => '')) === '5', 10000)), await body(p3));
+  await p3.getByRole('button', { name: 'Fighter down' }).click();
+  await p3.getByRole('button', { name: 'Fighter down' }).click();
+  check('71. the Lyst shows the standing counter as evidence on the group board', await until(async () => await has(tab.page, 'morgan'), 20000), await body(tab.page));
+  await shot(tab.page, 'team-board-evidence-768');
+  check('72. counters never touch the official result: no round, no score was written by a counter', sql(`select count(*) from public.lyst_rounds where match_id = '${mid(41)}' and status = 'confirmed'`) === '0' && sql(`select result from public.matches where id = '${mid(41)}'`) === '');
+  check('73. no page errors on the phones, the Lyst tablet, the devices tool or the platform page', [p1, p2, p3, tab.page, own.page].every(p => p.errors.length === 0), JSON.stringify([p1.errors, p2.errors, p3.errors, tab.page.errors, own.page.errors]));
 } catch (e) {
   check('script ran to the end', false, e && e.stack ? e.stack : String(e));
 } finally {

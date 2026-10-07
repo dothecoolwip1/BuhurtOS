@@ -47,7 +47,7 @@ const texts = async (page, sel) => (await page.locator(sel).allInnerTexts()).map
 const shot = async (page, name) => { if (SHOTS) await page.screenshot({ path: `${SHOTS}/represented-${name}.png`, fullPage: true }); };
 const noSideways = (page) => page.evaluate(() => document.scrollingElement.scrollWidth <= innerWidth);
 const RANKINGS = `/rankings?who=teams&org=${id('b001')}&season=${id('b101')}`;
-const RUN = '/events/fall-open/manage?tab=run';
+const RUN = '/events/fall-open/control?mode=setup&tool=run';
 const reprSection = (page) => page.locator('section[aria-label="Longsword (men)"] details', { hasText: 'Teams represented' });
 
 try {
@@ -238,7 +238,7 @@ try {
   // ================================================================ 4. the platform owner can correct the older event, at tablet and desktop width
   for (const kind of ['tablet', 'desktop']) {
     const { ctx, page } = await open(kind, 'owner');
-    await page.goto(BASE + '/events/spring-open/manage?tab=run');
+    await page.goto(BASE + '/events/spring-open/control?mode=setup&tool=run');
     await page.locator('section[aria-label="Longsword (men)"]').waitFor({ timeout: 20000 });
     const details = reprSection(page);
     await details.locator('summary').click();

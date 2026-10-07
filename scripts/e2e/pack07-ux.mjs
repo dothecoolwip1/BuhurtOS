@@ -110,9 +110,9 @@ try {
   await page.getByRole('button', { name: 'Clear all' }).click();
   await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Create event' }).click();
-  await page.waitForURL(/manage\?tab=home/);
-  await go(new URL(page.url()).pathname + '?tab=setup');
-  await page.waitForURL(/manage\?tab=setup/);
+  await page.waitForURL(/control\?mode=setup/);
+  await go(new URL(page.url()).pathname + '?mode=setup&tool=settings');
+  await page.waitForURL(/tool=settings/);
   await page.getByText('This event is a draft').waitFor();
   await page.getByTestId('fix-competitions').waitFor();
   const t3 = await body();
@@ -122,8 +122,8 @@ try {
   await noSideways('setup');
   check('3c. Setup has no competition editor of its own (one editor: Manage › Competitions)', (await page.getByLabel('Category').count()) === 0);
   await page.getByTestId('fix-competitions').click();
-  await page.waitForURL(/manage\?tab=competitions/);
-  check('4. "+ Add competition" opens Manage › Competitions', page.url().includes('tab=competitions'));
+  await page.waitForURL(/tool=competitions/);
+  check('4. "+ Add competition" opens Event Control › Competitions', page.url().includes('tool=competitions'));
   await page.getByRole('button', { name: '+ Add competition' }).click();
   await page.getByLabel('Category').waitFor();
   await page.getByLabel('Category').selectOption('longsword');
@@ -135,7 +135,7 @@ try {
   await page.getByText('Added Women Longsword.').waitFor();
   check('4b. the competition is saved through create_competition, with its tier', mock.db.competitions.some(c => c.name === 'Women Longsword' && c.tier === 'Regional') && mock.st.calls.some(c => c.fn === 'create_competition') && mock.st.calls.some(c => c.fn === 'set_competition_tier') && !mock.st.calls.some(c => c.table === 'competitions' && c.method === 'POST'));
   await noSideways('competitions tab');
-  await go(new URL(page.url()).pathname + '?tab=setup');
+  await go(new URL(page.url()).pathname + '?mode=setup&tool=settings');
   await page.getByText('This event is a draft').waitFor();
   await sleep(500);
   const t4 = await body();
@@ -166,7 +166,7 @@ try {
   check('waiver: an uploaded PDF became version 2 and version 1 is kept', mock.st.uploads.some(u => u.bucket === 'waiver-documents' && u.path.startsWith(newEvent.id + '/')) && mock.db.waiver_versions.filter(w => w.event_id === newEvent.id).length === 2);
 
   // ---- 5. organizer adds a fighter on the Rumble
-  await go('/events/red-deer-rumble/manage?tab=fighters');
+  await go('/events/red-deer-rumble/control?mode=setup&tool=entrants');
   await page.getByTestId('add-fighter').waitFor();
   await noSideways('fighters tab');
   await page.getByTestId('add-fighter').click();
@@ -220,14 +220,14 @@ try {
   await page.getByText('Thank you, you are in').waitFor();
   check('7c. completing the form and waiver registers them: the invitation is linked and the registration accepted', mock.db.event_invitations.find(i => i.fighter_id === IDS.f3).status === 'registered' && mock.db.registrations.some(r => r.user_id === IDS.fighter && r.status === 'accepted' && r.waiver_version_id === IDS.w1));
   await signIn(IDS.organizer, 'orla@example.test');
-  await go('/events/red-deer-rumble/manage?tab=fighters');
+  await go('/events/red-deer-rumble/control?mode=setup&tool=entrants');
   await page.getByTestId('invitation-row').first().waitFor();
   check('7d. the organizer now sees Ready for that fighter', /ready/i.test(await page.getByTestId('invitation-row').first().innerText()));
 
   // ---- 8. the fighter can withdraw (a fresh invitation on another event of this organizer)
   mock.db.events.find(e => e.id === IDS.spring).starts_on = '2027-03-01'; mock.db.events.find(e => e.id === IDS.spring).ends_on = '2027-03-01';
   mock.db.competitions.push({ id: '00000000-0000-0000-0000-0000000c0022', event_id: IDS.spring, name: 'Sabre (open)', category: 'sabre', gender: 'open', tier: null, ruleset: null, structure: 'round_robin', rounds_to_win: null, sort: 1, status: 'setup' });
-  await go('/events/spring-open/manage?tab=fighters');
+  await go('/events/spring-open/control?mode=setup&tool=entrants');
   await page.getByTestId('add-fighter').click();
   await page.getByLabel('Search BuhurtOS fighters by name').fill('garr');
   await page.getByRole('button', { name: /Garrett Robson/ }).click();
@@ -364,10 +364,12 @@ try {
 
   // ---- phone checks: tabs and bottom bar
   await signIn(IDS.organizer, 'orla@example.test');
-  await go('/events/red-deer-rumble/manage?tab=setup');
+  await go('/events/red-deer-rumble/control?mode=setup');
+  await page.getByTestId('control-setup').waitFor();
+  const seg = await page.evaluate(() => { const s = document.querySelector('.ctl-modes .seg'); return s ? [s.scrollWidth, s.clientWidth] : null; });
+  check('phone: the three Event Control modes fit on one line instead of clipping', seg !== null && seg[0] <= seg[1], JSON.stringify(seg));
+  await go('/events/red-deer-rumble/control?mode=setup&tool=settings');
   await page.getByText('Event details').waitFor();
-  const seg = await page.evaluate(() => { const s = document.querySelector('.seg.scroll'); return s ? [s.scrollWidth, s.clientWidth, getComputedStyle(s).overflowX] : null; });
-  check('phone: the Manage areas stay on one swipeable line instead of clipping', seg !== null && seg[2] === 'auto', JSON.stringify(seg));
   const covered = await page.evaluate(() => { const btn = [...document.querySelectorAll('button')].find(b => b.textContent.includes('Save changes')); btn.scrollIntoView({ block: 'center' }); const r = btn.getBoundingClientRect(); const bar = document.querySelector('nav.bottom').getBoundingClientRect(); return r.bottom <= bar.top; });
   check('phone: the sticky bottom bar does not cover a scrolled-to control', covered);
   // ---- 21c. a build WITH a Google key whose script cannot load: the picker says so and the plain fields still work

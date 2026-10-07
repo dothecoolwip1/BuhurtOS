@@ -218,7 +218,7 @@ try {
     await waitText(page, '#details', 'saved.', 20000);
     const fee = await waitDb(() => sql(`select coalesce(fee_cents::text, '-') || '|' || coalesce(fee_province, '-') || '|' || (registration_closes_at is not null) from public.events where id = '${EV}'`), '5000|AB|true');
     check('fee $50 for Albertans and a close time are stored', fee === '5000|AB|true', fee);
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=home`); await page.locator('section[aria-label="Event home"]').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup`); await page.locator('section[aria-label="Event home"]').waitFor({ timeout: 30000 });
     await waitText(page, '.eh-next', 'open registration');
     await page.locator('.eh-primary').click();
     await waitText(page, '.eh-next', 'nobody has registered yet', 30000);
@@ -286,7 +286,7 @@ try {
   // ============================================================== 3. organizer review on a phone: accept, fees, insurance; rosters
   {
     const { ctx, page } = await open('phone', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=review`); await page.locator('article[aria-label]').first().waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=registrations`); await page.locator('article[aria-label]').first().waitFor({ timeout: 30000 });
     const main = await text(page, 'main');
     check('50 waiting, the pending list first', /Pending 50/.test(main), main.slice(0, 300));
     const card = page.locator('article[aria-label="Aldric Stone"]');
@@ -313,7 +313,7 @@ try {
     const rosters = sql(`select rehearsal.set_rosters('${EV}')`);
     check('team rosters set by the organizer through set_entry_roster (8 + 6 + 3 team entries)', rosters === '17' && sql(`select count(*) from public.entry_fighters ef join public.entries e on e.id = ef.entry_id join public.competitions k on k.id = e.competition_id where k.event_id = '${EV}'`) === '67', rosters);
     issue('P2', 'review', 'Accepting a team registration creates the team entry but no roster: the organizer must set every roster in Run › Team rosters (17 here). The registrations already say who fights for which team.');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`); await page.locator('section[aria-label="Men 5v5"]').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`); await page.locator('section[aria-label="Men 5v5"]').waitFor({ timeout: 30000 });
     await page.locator('section[aria-label="Men 5v5"]').locator('summary', { hasText: 'Team rosters' }).click();
     await sleep(1500);
     check('Run shows the eight 5v5 rosters', /Team rosters \(8\)/.test(await text(page, 'section[aria-label="Men 5v5"]')) && (await has(page, 'Aldric Stone', 'section[aria-label="Men 5v5"]')));
@@ -325,7 +325,7 @@ try {
   // ============================================================== 4. check-in on a phone: the real people, the blocked ones, the no-shows
   {
     const { ctx, page } = await open('phone', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=checkin`); await page.locator('article[aria-label]').first().waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=live&tool=checkin`); await page.locator('article[aria-label]').first().waitFor({ timeout: 30000 });
     const head = await text(page, 'main');
     check('check-in header: 0/50 checked in, 3 blocked (insurance proof missing, two fees unpaid)', /0\/50 checked in/.test(head) && /3 blocked/.test(head) && /47 ready to check in/.test(head), head.slice(0, 200));
     await shot(page, '04-checkin-390');
@@ -359,7 +359,7 @@ try {
   // ============================================================== 5. Build tournament: the plan, two organizer choices, the fight order, the metrics
   {
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=build`); await page.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=build`); await page.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 30000 });
     await waitText(page, 'section[aria-label="Build tournament"]', 'tournament plan ready', 60000);
     const plan = await text(page, 'section[aria-label="Build tournament"]');
     check('the plan counts the fighters, competitions, fights and fields', /\b50\b fighters/.test(plan) && /\b8\b competitions/.test(plan) && /\b2\b fields/.test(plan), plan.slice(0, 400));
@@ -433,7 +433,7 @@ try {
     await hctx.close();
 
     const { ctx, page } = await open('desktop', 'organizer');
-    await timed('eventday_load_ms', async () => { await page.goto(BASE + `/events/${SLUG}/manage?tab=eventday`); await page.locator('article[aria-label="Next recommended on Field 1"]').waitFor({ timeout: 30000 }); });
+    await timed('eventday_load_ms', async () => { await page.goto(BASE + `/events/${SLUG}/control?mode=live`); await page.locator('article[aria-label="Next recommended on Field 1"]').waitFor({ timeout: 30000 }); });
     metrics.eventday_requests = page.requests;
     const c1 = await text(page, 'article[aria-label="Next recommended on Field 1"]');
     check('Field 1: one recommended fight with plain reasons, ready to fight', /vs/.test(c1) && /first fight today|fresh/i.test(c1) && /Ready to fight/.test(c1), c1);
@@ -720,7 +720,7 @@ try {
   // ============================================================== 11. a late no-show and a mid-event injury: walkovers, not a rebuilt draw
   {
     const { ctx, page } = await open('phone', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`); await page.locator('section[aria-label="Men Longsword"]').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`); await page.locator('section[aria-label="Men Longsword"]').waitFor({ timeout: 30000 });
     const ls = page.locator('section[aria-label="Men Longsword"]');
     await ls.locator('summary', { hasText: /^Entrants/ }).click();
     check('[no-show] the Entrants list explains that on the event day taking someone out gives walkovers', /event day: taking someone out keeps the draw/.test(await inner(ls)), (await inner(ls)).slice(0, 300));
@@ -796,7 +796,7 @@ try {
   // ============================================================== 13. from pools to brackets: the tie is decided by a person, the brackets are built and fought
   {
     const { ctx, page } = await open('tablet', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`); await page.locator('section[aria-label="Men Longsword"]').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`); await page.locator('section[aria-label="Men Longsword"]').waitFor({ timeout: 30000 });
     const ls = page.locator('section[aria-label="Men Longsword"]');
     await ls.getByRole('button', { name: 'Build bracket from pool results' }).waitFor({ timeout: 30000 });
     await ls.getByRole('button', { name: 'Build bracket from pool results' }).click();
@@ -860,7 +860,7 @@ try {
   // ============================================================== 14. Review wins & losses with a medal tie, Results made official, a wrong placing corrected, the closeout
   {
     const { ctx, page } = await open('phone', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=eventday`); await page.locator('section.ed-progress').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=live`); await page.locator('section.ed-progress').waitFor({ timeout: 30000 });
     await waitText(page, 'section.ed-progress', 'review wins & losses', 45000);
     const prog = await text(page, 'section.ed-progress');
     check('[review] every built competition asks for review (Review wins & losses on each)', (await page.getByRole('button', { name: 'Review wins & losses' }).count()) >= 8, prog.slice(0, 500));
@@ -884,7 +884,7 @@ try {
     check('[review] the tie decision is on record with the note', sql(`select count(*) from public.pool_tie_decisions where competition_id = '${comp('Men Sword & Buckler')}' and note like 'Deciding bouts%'`) === '3');
     await sheet.getByRole('button', { name: 'Next' }).click();
     // the rest in Manage › Results, one tap each
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=finalize`); await page.locator('section[aria-label="Results and closeout"]').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=results`); await page.locator('section[aria-label="Results and closeout"]').waitFor({ timeout: 30000 });
     for (const nm of ['Men Longsword', 'Women Longsword', 'Men Sword & Shield', 'Men Polearm', 'Men 5v5', 'Men 3v3', 'Women 3v3']) {
       await page.locator('.fz-pick').getByRole('button', { name: new RegExp(`^${nm.replace(/[&]/g, '\\$&')}( ●| ✓)?$`) }).click();
       await page.getByRole('button', { name: 'Finalize competition' }).waitFor({ timeout: 30000 });
@@ -1001,7 +1001,7 @@ try {
       || '|' || coalesce((select string_agg(scope || ':' || coalesce(category, '-') || ':' || matches || ':' || points, ',' order by scope, category, gender) from public.team_career('${tid(1)}') where context = 'official'), '-')`);
     const base = snap();
     const { ctx, page } = await open('desktop', 'owner');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=setup`); await page.locator('#lifecycle').waitFor({ timeout: 30000 });
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=settings`); await page.locator('#lifecycle').waitFor({ timeout: 30000 });
     await page.getByRole('button', { name: 'Archive event…' }).click();
     await page.locator('[role="dialog"]').getByRole('button', { name: 'Archive event' }).click();
     await waitText(page, '#lifecycle', 'archived.');
@@ -1103,7 +1103,7 @@ try {
     const { ctx, page } = await open('phone', 'scorer1');
     await page.goto(BASE + `/events/${SLUG}/field/Field%203`); await sleep(2500);
     check('[edge] a field with nothing queued says so, with the other fields offered', await has(page, 'Nothing queued on Field 3'), (await text(page, 'main')).slice(0, 200));
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`); await sleep(2500);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`); await sleep(2500);
     check('[edge] a scorekeeper opening the organizer area is told it is for organizers', await has(page, 'This area is for organizers'));
     await ctx.close();
     const { ctx: nctx, page: np } = await open('phone', 'f48');
@@ -1111,7 +1111,7 @@ try {
     check('[edge] a signed-in person with no entry sees no My next fight panel at all', (await np.locator('[aria-labelledby="mynext-h"]').count()) === 0);
     await nctx.close();
     const { ctx: octx, page: op } = await open('phone', 'organizer');
-    await op.goto(BASE + `/events/${SLUG}/manage?tab=run`); await op.locator('section[aria-label="Men Sabre"]').waitFor({ timeout: 30000 }); await sleep(1500);
+    await op.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`); await op.locator('section[aria-label="Men Sabre"]').waitFor({ timeout: 30000 }); await sleep(1500);
     check('[edge] the one-entrant competition explains it cannot be drawn', /at least 2 entrants/.test(await inner(op.locator('section[aria-label="Men Sabre"]'))));
     await octx.close();
     if (!process.env.RUMBLE_FAST) {
