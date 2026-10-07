@@ -12,6 +12,13 @@ import { IDS, REF, createMock, sessionFor, storageKey } from './mock-rest.mjs';
 const BASE = process.env.E2E_BASE ?? 'http://localhost:4180';
 const results = [];
 const check = (name, ok, detail = '') => { results.push({ name, ok }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  <-- ' + String(detail).slice(0, 300)}`); };
+
+// Pack 26: the settings row is "Notifications" in the More sheet (the header bell is the inbox). Open the sheet if it is closed, then the row.
+async function openNotificationSettings(page) {
+  const row = page.locator('nav.more-list').getByRole('button', { name: 'Notifications', exact: true });
+  if (!(await row.count())) await page.getByRole('button', { name: 'More', exact: true }).first().click();
+  await row.click();
+}
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 const SHOTS = process.env.E2E_SHOTS;
 const executablePath = process.env.CHROME ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -110,13 +117,13 @@ const PUSH_STUB = () => {
   check('A17. the choices made in the popup were saved for the person', mock.db.notif_settings[IDS.fighter]?.events === false && mock.db.notif_settings[IDS.fighter]?.fights === true, JSON.stringify(mock.db.notif_settings));
   const reg1 = mock.db.push_devices[0];
   check('A15. the device was registered with the database (endpoint + both keys), labelled generically', !!reg1 && reg1.endpoint === 'https://push.example.com/wpush/abc123' && reg1.keys.p256dh.length > 60 && reg1.keys.auth.length >= 16 && reg1.label !== undefined, JSON.stringify(reg1));
-  await page.getByRole('button', { name: 'Notification Settings' }).click();
+  await openNotificationSettings(page);
   await dlg.getByRole('button', { name: 'Save' }).waitFor();
   await dlg.getByRole('switch', { name: 'Team' }).click();
   await dlg.getByRole('button', { name: 'Save' }).click();
   await dlg.waitFor({ state: 'detached' });
-  check('A18. later, Notification Settings opens the same popup (four groups); Save stores the change and closes it', mock.db.notif_settings[IDS.fighter]?.team === false && mock.db.notif_settings[IDS.fighter]?.events === false);
-  await page.getByRole('button', { name: 'Notification Settings' }).click();
+  check('A18. later, Account › Notifications opens the same popup (four groups); Save stores the change and closes it', mock.db.notif_settings[IDS.fighter]?.team === false && mock.db.notif_settings[IDS.fighter]?.events === false);
+  await openNotificationSettings(page);
   await dlg.getByRole('button', { name: 'Manage devices' }).click();
   await dlg.getByRole('heading', { name: 'Manage devices' }).waitFor();
   check('A16. Manage devices lists this device', await dlg.getByText('This device').count() > 0);
@@ -209,7 +216,7 @@ for (const [label, w, h] of [['phone 390', 390, 844], ['narrow phone 320', 320, 
   check('A25. iPhone: the install card gives Share → Add to Home Screen steps', /Add BuhurtOS to your Home Screen/.test(t) && /Share/.test(t) && /Add to Home Screen/.test(t), t.slice(0, 300));
   await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [storageKey, sessionFor(IDS.fighter, 'garrett@example.test')]);
   await page.goto(`${BASE}/account`); await page.waitForLoadState('networkidle');
-  await page.getByRole('button', { name: 'Notification Settings' }).click();
+  await openNotificationSettings(page);
   await page.getByRole('dialog').getByRole('button', { name: 'Manage devices' }).click();
   await page.getByRole('dialog').getByRole('heading', { name: 'Manage devices' }).waitFor();
   const t2 = (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ');

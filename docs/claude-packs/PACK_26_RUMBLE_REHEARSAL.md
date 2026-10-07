@@ -64,6 +64,8 @@ Durable work log of Pack 26. Levels are kept apart on purpose: **repository**, *
 
 ## 4. Migrations
 
+**Filename timestamp.** `20261021000100` is not a date: the repository numbers migration files as a sequence that stays ahead of the calendar (`20261018…` for the Reavers work and `20261019…` for Pack 24 on 6–7 October, `20261020000100–300` for Pack 25 on 7 October); the hosted ledger records the real apply time as the version (`20261007120942 pack25_counter_pool`, `20261007133633 pack25_sides`). Pack 26 follows `20261020000300_pack25_sides.sql`, so the next free number is `20261021000100`; renaming it to today's date would sort it *before* the Pack 25 files it depends on. Intentional; left as is.
+
 One, additive: `supabase/migrations/20261021000100_pack26_test_push.sql` — `push_claim` redefined (a test push is always delivered), `private.field_label(text)` (new, private), `private.notification_text` redefined (alert text says Lyst, "Open Live ops to decide"). No table, column, grant or policy changes; nothing in flight on hosted is affected (a pending test push becomes claimable; alerts created from now on carry the new words). `supabase/schema.fingerprint.txt` regenerated. **Not applied to hosted.**
 
 ## 5. Permissions affected
