@@ -1,0 +1,55 @@
+name: Pack 25 production check (read-only)
+# Read-only browser + public API check of the LIVE site and the deployed device-session function after the Pack 25 rollout:
+# scripts/e2e/pack25-production-check.mjs. Never writes anything (no sign-in, no fight, no code, no session). Three published test events
+# (synthetic, or the owner's own test event) in their three phases, the legacy addresses, the workstations signed out, the device page, the
+# function's refusals and CORS. Run it by hand after a deployment (Actions › this workflow › Run workflow) with the build number and commit
+# the Pages run printed; it also runs once when this file itself changes on the Pack 25 branch (the pre-rollout baseline).
+on:
+  workflow_dispatch:
+    inputs:
+      expect_build:
+        description: 'Build number the live bundle must carry (empty = any)'
+        default: ''
+      expect_commit:
+        description: 'Short commit the live bundle must carry (empty = any)'
+        default: ''
+      phases:
+        description: 'Event phases to open (upcoming,live,completed)'
+        default: 'upcoming,live,completed'
+      event_live:
+        description: 'Slug of a published event that is live now'
+        default: 'testing-stuff-v3'
+  push:
+    branches: [ccr-cf597ddb-ehfkck]
+    paths: [.github/workflows/pack25-production-check.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright-core install --with-deps chromium
+      - name: Check the live site (read-only)
+        env:
+          BASE: https://dothecoolwip1.github.io/BuhurtOS
+          API: https://mvbxlebznlgroptwwdsm.supabase.co
+          SHOTS: ${{ github.workspace }}/p25-hosted-shots
+          EXPECT_BUILD: ${{ github.event.inputs.expect_build }}
+          EXPECT_COMMIT: ${{ github.event.inputs.expect_commit }}
+          PHASES: ${{ github.event.inputs.phases || 'upcoming,live,completed' }}
+          EVENT_LIVE: ${{ github.event.inputs.event_live || 'testing-stuff-v3' }}
+        run: node scripts/e2e/pack25-production-check.mjs
+      - name: Keep the hosted screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pack25-hosted-screenshots
+          path: p25-hosted-shots
+          if-no-files-found: ignore
