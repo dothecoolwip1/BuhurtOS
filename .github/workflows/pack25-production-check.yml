@@ -3,7 +3,7 @@ name: Pack 25 production check (read-only)
 # scripts/e2e/pack25-production-check.mjs. Never writes anything (no sign-in, no fight, no code, no session). Three published test events
 # (synthetic, or the owner's own test event) in their three phases, the legacy addresses, the workstations signed out, the device page, the
 # function's refusals and CORS. Run it by hand after a deployment (Actions › this workflow › Run workflow) with the build number and commit
-# the Pages run printed; it also runs once when this file itself changes on the Pack 25 branch (the pre-rollout baseline).
+# the Pages run printed. It ran against the pre-rollout site once as the baseline (see PACK_25_EVENT_CONTROL_AND_COUNTERS.md §9.4).
 on:
   workflow_dispatch:
     inputs:
@@ -19,11 +19,11 @@ on:
       event_live:
         description: 'Slug of a published event that is live now'
         default: 'testing-stuff-v3'
-  push:
-    branches: [ccr-cf597ddb-ehfkck]
-    paths: [.github/workflows/pack25-production-check.yml]
+      shots_label:
+        description: 'If set, the screenshots are committed to docs/reviews/assets/2026-10-07-pack25-hosted/<label>/ on this branch (the Actions artifact is kept either way)'
+        default: ''
 permissions:
-  contents: read
+  contents: write   # only the optional screenshot commit below writes; the check itself is read-only
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -53,3 +53,14 @@ jobs:
           name: pack25-hosted-screenshots
           path: p25-hosted-shots
           if-no-files-found: ignore
+      - name: Commit the hosted screenshots to the branch (only when a label is given)
+        if: always() && github.event.inputs.shots_label != ''
+        env:
+          LABEL: ${{ github.event.inputs.shots_label }}
+        run: |
+          set -e
+          case "$LABEL" in *[!A-Za-z0-9._-]*|'') echo "bad label"; exit 1;; esac
+          DEST="docs/reviews/assets/2026-10-07-pack25-hosted/$LABEL"
+          mkdir -p "$DEST" && cp p25-hosted-shots/*.png "$DEST"/ 2>/dev/null || { echo "no screenshots"; exit 0; }
+          git config user.name "github-actions[bot]" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST" && git commit -m "Pack 25 hosted screenshots: $LABEL (run ${{ github.run_id }}, read-only production check)" && git push origin HEAD:${{ github.ref_name }}
