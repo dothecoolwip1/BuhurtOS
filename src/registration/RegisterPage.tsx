@@ -175,7 +175,7 @@ export function RegisterPage() {
     return (
       <>
         <PageHead eyebrow="Registration" title={win === 'closed' ? 'Registration is closed' : 'Registration is not open yet'}
-          lede={win === 'closed' ? `Registration for ${data.name} closed${when(data.closesAt) ? ` on ${when(data.closesAt)}` : ''}. Teams are final. Ask the organizers if you still need to be added.` : `Registration for ${data.name} opens${when(data.opensAt) ? ` on ${when(data.opensAt)}` : ' later'}.`} />
+          lede={win === 'closed' ? `Registration for ${data.name} closed${when(data.closesAt) ? ` (${when(data.closesAt)})` : ''}. Teams are final. Ask the organizers if you still need to be added.` : `Registration for ${data.name} opens${when(data.opensAt) ? ` (${when(data.opensAt)})` : ' later'}`} />
         <p style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><Link className="btn btn-ink" to={`/events/${slug}`}>Back to the event</Link><Link className="btn btn-line" to="/my-events">My events</Link></p>
       </>
     );

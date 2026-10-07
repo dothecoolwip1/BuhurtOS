@@ -270,8 +270,8 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
       {notice && <p role={notice.kind === 'error' ? 'alert' : 'status'} className="panel info ed-notice" style={notice.kind === 'error' ? { color: 'var(--live)' } : undefined}>{notice.text}</p>}
       {snapError != null && !snap && <p className="src" role="status">Readiness and staff could not be read just now. It will try again.</p>}
 
-      {/* Camera Off: the safety control, for everyone who may protect the broadcast; it hides itself for anyone who may not even read the state */}
-      <div className="cc-camera"><CameraOffControl eventId={event.id} /></div>
+      {/* Camera Off: the livestream's safety control, for everyone who may protect the broadcast; only once a broadcast is configured (Pack 26: it led every Live ops page before) */}
+      {snap?.broadcast.configured && <div className="cc-camera"><CameraOffControl eventId={event.id} /></div>}
 
       <Section id="cc-attention" title="Needs attention" count={items.filter(i => i.urgency !== 'info').length} open>
         {items.length === 0 ? <p className="cc-empty">{snap ? 'Nothing needs you right now. Fights, check-in and armour are in order.' : 'Checking…'}</p> : <AttentionList items={items} />}

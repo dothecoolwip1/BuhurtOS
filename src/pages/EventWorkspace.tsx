@@ -84,7 +84,9 @@ function InvitationCard({ event, invitation, onChanged }: { event: LiveEvent; in
 }
 
 /** Registration, as the signed-in person sees it: their own state first, the way in otherwise. Upcoming events lead with this. */
-function RegistrationCard({ event, mine, signedIn, onChanged, entered }: { event: LiveEvent; mine: MyEventContext | undefined; signedIn: boolean; onChanged: () => void; entered: string[] }) {
+function RegistrationCard({ event, mine, signedIn, onChanged, entered, headerLeads = false }: { event: LiveEvent; mine: MyEventContext | undefined; signedIn: boolean; onChanged: () => void; entered: string[];
+  /** The header already carries the Register action (Pack 25); the card then keeps the facts (who, when it closes) and not a second button. */
+  headerLeads?: boolean }) {
   const win = registrationWindow(event.registrationOpensAt, event.registrationClosesAt);
   const reg = mine?.registration;
   const [busy, setBusy] = useState(false);
@@ -138,7 +140,7 @@ function RegistrationCard({ event, mine, signedIn, onChanged, entered }: { event
     <section className="panel info" data-testid="registration-card">
       <h3>Registration is open</h3>
       <p style={{ color: 'var(--muted)' }}>{signedIn ? 'Fighters and volunteers register here.' : 'Sign in with Google or an email code, then fill in the form.'}{event.registrationClosesAt ? ` Closes ${new Date(event.registrationClosesAt).toLocaleString('en-CA', { dateStyle: 'long', timeStyle: 'short', timeZone: event.timezone ?? 'America/Edmonton' })}.` : ''}</p>
-      <Link className="btn btn-ink" to={to}>{signedIn ? 'Register' : 'Sign in and register'}</Link>
+      {!headerLeads && <Link className="btn btn-ink" to={to}>{signedIn ? 'Register' : 'Sign in and register'}</Link>}
     </section>
   );
 }
@@ -244,7 +246,7 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
           {event.description && <p className="ev-lede">{event.description}</p>}
           <EventOrganization meta={meta.data} />
           {invitation.data && <InvitationCard event={event} invitation={invitation.data} onChanged={changed} />}
-          {!completed && <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} onChanged={changed} entered={enteredNames} />}
+          {!completed && <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} onChanged={changed} entered={enteredNames} headerLeads={cta?.to === `/events/${event.slug}/register`} />}
           {showLive && phase !== 'live' && <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />}
           <EventDaySchedule timeNote={event.timeNote} description={event.description} />
           {event.timeNote && !/\d/.test(event.timeNote) && <p className="panel info"><b>{event.timeNote}</b></p>}

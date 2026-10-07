@@ -113,7 +113,6 @@ export function RegistrationsTool({ event, regs, loading, error, onChanged }: { 
   return (
     <section style={{ display: 'grid', gap: 14 }} aria-label="Registrations">
       <AttentionStrip regs={regs} onPick={k => setFilter(k === 'pending' ? 'pending' : 'accepted')} />
-      <ExportRegistrations slug={event.slug} registrations={regs} />
       <Seg scroll label="Show" value={filter} options={[['pending', `Pending ${counts.pending}`], ['accepted', `Accepted ${counts.accepted}`], ['declined', `Declined ${counts.declined}`], ['withdrawn', `Withdrawn ${counts.withdrawn}`], ['all', 'All']] as const} onChange={setFilter} />
       <label className="field-in">Search by name, team or category
         <input type="search" value={query} onChange={e => setQuery(e.target.value)} />
@@ -126,6 +125,7 @@ export function RegistrationsTool({ event, regs, loading, error, onChanged }: { 
       <div style={{ display: 'grid', gap: 12 }}>
         {list.map(r => <ReviewCard key={r.id} r={r} act={act} block={blocks.data?.get(r.id) ?? null} />)}
       </div>
+      <ExportRegistrations slug={event.slug} registrations={regs} />
     </section>
   );
 }

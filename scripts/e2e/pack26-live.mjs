@@ -118,16 +118,20 @@ const aboveFold = async (page, selector) => page.locator(selector).first().bound
 const covered = (page, root = 'main') => page.evaluate((r) => {
   const out = new Set();
   const y0 = scrollY;
-  const probe = () => {
+  const probe = (edge) => {
     for (const e of document.querySelectorAll(`${r} button, ${r} a, ${r} input, ${r} select, ${r} summary`)) {
       if (e.tagName !== 'SUMMARY' && e.closest('details:not([open])')) continue;   // folded away: Chromium keeps a layout box for closed <details> content
-      const b = e.getBoundingClientRect(); if (b.width === 0 || b.height === 0 || b.top < 0 || b.bottom > innerHeight) continue;   // only controls wholly inside the viewport: a partly scrolled-out one is uncovered by scrolling
+      const b = e.getBoundingClientRect(); if (b.width === 0 || b.height === 0 || b.top < 0 || b.bottom > innerHeight) continue;
       const top = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
-      if (top && !e.contains(top) && !top.contains(e) && getComputedStyle(top).pointerEvents !== 'none') out.add((e.getAttribute('aria-label') || e.textContent || e.tagName).trim().slice(0, 30));
+      if (!top || e.contains(top) || top.contains(e) || getComputedStyle(top).pointerEvents === 'none') continue;
+      // at the top of the page only a cover at the TOP edge is final (nothing scrolls further up); at the bottom only a cover at the BOTTOM edge
+      const c = top.getBoundingClientRect();
+      if (edge === 'top' ? c.top > 120 : c.bottom < innerHeight - 120) continue;
+      out.add((e.getAttribute('aria-label') || e.textContent || e.tagName).trim().slice(0, 30));
     }
   };
-  window.scrollTo(0, 0); probe();
-  window.scrollTo(0, document.scrollingElement.scrollHeight); probe();
+  window.scrollTo(0, 0); probe('top');
+  window.scrollTo(0, document.scrollingElement.scrollHeight); probe('bottom');
   window.scrollTo(0, y0);
   return [...out];
 }, root);
@@ -514,17 +518,22 @@ try {
     await shot(o, 'liveops-before-start-full', true);
     // start Field 1 from the board
     const picker = o.locator('.ed-picker');
-    const startOn = async (page, fieldName) => {
+    // on a phone Live ops shows one Lyst at a time behind a picker; a wider screen shows them side by side
+    const showLyst = async (page, fieldName) => {
       if (await page.locator('.ed-picker').count()) await page.locator('.ed-picker').getByRole('button', { name: new RegExp(`^${fieldName.replace('Field', 'Lyst')}`) }).click();
+    };
+    const startOn = async (page, fieldName) => {
+      await showLyst(page, fieldName);
       const board = page.locator(`section.ed-field[aria-label="${fieldName.replace('Field', 'Lyst')}"]`);
-      await board.getByRole('button', { name: 'Start next ready match' }).click();
+      // the organizer's board recommends the next fight ("Run this fight"); without a recommendation it offers "Start next ready match"
+      await board.getByRole('button', { name: /^Run this fight$|^Run anyway$|^Start next ready match$/ }).first().click();
       return until(async () => activeOn(fieldName) !== '', 15000);
     };
     check('72. "Start next ready match" on Field 1 starts a fight (the database decides which)', await startOn(o, field1), label(activeOn(field1) || sql(`select id from public.matches limit 1`)));
     note('liveops.field1_now', label(activeOn(field1)));
     check('73. the same on Field 2: two fields, two fights on, independent queues', await startOn(o, field2) && activeOn(field2) !== activeOn(field1), label(activeOn(field2)));
     note('liveops.field2_now', label(activeOn(field2)));
-    check('74. each field shows NOW, ON DECK and IN THE HOLE after the start (the queue behind the fight is filled)', sql(`select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state in ('on_deck','in_the_hole')`) === '4', sql(`select string_agg(m.queue_state || ':' || coalesce(m.field, 'Field 1'), ',') from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state <> 'scheduled'`));
+    check('74. each field shows NOW, ON DECK and IN THE HOLE after the start (the queue behind the fight is filled)', await until(async () => sql(`select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state in ('on_deck','in_the_hole')`) === '4', 15000), sql(`select string_agg(m.queue_state || ':' || coalesce(m.field, 'Field 1'), ',') from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state <> 'scheduled'`));
     await shot(o, 'liveops-running');
     // a second organizer's tablet shows the same state without a reload (polling or realtime)
     await go(o2, `${E_PATH}/control?mode=live`);
@@ -533,6 +542,7 @@ try {
     // the running-order controls: Run next, Run later, Back to the line; the other screen follows
     const f1Line = lineOf(field1);
     const target = f1Line[4];
+    await showLyst(o, field1);
     const row = o.locator('section.ed-field[aria-label="Lyst 1"] li.ed-slot, section.ed-field[aria-label="Lyst 1"] .ed-upcoming li').filter({ hasText: label(target).split(' · ')[2].split(' vs ')[0] }).first();
     note('liveops.move_target', label(target));
     const change = row.locator('summary');
