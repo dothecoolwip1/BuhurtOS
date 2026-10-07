@@ -17,7 +17,7 @@
   "bad": [],
   "errors": 0,
   "requests": 55,
-  "chars": 3724
+  "chars": 3718
  },
  {
   "screen": "setup",
@@ -37,7 +37,7 @@
   "bad": [],
   "errors": 0,
   "requests": 15,
-  "chars": 2138
+  "chars": 2140
  },
  {
   "screen": "desk",
@@ -147,7 +147,7 @@
   "bad": [],
   "errors": 0,
   "requests": 23,
-  "chars": 902
+  "chars": 880
  },
  {
   "screen": "arena",
@@ -177,7 +177,7 @@
   "bad": [],
   "errors": 0,
   "requests": 55,
-  "chars": 3724
+  "chars": 3718
  },
  {
   "screen": "setup",
@@ -197,7 +197,7 @@
   "bad": [],
   "errors": 0,
   "requests": 15,
-  "chars": 2138
+  "chars": 2140
  },
  {
   "screen": "desk",
@@ -347,7 +347,7 @@
   "bad": [],
   "errors": 0,
   "requests": 23,
-  "chars": 902
+  "chars": 880
  },
  {
   "screen": "arena",
@@ -397,7 +397,7 @@
   "bad": [],
   "errors": 0,
   "requests": 55,
-  "chars": 3733
+  "chars": 3727
  },
  {
   "screen": "setup",
@@ -417,7 +417,7 @@
   "bad": [],
   "errors": 0,
   "requests": 15,
-  "chars": 2147
+  "chars": 2149
  },
  {
   "screen": "desk",
@@ -527,7 +527,7 @@
   "bad": [],
   "errors": 0,
   "requests": 23,
-  "chars": 902
+  "chars": 880
  },
  {
   "screen": "arena",
@@ -557,7 +557,7 @@
   "bad": [],
   "errors": 0,
   "requests": 55,
-  "chars": 3733
+  "chars": 3727
  },
  {
   "screen": "setup",
@@ -577,7 +577,7 @@
   "bad": [],
   "errors": 0,
   "requests": 15,
-  "chars": 2147
+  "chars": 2149
  },
  {
   "screen": "desk",
@@ -727,7 +727,7 @@
   "bad": [],
   "errors": 0,
   "requests": 23,
-  "chars": 902
+  "chars": 880
  },
  {
   "screen": "arena",
@@ -777,7 +777,7 @@
   "bad": [],
   "errors": 0,
   "requests": 55,
-  "chars": 3814
+  "chars": 3808
  },
  {
   "screen": "setup",
@@ -797,7 +797,7 @@
   "bad": [],
   "errors": 0,
   "requests": 15,
-  "chars": 2155
+  "chars": 2157
  },
  {
   "screen": "desk",
@@ -907,7 +907,7 @@
   "bad": [],
   "errors": 0,
   "requests": 23,
-  "chars": 902
+  "chars": 880
  },
  {
   "screen": "arena",
@@ -937,7 +937,7 @@
   "bad": [],
   "errors": 0,
   "requests": 55,
-  "chars": 3814
+  "chars": 3808
  },
  {
   "screen": "setup",
@@ -957,7 +957,7 @@
   "bad": [],
   "errors": 0,
   "requests": 15,
-  "chars": 2155
+  "chars": 2157
  },
  {
   "screen": "desk",
@@ -1067,7 +1067,7 @@
   "bad": [],
   "errors": 0,
   "requests": 23,
-  "chars": 902
+  "chars": 880
  },
  {
   "screen": "arena",

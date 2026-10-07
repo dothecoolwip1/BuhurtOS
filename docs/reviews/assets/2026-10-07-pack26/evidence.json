@@ -1,5 +1,5 @@
 {
- "setup.registered": "38 | mercenary=e680b64b-279e-4a71-98fb-4f8bd778a7a0 vol1=93ecbff7-0fea-45a7-8e80-f7f4f0a4bd82 vol2=2c47a139-f0e0-4452-a9e6-455deae2af7b edge31=df69e25a-cc04-4e18-a63c-e103123d98c6 edge32=5da3b607-940b-45f3-aec5-85d147904dc7 edge33=93982094-0ecc-477b-aa64-100960526c1d",
+ "setup.registered": "38 | mercenary=16eec5a7-ee5e-458b-a797-5794750308b4 vol1=e89cd38e-9e47-46ed-acd6-e96c1a7f7688 vol2=bbf2e927-afe6-4766-a486-a6bb4c320d2f edge31=c2ffb691-fb1d-436c-9007-1e0c62016bc9 edge32=db94e6b7-97f4-479a-bf2e-dfa8001a7cf1 edge33=cde6ef9a-cf56-4ff3-aae4-ad83efd283e6",
  "setup.event": "TEST Red Deer Rumble 2026 (Pack 26 rehearsal) | 2026-10-07..2026-10-08 | fields=2 | status=published | synthetic=true",
  "setup.registrations_by_status": "pending=43",
  "setup.entrants_per_competition": "Men Longsword=17, Men Sword & Shield=9, Women Longsword=5, Men Polearm=7, Men Sword & Buckler=3, Women Sword & Shield=2, Men 5v5=30, Men 3v3=12",
@@ -39,7 +39,7 @@
  "review.entries_per_competition": "Men Longsword=17, Men Sword & Shield=7, Women Longsword=5, Men Polearm=7, Men Sword & Buckler=3, Women Sword & Shield=2, Men 5v5=7, Men 3v3=4",
  "review.fees_marked_paid": "37",
  "review.rosters_set": "11",
- "review.ms_from_open_to_first_decision": 7515,
+ "review.ms_from_open_to_first_decision": 7278,
  "checkin.default_list_is_not_ready_with_cards": 42,
  "checkin.counts_row": "41 expected 41 not here yet 0 checked in 39 to inspect 0 armour issues 0 ready",
  "checkin.first_card_height_px_at_390": 288,
@@ -48,7 +48,7 @@
  "checkin.stranger_text_mentions_old_manage_people": false,
  "build.journey_headline": "what to do next registration is open. 44 people have registered. review 1 registration accept or decline who is waiting build tournament",
  "build.primary_step_with_one_pending": "review 1 registration accept or decline who is waiting",
- "build.plan_text": "build tournament tournament plan ready 39 fighters 8 competitions 111 fights 2 lysts preferred rest: 3 fights between appearances. 106 of the 106 fights ready to plan meet it. 5 fights wait for someone who is not here on 2026-10-14. they are held back and run on a day that person can attend, or you can call them by hand. use this plan builds 8 draws and plans the fight order review plan lysts competitions are spread so every lyst has about the same number of fights. − 2 + men longsword lyst 1 17 entrants · pools, then a bracket (2 pools) · 64 fights 17 entrants: 2 pools, then a bracket for the top of each pool change men sword & shield lyst 2 7 entrants · pools, then a bracket (2 pools) · 9 fights 7 entrants: 2 pools, then a bracket for the top of each pool change women longsword lyst 2 5 entrants · round robin · 10 fights 5 entrants: everyone fights everyone change men polearm lyst 2 7 entrants · pools, then a bracket (2 pools) · 9 fights 7 entrants: 2 pools, then a bracket for the top of each pool change men sword & buckler lyst 2 3 entrants · round robin · 3 fights 3 entrants: everyone fights everyone change women sword & shield lyst 2 2 entrants · round robin · 1 fights 2 entrants: everyone fights everyone change men 5v5 lyst 2 7 entrants · pools, then a bracket (2 pools) · 9 fights 7 entrants: 2 pools, then a bracket for the top of each pool change men 3v3 lyst 2 4 entrants · round robin · 6 fights 4 entrants: everyone fights everyone change",
+ "build.plan_text": "build tournament tournament plan ready 39 fighters 8 competitions 111 fights 2 lysts preferred rest: 3 fights between appearances. 107 of the 107 fights ready to plan meet it. 4 fights wait for someone who is not here on 2026-10-14. they are held back and run on a day that person can attend, or you can call them by hand. use this plan builds 8 draws and plans the fight order review plan lysts competitions are spread so every lyst has about the same number of fights. − 2 + men longsword lyst 1 17 entrants · pools, then a bracket (2 pools) · 64 fights 17 entrants: 2 pools, then a bracket for the top of each pool change men sword & shield lyst 2 7 entrants · pools, then a bracket (2 pools) · 9 fights 7 entrants: 2 pools, then a bracket for the top of each pool change women longsword lyst 2 5 entrants · round robin · 10 fights 5 entrants: everyone fights everyone change men polearm lyst 2 7 entrants · pools, then a bracket (2 pools) · 9 fights 7 entrants: 2 pools, then a bracket for the top of each pool change men sword & buckler lyst 2 3 entrants · round robin · 3 fights 3 entrants: everyone fights everyone change women sword & shield lyst 2 2 entrants · round robin · 1 fights 2 entrants: everyone fights everyone change men 5v5 lyst 2 7 entrants · pools, then a bracket (2 pools) · 9 fights 7 entrants: 2 pools, then a bracket for the top of each pool change men 3v3 lyst 2 4 entrants · round robin · 6 fights 4 entrants: everyone fights everyone change",
  "build.rows": [
   "Men Longsword LYST 1 17 entrants · Pools, then a bracket (2 pools) · 64 fights 17 entrants: 2 pools, then a bracket for the top of each pool Change",
   "Men Sword & Shield LYST 2 7 entrants · Pools, then a bracket (2 pools) · 9 fights 7 entrants: 2 pools, then a bracket for the top of each pool Change",
@@ -60,7 +60,7 @@
   "Men 3v3 LYST 2 4 entrants · Round robin · 6 fights 4 entrants: everyone fights everyone Change"
  ],
  "build.review_lanes": 2,
- "build.review_text_head": "lyst 1 aldric stone vs cael rhodes · men longsword brann oakley vs edric hale · men longsword piers crane vs dara voss · men longsword brann oakley vs cael rhodes · men longsword jorah ash vs aldric stone · men longsword hollis thorn vs brann oakley · men longsword aldric stone vs edric hale · men longsword cael rhodes vs jorah ash · men longsword aldric stone vs brann oakley · men longsword cael rhodes vs edric hale · men longsword ivar wold vs brann oakley · men longsword hollis thorn vs aldric stone · men longsword magnus holt vs cael rhodes · men longsword dara voss vs garen quill · men longsword cael rhodes vs rook lonely · men longsword dara voss vs finn marsh · men longsword ivar wold",
+ "build.review_text_head": "lyst 1 aldric stone vs cael rhodes · men longsword dara voss vs brann oakley · men longsword aldric stone vs rook lonely · men longsword brann oakley vs jorah ash · men longsword piers crane vs aldric stone · men longsword brann oakley vs hollis thorn · men longsword finn marsh vs aldric stone · men longsword brann oakley vs garen quill · men longsword ivar wold vs hollis thorn · men longsword edric hale vs brann oakley · men longsword cael rhodes vs finn marsh · men longsword hollis thorn vs garen quill · men longsword piers crane vs cael rhodes · men longsword finn marsh vs kaspar birch · men longsword magnus holt vs cael rhodes · men longsword garen quill vs dara voss · men longsword finn",
  "build.matches_per_competition": "Men Longsword=64, Men Sword & Shield=9, Women Longsword=10, Men Polearm=9, Men Sword & Buckler=3, Women Sword & Shield=1, Men 5v5=9, Men 3v3=6",
  "build.fields_used": "(null = Field 1),Field 2",
  "build.sword_shield_6_in_8": "Round 1 pos0 sides=2 | Round 2 pos0 sides=2 | Round 3 pos0 sides=2 | Round 1 pos0 sides=2 | Round 2 pos0 sides=2 | Round 3 pos0 sides=2 | Round 1 pos1 sides=2 | Round 2 pos1 sides=2 | Round 3 pos1 sides=2",
@@ -73,13 +73,13 @@
   "LYST 1\n0 OF 64 FIGHTS DONE",
   "Lyst 20 of 47 fights done"
  ],
- "liveops.attention_before_start": "needs attention 6 soon lyst 1 has no fight on next ready: aldric stone vs cael rhodes lyst 1 start it soon lyst 2 has no fight on next ready: iron ferns vs mire wolves lyst 2 start it 5 more",
- "liveops.overall_headline": "⚠ 6 things need attention refreshing every few seconds wed 09:52 at the event updated 09:52:30 refresh",
- "liveops.field1_now": "Men Longsword · Round 1 · Aldric Stone vs Cael Rhodes",
- "liveops.field2_now": "Men 5v5 · Round 2 · Iron Ferns vs Mire Wolves",
- "liveops.move_target": "Men Longsword · Round 4 · Hollis Thorn vs Brann Oakley",
- "liveops.after_withdrawal_sword_shield": "Round 1 pos0 scheduled:- | Round 2 pos0 scheduled:- | Round 3 pos0 scheduled:- | Round 2 pos0 scheduled:- | Round 3 pos0 final:a wo=true | Round 1 pos0 final:b wo=true | Round 1 pos1 scheduled:- | Round 2 pos1 scheduled:- | Round 3 pos1 scheduled:-",
- "liveops.held_fights_for_another_day": "5",
+ "liveops.attention_before_start": "needs attention 6 soon lyst 1 has no fight on next ready: aldric stone vs cael rhodes lyst 1 start it soon lyst 2 has no fight on next ready: mire wolves vs iron ferns lyst 2 start it 5 more",
+ "liveops.overall_headline": "⚠ 6 things need attention refreshing every few seconds wed 10:07 at the event updated 10:07:37 refresh",
+ "liveops.field1_now": "Men Longsword · Round 7 · Aldric Stone vs Cael Rhodes",
+ "liveops.field2_now": "Men 5v5 · Round 2 · Mire Wolves vs Iron Ferns",
+ "liveops.move_target": "Men Longsword · Round 6 · Brann Oakley vs Hollis Thorn",
+ "liveops.after_withdrawal_sword_shield": "Round 1 pos0 scheduled:- | Round 2 pos0 scheduled:- | Round 3 pos0 scheduled:- | Round 3 pos0 scheduled:- | Round 1 pos0 final:a wo=true | Round 2 pos0 final:b wo=true | Round 1 pos1 scheduled:- | Round 2 pos1 scheduled:- | Round 3 pos1 scheduled:-",
+ "liveops.held_fights_for_another_day": "4",
  "liveops.permissions": {
   "marshal_move": "403 only an organizer or the secretary can change the running order",
   "scorer_move": "200",
@@ -96,34 +96,34 @@
   "Big screen",
   "Cards and penalties"
  ],
- "duel.fight": "Men Longsword · Round 1 · Aldric Stone vs Cael Rhodes",
+ "duel.fight": "Men Longsword · Round 7 · Aldric Stone vs Cael Rhodes",
  "duel.result": "final draw 13-13 detail_has_lyst=true counter_words=false",
- "duel.phone_fights_lines": "LAST FIGHT — NOW FIGHTING Aldric Stone vs Cael Rhodes NEXT FIGHT Hollis Thorn vs Brann Oakley",
- "team.fight": "Men 5v5 · Round 1 · Coulee Ravens vs TEST Reavers",
+ "duel.phone_fights_lines": "LAST FIGHT Aldric Stone vs Cael Rhodes · 13-13 draw NOW FIGHTING Dara Voss vs Brann Oakley NEXT FIGHT Brann Oakley vs Hollis Thorn",
+ "team.fight": "Men 5v5 · Round 2 · Mire Wolves vs Iron Ferns",
  "team.arena_after_round_1": {
   "scores": [
    "1",
    "0"
   ],
-  "text": "LYST 2 2 OF 47 FIGHTS DONE NOW FIGHTING COULEE RAVENS 1 ROUND VS TEST REAVERS 0 ROUNDS Men 5v5 · Pool A · Round 1 · rounds won ROUND 0:55 AFTER ROUND 1"
+  "text": "LYST 2 2 OF 47 FIGHTS DONE NOW FIGHTING MIRE WOLVES 1 ROUND VS IRON FERNS 0 ROUNDS Men 5v5 · Pool A · Round 2 · rounds won ROUND 0:56 AFTER ROUND 1"
  },
- "team.public_live_field2": "lyst 2 big screen now coulee ravens vs test reavers men 5v5 · pool a, round 1 1–0 rounds won after round 1 0:53 on deck foothill lions vs badland bears men 5v5 · pool a, round 1 in the hole iron ferns vs mire wolves men 3v3 · round 1",
+ "team.public_live_field2": "lyst 2 big screen now mire wolves vs iron ferns men 5v5 · pool a, round 2 1–0 rounds won after round 1 0:53 on deck prairie hammers vs badland bears men 5v5 · pool a, round 2 in the hole iron ferns vs mire wolves men 3v3 · round 1",
  "team.board_counter_evidence": "",
- "myfight.scheduled_state": "my next fight coming up soon vs brann oakley 3 fights ahead of you on lyst 1. start getting ready; this page updates by itself when you are called. lyst 1 3 fights ahead men longsword · pool a, round 3 short rest: you just fought: no fight has finished since your last one (the target is 3 between appearances). tell the marshal if you need more time. ✓ you are checked in. also still to fight: 13 fi",
- "myfight.up_now_text": "my next fight up now you are fighting now on lyst 1 vs brann oakley go to lyst 1. lyst 1 men longsword · pool a, round 3 short rest: you just fought: no fight has finished since your last one (the target is 3 between appearances). tell the marshal if you need more time. ✓ you are checked in. also still to fight: 13 fights lyst 1 5 fights ahead vs jorah ash men longsword · pool a, round 6 lyst 1 7 ",
+ "myfight.scheduled_state": "my next fight in the hole you are in the hole vs ivar wold 2 fights ahead of you on lyst 2. start getting ready. lyst 2 2 fights ahead men polearm · pool b, round 2 short rest: only 1 fight has finished since your last one (the target is 3 between appearances). tell the marshal if you need more time. ✓ you are checked in. also still to fight: 13 fights lyst 2 6 fights ahead vs xander kettle men po",
+ "myfight.up_now_text": "my next fight up now you are fighting now on lyst 1 vs magnus holt go to lyst 1. lyst 1 men longsword · pool a, round 6 short rest: only 1 fight has finished since your last one (the target is 3 between appearances). tell the marshal if you need more time. ✓ you are checked in. also still to fight: 13 fights lyst 2 2 fights ahead vs ivar wold men polearm · pool b, round 2 lyst 2 6 fights ahead vs ",
  "myfight.withdrawn_fighter_sees": "1 account live test data test red deer rumble 2026 (pack 26 rehearsal) oct 7-8, 2026 test horse in hand ranch · blackfalds, alberta updating every few seconds overview live results test data a fictional test event. its teams, fighters and results are made up and count nowhere. lyst 1 big screen now ",
- "myevents.text": "2 account events my events events you take part in, run or score, or were added to. each one says why it is here and what is still open. events calendar my events my calendar search events filters upcoming past all happening now (1) test red deer rumble 2026 (pack 26 rehearsal)test data oct 7-8, 2026 · test horse in hand ranch · blackfalds, alberta registration accepted you are entered fee $40 · p",
+ "myevents.text": "3 account events my events events you take part in, run or score, or were added to. each one says why it is here and what is still open. events calendar my events my calendar search events filters upcoming past all happening now (1) test red deer rumble 2026 (pack 26 rehearsal)test data oct 7-8, 2026 · test horse in hand ranch · blackfalds, alberta registration accepted you are entered fee $40 · p",
  "public.live_field_names": [
   "LYST 1",
   "LYST 2"
  ],
- "announcer.text": "test red deer rumble 2026 (pack 26 rehearsal) updating every few seconds camera off all lysts focus lyst 1 focus lyst 2 lyst 1 ● fighting now 1 of 64 fights done ● now fighting men longsword · pool a · round 5 ▲ red t brann oakley test reavers 0-1 · test – vs ■ blue t edric hale test reavers 0-1 · test – up next on deck · men longsword · pool a · round 4 i ▲ red: hollis thorn iron ferns ! not yet ready t ■ blue: brann oakley test reavers ! not yet ready coming up in the hole · men longsword · po",
+ "announcer.text": "test red deer rumble 2026 (pack 26 rehearsal) updating every few seconds camera off all lysts focus lyst 1 focus lyst 2 lyst 1 ● fighting now 1 of 64 fights done ● now fighting men longsword · pool b · round 5 ▲ red t dara voss test reavers – vs ■ blue t brann oakley test reavers – up next on deck · men longsword · pool b · round 6 t ▲ red: brann oakley test reavers ! not yet ready i ■ blue: hollis thorn iron ferns ! not yet ready coming up in the hole · men longsword · pool a · round 3 t ▲ red:",
  "broadcast.overlay_text": "",
  "close.fights_run_before_bracket": 105,
  "close.open_with_withdrawn_side": "",
  "close.bracket_offer": {
   "offer": "Create 4 bracket matches",
-  "ties": 0
+  "ties": 1
  },
  "close.bracket_Men Sword & Shield": {
   "offer": "Create 4 bracket matches",
@@ -157,7 +157,7 @@
   "Men 5v5": "200",
   "Men 3v3": "200"
  },
- "close.closeout_text": "every competition is official. when you are done, close the event and it becomes the permanent record. men longsword ✓ men sword & shield ✓ women longsword ✓ men polearm ✓ men sword & buckler ✓ women sword & shield ✓ men 5v5 ✓ men 3v3 ✓ men longsword longsword men competition official 68 of 68 fights have a result · official since oct 7, 2026, 9:56 a.m. view official results back to live ops reopen… good to know (does not stop the result) 1 fighter has no recorded team for this competition. their placing is official either way; their points count for no team until a team is recorded. the compe",
+ "close.closeout_text": "every competition is official. when you are done, close the event and it becomes the permanent record. men longsword ✓ men sword & shield ✓ women longsword ✓ men polearm ✓ men sword & buckler ✓ women sword & shield ✓ men 5v5 ✓ men 3v3 ✓ men longsword longsword men competition official 68 of 68 fights have a result · official since oct 7, 2026, 10:11 a.m. view official results back to live ops reopen… good to know (does not stop the result) 1 fighter has no recorded team for this competition. their placing is official either way; their points count for no team until a team is recorded. the comp",
  "matrix": {
   "stranger": {
    "snapshot": "403",
@@ -398,7 +398,7 @@
  },
  "states.results_mode_on_empty_event": "8 account event control event page → test fresh draft (pack 26) draft set up live ops results no competitions yet add the competitions first; their results are made official here. close the event closing makes test fresh draft (pack 26) permanent history: every competition is official, nothing opera",
  "notify.onboarding_dialog_shown_on_home": 0,
- "notify.settings_dialog_text": "notifications choose what buhurtos tells you about. what to be notified about fight alerts called to fight, 2 away, schedule changes on team joins and requests on events announcements, registration, armour inspection on buhurtos account, profile claims, discipline on not now enable notifications",
+ "notify.settings_dialog_text": "notifications choose what buhurtos tells you about. what to be notified about fight alerts called to fight, 2 fights away, schedule changes on team joins and requests on events announcements, registration, armour inspection on buhurtos account, profile claims, discipline on not now enable notifications",
  "sweep.request_counts_phone": {
   "public-live": 40,
   "liveops": 55,
