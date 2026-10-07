@@ -1213,7 +1213,11 @@ try {
     note('states.results_mode_on_empty_event', (await body(o)).slice(0, 300));
     const tr = (await open('phone', 'f40')).page;
     await go(tr, '/lyst/train/BADCODE123');
-    check('204. a bad training code is refused in plain words with a way to type another', await until(async () => await has(tr, 'not valid') || await has(tr, 'type a new code') || await has(tr, 'training code'), 30000), (await body(tr)).slice(0, 200));
+    // the code is checked when the trainee starts (the form asks name and side first); the refusal is plain and offers another code
+    await tr.getByRole('textbox').first().fill('Trainee Nobody');
+    await tr.getByRole('button', { name: /Red/ }).first().click().catch(() => undefined);
+    await tr.getByRole('button', { name: /Start counting/ }).click().catch(() => undefined);
+    check('204. a bad training code is refused in plain words with a way to type another', await until(async () => await has(tr, 'not valid') || await has(tr, 'did not work') || await has(tr, 'type a new code') || await has(tr, 'another code'), 30000), (await body(tr)).slice(0, 300));
     // notifications: the ask and the settings
     const fp = (await open('phone', 'f1', { pushAsked: false })).page;
     await go(fp, '/');
