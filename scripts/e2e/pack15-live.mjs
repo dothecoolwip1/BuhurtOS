@@ -167,6 +167,7 @@ try {
   await acct.goto(`${BASE}/account#notifications`);
   if (!(await acct.getByTestId('ns-perm').isVisible().catch(() => false))) {   // Pack 26: the settings are a small sheet behind the Account row "Notifications"
     await acct.getByRole('button', { name: /^Notifications/ }).first().click({ timeout: 30000 }).catch(() => acct.getByRole('link', { name: /^Notifications/ }).first().click({ timeout: 30000 }));
+    await acct.getByRole('button', { name: 'Manage devices' }).click({ timeout: 30000 });   // the device status (permission, this device) is the sheet's second view
   }
   await acct.getByTestId('ns-perm').waitFor({ timeout: 30000 });
   await acct.waitForFunction(() => /^(On|Off)$/.test(document.querySelector('[data-testid="ns-device"]')?.textContent?.trim() ?? ''), null, { timeout: 15000 }).catch(() => undefined);
