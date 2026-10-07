@@ -5,7 +5,7 @@ import type { NotificationKind } from './teamManager';
 export type NotificationCategory = 'fights' | 'team' | 'events' | 'system';
 export type NotificationSettings = Record<NotificationCategory, boolean>;
 export const CATEGORY_LABEL: Record<NotificationCategory, { title: string; short: string; hint: string; sub: string }> = {
-  fights: { title: 'Event-day fight alerts', short: 'Fight alerts', hint: 'Called to fight, 2 away, schedule changes', sub: 'You are 2 fights away, up next, or your fight is ready. Your fight changed Lyst or the schedule changed.' },
+  fights: { title: 'Event-day fight alerts', short: 'Fight alerts', hint: 'Called to fight, 2 fights away, schedule changes', sub: 'You are 2 fights away, up next, or your fight is ready. Your fight changed Lyst or the schedule changed.' },
   team: { title: 'Team', short: 'Team', hint: 'Joins and requests', sub: 'Someone joins your team, join requests and answers.' },
   events: { title: 'Events', short: 'Events', hint: 'Announcements, registration, armour inspection', sub: 'Announcements from the organizers of an event you are in, registration decisions, armour inspection results, a cancelled event. For organizers and head marshals: a result that needs review.' },
   system: { title: 'BuhurtOS', short: 'BuhurtOS', hint: 'Account, profile claims, discipline', sub: 'Account news such as a fighter profile you claimed, and discipline decisions about you.' }

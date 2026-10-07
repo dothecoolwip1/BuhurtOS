@@ -167,7 +167,8 @@ try {
   await acct.addInitScript(() => { try { localStorage.setItem('bos-push-ask', String(Date.now())); } catch { /* ignore */ } });   // the first-time ask was answered on another day; this is the settings sheet
   await acct.goto(`${BASE}/account#notifications`);
   if (!(await acct.getByTestId('ns-perm').isVisible().catch(() => false))) {   // Pack 26: the settings are a small sheet behind the Account row "Notifications"
-    await acct.getByRole('button', { name: /^Notifications/ }).first().click({ timeout: 30000 }).catch(() => acct.getByRole('link', { name: /^Notifications/ }).first().click({ timeout: 30000 }));
+    if (await acct.getByRole('button', { name: 'More', exact: true }).count()) await acct.getByRole('button', { name: 'More', exact: true }).click();   // the phone's More sheet holds the row (the header bell is the inbox, not the settings)
+    await acct.getByRole('button', { name: 'Notifications', exact: true }).last().click({ timeout: 30000 });
     await acct.getByRole('button', { name: 'Manage devices' }).click({ timeout: 30000 });   // the device status (permission, this device) is the sheet's second view
   }
   await acct.getByTestId('ns-perm').waitFor({ timeout: 30000 });
