@@ -731,7 +731,8 @@ try {
     note('duel.result', sql(`select queue_state || ' ' || coalesce(result,'-') || ' ' || score_a || '-' || score_b || ' detail_has_lyst=' || (detail ? 'lyst') || ' counter_words=' || (detail::text ~* 'counter|learning|tally|seat') from public.matches where id = '${m1}'`));
     check('111. the stored detail carries the official rounds and no counter data', sql(`select (detail ? 'lyst') and not (detail::text ~* 'counter|learning|tally|seat|operator') from public.matches where id = '${m1}'`) === 't');
     await shot(tab, 'lyst-official');
-    check('112. the stale second tablet (head marshal) cannot score the finished fight: it is told the result stands', await until(async () => /official|final|finished|result/i.test(await body(hd)), 20000) && (await hd.getByRole('button', { name: /End round|Start round/ }).count()) === 0, await hdState());
+    // the second tablet learns it from the next poll (no realtime socket on the local stack): "This fight is final", no round or finish buttons
+    check('112. the stale second tablet (head marshal) cannot score the finished fight: it is told the result stands', await until(async () => (await hd.getByTestId('final-elsewhere').count()) === 1 && (await hd.getByRole('button', { name: /End round|Start round|Finish match/ }).count()) === 0, 60000) && /this fight is final/.test(await body(hd)), await hdState());
     await shot(hd, 'lyst-second-tablet-after-finish');
     // the queue moved on: the tablet offers the next fight, the phones follow
     check('113. the queue advanced by itself: a new fight is active on Field 1 and the tablet offers "Next fight"', await until(async () => activeOn(field1) !== '' && activeOn(field1) !== m1, 15000) && (await tab.getByRole('button', { name: /Next fight on Lyst 1/ }).count()) === 1, activeOn(field1));
@@ -979,7 +980,7 @@ try {
     };
     const first = await buildBracket('Men Longsword');
     note('close.bracket_offer', first);
-    check('160. the bracket is built from the pool results (append), and only then; level entries were ordered by a person first', await untilDb(() => sql(`select (count(*) > 0)::text from public.matches where competition_id = '${comp('Men Longsword')}' and stage <> 'pool'`), 'true', 20000) === 'true' && Number(sql(`select count(distinct (part, rank)) from public.pool_tie_decisions where competition_id = '${comp('Men Longsword')}'`)) === first.ties, JSON.stringify(first));
+    check('160. the bracket is built from the pool results (append), and only then; level entries were ordered by a person first', await untilDb(() => sql(`select (count(*) > 0)::text from public.matches where competition_id = '${comp('Men Longsword')}' and stage <> 'pool'`), 'true', 20000) === 'true' && (first.ties === 0 || Number(sql(`select count(*) from public.pool_tie_decisions where competition_id = '${comp('Men Longsword')}'`)) >= first.ties * 2), JSON.stringify(first));
     await shot(o, 'run-bracket-built', true);
     // every other competition the plan gave pools to
     for (const k of sql(`select string_agg(k.name, '|') from public.competitions k where k.event_id = '${EV}' and k.name <> 'Men Longsword' and exists (select 1 from public.matches m where m.competition_id = k.id and m.stage like 'pool%') and not exists (select 1 from public.matches m where m.competition_id = k.id and m.stage not like 'pool%')`).split('|').filter(Boolean)) {

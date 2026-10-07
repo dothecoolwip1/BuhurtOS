@@ -100,7 +100,7 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | `pack10-live` | 135 / 135 | |
 | `pack22-live` / `pack22-history-live` / `pack22-discipline-live` | 71 / 71, 32 / 32, 56 / 56 | |
 | `pack13-live`, `pack25-live` | 89 / 89, 81 / 81 (before the Lyst wording change; the two suites' "Field 1" button lookups then updated to accept "Lyst 1") | re-run in §10 |
-| `pack24a0-live` | 11 / 11, then an exception on the old `section[aria-label="Event day"]` | selector updated to the Pack 25 `Fields` section; re-run in §10 |
+| `pack24a0-live` | 11 / 11, then an exception on the old `section[aria-label="Event day"]` | selector updated to the Pack 25 `Fields` section; re-run: **22 / 22**, then stops waiting for the Pack 24A0 public "Now and next" block that Pack 25's Live view replaced (per-Lyst NOW / ON DECK / IN THE HOLE, covered by `pack26-live` 139–146); not rewritten |
 | `pack24a1-live` | 73 / 82 | the 9 failures were the suite's old words ("Lyst · Field 1") and Exit landing on `/live`; expectations updated; re-run in §10 |
 | `device-live` | 55 / 56 | the counter phone's "Field 1" button is "Lyst 1"; updated; re-run in §10 |
 | `cc181-live` | 104 / 113 | Camera Off hidden without a configured broadcast (Pack 26 change) broke the Pack 18.1 behaviour: reverted (§9 owner question 2); re-run in §10 |
@@ -116,9 +116,32 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 
 ## 7. Browser verification, screenshots, viewports
 
-Screenshots: `docs/reviews/assets/2026-10-07-pack26/`.
+Screenshots from the final run (`docs/reviews/assets/2026-10-07-pack26/`, `p26-NN-<what>-<width>.png`; the width is the viewport: 390 phone, 768 tablet, 1280 laptop, 1920 TV). What each one shows:
+
+| Phase | Screenshots |
+| --- | --- |
+| Set up | 01 a fresh draft's one next step · 02 draft ready to publish · 03 registration open · 04 Event settings with the Lyst count · 05 the public Overview for a fighter (one Register) |
+| Register | 06 the form's errors · 07 registered, what happens next · 08 "your registration" on the event page · 09 the closed window (no form) |
+| Review | 10 pending cards leading with the decision · 11 the whole list at 390 · 12 a very long name · 13 a volunteer's card |
+| Check-in | 14–15 the desk with a fighter not ready · 16 a failed inspection at 768 · 17 the head marshal's override · 18 the desk scrolled |
+| Build | 19 the plan at 1280 (two Lysts, formats, fight counts) · 20 the already-built state |
+| Live ops | 21–22 before the start (attention, idle Lysts, Start it) · 23 running (NOW / ON DECK / IN THE HOLE behind the Lyst picker) · 24 a second tablet following · 25 the head marshal's view · 26 the Counter QR |
+| Lyst Control and counters | 27 the queue · 28 the duel ready · 29 a counter bound and waiting · 30 the training QR · 31 the training counter · 32 counting · 33 the handoff · 34 offline counting · 35 end of round with each counter's tally beside the marshal's entry · 36 the second tablet on the same fight · 37–38 the Lyst offline, the marshal's call pending · 39 the public Live view with the official score · 40 the official result · 41 the second tablet after the finish ("This fight is final") · 42 the counter on the next fight |
+| Team fight | 43 the 5v5 board (fighters standing) · 44 the counter phone on a team fight · 45 the big screen: 1 round vs 0 rounds, "rounds won" · 46 the counter waiting for the next fight |
+| Public | 47–49 My next fight: scheduled, on deck, up now · 50 My events for a fighter (the test event listed) · 51–52 the public Live view · 53–54 the big screen for a duel at 1920 and 390 · 55 the announcer · 56 the broadcast overlay |
+| Conflict and close | 57 two scorers disagree, Live ops asks · 58 the bracket built from pools (ties decided) · 59 Review wins & losses · 60 Results mode · 61 the event closed · 62–63 the public Results with podiums · 64 the big screen: Event complete |
+| Devices, matrix, states | 65+ staff device landings, the permission matrix run, 404 / draft arena / empty Live ops / bad training code / the notification onboarding and settings, and the viewport sweep (`viewport-sweep.json`: every route at 360×800, 390×844, 768×1024, 1024×768, 1280×900 and 844×390) |
 
 ## 8. Documentation corrected
+
+| Document | Was | Now |
+| --- | --- | --- |
+| `README.md` | an early-scaffold README: "Supabase is not connected", mock data, no mention of the gates or the real-stack suites | the real product and stack (Supabase is the backend and is in use on hosted), how to run it, the database gate and the browser suites, where things are, how it deploys, the known gaps |
+| `docs/TEST_PLAN.md` | the Pack 04-era manual plan, presented as current | a superseded-in-part notice at the top pointing to the automated gates, the real-stack suites and this pack's rehearsal; the manual phone and iOS checks it still owns are left |
+| `docs/claude-packs/STATUS.md` | header said branch `ccr-a435c5f7-pmrfxr`, last updated 2026-10-04 | header on this branch and date; a Pack 26 entry at the end (status, hosted untouched, tests, verification, fixed, owner questions, not verified) |
+| `docs/claude-packs/PACK_26_UIUX_MATRIX.md` | – | new: 31 personas, every route with problems → outcomes and viewport columns, interaction cost, what was reviewed and left |
+| `docs/claude-packs/PACK_26_RUMBLE_REHEARSAL.md` | – | new: this work log |
+| Old real-stack suites (`eventday-live`, `finalize-live`, `pack09d-live`, `rumble-live`, `live-stability`, `represented-team-live`, the tail of `pack24a0-live`) | presented as runnable | recorded here (§6, §9) as superseded by `pack25-live` / `pack26-live` for the screens Pack 25 replaced; their one-line address fixes applied; not rewritten |
 
 ## 9. Known limitations, owner questions, deliberately deferred
 
