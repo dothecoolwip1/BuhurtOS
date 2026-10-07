@@ -112,7 +112,8 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | `represented-team-live` | 0 / 1 | waits for a "Team discipline leaders" heading that no longer exists (the team discipline table lives under Rankings › Teams › Disciplines since Pack 22); the suite, not the product; not rewritten (recorded) |
 | `broadcast-realtime` | 14 / 15 | check 14 looked for "Field 1" on the Lyst screen; accepts "Lyst 1" now; re-run in §10 |
 | `device-reliability-live` | see §10 | |
-| `finalize-live`, `pack09d-live`, `rumble-live`, `live-stability`, `eventday-live` | stopped on Pack 09A–09D / 18 screens that Pack 25 replaced (`?tab=finalize`, `?tab=home`, `section.eventday`) | the obvious addresses were updated where one line did it; these suites are superseded by `pack25-live` and `pack26-live` for those screens and are recorded as such (§9) |
+| `live-stability` (Pack 18: live updates keep the view) | 42 / 45 after the root was moved to the Pack 25 `Fields` section | two real findings, not fixed in this pack: on a desktop Live ops a live change moved the reading position by about 220 px (the attention list above re-flowed), and on the phone's public event page an offline/online reconnect moved it by about 100 px (the block above the standings re-flowed). Both are the Pack 18 guarantee ("the view is kept") on screens Pack 25 rebuilt; recorded as P2 for a follow-up (§9). The third failure is the suite's own Pack 18 screen list |
+| `finalize-live`, `pack09d-live`, `rumble-live`, `eventday-live` | stopped on Pack 09A–09D / 18 screens that Pack 25 replaced (`?tab=finalize`, `?tab=home`, `section.eventday`) | the obvious addresses were updated where one line did it; these suites are superseded by `pack25-live` and `pack26-live` for those screens and are recorded as such (§9) |
 
 ## 7. Browser verification, screenshots, viewports
 
@@ -151,7 +152,8 @@ Screenshots from the final run (`docs/reviews/assets/2026-10-07-pack26/`, `p26-N
 3. **Changing the event's dates after registration holds every fight.** Registrations carry the days a person attends (`attend_dates`); moving the event (as the rehearsal did to make "today" the first day) leaves every attendance on the old days and every fight "held: not attending today". Real events rarely move; if one does, the organizer must re-date attendances (Set up › Registrations) or the hold rule should follow the event. Recorded, not changed.
 4. **Review before build with one straggler.** With one registration still pending, Set up's single next step is "Review 1 registration"; Build tournament sits beside it (run 13 check 58 accepts both). Whether building should lead once most are reviewed is a product call.
 
-### Deliberately deferred
+### Found, not fixed (follow-up)
+- **Live refresh moves the reading position** on two rebuilt screens (`live-stability` re-run, §6): desktop Live ops after a live change (about 220 px, the attention list above re-flows) and the phone's public event page after a reconnect (about 100 px). The Pack 18 rule (`useAsync` refresh keeps data on screen; `.fade-in` fill backwards) holds for the data; the layout above the anchor changes height. The fix is to reserve the attention list's height or anchor the scroll (CSS `overflow-anchor` is already relied on); not done in Pack 26 because it was found in the last hour and a layout change needs its own browser verification.
 - The database's `collate "C"` Lyst order (Lyst 1, Lyst 10, Lyst 2) is corrected on the counter phone only; `event_field_keys` / `counter_state` ordering on the server is untouched (no migration for a sort).
 - The two first-time notification asks (install, push) share one "asked" key; acceptable.
 - The registrations list is not live-refreshed while another organizer decides; a reload shows the change.
