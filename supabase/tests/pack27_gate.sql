@@ -5,6 +5,7 @@
 --   * following the Lyst: taps, undos and "done" with the OLD seat are refused after the next fight opens; the turn moves to the new fight
 --   * ONE CURRENT FIGHT per Lyst: a Lyst in a running round is not switched by another tablet; a tablet left on an earlier fight cannot pull the phones back
 --   * the server's counter messages have no "seat" in them; a trainee's account id never appears in the tablet's state
+--   * Pack 27B: the Training Counter QR (a training pool): learning seats only, kept out of the official evidence, a comparison list for the learner
 -- LOCAL THROWAWAY DATABASE ONLY; everything is rolled back.   Run:  psql -v ON_ERROR_STOP=1 -d <db> -f supabase/tests/pack27_gate.sql
 \set ON_ERROR_STOP on
 begin;
@@ -240,6 +241,70 @@ select t.expect_eq('... and the trainee''s account id appears nowhere in it', po
 select t.as_admin();
 select t.expect_eq('no counter refusal the server raises says "seat"', (select count(*) from pg_proc p where p.pronamespace in ('public'::regnamespace, 'private'::regnamespace) and p.proname in ('lyst_seat_for_counting', 'counter_record', 'counter_undo', 'counter_submit', 'counter_bind', 'counter_set_operator', 'counter_leave') and p.prosrc ~* 'raise exception ''[^'']*seat'), 0::bigint);
 select t.expect_eq('the device allowlist gained nothing: no new public function is callable by a counter phone beyond Pack 25''s', (select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace and has_function_privilege('bos_event_device', p.oid, 'execute') and p.proname in ('lyst_field_claim', 'lyst_seat_operators')), 0::bigint);
+
+
+-- ================================================================ 9. Pack 27B: TRAINING COUNTERS. A second reusable pool (training): no account, no approval; learning seats only; kept out of the official evidence
+select t.as_user(t.u(1));
+select t.expect_error('a fighter cannot make the Training Counter QR', format($$select public.create_event_credential(%L, 'counter_pool', null, 'counter', %L, null, 'TRANQR234567', true)$$, t.e1(), t.h(60)), '42501');
+select t.as_user(t.u(90));
+select t.expect_eq('the organizer makes the event''s Training Counter QR (a counter pool marked training, labelled by default)', (public.create_event_credential(t.e1(), 'counter_pool', null, 'counter', t.h(60), null, 'TRANQR234567', true) ->> 'label'), 'Training Counter QR');
+select t.as_admin();
+select t.expect_eq('... stored as a training pool', (select training::text from public.event_credentials where code_hash = t.h(60)), 'true');
+select t.as_user(t.u(90));
+select t.expect_error('one Training Counter QR per event (the Counter QR is a separate one and still there)', format($$select public.create_event_credential(%L, 'counter_pool', null, 'counter', %L, null, 'TRANQR234568', true)$$, t.e1(), t.h(61)), '22023');
+select t.as_admin();
+select t.expect_eq('... both pools are open side by side', (select count(*) from public.event_credentials where event_id = t.e1() and kind = 'counter_pool' and revoked_at is null), 2::bigint);
+select t.as_user(t.u(90));
+select t.expect_error('only a pool can be a training credential', format($$select public.create_event_credential(%L, 'device', 'Phone X', 'marshal', %L, null, null, true)$$, t.e1(), t.h(62)), '22023');
+select t.as_user(t.u(88));
+select t.expect_eq('the scorekeeper shows the Training Counter QR (and the Counter QR is still the Counter QR)', (public.counter_pool_code(t.e1(), true) ->> 'code') || '|' || (public.counter_pool_code(t.e1(), true) ->> 'training') || '|' || (public.counter_pool_code(t.e1()) ->> 'code') || '|' || (public.counter_pool_code(t.e1()) ->> 'training'), 'TRANQR234567|true|ABCDEFGH2345|false');
+select t.as_user(t.u(1));
+select t.expect_error('a fighter cannot show it', format('select public.counter_pool_code(%L, true)', t.e1()), '42501');
+select t.as_admin();
+-- two learners scan the Training Counter QR: sessions of their own, no account anywhere
+insert into t.ph select n, t.open(60, 'ip-t' || n, 70 + n) from generate_series(27, 28) n;
+select t.expect_eq('two phones scan the Training QR: two more open counter sessions, the official phones untouched', (select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where c.event_id = t.e1() and c.kind = 'counter_pool' and s.ended_at is null), 5::bigint);
+select t.as_device(t.u(27));
+select t.expect_eq('a training phone knows it is one from its first call', (public.device_whoami() ->> 'training') || '|' || (public.device_whoami() ->> 'role') || '|' || (public.counter_state() ->> 'training'), 'true|counter|true');
+select t.expect_eq('it binds like any counter (name, Lyst, side) and is seated at once: as LEARNING, on the fight the Lyst has open (m5), red', (public.counter_bind('Field 1', 'a', 'Learner Lee') -> 'seat' ->> 'role') || '|' || (public.counter_state() -> 'seat' ->> 'match_id') || '|' || (public.counter_state() -> 'seat' ->> 'side'), 'learning|' || t.m(5)::text || '|a');
+select t.as_device(t.u(28)); select public.counter_bind('Field 1', 'b', 'Learner Max');
+select t.as_device(t.u(27));
+select t.expect_eq('the learner counts along: their own tally, round 1 of m5', (public.counter_record(gen_random_uuid(), t.seatof(27), 1, 2) ->> 'total'), '2');
+select t.cr(21, 1, 2); select t.cr(21, 1, 1);   -- Taylor (official, red) 3 on m5 round 1; Nathan (official, red) 0; Joe (blue) 2
+select t.as_device(t.u(27));
+select t.expect_eq('the learner''s screen compares against the OFFICIAL counters of the same side, one line each, never a combined number', (select string_agg((o ->> 'name') || '=' || (o ->> 'total'), ',' order by o ->> 'name') from jsonb_array_elements(public.counter_state() -> 'officials') o), 'Nathan=0,Taylor=3');
+select t.expect_eq('... and nothing else of theirs: no seat ids, no other learners', (public.counter_state() -> 'officials')::text !~* 'seat|user|session|Max', true);
+select t.as_device(t.u(21));
+select t.expect_eq('an official phone gets no comparison list (it must not count by another counter''s number)', (public.counter_state() ->> 'officials') is null and (public.counter_state() ->> 'training') = 'false', true);
+select t.as_device(t.u(27));
+select t.expect_error('a training phone has no staff authority either', format('select public.lyst_state(%L)', t.m(5)), '42501');
+select t.expect_error('... cannot show the Lyst tablet''s state of another phone', format('select public.device_session_preview(%L)', t.u(21)), '42501');
+select t.as_user(t.u(88));
+select t.expect_eq('the tablet lists the learners APART as learning, with their sessions', (select string_agg((s ->> 'name') || ':' || (s ->> 'role') || ':' || ((s ->> 'session_id') is not null)::text, ',' order by s ->> 'name') from jsonb_array_elements(public.lyst_state(t.m(5)) -> 'seats') s where s ->> 'role' = 'learning'), 'Elm:learning:false,Learner Lee:learning:true,Learner Max:learning:true');
+-- the marshal's call: the official evidence frozen with it holds OFFICIAL counters only
+select t.expect_eq('m5 round 1 ends', t.tc(86, 'Field 1', 5, -1, 'start', 'break', 45000, 1) ->> 'status', 'ok');
+select t.as_user(t.u(88));
+select t.cmd() as conf5 \gset
+select public.lyst_confirm_round(:'conf5'::uuid, t.m(5), 1, 4, 2, t.round_rev(5, 1)) ->> 'status' as s5 \gset
+select t.expect_eq('the marshal confirms 4-2', :'s5'::text, 'ok');
+select t.as_admin();
+select t.expect_eq('the frozen evidence names the official phones only; the learners'' practice is not official evidence', (select string_agg((c ->> 'operator') || ':' || (c ->> 'role'), ',' order by c ->> 'operator') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.id = :'conf5'::uuid), 'Joe:official,Nathan:official,Taylor:official');
+select t.expect_eq('... the learners'' taps are still there as practice rows (nothing deleted), on learning seats', (select count(*) from public.lyst_counts c join public.lyst_counter_seats s on s.id = c.seat_id where s.role = 'learning' and c.match_id = t.m(5)), 1::bigint);
+select t.expect_eq('the official score is the marshal''s', t.official(5, 1), '4-2');
+-- a training phone changes Lyst, follows the next fight and is moved by staff: learning every time
+select t.as_user(t.u(88)); select public.lyst_open(t.m(4), 'weighted');
+select t.as_admin();
+select t.expect_eq('on the next fight the learners followed as LEARNING, the officials as official', (select string_agg(x.role || ':' || x.n, ',' order by x.role) from (select role, count(*)::text as n from public.lyst_counter_seats where match_id = t.m(4) and status = 'active' group by role) x), 'learning:3,official:3');
+select t.as_device(t.u(27));
+select t.expect_eq('a learner changes to Lyst 2 blue: a learning seat there', (public.counter_bind('Field 2', 'b', 'Learner Lee') -> 'seat' ->> 'role'), 'learning');
+select t.as_user(t.u(88));
+select t.expect_eq('staff move the learner back to Lyst 1 red: still learning', (public.move_counter_session(t.u(27), 'Field 1', 'a') -> 'seat' ->> 'role'), 'learning');
+select t.as_admin();
+select t.expect_eq('a training session never held an official seat', (select count(*) from public.lyst_counter_seats where user_id in (t.u(27), t.u(28)) and role = 'official'), 0::bigint);
+select t.expect_eq('the helpers are private; the device allow-list gained nothing but the two-argument counter_pool_code', (select count(*) from pg_proc p where p.pronamespace = 'private'::regnamespace and p.proname = 'counter_training' and (has_function_privilege('authenticated', p.oid, 'execute') or has_function_privilege('bos_event_device', p.oid, 'execute'))), 0::bigint);
+select t.as_anon();
+select t.expect_error('anon cannot read the credentials (the training flag included)', 'select training from public.event_credentials', '42501');
+select t.as_admin();
 
 select format('PACK27 GATE PASSED %s checks', count(*)) from t.log \gset
 \echo :format

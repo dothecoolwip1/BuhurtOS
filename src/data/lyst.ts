@@ -111,6 +111,8 @@ export interface CounterState {
   match_id?: string | null; competition?: string | null; round_label?: string | null; final?: boolean; fighter?: string | null; opponent?: string | null;
   counter_input?: CounterInput; per_side?: number | null; standing?: number | null;
   round?: { no: number; status: 'running' | 'confirming' | 'confirmed' } | null; my_total?: number; submitted?: boolean; can_count?: boolean;
+  /** Pack 27B: a training phone (the Training Counter QR) or a trainee's account; `officials` is the same side's official counters in the live round, one line each, never a combined number. */
+  training?: boolean; officials?: { name: string; total: number }[] | null;
   timer?: (LystTimer & { now_remaining_ms: number }) | null;
   /** The field's last finished fight, the one on now and the next in its running order (null each when there is none). */
   fights?: { last: CounterFight | null; now: CounterFight | null; next: CounterFight | null } | null;

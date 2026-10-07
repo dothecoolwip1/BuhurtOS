@@ -202,6 +202,17 @@ describe('creating and replacing a code (the organizer)', () => {
     expect(h.calls[0].args).toMatchObject({ p_kind: 'counter_pool', p_role: 'counter', p_label: 'Counter QR', p_pool_code: normalizeCode(body.code) });
     expect(h.calls[0].args.p_code_hash).toBe(await codeVerifier(PEPPER, normalizeCode(body.code)!));
   });
+  it('the Training Counter QR (Pack 27B): a counter pool with training = true, labelled by default; the Counter QR sends training = false', async () => {
+    const h = harness({ rpc: () => ({ ok: true, status: 200, data: { ...created, kind: 'counter_pool', label: 'Training Counter QR' } }) });
+    const body = await (await h.post({ action: 'create', event: 'e1', kind: 'counter_pool', training: true }, { authorization: 'Bearer a.b.c' })).json();
+    expect(h.calls[0].args).toMatchObject({ p_kind: 'counter_pool', p_role: 'counter', p_label: 'Training Counter QR', p_training: true, p_pool_code: normalizeCode(body.code) });
+    const plain = harness({ rpc: () => ({ ok: true, status: 200, data: { ...created, kind: 'counter_pool', label: 'Counter QR' } }) });
+    await plain.post({ action: 'create', event: 'e1', kind: 'counter_pool' }, { authorization: 'Bearer a.b.c' });
+    expect(plain.calls[0].args.p_training).toBe(false);
+    const dev = harness({ rpc: () => ({ ok: true, status: 200, data: created }) });
+    await dev.post({ action: 'create', event: 'e1', kind: 'device', label: 'Marshal Phone', role: 'marshal', training: true }, { authorization: 'Bearer a.b.c' });
+    expect(dev.calls[0].args.p_training).toBe(false);   // only a pool can be a training one
+  });
   it('an ordinary device code never sends a plaintext to the database', async () => {
     const h = harness({ rpc: () => ({ ok: true, status: 200, data: created }) });
     await h.post({ action: 'create', event: 'e1', kind: 'device', label: 'Marshal Phone', role: 'marshal' }, { authorization: 'Bearer a.b.c' });

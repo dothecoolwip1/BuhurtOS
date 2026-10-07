@@ -9,7 +9,7 @@ import { LogPanel } from './LogPanel';
 import { LystSettingsDialog } from './LystSettingsDialog';
 import { RulesSheet } from '../rules/RulesSheet';
 import { fetchCitations } from '../../data/rules';
-import { createJoinCode, finalizeFromLyst, openLyst, timerCommand } from '../../data/lyst';
+import { finalizeFromLyst, openLyst, timerCommand } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
 import { fieldLabel } from '../../lib/eventDay';
@@ -182,8 +182,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
     try { await record('lyst.void', match.id, { id, reason }); await send(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(false); }
   };
 
-  /* ---------------- counters: the training code is the only thing the Lyst makes; phones bind themselves through the event's Counter QR ---------------- */
-  const seatAction = async (fn: () => Promise<unknown>) => { setBusy(true); setError(null); try { await fn(); await lyst.refresh(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(false); } };
+  /* ---------------- counters: the phones bind themselves through the event's Counter QR or Training Counter QR; the Lyst makes nothing for them ---------------- */
 
   /* ---------------- finishing: the existing human-confirmed path ---------------- */
   const supported = resultSupportedByTotals(rounds);
@@ -441,8 +440,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       </div>
 
       {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}
-      {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventId={eventId} fieldName={fieldName} busy={busy} sides={sides} onSidesSaved={() => lyst.refresh()} onClose={() => setSheet(null)}
-        onNewTrainingCode={() => void seatAction(() => createJoinCode(eventId, fieldName))} />}
+      {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventId={eventId} sides={sides} onSidesSaved={() => lyst.refresh()} onClose={() => setSheet(null)} />}
       {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, reason) => void voidIt(id, reason)} onClose={() => setSheet(null)} citations={citations} onCite={(id, p) => void cite(id, p)} />}
       {sheet === 'rules' && <RulesSheet onClose={() => setSheet(null)} />}
       {sheet === 'settings' && settings && <LystSettingsDialog eventId={eventId} settings={settings} onClose={() => setSheet(null)} onSaved={() => void lyst.refresh()} />}

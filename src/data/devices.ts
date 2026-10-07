@@ -6,18 +6,18 @@
  */
 import { supabase } from '../lib/supabase';
 import type { Credential, CredentialKind, DeviceSession } from '../lib/devices';
-import { COUNTER_POOL_LABEL, groupCode } from '../lib/devices';
+import { COUNTER_POOL_LABEL, TRAINING_POOL_LABEL, groupCode } from '../lib/devices';
 
 interface Row {
   id: string; kind: CredentialKind; label: string; role: string; status: Credential['status']; used: boolean; expires_at: string | null; created_at: string;
-  last_signin_at: string | null; last_seen_at: string | null; signed_in_elsewhere_at: string | null; revoked_at: string | null; replaced: boolean; open_sessions?: number | null;
+  last_signin_at: string | null; last_seen_at: string | null; signed_in_elsewhere_at: string | null; revoked_at: string | null; replaced: boolean; open_sessions?: number | null; training?: boolean | null;
 }
 export async function fetchCredentials(eventId: string): Promise<Credential[]> {
   const { data, error } = await supabase.rpc('list_event_credentials', { p_event: eventId });
   if (error) throw error;
   return ((data ?? []) as Row[]).map(r => ({
     id: r.id, kind: r.kind, label: r.label, role: r.role, status: r.status, used: r.used, expiresAt: r.expires_at, createdAt: r.created_at,
-    lastSigninAt: r.last_signin_at, lastSeenAt: r.last_seen_at, signedInElsewhereAt: r.signed_in_elsewhere_at, revokedAt: r.revoked_at, replaced: r.replaced, openSessions: r.open_sessions ?? 0
+    lastSigninAt: r.last_signin_at, lastSeenAt: r.last_seen_at, signedInElsewhereAt: r.signed_in_elsewhere_at, revokedAt: r.revoked_at, replaced: r.replaced, openSessions: r.open_sessions ?? 0, training: r.training === true
   }));
 }
 
@@ -56,16 +56,17 @@ export const createCredential = (eventId: string, kind: CredentialKind, label: s
   callFunction({ action: 'create', event: eventId, kind, label: label.trim(), role });
 export const replaceCredential = (credentialId: string): Promise<NewCode> => callFunction({ action: 'replace', credential: credentialId });
 /** Pack 25: the event's one reusable Counter QR (the organizer). The code comes back once here, and is also kept on the credential for scoring staff to show again. */
-export const createCounterPool = (eventId: string): Promise<NewCode> => callFunction({ action: 'create', event: eventId, kind: 'counter_pool', label: COUNTER_POOL_LABEL, role: 'counter' });
+export const createCounterPool = (eventId: string, training = false): Promise<NewCode> =>
+  callFunction({ action: 'create', event: eventId, kind: 'counter_pool', label: training ? TRAINING_POOL_LABEL : COUNTER_POOL_LABEL, role: 'counter', training });
 
 // ---------------------------------------------------------------- Pack 25: the Counter QR for scoring staff, and the phones as sessions
-export interface CounterPool { code: string | null; credentialId: string | null; label: string | null; expiresAt: string | null; openSessions: number; canCreate: boolean }
-/** What the Lyst and Event Control show: the pool's code (scoring staff of the event), or that there is none and whether this viewer may make one. */
-export async function fetchCounterPool(eventId: string): Promise<CounterPool> {
-  const { data, error } = await supabase.rpc('counter_pool_code', { p_event: eventId });
+export interface CounterPool { code: string | null; credentialId: string | null; label: string | null; expiresAt: string | null; openSessions: number; canCreate: boolean; training: boolean }
+/** What the Lyst and Event Control show: the pool's code (scoring staff of the event), or that there is none and whether this viewer may make one. Pack 27B: `training` picks the Training Counter QR. */
+export async function fetchCounterPool(eventId: string, training = false): Promise<CounterPool> {
+  const { data, error } = await supabase.rpc('counter_pool_code', { p_event: eventId, p_training: training });
   if (error) throw error;
-  const d = data as { code: string | null; credential_id?: string | null; label?: string | null; expires_at?: string | null; open_sessions?: number | null; can_create?: boolean } | null;
-  return { code: d?.code ?? null, credentialId: d?.credential_id ?? null, label: d?.label ?? null, expiresAt: d?.expires_at ?? null, openSessions: Number(d?.open_sessions ?? 0), canCreate: d?.can_create === true };
+  const d = data as { code: string | null; credential_id?: string | null; label?: string | null; expires_at?: string | null; open_sessions?: number | null; can_create?: boolean; training?: boolean } | null;
+  return { code: d?.code ?? null, credentialId: d?.credential_id ?? null, label: d?.label ?? null, expiresAt: d?.expires_at ?? null, openSessions: Number(d?.open_sessions ?? 0), canCreate: d?.can_create === true, training: d?.training === true || training };
 }
 
 type SessionDb = {

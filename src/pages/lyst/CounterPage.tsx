@@ -60,6 +60,7 @@ function DeviceCounter() {
   const binding = state?.binding;
   const sides = state?.sides ? mergeSides(state.sides) : DEFAULT_SIDES;
   const vars = sideVars(sides) as React.CSSProperties;
+  const training = state?.training === true || w?.training === true;   // the Training Counter QR: the same screen, practice only
   const step: CounterStep | 'loading' = !state ? 'loading' : editing ?? nextStep(binding, fields);
 
   const run = async (fn: () => Promise<unknown>) => {
@@ -104,7 +105,7 @@ function DeviceCounter() {
   const head = (
     <div className="cp-setup-head">
       <span className="cp-event">{state?.event?.name ?? w?.event.name}</span>
-      <span className="src">Counter phone{state?.device_label ? ` · ${state.device_label}` : ''}</span>
+      <span className="src">{training ? 'Training Counter · practice only' : 'Counter phone'}{state?.device_label && !training ? ` · ${state.device_label}` : ''}</span>
     </div>
   );
   if (step === 'operator') {
@@ -148,7 +149,7 @@ function DeviceCounter() {
     );
   }
   return (
-    <CountScreen state={state!} cs={cs} training={false} busy={busy} problem={problem}
+    <CountScreen state={state!} cs={cs} training={training} device busy={busy} problem={problem}
       onChangeOperator={() => setEditing('operator')} onChangeSide={() => setEditing('side')} onChangeField={fields.length > 1 ? () => setEditing('field') : undefined}
       onLeave={exit} />
   );
@@ -251,10 +252,11 @@ function TrainingCounter({ userId, urlCode }: { userId: string; urlCode: string 
 }
 
 /* ================================================================ the counting screen (both) */
-function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onChangeSide, onChangeField, onLeave }: {
-  state: CounterState; cs: ReturnType<typeof useCounterState>; training: boolean; busy: boolean; problem: string | null;
+function CountScreen({ state, cs, training, device = false, busy, problem, onChangeOperator, onChangeSide, onChangeField, onLeave }: {
+  state: CounterState; cs: ReturnType<typeof useCounterState>; training: boolean; device?: boolean; busy: boolean; problem: string | null;
   onChangeOperator: () => void; onChangeSide?: () => void; onChangeField?: () => void; onLeave: () => unknown;
 }) {
+  const exitWord = training ? 'Exit Training' : 'Exit Counter';
   const sides = state.sides ? mergeSides(state.sides) : DEFAULT_SIDES;
   const vars = sideVars(sides) as React.CSSProperties;
   const seat = state.seat;
@@ -368,6 +370,13 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         {state.timer && !state.waiting && <output className="cp-clock mono" aria-label={`Time left ${formatClock(timeLeft)}`}>{formatClock(timeLeft)}</output>}
         <p className={`cp-msg${offline || !canCount ? ' is-warn' : ''}`} role="status" aria-live="polite" data-testid="cp-banner">{banner}</p>
         {training && <p className="cp-msg" role="note">Practice: your count is kept for training and never changes any score.</p>}
+        {training && seat?.status === 'active' && round > 0 && !state.waiting && state.officials && (
+          <p className="cp-msg cp-officials" role="note" data-testid="cp-officials">
+            {state.officials.length === 0
+              ? `No official counter on ${sideLabel(side, sides)} yet.`
+              : <>Official {state.officials.length === 1 ? 'counter' : 'counters'} on {sideLabel(side, sides)}: {state.officials.map((o, i) => <span key={i}><b>{o.name}</b> {o.total}{i < state.officials!.length - 1 ? ' · ' : ''}</span>)}</>}
+          </p>
+        )}
         {offline && <p className="cp-msg is-warn" role="alert">No signal. Keep tapping: your taps are saved on this phone and will be sent. They are not counted yet.</p>}
         {notice && <p className="cp-msg is-warn" role="alert">{notice}</p>}
         {problem && <p className="cp-msg is-warn" role="alert">{problem}</p>}
@@ -398,20 +407,20 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         </div>
         <p className="cp-sync" role="status">{waiting > 0 ? `${waiting} tap${waiting === 1 ? '' : 's'} saved on this phone, sending…` : seat?.status === 'active' && !state.waiting ? 'All taps sent.' : ''}</p>
         <nav className="cp-links" aria-label="Change">
-          <button type="button" className="ly-link" disabled={busy} onClick={onChangeOperator}>{training ? 'Change name' : 'Change counter'}</button>
+          <button type="button" className="ly-link" disabled={busy} onClick={onChangeOperator}>{device ? 'Change counter' : 'Change name'}</button>
           {onChangeSide && <button type="button" className="ly-link" disabled={busy} onClick={onChangeSide}>Change side</button>}
           {onChangeField && <button type="button" className="ly-link" disabled={busy} onClick={onChangeField}>Change Lyst</button>}
-          {training
-            ? <button type="button" className="ly-link" disabled={busy} onClick={() => void onLeave()}>Leave</button>
-            : <button type="button" className="ly-link" disabled={busy} onClick={() => setLeaving(true)}>Exit Counter</button>}
+          {device
+            ? <button type="button" className="ly-link" disabled={busy} onClick={() => setLeaving(true)}>{exitWord}</button>
+            : <button type="button" className="ly-link" disabled={busy} onClick={() => void onLeave()}>Leave</button>}
         </nav>
-        {training && state.event && <Link className="ly-link" to={`/events/${state.event.slug}`}>Back to the event</Link>}
+        {training && !device && state.event && <Link className="ly-link" to={`/events/${state.event.slug}`}>Back to the event</Link>}
       </footer>
       {leaving && (
-        <Dialog title="Exit Counter?" variant="drawer" busy={busy} onClose={() => setLeaving(false)}>
-          <p style={{ marginTop: 0 }}>This phone stops counting{waiting > 0 ? ` (${waiting} tap${waiting === 1 ? '' : 's'} not sent yet would be lost)` : ''} and goes back to the ordinary BuhurtOS site. Your counts so far stay with the fight. To count again, scan the Counter QR.</p>
+        <Dialog title={`${exitWord}?`} variant="drawer" busy={busy} onClose={() => setLeaving(false)}>
+          <p style={{ marginTop: 0 }}>This phone stops counting{waiting > 0 ? ` (${waiting} tap${waiting === 1 ? '' : 's'} not sent yet would be lost)` : ''} and goes back to the ordinary BuhurtOS site. {training ? 'Your practice count stays with the fight as practice.' : 'Your counts so far stay with the fight.'} To count again, scan the {training ? 'Training Counter QR' : 'Counter QR'}.</p>
           <div style={{ display: 'grid', gap: 8 }}>
-            <button type="button" className="btn btn-ink" data-autofocus disabled={busy} onClick={() => void onLeave()} data-testid="cp-exit">Yes, exit Counter</button>
+            <button type="button" className="btn btn-ink" data-autofocus disabled={busy} onClick={() => void onLeave()} data-testid="cp-exit">Yes, {training ? 'exit Training' : 'exit Counter'}</button>
             <button type="button" className="btn btn-line" disabled={busy} onClick={() => setLeaving(false)}>Keep counting</button>
           </div>
         </Dialog>

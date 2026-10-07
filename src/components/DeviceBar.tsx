@@ -42,6 +42,7 @@ export function DeviceBar() {
   // a counter phone is one screen with one job: the bar is one short line, and leaving hides behind a small link. Leaving a COUNTER phone is "Exit
   // Counter" (Pack 27A): the phone goes back to the ordinary site, where a person's own account (if any) is untouched; staff devices sign out to the code page.
   const compact = w.role === 'counter';
+  const exitWord = w.training ? 'Exit Training' : 'Exit Counter';
   const out = async () => { setBusy(true); await mgr.signOut(compact ? EXIT_PATH : '/device'); };
   return (
     <header ref={ref} className={`device-bar${compact ? ' is-compact' : ''}`} data-testid="device-bar" aria-label="Temporary device">
@@ -60,15 +61,15 @@ export function DeviceBar() {
       <div className="db-actions">
         {canActivateCameraOff(w.role) && <CameraOffControl eventId={w.event.id} compact />}
         {compact
-          ? <button type="button" className="linklike db-out-link" onClick={() => setConfirm(true)}>Exit Counter</button>
+          ? <button type="button" className="linklike db-out-link" onClick={() => setConfirm(true)}>{exitWord}</button>
           : <button type="button" className="btn btn-line btn-sm db-out" onClick={() => setConfirm(true)}>Sign out this device</button>}
       </div>
       {confirm && (compact
         ? (
-          <Dialog title="Exit Counter?" variant="drawer" busy={busy} onClose={() => setConfirm(false)}>
-            <p style={{ marginTop: 0 }}>This phone stops counting and goes back to the ordinary BuhurtOS site. Your counts so far stay with the fight. To count again, scan the Counter QR.</p>
+          <Dialog title={`${exitWord}?`} variant="drawer" busy={busy} onClose={() => setConfirm(false)}>
+            <p style={{ marginTop: 0 }}>This phone stops counting and goes back to the ordinary BuhurtOS site. {w.training ? 'Your practice count stays with the fight as practice.' : 'Your counts so far stay with the fight.'} To count again, scan the {w.training ? 'Training Counter QR' : 'Counter QR'}.</p>
             <div style={{ display: 'grid', gap: 8 }}>
-              <button type="button" className="btn btn-ink" data-autofocus disabled={busy} onClick={() => void out()} data-testid="db-exit">Yes, exit Counter</button>
+              <button type="button" className="btn btn-ink" data-autofocus disabled={busy} onClick={() => void out()} data-testid="db-exit">Yes, {w.training ? 'exit Training' : 'exit Counter'}</button>
               <button type="button" className="btn btn-line" disabled={busy} onClick={() => setConfirm(false)}>Keep counting</button>
             </div>
           </Dialog>)

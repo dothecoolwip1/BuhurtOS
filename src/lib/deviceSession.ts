@@ -24,6 +24,8 @@ const MIN_WAIT_MS = 2_000;
 
 export interface DeviceWhoami {
   session_id: string; credential_id?: string; kind: 'device' | 'controller'; role: string; label: string;
+  /** Pack 27B: a Training Counter QR session (practice only). */
+  training?: boolean;
   event: { id: string; slug: string; name: string; timezone: string; ends_on?: string };
   expires_at: string;
   /** Added by device_whoami(): the staff roles this device counts as (display only). */
@@ -40,7 +42,7 @@ function parseWhoami(v: unknown): DeviceWhoami | null {
   if (!str(e.id) || !str(e.slug) || !str(e.name) || !str(e.timezone)) return null;
   return {
     session_id: v.session_id as string, credential_id: str(v.credential_id) ? v.credential_id as string : undefined,
-    kind: v.kind === 'controller' ? 'controller' : 'device', role: v.role as string, label: v.label as string,
+    kind: v.kind === 'controller' ? 'controller' : 'device', role: v.role as string, label: v.label as string, training: v.training === true,
     event: { id: e.id as string, slug: e.slug as string, name: e.name as string, timezone: e.timezone as string, ends_on: str(e.ends_on) ? e.ends_on as string : undefined },
     expires_at: str(v.expires_at) ? v.expires_at as string : '',
     effective_roles: Array.isArray(v.effective_roles) ? (v.effective_roles as unknown[]).filter((r): r is string => typeof r === 'string') : undefined

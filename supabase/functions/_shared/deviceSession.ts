@@ -153,9 +153,11 @@ export async function handleRequest(req: Request, deps: Deps): Promise<Response>
     const verifier = await codeVerifier(deps.env.pepper, code);
     // The event's reusable Counter QR (kind counter_pool) keeps its plaintext on the credential, so scoring staff can show it again: it signs in
     // counters only (no staff role, an allow-list of counter functions), so it is low privilege by construction. Every other kind keeps a verifier only.
+    // Pack 27B: the Training Counter QR is a second pool (training = true); its sessions only ever hold learning seats.
     const pool = body.kind === 'counter_pool';
+    const training = pool && body.training === true;
     const r = action === 'create'
-      ? await deps.rpc('create_event_credential', { p_event: body.event, p_kind: body.kind ?? 'device', p_label: body.label ?? (pool ? 'Counter QR' : undefined), p_role: pool ? 'counter' : body.role, p_code_hash: verifier, p_expires_at: body.expires_at ?? null, p_pool_code: pool ? code : null }, { jwt })
+      ? await deps.rpc('create_event_credential', { p_event: body.event, p_kind: body.kind ?? 'device', p_label: body.label ?? (pool ? (training ? 'Training Counter QR' : 'Counter QR') : undefined), p_role: pool ? 'counter' : body.role, p_code_hash: verifier, p_expires_at: body.expires_at ?? null, p_pool_code: pool ? code : null, p_training: training }, { jwt })
       : await deps.rpc('replace_event_credential', { p_credential: body.credential, p_code_hash: verifier }, { jwt });
     if (!r.ok) {
       const msg = typeof asObject(r.data).message === 'string' ? String(asObject(r.data).message) : 'could not create the code';

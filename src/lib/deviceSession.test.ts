@@ -221,6 +221,12 @@ describe('sign out and whoami', () => {
     expect(t.note.map.has(ENDED_NOTE_KEY)).toBe(false);
     expect(t.left).toEqual(['/device']);
   });
+  it('a Training Counter QR session is marked training (Pack 27B); anything else is not', async () => {
+    const t = setup({ stored: stored(), handler: () => json(200, { access_token: 'jwt-2', expires_in: 600, expires_at: EXP + 600, whoami: { ...whoami(), training: true } }) });
+    await t.mgr.refresh();
+    expect(t.mgr.getWhoami()?.training).toBe(true);
+    expect(parseStoredSession(JSON.stringify(stored()))?.whoami.training).toBe(false);
+  });
   it('a counter phone that EXITS goes back to the ordinary site (Pack 27A): its device key is gone, an account\'s own key is never touched', async () => {
     const t = setup({ stored: stored(), handler: () => json(200, { ok: true }) });
     t.local.map.set('sb-localhost-auth-token', '{"access_token":"a-person"}');

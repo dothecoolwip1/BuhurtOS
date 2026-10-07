@@ -283,6 +283,10 @@ try {
   check('56. the Lyst shows the Counter QR for the next phone', await until(async () => (await tab.page.getByTestId('counter-qr-code').innerText().catch(() => '')).replace(/-/g, '') === poolCode), await body(tab.page));
   await tab.page.keyboard.press('Escape');
   // the next fight: the phones follow by themselves
+  // Pack 27A: a Lyst still in a running round is not switched to another fight; the round is ended first (what the tablet's End round does)
+  const rev1 = Number(sql(`select rev from public.lyst_timer where event_id = '${EVENT}' and field_key = 'field 1'`));
+  const brk = await rpc('scorekeeper', 'lyst_timer_command', { p_event: EVENT, p_field: 'Field 1', p_match: mid(1), p_expected_rev: rev1, p_command: crypto.randomUUID(), p_action: 'start', p_mode: 'break', p_duration_ms: 30000, p_round: 1, p_delta_ms: 0 });
+  check('56a. the round is ended before the Lyst moves on (a Lyst in a running round is never switched under the phones)', brk.body?.status === 'ok', JSON.stringify(brk.body));
   const o2 = await rpc('scorekeeper', 'lyst_open', { p_match: mid(2), p_counter_input: 'weighted' });
   check('57. the Lyst opens the next fight on Field 1', o2.status === 200, JSON.stringify(o2));
   check('58. both phones follow to the new fight (Cael / Dara) by themselves, same sides', await until(async () => await has(p1, 'cael rhodes') && await has(p2, 'dara voss'), 20000), (await body(p1)).slice(0, 200));

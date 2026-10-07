@@ -161,10 +161,12 @@ try {
   check('19. the tablet shows the event\'s Counter QR (one code for every counter phone) and its QR image', /^[A-Z0-9]{12}$/.test(code) && code === pool && (await tab.getByRole('dialog').locator('.ly-qr svg').count()) === 1, code);
   await shot(tab, '04-counters-code');
   await tab.getByTestId('counters-tab-training').click();
-  await tab.getByRole('dialog').getByRole('button', { name: /Show training QR|New training code/ }).click();
-  await tab.getByRole('dialog').getByTestId('training-qr').locator('.ly-code').waitFor({ timeout: 15000 });
-  const train = (await tab.getByRole('dialog').getByTestId('training-qr').locator('.ly-code').innerText()).trim();
-  check('19b. the Lyst also has a TRAINING QR of its own (learning only, kept apart)', /^[A-Z0-9]{8,12}$/.test(train), train);
+  const trainCard = tab.getByRole('dialog').getByTestId('training-qr');
+  await trainCard.waitFor({ timeout: 15000 });
+  if ((await trainCard.getByTestId('make-training-qr').count()) > 0) await trainCard.getByTestId('make-training-qr').click();
+  await trainCard.getByTestId('training-qr-code').waitFor({ timeout: 15000 });
+  const train = (await trainCard.getByTestId('training-qr-code').innerText()).replace(/-/g, '').trim();
+  check('19b. the event also has a TRAINING COUNTER QR (Pack 27B: a reusable pool for learners, practice only, kept apart)', /^[0-9A-Z]{12}$/.test(train) && sql(`select training::text from public.event_credentials where pool_code = '${train}'`) === 'true', train);
   await tab.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
   const phones = {};
   for (const [name, who, side] of [['ash', 'Counter Ash', 'RED'], ['birch', 'Counter Birch', 'RED'], ['cedar', 'Counter Cedar', 'BLUE'], ['dune', 'Counter Dune', 'BLUE']]) {
@@ -178,17 +180,18 @@ try {
     phones[name] = page;
   }
   {
-    const { page } = await open('phone', 'elm');     // the learner: their own phone and account, the training QR
-    await page.goto(`${BASE}/lyst/train/${train}`);
+    const { page } = await open('phone');            // the learner: their own phone, the Training Counter QR, no account needed (Pack 27B)
+    await page.goto(`${BASE}/device#c=${train}`);
     await page.getByText(/Who.s counting/i).waitFor({ timeout: 30000 });
-    await page.fill('#cp-tname', 'Counter Elm');
+    await page.fill('#cp-name', 'Counter Elm');
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await page.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
     await page.getByRole('button', { name: /RED/ }).click();
-    await page.getByRole('button', { name: 'Start counting' }).click();
     phones.elm = page;
   }
   const seatRows = () => sql(`select string_agg(display_name || ':' || side || ':' || role, ',' order by display_name) from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}'`);
   check('20. four phones scanned the one QR and chose Red or Blue themselves; nobody is pending, nobody was seated by hand', await waitDb(seatRows, 'Counter Ash:a:official,Counter Birch:a:official,Counter Cedar:b:official,Counter Dune:b:official,Counter Elm:a:learning', 30000) === 'Counter Ash:a:official,Counter Birch:a:official,Counter Cedar:b:official,Counter Dune:b:official,Counter Elm:a:learning' && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '0', seatRows());
-  check('21. 4 official counters (Ash, Birch on Aldric; Cedar, Dune on Brann) and 1 learner on the same fight; every one is its own evidence', sql(`select count(*) from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}' and role = 'official'`) === '4' && sql(`select count(*) from public.event_sessions where ended_at is null and multi`) === '4');
+  check('21. 4 official counters (Ash, Birch on Aldric; Cedar, Dune on Brann) and 1 learner on the same fight; every one is its own evidence', sql(`select count(*) from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}' and role = 'official'`) === '4' && sql(`select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where s.ended_at is null and s.multi and not c.training`) === '4');
   for (const p of Object.values(phones)) await p.getByText(/Aldric Stone|Brann Oakley/).first().waitFor({ timeout: 30000 });
   check('22. a counter\'s phone: the fighter, their side in words, who is counting, and a huge COUNT button', (await has(phones.ash, 'Aldric Stone')) && (await has(phones.ash, 'Counting')) && (await has(phones.ash, 'Red')) && (await has(phones.ash, 'Counter Ash')) && (await has(phones.elm, 'never changes any score')), (await body(phones.ash)) + ' || ' + (await body(phones.elm)));
   const big = await phones.ash.getByRole('button', { name: 'Count one point, arm leg or hand' }).boundingBox();
@@ -257,7 +260,7 @@ try {
   const stressMs = Date.now() - tStress;
   check(`37. THE 30-SECOND BREAK: end round, enter the marshal's score, confirm and start the next round took ${interactions} taps and ${(stressMs / 1000).toFixed(1)} s (target: 5 taps, inside the 30 s break)`, interactions === 5 && stressMs < 30000 && breakLeft > 0, `${interactions} taps ${stressMs} ms, break had ${breakLeft}s left at the last tap, entry shown after ${tEntryShown} ms`);
   console.log(`(measure) break workflow: ${interactions} interactions, ${(stressMs / 1000).toFixed(1)} s wall time (entry screen after ${tEntryShown} ms; break clock had ${breakLeft}s left when round 2 started)`);
-  check('38. the evidence is frozen with the confirmation: every counter\'s tally (learner marked as learning) is in the revision; the marshal\'s call is not derived from it', sql(`select string_agg((c ->> 'operator') || ':' || (c ->> 'role') || ':' || (c ->> 'total'), ',' order by c ->> 'operator') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.match_id = '${mid(1)}' and r.round_no = 1`) === 'Counter Ash:official:6,Counter Birch:official:6,Counter Cedar:official:5,Counter Dune:official:4,Counter Elm:learning:9', sql(`select r.counters::text from public.lyst_round_revisions r where r.match_id = '${mid(1)}' and r.round_no = 1`));
+  check('38. the evidence is frozen with the confirmation: every OFFICIAL counter\'s tally is in the revision, the learner\'s practice is kept apart (Pack 27B) and not in it; the marshal\'s call is not derived from it', sql(`select string_agg((c ->> 'operator') || ':' || (c ->> 'role') || ':' || (c ->> 'total'), ',' order by c ->> 'operator') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.match_id = '${mid(1)}' and r.round_no = 1`) === 'Counter Ash:official:6,Counter Birch:official:6,Counter Cedar:official:5,Counter Dune:official:4' && sql(`select count(*) from public.lyst_counts c join public.lyst_counter_seats s on s.id = c.seat_id where s.display_name = 'Counter Elm' and c.match_id = '${mid(1)}' and c.undo_of is null`) === '9', sql(`select r.counters::text from public.lyst_round_revisions r where r.match_id = '${mid(1)}' and r.round_no = 1`));
   check('39. [tv] the display shows the official 6–5 and round 2 running', await waitFor(tv, () => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()).join('-') === '6-5' && /round 2/i.test(document.querySelector('.ar-main')?.innerText ?? ''), null, 30000), await arenaText());
   await shot(tab, '08-round-2');
   // the counters carry on in round 2, separately from round 1
