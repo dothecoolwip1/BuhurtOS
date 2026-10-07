@@ -162,7 +162,7 @@ for (const vp of ['m390', 'd1440']) {
   check('TEST 13b the event page shows a Scorekeeping panel with the fields', /SCOREKEEPING/i.test(ev) && /Open Ring 1/i.test(ev));
   await page.getByRole('link', { name: 'Open Ring 1' }).click(); await page.waitForTimeout(2000);
   const q = await text(page); await shot(page, 'm390-ring1-queue');
-  check('TEST 13c the field queue opens', /RING 1/i.test(q) && /Pick one to start scoring|Nothing queued on Ring 1/i.test(q) && /Other fields/i.test(q));
+  check('TEST 13c the field queue opens', /RING 1/i.test(q) && /Pick one to start scoring|Nothing queued on Ring 1/i.test(q) && /Other (fields|Lysts)/i.test(q));
   await go(page, '/events/red-deer-rumble-test/control'); const m = await text(page);
   check('TEST 14 scorekeeper gets no organizer area', /This area is for organizers/i.test(m) && !/Review \(/i.test(m));
   await go(page, '/events/red-deer-rumble-test/control?mode=setup&tool=competitions'); check('TEST 14b nor the Competitions tab', /This area is for organizers/i.test(await text(page)));

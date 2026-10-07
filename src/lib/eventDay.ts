@@ -322,7 +322,7 @@ export function attentionItems(i: AttentionInput): AttentionItem[] {
     if (notAccepted.length) out.push({ id: 'checkin-not-accepted', kind: 'not_checked_in', urgency: worst(notAccepted), title: `${countText(notAccepted.length, 'fighter', 'fighters')} without an accepted registration`, detail: names(notAccepted), target: { to: 'checkin' }, targetLabel: 'Review' });
   }
   for (const p of i.progress) {
-    if (p.needsBracket) out.push({ id: `bracket-${p.id}`, kind: 'bracket_needed', urgency: 'later', title: `${p.name}: pools are finished`, detail: 'The bracket needs building.', target: { to: 'run' }, targetLabel: 'Build bracket' });
+    if (p.needsBracket) out.push({ id: `bracket-${p.id}`, kind: 'bracket_needed', urgency: 'soon', title: `${p.name}: pools are finished`, detail: 'The bracket needs building.', target: { to: 'run' }, targetLabel: 'Build bracket' });
   }
   return out.sort((a, b) => URGENCY_RANK[a.urgency] - URGENCY_RANK[b.urgency] || KIND_RANK[a.kind] - KIND_RANK[b.kind] || a.id.localeCompare(b.id));
 }

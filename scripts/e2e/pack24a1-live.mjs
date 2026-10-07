@@ -92,13 +92,13 @@ try {
     note(`field.${kind}.queue.chrome`, c0);
     check(`[${kind}] field queue: no site header, bottom bar, footer, bug button or theme switch; the focus header is there`, !c0.siteHeader && !c0.bottomBar && !c0.footer && !c0.bugButton && !c0.themeSwitch && c0.focusHeader, JSON.stringify(c0));
     const head = await text(page, '[data-testid="focus-header"]');
-    check(`[${kind}] the focus header names the event and the field and offers Exit`, /Exit/.test(head) && head.includes(NAME) && /Field 1/i.test(head), head);
+    check(`[${kind}] the focus header names the event and the field and offers Exit`, /Exit/.test(head) && head.includes(NAME) && /Lyst 1/i.test(head), head);
     // open the fight
     await page.locator('button[aria-label^="Score "]').first().click();
     await page.locator(GO).waitFor({ timeout: 30000 });
     await sleep(600);
     const ctxText = await text(page, '[data-testid="focus-header"]');
-    check(`[${kind}] the header says this is the Lyst on Field 1`, /Lyst · Field 1/i.test(ctxText), ctxText);
+    check(`[${kind}] the header says this is Lyst 1`, /Lyst 1/i.test(ctxText) && !/Field 1/i.test(ctxText), ctxText);
     const c1 = await chrome(page);
     check(`[${kind}] Lyst screen: no site bottom bar or header, no sideways scroll`, !c1.bottomBar && !c1.siteHeader && c1.sideways <= 0, JSON.stringify(c1));
     // Start round at every scroll position: fully on screen and the topmost thing at its centre (nothing over it)
@@ -206,10 +206,10 @@ try {
     await page.goto(BASE + FIELD);
     await page.locator('button[aria-label^="Score "]').first().waitFor({ timeout: 45000 });
     await page.locator('.focus-exit').click();
-    await page.waitForURL(u => new URL(u).pathname === `/events/${SLUG}`, { timeout: 20000 }).catch(() => undefined);
+    await page.waitForURL(u => /^\/events\/[^/]+(\/live)?$/.test(new URL(u).pathname), { timeout: 20000 }).catch(() => undefined);   // Exit lands on the event's phase view (Live while it runs)
     await page.locator('header.top').waitFor({ timeout: 20000 }).catch(() => undefined);
     const c = await chrome(page);
-    check('Exit on the field screen returns to the event page, which has the normal site chrome again', new URL(page.url()).pathname === `/events/${SLUG}` && c.siteHeader && !c.focusHeader, `${page.url()} ${JSON.stringify(c)}`);
+    check('Exit on the field screen returns to the event page, which has the normal site chrome again', [`/events/${SLUG}`, `/events/${SLUG}/live`].includes(new URL(page.url()).pathname) && c.siteHeader && !c.focusHeader, `${page.url()} ${JSON.stringify(c)}`);
     await ctx.close();
     const o = await open('768x1024', 'organizer');
     await o.page.goto(BASE + FIELD + '?from=eventday');
@@ -301,7 +301,7 @@ try {
     const head = await text(page, '[data-testid="focus-header"]');
     check('the armour inspector sees the desk as "Armour inspection" in the same focus layout', /Armour inspection/i.test(head) && !(await chrome(page)).bottomBar, head);
     await page.locator('.focus-exit').click();
-    await page.waitForURL(u => new URL(u).pathname === `/events/${SLUG}`, { timeout: 20000 }).catch(() => undefined);
+    await page.waitForURL(u => /^\/events\/[^/]+(\/live)?$/.test(new URL(u).pathname), { timeout: 20000 }).catch(() => undefined);   // Exit lands on the event's phase view (Live while it runs)
     check('Exit on the desk returns to the event page', new URL(page.url()).pathname === `/events/${SLUG}`, page.url());
     await ctx.close();
     const o = await open('1280x900', 'organizer');
@@ -349,7 +349,7 @@ try {
   {
     const { ctx, page } = await open('768x1024', 'organizer');
     await page.goto(BASE + `/events/${SLUG}/control?mode=live`);
-    await page.locator('section[aria-label="Event day"]').waitFor({ timeout: 45000 });
+    await page.locator('section[aria-label="Fields"]').waitFor({ timeout: 45000 });
     const c = await chrome(page);
     check('Manage › Event day is unchanged: normal header and bottom bar, no focus header', c.siteHeader && c.bottomBar && !c.focusHeader, JSON.stringify(c));
     await ctx.close();

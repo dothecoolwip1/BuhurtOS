@@ -44,6 +44,12 @@ describe('filtering', () => {
     expect(applyEventFilter(indexed, { ...DEFAULT_FILTER, when: 'all' }, today).map(e => e.id)).not.toContain('fake');
     expect(applyEventFilter(indexed, { ...DEFAULT_FILTER, when: 'all', test: true }, today).map(e => e.id)).toContain('fake');
   });
+  it('My events lists a test event the person takes part in even with the toggle off (labelled Test); browsing still hides it', () => {
+    const mine = indexEvents(events, synthetic, new Map([...relations, ['fake', ['fighter']]]), orgs);
+    expect(applyEventFilter(mine, { ...DEFAULT_FILTER, when: 'all' }, today, true).map(e => e.id)).toContain('fake');
+    expect(applyEventFilter(mine, { ...DEFAULT_FILTER, when: 'all' }, today).map(e => e.id)).not.toContain('fake');
+    expect(applyEventFilter(indexed, { ...DEFAULT_FILTER, when: 'all' }, today, true).map(e => e.id)).not.toContain('fake');
+  });
   it('upcoming keeps running events and drafts, past keeps only finished ones', () => {
     expect(applyEventFilter(indexed, DEFAULT_FILTER, today).map(e => e.id).sort()).toEqual(['draft', 'later', 'now', 'soon']);
     expect(applyEventFilter(indexed, { ...DEFAULT_FILTER, when: 'past' }, today).map(e => e.id).sort()).toEqual(['old', 'older']);

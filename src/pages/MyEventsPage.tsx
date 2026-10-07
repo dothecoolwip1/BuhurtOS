@@ -59,7 +59,7 @@ export function MyEventsPage() {
         </div>
       )}
       {index.data && mineAll.length > 0 && shown === 0 && (
-        <div className="panel info"><h3>No events match</h3><p className="muted">Try clearing a filter, or switch to All under When. Test events show only with “Show test data”.</p></div>
+        <div className="panel info"><h3>No events match</h3><p className="muted">Try clearing a filter, or switch to All under When. Events you take part in are always listed, test events included.</p></div>
       )}
       {index.data && shown > 0 && (
         <div style={{ display: 'grid', gap: 18 }} data-testid="event-list">

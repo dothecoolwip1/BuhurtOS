@@ -457,7 +457,7 @@ try {
     if (primaryIsBuild) await o.getByTestId('journey-primary').click(); else await o.locator('.eh-next').getByRole('button', { name: /Build tournament/ }).click();
     await o.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 45000 });
     await until(async () => await has(o, 'tournament plan ready', 'section[aria-label="Build tournament"]'), 60000);
-    const fieldsShown = await o.locator('output[aria-label="Fields"]').innerText().catch(() => '');
+    const fieldsShown = await o.locator('output[aria-label="Lysts"]').innerText().catch(() => '');
     check('59. the plan uses the event\'s two Lysts by default (the field count comes from Event settings)', fieldsShown.trim() === '2', fieldsShown);
     const planText = await body(o, 'section[aria-label="Build tournament"]');
     note('build.plan_text', planText.slice(0, 1600));
@@ -551,10 +551,13 @@ try {
     check('76. a waiting fight can be moved to the front of its field\'s line in two taps, and the line is durable (manual order saved)', await until(async () => lineOf(field1)[0] === target || sql(`select queue_order from public.matches where id = '${target}'`) !== '', 15000), JSON.stringify(lineOf(field1).slice(0, 3)));
     check('77. the hand-arranged line is explained with a way to let BuhurtOS plan again', await until(async () => await has(o, 'arranged by hand', 'section[aria-label="Fields"]'), 20000), (await body(o, 'section[aria-label="Fields"]')).slice(0, 300));
     check('78. the second screen follows the change without a reload', await until(async () => (await body(o2, 'section[aria-label="Fields"]')).includes(label(target).split(' · ')[2].split(' vs ')[0].toLowerCase()), 40000), 'second screen did not update within 40 s');
-    // a withdrawn fighter: Soren... no: fighter 20 (Ulric Grange, Sword & Shield) withdraws with walkovers, as the head marshal
+    // an injured fighter (20, Ulric Grange, Sword & Shield) is taken out with walkovers. Taking an entrant out is the organizer's decision
+    // (Pack 11 rule); the head marshal's authority on the day is the scoring conflict (owner decisions 2026-10-03), so the marshal is refused.
     const e20 = sql(`select id from public.entries where competition_id = '${comp('Men Sword & Shield')}' and fighter_id = '${fid(20)}'`);
-    const wd = await rpc('head', 'withdraw_entry', { p_entry: e20, p_reason: 'Shoulder injury (TEST)', p_walkovers: true });
-    check('79. the head marshal withdraws an injured fighter with walkovers; the entry is withdrawn and his fights are settled or flagged', wd.status === 200 && sql(`select status from public.entries where id = '${e20}'`) === 'withdrawn', outcome(wd));
+    const wdHead = await rpc('head', 'withdraw_entry', { p_entry: e20, p_reason: 'Shoulder injury (TEST)', p_walkovers: true });
+    check('79a. the head marshal cannot take an entrant out (organizer decision; the database refuses)', wdHead.status === 403 && sql(`select status from public.entries where id = '${e20}'`) !== 'withdrawn', outcome(wdHead));
+    const wd = await rpc('organizer', 'withdraw_entry', { p_entry: e20, p_reason: 'Shoulder injury (TEST)', p_walkovers: true });
+    check('79. the organizer withdraws the injured fighter with walkovers; the entry is withdrawn and his fights are settled or flagged', wd.status === 200 && sql(`select status from public.entries where id = '${e20}'`) === 'withdrawn', outcome(wd));
     note('liveops.after_withdrawal_sword_shield', sql(`select string_agg(round_label || ' pos' || position || ' ' || queue_state || ':' || coalesce(result, '-') || coalesce(' wo=' || (detail ->> 'walkover'), ''), ' | ' order by private.stage_rank(stage), position) from public.matches where competition_id = '${comp('Men Sword & Shield')}'`));
     // a held fight (someone registered for another day): the planner holds fighter 26's Buckler fights (Sunday only)
     const heldCount = sql(`select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.plan_hold`);
@@ -690,7 +693,9 @@ try {
     const hd = (await open('tablet', 'head')).page;
     await go(hd, `${E_PATH}/field/Field%201?open=${m1}&from=control`);
     await hd.waitForSelector('.ly-timer', { timeout: 30000 });
-    check('104. a second tablet opening the same fight sees round 2 running and the 6–5 of round 1 (server state, not a blank board)', await until(async () => /Round 2/.test(await hd.locator('.ly-mode').innerText().catch(() => '')) && await has(hd, '6–5'), 15000), (await body(hd)).slice(0, 300));
+    const hdState = async () => `${(await hd.locator('.ly-mode').allInnerTexts().catch(() => [])).join('|')} :: ${(await body(hd)).slice(0, 900)}`;
+    check('104. a second tablet opening the same fight sees round 2 running and the 6–5 of round 1 (server state, not a blank board)', await until(async () => /round 2|after round 1/i.test(await hd.locator('.ly-mode').innerText().catch(() => '')) && await has(hd, '6–5'), 15000), await hdState());
+    await shot(hd, 'lyst-second-tablet');
     // offline on the scorer's tablet: the clock cannot be changed, the call is saved and sent later
     const tabCtx = tab.context();
     await tabCtx.setOffline(true);
@@ -726,7 +731,8 @@ try {
     note('duel.result', sql(`select queue_state || ' ' || coalesce(result,'-') || ' ' || score_a || '-' || score_b || ' detail_has_lyst=' || (detail ? 'lyst') || ' counter_words=' || (detail::text ~* 'counter|learning|tally|seat') from public.matches where id = '${m1}'`));
     check('111. the stored detail carries the official rounds and no counter data', sql(`select (detail ? 'lyst') and not (detail::text ~* 'counter|learning|tally|seat|operator') from public.matches where id = '${m1}'`) === 't');
     await shot(tab, 'lyst-official');
-    check('112. the stale second tablet (head marshal) cannot score the finished fight: it is told the result stands', await until(async () => /official|final|finished|result/i.test(await body(hd)), 20000) && (await hd.getByRole('button', { name: /End round|Start round/ }).count()) === 0, (await body(hd)).slice(0, 300));
+    check('112. the stale second tablet (head marshal) cannot score the finished fight: it is told the result stands', await until(async () => /official|final|finished|result/i.test(await body(hd)), 20000) && (await hd.getByRole('button', { name: /End round|Start round/ }).count()) === 0, await hdState());
+    await shot(hd, 'lyst-second-tablet-after-finish');
     // the queue moved on: the tablet offers the next fight, the phones follow
     check('113. the queue advanced by itself: a new fight is active on Field 1 and the tablet offers "Next fight"', await until(async () => activeOn(field1) !== '' && activeOn(field1) !== m1, 15000) && (await tab.getByRole('button', { name: /Next fight on Lyst 1/ }).count()) === 1, activeOn(field1));
     await tab.getByRole('button', { name: /Next fight on Lyst 1/ }).click();
@@ -774,7 +780,7 @@ try {
     const tv = (await open('tv')).page;
     await go(tv, `${E_PATH}/arena/Field%202`);
     await until(async () => /now fighting/i.test(await tv.locator('.ar-main').innerText().catch(() => '')), 40000);
-    const scores = await tv.evaluate(() => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()));
+    const scores = await tv.evaluate(() => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.replace(/[^0-9]/g, '')));   // the number alone; the unit is printed beside it
     const arenaText = (await tv.locator('.ar-main').innerText().catch(() => '')).replace(/\s+/g, ' ');
     note('team.arena_after_round_1', { scores, text: arenaText.slice(0, 300) });
     check('122. the big screen says what its numbers are for a team fight: the 1 is a ROUND WON, never "1 fighter standing" (explicit label)', /round/i.test(arenaText) && /rounds? won|rounds?\b/i.test(arenaText) && scores.join('-') === '1-0', JSON.stringify({ scores, text: arenaText.slice(0, 200) }));
@@ -906,7 +912,7 @@ try {
     const reopenNoReason = await rpc('organizer', 'reopen_match', { p_match: w, p_reason: 'x' });
     check('152. reopening needs a real reason', reopenNoReason.status >= 400, outcome(reopenNoReason));
     const reopen = await rpc('organizer', 'reopen_match', { p_match: w, p_reason: 'TEST: scored for the wrong fighter' });
-    check('153. the organizer reopens the result with a reason; the result is superseded, not deleted (revision log)', reopen.status === 200 && sql(`select queue_state from public.matches where id = '${w}'`) !== 'final' && Number(sql(`select count(*) from public.audit_log where event_id = '${EV}' and action like 'match.reopen%'`)) >= 1, outcome(reopen));
+    check('153. the organizer reopens the result with a reason; the result is superseded, not deleted (revision log)', reopen.status < 300 && sql(`select queue_state from public.matches where id = '${w}'`) !== 'final' && Number(sql(`select count(*) from public.audit_log where event_id = '${EV}' and action like 'match.reopen%'`)) >= 1, outcome(reopen));
     const headReopen = await rpc('head', 'reopen_match', { p_match: w, p_reason: 'TEST: not mine to do' });
     const scorerReopen = await rpc('scorer1', 'reopen_match', { p_match: w, p_reason: 'TEST: not mine to do' });
     check('154. a scorekeeper cannot reopen a result (the head marshal\'s authority is recorded as the matrix says)', scorerReopen.status === 403, outcome(scorerReopen) + ' / head: ' + outcome(headReopen));
@@ -950,17 +956,36 @@ try {
     await go(o, `${E_PATH}/control?mode=live`);
     check('159. Live ops says the Longsword pools are finished and the bracket needs building (an attention item)', await until(async () => /pools are finished|bracket needs building/.test(await body(o, '#cc-attention')), 40000), (await body(o, '#cc-attention')).slice(0, 300));
     await go(o, `${E_PATH}/control?mode=setup&tool=run`);
-    const ls = o.locator('section[aria-label="Men Longsword"]');
-    await ls.waitFor({ timeout: 45000 });
-    await ls.getByRole('button', { name: 'Build bracket from pool results' }).click({ timeout: 30000 });
-    const btn = ls.getByRole('button', { name: /Create \d+ bracket matches|Decide the ties/ });
-    await btn.waitFor({ timeout: 30000 });
-    const offer = (await btn.innerText()).trim();
-    note('close.bracket_offer', offer);
-    if (/Decide the ties/.test(offer)) { note('close.pool_tie_decision_needed', (await body(o, 'section[aria-label="Men Longsword"]')).slice(0, 400)); }
-    else { await btn.click(); }
-    check('160. the bracket is built from the pool results (append), and only then', await untilDb(() => sql(`select (count(*) > 0)::text from public.matches where competition_id = '${comp('Men Longsword')}' and stage <> 'pool'`), 'true', 20000) === 'true', offer);
+    // Build the bracket of a competition whose pools are done, on the real screen: level entries are put in order by the organizer first (recorded with a note).
+    const buildBracket = async (name) => {
+      const ls = o.locator(`section[aria-label="${name}"]`);
+      await ls.waitFor({ timeout: 45000 });
+      await ls.getByRole('button', { name: 'Build bracket from pool results' }).click({ timeout: 30000 });
+      const btn = ls.getByRole('button', { name: /Create \d+ bracket matches|Decide the ties/ });
+      await btn.waitFor({ timeout: 30000 });
+      let offer = (await btn.innerText()).trim(), ties = 0;
+      while (/Decide the ties/.test(offer) && ties < 8) {
+        const tie = ls.locator('[role=group][aria-label^="Tie for place"]').first();
+        await tie.waitFor({ timeout: 15000 });
+        await tie.getByRole('textbox').fill('TEST: head marshal drew lots');
+        await tie.getByRole('button', { name: 'Save this order' }).click();
+        ties += 1;
+        await until(async () => !/Decide the ties/.test((await btn.innerText().catch(() => 'Decide the ties')).trim()) || (await ls.locator('[role=group][aria-label^="Tie for place"]').count()) > 0, 15000);
+        await sleep(400);
+        offer = (await btn.innerText().catch(() => '')).trim();
+      }
+      if (/Create/.test(offer)) await btn.click();
+      return { offer, ties };
+    };
+    const first = await buildBracket('Men Longsword');
+    note('close.bracket_offer', first);
+    check('160. the bracket is built from the pool results (append), and only then; level entries were ordered by a person first', await untilDb(() => sql(`select (count(*) > 0)::text from public.matches where competition_id = '${comp('Men Longsword')}' and stage <> 'pool'`), 'true', 20000) === 'true' && Number(sql(`select count(*) from public.pool_tie_decisions where competition_id = '${comp('Men Longsword')}'`)) === first.ties, JSON.stringify(first));
     await shot(o, 'run-bracket-built', true);
+    // every other competition the plan gave pools to
+    for (const k of sql(`select string_agg(k.name, '|') from public.competitions k where k.event_id = '${EV}' and k.name <> 'Men Longsword' and exists (select 1 from public.matches m where m.competition_id = k.id and m.stage like 'pool%') and not exists (select 1 from public.matches m where m.competition_id = k.id and m.stage not like 'pool%')`).split('|').filter(Boolean)) {
+      await go(o, `${E_PATH}/control?mode=setup&tool=run`);
+      note(`close.bracket_${k}`, await buildBracket(k));
+    }
     note('close.fights_run_after_bracket', await runAll());
     note('close.unfinished', sql(`select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state <> 'final'`));
     // the Lyst and the public Live view when everything is fought

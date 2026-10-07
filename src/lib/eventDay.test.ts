@@ -282,7 +282,7 @@ describe('needs attention', () => {
   it('points at the next step when pools are finished', () => {
     const boards = buildFieldBoards([], SORTS, NONE);
     const progress = [{ id: 'alpha', name: 'Longsword', total: 6, final: 6, percent: 100, phase: 'pools_done' as const, label: 'x', detail: null, needsBracket: true }];
-    expect(attentionItems({ ...base, boards, progress })[0]).toMatchObject({ kind: 'bracket_needed', urgency: 'later', targetLabel: 'Build bracket' });
+    expect(attentionItems({ ...base, boards, progress })[0]).toMatchObject({ kind: 'bracket_needed', urgency: 'soon', targetLabel: 'Build bracket' });
   });
 });
 

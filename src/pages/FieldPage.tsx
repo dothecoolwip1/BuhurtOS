@@ -109,7 +109,7 @@ export function FieldPage() {
   const [moving, setMoving] = useState(false);
   const comps = useAsync(() => (eventId && canScore ? fetchFieldCompetitions(eventId) : Promise.resolve([] as FieldCompetition[])), [eventId, canScore]);
   const matches = useAsync(() => (comps.data?.length ? fetchEventMatches(comps.data) : Promise.resolve([] as CompetitionMatch[])), [comps.data], [reloadKey]);
-  useDocumentTitle(event ? `${field} · ${event.name}` : 'Field scoring');
+  useDocumentTitle(event ? `${fieldLabel(field)} · ${event.name}` : 'Lyst Control');
   useFocusBar({
     eventName: event?.name, context: fieldLabel(field),
     exit: fromControl ? { to: `/events/${slug}/control?mode=live`, label: 'Event Control' } : { to: `/events/${slug}/live`, label: 'Event' },
@@ -175,7 +175,7 @@ export function FieldPage() {
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error)}</p>;
   if (!loaded.data || !event) return <NotFoundPage />;
-  if (!session) return <><PageHead eyebrow="Field scoring" title={`${event.name} · ${field}`} /><SignIn reason="Sign in with the account that scores this event." /></>;
+  if (!session) return <><PageHead eyebrow="Lyst Control" title={`${event.name} · ${fieldLabel(field)}`} /><SignIn reason="Sign in with the account that scores this event." /></>;
   if (mine.loading && !mine.data) return <p className="muted">Loading…</p>;
   if (!canScore) {
     return (
@@ -211,14 +211,14 @@ export function FieldPage() {
         })()
       ) : (
         <>
-          <PageHead eyebrow={event.name} title={field} lede="Matches for this field, in running order. Pick one to start scoring." />
+          <PageHead eyebrow={event.name} title={fieldLabel(field)} lede="Fights on this Lyst, in running order. Pick one to start scoring." />
           {notice && <p role="alert" className="panel info">{notice}</p>}
           {canResolve && <ResultConflicts eventId={event.id} onChanged={reload} />}
           {openError && <p role="alert" style={{ color: 'var(--live)' }}>{openError}</p>}
           {(comps.error != null || matches.error != null) && <p role="alert">{friendlyError(comps.error ?? matches.error, 'Could not load the queue. Retrying.')}</p>}
           {(comps.loading || matches.loading) && !matches.data && <p className="muted">Loading the queue…</p>}
           {matches.data && queue.length === 0 && (
-            <div className="panel info"><h3>Nothing queued on {field}</h3><p>Matches show here once an organizer puts them on deck, in the hole or active for this field.</p></div>
+            <div className="panel info"><h3>Nothing queued on {fieldLabel(field)}</h3><p>Fights show here once an organizer puts them on deck, in the hole or on this Lyst.</p></div>
           )}
           <div style={{ display: 'grid', gap: 12 }}>
             {queue.map(m => {
@@ -232,10 +232,10 @@ export function FieldPage() {
           </div>
           {canResolve && <EnterOfficialResult matches={matches.data ?? []} names={new Map((comps.data ?? []).map(c => [c.id, c.name]))} onDone={reload} />}
           {otherFields.length > 0 && (
-            <nav aria-label="Other fields" className="panel info" style={{ display: 'grid', gap: 8 }}>
-              <b>Other fields</b>
+            <nav aria-label="Other Lysts" className="panel info" style={{ display: 'grid', gap: 8 }}>
+              <b>Other Lysts</b>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {otherFields.map(f => <Link key={f.field} className={`btn btn-sm ${f.queued > 0 ? 'btn-ink' : 'btn-line'}`} to={`/events/${event.slug}/field/${encodeURIComponent(f.field)}`}>{f.field}{f.queued > 0 ? ` (${f.queued})` : ''}</Link>)}
+                {otherFields.map(f => <Link key={f.field} className={`btn btn-sm ${f.queued > 0 ? 'btn-ink' : 'btn-line'}`} to={`/events/${event.slug}/field/${encodeURIComponent(f.field)}`}>{fieldLabel(f.field)}{f.queued > 0 ? ` (${f.queued})` : ''}</Link>)}
               </div>
             </nav>
           )}

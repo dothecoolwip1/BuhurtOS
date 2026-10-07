@@ -106,7 +106,7 @@ export const isFinished = (e: Pick<LiveEvent, 'status' | 'endsOn'>, today: strin
 /** The rules every view shares. `mine` limits to events with a relationship (My events); `role` narrows further. */
 export function applyEventFilter<T extends IndexedEvent>(events: readonly T[], f: EventFilter, today: string, mine = false): T[] {
   return events.filter(e => {
-    if (e.synthetic && !f.test) return false;
+    if (e.synthetic && !f.test && !(mine && e.roles.length > 0)) return false;   // a test event you take part in is still your event (My events shows it, labelled Test)
     if (e.onlyMine && !mine) return false;
     if (e.archivedAt && !f.archived && !mine) return false;   // archived: hidden from browsing, still reachable by link and with the toggle
     if (mine && e.roles.length === 0) return false;
