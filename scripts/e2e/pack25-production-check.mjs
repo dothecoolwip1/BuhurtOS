@@ -91,7 +91,7 @@ try {
       // -------------------------------------------------------------- 2. the other two views, one tap away
       for (const v of ['view-overview', 'view-live', 'view-results']) {
         if (v === want) continue;
-        await p.locator(`[data-testid=${v}]`).click();
+        await p.locator(`[data-testid=${v}]`).click({ timeout: 8000 }).catch(() => undefined);   // a missing view is a FAIL below, never the end of the run
         const ok = await until(async () => (await active(p)) === v, 10000);
         check(`2 [${view}] ${phase}: ${v.replace('view-', '')} opens in place at /events/${slug}/${v.replace('view-', '')}`, ok && path(p) === `/events/${slug}/${v.replace('view-', '')}`, path(p));
         check(`2 [${view}] ${phase}: ${v.replace('view-', '')}: no sideways scroll`, await noSideways(p));
@@ -116,7 +116,7 @@ try {
       await until(async () => (await p.locator('[data-testid=focus-header]').count()) > 0);
       let fc = await focusChrome(p);
       check(`4 [${view}] Lyst Control opened from Event Control: focus layout, Exit to Event Control, no site chrome`, fc.focusHeader && fc.exit === 'Exit to Event Control' && !fc.siteHeader && !fc.bottomBar, JSON.stringify(fc));
-      await p.locator('.focus-exit').click();
+      await p.locator('.focus-exit').click({ timeout: 8000 }).catch(() => undefined);
       check(`4 [${view}] Exit lands on Live ops`, await until(async () => path(p) === `/events/${slug}/control?mode=live`), path(p));
       await p.goto(`${BASE}/events/${slug}/field/${encodeURIComponent('Field 1')}`, { waitUntil: 'domcontentloaded' });
       await until(async () => (await p.locator('[data-testid=focus-header]').count()) > 0);
