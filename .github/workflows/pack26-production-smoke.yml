@@ -1,0 +1,42 @@
+name: Pack 26 production smoke (read-only)
+# Read-only browser check of the LIVE site after the Pack 26 rollout: scripts/e2e/pack26-production-smoke.mjs. Never writes anything
+# (no sign-in, no fight, no code, no session). Proves the served build and bundle carry Pack 26 (and that Pack 25.2 / 25.3 are intact),
+# opens the owner's test event's public pages, the counter and device pages, and the staff screens signed out.
+# Run it by hand after a deployment (Actions › this workflow › Run workflow) with the commit the Pages run printed.
+on:
+  workflow_dispatch:
+    inputs:
+      expect_commit:
+        description: 'Short commit the live bundle must carry (empty = any)'
+        default: ''
+      event:
+        description: 'Slug of a published test event'
+        default: 'testing-stuff-v3'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright-core install --with-deps chromium
+      - name: Smoke-test the live site (read-only)
+        env:
+          BASE: https://dothecoolwip1.github.io/BuhurtOS
+          EXPECT_COMMIT: ${{ github.event.inputs.expect_commit }}
+          EVENT: ${{ github.event.inputs.event || 'testing-stuff-v3' }}
+          SHOTS: ${{ github.workspace }}/p26-prod-shots
+        run: node scripts/e2e/pack26-production-smoke.mjs
+      - name: Keep the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pack26-production-screenshots
+          path: p26-prod-shots
+          if-no-files-found: ignore
