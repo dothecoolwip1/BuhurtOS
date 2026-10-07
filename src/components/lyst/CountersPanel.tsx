@@ -2,10 +2,7 @@ import { useMemo, useState } from 'react';
 import qrcode from 'qrcode-generator';
 import { Dialog } from '../Dialog';
 import type { LystSeat, LystState } from '../../data/lyst';
-import { createCounterPool, fetchCounterPool, type CounterPool } from '../../data/devices';
-import { deviceQrUrl } from '../../lib/devices';
-import { friendlyError } from '../../lib/friendlyError';
-import { useAsync } from '../../lib/useAsync';
+import { CounterQrCard } from '../command/CounterQrCard';
 import { sideLabel, trainingUrl } from '../../lib/lyst/counters';
 
 function Qr({ value, label }: { value: string; label: string }) {
@@ -56,14 +53,6 @@ export function CountersPanel({ state, names, round, eventId, fieldName, busy, o
   onNewTrainingCode: () => void; onClose: () => void;
 }) {
   const [tab, setTab] = useState<'counters' | 'qr' | 'training'>('counters');
-  const [key, setKey] = useState(0);
-  const pool = useAsync(() => fetchCounterPool(eventId), [eventId], [key]);
-  const [making, setMaking] = useState(false);
-  const [problem, setProblem] = useState<string | null>(null);
-  const makePool = async () => {
-    setMaking(true); setProblem(null);
-    try { await createCounterPool(eventId); setKey(k => k + 1); } catch (e) { setProblem(friendlyError(e)); } finally { setMaking(false); }
-  };
   const code = state.join_code;
   const trainUrl = code ? trainingUrl(window.location.origin, import.meta.env.BASE_URL, code.code) : '';
   const bound = state.field_counters ?? [];
@@ -85,22 +74,7 @@ export function CountersPanel({ state, names, round, eventId, fieldName, busy, o
             {state.seats.length === 0 && bound.length === 0 && <p className="src">No counters yet. Show the Counter QR to any phone that should count on this Lyst.</p>}
           </>
         )}
-        {tab === 'qr' && (
-          <div className="ly-join panel info" data-testid="counter-qr">
-            {pool.loading && !pool.data && <p className="src">Loading…</p>}
-            {pool.error != null && <p role="alert">{friendlyError(pool.error, 'Could not load the Counter QR.')}</p>}
-            {pool.data?.code && <>
-              <Qr value={deviceQrUrl(window.location.origin, import.meta.env.BASE_URL ?? '/', pool.data.code)} label="The event's Counter QR" />
-              <div>
-                <b className="mono ly-code" data-testid="counter-qr-code">{pool.data.code.replace(/(.{4})(?=.)/g, '$1-')}</b>
-                <span className="src">Any phone that should count scans this once. It then picks a Lyst and Red or Blue, and follows the fights on that Lyst by itself. {pool.data.openSessions} phone{pool.data.openSessions === 1 ? '' : 's'} on it now.</span>
-                <span className="src">A lost or dead phone is replaced by scanning this again on another phone.</span>
-              </div>
-            </>}
-            {pool.data && !pool.data.code && <NoPool pool={pool.data} making={making} onMake={() => void makePool()} />}
-            {problem && <p role="alert" className="ly-error">{problem}</p>}
-          </div>
-        )}
+        {tab === 'qr' && <CounterQrCard eventId={eventId} />}
         {tab === 'training' && (
           <div className="ly-join panel info" data-testid="training-qr">
             {code ? <><Qr value={trainUrl} label="This Lyst's training QR" /><div><b className="mono ly-code">{code.code}</b><span className="src">For someone learning to count on their own phone: scan, say your name, pick Red or Blue, count along. It is practice: never official, listed apart. Expires {new Date(code.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.</span></div></>
@@ -110,16 +84,5 @@ export function CountersPanel({ state, names, round, eventId, fieldName, busy, o
         )}
       </div>
     </Dialog>
-  );
-}
-
-function NoPool({ pool, making, onMake }: { pool: CounterPool; making: boolean; onMake: () => void }) {
-  return (
-    <div style={{ gridColumn: '1 / -1', display: 'grid', gap: 8 }}>
-      <p>This event has no Counter QR yet.</p>
-      {pool.canCreate
-        ? <button type="button" className="btn btn-ink" disabled={making} onClick={onMake} data-testid="make-counter-qr">{making ? 'Making…' : 'Make the Counter QR'}</button>
-        : <p className="src">An organizer makes it once, under Event Control › Counters and devices. Then it shows here.</p>}
-    </div>
   );
 }

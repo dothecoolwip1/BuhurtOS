@@ -77,7 +77,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
       const matches = per.flatMap(x => x.matches), entries = per.flatMap(x => x.entries);
       const live = planEvent({ matches, entries, roster, registrations: regs, sorts: competitionSorts(competitions), withdrawn: withdrawnEntryIds(entries), today: day, fieldCount: fields });
       await saveQueuePlan(event.id, live.upcoming, heldMatches(live));
-    } catch (e) { errs.push(`The fight order was not saved (${friendlyError(e)}). Event day will plan it when it opens.`); }
+    } catch (e) { errs.push(`The fight order was not saved (${friendlyError(e)}). Live ops will plan it when it opens.`); }
     setProblems(errs); setBusy(null); setDone({ built: builtNow, fights });
     setReload(k => k + 1); onChanged();
   };
@@ -92,8 +92,8 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
         <p>{done.built > 0 ? `${done.built} competition${done.built === 1 ? '' : 's'}, ${done.fights} fights. The fight order is planned for rest; Event day keeps it up to date as results come in.` : 'No competition could be built.'}</p>
         {problems.length > 0 && <ul role="alert" style={{ color: 'var(--live)', margin: 0, paddingLeft: 18 }}>{problems.map(p => <li key={p}>{p}</li>)}</ul>}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <Link className="btn btn-ink eh-primary" to={`/events/${event.slug}/manage?tab=eventday`}><span>Open Event day</span><small>Who fights next, on every field</small></Link>
-          <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=run`}>See the draws</Link>
+          <Link className="btn btn-ink eh-primary" to={`/events/${event.slug}/control?mode=live`}><span>Open Live ops</span><small>Who fights next, on every field</small></Link>
+          <Link className="btn btn-line" to={`/events/${event.slug}/control?mode=setup&tool=run`}>See the draws</Link>
         </div>
       </section>
     );
@@ -164,7 +164,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
                       {fieldNames.map(f => <option key={f} value={f}>{f}</option>)}
                     </select>
                   </label>
-                  <p className="src">Draw number {p.seed}. <button type="button" className="linklike" onClick={() => setSeeds(m => new Map(m).set(p.id, randomSeed()))}>Draw again</button> · Need manual seeding? Use <Link to={`/events/${event.slug}/manage?tab=run`}>Run</Link>.</p>
+                  <p className="src">Draw number {p.seed}. <button type="button" className="linklike" onClick={() => setSeeds(m => new Map(m).set(p.id, randomSeed()))}>Draw again</button> · Need manual seeding? Use <Link to={`/events/${event.slug}/control?mode=setup&tool=run`}>Draws and schedule</Link>.</p>
                 </div>
               </details>
             </li>
@@ -196,7 +196,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
       {(notRun.length > 0 || built.length > 0) && (
         <div className="panel info" style={{ display: 'grid', gap: 6 }}>
           {notRun.length > 0 && <p><b>Not built:</b> {notRun.map(p => `${p.name} (${p.entrants === 0 ? 'nobody entered' : '1 entrant'})`).join(', ')}. They stay offered and are built later if more people enter.</p>}
-          {built.length > 0 && <p><b>Already built:</b> {built.map(p => p.name).join(', ')}. Change a draw in <Link to={`/events/${event.slug}/manage?tab=run`}>Run</Link>.</p>}
+          {built.length > 0 && <p><b>Already built:</b> {built.map(p => p.name).join(', ')}. Change a draw in <Link to={`/events/${event.slug}/control?mode=setup&tool=run`}>Draws and schedule</Link>.</p>}
         </div>
       )}
     </section>

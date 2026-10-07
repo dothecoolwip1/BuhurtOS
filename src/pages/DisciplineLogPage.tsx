@@ -104,7 +104,7 @@ function Log({ eventId, slug, name, competitions }: { eventId: string; slug: str
         </>
       )}
       </>}
-      <p className="src"><Link className="lnk" to={`/events/${slug}/command`}>Command Centre</Link> · <Link className="lnk" to="/rules">Rules</Link></p>
+      <p className="src"><Link className="lnk" to={`/events/${slug}/control?mode=live`}>Event Control</Link> · <Link className="lnk" to="/rules">Rules</Link></p>
     </section>
   );
 }

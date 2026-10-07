@@ -108,7 +108,7 @@ function QuickSetup({ userId }: { userId: string }) {
       });
       trackEvent('event_created');
       const notes = r.problems.length > 0 ? `&notes=${encodeURIComponent(r.problems.join('\n'))}` : '';
-      nav(advanced ? `/events/${f.slug}/manage?tab=competitions` : `/events/${f.slug}/manage?tab=home&created=1${notes}`);
+      nav(advanced ? `/events/${f.slug}/control?mode=setup&tool=competitions` : `/events/${f.slug}/control?mode=setup&created=1${notes}`);
     } catch (x) {
       setProblem(isSlugTaken(x) ? 'That web address is already used by another event. Change it below.' : friendlyError(x));
       if (isSlugTaken(x)) { setStep('event'); setEditSlug(true); }

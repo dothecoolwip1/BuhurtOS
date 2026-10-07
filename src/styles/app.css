@@ -1477,3 +1477,36 @@ main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:
 @media (min-width:860px){
   .lf{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
 }
+
+/* ── Pack 25: Event Control — the one staff door, phase aware ── */
+.ctl{display:grid;gap:14px;min-width:0}
+.ctl-head{display:grid;gap:8px}
+.ctl-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ctl-top .eyebrow{margin:0}
+.ctl-back{font-weight:600;font-size:14px;color:var(--muted);min-height:32px;display:inline-flex;align-items:center}
+.ctl-back:hover{color:var(--ink)}
+.ctl-title{margin:0;font-size:clamp(22px,6vw,34px);line-height:1.1;overflow-wrap:anywhere}
+.ctl-meta{margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ctl-pending{font-weight:600;font-size:14px;color:var(--brass);text-decoration:underline;text-underline-offset:3px}
+.ctl-modes .seg{display:grid;grid-template-columns:repeat(3,1fr);width:100%;padding:3px}
+.ctl-modes .seg button{min-height:44px;font-size:15px;padding:8px 6px}
+.ctl-tool-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctl-tool-title{margin:0;font-size:20px}
+.ctl-tool-foot{margin:6px 0 0}
+@media (min-width:700px){.ctl-modes .seg{width:auto;min-width:360px}}
+
+/* Live ops */
+.lo .cc-head{padding:12px 14px}
+.lo .cc-meta{gap:8px 12px;align-items:center;flex-wrap:wrap}
+.lo-h{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.lo-h .cc-count{font:600 12px/1 var(--f-data);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.lo-fields{display:grid;gap:10px;min-width:0}
+.lo-stations{display:grid;gap:8px;padding:12px 14px}
+.lo-stations .lo-h{margin:0}
+.lo-stations .src{margin:0}
+.lo-station-row{display:flex;flex-wrap:wrap;gap:8px}
+.lo-station-row .btn{min-height:44px}
+.cq{align-items:center}
+.cq-row{grid-column:1 / -1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cq-row b{font-size:16px}
+.cq .linklike{justify-self:start;margin-top:4px}

@@ -41,14 +41,14 @@ export function landingFor({ role, slug }: RouteSubject): string {
   const e = `/events/${encodeURIComponent(slug)}`;
   switch (role) {
     case 'counter': return '/lyst/counter';
-    case 'scorekeeper': return `${e}/command`;
-    case 'temporary_organizer': return `${e}/command`;
+    case 'scorekeeper': return `${e}/control?mode=live`;
+    case 'temporary_organizer': return `${e}/control?mode=live`;
     case 'announcer': return `${e}/announcer`;
     default: return e;   // marshal: the field picker (DeviceHome)
   }
 }
 
-const strip = (p: string) => (p.length > 1 ? p.replace(/\/+$/, '') : p);
+const strip = (raw: string) => { const p = raw.replace(/[?#].*$/, ''); return p.length > 1 ? p.replace(/\/+$/, '') : p; };
 
 /** The pages anyone may read, devices included: the event's public page, the venue display, rules and privacy. */
 function isPublicPath(path: string): boolean {
@@ -66,10 +66,10 @@ export function pathAllowed({ role, slug }: RouteSubject, rawPath: string): bool
   if (under(own, '')) return role !== 'counter';                     // the event's home for this device (field picker); a counter has none
   switch (role) {
     case 'counter': return path === '/lyst/counter' || /^\/lyst\/(join|train)(\/[^/]+)?$/.test(path);
-    case 'scorekeeper': return under(own, '/command') || underPrefix('/field');
+    case 'scorekeeper': return under(own, '/control') || under(own, '/command') || underPrefix('/field');
     case 'marshal': return underPrefix('/field');
     case 'announcer': return under(own, '/announcer');
-    case 'temporary_organizer': return under(own, '/command') || under(own, '/checkin') || underPrefix('/field');
+    case 'temporary_organizer': return under(own, '/control') || under(own, '/command') || under(own, '/checkin') || underPrefix('/field');
     default: return false;
   }
 }

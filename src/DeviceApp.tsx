@@ -9,7 +9,8 @@ import { deviceManager } from './lib/deviceSession';
 import { supabase } from './lib/supabase';
 import { AnnouncerPage } from './pages/AnnouncerPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
-import { CommandCentrePage } from './pages/CommandCentrePage';
+import { EventControlPage } from './pages/control/EventControlPage';
+import { CommandRedirect } from './pages/control/LegacyRedirects';
 import { DeviceHome } from './pages/DeviceHome';
 import { DeviceSignInPage } from './pages/DeviceSignInPage';
 import { FieldPage } from './pages/FieldPage';
@@ -84,7 +85,8 @@ function Frame() {
           <Route path="lyst/train/:code" element={<Navigate to="/lyst/counter" replace />} />
           <Route path="lyst/counter" element={<CounterPage />} />
           <Route path="events/:eventId" element={<Page><DeviceHome /></Page>} />
-          <Route path="events/:eventId/command" element={<Page><CommandCentrePage /></Page>} />
+          <Route path="events/:eventId/control" element={<Page><EventControlPage /></Page>} />
+          <Route path="events/:eventId/command" element={<Page><CommandRedirect /></Page>} />
           <Route path="events/:eventId/field/:field" element={<Page><FieldPage /></Page>} />
           <Route path="events/:eventId/checkin" element={<Page><CheckinDeskPage /></Page>} />
           <Route path="events/:eventId/announcer" element={<AnnouncerPage />} />

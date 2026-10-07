@@ -116,7 +116,7 @@ export function journey(f: JourneyFacts): Journey {
       stage: 'results', headline: `${c.name}: every fight is done. Check who won before it becomes official.`,
       primary: { label: 'Review wins & losses', detail: c.name, target: { to: 'review', competitionId: c.id } },
       secondary: [
-        ...(running.length > 0 ? [{ label: 'Event day', detail: `${plural(running.length, 'competition')} still fighting`, target: { to: 'tab', tab: 'eventday' } } as JourneyAction] : []),
+        ...(running.length > 0 ? [{ label: 'Live ops', detail: `${plural(running.length, 'competition')} still fighting`, target: { to: 'tab', tab: 'eventday' } } as JourneyAction] : []),
         ...(toBuild.length > 0 ? [{ label: 'Build the rest', detail: `${plural(toBuild.length, 'competition')} not built yet`, target: { to: 'tab', tab: 'build' } } as JourneyAction] : [])
       ]
     };
@@ -131,7 +131,7 @@ export function journey(f: JourneyFacts): Journey {
   const left = running.reduce((s, c) => s + (c.fights - c.fightsDone), 0);
   return {
     stage: 'run', headline: f.eventDay ? `The event is running. ${plural(left, 'fight')} to go.` : `The tournament is built: ${plural(left, 'fight')} to fight.`,
-    primary: { label: 'Open Event day', detail: 'Who fights next, on every field', target: { to: 'tab', tab: 'eventday' } },
+    primary: { label: 'Open Live ops', detail: 'Who fights next, on every field', target: { to: 'tab', tab: 'eventday' } },
     secondary: [
       ...(f.eventDay && notCheckedIn > 0 ? [{ label: `Check in ${plural(notCheckedIn, 'fighter')}`, detail: `${f.checkin.ready} / ${f.checkin.accepted} ready`, target: { to: 'tab', tab: 'checkin' } } as JourneyAction] : []),
       ...(toBuild.length > 0 ? [{ label: 'Build the rest', detail: `${plural(toBuild.length, 'competition')} not built yet`, target: { to: 'tab', tab: 'build' } } as JourneyAction] : [])

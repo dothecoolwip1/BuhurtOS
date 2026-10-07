@@ -4,6 +4,7 @@
  * No scores, no clocks, no queue order are computed here.
  */
 import type { CompetitionMatch } from '../data/matches';
+import { controlPath, legacyManageTarget } from './eventPhaseView';
 import type { LystPublic } from '../data/lyst';
 import { attentionItems, type AttentionItem, type CompetitionProgress, type FieldBoard, type ScheduleClash, fieldKey, matchTitle } from './eventDay';
 import { timeLabel } from './runSchedule';
@@ -54,7 +55,8 @@ const names = (list: readonly string[], max = 3) => `${list.slice(0, max).join('
 export interface CommandLinks { slug: string; organizer: boolean }
 export const deskHref = (slug: string, filter?: string) => `/events/${slug}/checkin${filter ? `?f=${filter}` : ''}`;
 export const fieldHref = (slug: string, field: string) => `/events/${slug}/field/${encodeURIComponent(field)}`;
-export const manageHref = (slug: string, tab: string, extra = '') => `/events/${slug}/manage?tab=${tab}${extra}`;
+/** An old Manage tab's place in Event Control (Pack 25): its mode and tool, with any extras (`&match=…`) appended. */
+export const manageHref = (slug: string, tab: string, extra = '') => { const t = legacyManageTarget(tab); return `${controlPath(slug, t.mode, t.tool)}${extra}`; };
 
 /** The fight that is on, and the next one called, per field, with the official Lyst state of the one on (state words only). */
 export interface FieldSummary {
@@ -115,7 +117,7 @@ export function commandAttention(i: {
   const fieldOf = new Map<string, string>();
   for (const b of i.boards) for (const m of [...b.now, ...b.onDeck, ...b.inTheHole, ...b.upcoming, ...b.waiting.map(w => w.match)]) fieldOf.set(m.id, b.name);
 
-  // 1. result conflicts: decided on the field screen (head marshal) or Event day (organizer)
+  // 1. result conflicts: decided on the field screen (head marshal) or Live ops (organizer)
   if (i.conflicts.length > 0) {
     const fields = [...new Set(i.conflicts.map(c => fieldOf.get(c.matchId)).filter(Boolean) as string[])];
     const first = fields[0];
@@ -200,7 +202,7 @@ export function commandAttention(i: {
     }
     if (f.state === 'idle' && f.next && !f.current && L.organizer) {
       out.push({ id: `idle-${f.key}`, urgency: 'soon', what: `${f.name} has no fight on`, who: `Next ready: ${matchTitle(f.next)}`, where: f.name,
-        action: 'Call it in Event day', href: manageHref(L.slug, 'eventday') });
+        action: 'Call it in Live ops', href: manageHref(L.slug, 'eventday') });
     }
   }
 

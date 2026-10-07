@@ -92,7 +92,7 @@ describe('sign-up notifications', () => {
     expect(notificationText({ kind: 'registration_decided', payload: { event_name: 'Red Deer Rumble', decision: 'declined' } })).toBe('Your registration for Red Deer Rumble was declined.');
   });
   it('links organizers to managing the event and the person to the event page', () => {
-    expect(notificationLink({ kind: 'registration_submitted', payload: { event_slug: 'red-deer-rumble' } })).toBe('/events/red-deer-rumble/manage');
+    expect(notificationLink({ kind: 'registration_submitted', payload: { event_slug: 'red-deer-rumble' } })).toBe('/events/red-deer-rumble/control?mode=setup&tool=registrations');
     expect(notificationLink({ kind: 'registration_decided', payload: { event_slug: 'red-deer-rumble' } })).toBe('/events/red-deer-rumble');
     expect(notificationLink({ kind: 'registration_decided', payload: { event_slug: '../x' } })).toBe('/account');
   });

@@ -21,7 +21,8 @@ import { RulesPage } from './pages/RulesPage';
 import { RuleDocPage } from './pages/rules/RuleDocPage';
 import { RulePage } from './pages/rules/RulePage';
 import { RegisterPage } from './registration/RegisterPage';
-import { ManagePage } from './pages/ManagePage';
+import { EventControlPage } from './pages/control/EventControlPage';
+import { CommandRedirect, ManageRedirect } from './pages/control/LegacyRedirects';
 import { AccountPage } from './auth/AccountPage';
 import { ResetPasswordPage, SignInPage } from './auth/AuthPages';
 import { ClaimProfilePage } from './pages/ClaimProfilePage';
@@ -41,7 +42,6 @@ import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
-import { CommandCentrePage } from './pages/CommandCentrePage';
 import { DisciplineLogPage } from './pages/DisciplineLogPage';
 import { AnnouncerPage } from './pages/AnnouncerPage';
 import { DeviceSignInPage } from './pages/DeviceSignInPage';
@@ -101,8 +101,9 @@ function SiteApp() {
         <Route path="events/:eventId/live" element={<EventRoute view="live" />} />
         <Route path="events/:eventId/results" element={<EventRoute view="results" />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
-        <Route path="events/:eventId/manage" element={<ManagePage />} />
-        <Route path="events/:eventId/command" element={<CommandCentrePage />} />
+        <Route path="events/:eventId/control" element={<EventControlPage />} />
+        <Route path="events/:eventId/manage" element={<ManageRedirect />} />
+        <Route path="events/:eventId/command" element={<CommandRedirect />} />
         <Route path="events/:eventId/discipline" element={<DisciplineLogPage />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="organizations/:slug" element={<OrganizationPage />} />

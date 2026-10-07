@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { CommandEntry, DeskEntry } from '../components/DeskEntry';
+import { DeskEntry } from '../components/DeskEntry';
 import { ScorekeepingPanel } from '../components/ScorekeepingPanel';
 import { PageHead } from '../components/ui';
 import { fetchEvent } from '../data/api';
@@ -28,13 +28,12 @@ export function DeviceHome() {
       {ev.loading && !ev.data && <p className="muted" role="status">Loading…</p>}
       {ev.error != null && <p role="alert">{friendlyError(ev.error, 'Could not load this event. It may not be public yet, or there is no signal.')}</p>}
       {ev.data && <ScorekeepingPanel slug={slug} competitions={ev.data.competitions} roles={roles} />}
-      <CommandEntry slug={slug} roles={roles} />
       <DeskEntry slug={slug} roles={roles} />
       {w.role === 'scorekeeper' && (
         <section className="panel info" style={{ display: 'grid', gap: 10 }}>
-          <h3>Command Centre</h3>
-          <p className="src">What needs attention right now. Read only.</p>
-          <p><Link className="btn btn-ink" to={`${e}/command`}>Open the Command Centre</Link></p>
+          <h3>Event Control · Live ops</h3>
+          <p className="src">What needs attention right now, the fields, the Counter QR.</p>
+          <p><Link className="btn btn-ink" to={`${e}/control?mode=live`}>Open Live ops</Link></p>
         </section>
       )}
       {w.role === 'announcer' && <p><Link className="btn btn-ink fq-big" to={`${e}/announcer`}>Open the announcer view</Link></p>}

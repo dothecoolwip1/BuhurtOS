@@ -114,7 +114,7 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, notice, onPick, o
             {p.state === 'official' && (
               <div className="fz-actions">
                 <Link className="btn btn-ink" to={`/events/${slug}#results-${competition.id}`}>View official results</Link>
-                <Link className="btn btn-line" to={`/events/${slug}/manage?tab=eventday`}>Back to Event day</Link>
+                <Link className="btn btn-line" to={`/events/${slug}/control?mode=live`}>Back to Live ops</Link>
                 {nextId && <button type="button" className="btn btn-line" onClick={() => onPick(nextId)}>Finalize the next competition</button>}
                 {!eventClosed && <button type="button" className="btn btn-line" onClick={() => { setConfirm('reopen'); setProblem(null); }}>Reopen…</button>}
               </div>
@@ -125,7 +125,7 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, notice, onPick, o
           {p.blockers.length > 0 && p.state !== 'official' && (
             <div>
               <p className="eyebrow">Before this can be official</p>
-              <ul className="fz-list">{p.blockers.map(b => <li key={b.code}><span className="fz-dot block" aria-hidden="true" /><span><b>{b.text}</b>{b.code === 'result_conflicts' && <> <Link to={`/events/${slug}/manage?tab=eventday`}>Review on Event day</Link></>}{(b.code === 'bracket_missing' || b.code === 'open_matches' || b.code === 'live_matches') && <> <Link to={`/events/${slug}/manage?tab=run`}>Open the Run tools</Link></>}</span></li>)}</ul>
+              <ul className="fz-list">{p.blockers.map(b => <li key={b.code}><span className="fz-dot block" aria-hidden="true" /><span><b>{b.text}</b>{b.code === 'result_conflicts' && <> <Link to={`/events/${slug}/control?mode=live`}>Review in Live ops</Link></>}{(b.code === 'bracket_missing' || b.code === 'open_matches' || b.code === 'live_matches') && <> <Link to={`/events/${slug}/control?mode=setup&tool=run`}>Open the draws</Link></>}</span></li>)}</ul>
               {medalTie && ties.map(g => <TieDecision key={`${g.part}-${g.rank}`} comp={competition} group={g} nameOf={nameOf} onDecided={() => { setReload(k => k + 1); onChanged(); }} />)}
               {medalTie && standings.error != null && <p role="alert" style={errorStyle}>{friendlyError(standings.error, 'Could not load the standings.')}</p>}
             </div>
@@ -135,7 +135,7 @@ function ReviewPanel({ slug, competition, eventClosed, nextId, notice, onPick, o
               <p className="eyebrow">Good to know (does not stop the result)</p>
               <ul className="fz-list">{p.warnings.map(w => <li key={w.code}><span className="fz-dot warn" aria-hidden="true" /><span>{w.text}</span></li>)}</ul>
               {unattributed.length > 0 && (
-                <p className="src">No team recorded for: {unattributed.map(f => f.name).join(', ')}. If the entry list shows their team, record it under <Link to={`/events/${slug}/manage?tab=run`}>Run › Teams represented</Link>; the placing stays official either way.</p>
+                <p className="src">No team recorded for: {unattributed.map(f => f.name).join(', ')}. If the entry list shows their team, record it under <Link to={`/events/${slug}/control?mode=setup&tool=run`}>Draws and schedule › Teams represented</Link>; the placing stays official either way.</p>
               )}
             </div>
           )}

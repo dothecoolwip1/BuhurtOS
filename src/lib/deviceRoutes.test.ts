@@ -30,8 +30,8 @@ describe('role words', () => {
 describe('landing', () => {
   it('lands each role on its own screen', () => {
     expect(landingFor(subj('counter'))).toBe('/lyst/counter');
-    expect(landingFor(subj('scorekeeper'))).toBe(`/events/${S}/command`);
-    expect(landingFor(subj('temporary_organizer'))).toBe(`/events/${S}/command`);
+    expect(landingFor(subj('scorekeeper'))).toBe(`/events/${S}/control?mode=live`);
+    expect(landingFor(subj('temporary_organizer'))).toBe(`/events/${S}/control?mode=live`);
     expect(landingFor(subj('announcer'))).toBe(`/events/${S}/announcer`);
     expect(landingFor(subj('marshal'))).toBe(`/events/${S}`);
   });
@@ -60,7 +60,8 @@ describe('pathAllowed', () => {
     expect(ok('marshal', '/lyst/counter')).toBe(false);
   });
   it('a secretary / scorekeeper reaches the command centre and field screens, not the desk', () => {
-    expect(ok('scorekeeper', `/events/${S}/command`)).toBe(true);
+    expect(ok('scorekeeper', `/events/${S}/control`)).toBe(true);
+    expect(ok('scorekeeper', `/events/${S}/command`)).toBe(true);   // the old address still redirects
     expect(ok('scorekeeper', `/events/${S}/field/Field%201`)).toBe(true);
     expect(ok('scorekeeper', `/events/${S}/checkin`)).toBe(false);
     expect(ok('scorekeeper', `/events/${S}/manage`)).toBe(false);
@@ -71,13 +72,13 @@ describe('pathAllowed', () => {
     expect(ok('announcer', `/events/${S}/command`)).toBe(false);
   });
   it('a temporary organizer reaches command, field screens and the check-in desk, never manage or accounts', () => {
-    for (const p of [`/events/${S}/command`, `/events/${S}/checkin`, `/events/${S}/field/Field%201`]) expect(ok('temporary_organizer', p)).toBe(true);
+    for (const p of [`/events/${S}/control`, `/events/${S}/command`, `/events/${S}/checkin`, `/events/${S}/field/Field%201`]) expect(ok('temporary_organizer', p)).toBe(true);
     for (const p of [`/events/${S}/manage`, `/events/${S}/register`, '/account', '/welcome', '/platform', '/my-events', '/team-manager', '/sign-in', '/events/new']) expect(ok('temporary_organizer', p)).toBe(false);
   });
   it('tools never open for another event', () => {
-    expect(ok('temporary_organizer', '/events/other-event/command')).toBe(false);
+    expect(ok('temporary_organizer', '/events/other-event/control')).toBe(false);
     expect(ok('marshal', '/events/other-event/field/Field%201')).toBe(false);
-    expect(ok('temporary_organizer', `/events/${S}x/command`)).toBe(false);
+    expect(ok('temporary_organizer', `/events/${S}x/control`)).toBe(false);
   });
   it('public pages are readable by every role', () => {
     for (const r of ['counter', 'scorekeeper', 'marshal', 'announcer', 'temporary_organizer']) {

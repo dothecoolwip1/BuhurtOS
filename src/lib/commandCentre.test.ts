@@ -55,7 +55,7 @@ describe('attention: only real, actionable problems', () => {
     });
     const items = commandAttention(input(healthy, s, [lyst('m1', 'running'), lyst('m3', 'paused', 2)], [{ matchId: 'm3', competitionName: 'Longsword' }]));
     const byId = new Map(items.map(i => [i.id, i]));
-    expect(byId.get('result-conflicts')).toMatchObject({ urgency: 'now', where: 'Field 2', href: '/events/rumble/manage?tab=eventday' });
+    expect(byId.get('result-conflicts')).toMatchObject({ urgency: 'now', where: 'Field 2', href: '/events/rumble/control?mode=live' });
     expect(byId.get('not-ready-in-play')).toMatchObject({ urgency: 'now', who: 'Brann Oakley (armour needs correction)', where: 'Field 1', href: '/events/rumble/checkin?f=not_ready' });
     expect(byId.get('armour-issues')).toMatchObject({ who: 'Brann Oakley', href: '/events/rumble/checkin?f=issues' });
     expect(byId.get('arrived-not-in')).toMatchObject({ who: 'Dara Voss', href: '/events/rumble/checkin?f=arrived' });
@@ -74,7 +74,7 @@ describe('attention: only real, actionable problems', () => {
     const late = [m('m1', { queueState: 'on_deck', scheduledAt: '2026-10-10T16:30:00Z' })];
     const items = commandAttention(input(late, snap()));
     expect(items.find(i => i.id === 'behind-field 1')).toMatchObject({ what: 'Field 1 is 30 min behind schedule' });
-    expect(items.find(i => i.id === 'idle-field 1')).toMatchObject({ what: 'Field 1 has no fight on', href: '/events/rumble/manage?tab=eventday' });
+    expect(items.find(i => i.id === 'idle-field 1')).toMatchObject({ what: 'Field 1 has no fight on', href: '/events/rumble/control?mode=live' });
     // a fight that is on with its clock running is not "behind", even if it started late
     const running = commandAttention(input([m('m1', { queueState: 'active', scheduledAt: '2026-10-10T16:30:00Z' })], snap(), [lyst('m1', 'running')]));
     expect(running.some(i => i.id.startsWith('behind-'))).toBe(false);

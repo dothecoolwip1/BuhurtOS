@@ -99,7 +99,7 @@ export function BroadcastPanel({ eventId, slug, fieldNames, configured, organize
         </div>
       )}
       <p className="src">{configured ? 'A livestream address is set for this event.' : 'No livestream address is set.'}</p>
-      {organizer ? <p><Link className="btn btn-line cc-btn" to={manageHref(slug, 'broadcast')}>Manage › Broadcast</Link></p> : <p className="src">Organizers manage the broadcast settings.</p>}
+      {organizer ? <p><Link className="btn btn-line cc-btn" to={manageHref(slug, 'broadcast')}>Broadcast settings</Link></p> : <p className="src">Organizers manage the broadcast settings.</p>}
     </CommandSection>
   );
 }

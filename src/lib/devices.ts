@@ -28,7 +28,7 @@ export const roleWord = (role: string): string => (ROLE_WORDS as Record<string, 
 /** What each device role can do, in a line (shown while choosing). */
 export const ROLE_HINTS: Record<DeviceRole, string> = {
   counter: 'A named single phone that counts. The event\'s reusable Counter QR is the normal way to add counter phones.',
-  scorekeeper: 'Scores fights, adjusts the running order, announces, reads the Command Centre.',
+  scorekeeper: 'Scores fights, adjusts the running order, announces, opens Event Control › Live ops.',
   marshal: 'Scores fights on a field. Can cut the cameras.',
   announcer: 'Sees who is ready. Can cut the cameras.',
   temporary_organizer: 'Runs the day for you: results, check-in, announcements, broadcast. Cannot manage devices or event settings.'

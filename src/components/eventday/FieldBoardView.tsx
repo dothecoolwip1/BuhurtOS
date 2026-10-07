@@ -19,9 +19,9 @@ interface Ctx { slug: string; timeZone: string; competitionNames: ReadonlyMap<st
 const TBD = 'To be decided';
 const names = (m: CompetitionMatch) => ({ a: sideLabel(m.entryA, m.nameA, TBD), b: sideLabel(m.entryB, m.nameB, TBD) });
 const context = (m: CompetitionMatch, c: Ctx) => matchContext(m, c.competitionNames.get(m.competitionId) ?? 'Competition');
-const runLink = (slug: string, matchId: string) => `/events/${slug}/manage?tab=run&match=${matchId}`;
-/** The existing scoring screen, opened straight on this match. `from` gives it a way back to Event day. */
-export const scoreboardLink = (slug: string, field: string, matchId: string) => `/events/${slug}/field/${encodeURIComponent(field)}?match=${matchId}&from=eventday`;
+const runLink = (slug: string, matchId: string) => `/events/${slug}/control?mode=live&tool=run&match=${matchId}`;
+/** The existing scoring screen, opened straight on this match. `from` gives it a way back to Event Control › Live ops. */
+export const scoreboardLink = (slug: string, field: string, matchId: string) => `/events/${slug}/field/${encodeURIComponent(field)}?match=${matchId}&from=control`;
 
 function Versus({ m, big = false }: { m: CompetitionMatch; big?: boolean }) {
   const n = names(m);
