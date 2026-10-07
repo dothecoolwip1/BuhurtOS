@@ -90,7 +90,12 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | 9–12 (building the script) | reached Live ops; partial phases | the register-after-close P1, the team-fight score P1, the field-naming P2 (§3 1–3) |
 | 13 | 161 / 174 | the organizer-only withdrawal rule (script assumption), pool ties never decided before the bracket (script), My events hiding the person's own test event (§3 14), the bracket attention item folded away (§3 15), the big-screen check reading the unit as part of the number (script), the stale second tablet (§3 17) |
 | 14 | 173 / 178 | the stale tablet after the finish (§3 17, fixed), "all scored" before the bracket exists (§3 18, fixed), the review sheet checked before it had loaded (script), "Reopen the event…" matched two buttons (script) |
-| 15 | see §10 | one check misread a fighter's surname (Cedar) as a counter's name (script) |
+| 15 | 176 / 179 | one check misread a fighter's surname (Cedar) as a counter's name; the tie-decision count; the `results` column name (all script) |
+| 16 | 187 / 192 | the device phase's first real run: the credential expiry column, the bad-code message, a marshal device landing on a closed event (all script); the stale-tablet fix verified by hand with a probe (§3 17) |
+| 17 | stopped at 76 | the running-order step picked a called slot's row by one name (script) |
+| 18 | **213 / 217**, the first run through every phase including the permission matrix and the viewport sweep (208 PASS) | the matrix checks stated the rule wrongly for a fighter's own rows and for the marshal (a scoring role); the bad training code is checked when the trainee starts (all script) |
+| 19 | aborted at 50 | the local stack's background process reached its time limit mid-run; restarted with the longest allowed lifetime |
+| 20 | see §10 | the final run |
 
 ### The other real-stack suites, re-run on the branch (`/var/tmp/p26/side`, side ports, one at a time)
 
