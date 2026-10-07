@@ -16,7 +16,7 @@ import { friendlyError } from '../../lib/friendlyError';
 import { scoringGuard } from '../../lib/swUpdate';
 import { useOutbox } from '../../lib/useOutbox';
 import { trackEvent } from '../../lib/analytics';
-import { counterInputFor } from '../../lib/lyst/counters';
+import { counterInputFor, mergeSides, sideVars } from '../../lib/lyst/counters';
 import { clearFinalCommand, loadFinalCommand, saveFinalCommand } from '../../lib/lyst/finalizeStore';
 import {
   activeDiscipline, allRoundsConfirmed, currentRound, describeDiscipline, disciplineCounts, entryStart, hasDq, leadRule, officialTotals, resultSupportedByTotals, roundSeconds,
@@ -45,6 +45,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const names = sideName(match);
   const lyst = useLystState(match.id, eventId);
   const st = lyst.state;
+  const sides = mergeSides(st?.settings?.sides);
   const { waiting, record, drain, rejected, discardRejected, retryRejected } = useOutbox({ eventId });
   const mine = rejected.filter(e => e.subject === match.id);
 
@@ -318,7 +319,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const entryRound = showEntry && cur ? cur : null;
 
   return (
-    <div className="sk field-run ly">
+    <div className="sk field-run ly" style={sideVars(sides) as React.CSSProperties}>
       {context}
       <StatusBanner status={bannerStatus} line={bannerStatus === 'ready' ? 'Every round is confirmed. Finish the match when the marshal says so.' : bannerStatus === 'pending' ? 'Pending: NOT official until the server has it' : 'Pending: not official until you finish the match'} />
       {lyst.offline && <p className="ly-note" role="alert">No signal. What you see is the last thing the server told us; the clock keeps running on the server.</p>}
@@ -328,7 +329,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
           ? <div key="mid" className="sk-mid"><span className="sk-vs">vs</span><span className="sk-phase">{totals.rounds === 0 ? 'No round confirmed' : `After ${totals.rounds} round${totals.rounds === 1 ? '' : 's'}`}</span><span className="sk-unit">official</span></div>
           : (
             <div key={k} className={`sk-side ${k}${supported === k ? ' won' : totals[k] > totals[k === 'a' ? 'b' : 'a'] ? ' lead' : ''}`}>
-              <span className="sk-tag">{k === 'a' ? 'A' : 'B'}</span>
+              <span className="sk-tag" data-testid={`sk-tag-${k}`}>{sides[k].name}</span>
               <span className="sk-name">{names[k]}</span>
               <span className="sk-num" aria-label={`${names[k]}: ${totals[k]} official points`}>{totals[k]}</span>
               {(counts[k].warnings > 0 || counts[k].cards > 0 || counts[k].deducted > 0 || counts[k].dq) && (
@@ -439,7 +440,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       </div>
 
       {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}
-      {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventId={eventId} fieldName={fieldName} busy={busy} onClose={() => setSheet(null)}
+      {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventId={eventId} fieldName={fieldName} busy={busy} sides={sides} onSidesSaved={() => lyst.refresh()} onClose={() => setSheet(null)}
         onNewTrainingCode={() => void seatAction(() => createJoinCode(eventId, fieldName))} />}
       {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, reason) => void voidIt(id, reason)} onClose={() => setSheet(null)} citations={citations} onCite={(id, p) => void cite(id, p)} />}
       {sheet === 'rules' && <RulesSheet onClose={() => setSheet(null)} />}

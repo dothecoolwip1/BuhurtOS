@@ -68,14 +68,41 @@ export async function flushTaps(q: TapQueue, send: CounterSend): Promise<{ sent:
 
 export const SEAT_WORD = { official: 'Counting', learning: 'Learning' } as const;
 export const SIDE_LABEL = { a: 'Red', b: 'Blue' } as const;
-export const sideLabel = (side: 'a' | 'b' | null | undefined): string => (side ? SIDE_LABEL[side] : 'Side');
+/** The two sides of a fight as the event names and colours them (the flag colours of the day). Pack 25.2: chosen by whoever runs the Lyst. */
+export interface SideSpec { name: string; color: string }
+export interface EventSides { a: SideSpec; b: SideSpec }
+export const DEFAULT_SIDES: EventSides = { a: { name: 'Red', color: '#B42318' }, b: { name: 'Blue', color: '#2C4A8C' } };
+/** The usual flag colours, one tap each; a custom colour is always possible too. */
+export const SIDE_PRESETS: readonly SideSpec[] = [
+  { name: 'Red', color: '#B42318' }, { name: 'Blue', color: '#2C4A8C' }, { name: 'Yellow', color: '#F2B233' }, { name: 'Green', color: '#1B7F3B' },
+  { name: 'White', color: '#F4F4F2' }, { name: 'Black', color: '#111111' }, { name: 'Orange', color: '#E0661A' }, { name: 'Purple', color: '#6A3BA3' }
+];
+/** What the server stores may hold one side only, or nothing: fill the rest from the defaults. */
+export function mergeSides(partial: { a?: Partial<SideSpec> | null; b?: Partial<SideSpec> | null } | null | undefined): EventSides {
+  return { a: { ...DEFAULT_SIDES.a, ...(partial?.a ?? {}) }, b: { ...DEFAULT_SIDES.b, ...(partial?.b ?? {}) } };
+}
+export const sideLabel = (side: 'a' | 'b' | null | undefined, sides?: EventSides | null): string => (side ? (sides ?? DEFAULT_SIDES)[side].name : 'Side');
+/** Black or white text, whichever reads on the colour (yellow and white flags need dark ink). */
+export function inkFor(hex: string): string {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return '#fff';
+  const n = parseInt(m[1], 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const lin = (c: number) => { const v = c / 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return lum > 0.4 ? '#111111' : '#ffffff';
+}
+/** CSS variables for a screen that shows the two sides: `--side-a`, `--side-a-ink`, `--side-b`, `--side-b-ink`. */
+export function sideVars(sides: EventSides | null | undefined): Record<string, string> {
+  const s = sides ?? DEFAULT_SIDES;
+  return { '--side-a': s.a.color, '--side-a-ink': inkFor(s.a.color), '--side-b': s.b.color, '--side-b-ink': inkFor(s.b.color) };
+}
 /** The words a counter needs: what to do next, in every situation the phone can be in. */
 export function counterBanner(state: {
   seat: { status: string; role?: string; side?: 'a' | 'b' | null } | null; can_count?: boolean; final?: boolean; waiting?: boolean;
   round?: { status: string } | null; counter_input?: string; binding?: { field_key?: string | null; side?: 'a' | 'b' | null } | null;
-}): string {
+}, sides?: EventSides | null): string {
   if (!state.seat) {
-    if (state.binding?.field_key && !state.binding.side) return 'Choose Red or Blue.';
+    if (state.binding?.field_key && !state.binding.side) return `Choose ${sideLabel('a', sides)} or ${sideLabel('b', sides)}.`;
     return 'Choose your Lyst and side.';
   }
   if (state.seat.status === 'expired') return 'This seat has run out. Choose your Lyst and side again.';
