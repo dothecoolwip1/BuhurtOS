@@ -2,6 +2,20 @@
 
 Branch `claude/focus-layout-tablet-safety-b40tc4`, fast-forwarded onto the Pack 24A0 branch (`ccr-1138edea-jygf5t`: `11f2263` 23R, `eea04aa` and `38f195e` 24A0). Every Pack 24A0 protection is kept; this pack changes no SQL, no grants and no RPCs. **Local only: nothing deployed, nothing applied to hosted Supabase.**
 
+**State (2026-10-07):**
+- **Merged:** PR #51, `main` `4298aec`.
+- **Deployed:** CI and Deploy run 153, GitHub Pages; the live bundle is labelled `build 153 · 4298aec`.
+- **Production check (automated, live site):** `scripts/e2e/pack24-production-check.mjs`, run 37564308976, **47/47** at 390x844, 768x1024 and 1024x768.
+  - The field page and check-in desk run in the focus layout: focus header with Exit, one compact row (72 px or less), no site header, bottom bar or footer.
+  - The build label is shown inside the focus layout and matches.
+  - No sideways scroll and no page errors.
+- **Not verified in production:**
+  - Start round / End round / Back to the queue on a live fight: that needs a staff session and a fight, and no production fight may be created for UI testing.
+  - The signed-in checks: the smoke-account secrets were empty in that workflow.
+  - Covered locally instead: `pack24a1-live` 83/83 at the same sizes.
+- **Physical phones and tablets:** not tested.
+- **Fix after opening (`ca858a8`):** the focus layout had dropped the build label (`[data-testid=app-version]`) with the site footer. It's back as a small line at the end of focus screens, below every control.
+
 **Reconciled onto `main` (2026-10-06)** on branch `claude/pack-24-safety-reconcile-grf0gg`. The original text below was written for `claude/focus-layout-tablet-safety-b40tc4` before Pack 18.1 and Pack 22 reached `main`. What changed in the port:
 
 - **Routing:** the `FocusLayout` route group sits next to `main`'s chrome-less routes, after the Pack 18.1 `/device` sign-in route. Field scoring and the check-in desk keep their URLs. A temporary event device (Pack 18.1) runs `DeviceApp` with its own frame and identity bar, and does not use `FocusLayout`. `useFocusBar` does nothing outside it, so device screens are unchanged.

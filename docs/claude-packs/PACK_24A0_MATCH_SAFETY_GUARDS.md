@@ -1,6 +1,14 @@
 # Pack 24A0: Match safety guards
 
-Reconciled onto `main` (`643a62a`) on branch `claude/pack-24-safety-reconcile-grf0gg`. Additive migration `20261019000100_pack24a0_match_safety_guards.sql`. Two audit follow-ups, also additive: `20261019000200_pack24_test_fighter_propagation.sql` and `20261019000300_result_revisions_search_path.sql`. **Not applied to the hosted database and not deployed. Until this is merged and applied, the draw-rebuild hazard is live in production.**
+**State (2026-10-07):**
+- **Merged:** PR #51, `main` `4298aec`.
+- **Hosted migrations applied:** yes, all three, by the owner through the Supabase SQL editor (section 0.6).
+- **Deployed:** CI and Deploy run 153, GitHub Pages, the live bundle labelled `build 153 · 4298aec`.
+- **Hosted verification:** completed (section 0.7).
+- **Production smoke (automated, live site):** 47/47 public and signed-out checks. The signed-in part was not run (section 0.7).
+- **Physical devices:** not tested.
+
+Migrations: `20261019000100_pack24a0_match_safety_guards.sql`, `20261019000200_pack24_test_fighter_propagation.sql`, `20261019000300_result_revisions_search_path.sql` (additive). Branch: `claude/pack-24-safety-reconcile-grf0gg`, reconciled onto `main` `643a62a`, later merged with `7876836`.
 
 Sections 1 to 8 are the original report, written on the stranded branch `claude/focus-layout-tablet-safety-b40tc4` before Pack 18.1 and Pack 22 reached `main`. Wherever section 0 disagrees with them, section 0 wins.
 
@@ -19,7 +27,7 @@ Sections 1 to 8 are the original report, written on the stranded branch `claude/
 
 Not changed from the original: protected-history rules, locking and atomic replace, bracket shape validation, table grants on `matches` (only `scheduled_at`, `field`, `duration_minutes` stay writable, and they are audited), holds surviving Event day, the Run tab messages and the public Now and Next order.
 
-Hosted was checked read-only on 2026-10-06. The 11 functions this branch replaces or patches have md5-identical definitions on hosted and in a scratch build of `main`. Hosted `matches` still has the insert, update and delete policies, the DELETE grant and 24 column grants, and has no `hold_manual` column. **So the hazard is live in production.**
+Hosted was checked read-only on 2026-10-06. The 11 functions this branch replaces or patches have md5-identical definitions on hosted and in a scratch build of `main`. Hosted `matches` still has the insert, update and delete policies, the DELETE grant and 24 column grants, and has no `hold_manual` column. **So the hazard is live in production.** *(Superseded 2026-10-07: the migrations are applied and the hazard is closed on hosted; see sections 0.6 and 0.7.)*
 
 ### 0.2 Audit follow-ups in the same branch
 
@@ -53,16 +61,91 @@ Hosted was checked read-only on 2026-10-06. The 11 functions this branch replace
 
 1. Should marshals and the head marshal stop calling waiting fights by hand (the first 24A0 draft's rule)? Doing so contradicts the Pack 18.1 matrix, so it is not done here.
 2. Cleanup of `test-stuff-test` and `test-new-test`, including whether to tag the fighters created for them as test data (query in 0.2). Not touched.
-3. Applying the three migrations to hosted, after review.
+3. ~~Applying the three migrations to hosted, after review.~~ Done 2026-10-07 (section 0.6).
 
-### 0.6 Applying to hosted (only after the owner authorizes it)
+### 0.6 Applying to hosted: done on 2026-10-07
 
-Apply the committed files in this order, each by name: `20261019000100_pack24a0_match_safety_guards`, `20261019000200_pack24_test_fighter_propagation`, `20261019000300_result_revisions_search_path`. Each runs in one transaction. The two anchor patches (`save_queue_plan`, `add_entrant_core`) raise and roll back if hosted's body differs from the expected text. On 2026-10-06 both bodies were md5-identical to the repository. Afterwards:
+Hosted ledger (project `mvbxlebznlgroptwwdsm`), each recorded as one statement (the whole file), `created_by` the owner:
 
-- `select polname from pg_policy where polrelid = 'public.matches'::regclass;` should return only `matches_read` and `matches_organizer_update`.
-- `select privilege_type, column_name from information_schema.column_privileges where table_schema = 'public' and table_name = 'matches' and grantee = 'authenticated' and privilege_type <> 'SELECT';` should return only UPDATE on `scheduled_at`, `field` and `duration_minutes`.
-- The security advisor should show no `function_search_path_mutable`.
-- Run `pack24a0_gate.sql` and `pack24_followups_gate.sql` on hosted inside a transaction that is rolled back, as was done for the Pack 18.1 gates.
+| Version | Name |
+| --- | --- |
+| `20261007024158` | `pack24a0_match_safety_guards` |
+| `20261007024215` | `pack24_test_fighter_propagation` |
+| `20261007024220` | `result_revisions_search_path` |
+
+How it went:
+- **Preflight (read-only)** before applying:
+  - The 36 functions Pack 24 replaces, patches or calls were byte-identical on hosted and on a build of pre-merge `main` `7876836`.
+  - So were the 19 table shapes and the policies, triggers and grants on `matches`, `entries` and `result_revisions`.
+  - The only difference was Supabase's `service_role` grants. `create or replace` keeps them.
+- **The `apply_migration` tool cancelled migration 1 twice,** even after the owner approved in chat. It refuses anything containing DROP or DELETE, and migration 1 must contain them (dropped policies, a replaced trigger, the `delete` in `build_schedule`). Nothing was applied by either attempt (checked after each). As the repository's rule says, no `execute_sql` workaround and no splitting.
+- **The owner then applied the three committed files in the SQL editor,** in order, each with its ledger row.
+- **Do not use `supabase db push` for this project.** Hosted records migrations under their apply time, not the file numbers, so the CLI would treat every repository migration as missing.
+
+After applying, a read-only fingerprint matched a build of `4298aec` exactly: 61 items, whole-hash `f4f8534a…`. It covers:
+- every Pack 24 function body, plus its security-definer and search_path settings and its execute permissions (`service_role` aside)
+- `hold_manual`
+- the `matches` and `entries` policies, triggers and grants
+
+### 0.7 Hosted verification (2026-10-07)
+
+**Final hosted permissions on `matches`:**
+- Policies: `matches_read` and `matches_organizer_update` (the organizer INSERT and DELETE policies are gone).
+- `authenticated`: SELECT, plus UPDATE on exactly `scheduled_at`, `field` and `duration_minutes`. No INSERT, no DELETE, no other column.
+- `anon`: SELECT.
+- Triggers added: `matches_audit_schedule` on `matches`, `entries_history_guard` on `entries`.
+- `set_match_hold`: executable by `authenticated` only, not `anon` and not the device roles.
+- The other new helpers (`match_history_reason`, `check_plan_structure`, `plan_rows`, `audit_schedule_changes`, `entries_history_guard`, `synthetic_source_of`): no client can call them.
+
+**Behaviour on hosted, run without leaving data behind.** The local gate files were deliberately *not* run on production. Instead, `supabase/tests/hosted/pack24_hosted_verify.sql` ran as one DO block:
+- It built its own throwaway synthetic event (tagged with the existing test-data source, a new random slug), a stand-in real event, three small competitions and their fighters.
+- It acted as the designated synthetic test organizer (`pack181-hosted-test@example.test`) through the `authenticated` role.
+- It ended with a deliberate exception, so everything rolled back.
+- It contains no destructive keywords and never touches a genuine event, fight or score, or `test-stuff-test` / `test-new-test`.
+
+All checks passed:
+
+| Check | Result on hosted |
+| --- | --- |
+| Clean replace of an untouched future draw | allowed: 6 new fights, audit `replaced=6` |
+| Replace over an ACTIVE fight with a score event (through `record_score_event`) and a live score | refused P0001 "This draw cannot be replaced: 1 of its fights have started … (a fight is being fought)"; same rows afterwards; the fight still active; score event 1 and live score 1 kept; no audit row for the refused attempt |
+| Replace over an OFFICIAL result (through `finalize_match`) | refused P0001 "(a result is recorded)"; the fight still final |
+| Replace over a fight with a lodged discipline review | refused P0001 "(a discipline review …)"; the fight kept |
+| Organizer table INSERT; UPDATE of `entry_a`, `stage`, `next_match_id`, `queue_state`, `result` | all refused 42501 |
+| Organizer table UPDATE of `scheduled_at`, `field`, `duration_minutes` | allowed (1 row); audited `match.schedule_changed` |
+| `set_match_queue` | audited `queue.state_set`, `by=organizer` |
+| `set_match_hold` (authenticated organizer) | `{"held": true, "changed": true}`; `hold_manual` true; audited `queue.hold_set` |
+| Re-point (fighter) or move (competition) an entrant of the active fight through the table | refused P0001 "This entrant is in a fight that has started or has history …"; changing its seed still allowed |
+| `create_unclaimed_fighter` on the synthetic event | returns `synthetic: true`; one `record_sources` row naming the event's own source (`ac7ebfbe…`); audit `synthetic: true` |
+| `add_entrant` of that test fighter into a real event's competition | refused 22023; no entry made |
+| A real (untagged) fighter entered in the test event | stays real |
+| `create_unclaimed_fighter` on the real stand-in event | real (not tagged) |
+
+Row counts before and after the run were identical for every table involved: events 22, competitions 143, matches 863, entries 662, fighters 124, score events 112, live scores 0, record sources 1006, discipline reviews 0, audit rows 1837 (max id 2138), notifications 27. A fingerprint of `test-stuff-test` and `test-new-test` (event rows, their fights and entries) was unchanged. No `p24-verify` event remained, no fighter has been tagged since the migration, and no manual hold exists.
+
+Direct DELETE refusal on `matches` is proven by the grant and policy state above, not by issuing a DELETE.
+
+**Security advisor (after):** no `function_search_path_mutable` lint remains, so `private.result_revisions_append_only` is fixed. Unrelated findings, unchanged:
+- `pg_net` in the public schema
+- leaked-password protection off (a plan limitation)
+- 9 anon-executable security-definer functions (none from Pack 24)
+- 237 authenticated-executable security-definer functions (the accepted pattern; Pack 24 adds `set_match_hold`)
+- 40 RLS-on, no-policy tables (INFO, intended)
+
+**Live site.** `scripts/e2e/pack24-production-check.mjs`, one-shot workflow run 37564308976, then removed: **47/47**, at 390x844, 768x1024 and 1024x768, fresh contexts, read-only. It covered:
+- the live bundle `build 153 · 4298aec`, pointing at the hosted project
+- homepage and event page, with no sideways scroll
+- the field page and the check-in desk in the focus layout: focus header with Exit, one compact row, no site header, bottom bar or footer, the build label present and matching, sign-in asked
+- Command Centre in the normal layout
+- the Broadcast overlay
+- the device sign-in page (marshal and scorekeeper device entry)
+- no page errors
+
+**Not run on production:**
+- The signed-in part (sign-in, notification bell, popup and settings entry point, staff refusal): the repository's `SMOKE_X` secrets were empty in that workflow.
+- The staff screens with a live fight: Command Centre content, the desk list, the scoring screen with Start round / End round, and marshal and scorekeeper device sessions. These need staff credentials or device codes. Creating those would be a production write, and no fight may be created for UI testing.
+
+Those screens are covered locally only (`pack24a1-live` 83/83, `pack24a0-live` 40/40, `device-live` 82/82, `pack181-live` 176/176). Physical phones and tablets: not tested.
 
 ---
 
@@ -235,7 +318,7 @@ Not verified in a browser (and why): a held fight is not shown anywhere in Event
 - **Event deletion** (`delete_event`, drafts and synthetic events only) is guarded by "published, closed, official results, final fights", not by `match_history_reason`, so a *draft or synthetic* event with an active fight or scoring events but no final result can still be deleted. Not changed here; worth tightening in a later integrity pack.
 - **Schedule audit is per statement.** Bulk-scheduling a competition writes one `match.schedule_changed` row per match (the screen saves them one at a time). Acceptable noise; revisit if 24A3 moves scheduling behind an RPC.
 - **`save_queue_plan` and planner holds are still organizer-triggered by a screen**; a scorekeeper cannot, as before.
-- **Hosted database:** has the same grants and policies the migration revokes, and no `hold_manual`. The hazards in §1 remain live there until this migration is applied through the normal process. Not applied, deliberately.
+- **Hosted database:** has the same grants and policies the migration revokes, and no `hold_manual`. The hazards in §1 remain live there until this migration is applied through the normal process. Not applied, deliberately. *(Superseded 2026-10-07: applied and verified on hosted, section 0.7.)*
 - **The Pack 23R rehearsal script** (`scripts/e2e/pack23r-rehearsal.mjs`) records evidence about the *old* behaviour and is kept as the historical record; rerunning it against this branch will show the refusals instead.
 - **Deferred to 24A3 and later (not touched):** permanent fight numbers; day-specific scheduling; a published, human-ordered running order with deliberate moves; the secretary role; printable sheets; bracket source labels; best of three; exhibitions; wild cards; long axe category; one-lyst presentation; navigation cleanup; the delay and behind-schedule system. The mutation surface for those is now small and audited, which is what 24A3 needs.
 
