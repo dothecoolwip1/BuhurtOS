@@ -6,6 +6,8 @@ export interface SetupForm {
   startsOn: string; endsOn: string; opensLocal: string; closesLocal: string;
   feeDollars: string; feeProvince: string; feeNote: string;
   eventType: EventType; registrationMode: RegistrationMode; externalUrl: string; timeNote: string; volunteerInfo: string;
+  /** How many Lysts (fighting areas) the event runs at once, 1 to 12: the default list of fields for the draws, the counter phones and Live ops (Pack 26). */
+  fieldCount: string;
 }
 
 /** Messages in plain words, keyed by field. */
@@ -25,6 +27,8 @@ export function validateSetup(f: SetupForm): Record<string, string> {
   if (fee > 0 && f.registrationMode === 'buhuros' && !f.feeProvince) e.feeProvince = 'Say who pays: choose a province, or "Everyone".';
   if (f.registrationMode === 'external' && !/^https?:\/\/\S+$/i.test(f.externalUrl.trim())) e.externalUrl = 'Paste the full link, starting with https://';
   if (f.timeNote.length > 200) e.timeNote = 'Keep this under 200 characters.';
+  const lysts = Number(f.fieldCount);
+  if (!Number.isInteger(lysts) || lysts < 1 || lysts > 12) e.fieldCount = 'How many Lysts: a whole number from 1 to 12.';
   if (f.volunteerInfo.length > 2000) e.volunteerInfo = 'Keep this under 2000 characters.';
   if (f.description.length > 4000) e.description = 'Keep the description under 4000 characters.';
   if ([f.venue, f.address, f.city, f.region, f.country].some(v => v.trim().length > 200)) e.venue = 'Keep each part of the address under 200 characters.';
@@ -41,7 +45,8 @@ export function toPatch(f: SetupForm) {
     registration_opens_at: f.opensLocal ? localToIso(f.opensLocal) : null, registration_closes_at: f.closesLocal ? localToIso(f.closesLocal) : null,
     fee_cents: cents, fee_province: cents > 0 && f.registrationMode === 'buhuros' && f.feeProvince && f.feeProvince !== 'ALL' ? f.feeProvince : null, fee_note: f.feeNote.trim() || null,
     event_type: f.eventType, registration_mode: f.registrationMode,
-    external_url: f.registrationMode === 'external' ? f.externalUrl.trim() : null, time_note: f.timeNote.trim() || null, volunteer_info: f.volunteerInfo.trim() || null
+    external_url: f.registrationMode === 'external' ? f.externalUrl.trim() : null, time_note: f.timeNote.trim() || null, volunteer_info: f.volunteerInfo.trim() || null,
+    field_count: Number(f.fieldCount)
   };
 }
 

@@ -1,3 +1,4 @@
+import { fieldLabel } from './eventDay';
 /**
  * Pack 18.1: temporary event devices, in words (pure, so what an organizer reads and prints is tested). The database decides who may do anything;
  * this only names things, orders the list and builds the link a QR carries.
@@ -154,7 +155,7 @@ export const sideWord = (side: 'a' | 'b' | null | undefined): string => (side ? 
 export function sessionLine(s: Pick<DeviceSession, 'role' | 'binding'>): string {
   if (s.role !== 'counter') return roleWord(s.role);
   if (!s.binding || (!s.binding.fieldKey && !s.binding.operator)) return 'Counter · not set up yet';
-  return ['Counter', s.binding.fieldLabel ?? s.binding.fieldKey ?? 'no Lyst', s.binding.side ? sideWord(s.binding.side) : 'no side', s.binding.operator ?? 'no name'].join(' · ');
+  return ['Counter', fieldLabel(s.binding.fieldLabel ?? s.binding.fieldKey ?? 'no Lyst'), s.binding.side ? sideWord(s.binding.side) : 'no side', s.binding.operator ?? 'no name'].join(' · ');
 }
 const SESSION_STATUS_ORDER: Record<string, number> = { active: 0, expired: 1, revoked: 2, ended: 3 };
 /** Online first, then active, then by event and name. */

@@ -6,6 +6,7 @@ import { usePoll } from './hooks';
 import { endEventSession, fetchCounterOperatorHistory, fetchDeviceSessionPreview, fetchEventDeviceSessions, fetchPlatformDeviceSessions, moveCounterSession, type OperatorHistoryRow } from '../../data/devices';
 import type { CounterState } from '../../data/lyst';
 import { SIDE_WORD, sessionLine, sideWord, sortSessions, type DeviceSession } from '../../lib/devices';
+import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { timeAgo } from '../../lib/notificationView';
 import { useAsync } from '../../lib/useAsync';
@@ -112,11 +113,11 @@ function MoveSheet({ s, fieldCount, known, busy, onClose, onMove }: { s: DeviceS
       <p style={{ marginTop: 0 }} className="src">The phone follows at once: it leaves its fight and joins the current fight on the new Lyst and side. Who holds it does not change ({s.binding?.operator ?? 'no name yet'}).</p>
       <label className="field-in">Lyst
         <select value={labels.includes(field) ? field : '__other'} onChange={e => setField(e.target.value)}>
-          {labels.map(l => <option key={l} value={l}>{l}</option>)}
-          <option value="__other">Another field…</option>
+          {labels.map(l => <option key={l} value={l}>{fieldLabel(l)}</option>)}
+          <option value="__other">Another Lyst…</option>
         </select>
       </label>
-      {field === '__other' && <label className="field-in">Field name<input value={other} onChange={e => setOther(e.target.value)} placeholder="Field 3" /></label>}
+      {field === '__other' && <label className="field-in">Lyst name<input value={other} onChange={e => setOther(e.target.value)} placeholder="Lyst 3" /></label>}
       <fieldset className="cp-sides" style={{ border: 0, padding: 0, margin: '8px 0' }}>
         <legend className="src">Side</legend>
         {(['a', 'b'] as const).map(x => <button key={x} type="button" className={`btn ${side === x ? 'btn-ink' : 'btn-line'} cp-side-${x}`} aria-pressed={side === x} onClick={() => setSide(x)}>{sideWord(x).toUpperCase()}</button>)}
@@ -141,7 +142,7 @@ function PreviewSheet({ s, onClose }: { s: DeviceSession; onClose: () => void })
       {st.error != null && <p role="alert">{friendlyError(st.error, 'Could not read this phone.')}</p>}
       {d && (
         <div className="panel info dev-preview" data-testid="device-preview" style={{ display: 'grid', gap: 6 }}>
-          <p style={{ margin: 0 }}><b>{d.binding?.operator ?? 'No name yet'}</b> · {d.field_label ?? 'no Lyst yet'} · {d.binding?.side ? sideWord(d.binding.side) : 'no side yet'}</p>
+          <p style={{ margin: 0 }}><b>{d.binding?.operator ?? 'No name yet'}</b> · {d.field_label ? fieldLabel(d.field_label) : 'no Lyst yet'} · {d.binding?.side ? sideWord(d.binding.side) : 'no side yet'}</p>
           {d.fighter ? <p style={{ margin: 0 }}>Counting for <b>{d.fighter}</b>{d.opponent ? ` vs ${d.opponent}` : ''}{d.competition ? ` · ${d.competition}` : ''}{d.round_label ? ` · ${d.round_label}` : ''}</p> : <p style={{ margin: 0 }} className="src">{d.waiting ? 'Waiting for the next fight on this Lyst.' : 'Not on a fight.'}</p>}
           {d.round && <p style={{ margin: 0 }}>Round {d.round.no} · {d.round.status}{typeof d.my_total === 'number' ? ` · this phone's tally ${d.my_total}` : ''}{d.submitted ? ' · submitted' : ''}</p>}
           {d.counter_input === 'standing' && <p style={{ margin: 0 }} className="src">Standing count{typeof d.per_side === 'number' ? ` · ${d.per_side} a side` : ''}</p>}

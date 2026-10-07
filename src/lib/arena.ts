@@ -1,6 +1,6 @@
 import type { CompetitionMatch } from '../data/matches';
 import type { LiveScore } from '../data/liveScores';
-import { buildFieldBoards, competitionSorts, fieldKey, type FieldBoard } from './eventDay';
+import { buildFieldBoards, competitionSorts, fieldKey, fieldLabel, type FieldBoard } from './eventDay';
 import { sideLabel } from './entryLabel';
 import type { LystPublic } from '../data/lyst';
 
@@ -21,6 +21,8 @@ export interface ArenaLyst {
   marks: ArenaMark[];
 }
 export interface ArenaFight { id: string; competition: string; stage: string; a: ArenaSide; b: ArenaSide; phase: string | null; live: boolean; detail: LiveScore['detail'] | null; lyst?: ArenaLyst;
+  /** What the two numbers count: points (duels, profights) or ROUNDS WON (team fights). The display says so, so "1" is never read as one fighter standing (Pack 26). */
+  unit: 'points' | 'rounds';
   /** When the result became official (a final match), so a presentation can tell "just finished" from "result on screen". */
   finalizedAt?: string | null; entryA?: string | null; entryB?: string | null }
 export type ArenaState =
@@ -30,7 +32,7 @@ export type ArenaState =
   | { kind: 'waiting'; next: ArenaFight | null }
   | { kind: 'finished' }
   | { kind: 'no_matches' };
-export interface ArenaView { field: string; state: ArenaState; onDeck: ArenaFight | null; inTheHole: ArenaFight | null; upNext: ArenaFight[]; done: number; total: number }
+export interface ArenaView { field: string; /** The word on screen for the field ("Lyst 1" for the stored "Field 1"; a custom name as written). */ label: string; state: ArenaState; onDeck: ArenaFight | null; inTheHole: ArenaFight | null; upNext: ArenaFight[]; done: number; total: number }
 
 const roundText = (m: CompetitionMatch) => (m.pool ? `Pool ${m.pool} · ${m.roundLabel || m.stage}` : m.roundLabel || m.stage);
 
@@ -49,7 +51,7 @@ function lystOf(row: LystPublic | undefined): ArenaLyst | undefined {
   };
 }
 
-function fight(m: CompetitionMatch, names: ReadonlyMap<string, string>, score: LiveScore | undefined, lystRow?: LystPublic): ArenaFight {
+function fight(m: CompetitionMatch, names: ReadonlyMap<string, string>, score: LiveScore | undefined, lystRow: LystPublic | undefined, unit: 'points' | 'rounds'): ArenaFight {
   const final = m.queueState === 'final';
   const lyst = final ? undefined : lystOf(lystRow);
   const a = sideLabel(m.entryA, m.nameA, TBD), b = sideLabel(m.entryB, m.nameB, TBD);
@@ -60,7 +62,7 @@ function fight(m: CompetitionMatch, names: ReadonlyMap<string, string>, score: L
     a: { name: a, score: final ? m.scoreA : lystRow && lyst ? lystRow.official_a : score ? score.scoreA : null, winner: winA },
     b: { name: b, score: final ? m.scoreB : lystRow && lyst ? lystRow.official_b : score ? score.scoreB : null, winner: winB },
     phase: final ? null : lyst ? lystPhase(lyst) : score?.phase || null, live: !final && (!!score || !!lyst), detail: lyst ? null : score?.detail ?? null, ...(lyst ? { lyst } : {}),
-    finalizedAt: m.finalizedAt, entryA: m.entryA, entryB: m.entryB
+    finalizedAt: m.finalizedAt, entryA: m.entryA, entryB: m.entryB, unit
   };
 }
 
@@ -74,19 +76,21 @@ export function pickField(fields: readonly string[], wanted: string | null | und
 }
 
 export function buildArena(input: {
-  matches: readonly CompetitionMatch[]; scores: readonly LiveScore[]; competitions: readonly { id: string; name: string; sort?: number }[]; field: string; now: number;
+  matches: readonly CompetitionMatch[]; scores: readonly LiveScore[]; competitions: readonly { id: string; name: string; sort?: number; league?: string }[]; field: string; now: number;
   /** Official lyst state per match (public view lyst_public_state). Optional: an event not using Lyst Control has none. */
   lyst?: readonly LystPublic[];
 }): ArenaView {
   const names = new Map(input.competitions.map(c => [c.id, c.name]));
+  const units = new Map(input.competitions.map(c => [c.id, c.league === 'buhurt' ? 'rounds' as const : 'points' as const]));
   const scores = new Map(input.scores.map(s => [s.matchId, s]));
   const lystRows = new Map((input.lyst ?? []).map(r => [r.match_id, r]));
   const key = fieldKey(input.field);
   const boards = buildFieldBoards(input.matches, competitionSorts(input.competitions), new Set());
   const board: FieldBoard | undefined = boards.find(b => b.key === key);
   const onField = input.matches.filter(m => fieldKey(m.field) === key);
-  const f = (m: CompetitionMatch) => fight(m, names, scores.get(m.id), lystRows.get(m.id));
-  const base = { field: board?.name ?? (input.field.trim() || 'Field 1'), onDeck: board?.onDeck[0] ? f(board.onDeck[0]) : null, inTheHole: board?.inTheHole[0] ? f(board.inTheHole[0]) : null, upNext: (board?.upcoming ?? []).slice(0, 3).map(f), done: board?.done ?? 0, total: board?.total ?? 0 };
+  const f = (m: CompetitionMatch) => fight(m, names, scores.get(m.id), lystRows.get(m.id), units.get(m.competitionId) ?? 'points');
+  const fieldName = board?.name ?? (input.field.trim() || 'Field 1');
+  const base = { field: fieldName, label: fieldLabel(fieldName), onDeck: board?.onDeck[0] ? f(board.onDeck[0]) : null, inTheHole: board?.inTheHole[0] ? f(board.inTheHole[0]) : null, upNext: (board?.upcoming ?? []).slice(0, 3).map(f), done: board?.done ?? 0, total: board?.total ?? 0 };
   if (!board || board.total === 0) return { ...base, state: { kind: 'no_matches' } };
   // A result stays on screen for a short while after it became official, even though the queue has already called the next fight: the hall
   // wants to see who won while the next pair walks on. The moment that next fight's scorer reports a score, the fight takes the screen.

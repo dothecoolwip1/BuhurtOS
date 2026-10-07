@@ -91,9 +91,9 @@ describe('fighter and team presentation', () => {
 });
 
 const NOW = Date.parse('2026-10-08T18:00:00Z');
-const fight = (id: string, over: Partial<ArenaFight> = {}): ArenaFight => ({ id, competition: 'Longsword', stage: 'Round 1', a: { name: `${id}A`, score: 0, winner: false }, b: { name: `${id}B`, score: 0, winner: false }, phase: null, live: false, detail: null, ...over });
+const fight = (id: string, over: Partial<ArenaFight> = {}): ArenaFight => ({ id, competition: 'Longsword', stage: 'Round 1', unit: 'points', a: { name: `${id}A`, score: 0, winner: false }, b: { name: `${id}B`, score: 0, winner: false }, phase: null, live: false, detail: null, ...over });
 const lyst = (over: Partial<ArenaLyst> = {}): ArenaLyst => ({ round: 1, roundStatus: 'running', roundsConfirmed: 0, timer: { mode: 'fight', status: 'running', remainingMs: 40_000, startedAt: new Date(NOW).toISOString(), round: 1 }, marks: [], ...over });
-const view = (state: ArenaView['state'], over: Partial<ArenaView> = {}): ArenaView => ({ field: 'Field 1', state, onDeck: fight('d'), inTheHole: fight('h'), upNext: [fight('u1'), fight('u2')], done: 2, total: 8, ...over });
+const view = (state: ArenaView['state'], over: Partial<ArenaView> = {}): ArenaView => ({ field: 'Field 1', label: 'Lyst 1', state, onDeck: fight('d'), inTheHole: fight('h'), upNext: [fight('u1'), fight('u2')], done: 2, total: 8, ...over });
 const live = (l: ArenaLyst | undefined, f: Partial<ArenaFight> = {}) => view({ kind: 'fighting', now: fight('n', { live: true, ...(l ? { lyst: l } : {}), ...f }) });
 const ctx = { phase: 'current' as const, nowMs: NOW };
 

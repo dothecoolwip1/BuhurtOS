@@ -13,6 +13,9 @@ export function friendlyError(error: unknown, fallback = 'Something went wrong. 
   if (e.code && SAFE_CODES.has(e.code) && e.message) {
     if (e.code === '42501') return 'You do not have permission to do that.';
     if (e.code === '28000') return 'Please sign in first.';
+    // the database's counter messages name the "seat"; the person holding the phone knows a Lyst and a side
+    if (/not your counter seat/i.test(e.message)) return 'This phone is not counting on that fight any more. Choose your Lyst and side again.';
+    if (/counter seat is not active/i.test(e.message)) return 'This phone is no longer counting. Choose your Lyst and side again.';
     return capitalise(e.message);
   }
   const m = (e.message ?? '').toLowerCase();

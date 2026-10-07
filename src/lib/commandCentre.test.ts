@@ -55,11 +55,11 @@ describe('attention: only real, actionable problems', () => {
     });
     const items = commandAttention(input(healthy, s, [lyst('m1', 'running'), lyst('m3', 'paused', 2)], [{ matchId: 'm3', competitionName: 'Longsword' }]));
     const byId = new Map(items.map(i => [i.id, i]));
-    expect(byId.get('result-conflicts')).toMatchObject({ urgency: 'now', where: 'Field 2', href: '/events/rumble/control?mode=live' });
-    expect(byId.get('not-ready-in-play')).toMatchObject({ urgency: 'now', who: 'Brann Oakley (armour needs correction)', where: 'Field 1', href: '/events/rumble/checkin?f=not_ready' });
+    expect(byId.get('result-conflicts')).toMatchObject({ urgency: 'now', where: 'Lyst 2', href: '/events/rumble/control?mode=live' });
+    expect(byId.get('not-ready-in-play')).toMatchObject({ urgency: 'now', who: 'Brann Oakley (armour needs correction)', where: 'Lyst 1', href: '/events/rumble/checkin?f=not_ready' });
     expect(byId.get('armour-issues')).toMatchObject({ who: 'Brann Oakley', href: '/events/rumble/checkin?f=issues' });
     expect(byId.get('arrived-not-in')).toMatchObject({ who: 'Dara Voss', href: '/events/rumble/checkin?f=arrived' });
-    expect(byId.get('paused-field 2')).toMatchObject({ what: 'Field 2: clock paused', href: '/events/rumble/field/Field%202' });
+    expect(byId.get('paused-field 2')).toMatchObject({ what: 'Lyst 2: clock paused', href: '/events/rumble/field/Field%202' });
     expect(items[0].urgency).toBe('now');
     expect(overallState(items)).toEqual({ tone: 'urgent', headline: '6 things need attention (2 now)' });
   });
@@ -73,8 +73,8 @@ describe('attention: only real, actionable problems', () => {
   it('a field behind schedule (factual, from the scheduled time) and an idle field with a fight ready', () => {
     const late = [m('m1', { queueState: 'on_deck', scheduledAt: '2026-10-10T16:30:00Z' })];
     const items = commandAttention(input(late, snap()));
-    expect(items.find(i => i.id === 'behind-field 1')).toMatchObject({ what: 'Field 1 is 30 min behind schedule' });
-    expect(items.find(i => i.id === 'idle-field 1')).toMatchObject({ what: 'Field 1 has no fight on', href: '/events/rumble/control?mode=live' });
+    expect(items.find(i => i.id === 'behind-field 1')).toMatchObject({ what: 'Lyst 1 is 30 min behind schedule' });
+    expect(items.find(i => i.id === 'idle-field 1')).toMatchObject({ what: 'Lyst 1 has no fight on', href: '/events/rumble/control?mode=live' });
     // a fight that is on with its clock running is not "behind", even if it started late
     const running = commandAttention(input([m('m1', { queueState: 'active', scheduledAt: '2026-10-10T16:30:00Z' })], snap(), [lyst('m1', 'running')]));
     expect(running.some(i => i.id.startsWith('behind-'))).toBe(false);

@@ -78,7 +78,7 @@ export function counterBanner(state: {
     if (state.binding?.field_key && !state.binding.side) return 'Choose Red or Blue.';
     return 'Choose your Lyst and side.';
   }
-  if (state.seat.status === 'expired') return 'This seat has run out. Choose your Lyst and side again.';
+  if (state.seat.status === 'expired') return 'This phone\'s place on the Lyst has run out. Choose your Lyst and side again.';
   if (state.seat.status === 'ended' || state.seat.status === 'declined') return 'You are not counting right now. Choose your Lyst and side.';
   if (state.waiting) return 'Waiting for the next fight on this Lyst. It opens here by itself.';
   if (state.final) return 'This fight is finished. The next one opens here by itself.';

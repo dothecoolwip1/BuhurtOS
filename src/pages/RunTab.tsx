@@ -19,6 +19,7 @@ import {
 import type { PlannedMatch } from '../lib/bracket';
 import { sideLabel } from '../lib/entryLabel';
 import { friendlyError } from '../lib/friendlyError';
+import { fieldLabel } from '../lib/eventDay';
 import {
   DRAW_FORMATS, activeEntries, bracketFromPools, canBuildBracketFromPools, describePlan, drawProblem, maxPoolCount, moveItem, planDraw, randomSeed, rankedPools, tiesWithin,
   type DrawChoice, type DrawFormat, type PlanGroup
@@ -190,7 +191,7 @@ function MatchCard({ m, onChanged, sched }: { m: CompetitionMatch; onChanged: ()
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         <b style={{ overflowWrap: 'anywhere' }}>{title}</b>
         {isFinal ? <Chip tone="win">Final</Chip> : m.queueState === 'active' ? <Chip tone="live">Active</Chip> : <Chip>{QUEUE_OPTIONS.find(([k]) => k === m.queueState)?.[1] ?? m.queueState}</Chip>}
-        {m.field && <Chip tone="steel">{m.field}</Chip>}
+        {m.field && <Chip tone="steel">{fieldLabel(m.field)}</Chip>}
       </div>
       {isFinal && m.scheduledAt && <p className="src">Was scheduled for {timeLabel(m.scheduledAt, sched.timeZone)}</p>}
       {isFinal && <p>{winner}{m.scoreA !== null && m.scoreB !== null ? ` (${m.scoreA} to ${m.scoreB})` : ''}</p>}

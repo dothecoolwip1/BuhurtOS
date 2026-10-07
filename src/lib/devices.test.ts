@@ -151,8 +151,8 @@ describe('the phones as sessions (Pack 25)', () => {
   });
   it('says what a phone is doing in one line, in sporting words (Red / Blue, never a / b)', () => {
     expect(sessionLine(sess())).toBe('Counter · not set up yet');
-    expect(sessionLine(sess({ binding: { fieldKey: 'field 1', fieldLabel: 'Field 1', side: 'a', operator: 'Garrett', updatedAt: null } }))).toBe('Counter · Field 1 · Red · Garrett');
-    expect(sessionLine(sess({ binding: { fieldKey: 'field 2', fieldLabel: 'Field 2', side: null, operator: 'Nathan', updatedAt: null } }))).toBe('Counter · Field 2 · no side · Nathan');
+    expect(sessionLine(sess({ binding: { fieldKey: 'field 1', fieldLabel: 'Field 1', side: 'a', operator: 'Garrett', updatedAt: null } }))).toBe('Counter · Lyst 1 · Red · Garrett');
+    expect(sessionLine(sess({ binding: { fieldKey: 'field 2', fieldLabel: 'Field 2', side: null, operator: 'Nathan', updatedAt: null } }))).toBe('Counter · Lyst 2 · no side · Nathan');
     expect(sessionLine(sess({ role: 'scorekeeper', kind: 'device', label: 'Secretary Tablet' }))).toBe('Secretary / Scorekeeper');
     expect(sideWord('b')).toBe('Blue'); expect(sideWord(null)).toBe('No side');
   });

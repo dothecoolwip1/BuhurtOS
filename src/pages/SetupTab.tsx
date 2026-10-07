@@ -18,7 +18,8 @@ const fromEvent = (e: LiveEvent): SetupForm => ({
   name: e.name, description: e.description, venue: e.venue ?? '', address: e.address ?? '', city: e.city ?? '', region: e.region ?? '', country: e.country ?? '', latitude: e.latitude, longitude: e.longitude,
   startsOn: e.startsOn, endsOn: e.endsOn, opensLocal: isoToLocal(e.registrationOpensAt), closesLocal: isoToLocal(e.registrationClosesAt),
   feeDollars: e.feeCents ? String(e.feeCents / 100) : '', feeProvince: e.feeCents ? (e.feeProvince ?? 'ALL') : '', feeNote: e.feeNote ?? '',
-  eventType: e.eventType as EventType, registrationMode: e.registrationMode, externalUrl: e.externalUrl ?? '', timeNote: e.timeNote ?? '', volunteerInfo: e.volunteerInfo ?? ''
+  eventType: e.eventType as EventType, registrationMode: e.registrationMode, externalUrl: e.externalUrl ?? '', timeNote: e.timeNote ?? '', volunteerInfo: e.volunteerInfo ?? '',
+  fieldCount: String(e.fieldCount ?? 1)
 });
 
 /** Where each requirement on this page is satisfied, so the checklist can point straight at it. Competitions live in their own tab. */
@@ -134,6 +135,13 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
           <legend style={{ fontWeight: 600, marginBottom: 6 }}>Where</legend>
           <VenuePicker value={venue} onChange={v => setF(p => ({ ...p, ...v }))} />
         </fieldset>
+        {f.eventType === 'tournament' && (
+          <label className="field-in">How many Lysts (fighting areas) run at once
+            <input type="number" inputMode="numeric" min={1} max={12} step={1} value={f.fieldCount} onChange={e => set('fieldCount', e.target.value)} aria-invalid={Boolean(show && errors.fieldCount)} style={{ maxWidth: 120 }} />
+            <span className="src">They are called Lyst 1, Lyst 2… Build tournament spreads the fights over them; each Lyst has its own clock and its own counter phones.</span>
+            {err('fieldCount')}
+          </label>
+        )}
         {text('timeNote', 'Times to show (for example "Doors 6 pm, karaoke 9:30 pm")')}
         <label className="field-in">How do people sign up
           <select value={f.registrationMode} onChange={e => set('registrationMode', e.target.value as RegistrationMode)}>{REGISTRATION_MODES.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select>

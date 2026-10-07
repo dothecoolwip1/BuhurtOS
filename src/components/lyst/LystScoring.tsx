@@ -12,6 +12,7 @@ import { fetchCitations } from '../../data/rules';
 import { createJoinCode, finalizeFromLyst, openLyst, timerCommand } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
+import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { scoringGuard } from '../../lib/swUpdate';
 import { useOutbox } from '../../lib/useOutbox';
@@ -219,7 +220,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
     onOpenNext(m);
   };
 
-  const context = <><h1 className="sr-only">{names.a} vs {names.b}</h1><p className="sk-ctx"><b>{fieldName}</b> · {comp.name} · {roundText(match)}</p></>;
+  const context = <><h1 className="sr-only">{names.a} vs {names.b}</h1><p className="sk-ctx"><b>{fieldLabel(fieldName)}</b> · {comp.name} · {roundText(match)}</p></>;
 
   /* ---------------- result screens ---------------- */
   if (phase === 'official' && saved) {
@@ -233,8 +234,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         </div>
         <p className="sk-winner">{saved.winner === 'draw' ? <b>Draw</b> : <>Winner: <b>{names[saved.winner]}</b></>}</p>
         <div className="sk-after">
-          {nextFight && nextNames && <button type="button" className="btn btn-ink fq-big" onClick={() => void goNext(nextFight)}><span className="sk-after-k">Next fight on {fieldName}</span><span>{nextNames.a} vs {nextNames.b}</span></button>}
-          {!nextFight && <p className="muted">Nothing is waiting on {fieldName} right now.</p>}
+          {nextFight && nextNames && <button type="button" className="btn btn-ink fq-big" onClick={() => void goNext(nextFight)}><span className="sk-after-k">Next fight on {fieldLabel(fieldName)}</span><span>{nextNames.a} vs {nextNames.b}</span></button>}
+          {!nextFight && <p className="muted">Nothing is waiting on {fieldLabel(fieldName)} right now.</p>}
           {backHref && <Link className="btn btn-line fq-big" to={backHref.to}>{backHref.label}</Link>}
           <button type="button" className="btn btn-line fq-big" onClick={onFinished}>Back to the queue</button>
         </div>

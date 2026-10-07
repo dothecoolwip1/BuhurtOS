@@ -269,7 +269,7 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
           {!showLive && <p className="panel info muted">Live fights appear here once the event is published.</p>}
           {showLive && live.loading && live.updatedAt === null && <p className="muted">Loading the fields…</p>}
           {showLive && live.error != null && live.updatedAt === null && <p role="alert">{friendlyError(live.error, 'Could not load the fights.')}</p>}
-          {showLive && <LiveFields matches={allMatches} competitionNames={names} lyst={lyst.rows} clock={lyst.clock} slug={event.slug} mine={myMatchIds} />}
+          {showLive && <LiveFields matches={allMatches} competitionNames={names} lyst={lyst.rows} clock={lyst.clock} slug={event.slug} mine={myMatchIds} teamCompetitions={new Set(competitions.filter(c => c.league === 'buhurt').map(c => c.id))} />}
           {showLive && live.updatedAt !== null && allMatches.every(m => m.queueState === 'scheduled' || m.queueState === 'final') && (
             <section className="panel info ev-quiet" data-testid="live-quiet">
               <h2>{phase === 'upcoming' ? 'Nothing is fighting yet' : phase === 'completed' ? 'The fighting is over' : 'Nothing on the fields right now'}</h2>

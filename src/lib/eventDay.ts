@@ -16,6 +16,15 @@ export const DEFAULT_FIELD = 'Field 1';
 export const fieldName = (f: string | null | undefined): string => f?.trim() || DEFAULT_FIELD;
 /** One field is one name, trimmed and case-insensitive. */
 export const fieldKey = (f: string | null | undefined): string => fieldName(f).toLowerCase();
+/**
+ * The word a person reads for a field (Pack 26): the stored default "Field N" (and a bare "N" or "lyst N" someone typed) is shown as "Lyst N", the
+ * sport's own word; a custom name is shown as the organizer wrote it. DISPLAY ONLY: routes, RPC arguments and keys keep the stored name.
+ */
+export function fieldLabel(f: string | null | undefined): string {
+  const name = fieldName(f);
+  const m = /^\s*(?:field|lyst)?\s*(\d{1,2})\s*$/i.exec(name);
+  return m ? `Lyst ${Number(m[1])}` : name;
+}
 
 const natural = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 const plainCompare = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);   // the database compares pools with collation "C"
@@ -233,7 +242,7 @@ export function checkinGaps(boards: readonly FieldBoard[], entries: readonly Sid
           if (!reg) continue;
           const problem = reg.status === 'accepted' ? (reg.checkedIn ? null : 'not_checked_in') : 'registration_not_accepted';
           if (!problem) continue;
-          const gap: CheckinGap = { fighterId: p.fighterId, name: p.name, problem, matchId: m.id, field: b.name, slot, teamName: entry?.teamId ? entry.name : null, registrationStatus: reg.status };
+          const gap: CheckinGap = { fighterId: p.fighterId, name: p.name, problem, matchId: m.id, field: fieldLabel(b.name), slot, teamName: entry?.teamId ? entry.name : null, registrationStatus: reg.status };
           const have = best.get(p.fighterId);
           if (!have || SLOT_RANK[slot] < SLOT_RANK[have.slot]) best.set(p.fighterId, gap);
         }
@@ -277,17 +286,17 @@ export function attentionItems(i: AttentionInput): AttentionItem[] {
   }
   for (const b of i.boards) {
     if (b.now.length > 1) {
-      out.push({ id: `two-active-${b.key}`, kind: 'two_active', urgency: 'now', title: `${b.now.length} fights are marked active on ${b.name}`, detail: b.now.map(versus).join(' · '), target: { to: 'run', matchId: b.now[1].id }, targetLabel: 'Fix in Run' });
+      out.push({ id: `two-active-${b.key}`, kind: 'two_active', urgency: 'now', title: `${b.now.length} fights are marked active on ${fieldLabel(b.name)}`, detail: b.now.map(versus).join(' · '), target: { to: 'run', matchId: b.now[1].id }, targetLabel: 'Fix in Draws and schedule' });
     }
     for (const m of [...b.now, ...b.onDeck, ...b.inTheHole]) {
       const blocked = blockedReason(m, i.withdrawn);
-      if (blocked) out.push({ id: `live-blocked-${m.id}`, kind: 'withdrawn_in_live', urgency: 'now', title: `${versus(m)} cannot go ahead on ${b.name}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Run' });
+      if (blocked) out.push({ id: `live-blocked-${m.id}`, kind: 'withdrawn_in_live', urgency: 'now', title: `${versus(m)} cannot go ahead on ${fieldLabel(b.name)}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Draws and schedule' });
     }
     for (const { match: m, blocked } of b.waiting) {
       if (blocked.code === 'withdrawn' && m.entryA && m.entryB) {
-        out.push({ id: `walkover-${m.id}`, kind: 'walkover_needed', urgency: 'soon', title: `${versus(m)}: an entrant has withdrawn`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Run' });
+        out.push({ id: `walkover-${m.id}`, kind: 'walkover_needed', urgency: 'soon', title: `${versus(m)}: an entrant has withdrawn`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Draws and schedule' });
       } else if (m.scheduledAt && new Date(m.scheduledAt).getTime() <= i.now.getTime() + (i.dueMinutes ?? 20) * 60000) {
-        out.push({ id: `due-${m.id}`, kind: 'due_but_blocked', urgency: 'soon', title: `${versus(m)} was due ${timeLabel(m.scheduledAt, i.timeZone)} on ${b.name}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Run' });
+        out.push({ id: `due-${m.id}`, kind: 'due_but_blocked', urgency: 'soon', title: `${versus(m)} was due ${timeLabel(m.scheduledAt, i.timeZone)} on ${fieldLabel(b.name)}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Draws and schedule' });
       }
     }
   }
@@ -324,7 +333,7 @@ export function fightingNow(matches: Iterable<Pick<CompetitionMatch, 'queueState
   const out = new Map<string, string>();
   for (const m of matches) {
     if (m.queueState !== 'active') continue;
-    for (const entry of [m.entryA, m.entryB]) for (const p of (entry ? sides.get(entry) ?? [] : [])) if (!out.has(p)) out.set(p, fieldName(m.field));
+    for (const entry of [m.entryA, m.entryB]) for (const p of (entry ? sides.get(entry) ?? [] : [])) if (!out.has(p)) out.set(p, fieldLabel(m.field));
   }
   return out;
 }

@@ -23,7 +23,7 @@ import {
   type CommandItem, type CommandSnapshot, type FightWarning
 } from '../../lib/commandCentre';
 import { controlPath, eventPath } from '../../lib/eventPhaseView';
-import { buildFieldBoards, checkinGaps, competitionProgress, competitionSorts, matchTitle, planAdvance, withdrawnEntryIds, type FieldBoard } from '../../lib/eventDay';
+import { buildFieldBoards, checkinGaps, competitionProgress, competitionSorts, fieldLabel, matchTitle, planAdvance, withdrawnEntryIds, type FieldBoard } from '../../lib/eventDay';
 import { heldMatches, planEvent, planIsSaved } from '../../lib/eventPlan';
 import { blockerLine, recordState } from '../../lib/finalization';
 import { friendlyError } from '../../lib/friendlyError';
@@ -180,7 +180,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
       const r = await advanceFieldQueue(event.id, board.name, true);
       const started = r.promoted.find(p => p.to === 'active');
       const m = started ? byMatch.get(started.match) : undefined;
-      return m ? `Started: ${matchTitle(m)}.` : r.promoted.length > 0 ? 'The queue behind the fight is filled.' : 'Nothing is ready to start on this field.';
+      return m ? `Started: ${matchTitle(m)}.` : r.promoted.length > 0 ? 'The queue behind the fight is filled.' : 'Nothing is ready to start on this Lyst.';
     }),
     move: (m, action: QueueMove) => void run(async () => {
       const r = await moveMatchInQueue(m.id, action);
@@ -211,7 +211,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
   };
   const replanField = (b: FieldBoard) => void run(async () => {
     const r = await clearManualQueue(event.id, b.name);
-    return r.changed > 0 ? `BuhurtOS plans ${b.name} again.` : undefined;
+    return r.changed > 0 ? `BuhurtOS plans ${fieldLabel(b.name)} again.` : undefined;
   });
 
   // ---- which field is showing on a phone (wide screens show them all)
@@ -280,7 +280,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
 
       {/* the fields: the operator's boards (start the next fight, change the line); for the others, what is on and what is next */}
       <section className="lo-fields" aria-label="Fields">
-        <h2 className="cc-h lo-h">Fields{boards.length > 0 && <span className="cc-count">{boards.length} {boards.length === 1 ? 'field' : 'fields'}</span>}</h2>
+        <h2 className="cc-h lo-h">Lysts{boards.length > 0 && <span className="cc-count">{boards.length} {boards.length === 1 ? 'Lyst' : 'Lysts'}</span>}</h2>
         {live.error != null && live.matches.length === 0 && (
           <div className="panel info" role="alert" style={{ display: 'grid', gap: 8 }}>
             <b>{friendlyError(live.error, 'Could not load the matches.')}</b>
@@ -291,7 +291,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
         {!live.loading && live.error == null && boards.length === 0 && (
           <div className="panel info ed-empty" style={{ display: 'grid', gap: 10, justifyItems: 'start' }}>
             <h3>The tournament is not built yet</h3>
-            <p>Build tournament turns the registrations into draws, fields and a fight order in one step. You check the plan before anything is created.</p>
+            <p>Build tournament turns the registrations into draws, Lysts and a fight order in one step. You check the plan before anything is created.</p>
             {organizer && <><Link className="btn btn-ink" to={controlPath(slug, 'setup', 'build')}>Build tournament</Link><Link className="btn btn-line" to={controlPath(slug, 'setup', 'run')}>Build one draw by hand</Link></>}
           </div>
         )}
@@ -300,7 +300,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
         )}
         {operator && boards.length > 1 && (
           <div className="ed-picker">
-            <Seg scroll label="Field" value={pickedKey} onChange={setPicked} options={boards.map(b => [b.key, `${b.name}${b.now.length > 0 ? ' · live' : ''}`] as const)} />
+            <Seg scroll label="Lyst" value={pickedKey} onChange={setPicked} options={boards.map(b => [b.key, `${fieldLabel(b.name)}${b.now.length > 0 ? ' · live' : ''}`] as const)} />
           </div>
         )}
         {operator ? (
@@ -308,9 +308,9 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
             {boards.map(b => (
               <div key={b.key} className={`ed-field-wrap${b.key === pickedKey ? ' picked' : ''}`}>
                 <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, timeZone: tz, competitionNames: names, actions }} next={<>
-                  <NextFight field={b.key} label={b.name} plan={plan} matches={byMatch} fighting={b.now.length > 0} called={b.onDeck.length > 0} sides={sides} names={people} competitionNames={names} notReady={notReady} actions={nextActions} />
+                  <NextFight field={b.key} label={fieldLabel(b.name)} plan={plan} matches={byMatch} fighting={b.now.length > 0} called={b.onDeck.length > 0} sides={sides} names={people} competitionNames={names} notReady={notReady} actions={nextActions} />
                   {b.upcoming.some(m => m.queueOrder != null) && (
-                    <p className="src ed-manual">This field's line was arranged by hand, so BuhurtOS follows it. <button type="button" className="linklike" disabled={busy} onClick={() => replanField(b)}>Let BuhurtOS plan it again</button></p>
+                    <p className="src ed-manual">This Lyst's line was arranged by hand, so BuhurtOS follows it. <button type="button" className="linklike" disabled={busy} onClick={() => replanField(b)}>Let BuhurtOS plan it again</button></p>
                   )}
                 </>} />
               </div>
@@ -319,13 +319,13 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
         ) : fields.length > 0 && (
           <div className="cc-fields">
             {fields.map(f => (
-              <article key={f.key} className={`cc-field state-${f.state} panel`} aria-label={f.name}>
-                <div className="cc-field-head"><h3>{f.name}</h3><span className="cc-state">{FIELD_STATE_LABEL[f.state]}{f.round ? ` · round ${f.round}` : ''}</span></div>
+              <article key={f.key} className={`cc-field state-${f.state} panel`} aria-label={fieldLabel(f.name)}>
+                <div className="cc-field-head"><h3>{fieldLabel(f.name)}</h3><span className="cc-state">{FIELD_STATE_LABEL[f.state]}{f.round ? ` · round ${f.round}` : ''}</span></div>
                 {f.current && <p><span className="src">On now</span><br /><b>{matchTitle(f.current)}</b></p>}
                 {f.next && <p><span className="src">Next</span><br />{matchTitle(f.next)}{f.next.scheduledAt ? <span className="src"> · {timeLabel(f.next.scheduledAt, tz)}</span> : null}</p>}
-                <p className="src">{f.queueDepth} waiting on this field{f.behindMinutes !== null ? ` · ${f.behindMinutes} min behind schedule` : ''}</p>
+                <p className="src">{f.queueDepth} waiting on this Lyst{f.behindMinutes !== null ? ` · ${f.behindMinutes} min behind schedule` : ''}</p>
                 {f.warnings.length > 0 && <p className="cc-warn">⚠ Not ready: {f.warnings.map(w => `${w.name} (${(w.reasons[0] ?? 'not ready').toLowerCase()})`).join(', ')}</p>}
-                <Link className="btn btn-ink cc-btn" to={`${fieldHref(slug, f.name)}?from=control`}>Open Lyst Control · {f.name}</Link>
+                <Link className="btn btn-ink cc-btn" to={`${fieldHref(slug, f.name)}?from=control`}>Open Lyst Control · {fieldLabel(f.name)}</Link>
               </article>
             ))}
           </div>
@@ -336,7 +336,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
         <h2 className="cc-h lo-h">Workstations</h2>
         <p className="src">Each one is a full-screen job for one person and one phone. Exit brings them back here.</p>
         <div className="lo-station-row">
-          {fieldNames.map(f => <Link key={f} className="btn btn-ink" to={`${fieldHref(slug, f)}?from=control`} data-testid="station-lyst">Lyst Control · {f}</Link>)}
+          {fieldNames.map(f => <Link key={f} className="btn btn-ink" to={`${fieldHref(slug, f)}?from=control`} data-testid="station-lyst">Lyst Control · {fieldLabel(f)}</Link>)}
           <Link className="btn btn-line" to={`${deskHref(slug)}?from=control`} data-testid="station-desk">Check-in desk</Link>
           <Link className="btn btn-line" to={`/events/${slug}/announcer`}>Announcer</Link>
           <Link className="btn btn-line" to={`/events/${slug}/arena`}>Big screen</Link>

@@ -113,7 +113,7 @@ describe('buildNowAndNext', () => {
     expect(buildNowAndNext([m({ id: '1' })], names)).toEqual([]);
   });
   it('puts matches without a field in their own group', () => {
-    expect(buildNowAndNext([m({ id: '1', queueState: 'active' })], names)[0].field).toBe('Field not set');
+    expect(buildNowAndNext([m({ id: '1', queueState: 'active' })], names)[0].field).toBe('Field 1');
   });
 });
 

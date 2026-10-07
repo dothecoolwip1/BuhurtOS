@@ -6,7 +6,7 @@
 import type { CompetitionMatch } from '../data/matches';
 import { controlPath, legacyManageTarget } from './eventPhaseView';
 import type { LystPublic } from '../data/lyst';
-import { attentionItems, type AttentionItem, type CompetitionProgress, type FieldBoard, type ScheduleClash, fieldKey, matchTitle } from './eventDay';
+import { attentionItems, type AttentionItem, type CompetitionProgress, type FieldBoard, type ScheduleClash, fieldKey, fieldLabel, matchTitle } from './eventDay';
 import { timeLabel } from './runSchedule';
 
 // ---------------------------------------------------------------- the server snapshot (public.event_command_snapshot)
@@ -116,15 +116,17 @@ export function commandAttention(i: {
   const out: CommandItem[] = [];
   const fieldOf = new Map<string, string>();
   for (const b of i.boards) for (const m of [...b.now, ...b.onDeck, ...b.inTheHole, ...b.upcoming, ...b.waiting.map(w => w.match)]) fieldOf.set(m.id, b.name);
+  const fieldWord = (id: string) => { const f = fieldOf.get(id); return f ? fieldLabel(f) : undefined; };
 
   // 1. result conflicts: decided on the field screen (head marshal) or Live ops (organizer)
   if (i.conflicts.length > 0) {
     const fields = [...new Set(i.conflicts.map(c => fieldOf.get(c.matchId)).filter(Boolean) as string[])];
     const first = fields[0];
+    const fieldWords = fields.map(fieldLabel);
     out.push({
       id: 'result-conflicts', urgency: 'now', what: `${plural(i.conflicts.length, 'result needs', 'results need')} a decision`,
       who: `Two devices disagreed in ${names([...new Set(i.conflicts.map(c => c.competitionName))])}. The official result has not changed.`,
-      where: fields.length ? fields.join(', ') : null,
+      where: fieldWords.length ? fieldWords.join(', ') : null,
       action: 'Decide', href: L.organizer ? manageHref(L.slug, 'eventday') : first ? fieldHref(L.slug, first) : manageHref(L.slug, 'eventday')
     });
   }
@@ -135,8 +137,8 @@ export function commandAttention(i: {
   for (const a of base) {
     const href = a.target.to === 'field' ? fieldHref(L.slug, a.target.field) : L.organizer ? manageHref(L.slug, 'run', a.target.to === 'run' && a.target.matchId ? `&match=${a.target.matchId}` : '')
       : (a.target.to === 'run' && a.target.matchId && fieldOf.get(a.target.matchId)) ? fieldHref(L.slug, fieldOf.get(a.target.matchId)!) : manageHref(L.slug, 'eventday');
-    const where = a.target.to === 'run' && a.target.matchId ? fieldOf.get(a.target.matchId) ?? null : null;
-    out.push({ id: `ed-${a.id}`, urgency: a.urgency, what: a.title, who: a.detail, where, action: L.organizer ? a.targetLabel : 'Open the field', href });
+    const where = a.target.to === 'run' && a.target.matchId ? fieldWord(a.target.matchId) ?? null : null;
+    out.push({ id: `ed-${a.id}`, urgency: a.urgency, what: a.title, who: a.detail, where, action: L.organizer ? a.targetLabel : 'Open Lyst Control', href });
   }
 
   // 3. readiness of the people in the fights on now / called next (Pack 16, one rule; status words only)
@@ -147,7 +149,7 @@ export function commandAttention(i: {
     out.push({
       id: 'not-ready-in-play', urgency: 'now', what: `${plural(people.length, 'fighter', 'fighters')} called to fight but not ready`,
       who: names(people.map(w => `${w.name} (${(w.reasons[0] ?? 'not ready').toLowerCase()})`)),
-      where: [...new Set(people.map(w => fieldOf.get(w.matchId)).filter(Boolean) as string[])].join(', ') || null,
+      where: [...new Set(people.map(w => fieldWord(w.matchId)).filter(Boolean) as string[])].join(', ') || null,
       action: 'Open the desk', href: deskHref(L.slug, 'not_ready')
     });
   }
@@ -193,15 +195,15 @@ export function commandAttention(i: {
   // 4. the fields (Pack 13 / queue): a paused clock, a field behind schedule, a field waiting to call its next fight
   for (const f of i.fields) {
     if (f.state === 'paused' && f.current) {
-      out.push({ id: `paused-${f.key}`, urgency: 'soon', what: `${f.name}: clock paused`, who: matchTitle(f.current), where: f.name, action: 'Open Lyst Control', href: fieldHref(L.slug, f.name) });
+      out.push({ id: `paused-${f.key}`, urgency: 'soon', what: `${fieldLabel(f.name)}: clock paused`, who: matchTitle(f.current), where: fieldLabel(f.name), action: 'Open Lyst Control', href: fieldHref(L.slug, f.name) });
     }
     if (f.behindMinutes !== null) {
       const due = f.current ?? f.next;
-      out.push({ id: `behind-${f.key}`, urgency: 'soon', what: `${f.name} is ${f.behindMinutes} min behind schedule`,
-        who: due ? `${matchTitle(due)} was due ${timeLabel(due.scheduledAt!, tz)}` : null, where: f.name, action: 'Open the field', href: fieldHref(L.slug, f.name) });
+      out.push({ id: `behind-${f.key}`, urgency: 'soon', what: `${fieldLabel(f.name)} is ${f.behindMinutes} min behind schedule`,
+        who: due ? `${matchTitle(due)} was due ${timeLabel(due.scheduledAt!, tz)}` : null, where: fieldLabel(f.name), action: 'Open Lyst Control', href: fieldHref(L.slug, f.name) });
     }
     if (f.state === 'idle' && f.next && !f.current && L.organizer) {
-      out.push({ id: `idle-${f.key}`, urgency: 'soon', what: `${f.name} has no fight on`, who: `Next ready: ${matchTitle(f.next)}`, where: f.name,
+      out.push({ id: `idle-${f.key}`, urgency: 'soon', what: `${fieldLabel(f.name)} has no fight on`, who: `Next ready: ${matchTitle(f.next)}`, where: fieldLabel(f.name),
         action: 'Call it in Live ops', href: manageHref(L.slug, 'eventday') });
     }
   }

@@ -6,6 +6,7 @@
 import type { CompetitionMatch, CompetitionEntry, Standing, QueueState } from '../data/matches';
 import { groupIntoRounds } from '../data/matches';
 import { sideLabel, UNNAMED_ENTRY } from './entryLabel';
+import { fieldKey, fieldName } from './eventDay';
 import { explainResult } from './matchExplain';
 
 export const TBD = 'To be decided';
@@ -83,7 +84,7 @@ export function championOf(matches: readonly CompetitionMatch[]): string | null 
   return (f.winnerEntryId === f.entryA ? f.nameA : f.winnerEntryId === f.entryB ? f.nameB : null) ?? null;
 }
 
-export interface NowItem { id: string; state: 'active' | 'in_the_hole' | 'on_deck'; competition: string; round: string; nameA: string; nameB: string }
+export interface NowItem { id: string; state: 'active' | 'in_the_hole' | 'on_deck'; competition: string; competitionId: string; round: string; nameA: string; nameB: string }
 export interface FieldNow { field: string; items: NowItem[] }
 /** The order the field calls them in: the fight now, the one on deck (next), then the one in the hole (after that). */
 const NOW_RANK = { active: 0, on_deck: 1, in_the_hole: 2 } as const;
@@ -92,15 +93,18 @@ export const NOW_LABEL: Record<NowItem['state'], string> = { active: 'Now', in_t
 /** Matches that are running or queued, grouped by field (fields sorted by name, matches by state then scheduled time). */
 export function buildNowAndNext(matches: readonly CompetitionMatch[], competitionNames: ReadonlyMap<string, string>): FieldNow[] {
   const live = matches.filter((m): m is CompetitionMatch & { queueState: NowItem['state'] } => m.queueState === 'active' || m.queueState === 'in_the_hole' || m.queueState === 'on_deck');
-  const byField = new Map<string, typeof live>();
+  // one field is one key (case-insensitive, trimmed); a blank field is Field 1, the default: the same rule as every queue
+  const byField = new Map<string, { name: string; list: typeof live }>();
   for (const m of live) {
-    const f = m.field?.trim() || 'Field not set';
-    byField.set(f, [...(byField.get(f) ?? []), m]);
+    const k = fieldKey(m.field);
+    const g = byField.get(k) ?? { name: fieldName(m.field), list: [] };
+    g.list.push(m);
+    byField.set(k, g);
   }
-  return [...byField.entries()].sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })).map(([field, list]) => ({
+  return [...byField.values()].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true })).map(({ name: field, list }) => ({
     field,
     items: [...list].sort((x, y) => NOW_RANK[x.queueState] - NOW_RANK[y.queueState] || (x.scheduledAt ?? '').localeCompare(y.scheduledAt ?? '') || x.position - y.position).map(m => ({
-      id: m.id, state: m.queueState, competition: competitionNames.get(m.competitionId) ?? 'Competition', round: m.pool ? `Pool ${m.pool}, ${m.roundLabel}` : m.roundLabel,
+      id: m.id, state: m.queueState, competition: competitionNames.get(m.competitionId) ?? 'Competition', competitionId: m.competitionId, round: m.pool ? `Pool ${m.pool}, ${m.roundLabel}` : m.roundLabel,
       nameA: sideLabel(m.entryA, m.nameA, TBD), nameB: sideLabel(m.entryB, m.nameB, TBD)
     }))
   }));

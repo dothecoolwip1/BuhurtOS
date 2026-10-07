@@ -5,6 +5,7 @@ import { SignIn } from '../../auth/SignIn';
 import { counterBind, counterLeave, counterRecord, counterSetOperator, counterSubmit, counterUndo, joinTrainingCounter, leaveSeat, type CounterField, type CounterState } from '../../data/lyst';
 import { isDeviceMode, storedWhoami } from '../../lib/deviceSession';
 import { classifyRpcError } from '../../lib/scoreSender';
+import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
 import { TapQueue, counterBanner, flushTaps, nextStep, onlyField, parseJoinCode, sideLabel, standingLeft, type CountAction, type CounterSend, type CounterStep, fightLine } from '../../lib/lyst/counters';
@@ -107,21 +108,21 @@ function DeviceCounter() {
       <main className="cp cp-setup" aria-label="Which Lyst">
         {head}
         <h1 className="cp-q">Which Lyst?</h1>
-        {fields.length === 0 && <p className="cp-msg">This event has no fields yet. Ask the organizer, then try again.</p>}
+        {fields.length === 0 && <p className="cp-msg">This event has no Lysts yet. Ask the organizer, then try again.</p>}
         <div className="cp-choices">
           {fields.map(f => <FieldButton key={f.key} f={f} current={binding?.field_key === f.key} onPick={() => chooseField(f.key)} busy={busy} />)}
         </div>
         {problem && <p role="alert" className="ly-error">{problem}</p>}
-        {editing && binding?.field_key && <button type="button" className="ly-link" onClick={() => setEditing(null)}>Keep {state?.field_label ?? 'this Lyst'}</button>}
+        {editing && binding?.field_key && <button type="button" className="ly-link" onClick={() => setEditing(null)}>Keep {fieldLabel(state?.field_label ?? 'this Lyst')}</button>}
       </main>
     );
   }
   if (step === 'side') {
-    const fieldLabel = fields.find(f => f.key === (draft.field ?? binding?.field_key ?? onlyField(fields)))?.label ?? state?.field_label ?? 'this Lyst';
+    const whichLyst = fieldLabel(fields.find(f => f.key === (draft.field ?? binding?.field_key ?? onlyField(fields)))?.label ?? state?.field_label ?? 'this Lyst');
     return (
       <main className="cp cp-setup" aria-label="Which side">
         {head}
-        <h1 className="cp-q">Which side on {fieldLabel}?</h1>
+        <h1 className="cp-q">Which side on {whichLyst}?</h1>
         <div className="cp-sides">
           <button type="button" className="cp-side cp-side-a" disabled={busy} onClick={() => chooseSide('a')} aria-pressed={binding?.side === 'a'}><span>RED</span><small>Side A</small></button>
           <button type="button" className="cp-side cp-side-b" disabled={busy} onClick={() => chooseSide('b')} aria-pressed={binding?.side === 'b'}><span>BLUE</span><small>Side B</small></button>
@@ -142,7 +143,7 @@ function DeviceCounter() {
 function FieldButton({ f, current, onPick, busy }: { f: CounterField; current: boolean; onPick: () => void; busy: boolean }) {
   return (
     <button type="button" className="cp-choice" disabled={busy} onClick={onPick} aria-pressed={current}>
-      <b>{f.label}</b><span className="src">{f.open ? 'A fight is open here' : 'No fight open yet'}{current ? ' · your Lyst now' : ''}</span>
+      <b>{fieldLabel(f.label)}</b><span className="src">{f.open ? 'A fight is open here' : 'No fight open yet'}{current ? ' · your Lyst now' : ''}</span>
     </button>
   );
 }
@@ -330,11 +331,11 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         <div className="cp-who">
           <span className={`cp-badge${training ? ' is-learning' : ''}`}>{training ? 'Training' : 'Counting'}</span>
           {side && <span className={`cp-corner cp-corner-${side}`}>{sideLabel(side).toUpperCase()}</span>}
-          <span className="cp-lyst">{state.field_label ?? seat?.field_key ?? ''}</span>
+          <span className="cp-lyst">{fieldLabel(state.field_label ?? seat?.field_key ?? '')}</span>
           <span className="cp-op" data-testid="cp-operator">{operator}</span>
         </div>
         {state.competition && <p className="src cp-ctx">{state.competition}{state.round_label ? ` · ${state.round_label}` : ''}</p>}
-        {state.fighter ? <h1 className="cp-fighter" data-testid="cp-fighter">{state.fighter}</h1> : <h1 className="cp-fighter cp-fighter-wait">{state.field_label ?? 'Your Lyst'}</h1>}
+        {state.fighter ? <h1 className="cp-fighter" data-testid="cp-fighter">{state.fighter}</h1> : <h1 className="cp-fighter cp-fighter-wait">{state.field_label ? fieldLabel(state.field_label) : 'Your Lyst'}</h1>}
         {state.opponent && <p className="src cp-vs">vs {state.opponent}</p>}
         {state.fights && (state.fights.last || state.fights.now || state.fights.next) && (
           <dl className="cp-fights" data-testid="cp-fights" aria-label="This Lyst: last, now, next">

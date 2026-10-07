@@ -1,3 +1,4 @@
+import { fieldLabel } from '../eventDay';
 import type { CompetitionMatch } from '../../data/matches';
 import type { LystPublic } from '../../data/lyst';
 import type { Team } from '../../data/types';
@@ -74,11 +75,7 @@ export interface AnnouncerView {
 
 // ------------------------------------------------------------------------------------------------ words
 /** "Field 2" is "Lyst 2" on the announcer's screen; any other name is kept as the organizer wrote it. */
-export function lystLabel(field: string): string {
-  const m = /^\s*field\s*(\d+)\s*$/i.exec(field);
-  if (m) return `Lyst ${m[1]}`;
-  return field.trim() || 'Lyst 1';
-}
+export const lystLabel = (field: string): string => fieldLabel(field);
 
 const SLOT_WORD: Record<FightSlot, string> = { fighting: 'Fighting now', on_deck: 'On deck', in_the_hole: 'In the hole', waiting: 'Coming up' };
 export const slotWord = (s: FightSlot): string => SLOT_WORD[s];

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Chip } from '../ui';
 import type { CompetitionMatch } from '../../data/matches';
 import type { QueueMove } from '../../data/eventDay';
-import { matchContext, type FieldBoard, type AdvancePlan } from '../../lib/eventDay';
+import { matchContext, type FieldBoard, type AdvancePlan, fieldLabel } from '../../lib/eventDay';
 import { sideLabel } from '../../lib/entryLabel';
 import { timeLabel } from '../../lib/runSchedule';
 
@@ -73,32 +73,32 @@ export function FieldBoardView({ board, plan, c, next }: { board: FieldBoard; pl
   const upcoming = all ? board.upcoming : board.upcoming.slice(0, SHOWN);
   const canStart = plan.promote.length > 0;
   return (
-    <section className="ed-field" aria-label={board.name}>
-      <h2 className="ed-field-name">{board.name}<span className="ed-count">{board.done} of {board.total} fights done</span></h2>
+    <section className="ed-field" aria-label={fieldLabel(board.name)}>
+      <h2 className="ed-field-name">{fieldLabel(board.name)}<span className="ed-count">{board.done} of {board.total} fights done</span></h2>
 
       {board.now.length > 0 ? board.now.map(m => (
-        <article key={m.id} className="ed-now panel" aria-label={`Now on ${board.name}`}>
+        <article key={m.id} className="ed-now panel" aria-label={`Now on ${fieldLabel(board.name)}`}>
           <div className="ed-slot-head"><Chip tone="live">Now</Chip><span className="ed-ctx">{context(m, c)}</span></div>
           <Versus m={m} big />
           <Link className="btn btn-ink fq-big ed-open" to={scoreboardLink(c.slug, board.name, m.id)}>Open scoreboard</Link>
           <details className="ed-change">
             <summary>More</summary>
             <div className="ed-change-body">
-              <Link className="btn btn-line" to={runLink(c.slug, m.id)}>Open in Run tools</Link>
+              <Link className="btn btn-line" to={runLink(c.slug, m.id)}>Open in Draws and schedule</Link>
               <button type="button" className="btn btn-line" disabled={actions.busy} onClick={() => actions.sendBack(m)}>Back to the line (not fought)</button>
             </div>
           </details>
         </article>
       )) : board.state === 'ready' && next ? next : (
-        <article className="ed-now ed-idle panel" aria-label={`Nothing active on ${board.name}`}>
-          {board.state === 'finished' && <><h3>All fights on {board.name} are done</h3><p className="muted">Nothing is left to run here.</p></>}
+        <article className="ed-now ed-idle panel" aria-label={`Nothing active on ${fieldLabel(board.name)}`}>
+          {board.state === 'finished' && <><h3>All fights on {fieldLabel(board.name)} are done</h3><p className="muted">Nothing is left to run here.</p></>}
           {board.state === 'ready' && !next && (<>
-            <h3>No fight is active on {board.name}.</h3>
+            <h3>No fight is active on {fieldLabel(board.name)}.</h3>
             <p className="muted">The next ready fight is {names(nextToStart(board, plan)).a} against {names(nextToStart(board, plan)).b}.</p>
             <button type="button" className="btn btn-ink fq-big" disabled={actions.busy || !canStart} onClick={() => actions.startNext(board)}>Start next ready match</button>
           </>)}
           {board.state === 'stalled' && (<>
-            <h3>Nothing on {board.name} can start yet</h3>
+            <h3>Nothing on {fieldLabel(board.name)} can start yet</h3>
             <p className="muted">{board.waiting.length === 1 ? 'One fight is' : `${board.waiting.length} fights are`} waiting. {board.waiting[0]?.blocked.text}.</p>
             {plan.demote.length > 0 && <button type="button" className="btn btn-line fq-big" disabled={actions.busy} onClick={() => actions.startNext(board)}>Tidy the queue</button>}
           </>)}
@@ -106,7 +106,7 @@ export function FieldBoardView({ board, plan, c, next }: { board: FieldBoard; pl
       )}
 
       {(board.onDeck.length > 0 || board.inTheHole.length > 0) && (
-        <ul className="ed-slots" aria-label={`Next on ${board.name}`}>
+        <ul className="ed-slots" aria-label={`Next on ${fieldLabel(board.name)}`}>
           {board.onDeck.map(m => <SlotCard key={m.id} m={m} label="On deck" tone="brass" c={c} />)}
           {board.inTheHole.map(m => <SlotCard key={m.id} m={m} label="In the hole" tone="" c={c} />)}
         </ul>

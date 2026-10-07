@@ -6,6 +6,7 @@ import { Chip } from '../components/ui';
 import { fetchMyEventEntryIds } from '../data/myFight';
 import { fetchMyEvents } from '../data/myEvents';
 import { friendlyError } from '../lib/friendlyError';
+import { fieldLabel } from '../lib/eventDay';
 import { nextForEntries, recordText, restText, statusLabel, type NextFight } from '../lib/myFight';
 import { useAsync } from '../lib/useAsync';
 import type { LiveState } from '../lib/useLiveMatches';
@@ -52,7 +53,7 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
   const compName = (id: string) => competitions.find(c => c.id === id)?.name ?? 'Competition';
   const myEntries = Object.values(live.data).flatMap(d => d.entries).filter(e => entryIds.includes(e.id));
   const { next, results, upcoming, rest } = summary;
-  const status = next ? statusLabel(next.match.queueState, next.ahead, next.field, next.held) : null;
+  const status = next ? statusLabel(next.match.queueState, next.ahead, fieldLabel(next.field), next.held) : null;
   const waiting = live.updatedAt === null && live.error == null;
   const reg = me.data?.find(e => e.id === eventId)?.registration ?? null;
   const later = upcoming.slice(1);
@@ -76,7 +77,7 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
           <p style={{ fontSize: 17 }}><b>vs {next.opponent}</b></p>
           <p>{status.detail}</p>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-            <Chip>{next.field}</Chip>
+            <Chip>{fieldLabel(next.field)}</Chip>
             {next.match.queueState !== 'active' && <Chip tone={next.ahead !== null && next.ahead <= 1 ? 'brass' : ''}>{aheadChip(next)}</Chip>}
             <span className="src">{where(next)}</span>
           </div>
@@ -101,7 +102,7 @@ export function MyNextFight({ eventId, userId, competitions, live }: { eventId: 
           <ul className="mf-later" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 6 }} aria-label="Your other fights">
             {later.map(u => (
               <li key={u.match.id} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                <Chip>{u.field}</Chip>
+                <Chip>{fieldLabel(u.field)}</Chip>
                 <Chip tone={u.match.queueState !== 'scheduled' ? 'brass' : ''}>{aheadChip(u)}</Chip>
                 <span style={{ overflowWrap: 'anywhere' }}>vs {u.opponent}</span>
                 <span className="src">{where(u)}</span>

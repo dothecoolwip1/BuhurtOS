@@ -233,7 +233,7 @@ export function NotificationSettingsRow() {
       <h2 id="notif-set-h" className="acct-h">Notifications</h2>
       <div className="panel acct-list">
         <button type="button" className="acct-row" aria-haspopup="dialog" onClick={() => setOpen(true)}>
-          <span style={{ minWidth: 0 }}><b>Notification Settings</b></span>
+          <span style={{ minWidth: 0 }}><b>Notifications</b></span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
         </button>
       </div>

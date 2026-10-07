@@ -3,7 +3,7 @@ import { toMatch, type CompetitionMatch } from '../data/matches';
 import {
   DEFAULT_FIELD, attentionItems, blockedReason, buildFieldBoards, checkinGaps, competitionProgress, competitionSorts, compareRunOrder, eventIsRunning, fieldKey, fieldName,
   isRunnable, planAdvance, planAfterResult, roundRank, withdrawnEntryIds, type FieldBoard, type RegistrationFlag
-, fightingNow } from './eventDay';
+, fightingNow, fieldLabel } from './eventDay';
 
 const NONE = new Set<string>();
 const m = (n: number, over: Partial<CompetitionMatch> = {}): CompetitionMatch => ({
@@ -262,7 +262,7 @@ describe('needs attention', () => {
     const boards = buildFieldBoards([m(1, { queueState: 'active' }), m(5, { entryA: 'gone' })], SORTS, new Set(['gone']));
     const items = attentionItems({ ...base, boards, withdrawn: new Set(['gone']) });
     expect(items).toHaveLength(1);
-    expect(items[0]).toMatchObject({ kind: 'walkover_needed', targetLabel: 'Open in Run' });
+    expect(items[0]).toMatchObject({ kind: 'walkover_needed', targetLabel: 'Open in Draws and schedule' });
   });
   it('turns a double booking into fighter, both matches, times and fields', () => {
     const boards = buildFieldBoards([m(1, { field: 'Field 1' }), m(2, { field: 'Field 2', competitionId: 'bravo' })], SORTS, NONE);
@@ -303,6 +303,23 @@ describe('fightingNow (Pack 11)', () => {
       { queueState: 'active', entryA: 'ea', entryB: 'eb', field: null },
       { queueState: 'on_deck', entryA: 'ec', entryB: 'ed', field: 'Field 2' },
     ], sides);
-    expect([...now.entries()]).toEqual([['p1', 'Field 1'], ['p2', 'Field 1'], ['p3', 'Field 1']]);
+    expect([...now.entries()]).toEqual([['p1', 'Lyst 1'], ['p2', 'Lyst 1'], ['p3', 'Lyst 1']]);
+  });
+});
+
+describe('fieldLabel (Pack 26): the word a person reads for a field', () => {
+  it('shows the stored default and a bare or lowercase number as Lyst N', () => {
+    expect(fieldLabel('Field 1')).toBe('Lyst 1');
+    expect(fieldLabel(null)).toBe('Lyst 1');
+    expect(fieldLabel('  ')).toBe('Lyst 1');
+    expect(fieldLabel('field 2')).toBe('Lyst 2');
+    expect(fieldLabel('10')).toBe('Lyst 10');
+    expect(fieldLabel('lyst 3')).toBe('Lyst 3');
+    expect(fieldLabel('Field 07')).toBe('Lyst 7');
+  });
+  it('keeps a custom name exactly as the organizer wrote it', () => {
+    expect(fieldLabel('Arena A')).toBe('Arena A');
+    expect(fieldLabel('Main Lyst')).toBe('Main Lyst');
+    expect(fieldLabel('Ring 2 (north)')).toBe('Ring 2 (north)');
   });
 });
