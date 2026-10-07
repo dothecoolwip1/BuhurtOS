@@ -208,7 +208,7 @@ try {
   check('43. then which Lyst (the event has more than one field)', await until(async () => await has(p1, 'which lyst')), await body(p1));
   await shot(p1, 'counter-02-lyst-390');
   await p1.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
-  check('44. then RED or BLUE, in words not just colour', await until(async () => await has(p1, 'which side on field 1') && await has(p1, 'red') && await has(p1, 'blue')), await body(p1));
+  check('44. then RED or BLUE, in words not just colour', await until(async () => await has(p1, 'which side on lyst 1') && await has(p1, 'red') && await has(p1, 'blue')), await body(p1));
   await shot(p1, 'counter-03-side-390');
   await p1.getByRole('button', { name: /RED/ }).click();
   check('45. the phone is on the fight (Aldric, red) waiting for the round; no fighter was assigned by hand', await until(async () => await has(p1, 'aldric stone') && await has(p1, 'waiting for the round')), await body(p1));
@@ -264,7 +264,7 @@ try {
 
   // ───────────── device management: the organizer's tool and the platform owner's page
   await go(o.page, `${E}/control?mode=live&tool=devices`);
-  check('60. the devices tool lists the two counter phones with Lyst, side and operator', await until(async () => (await o.page.getByTestId('session-row').count()) >= 2 && await has(o.page, 'nathan toth') && await has(o.page, 'field 1 · blue · taylor'), 20000), await body(o.page));
+  check('60. the devices tool lists the two counter phones with Lyst, side and operator', await until(async () => (await o.page.getByTestId('session-row').count()) >= 2 && await has(o.page, 'nathan toth') && await has(o.page, 'lyst 1 · blue · taylor'), 20000), await body(o.page));
   await shot(o.page, 'devices-tool-390');
   await o.page.getByTestId('session-preview').first().click();
   check('61. device preview is read only and shows what the phone shows', await until(async () => (await o.page.getByTestId('device-preview').count()) === 1 && await has(o.page, 'read only')), await body(o.page));

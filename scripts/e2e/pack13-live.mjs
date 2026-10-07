@@ -344,7 +344,7 @@ try {
   check('61. the counters\' phone leaves the finished fight by itself (waiting for the next one on this Lyst) and COUNT is disabled', await waitFor(phones.ash, () => /finished|waiting for the next fight/i.test(document.querySelector('.cp-msg')?.textContent ?? '') && document.querySelector('.cp-count, .cp-weighted button')?.disabled === true, null, 20000), await body(phones.ash));
 
   // ================================================================ 10. NEXT FIGHT: the phones follow the Lyst by themselves (bound to the field and side, never to a fighter)
-  await tab.getByRole('button', { name: /Next fight on Field 1/ }).click();
+  await tab.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).click();
   await tab.waitForSelector('.ly-timer', { timeout: 30000 });
   check('62. NEXT FIGHT opens the next match on the field in Lyst Control and every phone on the field follows it (one open match per field)', await waitDb(() => sql(`select count(distinct match_id) || ':' || count(*) from public.lyst_counter_seats where status = 'active'`), '1:5', 20000) === '1:5' && sql(`select count(*) from public.lyst_counter_seats where match_id = '${mid(2)}' and status = 'active'`) === '5' && sql(`select count(*) from public.lyst_field_current where event_id = '${EVENT}' and field_key = 'field 1' and match_id = '${mid(2)}'`) === '1');
   check('63. the counters\' phones follow to the new fighters without scanning again', await waitFor(phones.ash, () => /Cael Rhodes/i.test(document.body.innerText), null, 25000), await body(phones.ash));

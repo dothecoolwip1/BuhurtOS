@@ -1089,7 +1089,8 @@ try {
     await shot(skp.page, 'device-secretary-tablet');
     const map = await signIn(ma.body.code, 'phone');
     // the event is closed by now (the close phase ran first): the phone lands on the event, which leads with the results; on a live day it leads with the Lysts
-    check('176. the Marshal Phone lands on the event (its Lyst picker on a live day; the results once the event is closed)', /\/events\/test-rumble-26$/.test(map.page.url()) && await until(async () => await has(map.page, 'lyst') || await has(map.page, 'results') || await has(map.page, 'complete'), 30000), map.page.url() + ' ' + (await body(map.page)).slice(0, 200));
+    check('176. the Marshal Phone lands on the event with the device bar (role marshal, access ends, sign out)', /\/events\/test-rumble-26$/.test(map.page.url()) && await until(async () => await has(map.page, 'temporary device') && await has(map.page, 'marshal') && await has(map.page, 'access ends'), 30000), map.page.url() + ' ' + (await body(map.page)).slice(0, 300));
+    await shot(map.page, 'device-marshal-phone');
     await shot(map.page, 'device-marshal-phone');
     const anp = await signIn(an.body.code);
     check('177. the Announcer Tablet lands on the announcer screen', /\/announcer/.test(anp.page.url()), anp.page.url());
