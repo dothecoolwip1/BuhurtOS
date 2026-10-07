@@ -53,6 +53,12 @@ Durable work log of Pack 26. Levels are kept apart on purpose: **repository**, *
 | 8 | Notification settings | P3 | the audit: hints "2 away, up next, ready" / "Account news" did not cover schedule changes, armour inspection, discipline; the Account row said "Notification Settings" while the dialog said "Notifications" | – | hints rewritten; row renamed | `src/data/notifications.ts`, `NotificationSettings.tsx`, `Layout.tsx` | – |
 | 9 | Live ops attention item for an idle Lyst | P3 | run 9: "Lyst 1 has no fight on → Call it in Live ops" linked to the page it was shown on | the item kept the old Command Centre's link to Event day | the item jumps to that Lyst's board on the same page ("Start it") | `src/lib/commandCentre.ts`, `FieldBoardView.tsx` | `commandCentre.test.ts` |
 | 10 | Counter phone Lyst picker order | P3 | the naming audit: `collate "C"` order gives Lyst 1, Lyst 10, Lyst 2 | server ordering | natural order on the phone (client side; no migration) | `src/pages/lyst/CounterPage.tsx` | – |
+| 11 | Event Overview: two Register buttons | P3 | run 11 screenshot `p26-05`: the header's call to action and the registration card both said Register | the card did not know the header already led there | the card hides its button when the header leads to the same place | `src/pages/EventWorkspace.tsx`, `RegistrationCard` | – |
+| 12 | Build tournament said "Field" | P3 | run 11 `p26-19`: "Fields" stepper, "Field 1 / Field 2" chips and headings beside Lyst everywhere else | raw stored names | `fieldLabel` and "Lysts" in the stepper, chips, headings and totals | `src/pages/BuildTournamentTab.tsx` | `pack26-live` 59, 66 |
+| 13 | Lyst Control queue page said "Field" | P3 | probe on run 13's database: "FIELD 1 · Matches for this field · Other fields: Field 2" | raw stored names | "Lyst 1", "Fights on this Lyst", "Other Lysts" (the route and key keep the stored name) | `src/pages/FieldPage.tsx` | `pack1-live` 13c accepts either; the queue page is in the run 14 screenshots |
+| 14 | My events hides a test event the person is in | P2 | run 13 check 138: a fighter registered for the rehearsal event opened My events and saw "No events match … Test events show only with Show test data" | the test-data rule ran before the "mine" rule | an event the person takes part in is listed whatever the toggle says, labelled Test; browsing (Events) still hides test events without the toggle. Matters on hosted: real people rehearse on test events before the Rumble | `src/lib/eventFilters.ts`, `src/pages/MyEventsPage.tsx` | `eventFilters.test.ts` ("My events lists a test event the person takes part in"); `pack26-live` 138 |
+| 15 | "Pools are finished, the bracket needs building" folded away | P2 | run 13 check 159: with the Longsword pools done and Lyst 1 idle, Live ops showed two "later" items (fees, a fighter not here) and "3 more"; the bracket item was behind the fold | the item was ranked `later` | it is a `soon` item: the Lyst stands still until the bracket exists | `src/lib/eventDay.ts` | `eventDay.test.ts` ("points at the next step when pools are finished") |
+| 16 | Review list: the export in the way | P3 | run 11 `p26-10`: the CSV export sat above the first pending card | – | the export sits below the list | `src/pages/control/RegistrationsTool.tsx` | – |
 
 ## 4. Migrations
 
@@ -73,5 +79,18 @@ Screenshots: `docs/reviews/assets/2026-10-07-pack26/`.
 ## 8. Documentation corrected
 
 ## 9. Known limitations, owner questions, deliberately deferred
+
+### Owner questions (nothing changed; the current rule is stated)
+1. **Who may take an injured fighter out on the day.** `withdraw_entry` is the organizer's (Pack 11). The head marshal and the medic are refused (run 13 check 79, now asserted as 79a). On the day that means the organizer, or an event admin device, does the withdrawal. If the head marshal should be able to, it is one permission line in `withdraw_entry` plus a gate check; not done without the owner.
+2. **Camera Off on an event without a broadcast.** Pack 18.1 placed the red Camera Off control first on Live ops for everyone who may protect the stream. On a phone at an event with no camera it is the first screen (run 11 `p26-21`). Pack 26 tried showing it only once a broadcast is configured; that broke the deliberate Pack 18.1 behaviour (`cc181-live` 1.1, 2.10, 4.24) because a stream controller can be live without the configured flag, so the change was reverted. A smaller control, or one that hides when no controller has ever reported, is the owner's call.
+3. **Changing the event's dates after registration holds every fight.** Registrations carry the days a person attends (`attend_dates`); moving the event (as the rehearsal did to make "today" the first day) leaves every attendance on the old days and every fight "held: not attending today". Real events rarely move; if one does, the organizer must re-date attendances (Set up › Registrations) or the hold rule should follow the event. Recorded, not changed.
+4. **Review before build with one straggler.** With one registration still pending, Set up's single next step is "Review 1 registration"; Build tournament sits beside it (run 13 check 58 accepts both). Whether building should lead once most are reviewed is a product call.
+
+### Deliberately deferred
+- The database's `collate "C"` Lyst order (Lyst 1, Lyst 10, Lyst 2) is corrected on the counter phone only; `event_field_keys` / `counter_state` ordering on the server is untouched (no migration for a sort).
+- The two first-time notification asks (install, push) share one "asked" key; acceptable.
+- The registrations list is not live-refreshed while another organizer decides; a reload shows the change.
+- `result_needs_review` pushes still route to the legacy `/manage?tab=eventday` address, which redirects to Event Control.
+- Old real-stack suites that encode screens replaced by Pack 25 (`eventday-live.mjs` Pack 09A Event day, `finalize-live.mjs` Pack 09C Review tab) are superseded by `pack25-live` and `pack26-live`; they were not rewritten. Their stack runner (`eventday-live.sh`) is still the shared runner for every suite.
 
 ## 10. Final verification

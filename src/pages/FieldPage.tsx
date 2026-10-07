@@ -54,6 +54,24 @@ const sideName = (m: CompetitionMatch) => ({ a: sideLabel(m.entryA, m.nameA, 'Si
 
 interface Adjust { canEarlier: boolean; canLater: boolean; onMove: (action: QueueMove) => void }
 
+/** The fight was finished on another device while this board was open: show the official result, offer the next fight, change nothing. */
+function FinalElsewhere({ m, fieldName, nextFight, onOpenNext, onBack }: { m: CompetitionMatch; fieldName: string; nextFight: CompetitionMatch | null; onOpenNext: (m: CompetitionMatch) => void; onBack: () => void }) {
+  const n = sideName(m);
+  const score = m.scoreA !== null && m.scoreB !== null ? `${m.scoreA}–${m.scoreB}` : null;
+  const summary = m.result === 'draw' ? `Draw${score ? `, ${score}` : ''}` : m.result === 'a' || m.result === 'b' ? `${m.result === 'a' ? n.a : n.b} win${score ? `, ${score}` : ''}` : 'Result recorded';
+  const next = nextFight ? sideName(nextFight) : null;
+  return (
+    <section className="panel info" aria-label="This fight is final" style={{ display: 'grid', gap: 12 }} data-testid="final-elsewhere">
+      <h2 style={{ margin: 0 }}>This fight is final</h2>
+      <p style={{ margin: 0 }}><b>{n.a} vs {n.b}</b>: {summary}. It was finished on another device. The result stands; nothing on this screen can change it. If it is wrong, an organizer corrects it from Live ops.</p>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {nextFight && next && <button type="button" className="btn btn-ink fq-big" onClick={() => onOpenNext(nextFight)}><span className="sk-after-k">Next fight on {fieldLabel(fieldName)}</span><span>{next.a} vs {next.b}</span></button>}
+        <button type="button" className="btn btn-line fq-big" onClick={onBack}>Back to the queue</button>
+      </div>
+    </section>
+  );
+}
+
 function QueueRow({ m, comp, busy, onOpen, adjust }: { m: CompetitionMatch; comp: FieldCompetition | undefined; busy: boolean; onOpen: () => void; adjust?: Adjust }) {
   const n = sideName(m);
   const ready = m.entryA !== null && m.entryB !== null;
@@ -94,6 +112,7 @@ export function FieldPage() {
   const { waiting, stuck, heldForOthers, durable } = useOutbox();
   const [reloadKey, setReloadKey] = useState(0);
   const [opened, setOpened] = useState<Opened | null>(null);
+  const [officialHere, setOfficialHere] = useState<string | null>(null);   // the fight this device itself finished (its board shows the result and the next fight)
   const [notice, setNotice] = useState<string | null>(null);
   const [opening, setOpening] = useState(false);
   const [openError, setOpenError] = useState<string | null>(null);
@@ -197,11 +216,16 @@ export function FieldPage() {
             backHref: fromControl ? { to: `/events/${event.slug}/control?mode=live`, label: 'Back to Event Control' } : null,
             onExit: () => { closeOpened(); reload(); },
             onFinished: () => { closeOpened(); reload(); },
-            onOfficial: reload,
+            onOfficial: () => { setOfficialHere(opened.match.id); reload(); },
             onOpenNext: (m: CompetitionMatch) => { closeOpened(); void open(m); },
             onStale: (message: string) => { closeOpened(); setNotice(message); reload(); }
           };
           const isDuel = boardModeFor(opened.comp.league, opened.comp.category) === 'duel';
+          // Another device finished this fight while it was open here: the result stands; this board must not offer another round or a second result.
+          const fresh = matches.data?.find(m => m.id === opened.match.id);
+          if (fresh && fresh.queueState === 'final' && officialHere !== opened.match.id) {
+            return <FinalElsewhere m={fresh} fieldName={field} nextFight={common.nextFight} onOpenNext={common.onOpenNext} onBack={common.onFinished} />;
+          }
           return <>
             <ReadinessStrip key={`ready-${opened.match.id}`} matchId={opened.match.id} />
             {isDuel && !classic

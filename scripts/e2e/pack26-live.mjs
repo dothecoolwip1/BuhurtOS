@@ -349,7 +349,7 @@ try {
     await search.fill('Volunteer');
     await until(async () => (await o.locator('section[aria-label="Registrations"] article').count()) === 2);
     const vol = await body(o, 'section[aria-label="Registrations"] article');
-    check('37. a volunteer\'s card shows the roles and "no fee"', /squire|points counter/.test(vol) && /no fee/.test(vol), vol.slice(0, 300));
+    check('37. a volunteer\'s card shows the roles and "no fee"', /squire|points counter|runner/.test(vol) && /no fee/.test(vol), vol.slice(0, 300));
     await shot(o, 'review-volunteer');
     check('38. the Registrations tool at 390: nothing sideways, no covered control', await fits(o) && (await covered(o)).length === 0, JSON.stringify(await covered(o)));
     check('39. no page errors in review', o.errors.length === 0, o.errors.join(' | '));

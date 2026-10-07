@@ -116,9 +116,9 @@ try {
   await progressRow(page, 'Longsword (men)').getByRole('button', { name: 'Review wins & losses' }).click();
   check('Review wins & losses opens the review sheet with Confirm results', await waitText(page, '[role="dialog"]', 'confirm results', 30000), await body(page, '[role="dialog"]'));
   await page.locator('[role="dialog"]').getByRole('button', { name: 'Close' }).click().catch(() => page.keyboard.press('Escape'));
-  await page.goto(BASE + MANAGE + `?tab=finalize&competition=${C(1)}`);
+  await page.goto(BASE + MANAGE + `?mode=results&competition=${C(1)}`);   // Pack 25: Results mode (the old ?tab=finalize)
   await page.waitForSelector(REVIEW, { timeout: 30000 }); await waitText(page, REVIEW, 'ready to finalize');
-  check('the Results tab opens on Longsword', /tab=finalize/.test(page.url()) && /competition=00000000-0000-0000-0000-00000000c001/.test(page.url()) && (await page.locator('[aria-label="Area"] button[aria-pressed="true"]').innerText()) === 'Results', page.url());
+  check('the Results tab opens on Longsword', /mode=results/.test(page.url()) && /competition=00000000-0000-0000-0000-00000000c001/.test(page.url()) && (await page.locator('[aria-label="Area"] button[aria-pressed="true"]').innerText()) === 'Results', page.url());
   check('the state leads: Ready to finalize, 6 of 6 fights have a result', /ready to finalize.*6 of 6 fights have a result/.test(await body(page, `${REVIEW} .fz-state`)), await body(page, `${REVIEW} .fz-state`));
   const steps = await podiumNames(page, REVIEW);
   check('the podium preview: Bob champion, John silver, Joe bronze; Mike 4th below', steps.length === 3 && /champion.*bob stone/i.test(steps[0]) && /silver.*john oakley/i.test(steps[1]) && /bronze.*joe rhodes/i.test(steps[2]) && /4.*mike voss/i.test(await body(page, `${REVIEW} ol.pd-list`)), JSON.stringify(steps));
@@ -321,7 +321,7 @@ try {
   await shot(arena, '14-arena-complete', false);
   await arctx.close();
 
-  await page.goto(BASE + MANAGE + '?tab=eventday'); await page.waitForSelector('section.ed-progress', { timeout: 30000 });
+  await page.goto(BASE + MANAGE + '?mode=live'); await page.waitForSelector('section.ed-progress', { timeout: 30000 });
   await waitText(page, 'section.ed-progress', 'this event is closed');
   const edClosed = await body(page, 'section.ed-progress');
   check('Event day says the event is closed and every competition Official, with Official results links', /this event is closed/.test(edClosed) && (await page.locator('section.ed-progress .ed-phase-official').count()) === 4 && (await page.locator('section.ed-progress a', { hasText: 'Official results' }).count()) === 4, edClosed);
@@ -329,7 +329,7 @@ try {
   await shot(page, '15-eventday-closed');
 
   // ================================================================ 10. reopen the event (audited), then close it again
-  await page.goto(BASE + MANAGE + '?tab=finalize'); await page.locator('[aria-label="Event closed"]').waitFor({ timeout: 30000 });
+  await page.goto(BASE + MANAGE + '?mode=results'); await page.locator('[aria-label="Event closed"]').waitFor({ timeout: 30000 });
   await page.locator('[aria-label="Event closed"] button', { hasText: 'Reopen the event…' }).click();
   await dialog(page).waitFor({ timeout: 10000 });
   await dialog(page).locator('input[type="text"]').fill('a result was contested after closing');
@@ -353,7 +353,7 @@ try {
   // ================================================================ 11. phone, tablet, desktop and large screens
   for (const kind of ['phone', 'tablet', 'desktop', 'large']) {
     const { ctx, page: p } = await open(kind, 'organizer');
-    await p.goto(BASE + MANAGE + `?tab=finalize&competition=${C(1)}`); await p.waitForSelector(REVIEW, { timeout: 30000 }); await waitText(p, REVIEW, 'competition official');
+    await p.goto(BASE + MANAGE + `?mode=results&competition=${C(1)}`); await p.waitForSelector(REVIEW, { timeout: 30000 }); await waitText(p, REVIEW, 'competition official');
     await p.locator('[aria-label="Event closed"]').waitFor({ timeout: 30000 });
     await sleep(1200);
     const sw = await noSideways(p);
@@ -370,7 +370,7 @@ try {
     const sw2 = await noSideways(p);
     check(`[${kind}] public results page: four podiums, no sideways scroll`, (await p.locator('ol.podium').count()) === 4 && sw2[0] <= sw2[1], JSON.stringify(sw2));
     await shot(p, `17-${kind}-public-results`);
-    await p.goto(BASE + MANAGE + '?tab=eventday'); await p.waitForSelector('section.ed-progress', { timeout: 30000 }); await waitText(p, 'section.ed-progress', 'this event is closed');
+    await p.goto(BASE + MANAGE + '?mode=live'); await p.waitForSelector('section.ed-progress', { timeout: 30000 }); await waitText(p, 'section.ed-progress', 'this event is closed');
     await sleep(800);
     check(`[${kind}] the closed Event day says the never-run competition was closed as not held, and no longer asks for a draw`, (await has(p, 'closed as not held', 'section.ed-progress')) && !(await has(p, 'build a draw', 'section.ed-progress')), await body(p, 'section.ed-progress'));
     await shot(p, `18-${kind}-eventday-closed`);
