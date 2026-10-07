@@ -38,11 +38,11 @@ check('11/12. the notifications sheet hints say 2 fights away and announcements'
 check('P1. the second-tablet guard is deployed (This fight is final)', has('This fight is final') && has('final-elsewhere'), '');
 check('P2. the pools-done rule is deployed (Pools complete, bracket needs building; structure in the live competition)', has('Pools complete, bracket needs building') && has('pools_elimination'), '');
 check('17. Pack 25.2 (sides and colours) is intact in the bundle', has('cp-side-now') && has('Now fighting:'), '');
-check('18. Pack 25.3 (attention list at the top) is intact in the bundle', has('cc-attention') && has('need attention') , '');
-check('P3. the old row name is gone (Notification Settings) and the row is Notifications', !has('Notification Settings'), '');
+check('18. Pack 25.3 (attention list at the top) is intact in the bundle', has('#cc-attention') && has('Needs attention') && has(' more ›'), '');
+check('11b. the compact notifications sheet is deployed (Choose what BuhurtOS tells you about, Manage devices)', has('Choose what BuhurtOS tells you about') && has('Manage devices'), '');
 // 2. events + the production test event
 await go('/events'); const ev = await body();
-check('2. the events list loads with the Test data badge on test events', /events/i.test(ev) && /test data/i.test(ev), ev.slice(0, 200));
+check('2. the events list loads with its search and folded Filters (test events stay behind the Show test data toggle for a visitor)', /events/i.test(ev) && /calendar/i.test(ev) && /filters/i.test(ev), ev.slice(0, 200));
 await go(`/events/${EVENT}`); const ovw = await body();
 check('2b. the production test event opens (Overview / Live / Results)', /testing stuff|test/i.test(ovw) && /overview|live|results/i.test(ovw), ovw.slice(0, 200));
 check('2c. no sideways scroll on the event page', (await sideways()) <= 0, await sideways());
