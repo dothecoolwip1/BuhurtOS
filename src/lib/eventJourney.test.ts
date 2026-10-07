@@ -33,10 +33,10 @@ describe('event journey: one recommended action per state', () => {
     expect(j.primary?.label).toBe('Build tournament');
     expect(j.headline).toMatch(/1 competition has enough fighters/);
   });
-  it('running: Event day, with check-in as the next thing on the day', () => {
+  it('running: Live ops, with check-in as the next thing on the day', () => {
     const j = journey({ ...base, status: 'published', eventDay: true, competitions: [comp('a', { active: 4, fights: 6, fightsDone: 2, record: 'running' })], checkin: { ready: 23, accepted: 26 } });
     expect(j.stage).toBe('run');
-    expect(j.primary?.label).toBe('Open Event day');
+    expect(j.primary?.label).toBe('Open Live ops');
     expect(j.secondary[0].label).toBe('Check in 3 fighters');
     expect(j.headline).toMatch(/4 fights to go/);
   });

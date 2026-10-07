@@ -69,7 +69,7 @@ const waitText = (page, sel, text, timeout = 40000) => page.waitForFunction(([s,
 // The review panel re-keys itself after a change (once right away, once more when the event re-reads), so wait until the text holds for a while.
 const settled = async (page, sel, text, timeout = 40000) => { for (let i = 0; i < 3; i++) { if (!(await waitText(page, sel, text, timeout))) return false; await sleep(1200); } return waitText(page, sel, text, timeout); };
 const waitGone = (page, sel, text, timeout = 40000) => page.waitForFunction(([s, t]) => !(document.querySelector(s)?.innerText ?? '').replace(/\s+/g, ' ').toLowerCase().includes(t), [sel, text.toLowerCase()], { timeout }).then(() => true, () => false);
-const MANAGE = `/events/${SLUG}/manage`;
+const MANAGE = `/events/${SLUG}/control`;
 const REVIEW = 'section[aria-labelledby="rv-h"]';
 const progressRow = (page, name) => page.locator('section.ed-progress li', { has: page.locator('b', { hasText: name }) }).first();
 const rowText = async (page, name) => (await progressRow(page, name).innerText().catch(() => '')).replace(/\s+/g, ' ').toLowerCase();

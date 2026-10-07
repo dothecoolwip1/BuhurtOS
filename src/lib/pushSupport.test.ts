@@ -50,12 +50,13 @@ describe('prompts stay out of the way', () => {
   it('no nudges while scoring, on the field, running the event or on the big screen', () => {
     expect(quietRoute('/events/rumble/field/Field 1')).toBe(true);
     expect(quietRoute('/events/rumble/arena')).toBe(true);
-    expect(quietRoute('/events/rumble/manage', '?tab=run')).toBe(true);
-    expect(quietRoute('/events/rumble/manage', '?tab=checkin')).toBe(true);
+    expect(quietRoute('/events/rumble/control', '?mode=live')).toBe(true);
+    expect(quietRoute('/events/rumble/control', '?mode=setup&tool=run')).toBe(true);
+    expect(quietRoute('/events/rumble/control', '?mode=live&tool=checkin')).toBe(true);
     expect(quietRoute('/marshal')).toBe(true);
     expect(quietRoute('/events/rumble')).toBe(false);
     expect(quietRoute('/')).toBe(false);
-    expect(quietRoute('/events/rumble/manage', '?tab=setup')).toBe(false);
+    expect(quietRoute('/events/rumble/control', '?mode=setup')).toBe(false);
   });
   it('has short, device-appropriate install steps', () => {
     expect(installHelp('ios').steps.join(' ')).toMatch(/Share.*Add to Home Screen/);

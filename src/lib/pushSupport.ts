@@ -51,7 +51,7 @@ export const stillDismissed = (stored: string | null, now: number, days: number)
 
 /** Pages where an install or notification nudge would get in the way: scoring, the field, the running of an event, check-in. */
 export const quietRoute = (pathname: string, search = ''): boolean =>
-  /\/events\/[^/]+\/(field|arena)/.test(pathname) || (/\/events\/[^/]+\/manage$/.test(pathname) && /tab=(run|checkin|finalize)/.test(search)) || pathname.startsWith('/marshal');
+  /\/events\/[^/]+\/(field|arena)/.test(pathname) || (/\/events\/[^/]+\/control$/.test(pathname) && /mode=(live|results)|tool=(run|checkin)/.test(search)) || pathname.startsWith('/marshal');
 
 /** Decode a base64url VAPID public key for PushManager.subscribe. */
 export function urlBase64ToBytes(text: string): Uint8Array {

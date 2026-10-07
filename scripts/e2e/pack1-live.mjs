@@ -73,7 +73,7 @@ for (const vp of ['m390', 'd1440']) {
   await page.fill('input >> nth=0', 'Pack One Cup'); await page.fill('input >> nth=1', slug);
   await page.fill('input[type=date] >> nth=0', '2026-12-05'); await page.fill('input[type=date] >> nth=1', '2026-12-06');
   await page.click('button[type=submit]'); await page.waitForURL(/manage\?tab=setup/, { timeout: 15000 }); await page.waitForTimeout(1500);
-  check('TEST 6 organizer creates a draft event', page.url().includes(`/events/${slug}/manage`));
+  check('TEST 6 organizer creates a draft event', page.url().includes(`/events/${slug}/control`));
   const t7 = await text(page); await shot(page, 'm390-setup-blocker');
   check('TEST 7 publish checklist says no competitions yet, with an action', /No competitions yet/i.test(t7) && (await page.getByRole('link', { name: '+ Add competition' }).count()) > 0 && (await page.locator('button:has-text("Publish event")').isDisabled()));
   await page.getByRole('link', { name: '+ Add competition' }).first().click(); await page.waitForTimeout(1200);
@@ -92,7 +92,7 @@ for (const vp of ['m390', 'd1440']) {
   const rows = page.locator('li', { hasText: 'Men 5v5' }); await rows.getByRole('button', { name: 'Remove' }).click(); await page.getByRole('button', { name: 'Yes, remove it' }).click(); await page.waitForTimeout(1200);
   check('TEST 9b an unused competition can be removed', /Removed Men 5v5/i.test(await text(page)) && /Competitions \(1\)/i.test(await text(page)));
   // waiver + close so the rest of the checklist is green, then publish
-  await go(page, `/events/${slug}/manage?tab=setup`);
+  await go(page, `/events/${slug}/control?mode=setup&tool=settings`);
   await page.click('button:has-text("Add the waiver")'); await page.fill('textarea', 'Pack one waiver text.'); await page.click('button:has-text("Save waiver")'); await page.waitForTimeout(1200);
   await page.locator('input[type=datetime-local] >> nth=1').fill('2026-12-01T23:59'); await page.fill('label:has-text("Venue") input', 'Pack Hall');
   await page.fill('label:has-text("Entry fee") input', '25'); await page.selectOption('label:has-text("Who pays") select', 'ALL'); await page.fill('label:has-text("Note about payment") input', 'E-transfer to the club treasurer, or cash at the door.');
@@ -101,7 +101,7 @@ for (const vp of ['m390', 'd1440']) {
   check('TEST 10 the publish requirement clears once a competition exists', !/No competitions yet/i.test(t10) && /✓ At least one competition is set up/i.test(t10) && !(await page.locator('button:has-text("Publish event")').isDisabled()));
   await page.click('button:has-text("Publish event")'); await page.click('button:has-text("Yes, publish")'); await page.waitForTimeout(1500);
   check('TEST 10b publish succeeds', /PUBLISHED|This event is public/i.test(await text(page)));
-  await go(page, `/events/${slug}/manage?tab=run`); const t11 = await text(page); await shot(page, 'm390-run-with-competition');
+  await go(page, `/events/${slug}/control?mode=setup&tool=run`); const t11 = await text(page); await shot(page, 'm390-run-with-competition');
   check('TEST 11 the competition appears in Run', /LONGSWORD \(OPEN\)/i.test(t11) && !/No competitions yet/i.test(t11));
   await c.close();
 }
@@ -163,17 +163,17 @@ for (const vp of ['m390', 'd1440']) {
   await page.getByRole('link', { name: 'Open Ring 1' }).click(); await page.waitForTimeout(2000);
   const q = await text(page); await shot(page, 'm390-ring1-queue');
   check('TEST 13c the field queue opens', /RING 1/i.test(q) && /Pick one to start scoring|Nothing queued on Ring 1/i.test(q) && /Other fields/i.test(q));
-  await go(page, '/events/red-deer-rumble-test/manage'); const m = await text(page);
+  await go(page, '/events/red-deer-rumble-test/control'); const m = await text(page);
   check('TEST 14 scorekeeper gets no organizer area', /This area is for organizers/i.test(m) && !/Review \(/i.test(m));
-  await go(page, '/events/red-deer-rumble-test/manage?tab=competitions'); check('TEST 14b nor the Competitions tab', /This area is for organizers/i.test(await text(page)));
+  await go(page, '/events/red-deer-rumble-test/control?mode=setup&tool=competitions'); check('TEST 14b nor the Competitions tab', /This area is for organizers/i.test(await text(page)));
   await c.close();
 }
 // ---------------- desktop pass on the organizer screens
 {
   const { c, page } = await ctx('d1440');
   await login(page, 'organizer');
-  await go(page, `/events/${slug}/manage?tab=competitions`); await shot(page, 'd1440-competitions-tab');
-  await go(page, `/events/${slug}/manage`); const rv = await text(page);
+  await go(page, `/events/${slug}/control?mode=setup&tool=competitions`); await shot(page, 'd1440-competitions-tab');
+  await go(page, `/events/${slug}/control`); const rv = await text(page);
   check('TEST 15b organizer sees the registration with event-day attendance', /Pack One Fighter/i.test(rv));
   await page.locator('summary:has-text("Contact")').click(); await page.waitForTimeout(300);
   check('TEST 21b organizer review shows the chosen event day', /Can attend: Saturday, Dec 5/i.test(await text(page)));

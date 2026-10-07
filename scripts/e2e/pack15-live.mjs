@@ -115,7 +115,7 @@ try {
 
   // ================================================================ 7. organizer announcement from the phone (Manage › Event day)
   const org = await open('organizer');
-  await org.goto(`${BASE}/events/test-stuff-test/manage?tab=eventday`);
+  await org.goto(`${BASE}/events/test-stuff-test/control?mode=live`);
   await org.getByRole('heading', { name: /Announce to the event/i }).waitFor({ timeout: 30000 });
   const box = org.getByLabel(/Message/);
   await box.fill('Lyst 2 is running 20 minutes behind.');

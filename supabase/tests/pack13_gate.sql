@@ -43,7 +43,14 @@ grant usage on schema t to anon, authenticated, service_role;
 grant all on t.log to anon, authenticated, service_role;
 grant usage on all sequences in schema t to anon, authenticated, service_role;
 
-create function t.u(n int) returns uuid language sql immutable as $$ select ('00000000-0000-0000-0000-0000000000' || lpad(n::text, 2, '0'))::uuid $$;
+create table t.ph (n int primary key, sid uuid);   -- counter phones 21..24: sessions of the event's Counter QR (not people)
+create function t.u(n int) returns uuid language sql stable as $$ select coalesce((select sid from t.ph where t.ph.n = u.n), ('00000000-0000-0000-0000-0000000000' || lpad(u.n::text, 2, '0'))::uuid) from (select n) u $$;
+create function t.as_device(s uuid) returns void language plpgsql as $$ begin reset role; perform set_config('request.jwt.claim.sub', s::text, true); set local role bos_event_device; end $$;
+-- a phone (21..24) acts as a device session; anyone else as a signed-in person
+create function t.as_who(n int) returns void language plpgsql as $$ begin if exists (select 1 from t.ph where t.ph.n = as_who.n) then perform t.as_device(t.u(n)); else perform t.as_user(t.u(n)); end if; end $$;
+create function t.h(n int) returns bytea language sql immutable as $$ select decode(repeat(lpad(to_hex(n), 2, '0'), 32), 'hex') $$;
+create function t.sh(n int) returns bytea language sql immutable as $$ select decode(repeat(lpad(to_hex(n + 128), 2, '0'), 32), 'hex') $$;
+create function t.open(code int, ip text, sec int) returns uuid language sql as $$ select (public.device_open_session(t.h(code), t.sh(sec), ip) ->> 'session_id')::uuid $$;
 create function t.m(n int) returns uuid language sql immutable as $$ select ('00000000-0000-0000-0000-0000000f0' || lpad(n::text, 3, '0'))::uuid $$;
 create function t.cmd() returns uuid language sql volatile as $$ select gen_random_uuid() $$;
 create function t.e1() returns uuid language sql immutable as $$ select '00000000-0000-0000-0000-00000000e101'::uuid $$;
@@ -76,12 +83,13 @@ create function t.total(uid int, r int) returns int language sql volatile securi
 create function t.cr(uid int, rnd int, w int default 1, id uuid default null) returns jsonb language plpgsql as $$
 declare r jsonb;
 begin
-  perform t.as_user(t.u(uid));
+  perform t.as_who(uid);
   r := public.counter_record(coalesce(id, gen_random_uuid()), t.seatof(uid), rnd, w);
   perform t.as_admin();
   return r;
 end $$;
-grant execute on all functions in schema t to anon, authenticated, service_role;
+grant usage on schema t to bos_event_device; grant all on t.log to bos_event_device; grant usage on all sequences in schema t to bos_event_device; grant select on t.ph to anon, authenticated, service_role, bos_event_device;
+grant execute on all functions in schema t to anon, authenticated, service_role, bos_event_device;
 
 -- ---------------------------------------------------------------- fixtures
 insert into auth.users (id, email) select t.u(n), 'u' || n || '@example.test' from generate_series(1, 99) n;
@@ -202,36 +210,66 @@ select t.expect_eq('START BREAK ends the running round for scoring (one tap: "Sc
 select t.expect_eq('... the round is now being confirmed', t.round_status(1, 1), 'confirming');
 select t.expect_eq('... and the break timer runs on the same field', array[t.timer_mode('field 1'), t.timer_status('field 1')], array['break', 'running']);
 
--- ================================================================ 3. counters join (provisional evidence), before the marshal's call
+-- ================================================================ 3. counters: ONE reusable Counter QR per event (many phones), each phone bound to a field and a side; trainees through the training QR
+select t.as_user(t.u(90));
+select t.expect_eq('the organizer makes the event''s reusable Counter QR (kind counter_pool, role counter)', public.create_event_credential(t.e1(), 'counter_pool', 'Counter QR', 'counter', t.h(50), null, 'ABCDEFGH2345') ->> 'kind', 'counter_pool');
+select t.expect_error('one Counter QR per event', format($$select public.create_event_credential(%L, 'counter_pool', 'Second QR', 'counter', %L, null, 'ABCDEFGH2346')$$, t.e1(), t.h(51)), '22023');
+select t.expect_error('the pool needs its plaintext code (that is what the QR shows)', format($$select public.create_event_credential(%L, 'counter_pool', 'QR', 'counter', %L)$$, t.e2(), t.h(52)), '42501');
+select t.expect_error('an ordinary device code never keeps a plaintext', format($$select public.create_event_credential(%L, 'device', 'Marshal Phone', 'marshal', %L, null, 'ABCDEFGH2347')$$, t.e1(), t.h(53)), '22023');
+select t.expect_error('a pool is only ever a counter', format($$select public.create_event_credential(%L, 'counter_pool', 'QR', 'marshal', %L, null, 'ABCDEFGH2348')$$, t.e1(), t.h(54)), '22023');
+select t.as_admin();
+insert into t.ph select n, t.open(50, 'ip-p' || n, 50 + n) from generate_series(21, 24) n;
+select t.expect_eq('four phones scan the same QR: four open sessions, none signed the others out', (select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where c.kind = 'counter_pool' and s.ended_at is null and s.multi), 4::bigint);
+select t.expect_eq('... and the credential is not flagged "signed in elsewhere"', (select elsewhere_at is null from public.event_credentials where kind = 'counter_pool'), true);
+select t.as_user(t.u(88));
+select t.expect_eq('the Secretary / Scorekeeper shows the Counter QR (the plaintext, with how many phones are on it)', (public.counter_pool_code(t.e1()) ->> 'code') || '|' || (public.counter_pool_code(t.e1()) ->> 'open_sessions'), 'ABCDEFGH2345|4');
+select t.as_user(t.u(87));
+select t.expect_eq('a marshal shows it too', public.counter_pool_code(t.e1()) ->> 'code', 'ABCDEFGH2345');
+select t.as_user(t.u(1));
+select t.expect_error('a fighter cannot', format('select public.counter_pool_code(%L)', t.e1()), '42501');
+select t.as_user(t.u(70));
+select t.expect_error('another event''s organizer cannot', format('select public.counter_pool_code(%L)', t.e1()), '42501');
+select t.as_user(t.u(70));
+select t.expect_eq('an event without a Counter QR says so, and that its organizer may make one', (public.counter_pool_code(t.e2()) ->> 'code') is null and (public.counter_pool_code(t.e2()) ->> 'can_create') = 'true', true);
+-- the Lyst is running m1 on Field 1 (the last fight opened on a field is its current one)
+select t.as_user(t.u(88)); select public.lyst_open(t.m(1), 'weighted');
+-- the phone: who is counting, which Lyst, which side. Nothing else to decide, nobody to approve.
+select t.as_device(t.u(21));
+select t.expect_eq('a fresh phone knows its event and its fields, and has no seat yet', (public.counter_state() ->> 'kind') || '|' || jsonb_array_length(public.counter_state() -> 'fields') || '|' || jsonb_typeof(public.counter_state() -> 'seat'), 'device|2|null');
+select t.expect_error('a phone must say who is counting', $$select public.counter_bind('Field 1', 'a')$$, '22023');
+select t.expect_error('a phone cannot bind to a field the event does not have', $$select public.counter_bind('Field 9', 'a', 'Ash')$$, '22023');
+select t.expect_error('a side is a (red) or b (blue)', $$select public.counter_bind('Field 1', 'c', 'Ash')$$, '22023');
+select t.expect_eq('phone 21: Field 1, red, Ash: seated at once on the fight the Lyst has open', (public.counter_bind('Field 1', 'a', 'Ash') -> 'seat' ->> 'match_id'), t.m(1)::text);
+select t.expect_eq('... as an official counter on side a, watching Fighter 1', (public.counter_state() -> 'seat' ->> 'role') || '|' || (public.counter_state() -> 'seat' ->> 'side') || '|' || (public.counter_state() ->> 'fighter'), 'official|a|Fighter 1');
+select t.expect_error('a phone cannot make a training code', format($$select public.create_lyst_join_code(%L, 'Field 1')$$, t.e1()), '42501');
+select t.expect_error('a phone cannot read the staff state', format('select public.lyst_state(%L)', t.m(1)), '42501');
+select t.expect_error('a phone cannot touch the timer', format($$select public.lyst_timer_command(%L, 'Field 1', %L, 0, gen_random_uuid(), 'pause')$$, t.e1(), t.m(1)), '42501');
+select t.expect_error('a phone cannot confirm a round', format('select public.lyst_confirm_round(gen_random_uuid(), %L, 1, 6, 5, 0)', t.m(1)), '42501');
+select t.expect_error('a phone cannot record discipline', format($$select public.lyst_record_discipline(gen_random_uuid(), %L, 1, 'b', 'warning')$$, t.m(1)), '42501');
+select t.expect_error('a phone cannot finalize', format($$select public.lyst_finalize(gen_random_uuid(), %L, 0, 'a')$$, t.m(1)), '42501');
+select t.expect_error('a phone cannot read any table (it inherits the public reads only)', 'select count(*) from public.lyst_counter_seats', '42501');
+select t.expect_error('a phone cannot move another phone', format($$select public.move_counter_session(%L, 'Field 2', 'b')$$, t.u(22)), '42501');
+select t.as_device(t.u(22)); select public.counter_bind('Field 1', 'a', 'Birch');
+select t.as_device(t.u(23)); select public.counter_bind('Field 1', 'b', 'Cedar');
+select t.as_device(t.u(24)); select public.counter_bind('Field 1', 'b', 'Dune');
+select t.as_admin();
+select t.expect_eq('the phones have no slots and are not limited to four: two on red, two on blue', (select string_agg(coalesce(slot, '-') || side, ',' order by display_name) from public.lyst_counter_seats where match_id = t.m(1) and status = 'active'), '-a,-a,-b,-b');
+select t.expect_eq('the operator history has one line per phone', (select count(*) from public.counter_operator_log where event_id = t.e1()), 4::bigint);
+-- trainees: the Lyst's join code is the TRAINING QR; a signed-in person joins at once (no approval, no waiting), always as LEARNING
 select t.as_user(t.u(88));
 select public.create_lyst_join_code(t.e1(), 'Field 1') ->> 'code' as code1 \gset
-select t.as_user(t.u(21));
-select t.expect_eq('a wrong join code is answered "invalid" (not an error, so the try is counted)', public.request_counter_seat('NOT-A-CODE') ->> 'status', 'invalid');
-select t.expect_eq('a counter scanning the code only ASKS for a seat (pending, no match, no side)', public.request_counter_seat(:'code1') ->> 'status', 'pending');
-select t.expect_eq('asking again is the same request', (select count(*) from public.lyst_counter_seats where user_id = t.u(21)), 1::bigint);
-select t.expect_error('a counter cannot assign themselves', format('select public.assign_counter_seat(%L, %L, %L)', t.seatof(21), t.m(1), 'a'), '42501');
-select t.expect_error('a counter cannot count before being seated', format('select public.counter_record(gen_random_uuid(), %L, 1, 1)', t.seatof(21)), 'P0001');
-select t.expect_error('a counter cannot make a join code', format($$select public.create_lyst_join_code(%L, 'Field 1')$$, t.e1()), '42501');
-select t.expect_error('a counter cannot read the staff state', format('select public.lyst_state(%L)', t.m(1)), '42501');
-select t.expect_error('a counter cannot touch the timer', format($$select public.lyst_timer_command(%L, 'Field 1', %L, 0, gen_random_uuid(), 'pause')$$, t.e1(), t.m(1)), '42501');
-select t.expect_error('a counter cannot confirm a round', format('select public.lyst_confirm_round(gen_random_uuid(), %L, 1, 6, 5, 0)', t.m(1)), '42501');
-select t.expect_error('a counter cannot record discipline', format($$select public.lyst_record_discipline(gen_random_uuid(), %L, 1, 'b', 'warning')$$, t.m(1)), '42501');
-select t.expect_error('a counter cannot finalize', format($$select public.lyst_finalize(gen_random_uuid(), %L, 0, 'a')$$, t.m(1)), '42501');
-select t.as_user(t.u(22)); select public.request_counter_seat(lower(:'code1'));
-select t.as_user(t.u(23)); select public.request_counter_seat(:'code1');
-select t.as_user(t.u(24)); select public.request_counter_seat(:'code1');
-select t.as_user(t.u(25)); select public.request_counter_seat(:'code1');
-select t.as_user(t.u(26)); select public.request_counter_seat(:'code1');
+select t.as_user(t.u(25));
+select t.expect_eq('a wrong training code is answered "invalid" (not an error, so the try is counted)', public.join_training_counter('NOT-A-CODE', 'Elm', 'a') ->> 'status', 'invalid');
+select t.expect_error('a trainee must pick a side', format($$select public.join_training_counter(%L, 'Elm', null)$$, :'code1'), '22023');
+select t.expect_eq('a trainee joins at once as a LEARNING counter on the open fight (no approval)', public.join_training_counter(:'code1', 'Elm', 'a') ->> 'status', 'ok');
+select t.expect_eq('... learning, side a, on m1', (public.counter_state() ->> 'kind') || '|' || (public.counter_state() -> 'seat' ->> 'role') || '|' || (public.counter_state() -> 'seat' ->> 'side') || '|' || (public.counter_state() -> 'seat' ->> 'match_id'), 'training|learning|a|' || t.m(1)::text);
+select t.expect_error('a trainee cannot bind like a phone (no device)', $$select public.counter_bind('Field 1', 'a', 'Elm')$$, '42501');
+select t.as_user(t.u(26)); select public.join_training_counter(lower(:'code1'), 'Fir', 'b');
 select t.as_user(t.u(88));
-select t.expect_eq('the tablet sees the pending requests (names, no accounts)', jsonb_array_length(public.lyst_state(t.m(1)) -> 'requests'), 6);
-select t.expect_error('a seat cannot be on a match of another field', format('select public.assign_counter_seat(%L, %L, %L)', t.seatof(21), t.m(2), 'a'), 'P0001');
-select t.expect_error('a seat cannot be on a match of another event', format('select public.assign_counter_seat(%L, %L, %L)', t.seatof(21), t.m(9), 'a'), 'P0002');
-select t.expect_eq('seat counter 21 on fighter A: slot A, official', (public.assign_counter_seat(t.seatof(21), t.m(1), 'a') ->> 'slot'), 'A');
-select t.expect_eq('seat counter 22 on fighter A: slot B', public.assign_counter_seat(t.seatof(22), t.m(1), 'a') ->> 'slot', 'B');
-select t.expect_eq('seat counter 23 on fighter B: slot C', public.assign_counter_seat(t.seatof(23), t.m(1), 'b') ->> 'slot', 'C');
-select t.expect_eq('seat counter 24 on fighter B: slot D', public.assign_counter_seat(t.seatof(24), t.m(1), 'b') ->> 'slot', 'D');
-select t.expect_eq('a LEARNING counter on fighter A: slot L1', public.assign_counter_seat(t.seatof(25), t.m(1), 'a', 'learning') ->> 'slot', 'L1');
-select t.expect_eq('a second LEARNING counter on fighter B: slot L2 (not limited to four devices)', public.assign_counter_seat(t.seatof(26), t.m(1), 'b', 'learning') ->> 'slot', 'L2');
+select t.expect_eq('the Lyst sees 4 counters and 2 trainees on the fight, by operator name (no slots, no accounts), device counters marked online',
+  (select string_agg((x ->> 'name') || ':' || (x ->> 'role') || ':' || (x ->> 'side') || ':' || coalesce(x ->> 'online', 'n/a'), ',' order by x ->> 'role', x ->> 'side', x ->> 'name') from jsonb_array_elements(public.lyst_state(t.m(1)) -> 'seats') x),
+  'Elm:learning:a:n/a,Fir:learning:b:n/a,Ash:official:a:true,Birch:official:a:true,Cedar:official:b:true,Dune:official:b:true');
+select t.expect_eq('... and the field''s bound phones with their operators', jsonb_array_length(public.lyst_state(t.m(1)) -> 'field_counters'), 4);
 select t.as_admin();
 
 -- ---------------------------------------------------------------- counting: the round must be the one being fought
@@ -261,23 +299,35 @@ select t.expect_eq('UNDO LAST took one off', t.total(22, 1), 4);
 select t.cmd() as undo \gset
 select t.as_user(t.u(22)); select public.counter_undo(:'undo'::uuid, t.seatof(22), 1); select public.counter_undo(:'undo'::uuid, t.seatof(22), 1); select t.as_admin();
 select t.expect_eq('a retried undo (same id) reverses only once', t.total(22, 1), 3);
-select t.as_user(t.u(21));
+select t.as_device(t.u(21));
 select t.expect_error('a counter cannot count on another counter''s seat', format('select public.counter_record(gen_random_uuid(), %L, 1, 1)', t.seatof(22)), '42501');
 select t.expect_error('... nor undo another counter''s tap', format('select public.counter_undo(gen_random_uuid(), %L, 1)', t.seatof(22)), '42501');
 select t.expect_error('... nor submit for them', format('select public.counter_submit(%L, 1)', t.seatof(22)), '42501');
 select t.expect_error('stale input: a counter cannot add to round 2 while round 1 is the live round', format('select public.counter_record(gen_random_uuid(), %L, 2, 1)', t.seatof(21)), 'P0001');
 select t.as_admin();
 select t.expect_eq('the tablet can see every tally row (taps only; undo rows reverse them)', (select count(*) from public.lyst_counts where round_no = 1 and undo_of is null), 53::bigint);
-select t.as_user(t.u(21));
-select t.expect_eq('a counter sees only their own tally rows', (select count(*) from public.lyst_counts), 32::bigint);
-select t.expect_eq('a counter sees only their own seat', (select count(*) from public.lyst_counter_seats), 1::bigint);
-select t.expect_eq('a counter sees their own phone state: fighter, slot, role, round, total, can_count', (public.counter_state() ->> 'fighter') || '|' || (public.counter_state() #>> '{seat,slot}') || '|' || (public.counter_state() #>> '{seat,role}') || '|' || (public.counter_state() ->> 'my_total') || '|' || (public.counter_state() ->> 'can_count'), 'Fighter 1|A|official|32|true');
+select t.as_user(t.u(25));
+select t.expect_eq('a trainee sees only their own tally rows', (select count(*) from public.lyst_counts), 9::bigint);
+select t.expect_eq('a trainee sees only their own seat', (select count(*) from public.lyst_counter_seats), 1::bigint);
+select t.as_device(t.u(21));
+select t.expect_error('a phone reads no tally table at all', 'select count(*) from public.lyst_counts', '42501');
+select t.expect_eq('a phone sees its own state: fighter, side, role, operator, round, total, can_count', (public.counter_state() ->> 'fighter') || '|' || (public.counter_state() #>> '{seat,side}') || '|' || (public.counter_state() #>> '{seat,role}') || '|' || (public.counter_state() #>> '{binding,operator}') || '|' || (public.counter_state() ->> 'my_total') || '|' || (public.counter_state() ->> 'can_count'), 'Fighter 1|a|official|Ash|32|true');
 select t.expect_eq('the phone state carries no other counter, no official score and no account id', (select count(*) from jsonb_object_keys(public.counter_state()) k where k in ('seats', 'rounds', 'discipline', 'requests', 'user_id', 'official_a', 'official_b')), 0::bigint);
+-- OPERATOR HANDOFF: Ash hands the phone to Birch's friend Oak mid-round; the tally on the phone carries on, the log says who held it when, every tap names its operator
+select t.expect_eq('a new operator takes the phone: same seat, same tally (32), new name', (public.counter_set_operator('Oak') -> 'seat' ->> 'operator') || '|' || (public.counter_set_operator('Oak') ->> 'my_total'), 'Oak|32');
+select t.expect_eq('... the next tap is Oak''s and continues the count', (t.cr(21, 1) ->> 'total'), '33');
+select t.as_admin();
+select t.expect_eq('every tap names the operator who made it (32 by Ash, 1 by Oak)', (select string_agg(x.operator_name || ':' || x.n, ',' order by x.operator_name) from (select operator_name, count(*) as n from public.lyst_counts c join public.lyst_counter_seats s on s.id = c.seat_id where s.user_id = t.u(21) and c.undo_of is null group by operator_name) x), 'Ash:32,Oak:1');
+select t.expect_eq('the operator log keeps both (Ash ended, Oak open)', (select string_agg(operator_name || ':' || (ended_at is not null)::text, ',' order by started_at) from public.counter_operator_log where session_id = t.u(21)), 'Ash:true,Oak:false');
+select t.expect_error('the operator log is append-only', format('delete from public.counter_operator_log where session_id = %L', t.u(21)), '42501');
+select t.as_user(t.u(88));
+select t.expect_eq('the operator history is readable by the Lyst (who counted red on this phone)', (select string_agg(x ->> 'operator', ',' order by x ->> 'started_at') from jsonb_array_elements(public.counter_operator_history(t.e1(), t.u(21))) x), 'Ash,Oak');
+select t.as_device(t.u(21));
 select public.counter_submit(t.seatof(21), 1);
 select t.as_admin();
 
 -- ================================================================ 4. the marshal's call
--- Counters on A: 32 and 3 (official), on B: 4 and 3. The marshal's call is 6-5: not an average, not a max, not a majority.
+-- Counters on A: 33 and 3 (official), on B: 4 and 3. The marshal's call is 6-5: not an average, not a max, not a majority.
 select t.expect_eq('the operator ends the round with the break timer (counting stops, "Scores being confirmed")', (t.tc(88, 'Field 1', 1, -1, 'start', 'break', 45000, 1) ->> 'status'), 'ok');
 select t.as_user(t.u(88));
 select t.expect_eq('a stale revision on the round is told so', public.lyst_confirm_round(gen_random_uuid(), t.m(1), 1, 6, 5, t.round_rev(1, 1) + 5) ->> 'status', 'stale');
@@ -287,17 +337,17 @@ select public.lyst_confirm_round(:'conf'::uuid, t.m(1), 1, 6, 5, t.round_rev(1, 
 select t.expect_eq('CONFIRM ROUND records the marshal''s 6-5 (counters recommended 7-5: that is only recorded)', :'s1'::text, 'ok');
 select t.as_admin();
 select t.expect_eq('the official round score is exactly what the marshal awarded', t.official(1, 1), '6-5');
-select t.expect_eq('... even though the counters tallied 32/3 and 4/3 and recommended 7-5', (select recommended_a || '-' || recommended_b from public.lyst_round_revisions where id = :'conf'::uuid), '7-5');
-select t.expect_eq('the evidence keeps every counter''s number, learning ones marked as learning',
-  (select string_agg((c ->> 'slot') || ':' || (c ->> 'role') || ':' || (c ->> 'total'), ',' order by c ->> 'slot') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.id = :'conf'::uuid),
-  'A:official:32,B:official:3,C:official:4,D:official:3,L1:learning:9,L2:learning:2');
+select t.expect_eq('... even though the counters tallied 33/3 and 4/3 and recommended 7-5', (select recommended_a || '-' || recommended_b from public.lyst_round_revisions where id = :'conf'::uuid), '7-5');
+select t.expect_eq('the evidence keeps every counter''s number by operator and side, learning ones marked as learning',
+  (select string_agg((c ->> 'operator') || ':' || (c ->> 'side') || ':' || (c ->> 'role') || ':' || (c ->> 'total'), ',' order by c ->> 'role', c ->> 'side', c ->> 'operator') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.id = :'conf'::uuid),
+  'Elm:a:learning:9,Fir:b:learning:2,Birch:a:official:3,Oak:a:official:33,Cedar:b:official:4,Dune:b:official:3');
 select t.as_user(t.u(88));
 select t.expect_eq('a double tap on CONFIRM ROUND (same command) does not confirm twice', public.lyst_confirm_round(:'conf'::uuid, t.m(1), 1, 6, 5, t.round_rev(1, 1) - 1, 7, 5) ->> 'status', 'duplicate');
 select t.expect_eq('a second confirm from another device with the old revision is stale', public.lyst_confirm_round(gen_random_uuid(), t.m(1), 1, 9, 9, t.round_rev(1, 1) - 1) ->> 'status', 'stale');
 select t.as_admin();
 select t.expect_eq('one confirmation, one revision', (select count(*) from public.lyst_round_revisions where match_id = t.m(1) and round_no = 1), 1::bigint);
 select t.expect_eq('the official score did not move', t.official(1, 1), '6-5');
-select t.as_user(t.u(21));
+select t.as_device(t.u(21));
 select t.expect_error('a counter cannot add after the round is confirmed (stale round input cannot leak)', format('select public.counter_record(gen_random_uuid(), %L, 1, 1)', t.seatof(21)), 'P0001');
 select t.as_admin();
 select t.expect_eq('learning counts have zero official effect: the official round did not change when they counted', t.official(1, 1), '6-5');
@@ -309,7 +359,7 @@ select t.expect_eq('round 2 is running, round 1 stays confirmed', array[t.round_
 select t.expect_error('the timer cannot restart a confirmed round', $$select t.tc(88, 'Field 1', 1, -1, 'start', 'fight', 60000, 1)$$, 'P0001');
 select t.expect_eq('a counter can now count round 2', (t.cr(21, 2) ->> 'total'), '1');
 select t.expect_error('... but round 1 input is refused for good', $$select t.cr(21, 1)$$, 'P0001');
-select t.as_user(t.u(21)); select public.counter_submit(t.seatof(21), 2);
+select t.as_device(t.u(21)); select public.counter_submit(t.seatof(21), 2);
 select t.as_admin();
 
 -- ================================================================ 5. discipline: structured, official, audited
@@ -404,15 +454,40 @@ update public.events set status = 'published' where id = t.e1();
 select t.expect_eq('nothing the lyst did created a notification', t.notif_count(), 0::bigint);
 select t.expect_eq('... or moved the queue (the match is still scheduled: only the existing queue functions move it)', t.qstate(1), 'scheduled');
 
--- ================================================================ 9. carrying counters to the next fight (same field), field scope, expiry
-select t.as_user(t.u(88));
-select t.expect_error('counters cannot be carried to a match on another field', format('select public.carry_counter_seats(%L, %L)', t.m(1), t.m(2)), 'P0001');
-select t.expect_error('the next match must be opened in Lyst Control first', format('select public.carry_counter_seats(%L, %L)', t.m(1), t.m(3)), 'P0001');
+-- ================================================================ 9. the field has ONE current fight; a phone changes field or side itself; expiry
 select t.as_admin();
+select t.expect_eq('Field 1 has exactly one current fight (m1)', private.field_current_match(t.e1(), 'field 1'), t.m(1));
+select t.as_user(t.u(88));
+select t.expect_eq('opening m2 on Field 2 again', public.lyst_open(t.m(2), 'weighted') ->> 'status', 'ok');
+select t.as_admin();
+select t.expect_eq('... it is Field 2''s current fight and Field 1 is left alone', (private.field_current_match(t.e1(), 'field 2') = t.m(2))::text || '|' || (private.field_current_match(t.e1(), 'field 1') = t.m(1))::text, 'true|true');
+select t.expect_eq('the Field 1 phones did not move', (select count(*) from public.lyst_counter_seats where match_id = t.m(1) and status = 'active'), 6::bigint);
+-- phone 24 deliberately moves to Field 2, blue: its old seat ends (evidence kept), a new one starts on m2 at zero
+select t.as_device(t.u(24));
+select t.expect_eq('a phone changes field and side itself: seated on Field 2''s fight, blue', (public.counter_bind('Field 2', 'b', 'Dune') -> 'seat' ->> 'match_id') || '|' || (public.counter_state() -> 'seat' ->> 'side'), t.m(2)::text || '|b');
+select t.as_admin();
+select t.expect_eq('... its m1 seat is ended, its round-1 taps on m1 are still there as evidence', (select status from public.lyst_counter_seats where user_id = t.u(24) and match_id = t.m(1)) || '|' || (select count(*) from public.lyst_counts c join public.lyst_counter_seats s on s.id = c.seat_id where s.user_id = t.u(24) and c.match_id = t.m(1) and c.undo_of is null), 'ended|3');
+select t.as_device(t.u(24));
+select t.expect_eq('... and it comes back to Field 1 red, a fresh seat on m1, round-2 count at zero', (public.counter_bind('Field 1', 'a', 'Dune') ->> 'my_total'), '0');
 -- an expired seat cannot count
-update public.lyst_counter_seats set expires_at = now() - interval '1 minute' where user_id = t.u(24);
+select t.as_admin();
+update public.lyst_counter_seats set expires_at = now() - interval '1 minute' where user_id = t.u(24) and status = 'active';
 select t.expect_msg('an expired counter seat cannot count', $$select t.cr(24, 2)$$, 'not active');
-update public.lyst_counter_seats set expires_at = now() + interval '1 hour' where user_id = t.u(24);
+update public.lyst_counter_seats set expires_at = now() + interval '1 hour' where user_id = t.u(24) and status = 'active';
+-- a lost phone: the organizer signs that one phone out; the other phones and the QR keep working; a replacement phone just scans the QR
+select t.as_user(t.u(90));
+select t.expect_eq('the organizer sees every phone on the event with its field, side and operator', (select count(*) from jsonb_array_elements(public.list_event_device_sessions(t.e1())) x where x -> 'binding' ->> 'operator' is not null), 4::bigint);
+select t.expect_eq('the organizer signs the lost phone (24) out', public.end_event_session(t.u(24), 'left in a car') ->> 'status', 'ended');
+select t.as_device(t.u(24));
+select t.expect_error('the lost phone has no authority from its next call', 'select public.counter_state()', '42501');
+select t.as_admin();
+select t.expect_eq('its seat is ended, its operator log closed', (select status from public.lyst_counter_seats where user_id = t.u(24) and match_id = t.m(1) order by requested_at desc limit 1) || '|' || (select (ended_at is not null)::text from public.counter_operator_log where session_id = t.u(24) order by started_at desc limit 1), 'ended|true');
+select t.expect_eq('the other three phones and the QR are untouched', (select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where c.kind = 'counter_pool' and s.ended_at is null) || '|' || (select revoked_at is null from public.event_credentials where kind = 'counter_pool')::text, '3|true');
+update t.ph set sid = t.open(50, 'ip-p24b', 60) where n = 24;
+select t.expect_eq('a replacement phone scans the same QR and is in at once (nothing blocked it)', (select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where c.kind = 'counter_pool' and s.ended_at is null), 4::bigint);
+select t.as_device(t.u(24));
+select t.expect_eq('... binds to Field 1 red as Dune and is seated on m1', public.counter_bind('Field 1', 'a', 'Dune') -> 'seat' ->> 'match_id', t.m(1)::text);
+select t.as_admin();
 
 -- ================================================================ 10. finalization: human, official, through the existing path
 select t.as_user(t.u(88));
@@ -434,7 +509,7 @@ select t.as_admin();
 select t.expect_eq('only one result exists', (select count(*) from public.result_proposals where match_id = t.m(1)), 1::bigint);
 select t.expect_eq('finishing stopped the field-1 timer for that match', t.timer_status('field 1'), 'idle');
 select t.expect_eq('finishing the match ended the fight; the second field is untouched', t.timer_status('field 2'), 'running');
-select t.as_user(t.u(21));
+select t.as_device(t.u(21));
 select t.expect_error('counters cannot count a final match', format('select public.counter_record(gen_random_uuid(), %L, 2, 1)', t.seatof(21)), 'P0001');
 select t.as_user(t.u(88));
 select t.expect_error('a final match''s rounds are locked (reopen it first)', format('select public.lyst_confirm_round(gen_random_uuid(), %L, 2, 9, 9, %s, null, null, ''x1x'')', t.m(1), t.round_rev(1, 2)), 'P0001');
@@ -454,10 +529,16 @@ select t.expect_eq('the earlier official result was superseded into the existing
 
 -- ================================================================ 11. a pool match with a draw, a DQ and a technical result
 select t.as_user(t.u(88));
-select t.expect_eq('NEXT FIGHT: the counters move to the next match on the field (same side and slot)', public.carry_counter_seats(t.m(1), t.m(4)) ->> 'moved', '6');
+select t.expect_eq('NEXT FIGHT: the Lyst opens m4 on Field 1', public.lyst_open(t.m(4), 'simple') ->> 'status', 'ok');
+select t.as_admin();
+select t.expect_eq('... every counter on the field followed it (same side, same operator): no rejoin, no reseat', (select count(*) from public.lyst_counter_seats where match_id = t.m(4) and status = 'active'), 6::bigint);
+select t.expect_eq('the old seats are ended and keep their evidence (nothing deleted)', (select count(*) from public.lyst_counter_seats where match_id = t.m(1) and status = 'ended') || '|' || (select count(*) from public.lyst_counts where match_id = t.m(1) and undo_of is null), '8|' || (select count(*) from public.lyst_counts where match_id = t.m(1) and undo_of is null));
+select t.as_device(t.u(21));
+select t.expect_eq('the phone shows the new fight on its own, same side, count at zero, no new fighter chosen by anyone', (public.counter_state() ->> 'fighter') || '|' || (public.counter_state() -> 'seat' ->> 'side') || '|' || (public.counter_state() ->> 'my_total') || '|' || (public.counter_state() ->> 'competition'), 'Fighter 5|a|0|Sword and Buckler');
 select t.as_admin();
 select t.tc(88, 'Field 1', 4, -1, 'start', 'fight', 60000, 1);
-select t.expect_eq('a carried counter counts the new fight', (t.cr(21, 1) ->> 'total'), '1');
+select t.expect_eq('a followed counter counts the new fight', (t.cr(21, 1) ->> 'total'), '1');
+select t.expect_eq('... and the trainee followed too (still learning, never official)', (t.cr(25, 1) ->> 'total') || '|' || (select role from public.lyst_counter_seats where user_id = t.u(25) and match_id = t.m(4)), '1|learning');
 select t.expect_error('a simple-input fight refuses a weight of 2', $$select t.cr(21, 1, 2)$$, '22023');
 select t.as_user(t.u(88));
 select public.lyst_confirm_round(gen_random_uuid(), t.m(4), 1, 3, 3, t.round_rev(4, 1));
@@ -486,22 +567,23 @@ select t.expect_eq('lyst tables feed no ranking, statistic or career view (they 
 
 -- ================================================================ 13. join-code brute force, grants and row-level security on everything new
 select t.as_user(t.u(40));
-select public.request_counter_seat('WRONGCODE' || n) from generate_series(1, 15) n;
-select t.expect_error('after 15 wrong guesses a person is asked to wait (even with the right code)', format('select public.request_counter_seat(%L)', :'code1'), '22023');
+select public.join_training_counter('WRONGCODE' || n, 'Guess', 'a') from generate_series(1, 15) n;
+select t.expect_error('after 15 wrong guesses a person is asked to wait (even with the right code)', format($$select public.join_training_counter(%L, 'Guess', 'a')$$, :'code1'), '22023');
+select t.expect_eq('the old seating ceremony is gone (no seat request, no assignment, no carry)', (select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname in ('request_counter_seat', 'assign_counter_seat', 'carry_counter_seats')), 0::bigint);
 select t.as_admin();
 select t.expect_eq('the new tables all have row-level security on',
-  (select count(*) from pg_class c where c.relnamespace = 'public'::regnamespace and c.relname in ('event_lyst_settings','lyst_matches','lyst_timer','lyst_rounds','lyst_round_revisions','match_discipline','match_discipline_private','lyst_join_codes','lyst_counter_seats','lyst_counts','lyst_counter_rounds','lyst_join_attempts') and c.relrowsecurity),
-  12::bigint);
+  (select count(*) from pg_class c where c.relnamespace = 'public'::regnamespace and c.relname in ('event_lyst_settings','lyst_matches','lyst_timer','lyst_rounds','lyst_round_revisions','match_discipline','match_discipline_private','lyst_join_codes','lyst_counter_seats','lyst_counts','lyst_counter_rounds','lyst_join_attempts','lyst_field_current','counter_bindings','counter_operator_log') and c.relrowsecurity),
+  15::bigint);
 select t.expect_eq('no client role can write any new table directly',
   (select count(*) from information_schema.role_table_grants g where g.table_schema = 'public' and g.grantee in ('anon','authenticated','public') and g.privilege_type in ('INSERT','UPDATE','DELETE','TRUNCATE')
-     and g.table_name in ('event_lyst_settings','lyst_matches','lyst_timer','lyst_rounds','lyst_round_revisions','match_discipline','match_discipline_private','lyst_join_codes','lyst_counter_seats','lyst_counts','lyst_counter_rounds','lyst_join_attempts')), 0::bigint);
+     and g.table_name in ('event_lyst_settings','lyst_matches','lyst_timer','lyst_rounds','lyst_round_revisions','match_discipline','match_discipline_private','lyst_join_codes','lyst_counter_seats','lyst_counts','lyst_counter_rounds','lyst_join_attempts','lyst_field_current','counter_bindings','counter_operator_log')), 0::bigint);
 select t.expect_eq('anonymous cannot run any lyst or counter function',
-  (select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace and (p.proname like 'lyst\_%' or p.proname like 'counter\_%' or p.proname in ('create_lyst_join_code','request_counter_seat','assign_counter_seat','end_counter_seat','carry_counter_seats','set_lyst_settings'))
+  (select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace and (p.proname like 'lyst\_%' or p.proname like 'counter\_%' or p.proname in ('create_lyst_join_code','join_training_counter','end_counter_seat','set_lyst_settings','move_counter_session','end_event_session','device_session_preview'))
      and has_function_privilege('anon', p.oid, 'execute')), 0::bigint);
 select t.expect_eq('the helper functions in the private schema are not callable by signed-in users',
   (select count(*) from pg_proc p where p.pronamespace = 'private'::regnamespace and p.proname like 'lyst\_%' and has_function_privilege('authenticated', p.oid, 'execute')), 0::bigint);
 select t.expect_eq('every public lyst function sets an empty search path (no path hijacking)',
-  (select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace and p.prosecdef and (p.proname like 'lyst\_%' or p.proname like 'counter\_%' or p.proname in ('create_lyst_join_code','request_counter_seat','assign_counter_seat','end_counter_seat','carry_counter_seats','set_lyst_settings'))
+  (select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace and p.prosecdef and (p.proname like 'lyst\_%' or p.proname like 'counter\_%' or p.proname in ('create_lyst_join_code','join_training_counter','end_counter_seat','set_lyst_settings','move_counter_session','end_event_session','device_session_preview'))
      and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')), 0::bigint);
 
 select 'PACK13 GATE PASSED ' || count(*) || ' checks' from t.log;

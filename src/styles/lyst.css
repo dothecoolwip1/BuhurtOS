@@ -150,3 +150,61 @@
 .cp-code-in{font:800 28px var(--f-data);letter-spacing:.18em;text-align:center;text-transform:uppercase;min-height:60px;border-radius:12px;border:2px solid var(--line);background:var(--raised);color:var(--ink);width:100%}
 @media (min-width:768px){.ly{max-width:760px;margin-inline:auto}.cp{max-width:520px;margin-inline:auto}}
 @media (min-width:1280px){.ly{max-width:900px}}
+
+/* ---- Pack 25: the counter phone's three answers (who, which Lyst, which side), the corner colours with words, the team standing count */
+.cp-setup{grid-template-rows:auto 1fr;align-content:start;gap:16px}
+.cp-setup-head{display:grid;gap:2px}
+.cp-event{font:800 14px/1.2 var(--f-data);letter-spacing:.08em;text-transform:uppercase}
+.cp-q{font-size:clamp(28px,8vw,40px);margin:4px 0 0}
+.cp-form{display:grid;gap:12px;align-content:start}
+.cp-name-in{min-height:60px;padding:0 14px;border-radius:14px;border:2px solid var(--line);background:var(--raised);color:var(--ink);font:600 22px var(--f-body);width:100%}
+.cp-choices{display:grid;gap:10px}
+.cp-choice{display:grid;gap:4px;min-height:72px;padding:12px 16px;border-radius:16px;border:2px solid var(--line);background:var(--raised);text-align:left;font-size:20px}
+.cp-choice[aria-pressed="true"]{border-color:var(--ink)}
+.cp-sides{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cp-side{display:grid;place-content:center;gap:4px;min-height:38dvh;border-radius:24px;color:#fff;font:900 clamp(34px,12vw,56px)/1 var(--f-display);letter-spacing:.04em;border:4px solid transparent}
+.cp-side small{font:600 14px var(--f-data);letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.cp-side-a{background:#B42318;box-shadow:0 8px 0 #7a1710}
+.cp-side-b{background:#2C4A8C;box-shadow:0 8px 0 #1b2f5c}
+.cp-side[aria-pressed="true"]{border-color:#fff}
+.cp-side:active{transform:translateY(4px)}
+.cp-corner{font:900 13px/1 var(--f-data);letter-spacing:.12em;text-transform:uppercase;padding:7px 10px;border-radius:999px;color:#fff}
+.cp-corner-a{background:#B42318}
+.cp-corner-b{background:#2C4A8C}
+.cp-lyst{font:700 13px/1 var(--f-data);letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;background:var(--raised);border:1px solid var(--line)}
+.cp-op{font-weight:600;font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+.cp-ctx,.cp-vs{margin:0}
+.cp-fighter-wait{color:var(--muted)}
+.cp-on-a .cp-count{background:#B42318;box-shadow:0 8px 0 #7a1710}
+.cp-on-b .cp-count{background:#2C4A8C;box-shadow:0 8px 0 #1b2f5c}
+.cp-on-a .cp-count.is-two{background:#7a1710;box-shadow:0 8px 0 #4a0d09}
+.cp-on-b .cp-count.is-two{background:#1b2f5c;box-shadow:0 8px 0 #0f1b38}
+.cp-on-a .cp-count:active,.cp-on-b .cp-count:active{box-shadow:0 2px 0 rgba(0,0,0,.5)}
+.cp-count.is-down{font-size:clamp(34px,11vw,64px);line-height:1.05;padding:0 12px}
+.cp-count:disabled{background:var(--faint)!important;box-shadow:none!important}
+.cp-links{display:flex;gap:4px 14px;flex-wrap:wrap;justify-content:center}
+.cp-total output{display:block}
+/* counters as evidence (Pack 25): operator, corner in words and colour, tally, online */
+.ly-seg-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.ly-evidence{display:grid;gap:12px}
+.ly-evidence-side{display:grid;gap:6px}
+.ly-corner-h{font:700 12px/1.3 var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ly-corner-h-a{color:#B42318}
+.ly-corner-h-b{color:var(--steel)}
+.ly-corner{font:800 11px/1 var(--f-data);letter-spacing:.08em;text-transform:uppercase;padding:5px 7px;border-radius:999px;color:#fff;background:var(--faint);min-width:44px;text-align:center}
+.ly-corner-a{background:#B42318}
+.ly-corner-b{background:#2C4A8C}
+.ly-online{font:600 11px/1 var(--f-data);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ly-online.is-on{color:var(--win)}
+.ly-online.is-off{color:var(--live)}
+.ly-evidence-strip{display:grid;gap:8px;padding:10px 12px;border-radius:12px;background:var(--raised);border:1px dashed var(--line)}
+.ly-evidence-strip .ly-seat{padding:4px 8px;grid-template-columns:auto minmax(0,1fr) auto auto}
+.ly-evidence-strip .ly-seat-n{font-size:18px}
+.ly-evidence-strip .ly-corner-h{font-size:11px}
+/* team fights: the counters strip beside the group board (Pack 25) */
+.gc-rounds{gap:10px}
+.gc-head{display:grid;gap:2px}
+.gc-clock-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.gc-round{font:700 13px var(--f-data);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.gc-clock{font:900 28px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.gc-clock-row .btn{min-height:48px}

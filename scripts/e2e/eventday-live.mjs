@@ -50,7 +50,7 @@ const has = async (page, text) => (await body(page)).includes(text.toLowerCase()
 const field = (page, name) => page.locator(`section.ed-field[aria-label="${name}"]`);
 const shot = async (page, name) => { if (SHOTS) await page.screenshot({ path: `${SHOTS}/eventday-${name}.png`, fullPage: true }); };
 const waitText = (page, loc, text, timeout = 30000) => page.waitForFunction(([sel, t]) => (document.querySelector(sel)?.innerText ?? '').replace(/\s+/g, ' ').toLowerCase().includes(t), [loc, text.toLowerCase()], { timeout }).then(() => true, () => false);
-const MANAGE = '/events/test-stuff-test/manage';
+const MANAGE = '/events/test-stuff-test/control';
 const noSideways = (page) => page.evaluate(() => [document.scrollingElement.scrollWidth, innerWidth]);
 
 try {
@@ -205,9 +205,9 @@ try {
   sql(`insert into public.events (id, slug, name, status, event_type, starts_on, ends_on) values ('00000000-0000-0000-0000-00000000ed02', 'empty-day', 'Empty Day Open', 'published', 'tournament', (now() at time zone 'America/Edmonton')::date, (now() at time zone 'America/Edmonton')::date + 1), ('00000000-0000-0000-0000-00000000ed03', 'undrawn-day', 'Undrawn Day Open', 'published', 'tournament', (now() at time zone 'America/Edmonton')::date, (now() at time zone 'America/Edmonton')::date + 1)`);
   sql(`insert into public.event_staff (event_id, user_id, role) values ('00000000-0000-0000-0000-00000000ed02', '${U(2)}', 'organizer'), ('00000000-0000-0000-0000-00000000ed03', '${U(2)}', 'organizer')`);
   sql(`insert into public.competitions (id, event_id, name, category, gender, tier, structure, sort) values ('00000000-0000-0000-0000-00000000cd09', '00000000-0000-0000-0000-00000000ed03', 'Longsword (open)', 'longsword', 'open', 'Classic', 'round_robin', 1)`);
-  await page.goto(BASE + '/events/empty-day/manage'); await page.waitForSelector('section.eventday, .ed-empty', { timeout: 20000 });
+  await page.goto(BASE + '/events/empty-day/control'); await page.waitForSelector('section.eventday, .ed-empty', { timeout: 20000 });
   check('an event with no competitions says so and offers to add one', (await has(page, 'No competitions yet')) && (await page.getByRole('link', { name: '+ Add competition' }).count()) === 1 && !(await has(page, 'scary')));
-  await page.goto(BASE + '/events/undrawn-day/manage'); await page.waitForSelector('text=The tournament is not built yet', { timeout: 20000 });
+  await page.goto(BASE + '/events/undrawn-day/control'); await page.waitForSelector('text=The tournament is not built yet', { timeout: 20000 });
   // Pack 09D: the way forward is Build tournament (one draw by hand in Run is still offered); unbuilt competitions are one line
   check('competitions without a draw: "The tournament is not built yet" with Build tournament and Run, and progress lists it as not built', (await page.getByRole('link', { name: 'Build tournament' }).count()) >= 1 && (await page.getByRole('link', { name: 'Build one draw by hand (Run)' }).count()) === 1 && /not built: .*longsword \(open\)/i.test((await page.locator('section.ed-progress').innerText()).replace(/\s+/g, ' ')));
   check('and no warning is shown for these normal empty states', (await page.locator('section.ed-attention .ed-att').count()) === 0 && (await has(page, 'Nothing needs your attention right now')));

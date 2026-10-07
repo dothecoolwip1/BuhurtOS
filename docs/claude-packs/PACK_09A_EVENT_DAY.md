@@ -1,5 +1,7 @@
 # Pack 09A: Event Day Command Center + Field Queue
 
+> **Superseded by Pack 25 (2026-10-07):** Manage › Event day is now part of **Event Control › Live ops**; `/manage?tab=eventday` redirects there. The field boards, queue commands and planner are unchanged.
+
 Branch: `pack09a-event-day-command-center` (based on `fix-team-rankings-categories`, which is based on main `8583a2b`).
 Not deployed. Nothing applied to hosted Supabase. A future session can continue from the checklist at the bottom.
 

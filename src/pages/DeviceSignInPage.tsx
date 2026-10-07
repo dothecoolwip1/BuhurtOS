@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Navigate } from 'react-router-dom';
 import { formatTyping, normalizeDeviceCode } from '../lib/deviceCode';
 import { landingFor } from '../lib/deviceRoutes';
-import { deviceManager, ENDED_MESSAGE, isDeviceMode, setNoReferrer, takePendingCode } from '../lib/deviceSession';
+import { captureFragment, deviceManager, ENDED_MESSAGE, isDeviceMode, setNoReferrer, takePendingCode } from '../lib/deviceSession';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
 import '../styles/device.css';
 
@@ -39,6 +39,18 @@ export function DeviceSignInPage() {
   // A scanned code signs in at once (nothing to type).
   useEffect(() => {
     if (scanned && !already && !started.current) { started.current = true; void go(scanned); }
+  }, []);   // eslint-disable-line react-hooks/exhaustive-deps
+  // The QR link can also arrive as a hash change on this very page (a phone that was just signed out scans the Counter QR again): same thing, no reload.
+  useEffect(() => {
+    const onHash = () => {
+      captureFragment(window.location, window.history);
+      const code = takePendingCode();
+      if (!code) return;
+      if (isDeviceMode()) { setAsk(true); return; }
+      if (!started.current) { started.current = true; void go(code); }
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
   }, []);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const w = mgr.getWhoami();

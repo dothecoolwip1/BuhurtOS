@@ -80,7 +80,7 @@ export function ReviewSheet({ event, competition, onClose, onChanged }: { event:
             <ul>{p.blockers.map(b => <li key={b.code}>{b.text}</li>)}</ul>
             {medalTie && <p className="src">Equal records at the top. BuhurtOS will not guess: decide the order below (with a short note), then confirm.</p>}
             {medalTie && ties.map(g => <TieDecision key={`${g.part}-${g.rank}`} comp={competition} group={g} nameOf={nameOf} onDecided={() => { setReload(k => k + 1); onChanged(); }} />)}
-            {!medalTie && <Link className="btn btn-line" to={`/events/${event.slug}/manage?tab=finalize&competition=${competition.id}`} onClick={onClose}>Resolve it</Link>}
+            {!medalTie && <Link className="btn btn-line" to={`/events/${event.slug}/control?mode=results&competition=${competition.id}`} onClick={onClose}>Resolve it</Link>}
           </div>
         )}
 

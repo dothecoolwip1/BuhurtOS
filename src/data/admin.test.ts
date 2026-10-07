@@ -8,7 +8,8 @@ const v = (o: Partial<Visit>): Visit => ({ sessionId: 's', userId: null, name: n
 describe('activity', () => {
   it('names pages in plain words', () => {
     expect(pageLabel('/teams/bears/edit')).toBe('Editing a team');
-    expect(pageLabel('/events/rumble/manage')).toBe('Managing an event');
+    expect(pageLabel('/events/rumble/control')).toBe('Running an event');
+    expect(pageLabel('/events/rumble/manage')).toBe('Running an event');
     expect(pageLabel('/events/rumble')).toBe('An event page');
     expect(pageLabel('/')).toBe('Home');
     expect(pageLabel('/something-new')).toBe('/something-new');

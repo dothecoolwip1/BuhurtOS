@@ -4,12 +4,12 @@ import { StatusBanner, type ScoringScreenProps } from '../scoring/ScoringScreen'
 import { TimerBar, type TimerSend } from './TimerBar';
 import { RoundEntry, type Hint } from './RoundEntry';
 import { DisciplineSheet, type DisciplineDraft } from './DisciplineSheet';
-import { CountersPanel } from './CountersPanel';
+import { CounterEvidence, CountersPanel } from './CountersPanel';
 import { LogPanel } from './LogPanel';
 import { LystSettingsDialog } from './LystSettingsDialog';
 import { RulesSheet } from '../rules/RulesSheet';
 import { fetchCitations } from '../../data/rules';
-import { assignSeat, carrySeats, createJoinCode, endSeat, finalizeFromLyst, openLyst, timerCommand } from '../../data/lyst';
+import { createJoinCode, finalizeFromLyst, openLyst, timerCommand } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
 import { friendlyError } from '../../lib/friendlyError';
@@ -72,7 +72,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   useEffect(() => {
     if (!st || st.lyst || openedOnce.current) return;
     openedOnce.current = true;
-    void openLyst(match.id, counterInputFor(comp.category, st.settings.counter_input) === 'weighted' ? 'weighted' : 'simple').then(() => lyst.refresh()).catch(e => setError(friendlyError(e)));
+    void openLyst(match.id, counterInputFor(comp.category, st.settings.counter_input, comp.league)).then(() => lyst.refresh()).catch(e => setError(friendlyError(e)));
   }, [st, match.id, comp.category, lyst]);
 
   const settings = st?.settings;
@@ -180,7 +180,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
     try { await record('lyst.void', match.id, { id, reason }); await send(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(false); }
   };
 
-  /* ---------------- counters: seats ---------------- */
+  /* ---------------- counters: the training code is the only thing the Lyst makes; phones bind themselves through the event's Counter QR ---------------- */
   const seatAction = async (fn: () => Promise<unknown>) => { setBusy(true); setError(null); try { await fn(); await lyst.refresh(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(false); } };
 
   /* ---------------- finishing: the existing human-confirmed path ---------------- */
@@ -214,8 +214,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   };
 
   const goNext = async (m: NonNullable<ScoringScreenProps['nextFight']>) => {
-    // the same counters carry over to the next fight on this field (the operator can still change any seat)
-    try { await openLyst(m.id, 'weighted'); await carrySeats(match.id, m.id); } catch { /* the counters can be seated again by hand */ }
+    // opening the next fight on this field is what moves every counter phone (and trainee) to it: the phones follow the Lyst
+    try { await openLyst(m.id, counterInputFor(comp.category, settings?.counter_input, comp.league)); } catch { /* the field screen opens it again */ }
     onOpenNext(m);
   };
 
@@ -310,7 +310,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
   /* ---------------- the lyst ---------------- */
   const zone: 'loading' | 'start' | 'fighting' | 'confirm' | 'between' = !st ? 'loading' : !cur ? 'start' : cur.status === 'running' ? 'fighting' : cur.status === 'confirming' ? 'confirm' : 'between';
-  const hintsFor = (side: 'a' | 'b', round: number): Hint[] => (st?.seats ?? []).filter(s => s.role === 'official' && s.side === side && s.status === 'active').map(s => ({ slot: s.slot ?? '?', total: s.tallies.find(t => t.round_no === round)?.total ?? 0 }));
+  const hintsFor = (side: 'a' | 'b', round: number): Hint[] => (st?.seats ?? []).filter(s => s.role === 'official' && s.side === side && s.status === 'active').map(s => ({ slot: s.name, total: s.tallies.find(t => t.round_no === round)?.total ?? 0 }));
   const correctingRound = correcting !== null ? rounds.find(r => r.round_no === correcting) ?? null : null;
   const showEntry = zone === 'confirm' || (zone === 'fighting' && early);
   const bannerStatus = pendingRound || waiting > 0 ? 'pending' : finishReady ? 'ready' : 'scoring';
@@ -348,6 +348,12 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
             </li>
           ))}
         </ul>
+      )}
+
+      {st && st.seats.some(s => s.status === 'active') && zone !== 'loading' && (
+        <section className="ly-evidence-strip" aria-label="Counters on this fight" data-testid="counter-evidence">
+          <CounterEvidence seats={st.seats} names={names} round={cur?.round_no ?? 1} compact />
+        </section>
       )}
 
       <TimerBar timer={timer} leftMs={leftMs} roundNo={cur?.round_no ?? 1} presets={presets} busy={timerBusy || !st} offline={lyst.offline} note={timerNote} onSend={sendTimer}
@@ -416,7 +422,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
       <nav className="ly-tools" aria-label="Lyst tools">
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('discipline')} disabled={!st || !cur}>Marshal's call{discipline.length ? ` · ${activeDiscipline(discipline).length}` : ''}</button>
-        <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('counters')} disabled={!st}>Counters{st && st.seats.length ? ` · ${st.seats.length}` : ''}{st && st.requests.length ? ` (+${st.requests.length})` : ''}</button>
+        <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('counters')} disabled={!st}>Counters{st && st.seats.length ? ` · ${st.seats.filter(s => s.status === 'active').length}` : ''}</button>
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('log')} disabled={!st}>Record</button>
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('rules')}>Rules</button>
         {canResolve && <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('settings')} disabled={!st}>Lyst settings</button>}
@@ -433,8 +439,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       </div>
 
       {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}
-      {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventSlug="" busy={busy} onClose={() => setSheet(null)}
-        onNewCode={() => void seatAction(() => createJoinCode(eventId, fieldName))} onAssign={(seat, side, role) => void seatAction(() => assignSeat(seat, match.id, side, role))} onEnd={(seat, decline) => void seatAction(() => endSeat(seat, decline))} />}
+      {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventId={eventId} fieldName={fieldName} busy={busy} onClose={() => setSheet(null)}
+        onNewTrainingCode={() => void seatAction(() => createJoinCode(eventId, fieldName))} />}
       {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, reason) => void voidIt(id, reason)} onClose={() => setSheet(null)} citations={citations} onCite={(id, p) => void cite(id, p)} />}
       {sheet === 'rules' && <RulesSheet onClose={() => setSheet(null)} />}
       {sheet === 'settings' && settings && <LystSettingsDialog eventId={eventId} settings={settings} onClose={() => setSheet(null)} onSaved={() => void lyst.refresh()} />}

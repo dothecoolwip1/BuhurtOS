@@ -104,7 +104,7 @@ export function summarizeActivity(list: readonly Visit[]): ActivitySummary {
 export function pageLabel(path: string): string {
   const p = path.replace(/\/+$/, '') || '/';
   const rules: [RegExp, string][] = [
-    [/^\/$/, 'Home'], [/^\/events$/, 'Events list'], [/^\/events\/new$/, 'Creating an event'], [/^\/events\/[^/]+\/manage$/, 'Managing an event'],
+    [/^\/$/, 'Home'], [/^\/events$/, 'Events list'], [/^\/events\/new$/, 'Creating an event'], [/^\/events\/[^/]+\/(control|manage|command)$/, 'Running an event'],
     [/^\/events\/[^/]+\/register$/, 'Registering for an event'], [/^\/events\/[^/]+\/field\/[^/]+$/, 'Scoring on a field'], [/^\/events\/[^/]+$/, 'An event page'],
     [/^\/teams$/, 'Teams list'], [/^\/teams\/[^/]+\/edit$/, 'Editing a team'], [/^\/teams\/[^/]+$/, 'A team page'],
     [/^\/fighters$/, 'Fighters list'], [/^\/fighters\/[^/]+\/edit$/, 'Editing their profile'], [/^\/fighters\/[^/]+$/, 'A fighter page'],

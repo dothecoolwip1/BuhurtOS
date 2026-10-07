@@ -195,6 +195,18 @@ describe('creating and replacing a code (the organizer)', () => {
     expect(body.code).toBeUndefined();
     expect(body.error).toContain('only an organizer');
   });
+  it('the event\'s reusable Counter QR (kind counter_pool): the plaintext goes to the database with the verifier, as a counter, labelled by default', async () => {
+    const h = harness({ rpc: () => ({ ok: true, status: 200, data: { ...created, kind: 'counter_pool', label: 'Counter QR' } }) });
+    const body = await (await h.post({ action: 'create', event: 'e1', kind: 'counter_pool' }, { authorization: 'Bearer a.b.c' })).json();
+    expect(h.calls[0].name).toBe('create_event_credential');
+    expect(h.calls[0].args).toMatchObject({ p_kind: 'counter_pool', p_role: 'counter', p_label: 'Counter QR', p_pool_code: normalizeCode(body.code) });
+    expect(h.calls[0].args.p_code_hash).toBe(await codeVerifier(PEPPER, normalizeCode(body.code)!));
+  });
+  it('an ordinary device code never sends a plaintext to the database', async () => {
+    const h = harness({ rpc: () => ({ ok: true, status: 200, data: created }) });
+    await h.post({ action: 'create', event: 'e1', kind: 'device', label: 'Marshal Phone', role: 'marshal' }, { authorization: 'Bearer a.b.c' });
+    expect(h.calls[0].args.p_pool_code).toBeNull();
+  });
   it('replace goes the same way', async () => {
     const h = harness({ rpc: () => ({ ok: true, status: 200, data: created }) });
     const body = await (await h.post({ action: 'replace', credential: 'cred1' }, { authorization: 'Bearer a.b.c' })).json();

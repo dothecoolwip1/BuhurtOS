@@ -33,7 +33,7 @@ const WHO = { organizer: [U('a2'), 'u2@example.test'], scorekeeper: [U('a4'), 'u
 const STORAGE_KEY = 'sb-localhost-auth-token';
 const EV = '00000000-0000-0000-0000-00000000ed01', OTHER_EV = '00000000-0000-0000-0000-00000000ed02';
 const GATE_SESSION = '00000000-0000-0000-0000-0000000e5d01';
-const SLUG = 'test-stuff-test', CMD = `/events/${SLUG}/command`;
+const SLUG = 'test-stuff-test', CMD = `/events/${SLUG}/control?mode=live`;
 const sql = (q) => execFileSync('psql', ['-X', '-At', '-d', DB, '-c', q], { encoding: 'utf8' }).trim().split('\n').at(-1) ?? '';   // the last line: "SET" lines from a leading set timezone are dropped
 const count = (q) => Number(sql(q));
 const orgToken = jwt(...WHO.organizer);
@@ -346,7 +346,7 @@ try {
   check('3.4 ...but the stream controller credential is untouched', credState('Stream laptop') === 'controller|broadcast_controller|open' && count(`select count(*) from public.event_credentials where event_id = '${EV}' and kind = 'device' and revoked_at is null`) === 0);
   check('3.5 audit: device.revoked_all with the count', count(`select count(*) from public.audit_log where event_id = '${EV}' and action = 'device.revoked_all' and (details ->> 'devices')::int >= 2`) === 1);
   await focusRefresh(dpage); await sleep(1500);
-  check('3.6 the device\'s own page notices on its next read (the database refuses it: the Command Centre says it is not for it, not a broken screen)', await until(async () => /not for|Could not|permission|Command Centre is for/i.test(await text(dpage)) || (await dpage.locator('.cmd-centre').count()) === 1, 25000));
+  check('3.6 the device\'s own page notices on its next read (the database refuses it: the Command Centre says it is not for it, not a broken screen)', await until(async () => /not for|Could not|permission|Command Centre is for|Live ops is for|Sign in/i.test(await text(dpage)) || (await dpage.locator('.cmd-centre').count()) === 1, 25000));
 
   // ---- the stream laptop's own credential: replace, revoke, create, only one
   const lapRow = org.locator('[data-testid="device-row"][data-label="Stream laptop"]');
@@ -379,28 +379,28 @@ try {
   // ---- the usual set, all codes together, printable
   await org.getByRole('button', { name: 'Add the usual set for an event' }).click();
   await sheet.waitFor({ timeout: 30000 });
-  await until(async () => (await org.getByTestId('code-card').count()) === 8, 20000);
+  await until(async () => (await org.getByTestId('code-card').count()) === 4, 20000);   // Pack 25: counters scan the Counter QR; the usual set is the four staff devices
   const cards = org.getByTestId('code-card');
   const setCodes = await org.getByTestId('device-code').allInnerTexts();
   setCodes.forEach(c => usedCodes.push(c.trim()));
   const labels = await cards.locator('.dev-card-label').allTextContents();
-  check('3.16 the usual set: ONE sheet with EIGHT cards: Counter Phone 1-4, Secretary Tablet, Marshal Phone, Announcer Tablet, Event Admin Tablet', JSON.stringify(labels) === JSON.stringify(['Counter Phone 1', 'Counter Phone 2', 'Counter Phone 3', 'Counter Phone 4', 'Secretary Tablet', 'Marshal Phone', 'Announcer Tablet', 'Event Admin Tablet']), JSON.stringify(labels));
-  check('3.17 each card has its role, a code and a QR; all eight codes are different', (await cards.locator('.dev-qr svg').count()) === 8 && new Set(setCodes.map(c => c.trim())).size === 8 && setCodes.every(c => CODE_RE.test(c.trim())));
+  check('3.16 the usual set: ONE sheet with FOUR cards: Secretary Tablet, Marshal Phone, Announcer Tablet, Event Admin Tablet (counter phones scan the Counter QR, Pack 25)', JSON.stringify(labels) === JSON.stringify(['Secretary Tablet', 'Marshal Phone', 'Announcer Tablet', 'Event Admin Tablet']), JSON.stringify(labels));
+  check('3.17 each card has its role, a code and a QR; all four codes are different', (await cards.locator('.dev-qr svg').count()) === 4 && new Set(setCodes.map(c => c.trim())).size === 4 && setCodes.every(c => CODE_RE.test(c.trim())));
   const roles = await cards.locator('.dev-card-role').allTextContents();
-  check('3.18 roles in words: Counter x4, Secretary / Scorekeeper, Marshal, Announcer, Event Admin / Temporary Organizer', JSON.stringify(roles) === JSON.stringify(['Counter', 'Counter', 'Counter', 'Counter', 'Secretary / Scorekeeper', 'Marshal', 'Announcer', 'Event Admin / Temporary Organizer']), JSON.stringify(roles));
-  const qrs = await Promise.all([0, 3, 7].map(async i => ({ i, q: await cards.nth(i).locator('.dev-qr svg').evaluate(s => s.querySelector('path').getAttribute('d')) })));
+  check('3.18 roles in words: Secretary / Scorekeeper, Marshal, Announcer, Event Admin / Temporary Organizer', JSON.stringify(roles) === JSON.stringify(['Secretary / Scorekeeper', 'Marshal', 'Announcer', 'Event Admin / Temporary Organizer']), JSON.stringify(roles));
+  const qrs = await Promise.all([0, 3].map(async i => ({ i, q: await cards.nth(i).locator('.dev-qr svg').evaluate(s => s.querySelector('path').getAttribute('d')) })));
   check('3.19 the QRs encode each card\'s own fragment link', qrs.every(({ i, q }) => q === qrPath(`${BASE}/device#c=${raw(setCodes[i].trim())}`).d));
   const dbSet = sql(`select string_agg(label || ':' || role, ',' order by label) from public.event_credentials where event_id = '${EV}' and kind = 'device' and revoked_at is null`);
-  check('3.20 the database holds exactly those eight devices, active, with those roles', dbSet === 'Announcer Tablet:announcer,Counter Phone 1:counter,Counter Phone 2:counter,Counter Phone 3:counter,Counter Phone 4:counter,Event Admin Tablet:temporary_organizer,Marshal Phone:marshal,Secretary Tablet:scorekeeper', dbSet);
-  const evAdmin = setCodes[7].trim();
+  check('3.20 the database holds exactly those four devices, active, with those roles', dbSet === 'Announcer Tablet:announcer,Event Admin Tablet:temporary_organizer,Marshal Phone:marshal,Secretary Tablet:scorekeeper', dbSet);
+  const evAdmin = setCodes[3].trim();
   const adminIn = await signin(evAdmin);
-  check('3.21 the Event Admin Tablet code signs in as a Temporary Organizer (real Edge Function token) and may read the Command Centre; the Counter Phone 1 code gets nothing there',
+  check('3.21 the Event Admin Tablet code signs in as a Temporary Organizer (real Edge Function token) and may read the Command Centre; the Marshal Phone code gets nothing there',
     adminIn.status === 200 && adminIn.body?.whoami?.role === 'temporary_organizer' && (await rpc({ jwt: adminIn.body.access_token }, 'event_command_snapshot', { p_event: EV })).status === 200
-    && refused(await rpc({ jwt: (await signin(setCodes[0].trim())).body.access_token }, 'event_command_snapshot', { p_event: EV })));
+    && refused(await rpc({ jwt: (await signin(setCodes[1].trim())).body.access_token }, 'event_command_snapshot', { p_event: EV })));
   await shot(org, '04-phone-usual-set');
   await org.getByRole('dialog').getByRole('button', { name: /^Copy all codes/ }).click();
   const clipAll = await org.evaluate(() => navigator.clipboard.readText()).catch(() => '');
-  check('3.22 Copy all codes puts "label: code" lines on the clipboard', clipAll.split('\n').length === 8 && clipAll.includes(`Event Admin Tablet: ${evAdmin}`), clipAll.slice(0, 100));
+  check('3.22 Copy all codes puts "label: code" lines on the clipboard', clipAll.split('\n').length === 4 && clipAll.includes(`Event Admin Tablet: ${evAdmin}`), clipAll.slice(0, 100));
   await org.evaluate(() => navigator.clipboard.writeText('')).catch(() => undefined);
   await org.getByRole('dialog').getByRole('button', { name: /^Print/ }).click();
   const prints = await org.evaluate(() => window.__prints);
@@ -412,16 +412,16 @@ try {
     once: getComputedStyle(document.querySelector('.dev-once')).display, buttons: [...document.querySelectorAll('.dev-noprint')].every(e => getComputedStyle(e).display === 'none'),
     title: getComputedStyle(document.querySelector('.dev-print-title')).display, bg: getComputedStyle(document.body).backgroundColor, keep: getComputedStyle(document.querySelector('.dev-card')).breakInside
   }));
-  check('3.24 print CSS: only the sheet prints (page hidden), eight cards, no buttons or warning banner, a title line, white background, a card never split across pages',
-    printView.root === 'none' && printView.cards === 8 && printView.buttons && printView.once === 'none' && printView.title !== 'none' && /255, 255, 255/.test(printView.bg) && printView.keep === 'avoid', JSON.stringify(printView));
+  check('3.24 print CSS: only the sheet prints (page hidden), four cards, no buttons or warning banner, a title line, white background, a card never split across pages',
+    printView.root === 'none' && printView.cards === 4 && printView.buttons && printView.once === 'none' && printView.title !== 'none' && /255, 255, 255/.test(printView.bg) && printView.keep === 'avoid', JSON.stringify(printView));
   if (SHOTS) await org.pdf({ path: `${SHOTS}/cc181-05-print-sheet.pdf` }).catch(() => undefined);
   await org.emulateMedia({ media: 'screen' });
   await org.evaluate(() => document.body.classList.remove('printing-codes'));
   await closeSheet(org);
   const allHits = await Promise.all(setCodes.map(c => codeInBrowser(org, c.trim())));
-  check('3.25 after closing the printable sheet none of the eight codes remains in the page, its storage, the console or any URL; none is in the database', allHits.every(r => !r.dom && !r.logs && !r.urls) && setCodes.every(c => Object.values(codeInDb(c.trim())).every(n => n === 0)));
+  check('3.25 after closing the printable sheet none of the four codes remains in the page, its storage, the console or any URL; none is in the database', allHits.every(r => !r.dom && !r.logs && !r.urls) && setCodes.every(c => Object.values(codeInDb(c.trim())).every(n => n === 0)));
   await org.getByRole('button', { name: 'Add the usual set for an event' }).click();
-  check('3.26 asking for the usual set again makes no duplicates: it says they are already set up, and no sheet opens', await until(async () => /Already set up/i.test(await text(org, '#cc-devices')), 10000) && (await org.getByRole('dialog').count()) === 0 && count(`select count(*) from public.event_credentials where event_id = '${EV}' and kind = 'device' and revoked_at is null`) === 8);
+  check('3.26 asking for the usual set again makes no duplicates: it says they are already set up, and no sheet opens', await until(async () => /Already set up/i.test(await text(org, '#cc-devices')), 10000) && (await org.getByRole('dialog').count()) === 0 && count(`select count(*) from public.event_credentials where event_id = '${EV}' and kind = 'device' and revoked_at is null`) === 4);
   check('3.27 the organizer page has had no page errors so far', org.errors.length === 0, org.errors.join(' | '));
 
   // =================================================================== 4. Broadcast controls (organizer): each press changes the control row
@@ -506,7 +506,9 @@ try {
   await openSection(org, '#cc-announce');
   const draft = 'Unsent draft: Lyst 2 will start late';
   await org.locator('#cc-announce textarea').fill(draft);
-  await org.locator('#cc-fighters > summary').click();                              // the organizer closes the Fighters section on purpose
+  await openSection(org, '#cc-fighters');                                            // Pack 25: Fighters starts folded; open it, then the organizer closes it on purpose
+  await org.locator('#cc-fighters > summary').click();
+  await until(async () => !(await org.locator('#cc-fighters').evaluate(el => el.open)));
   const fightersClosed = !(await org.locator('#cc-fighters').evaluate(el => el.open));
   await org.evaluate(() => window.scrollTo(0, 1100));
   await sleep(500);
@@ -527,7 +529,8 @@ try {
   check('5.2 scroll position is kept (no jump to the top): before ' + y0 + ' after ' + y1, y0 > 700 && Math.abs(y1 - y0) <= 4, `${y0} -> ${y1}`);
   check('5.3 the unsent announcement draft is untouched', (await org.locator('#cc-announce textarea').inputValue()) === draft);
   check('5.4 the page was not remounted (marker on the root survived), and the sections the organizer opened or closed stayed as they were',
-    (await org.evaluate(() => document.querySelector('.cmd-centre')?.dataset.mark)) === 'kept2' && fightersClosed && !(await org.locator('#cc-fighters').evaluate(el => el.open)) && (await org.locator('#cc-devices').evaluate(el => el.open)) && (await org.locator('#cc-staff').evaluate(el => el.open)));
+    (await org.evaluate(() => document.querySelector('.cmd-centre')?.dataset.mark)) === 'kept2' && fightersClosed && !(await org.locator('#cc-fighters').evaluate(el => el.open)) && (await org.locator('#cc-devices').evaluate(el => el.open)) && (await org.locator('#cc-staff').evaluate(el => el.open)),
+    JSON.stringify({ mark: await org.evaluate(() => document.querySelector('.cmd-centre')?.dataset.mark), fightersClosed, fighters: await org.locator('#cc-fighters').evaluate(el => el.open).catch(() => 'missing'), devices: await org.locator('#cc-devices').evaluate(el => el.open).catch(() => 'missing'), staff: await org.locator('#cc-staff').evaluate(el => el.open).catch(() => 'missing') }));
   check('5.5 no page errors after all of that', org.errors.length === 0, org.errors.join(' | '));
   await shot(org, '09-phone-after-live-updates');
 
@@ -573,7 +576,7 @@ try {
   // =================================================================== 8. refused: a stranger, another event's organizer, a signed-out visitor
   const st = await open('phone', 'stranger'); pages.push(st);
   await st.goto(BASE + CMD); await st.waitForLoadState('networkidle').catch(() => undefined); await sleep(1500);
-  check('8.1 a stranger is told the Command Centre is for organizers, head marshal and secretary: no panels, no controls', /for this event's organizers, head marshal and secretary/.test(await text(st)) && (await st.locator('#cc-broadcast, #cc-devices, [data-testid="camera-off"]').count()) === 0, await text(st));
+  check('8.1 a stranger is told the Command Centre is for organizers, head marshal and secretary: no panels, no controls', /people who run this event|for this event's organizers, head marshal and secretary/i.test(await text(st)) && (await st.locator('#cc-broadcast, #cc-devices, [data-testid="camera-off"]').count()) === 0, await text(st));
   const oo = await rpc('otherOrg', 'list_event_credentials', { p_event: EV });
   check('8.2 another event\'s organizer is refused this event\'s devices and broadcast state by the database', refused(oo) && refused(await rpc('otherOrg', 'broadcast_control_state', { p_event: EV })) && refused(await rpc('otherOrg', 'set_broadcast_control', { p_event: EV, p_expected_rev: 0, p_patch: { mode: 'auto' } })));
   const anon = await open('phone', null); pages.push(anon);
@@ -593,11 +596,11 @@ try {
   await until(async () => /No device codes are active/.test(await text(dk, '#cc-devices')), 15000);
   await dk.getByRole('button', { name: 'Add the usual set for an event' }).click();
   await dk.getByTestId('code-sheet').waitFor({ timeout: 30000 });
-  await until(async () => (await dk.getByTestId('code-card').count()) === 8, 20000);
+  await until(async () => (await dk.getByTestId('code-card').count()) === 4, 20000);
   (await dk.getByTestId('device-code').allInnerTexts()).forEach(c => usedCodes.push(c.trim()));
   const dlg = await dk.locator('.dlg').boundingBox();
   const cardsBox = await dk.getByTestId('code-card').evaluateAll(els => els.map(e => { const r = e.getBoundingClientRect(); return [Math.round(r.x), Math.round(r.y)]; }));
-  check('9.3 desktop: the usual-set sheet is wide with the cards in two columns, all eight visible by scrolling inside the sheet', dlg.width > 700 && new Set(cardsBox.map(c => c[0])).size === 2 && await noSideways(dk), JSON.stringify([dlg, cardsBox.slice(0, 4)]));
+  check('9.3 desktop: the usual-set sheet is wide with the cards in two columns, all four visible by scrolling inside the sheet', dlg.width > 700 && new Set(cardsBox.map(c => c[0])).size === 2 && await noSideways(dk), JSON.stringify([dlg, cardsBox.slice(0, 4)]));
   await shot(dk, '11-desktop-usual-set');
   await dk.getByRole('dialog').getByRole('button', { name: /^Print/ }).click();
   await dk.emulateMedia({ media: 'print' });

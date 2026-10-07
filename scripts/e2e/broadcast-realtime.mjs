@@ -58,7 +58,7 @@ try {
   // 1. Manage › Broadcast for an event that has NEVER had broadcast settings or sponsors
   sql(`delete from public.event_sponsors where event_id = '${EVENT}'; delete from public.event_broadcast where event_id = '${EVENT}'`);
   const org = await open('organizer');
-  await org.goto(`${BASE}/events/test-stuff-test/manage?tab=broadcast`);
+  await org.goto(`${BASE}/events/test-stuff-test/control?mode=setup&tool=broadcast`);
   await org.getByText('OBS overlay').first().waitFor({ timeout: 30000 }).catch(() => undefined);
   const t1 = await settledText(org);
   check('1. realtime is really connected in this run (channels joined, as in production)', joins.length > 0, JSON.stringify(joins));
@@ -104,7 +104,7 @@ try {
   // 6. unauthorized people: refused, but never a blank app
   for (const who of ['stranger', 'scorekeeper']) {
     const p = await open(who);
-    await p.goto(`${BASE}/events/test-stuff-test/manage?tab=broadcast`);
+    await p.goto(`${BASE}/events/test-stuff-test/control?mode=setup&tool=broadcast`);
     const t = await settledText(p);
     check(`11. ${who} on Manage › Broadcast: no broadcast setup offered, and the page is not blank`, t.length > 40 && !/OBS overlay/i.test(t) && p.errors.length === 0, t.slice(0, 200) + ' | ' + p.errors.join(' | '));
   }

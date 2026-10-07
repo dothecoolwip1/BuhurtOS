@@ -11,3 +11,15 @@ insert into public.event_staff (event_id, user_id, role) values
 -- fighters 1 and 2 (Aldric, Brann) have accounts, so the existing fight alerts reach them (to prove Lyst Control adds none)
 insert into public.fighter_accounts (fighter_id, user_id) values
   ('00000000-0000-0000-0000-00000000f101', '00000000-0000-0000-0000-000000000101'), ('00000000-0000-0000-0000-00000000f102', '00000000-0000-0000-0000-000000000102');
+-- Pack 25: a team fight (5v5) on Field 2 for the standing-count counters: Ankle Biters (fighters 11-13) vs Red Deer Reavers (fighters 14-16), match m41, not called yet.
+insert into public.teams (id, slug, name, status, city, country) values
+  ('00000000-0000-0000-0000-00000000a301', 'ankle-biters', 'Ankle Biters', 'approved', 'Red Deer', 'CA'), ('00000000-0000-0000-0000-00000000a302', 'red-deer-reavers', 'Red Deer Reavers', 'approved', 'Red Deer', 'CA');
+insert into public.competitions (id, event_id, name, category, gender, tier, structure, sort, rounds_to_win) values
+  ('00000000-0000-0000-0000-00000000cd07', '00000000-0000-0000-0000-00000000ed01', '5v5 (men)', '5v5', 'men', 'Classic', 'round_robin', 5, 2);
+insert into public.entries (id, competition_id, team_id) values
+  ('00000000-0000-0000-0000-00000000e271', '00000000-0000-0000-0000-00000000cd07', '00000000-0000-0000-0000-00000000a301'),
+  ('00000000-0000-0000-0000-00000000e272', '00000000-0000-0000-0000-00000000cd07', '00000000-0000-0000-0000-00000000a302');
+insert into public.entry_fighters (entry_id, fighter_id, role) select '00000000-0000-0000-0000-00000000e271', ('00000000-0000-0000-0000-00000000f1' || n)::uuid, 'fighter' from generate_series(11, 13) n;
+insert into public.entry_fighters (entry_id, fighter_id, role) select '00000000-0000-0000-0000-00000000e272', ('00000000-0000-0000-0000-00000000f1' || n)::uuid, 'fighter' from generate_series(14, 16) n;
+insert into public.matches (id, competition_id, stage, round_label, position, field, entry_a, entry_b) values
+  ('00000000-0000-0000-0000-0000000fd042', '00000000-0000-0000-0000-00000000cd07', 'round_robin', 'Round 1', 0, 'Field 2', '00000000-0000-0000-0000-00000000e271', '00000000-0000-0000-0000-00000000e272');

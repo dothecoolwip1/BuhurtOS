@@ -883,9 +883,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .reprteam-form{display:grid;gap:10px}
 
 /* ---- Event day (Manage > Event day): the organizer's screen while a tournament runs. What is fighting NOW dominates; the rest is quieter. */
-.ed-title{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 14px}
-.ed-title h1{font-size:clamp(22px,5vw,36px);margin:0;overflow-wrap:anywhere}
-.ed-title-tag{font:600 11px/1 var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:6px;vertical-align:middle}
 .ed-status{display:flex;gap:6px 12px;flex-wrap:wrap;align-items:center;font-size:13px}
 .ed-live{font:600 12px/1 var(--f-data);color:var(--muted)}
 .ed-live.on{color:var(--win)}
@@ -924,14 +921,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .ed-lower{display:grid;gap:16px}
 .ed-h{font-size:20px;display:flex;gap:10px;align-items:center}
 .ed-calm{color:var(--muted);margin:0}
-.ed-att-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.ed-att{display:flex;gap:10px 12px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-left-width:4px;border-radius:10px}
-.ed-att.now{border-left-color:var(--live)}
-.ed-att.soon{border-left-color:var(--brass)}
-.ed-att.later{border-left-color:var(--steel)}
-.ed-att>div{display:grid;gap:2px;min-width:0;flex:1 1 220px}
-.ed-att .src,.ed-att b{overflow-wrap:anywhere}
-.ed-att .btn{min-height:44px}
 .ed-prog-list{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 .ed-prog-list li{display:grid;gap:6px}
 .ed-prog-head{display:flex;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;align-items:baseline}
@@ -984,8 +973,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 @media (prefers-reduced-motion:reduce){.fade-in,.ar-enter,.fz-state{animation:none;transition:none}}
 .ed-bar{height:8px;border-radius:999px;background:var(--ground);overflow:hidden;border:1px solid var(--line)}
 .ed-bar i{display:block;height:100%;background:var(--steel)}
-.ed-links{display:grid;gap:8px}
-.ed-links div{display:flex;gap:8px;flex-wrap:wrap}
 @media (min-width:900px){
   .ed-fields{grid-template-columns:repeat(auto-fit,minmax(400px,1fr));align-items:start}
   .ed-field-wrap{display:block}
@@ -1090,12 +1077,6 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .eh-more-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
 .eh-more-list a{display:grid;gap:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;min-height:44px;background:var(--surface)}
 .eh-more-list a:hover{border-color:var(--steel)}
-.mg-more{display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
-.mg-more .seg{flex:1 1 auto;min-width:0}
-.mg-more > .btn{flex:none}
-.mg-more-panel{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr))}
-.mg-more-panel a{min-height:44px;display:flex;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px;color:inherit;text-decoration:none;background:var(--surface);font-weight:600}
-.mg-more-panel a[aria-current="page"]{border-color:var(--ink);background:var(--ink);color:var(--ground)}
 
 /* ---------------------------------------------------------------- Pack 09D: Review wins & losses */
 .rw-lede{margin:0;font-weight:600}
@@ -1152,7 +1133,7 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 .ed-held{margin:0;border-left:4px solid var(--brass)}
 .ed-manual{margin:0}
 /* Pack 09D: the organizer's main controls are full-size tap targets (44 px) */
-.mg-more .seg button,.mg-more .btn,.qs-bulk .btn,.ed-status .btn,.ed-prog-list .btn,.eh-secondary .btn,.ed-next .btn,.lc .btn,.lc-fighter .btn,.lc-roster .btn{min-height:44px}
+.qs-bulk .btn,.ed-status .btn,.ed-prog-list .btn,.eh-secondary .btn,.ed-next .btn,.lc .btn,.lc-fighter .btn,.lc-roster .btn{min-height:44px}
 .lc-roster summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 .lc-roster ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
 .lc-roster li{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
@@ -1334,11 +1315,8 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .cc-staff{margin:0;display:grid;gap:6px}
 .cc-staff div{display:grid;grid-template-columns:minmax(110px,40%) 1fr;gap:8px;font-size:14px}
 .cc-staff dt{color:var(--muted)} .cc-staff dd{margin:0;overflow-wrap:anywhere}
-.cc-quick{display:grid;gap:8px}
-.cc-quick>div{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-.cc-quick .btn{min-height:48px;justify-content:center;text-align:center;white-space:normal}
 @media (min-width:720px){.cc-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}.cc-item{grid-template-columns:auto minmax(0,1fr) auto}.cc-act{grid-column:auto;justify-self:end}}
-@media (min-width:1100px){.cmd-centre{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}.cc-head,.cc-quick,#cc-attention{grid-column:1 / -1}}
+@media (min-width:1100px){.cmd-centre{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}.cc-head,#cc-attention,.lo-fields,.lo-stations{grid-column:1 / -1}}
 
 /* Pack 18.1: Camera Off (a safety control: loud, large, one-handed) */
 .camoff { display: grid; gap: 8px; }
@@ -1420,3 +1398,100 @@ main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:
   .top,.bottom,footer,.focus-top,.no-print,.mockflag,.more-sheet{display:none!important}
   body,main{background:#fff!important;color:#000!important}
 }
+
+/* ── Pack 25: the public event page — header, three destinations, live fields ── */
+.ev-head{display:grid;gap:10px}
+.ev-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ev-status{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ev-control{min-height:40px;padding:0 14px;font-size:14px;margin-left:auto}
+.ev-title{margin:0;font-size:clamp(26px,7vw,40px);line-height:1.08;letter-spacing:-.01em;overflow-wrap:anywhere}
+.ev-facts{margin:0;display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--muted);font-size:15px}
+.ev-facts .ev-when{color:var(--ink);font-weight:600}
+.ev-conn{font:500 12.5px/1.4 var(--f-data);color:var(--faint)}
+.ev-conn.is-live{color:var(--win)}
+.ev-cta{margin:2px 0 0}
+.ev-cta .btn{width:100%}
+.ev-views{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:3px;border-radius:999px;background:var(--surface);border:1px solid var(--line);position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);z-index:5}
+.ev-view{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 10px;border-radius:999px;font-weight:600;font-size:15px;color:var(--muted);text-align:center}
+.ev-view:hover{color:var(--ink)}
+.ev-view.is-active{color:var(--ink);background:var(--ground);box-shadow:inset 0 0 0 1px var(--line)}
+.ev-dot{width:8px;height:8px;border-radius:50%;background:var(--live);animation:pulse 1.6s ease-in-out infinite}
+.ev-lede{margin:0;font-size:17px;line-height:1.5;white-space:pre-line}
+.ev-tools{display:flex;flex-wrap:wrap;gap:8px}
+.ev-quiet{display:grid;gap:8px;justify-items:start}
+.ev-quiet h2{margin:0;font-size:20px}
+.ev-bracket summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;list-style:none}
+.ev-bracket summary::-webkit-details-marker{display:none}
+.ev-bracket summary::before{content:"▸";color:var(--muted);font-size:14px}
+.ev-bracket[open] summary::before{content:"▾"}
+@media (min-width:700px){
+  .ev-cta .btn{width:auto}
+  .ev-views{position:static;max-width:520px}
+}
+
+/* per field: NOW, ON DECK, IN THE HOLE */
+.lf{display:grid;gap:12px}
+.lf-field{padding:12px 14px 14px;display:grid;gap:10px}
+.lf-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lf-name{margin:0;font-size:19px}
+.lf-arena{font:600 13px/1 var(--f-data);color:var(--muted);text-decoration:underline;text-underline-offset:3px;min-height:32px;display:inline-flex;align-items:center}
+.lf-slots{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.lf-slot{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:start;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--raised)}
+.lf-slot.is-active{border-color:var(--live);background:color-mix(in oklab,var(--live-soft) 55%,var(--raised))}
+.lf-slot.is-mine{box-shadow:inset 0 0 0 2px var(--brass)}
+.lf-k{font:700 11px/1.2 var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.lf-slot.is-active .lf-k{color:var(--live)}
+.lf-body{display:grid;gap:4px;min-width:0}
+.lf-names{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-size:17px;line-height:1.25}
+.lf-names i{font-style:normal;color:var(--faint);font-size:13px}
+.lf-slot.is-active .lf-names{font-size:19px}
+.lf-ctx{font-size:13px;color:var(--muted)}
+.lf-lyst{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:2px}
+.lf-score{font-size:22px;font-weight:700;letter-spacing:.04em}
+.lf-score i{font-style:normal;color:var(--faint);margin:0 2px}
+.lf-phase{font:600 12px/1 var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lf-clock{font-size:18px;font-weight:700;color:var(--muted)}
+.lf-clock.is-running{color:var(--ink)}
+@media (min-width:860px){
+  .lf{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))}
+}
+
+/* ── Pack 25: Event Control — the one staff door, phase aware ── */
+.ctl{display:grid;gap:14px;min-width:0}
+.ctl-head{display:grid;gap:8px}
+.ctl-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ctl-top .eyebrow{margin:0}
+.ctl-back{font-weight:600;font-size:14px;color:var(--muted);min-height:32px;display:inline-flex;align-items:center}
+.ctl-back:hover{color:var(--ink)}
+.ctl-title{margin:0;font-size:clamp(22px,6vw,34px);line-height:1.1;overflow-wrap:anywhere}
+.ctl-meta{margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ctl-pending{font-weight:600;font-size:14px;color:var(--brass);text-decoration:underline;text-underline-offset:3px}
+.ctl-modes .seg{display:grid;grid-template-columns:repeat(3,1fr);width:100%;padding:3px}
+.ctl-modes .seg button{min-height:44px;font-size:15px;padding:8px 6px}
+.ctl-tool-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctl-tool-title{margin:0;font-size:20px}
+.ctl-tool-foot{margin:6px 0 0}
+@media (min-width:700px){.ctl-modes .seg{width:auto;min-width:360px}}
+
+/* Live ops */
+.lo .cc-head{padding:12px 14px}
+.lo .cc-meta{gap:8px 12px;align-items:center;flex-wrap:wrap}
+.lo-h{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.lo-h .cc-count{font:600 12px/1 var(--f-data);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.lo-fields{display:grid;gap:10px;min-width:0}
+.lo-stations{display:grid;gap:8px;padding:12px 14px}
+.lo-stations .lo-h{margin:0}
+.lo-stations .src{margin:0}
+.lo-station-row{display:flex;flex-wrap:wrap;gap:8px}
+.lo-station-row .btn{min-height:44px}
+.cq{align-items:center}
+.cq-row{grid-column:1 / -1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cq-row b{font-size:16px}
+.cq .linklike{justify-self:start;margin-top:4px}
+.ev-note{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;font-size:14px;line-height:1.4}
+.ev-note .chip{flex:none;margin-top:1px}
+.ev-note span{min-width:0}
+.ly-join.cq .ly-qr{width:min(60vw,220px)}
+.ly-join.cq .ly-code{font-size:20px}
+.ly-join.cq>div{display:grid;gap:6px;min-width:0}
+@media (max-width:599px){.ly-join.cq{grid-template-columns:1fr;justify-items:start}.ly-join.cq .ly-qr{justify-self:center}}

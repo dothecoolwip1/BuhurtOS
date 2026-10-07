@@ -35,15 +35,16 @@ export function CheckinDeskPage() {
   const roles = useAsync(() => (event && session ? fetchMyDeskRoles(event.id) : Promise.resolve(null)), [event?.id, session?.user.id]);
   useDocumentTitle(event ? `Check-in · ${event.name}` : 'Check-in');
   const desk = roles.data?.detail ? roles.data : null;
-  useFocusBar({ eventName: event?.name, context: desk && desk.inspect && !desk.checkIn ? 'Armour inspection' : desk?.inspect ? 'Check-in and armour' : 'Check-in', exit: { to: `/events/${slug}`, label: 'Event' } });
+  const fromControl = params.get('from') === 'control';   // opened from Event Control: Exit returns there
+  useFocusBar({ eventName: event?.name, context: desk && desk.inspect && !desk.checkIn ? 'Armour inspection' : desk?.inspect ? 'Check-in and armour' : 'Check-in', exit: fromControl ? { to: `/events/${slug}/control?mode=live`, label: 'Event Control' } : { to: `/events/${slug}`, label: 'Event' } });
 
-  if (!session) return <><PageHead eyebrow="Event day" title="Check-in desk" /><SignIn reason="Sign in with the account you use as event staff." /></>;
+  if (!session) return <><PageHead eyebrow="Event Control" title="Check-in desk" /><SignIn reason="Sign in with the account you use as event staff." /></>;
   if (ev.loading || (event && roles.loading)) return <p className="muted">Loading…</p>;
   if (ev.error != null || !event) return <p role="alert">{friendlyError(ev.error, 'Could not load this event.')}</p>;
   if (!roles.data?.detail) {
     return (
       <section className="panel info" role="status" style={{ display: 'grid', gap: 10 }}>
-        <PageHead eyebrow="Event day" title="Check-in desk" />
+        <PageHead eyebrow="Event Control" title="Check-in desk" />
         <p><b>This screen is for {event.name}'s check-in desk and armour inspectors.</b> A check-in code does not open it by itself: an organizer adds staff under Manage › People.</p>
         <p><Link className="btn btn-line" to={`/events/${event.slug}`}>Back to the event</Link></p>
       </section>

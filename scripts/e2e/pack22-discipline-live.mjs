@@ -310,7 +310,7 @@ try {
 
   // ================================================================ 9. competition documents (organizer, desktop)
   const { page: od } = await open('desktop', 'organizer');
-  await od.goto(BASE + `/events/${SLUG}/manage?tab=competitions`);
+  await od.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=competitions`);
   await waitText(od, 'Longsword (men)', 30000);
   await od.getByRole('button', { name: /Use the current Buhurt International documents/ }).first().click();
   check('46. "use the current Buhurt International documents" attaches the published duels documents and the documents for every format (from the classification)',

@@ -16,6 +16,8 @@ export interface LiveEvent {
   startsOn: string; endsOn: string; feeCents: number; feeProvince: string | null; feeNote: string | null;
   registrationOpensAt: string | null; registrationClosesAt: string | null; leagues: LeagueKey[];
   registrationMode: 'buhuros' | 'external' | 'none'; externalUrl: string | null; timeNote: string | null; volunteerInfo: string | null;
+  /** The event's own time zone (IANA): the venue's clock decides which day it is (Pack 25). Absent in older fixtures: Mountain time is assumed. */
+  timezone?: string;
   /** How many competitions the event has (0 for a tournament draft means "needs competition setup"). */
   competitionCount: number;
   organizationId: string | null; seasonId: string | null;
@@ -31,13 +33,13 @@ export interface MyEventContext {
   pendingRegistrations: number | null;
 }
 
-const EVENT_COLUMNS_09C = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id,closed_at,reopened_at';
+const EVENT_COLUMNS_09C = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,timezone,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id,closed_at,reopened_at';
 /** Pack 09D adds the lifecycle and the number of fields. A database without them (42703) is asked again with the older list. */
 const EVENT_COLUMNS = `${EVENT_COLUMNS_09C},archived_at,stats_excluded_at,stats_excluded_reason,field_count`;
 const missingColumn = (e: unknown) => (e as { code?: string } | null)?.code === '42703';
 type EventRow = {
   id: string; slug: string; name: string; description: string; event_type: string; status: LiveEvent['status'];
-  venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null; latitude: number | null; longitude: number | null; starts_on: string; ends_on: string;
+  venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null; latitude: number | null; longitude: number | null; starts_on: string; ends_on: string; timezone?: string | null;
   organization_id: string | null; season_id: string | null;
   fee_cents: number; fee_province: string | null; fee_note: string | null; registration_opens_at: string | null; registration_closes_at: string | null;
   registration_mode: LiveEvent['registrationMode']; external_url: string | null; time_note: string | null; volunteer_info: string | null;
@@ -51,7 +53,7 @@ const toEvent = (r: EventRow, leagues: LeagueKey[] = [], competitionCount = 0): 
   id: r.id, slug: r.slug, name: r.name, description: r.description, eventType: r.event_type, status: r.status,
   closedAt: r.closed_at ?? null, reopenedAt: r.reopened_at ?? null,
   archivedAt: r.archived_at ?? null, statsExcludedAt: r.stats_excluded_at ?? null, statsExcludedReason: r.stats_excluded_reason ?? null, fieldCount: r.field_count ?? 1,
-  venue: r.venue, address: r.address, city: r.city, region: r.region, country: r.country ?? null, latitude: r.latitude ?? null, longitude: r.longitude ?? null, startsOn: r.starts_on, endsOn: r.ends_on,
+  venue: r.venue, address: r.address, city: r.city, region: r.region, country: r.country ?? null, latitude: r.latitude ?? null, longitude: r.longitude ?? null, startsOn: r.starts_on, endsOn: r.ends_on, timezone: r.timezone ?? 'America/Edmonton',
   competitionCount, organizationId: r.organization_id ?? null, seasonId: r.season_id ?? null,
   feeCents: r.fee_cents, feeProvince: r.fee_province, feeNote: r.fee_note,
   registrationOpensAt: r.registration_opens_at, registrationClosesAt: r.registration_closes_at, leagues,

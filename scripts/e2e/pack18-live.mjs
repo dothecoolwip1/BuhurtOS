@@ -23,7 +23,7 @@ const REG = (n) => `00000000-0000-0000-0000-00000000ae0${n}`;   // 1 Aldric, 2 B
 const MID = (n) => `00000000-0000-0000-0000-0000000fd${String(n).padStart(3, '0')}`;
 const EM = { organizer: 'u2@example.test', scorekeeper: 'u4@example.test', stranger: 'u7@example.test', head: 'c1@example.test', desk: 'd1@example.test', inspector: 'd2@example.test',
   captain: 'd3@example.test', otherDesk: 'd4@example.test', brann: 'fighter2@example.test', codeOnly: 'c7@example.test' };
-const SLUG = 'test-stuff-test', CMD = `/events/${SLUG}/command`;
+const SLUG = 'test-stuff-test', CMD = `/events/${SLUG}/control?mode=live`;
 
 // ---- the real Auth server and the database, as a device would use them
 const tokens = new Map();
@@ -351,7 +351,7 @@ try {
   await org.goBack(); await org.locator('.cmd-centre').waitFor();
   await until(async () => (await org.locator('.cc-item').count()) >= 5);
   await org.locator('.cc-item', { hasText: 'result needs a decision' }).getByRole('link').click();
-  check('B10. the result conflict opens Event day, where it is decided', await until(async () => path(org) === `/events/${SLUG}/manage?tab=eventday` && /review|disagree/i.test(await text(org)), 20000), path(org));
+  check('B10. the result conflict opens Event day, where it is decided', await until(async () => path(org) === `/events/${SLUG}/control?mode=live` && /review|disagree/i.test(await text(org)), 20000), path(org));
   await org.goto(BASE + CMD); await org.locator('.cmd-centre').waitFor();
   await org.getByRole('link', { name: 'Open Lyst Control · Field 2' }).click();
   check('B11. "Open Lyst Control · Field 2" opens that field\'s Lyst Control screen', await until(async () => path(org) === `/events/${SLUG}/field/Field%202`), path(org));
@@ -422,7 +422,7 @@ try {
   await shot(sk, '15-command-scorekeeper-phone', false);
   const empty = await open('phone'); pages.push(empty);
   await empty.goto(BASE + '/account'); await signInHere(empty, EM.otherDesk); await until(async () => /Sign out/.test(await text(empty)));
-  await empty.goto(BASE + '/events/other-event/command'); await empty.locator('.cmd-centre').waitFor({ timeout: 30000 });
+  await empty.goto(BASE + '/events/other-event/control?mode=live'); await empty.locator('.cmd-centre').waitFor({ timeout: 30000 });
   check('B22b. an event with nothing drawn yet: "All good", no fields yet, nothing invented', /All good/.test(await text(empty, '.cc-head')) && /No fights are scheduled on a field yet/.test(await text(empty, '#cc-fields')) && await noSideways(empty));
   await shot(empty, '16-command-empty-phone');
   const snapText = JSON.stringify((await rpc('organizer', 'event_command_snapshot', { p_event: EVENT })).body);

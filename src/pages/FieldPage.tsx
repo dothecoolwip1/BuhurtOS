@@ -87,7 +87,7 @@ export function FieldPage() {
   const [search, setSearch] = useSearchParams();
   const field = rawField.trim();
   const wantedMatch = search.get('match') ?? search.get('open');   // Event day opens the scoreboard of one match directly; `open` keeps an open fight across a refresh
-  const fromEventDay = search.get('from') === 'eventday'; // ... and offers the way back
+  const fromControl = search.get('from') === 'control' || search.get('from') === 'eventday'; // ... and offers the way back to Event Control › Live ops
   const { session, loading: authLoading } = useAuth();
   const userId = session?.user.id;
   const { waiting, stuck, heldForOthers, durable } = useOutbox();
@@ -112,7 +112,7 @@ export function FieldPage() {
   const lystOpen = opened !== null && boardModeFor(opened.comp.league, opened.comp.category) === 'duel' && !classic;
   useFocusBar({
     eventName: event?.name, context: lystOpen ? `Lyst · ${field}` : field,
-    exit: fromEventDay ? { to: `/events/${slug}/manage?tab=eventday`, label: 'Event day' } : { to: `/events/${slug}#scorekeeping`, label: 'Event' },
+    exit: fromControl ? { to: `/events/${slug}/control?mode=live`, label: 'Event Control' } : { to: `/events/${slug}/live`, label: 'Event' },
     pending: canScore ? waiting : undefined
   });
 
@@ -194,7 +194,7 @@ export function FieldPage() {
           const common = {
             opened, eventId: event.id, userId: session.user.id, fieldName: field,
             nextFight: queue.find(m => m.id !== opened.match.id && m.queueState === 'active' && m.entryA && m.entryB) ?? queue.find(m => m.id !== opened.match.id && m.queueState === 'on_deck' && m.entryA && m.entryB) ?? null,
-            backHref: fromEventDay ? { to: `/events/${event.slug}/manage?tab=eventday`, label: 'Back to Event day' } : null,
+            backHref: fromControl ? { to: `/events/${event.slug}/control?mode=live`, label: 'Back to Event Control' } : null,
             onExit: () => { closeOpened(); reload(); },
             onFinished: () => { closeOpened(); reload(); },
             onOfficial: reload,
@@ -239,9 +239,9 @@ export function FieldPage() {
               </div>
             </nav>
           )}
-          {fromEventDay
-            ? <Link className="more" to={`/events/${event.slug}/manage?tab=eventday`}>← Back to Event day</Link>
-            : <Link className="more" to={`/events/${event.slug}#scorekeeping`}>← Back to the event and field list</Link>}
+          {fromControl
+            ? <Link className="more" to={`/events/${event.slug}/control?mode=live`}>← Back to Event Control</Link>
+            : <Link className="more" to={`/events/${event.slug}/live`}>← Back to the event</Link>}
         </>
       )}
     </section>

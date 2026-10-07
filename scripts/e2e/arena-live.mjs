@@ -64,7 +64,7 @@ const waitDb = async (fn, want, timeout = 8000) => { const t0 = Date.now(); let 
 const stageText = async (page) => (await page.locator('.ar-main').innerText().catch(() => '')).replace(/\s+/g, ' ').toLowerCase();
 const nextText = async (page) => (await page.locator('.ar-next').innerText().catch(() => '')).replace(/\s+/g, ' ').toLowerCase();
 const scores = async (page) => page.evaluate(() => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.replace(/\s*\(winner\)/, '').trim()));
-const ARENA = '/events/test-stuff-test/arena', MANAGE = '/events/test-stuff-test/manage', FIELD1 = '/events/test-stuff-test/field/Field%201';
+const ARENA = '/events/test-stuff-test/arena', MANAGE = '/events/test-stuff-test/control', FIELD1 = '/events/test-stuff-test/field/Field%201';
 const noSideways = (page) => page.evaluate(() => [document.scrollingElement.scrollWidth, innerWidth]);
 const tap = async (page, name) => { await page.getByRole('button', { name, exact: true }).first().click(); };
 

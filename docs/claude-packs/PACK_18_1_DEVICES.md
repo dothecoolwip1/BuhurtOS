@@ -1,5 +1,7 @@
 # Pack 18.1: temporary event devices, client side
 
+> **Changed by Pack 25 (2026-10-07):** a new credential kind `counter_pool` (the event's one Counter QR, many sessions per credential, `event_sessions.multi`) replaces per-phone Counter codes in the normal path; staff device codes are unchanged. Sessions are listed and managed (move, end, preview) from Event Control and Platform › Devices. See `PACK_25_EVENT_CONTROL_AND_COUNTERS.md`.
+
 What a phone or tablet does when an organizer gives it a code. The database and the Edge Function are in `PACK_18_1_CONTRACTS.md`; this file is the browser half.
 
 ## What a device sees

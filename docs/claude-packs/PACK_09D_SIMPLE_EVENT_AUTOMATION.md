@@ -1,5 +1,7 @@
 # Pack 09D: Simple event mode, automatic tournament planning, smart scheduling, event / fighter / roster lifecycle
 
+> **Superseded by Pack 25 (2026-10-07):** Manage › Event home is now **Event Control › Set up** (the journey and its one next step are kept); the Manage tabs are Event Control tools; `/manage?tab=…` redirects. See `PACK_25_EVENT_CONTROL_AND_COUNTERS.md`.
+
 Branch `ccr-b436c25f-hua0xj` (from `main` `74bf9ce`, Pack 09C released). Migration `20261005000100_pack09d_simple_event_automation.sql` is the only
 new migration; nothing before it was touched or re-applied.
 

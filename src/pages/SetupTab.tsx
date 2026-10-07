@@ -85,7 +85,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
               <li key={c.label} className="checkrow">
                 <span>{c.ok ? '✓' : c.blocking ? '✗' : '!'} {c.ok || c.key !== 'competitions' ? c.label : 'No competitions yet'}{!c.ok && !c.blocking ? ' (recommended)' : ''}</span>
                 {/* Competitions have one editor, Manage › Competitions; everything else is on this page. */}
-                {!c.ok && c.key === 'competitions' && <Link className="btn btn-ink btn-sm" data-testid="fix-competitions" to={`/events/${event.slug}/manage?tab=competitions`}>+ Add competition</Link>}
+                {!c.ok && c.key === 'competitions' && <Link className="btn btn-ink btn-sm" data-testid="fix-competitions" to={`/events/${event.slug}/control?mode=setup&tool=competitions`}>+ Add competition</Link>}
                 {fix && <button type="button" className={`btn btn-sm ${c.blocking ? 'btn-ink' : 'btn-line'}`} data-testid={`fix-${fix.id}`} onClick={() => jump(fix.id)}>{fix.action}</button>}
               </li>
             );

@@ -9,16 +9,18 @@ export const JOIN_CODE_LENGTH = 10;
 export function parseJoinCode(input: string | null | undefined): string | null {
   const raw = (input ?? '').trim();
   if (!raw) return null;
-  const fromLink = /\/lyst\/join\/([A-Za-z0-9-]+)/.exec(raw)?.[1];
+  const fromLink = /\/lyst\/(?:join|train)\/([A-Za-z0-9-]+)/.exec(raw)?.[1];
   const code = (fromLink ?? raw).toUpperCase().replace(/[^A-Z0-9]/g, '');
   return code.length === JOIN_CODE_LENGTH ? code : null;
 }
 
-/** The address a QR code carries. `base` is the app's base path (for example "/BuhurtOS/"). */
-export function joinUrl(origin: string, base: string, code: string): string {
+/** The address the TRAINING QR carries (Pack 25: the Lyst's join code is for trainees; real counters use the event's Counter QR). `base` is the app's base path. */
+export function trainingUrl(origin: string, base: string, code: string): string {
   const b = base.endsWith('/') ? base : `${base}/`;
-  return `${origin}${b}lyst/join/${code}`;
+  return `${origin}${b}lyst/train/${code}`;
 }
+/** @deprecated the old name of trainingUrl; the /lyst/join/:code address still opens the training flow. */
+export const joinUrl = trainingUrl;
 
 export type CountAction = { kind: 'tap'; id: string; weight: number; round: number } | { kind: 'undo'; id: string; round: number };
 
@@ -65,21 +67,44 @@ export async function flushTaps(q: TapQueue, send: CounterSend): Promise<{ sent:
 }
 
 export const SEAT_WORD = { official: 'Counting', learning: 'Learning' } as const;
-export const slotLabel = (slot: string | null | undefined): string => slot ?? '–';
-/** The words a counter needs when the tablet has not seated them yet, or has moved them on. */
-export function counterBanner(state: { seat: { status: string; role?: string } | null; can_count?: boolean; final?: boolean; round?: { status: string } | null }): string {
-  if (!state.seat) return 'Scan the join code on the lyst tablet.';
-  if (state.seat.status === 'pending') return 'Waiting for the lyst to seat you. Keep this screen open.';
-  if (state.seat.status === 'expired') return 'Your seat has ended. Ask the lyst for a new one.';
-  if (state.final) return 'This fight is finished. Wait for the next one.';
+export const SIDE_LABEL = { a: 'Red', b: 'Blue' } as const;
+export const sideLabel = (side: 'a' | 'b' | null | undefined): string => (side ? SIDE_LABEL[side] : 'Side');
+/** The words a counter needs: what to do next, in every situation the phone can be in. */
+export function counterBanner(state: {
+  seat: { status: string; role?: string; side?: 'a' | 'b' | null } | null; can_count?: boolean; final?: boolean; waiting?: boolean;
+  round?: { status: string } | null; counter_input?: string; binding?: { field_key?: string | null; side?: 'a' | 'b' | null } | null;
+}): string {
+  if (!state.seat) {
+    if (state.binding?.field_key && !state.binding.side) return 'Choose Red or Blue.';
+    return 'Choose your Lyst and side.';
+  }
+  if (state.seat.status === 'expired') return 'This seat has run out. Choose your Lyst and side again.';
+  if (state.seat.status === 'ended' || state.seat.status === 'declined') return 'You are not counting right now. Choose your Lyst and side.';
+  if (state.waiting) return 'Waiting for the next fight on this Lyst. It opens here by itself.';
+  if (state.final) return 'This fight is finished. The next one opens here by itself.';
   if (!state.round) return 'Waiting for the round to start.';
   if (state.round.status === 'confirming') return 'Round over. The marshal is confirming the score.';
   if (state.round.status === 'confirmed') return 'Round confirmed. Wait for the next round.';
-  return state.can_count ? 'Tap COUNT for every valid strike.' : 'Waiting for the round to start.';
+  if (!state.can_count) return 'Waiting for the round to start.';
+  return state.counter_input === 'standing' ? 'Tap FIGHTER DOWN each time one of your side goes down.' : 'Tap COUNT for every valid strike.';
 }
 
-/** One tap per valid strike, or two buttons (+2 head/torso, +1 limbs) where the ruleset scores that way. 'auto' follows the category's own zone values; an event can force either. */
-export function counterInputFor(category: string, setting: 'auto' | 'simple' | 'weighted' | undefined): 'simple' | 'weighted' {
+/** One tap per valid strike, or two buttons (+2 head/torso, +1 limbs) where the ruleset scores that way; group fights count fighters standing. 'auto' follows the category. */
+export function counterInputFor(category: string, setting: 'auto' | 'simple' | 'weighted' | undefined, league?: string): 'simple' | 'weighted' | 'standing' {
+  if (league === 'buhurt' || /^\d+v\d+$/.test(category)) return 'standing';
   if (setting === 'simple' || setting === 'weighted') return setting;
   return category === 'sword_shield' || category === 'longsword' ? 'weighted' : 'simple';
 }
+
+/** The phone's first-run steps: who, which Lyst (only when there is more than one), which side. Returns the step that still needs an answer. */
+export type CounterStep = 'operator' | 'field' | 'side' | 'count';
+export function nextStep(b: { operator?: string | null; field_key?: string | null; side?: 'a' | 'b' | null } | null | undefined, fields: readonly { key: string }[]): CounterStep {
+  if (!b?.operator) return 'operator';
+  if (!b.field_key) return fields.length === 1 ? 'side' : 'field';
+  if (!b.side) return 'side';
+  return 'count';
+}
+/** With exactly one field there is nothing to choose: that field. */
+export const onlyField = (fields: readonly { key: string }[]): string | null => (fields.length === 1 ? fields[0].key : null);
+/** What the standing counter shows: fighters still up on this side (bounded at zero). */
+export const standingLeft = (perSide: number | null | undefined, downs: number): number => Math.max(0, (perSide ?? 0) - downs);

@@ -246,11 +246,11 @@ try {
 
   // ------------------------------------------------------------------ 11. existing screens still agree; staff roles in People
   const org = await open('phone', 'organizer');
-  await org.goto(BASE + '/events/test-stuff-test/manage?tab=checkin');
+  await org.goto(BASE + '/events/test-stuff-test/control?mode=live&tool=checkin');
   await org.getByRole('link', { name: 'Open the check-in desk' }).waitFor({ timeout: 30000 });
   await org.getByRole('group', { name: 'Show' }).getByRole('button', { name: 'All', exact: true }).click();
   check('58. Manage › Check-in links to the desk and still lists Brann as checked in with kit passed', await until(async () => /Checked in ✓/.test(await text(org, 'article[aria-label="Brann Oakley"]')) && /Kit passed ✓/.test(await text(org, 'article[aria-label="Brann Oakley"]'))), await text(org, 'article[aria-label="Brann Oakley"]'));
-  await org.goto(BASE + '/events/test-stuff-test/manage?tab=people');
+  await org.goto(BASE + '/events/test-stuff-test/control?mode=setup&tool=staff');
   await org.waitForSelector('select', { timeout: 30000 });
   const roleOptions = await org.locator('select').first().innerText();
   check('59. People offers the two new roles: Check-in desk and Armour inspector', /Check-in desk/.test(roleOptions) && /Armour inspector/.test(roleOptions), roleOptions);

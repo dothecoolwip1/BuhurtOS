@@ -30,3 +30,12 @@
 .device-signin .ds-go { min-height: 56px; font-size: 1.1rem; }
 .device-signin .ds-error { color: var(--live); font-weight: 600; }
 .device-signin .ds-ended { border-left: 4px solid var(--live); }
+
+/* Pack 25: a counter phone's bar is one line; the sign-out is a small link at the end of it */
+.device-bar.is-compact { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 6px 12px; gap: 2px 10px; }
+.device-bar.is-compact .db-row { grid-column: 1; }
+.device-bar.is-compact .db-event { font-size: .9rem; }
+.device-bar.is-compact .db-tag { display: none; }
+.device-bar.is-compact .db-meta { grid-column: 1; font-size: .74rem; }
+.device-bar.is-compact .db-actions { grid-column: 2; grid-row: 1 / span 2; }
+.device-bar.is-compact .db-out-link { color: #C3CBD8; font-size: .85rem; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; padding: 0 4px; }

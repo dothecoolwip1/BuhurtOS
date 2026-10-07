@@ -50,7 +50,7 @@ export function FightersTab({ eventId, competitions, registrationMode, regs = []
       {registrationMode === 'buhuros' && (
         <section className="panel info" style={{ display: 'grid', gap: 10 }} aria-labelledby="reg-h" data-testid="registered-fighters">
           <h3 id="reg-h">Registered fighters <Chip>{registered.length}</Chip></h3>
-          <p className="src">People who registered themselves for a competition. They are already in: there is nothing to add. Accept, check in or change them on the <Link to={slug ? `/events/${slug}/manage?tab=review` : '?tab=review'}>Review</Link> tab.</p>
+          <p className="src">People who registered themselves for a competition. They are already in: there is nothing to add. Accept, check in or change them on the <Link to={slug ? `/events/${slug}/control?mode=setup&tool=registrations` : '?tool=registrations'}>Registrations</Link> tool.</p>
           {registered.length === 0 && <p className="muted">Nobody has registered to fight yet.</p>}
           <ul className="plain" style={{ display: 'grid', gap: 8 }}>
             {registered.map(r => (

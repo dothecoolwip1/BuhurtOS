@@ -106,8 +106,8 @@ function EventCard({ e, d }: { e: IndexedEvent; d: MyEvent | undefined }) {
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {reg && <Link className="btn btn-ink btn-sm" to={`/events/${e.slug}/register`}>View registration</Link>}
         {d?.invited && !reg && <Link className="btn btn-ink btn-sm" to={`/events/${e.slug}`}>Complete registration</Link>}
-        {organizer && <Link className="btn btn-line btn-sm" to={`/events/${e.slug}/manage`}>Manage</Link>}
-        {scorer && !organizer && <Link className="btn btn-line btn-sm" to={`/events/${e.slug}#scorekeeping`}>Scorekeeping</Link>}
+        {organizer && <Link className="btn btn-line btn-sm" to={`/events/${e.slug}/control`}>Event Control</Link>}
+        {scorer && !organizer && <Link className="btn btn-line btn-sm" to={`/events/${e.slug}/control?mode=live`}>Event Control</Link>}
         {!reg && !d?.invited && staffRoles.length === 0 && <Link className="btn btn-line btn-sm" to={`/events/${e.slug}`}>Open event</Link>}
       </div>
     </article>

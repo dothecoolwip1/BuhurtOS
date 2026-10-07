@@ -1,5 +1,7 @@
 # Pack 18: email + password sign-in and the Organizer Command Centre (2026-10-06)
 
+> **Superseded by Pack 25 (2026-10-07):** the Command Centre page is now **Event Control › Live ops** (`/events/:slug/control?mode=live`), merged with the old Event day screen; `/command` redirects there. Its thinking (`src/lib/commandCentre.ts`) and panels are kept. See `PACK_25_EVENT_CONTROL_AND_COUNTERS.md`.
+
 Branch `pack18-command-centre` from `main` at `90ff429` (Packs 13–16 merged and deployed; the PR #35 realtime-channel / ErrorBoundary fix is on main).
 Read with `STATUS.md` (Pack 18 section).
 

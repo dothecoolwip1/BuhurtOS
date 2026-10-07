@@ -33,7 +33,7 @@ describe('analytics privacy helpers', () => {
 
 describe('which pages need an account', () => {
   const pub = ['/', '/events', '/events/rumble', '/teams', '/teams/bears', '/fighters', '/fighters/abc', '/rankings', '/rules', '/formats', '/organizations', '/organizations/nacl', '/marshal', '/welcome'];
-  const acct = ['/account', '/team-manager', '/platform', '/platform/activity', '/events/new', '/events/rumble/register', '/events/rumble/manage', '/events/rumble/field/1', '/teams/bears/edit', '/fighters/abc/edit'];
+  const acct = ['/account', '/team-manager', '/platform', '/platform/activity', '/events/new', '/events/rumble/register', '/events/rumble/control', '/events/rumble/manage', '/events/rumble/field/1', '/teams/bears/edit', '/fighters/abc/edit'];
   it('public pages never send anyone to setup', () => { expect(pub.filter(p => ACCOUNT_PATH.test(p))).toEqual([]); });
   it('account pages do', () => { expect(acct.filter(p => !ACCOUNT_PATH.test(p))).toEqual([]); });
 });

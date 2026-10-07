@@ -20,9 +20,13 @@ a duel competition on each, and a scorekeeper, a head marshal and 4 to 6 volunte
 - [ ] Two tablets on the same field (operator and head marshal) both open: both show the same clock; press PAUSE on both at once: one wins, the other says another device changed the clock.
 - [ ] Field 1 and Field 2 run at the same time on two tablets without affecting each other.
 
-## Counters
-- [ ] A volunteer scans the QR from the tablet with the phone camera (iPhone and Android both): the browser opens the counter page; if signed out they sign in and come back to it.
-- [ ] They appear as waiting on the tablet; the operator seats them on a fighter in two taps. The phone then shows the fighter's name, the clock and the COUNT button.
+## Counters (Pack 25: one Counter QR, no seats, no approval)
+- [ ] A volunteer scans the event's Counter QR (tablet: Counters › Counter QR) with the phone camera (iPhone and Android both): the counter page opens with no sign-in, asks who is counting, which Lyst (if several) and RED or BLUE.
+- [ ] The phone then shows the fighter on that side, the clock and the COUNT button; the tablet lists it under that corner with the name, online.
+- [ ] NEW COUNTER on the phone: a new name, same Lyst and side, the tally carries on; the tablet shows the new name.
+- [ ] The Lyst opens the next fight: every phone on the field follows by itself, count at zero, same sides.
+- [ ] A dead phone: scan the Counter QR on another phone; the old one is signed out from Counters and devices.
+- [ ] A trainee scans the Lyst's Training QR on their own phone, gives a name and a side; they are listed apart as learning.
 - [ ] COUNT is big enough to hit without looking, with sweaty/gloved hands, at arm's length. Weighted buttons (+2 / +1) are not confused for each other.
 - [ ] Tap fast for 10 s (about 5 taps per second): the number on the phone matches the taps; the tablet's tally for that counter matches.
 - [ ] UNDO LAST removes only that counter's last tap.

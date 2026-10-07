@@ -21,7 +21,8 @@ import { RulesPage } from './pages/RulesPage';
 import { RuleDocPage } from './pages/rules/RuleDocPage';
 import { RulePage } from './pages/rules/RulePage';
 import { RegisterPage } from './registration/RegisterPage';
-import { ManagePage } from './pages/ManagePage';
+import { EventControlPage } from './pages/control/EventControlPage';
+import { CommandRedirect, ManageRedirect } from './pages/control/LegacyRedirects';
 import { AccountPage } from './auth/AccountPage';
 import { ResetPasswordPage, SignInPage } from './auth/AuthPages';
 import { ClaimProfilePage } from './pages/ClaimProfilePage';
@@ -37,11 +38,11 @@ import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
 import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
 import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
 import { PlatformRulesPage } from './pages/platform/PlatformRulesPage';
+import { PlatformDevicesPage } from './pages/platform/PlatformDevicesPage';
 import { ArenaPage } from './pages/arena/ArenaPage';
 import { CounterPage } from './pages/lyst/CounterPage';
 import { BroadcastPage } from './pages/broadcast/BroadcastPage';
 import { CheckinDeskPage } from './pages/CheckinDeskPage';
-import { CommandCentrePage } from './pages/CommandCentrePage';
 import { DisciplineLogPage } from './pages/DisciplineLogPage';
 import { AnnouncerPage } from './pages/AnnouncerPage';
 import { DeviceSignInPage } from './pages/DeviceSignInPage';
@@ -67,7 +68,9 @@ function SiteApp() {
       {/* The broadcast overlay (OBS browser source): public, read-only, no site chrome. */}
       <Route path="broadcast/:eventId" element={<BroadcastPage />} />
       <Route path="broadcast/:eventId/:field" element={<BroadcastPage />} />
-      {/* The counter's phone: no site chrome, one screen, one huge button. */}
+      {/* The counter's phone: no site chrome, one screen, one huge button. A signed-in trainee joins through the Lyst's training QR (/lyst/train/:code; the old /lyst/join address still works). */}
+      <Route path="lyst/train" element={<CounterPage />} />
+      <Route path="lyst/train/:code" element={<CounterPage />} />
       <Route path="lyst/join" element={<CounterPage />} />
       <Route path="lyst/join/:code" element={<CounterPage />} />
       <Route path="lyst/counter" element={<CounterPage />} />
@@ -95,9 +98,13 @@ function SiteApp() {
         <Route path="rankings" element={<RankingsPage />} />
         <Route path="team-manager" element={<TeamManagerPage />} />
         <Route path="events/:eventId" element={<EventRoute />} />
+        <Route path="events/:eventId/overview" element={<EventRoute view="overview" />} />
+        <Route path="events/:eventId/live" element={<EventRoute view="live" />} />
+        <Route path="events/:eventId/results" element={<EventRoute view="results" />} />
         <Route path="events/:eventId/register" element={<RegisterPage />} />
-        <Route path="events/:eventId/manage" element={<ManagePage />} />
-        <Route path="events/:eventId/command" element={<CommandCentrePage />} />
+        <Route path="events/:eventId/control" element={<EventControlPage />} />
+        <Route path="events/:eventId/manage" element={<ManageRedirect />} />
+        <Route path="events/:eventId/command" element={<CommandRedirect />} />
         <Route path="events/:eventId/discipline" element={<DisciplineLogPage />} />
         <Route path="organizations" element={<OrganizationsPage />} />
         <Route path="organizations/:slug" element={<OrganizationPage />} />
@@ -109,6 +116,7 @@ function SiteApp() {
         <Route path="platform/activity" element={<Navigate to="/platform/analytics" replace />} />
         <Route path="platform/bugs" element={<PlatformBugsPage />} />
         <Route path="platform/rules" element={<PlatformRulesPage />} />
+        <Route path="platform/devices" element={<PlatformDevicesPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="sign-in" element={<SignInPage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />

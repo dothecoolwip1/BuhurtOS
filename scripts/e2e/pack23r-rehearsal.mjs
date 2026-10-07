@@ -121,7 +121,7 @@ try {
   // ============================================================== 1. Build tournament on the real screen, ONE lyst, as an organizer would
   {
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=build`);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=build`);
     await page.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 45000 });
     await waitText(page, 'section[aria-label="Build tournament"]', 'tournament plan ready', 60000);
     note('build.plan_text', (await text(page, 'section[aria-label="Build tournament"]')).slice(0, 1600));
@@ -185,7 +185,7 @@ try {
 
   // ============================================================== 3. organizer screens at four sizes BEFORE anything runs (scale)
   for (const kind of ['phone', 'tabletP', 'tabletL', 'desktop']) {
-    for (const [nm, path, ready] of [['eventday', `/events/${SLUG}/manage?tab=eventday`, 'section[aria-label="Event day"]'], ['run', `/events/${SLUG}/manage?tab=run`, 'section[aria-label="Men Longsword"]'], ['command', `/events/${SLUG}/command`, 'main h1']]) {
+    for (const [nm, path, ready] of [['eventday', `/events/${SLUG}/control?mode=live`, 'section[aria-label="Event day"]'], ['run', `/events/${SLUG}/control?mode=setup&tool=run`, 'section[aria-label="Men Longsword"]'], ['command', `/events/${SLUG}/control?mode=live`, 'main h1']]) {
       const v = await visit(kind, 'organizer', path, `03-${nm}-${kind}`, ready, { wait: nm === 'run' ? 4000 : 2500 });
       S[`before.${nm}.${kind}`] = v.m;
       if (nm === 'eventday' && kind === 'desktop') note('eventday.text_before', (await text(v.page, 'main')).slice(0, 1500));
@@ -239,7 +239,7 @@ try {
     const order = sql(`select string_agg(m.id::text, ',' order by m.plan_order) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.plan_order is not null and m.queue_state = 'scheduled'`).split(',');
     const hold = await rpc('organizer', 'save_queue_plan', { p_event: EV, p_order: order, p_hold: [H] });
     note('hold.organizer_save_queue_plan_hold', outcome(hold) + ' plan_hold=' + sql(`select plan_hold from public.matches where id = '${H}'`) + ' · ' + label(H));
-    const v = await visit('desktop', 'organizer', `/events/${SLUG}/manage?tab=eventday`, '04-eventday-after-hold-1280', 'section[aria-label="Event day"]', { wait: 6000 });
+    const v = await visit('desktop', 'organizer', `/events/${SLUG}/control?mode=live`, '04-eventday-after-hold-1280', 'section[aria-label="Event day"]', { wait: 6000 });
     note('hold.after_an_organizer_opens_event_day_plan_hold_is', sql(`select plan_hold from public.matches where id = '${H}'`));
     await v.ctx.close();
   }
@@ -301,7 +301,7 @@ try {
     for (let i = 0; i < waitingTimed.length; i += 1) await rest('organizer', 'PATCH', `matches?id=eq.${waitingTimed[i]}`, { scheduled_at: new Date(Date.now() - 18 * 60e3 + i * 7 * 60e3).toISOString() });
     note('delay.waiting_timed_fights_retimed', waitingTimed.length);
     note('delay.schedule_changed_notifications', Number(sql(`select count(*) from public.notifications where kind = 'schedule_changed' and payload ->> 'event_slug' = '${SLUG}'`)));
-    { const r = await visit('desktop', 'organizer', `/events/${SLUG}/manage?tab=eventday`, '06b-eventday-replan-1280', 'section[aria-label="Event day"]', { wait: 6000 }); await r.ctx.close(); }   // Event day re-plans and saves
+    { const r = await visit('desktop', 'organizer', `/events/${SLUG}/control?mode=live`, '06b-eventday-replan-1280', 'section[aria-label="Event day"]', { wait: 6000 }); await r.ctx.close(); }   // Event day re-plans and saves
     const cur = activeOn();
     if (cur) await finish('scorer', cur, 'a', 5, 3);
     if (!activeOn()) await rpc('scorer', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true });
@@ -311,10 +311,10 @@ try {
     note('delay.waiting_timed_fights_already_overdue', Number(sql(`select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state <> 'final' and m.scheduled_at < now()`)));
     note('delay.saturday_finished_out_of_time_order', sql(`with f as (select m.id, m.scheduled_at, m.finalized_at from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state = 'final' and m.scheduled_at is not null)
       select count(*) || ' of ' || (select count(*) from f) || ' timed fights finished before a fight timed earlier than them' from f a where exists (select 1 from f b where b.scheduled_at < a.scheduled_at and b.finalized_at > a.finalized_at)`));
-    const v = await visit('tabletP', 'organizer', `/events/${SLUG}/command`, '06b-command-late-768', 'main h1', { wait: 3000 });
+    const v = await visit('tabletP', 'organizer', `/events/${SLUG}/control?mode=live`, '06b-command-late-768', 'main h1', { wait: 3000 });
     note('delay.command_centre_text', (await text(v.page, 'main')).slice(0, 900));
     await v.ctx.close();
-    const w = await visit('tabletP', 'organizer', `/events/${SLUG}/manage?tab=eventday`, '06b-eventday-late-768', 'section[aria-label="Event day"]', { wait: 3000 });
+    const w = await visit('tabletP', 'organizer', `/events/${SLUG}/control?mode=live`, '06b-eventday-late-768', 'section[aria-label="Event day"]', { wait: 3000 });
     note('delay.eventday_head', (await text(w.page, 'section[aria-label="Event day"]')).slice(0, 700));
     await w.ctx.close();
   }
@@ -411,7 +411,7 @@ try {
     note('pools.longsword_pool_fights_finished', `${ok} of ${pool.length}`);
     note('pools.placeholders_before_bracket', 'none: no bracket rows exist until every pool fight is final (build_schedule append)');
     const { ctx, page } = await open('tabletP', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`);
     const ls = page.locator('section[aria-label="Men Longsword"]');
     await ls.waitFor({ timeout: 45000 });
     await ls.getByRole('button', { name: 'Build bracket from pool results' }).click({ timeout: 30000 });
@@ -422,14 +422,14 @@ try {
     await btn.click();
     await sleep(2500);
     note('pools.bracket_rows', sql(`select string_agg(round_label || ' pos' || position || ' sides=' || ((entry_a is not null)::int + (entry_b is not null)::int), ' | ' order by private.stage_rank(stage), position) from public.matches where competition_id = '${LS}' and stage <> 'pool'`));
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=run`); await ls.waitFor({ timeout: 45000 }); await sleep(3000);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=setup&tool=run`); await ls.waitFor({ timeout: 45000 }); await sleep(3000);
     note('pools.run_tab_bracket_text', (await text(page, 'section[aria-label="Men Longsword"]')).replace(/.*?(Quarterfinal)/, '$1').slice(0, 900));
     await shot(page, '11-run-longsword-bracket-768');
     await ctx.close();
     const qf = sql(`select string_agg(id::text, ',' order by position) from public.matches where competition_id = '${LS}' and stage = 'elimination' and round_label = 'Quarterfinal'`).split(',');
     note('pools.new_quarterfinals_scheduled_at', sql(`select count(*) filter (where scheduled_at is not null) || ' of ' || count(*) || ' have a time' from public.matches where id::text = any(string_to_array('${qf.join(',')}', ','))`));
     note('pools.new_quarterfinals_line_positions_before_event_day_replans', qf.map(m => line().indexOf(m) + 1));
-    const v = await visit('desktop', 'organizer', `/events/${SLUG}/manage?tab=eventday`, '11-eventday-after-bracket-1280', 'section[aria-label="Event day"]', { wait: 6000 });
+    const v = await visit('desktop', 'organizer', `/events/${SLUG}/control?mode=live`, '11-eventday-after-bracket-1280', 'section[aria-label="Event day"]', { wait: 6000 });
     note('pools.new_quarterfinals_line_positions_after_event_day_replans', qf.map(m => line().indexOf(m) + 1));
     note('pools.line_length_now', line().length);
     await v.ctx.close();
@@ -440,14 +440,14 @@ try {
     // one fight live on Field 1 so every screen has a now / next
     if (!activeOn()) await rpc('scorer', 'advance_field_queue', { p_event: EV, p_field: 'Field 1', p_start: true });
     const views = [
-      ['organizer', 'eventday', `/events/${SLUG}/manage?tab=eventday`, 'section[aria-label="Event day"]', ['phone', 'tabletP', 'tabletL', 'desktop']],
-      ['organizer', 'run', `/events/${SLUG}/manage?tab=run`, 'section[aria-label="Men Longsword"]', ['phone', 'tabletP', 'tabletL', 'desktop']],
-      ['organizer', 'command', `/events/${SLUG}/command`, 'main h1', ['phone', 'tabletP', 'tabletL', 'desktop']],
-      ['headmarshal', 'command', `/events/${SLUG}/command`, 'main h1', ['tabletP']],
-      ['headmarshal', 'manage', `/events/${SLUG}/manage?tab=eventday`, 'main', ['tabletP']],
+      ['organizer', 'eventday', `/events/${SLUG}/control?mode=live`, 'section[aria-label="Event day"]', ['phone', 'tabletP', 'tabletL', 'desktop']],
+      ['organizer', 'run', `/events/${SLUG}/control?mode=setup&tool=run`, 'section[aria-label="Men Longsword"]', ['phone', 'tabletP', 'tabletL', 'desktop']],
+      ['organizer', 'command', `/events/${SLUG}/control?mode=live`, 'main h1', ['phone', 'tabletP', 'tabletL', 'desktop']],
+      ['headmarshal', 'command', `/events/${SLUG}/control?mode=live`, 'main h1', ['tabletP']],
+      ['headmarshal', 'manage', `/events/${SLUG}/control?mode=live`, 'main', ['tabletP']],
       ['headmarshal', 'field', `/events/${SLUG}/field/Field%201`, 'main', ['tabletP']],
       ['scorer', 'field', `/events/${SLUG}/field/Field%201`, 'main', ['phone', 'tabletP', 'tabletL']],
-      ['scorer', 'manage', `/events/${SLUG}/manage?tab=eventday`, 'main', ['tabletP']],
+      ['scorer', 'manage', `/events/${SLUG}/control?mode=live`, 'main', ['tabletP']],
       ['checkin', 'event', `/events/${SLUG}`, 'main', ['tabletP']],
       ['f1', 'event', `/events/${SLUG}`, '[aria-labelledby="mynext-h"]', ['phone', 'tabletP']],
       ['f20', 'event', `/events/${SLUG}`, '[aria-labelledby="mynext-h"]', ['phone']],

@@ -215,7 +215,7 @@ try {
     await o.page.goto(BASE + FIELD + '?from=eventday');
     await o.page.locator('.focus-exit').waitFor({ timeout: 45000 });
     const href = await o.page.locator('.focus-exit').getAttribute('href');
-    check('Coming from Event day, Exit goes back to Event day', href === `/events/${SLUG}/manage?tab=eventday`, href);
+    check('Coming from Event day, Exit goes back to Event day', href === `/events/${SLUG}/control?mode=live`, href);
     await o.ctx.close();
   }
 
@@ -348,7 +348,7 @@ try {
   // ============================================================== 9. the normal site keeps its chrome (the focus layout is only where it was applied)
   {
     const { ctx, page } = await open('768x1024', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/manage?tab=eventday`);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=live`);
     await page.locator('section[aria-label="Event day"]').waitFor({ timeout: 45000 });
     const c = await chrome(page);
     check('Manage › Event day is unchanged: normal header and bottom bar, no focus header', c.siteHeader && c.bottomBar && !c.focusHeader, JSON.stringify(c));

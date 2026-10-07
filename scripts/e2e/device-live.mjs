@@ -23,7 +23,7 @@ const sql = (q) => execFileSync('psql', ['-X', '-At', '-d', DB, '-c', q], { enco
 const E1 = '00000000-0000-0000-0000-00000000ed01', E2 = '00000000-0000-0000-0000-00000000ed02';
 const mid = (n) => `00000000-0000-0000-0000-0000000fd${String(n).padStart(3, '0')}`;
 const SLUG = 'test-stuff-test';
-const HOME = `/events/${SLUG}`, COMMAND = `${HOME}/command`, ANNOUNCER = `${HOME}/announcer`, CHECKIN = `${HOME}/checkin`, FIELD1 = `${HOME}/field/Field%201`, FIELD2 = `${HOME}/field/Field%202`;
+const HOME = `/events/${SLUG}`, COMMAND = `${HOME}/control`, ANNOUNCER = `${HOME}/announcer`, CHECKIN = `${HOME}/checkin`, FIELD1 = `${HOME}/field/Field%201`, FIELD2 = `${HOME}/field/Field%202`;
 
 // ---------------------------------------------------------------- the database starts from the fixture every time (this script may be re-run on the same stack)
 sql(`delete from public.event_sessions; delete from public.event_credentials; delete from public.device_code_attempts;
@@ -160,10 +160,10 @@ try {
   const landed = {};
   for (const [key, want] of Object.entries(LANDING)) landed[key] = await until(async () => path(P[key]) === want && (await P[key].locator('[data-testid="device-bar"]').count()) === 1, 45000);
   check('15. every valid code lands on the right screen with no fighter onboarding: counters on the counter screen', ['counter1', 'counter2', 'counter3', 'counter4'].every(k => landed[k]), JSON.stringify(landed));
-  check('16. ... Secretary / Scorekeeper on the Command Centre (QR link, nothing typed)', landed.secretary, path(P.secretary));
+  check('16. ... Secretary / Scorekeeper on Event Control › Live ops (QR link, nothing typed)', landed.secretary, path(P.secretary));
   check('17. ... Marshal on the event home with the field picker', landed.marshal && (await until(async () => /Field 1/.test(await text(P.marshal, '[data-testid="device-home"]')))), await text(P.marshal));
   check('18. ... Announcer on the announcer view', landed.announcer, path(P.announcer));
-  check('19. ... Event Admin / Temporary Organizer on the Command Centre', landed.admin, path(P.admin));
+  check('19. ... Event Admin / Temporary Organizer on Event Control › Live ops', landed.admin, path(P.admin));
   check('20. QR link: the fragment is gone and the page is signed in; the code reached the network only in the sign-in POST body', !P.secretary.url().includes('#') && !net.filter(n => n.who === 'secretary').some(n => n.url.includes(norm(dev.secretary.code)) || n.url.includes(dev.secretary.code) || JSON.stringify(n.headers).includes(norm(dev.secretary.code))), P.secretary.url());
   check('21. no device went through onboarding or a profile page', Object.values(P).every(p => !/\/welcome|\/account|\/claim-profile/.test(path(p))));
   await shot(P.marshal, '02-marshal-home'); await shot(P.secretary, '03-secretary-command'); await shot(P.admin, '04-admin-command'); await shot(P.announcer, '05-announcer'); await shot(P.counter1, '06-counter');
@@ -175,7 +175,8 @@ try {
   for (const [key, label, role] of DEVICES) {
     const bar = await text(P[key], '[data-testid="device-bar"]');
     const lo = bar.toLowerCase();
-    const ok = lo.includes('test stuff test') && lo.includes('temporary device') && lo.includes(label.toLowerCase()) && lo.includes(ROLE[role].toLowerCase()) && lo.includes(`access ends ${ENDS}`.toLowerCase()) && /sign out this device/i.test(bar);
+    // Pack 25: a counter phone has the compact one-line bar (event · label · role · access ends · Sign out), without the "Temporary Device" tag
+    const ok = lo.includes('test stuff test') && (role === 'counter' || lo.includes('temporary device')) && lo.includes(label.toLowerCase()) && lo.includes(ROLE[role].toLowerCase()) && lo.includes(`access ends ${ENDS}`.toLowerCase()) && (role === 'counter' ? /sign out/i.test(bar) : /sign out this device/i.test(bar));
     if (!ok) { barOk = false; barDetail.push(`${key}: ${bar}`); }
   }
   check(`22. every device shows its identity bar: event, "Temporary Device", its label, "Role: ...", "Access ends ${ENDS}" in the EVENT's time zone, and Sign out`, barOk, barDetail.join(' || '));
@@ -216,20 +217,21 @@ try {
   // ------------------------------------------------------------ 6. what each role may open (route restrictions: only what is OFFERED; the database refuses the rest, checked below)
   const goes = async (page, to, want, wait = 15000) => { await page.goto(BASE + to); return until(async () => path(page) === want, wait); };
   check('34. a Marshal who opens /account lands back on its own screen', await goes(P.marshal, '/account', HOME));
-  check('35. a Marshal who opens the Command Centre is sent home (it is not a marshal tool)', await goes(P.marshal, COMMAND, HOME));
+  check('35. a Marshal who opens Event Control is sent home (it is not a marshal tool)', await goes(P.marshal, COMMAND, HOME));
   check('36. a Counter who opens a field screen lands on the counter screen', await goes(P.counter4, FIELD1, '/lyst/counter'));
   check('37. an Announcer who opens a field screen or the desk lands on the announcer view', (await goes(P.announcer, FIELD1, ANNOUNCER)) && (await goes(P.announcer, CHECKIN, ANNOUNCER)));
-  check('38. a Secretary who opens the check-in desk or Manage lands on the Command Centre', (await goes(P.secretary, CHECKIN, COMMAND)) && (await goes(P.secretary, `${HOME}/manage`, COMMAND)));
-  check('39. another event\'s tools never open: the admin opening /events/other-event/command is sent to its own Command Centre', await goes(P.admin, '/events/other-event/command', COMMAND));
+  check('38. a Secretary who opens the check-in desk or an organizer page lands on Live ops', (await goes(P.secretary, CHECKIN, COMMAND)) && (await goes(P.secretary, `${HOME}/register`, COMMAND)));
+  check('39. another event\'s tools never open: the admin opening /events/other-event/control is sent to its own Live ops', await goes(P.admin, '/events/other-event/control?mode=live', COMMAND));
   check('40. public pages stay readable by a device (rules, the venue display of its event)', (await goes(P.marshal, '/rules', '/rules')) && (await goes(P.marshal, `${HOME}/arena/Field%201`, `${HOME}/arena/Field%201`)));
   await P.marshal.goto(BASE + HOME);
 
-  // ------------------------------------------------------------ 7. the Command Centre (read only) and the check-in desk
+  // ------------------------------------------------------------ 7. Event Control › Live ops (read only for the secretary) and the check-in desk
   await P.secretary.goto(BASE + COMMAND);
-  check('41. the Secretary / Scorekeeper device opens the Command Centre for its event (read only)', await until(async () => /command centre/i.test(await text(P.secretary, '.cmd-centre')) && /test stuff test/i.test(await text(P.secretary, '.cmd-centre')), 30000), await text(P.secretary));
-  check('42. the Event Admin device opens the Command Centre too', await (async () => { await P.admin.goto(BASE + COMMAND); return until(async () => /command centre/i.test(await text(P.admin, '.cmd-centre')), 30000); })(), await text(P.admin));
+  check('41. the Secretary / Scorekeeper device opens Live ops for its event (read only)', await until(async () => /needs attention/i.test(await text(P.secretary, '.cmd-centre')) && /test stuff test/i.test(await text(P.secretary, '[data-testid="event-control"]')), 30000), await text(P.secretary));
+  check('42. the Event Admin device opens Live ops too', await (async () => { await P.admin.goto(BASE + COMMAND); return until(async () => /needs attention/i.test(await text(P.admin, '.cmd-centre')), 30000); })(), await text(P.admin));
   await P.admin.goto(BASE + CHECKIN);
   await P.admin.waitForSelector('.desk-counts', { timeout: 30000 }).catch(() => undefined);
+  await until(async () => /[1-9]\d* expected/.test(await text(P.admin, '.desk-counts')), 20000);
   const counts = await text(P.admin, '.desk-counts');
   check('43. the Event Admin / Temporary Organizer opens the CHECK-IN DESK: 4 expected, readiness counts, cards of fighters', /4 expected/.test(counts) && (await P.admin.locator('article.desk-card').count()) >= 1, counts + ' / ' + (await text(P.admin)).slice(0, 300));
   await shot(P.admin, '07-admin-checkin');
@@ -269,32 +271,32 @@ try {
   await P.marshal.getByRole('button', { name: /Score Aldric Stone against Brann Oakley/ }).click();
   await P.marshal.waitForSelector('.ly-timer', { timeout: 30000 });
   check('54. the marshal device opens the fight on the Lyst screen (a duel)', (await P.marshal.locator('.ly-timer').count()) === 1, await text(P.marshal));
+  // Pack 25: no join code, no seat request, no seating. The marshal can show the event's Counter QR; a counter device binds itself to a Lyst and a side.
   await P.marshal.getByRole('button', { name: /^Counters/ }).click();
-  await P.marshal.getByRole('dialog').getByRole('button', { name: 'Show join code' }).click();
-  await P.marshal.getByRole('dialog').locator('.ly-code').waitFor({ timeout: 15000 });
-  const joinCode = (await P.marshal.getByRole('dialog').locator('.ly-code').innerText()).trim();
-  check('55. the MARSHAL device shows a join code for the field', /^[A-Z0-9]{10}$/.test(joinCode), joinCode);
+  await P.marshal.getByRole('dialog').getByTestId('counters-tab-qr').click();
+  const qrSeen = await P.marshal.getByRole('dialog').getByTestId('counter-qr').waitFor({ timeout: 15000 }).then(() => true, () => false);
+  check('55. the MARSHAL device can open the Counter QR card for the event (a pool is made by the organizer; the marshal only shows it)', qrSeen && /Counter QR|no Counter QR yet/i.test(await text(P.marshal, '[data-testid="counter-qr"]')), await text(P.marshal, '[role=dialog]'));
   await P.marshal.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
   await P.counter1.goto(BASE + '/lyst/counter');
-  await P.counter1.waitForSelector('#cp-code', { timeout: 20000 });
-  await P.counter1.fill('#cp-code', joinCode);
-  await P.counter1.getByRole('button', { name: 'Join', exact: true }).click();
-  const waiting = await P.counter1.getByText(/Waiting for the lyst to seat you/).waitFor({ timeout: 30000 }).then(() => true, () => false);
-  check('56. the COUNTER device types the code: it is only PENDING ("Waiting for the lyst to seat you"); a code grants nothing by itself', waiting && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '1', await text(P.counter1));
-  await shot(P.counter1, '09-counter-waiting');
-  // the Secretary device seats it
+  await P.counter1.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
+  await P.counter1.fill('#cp-name', 'Pat');
+  await P.counter1.getByRole('button', { name: 'Continue' }).click();
+  await P.counter1.getByRole('button', { name: /Field 1/ }).click();
+  await P.counter1.getByRole('button', { name: /RED/ }).click();
+  const bound = await until(async () => sql(`select string_agg(role || ':' || side || ':' || display_name, ',') from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}'`) === 'official:a:Pat', 30000);
+  check('56. the COUNTER device (its own Pack 18.1 code) says who holds it, picks Field 1 and RED and is on the fight at once: no pending seat, no approval', bound && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '0', await text(P.counter1));
+  await shot(P.counter1, '09-counter-bound');
+  // the Secretary device sees it as evidence
   await P.secretary.goto(BASE + FIELD1); await P.secretary.waitForSelector('.fq-row', { timeout: 30000 });
   await P.secretary.getByRole('button', { name: /Score Aldric Stone against Brann Oakley/ }).click();
   await P.secretary.waitForSelector('.ly-timer', { timeout: 30000 });
   await P.secretary.getByRole('button', { name: /^Counters/ }).click();
-  const seatGroup = P.secretary.getByRole('dialog').getByRole('group', { name: /^Seat Counter Phone 1$/ });
-  await seatGroup.waitFor({ timeout: 30000 });
-  check('57. the SECRETARY device sees the pending counter by the device\'s label ("Counter Phone 1"), not a person\'s name', true);
-  await seatGroup.getByRole('button', { name: 'Counts Aldric Stone' }).click();
-  check('58. the Secretary seats it: an official counter for Aldric (slot A) on the server', await until(async () => sql(`select string_agg(slot || ':' || role || ':' || side, ',') from public.lyst_counter_seats where status = 'active'`) === 'A:official:a'), sql(`select string_agg(slot || ':' || role || ':' || side || ':' || status, ',') from public.lyst_counter_seats`));
+  const row = P.secretary.getByRole('dialog').getByTestId('counter-row').filter({ hasText: 'Pat' });
+  check('57. the SECRETARY device sees the counter by the name its holder gave ("Pat"), under the Red corner, online', await row.waitFor({ timeout: 30000 }).then(() => true, () => false) && /online/i.test(await row.innerText()), await text(P.secretary, '[role=dialog]'));
+  check('58. on the server it is an official counter on Aldric\'s side, created by the phone itself', sql(`select string_agg(role || ':' || side, ',') from public.lyst_counter_seats where status = 'active'`) === 'official:a');
   await P.secretary.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
   await P.marshal.getByRole('button', { name: /Start round 1/ }).click();
-  check('59. the marshal starts round 1; the counter\'s phone shows its fighter, its slot and a COUNT button that is live', await until(async () => /counting · A/i.test(await text(P.counter1)) && /aldric stone/i.test(await text(P.counter1)), 30000) && await until(async () => (await P.counter1.getByRole('button', { name: 'Count two points, head or torso' }).isEnabled()), 20000), await text(P.counter1));
+  check('59. the marshal starts round 1; the counter\'s phone shows its fighter, its side and a COUNT button that is live', await until(async () => /counting/i.test(await text(P.counter1)) && /red/i.test(await text(P.counter1)) && /aldric stone/i.test(await text(P.counter1)), 30000) && await until(async () => (await P.counter1.getByRole('button', { name: 'Count two points, head or torso' }).isEnabled().catch(() => false)), 20000), await text(P.counter1));
   const plus2 = P.counter1.getByRole('button', { name: 'Count two points, head or torso' }), plus1 = P.counter1.getByRole('button', { name: 'Count one point, arm leg or hand' });
   await plus2.click(); await plus2.click(); await plus1.click();
   const seatTotal = () => sql(`select coalesce((select private.lyst_seat_total(s.id, 1) from public.lyst_counter_seats s where s.status = 'active' and s.match_id = '${mid(1)}' limit 1), 0)`);
@@ -344,14 +346,14 @@ try {
   await P.counter2.evaluate(() => window.dispatchEvent(new Event('focus')));
   check('72. the SAME code signed in elsewhere: the first device is signed out within one check (a copied code cannot quietly run two devices)', again.status === 200 && (await until(async () => path(P.counter2) === '/device' && ENDED.test(await text(P.counter2)), 30000)), `${again.status} ${path(P.counter2)} ${(await text(P.counter2)).slice(0, 200)}`);
   // sign out on purpose
-  await P.counter3.getByRole('button', { name: 'Sign out this device' }).click();
+  await P.counter3.getByRole('button', { name: /^Sign out/ }).click();   // Pack 25: the counter's compact bar says "Sign out"
   const dlg = P.counter3.getByRole('dialog');
   await dlg.waitFor({ timeout: 10000 });
   const dlgText = (await dlg.innerText()).replace(/\s+/g, ' ');
   check('73. SIGN OUT asks first ("Sign out this device?") and says what happens', /sign out this device\?/i.test(dlgText) && /new code/i.test(dlgText), dlgText);
   await dlg.getByRole('button', { name: /No, stay signed in/ }).click();
   check('74. "No, stay signed in" changes nothing', (await P.counter3.locator('[data-testid="device-bar"]').count()) === 1 && (await stored(P.counter3)) !== null);
-  await P.counter3.getByRole('button', { name: 'Sign out this device' }).click();
+  await P.counter3.getByRole('button', { name: /^Sign out/ }).click();   // Pack 25: the counter's compact bar says "Sign out"
   await P.counter3.getByRole('dialog').getByRole('button', { name: /Yes, sign out/ }).click();
   check('75. "Yes, sign out": the device ends on the server, forgets itself and shows the plain sign-in page (no "ended" warning)', await until(async () => path(P.counter3) === '/device' && (await P.counter3.locator('#ds-code').count()) === 1) && (await stored(P.counter3)) === null && !ENDED.test(await text(P.counter3)) && sql(`select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where c.label = 'Counter Phone 3' and s.ended_at is not null`) !== '0');
 
