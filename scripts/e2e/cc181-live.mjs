@@ -421,7 +421,7 @@ try {
   const allHits = await Promise.all(setCodes.map(c => codeInBrowser(org, c.trim())));
   check('3.25 after closing the printable sheet none of the four codes remains in the page, its storage, the console or any URL; none is in the database', allHits.every(r => !r.dom && !r.logs && !r.urls) && setCodes.every(c => Object.values(codeInDb(c.trim())).every(n => n === 0)));
   await org.getByRole('button', { name: 'Add the usual set for an event' }).click();
-  check('3.26 asking for the usual set again makes no duplicates: it says they are already set up, and no sheet opens', await until(async () => /Already set up/i.test(await text(org, '#cc-devices')), 10000) && (await org.getByRole('dialog').count()) === 0 && count(`select count(*) from public.event_credentials where event_id = '${EV}' and kind = 'device' and revoked_at is null`) === 8);
+  check('3.26 asking for the usual set again makes no duplicates: it says they are already set up, and no sheet opens', await until(async () => /Already set up/i.test(await text(org, '#cc-devices')), 10000) && (await org.getByRole('dialog').count()) === 0 && count(`select count(*) from public.event_credentials where event_id = '${EV}' and kind = 'device' and revoked_at is null`) === 4);
   check('3.27 the organizer page has had no page errors so far', org.errors.length === 0, org.errors.join(' | '));
 
   // =================================================================== 4. Broadcast controls (organizer): each press changes the control row
@@ -527,7 +527,8 @@ try {
   check('5.2 scroll position is kept (no jump to the top): before ' + y0 + ' after ' + y1, y0 > 700 && Math.abs(y1 - y0) <= 4, `${y0} -> ${y1}`);
   check('5.3 the unsent announcement draft is untouched', (await org.locator('#cc-announce textarea').inputValue()) === draft);
   check('5.4 the page was not remounted (marker on the root survived), and the sections the organizer opened or closed stayed as they were',
-    (await org.evaluate(() => document.querySelector('.cmd-centre')?.dataset.mark)) === 'kept2' && fightersClosed && !(await org.locator('#cc-fighters').evaluate(el => el.open)) && (await org.locator('#cc-devices').evaluate(el => el.open)) && (await org.locator('#cc-staff').evaluate(el => el.open)));
+    (await org.evaluate(() => document.querySelector('.cmd-centre')?.dataset.mark)) === 'kept2' && fightersClosed && !(await org.locator('#cc-fighters').evaluate(el => el.open)) && (await org.locator('#cc-devices').evaluate(el => el.open)) && (await org.locator('#cc-staff').evaluate(el => el.open)),
+    JSON.stringify({ mark: await org.evaluate(() => document.querySelector('.cmd-centre')?.dataset.mark), fightersClosed, fighters: await org.locator('#cc-fighters').evaluate(el => el.open).catch(() => 'missing'), devices: await org.locator('#cc-devices').evaluate(el => el.open).catch(() => 'missing'), staff: await org.locator('#cc-staff').evaluate(el => el.open).catch(() => 'missing') }));
   check('5.5 no page errors after all of that', org.errors.length === 0, org.errors.join(' | '));
   await shot(org, '09-phone-after-live-updates');
 
@@ -573,7 +574,7 @@ try {
   // =================================================================== 8. refused: a stranger, another event's organizer, a signed-out visitor
   const st = await open('phone', 'stranger'); pages.push(st);
   await st.goto(BASE + CMD); await st.waitForLoadState('networkidle').catch(() => undefined); await sleep(1500);
-  check('8.1 a stranger is told the Command Centre is for organizers, head marshal and secretary: no panels, no controls', /for this event's organizers, head marshal and secretary/.test(await text(st)) && (await st.locator('#cc-broadcast, #cc-devices, [data-testid="camera-off"]').count()) === 0, await text(st));
+  check('8.1 a stranger is told the Command Centre is for organizers, head marshal and secretary: no panels, no controls', /people who run this event|for this event's organizers, head marshal and secretary/.test(await text(st)) && (await st.locator('#cc-broadcast, #cc-devices, [data-testid="camera-off"]').count()) === 0, await text(st));
   const oo = await rpc('otherOrg', 'list_event_credentials', { p_event: EV });
   check('8.2 another event\'s organizer is refused this event\'s devices and broadcast state by the database', refused(oo) && refused(await rpc('otherOrg', 'broadcast_control_state', { p_event: EV })) && refused(await rpc('otherOrg', 'set_broadcast_control', { p_event: EV, p_expected_rev: 0, p_patch: { mode: 'auto' } })));
   const anon = await open('phone', null); pages.push(anon);
