@@ -55,7 +55,7 @@ function DeviceCounter() {
   const [editing, setEditing] = useState<CounterStep | null>(null);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
-  const fields = state?.fields ?? [];
+  const fields = useMemo(() => [...(state?.fields ?? [])].sort((x, y) => fieldLabel(x.label).localeCompare(fieldLabel(y.label), undefined, { numeric: true })), [state?.fields]);
   const binding = state?.binding;
   const step: CounterStep | 'loading' = !state ? 'loading' : editing ?? nextStep(binding, fields);
 

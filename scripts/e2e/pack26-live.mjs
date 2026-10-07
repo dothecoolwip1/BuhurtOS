@@ -103,15 +103,25 @@ const attr = (page, testid, name) => page.getByTestId(testid).first().getAttribu
 const phase = (id) => ONLY.length === 0 || ONLY.includes(id);
 /** The tab-order position of a control relative to the first viewport: is the thing a person needs visible without scrolling? */
 const aboveFold = async (page, selector) => page.locator(selector).first().boundingBox().then(b => b && b.y >= 0 && b.y + b.height <= VIEW[page.kind].viewport.height, () => false);
-/** Every interactive control under `root` whose centre is covered by something else (a fixed bar, a sticky header). */
+/**
+ * Controls under `root` that a person can never uncover: covered by something else (a fixed bar, a sticky header) while the page is scrolled to its very
+ * top or its very bottom. A control under a bar half-way down is fine (it scrolls out from under it); one under the bottom bar at the end of the page is
+ * the Pack 24A1 obstruction. The scroll position is restored afterwards.
+ */
 const covered = (page, root = 'main') => page.evaluate((r) => {
-  const out = [];
-  for (const e of document.querySelectorAll(`${r} button, ${r} a, ${r} input, ${r} select`)) {
-    const b = e.getBoundingClientRect(); if (b.width === 0 || b.height === 0 || b.bottom < 0 || b.top > innerHeight) continue;
-    const top = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
-    if (top && !e.contains(top) && !top.contains(e)) out.push((e.getAttribute('aria-label') || e.textContent || e.tagName).trim().slice(0, 30));
-  }
-  return out;
+  const out = new Set();
+  const y0 = scrollY;
+  const probe = () => {
+    for (const e of document.querySelectorAll(`${r} button, ${r} a, ${r} input, ${r} select, ${r} summary`)) {
+      const b = e.getBoundingClientRect(); if (b.width === 0 || b.height === 0 || b.top < 0 || b.bottom > innerHeight) continue;   // only controls wholly inside the viewport: a partly scrolled-out one is uncovered by scrolling
+      const top = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+      if (top && !e.contains(top) && !top.contains(e) && getComputedStyle(top).pointerEvents !== 'none') out.add((e.getAttribute('aria-label') || e.textContent || e.tagName).trim().slice(0, 30));
+    }
+  };
+  window.scrollTo(0, 0); probe();
+  window.scrollTo(0, document.scrollingElement.scrollHeight); probe();
+  window.scrollTo(0, y0);
+  return [...out];
 }, root);
 
 try {
@@ -269,9 +279,9 @@ try {
     await shot(o, 'review-long-name');
     const card = o.locator('section[aria-label="Registrations"] article').first();
     const cardText = await body(o, 'section[aria-label="Registrations"] article');
-    check('27. the card says the fee ($40), the insurance state, the team and the categories; contact, availability and the medical note are folded', cardText.includes('$40') && cardText.includes('badland bears') && cardText.includes('sword & shield') && cardText.includes('contact, availability and notes') && !cardText.includes('no real medical information'), cardText.slice(0, 500));
-    await card.locator('summary', { hasText: 'Contact, availability and notes' }).click();
-    check('27b. unfolded: the emergency contact, the days and the notes, and the medical note still hidden behind a button', await until(async () => await has(o, 'show private medical note', 'section[aria-label="Registrations"] article')) && /test contact|4035550034/.test(await body(o, 'section[aria-label="Registrations"] article')), (await body(o, 'section[aria-label="Registrations"] article')).slice(0, 500));
+    check('27. a pending card leads with the decision: name, team, categories, what is outstanding, Accept / Decline; fee, insurance, contact and the medical note are folded', cardText.includes('badland bears') && cardText.includes('sword & shield') && /outstanding/.test(cardText) && cardText.includes('fee, insurance, contact and notes') && !cardText.includes('no real medical information'), cardText.slice(0, 500));
+    await card.locator('summary', { hasText: /Fee, insurance, contact and notes|Contact, availability and notes/ }).click();
+    check('27b. unfolded: the $40 fee, the insurance, the emergency contact, the days and the notes, and the medical note still hidden behind a button', await until(async () => await has(o, 'show private medical note', 'section[aria-label="Registrations"] article')) && /test contact|4035550034/.test(await body(o, 'section[aria-label="Registrations"] article')) && (await body(o, 'section[aria-label="Registrations"] article')).includes('$40'), (await body(o, 'section[aria-label="Registrations"] article')).slice(0, 500));
     await card.getByRole('button', { name: 'Show private medical note' }).click();
     check('28. the medical note is shown only on request', await has(o, 'no real medical information', 'section[aria-label="Registrations"] article'));
     await card.getByRole('button', { name: /^Accept/ }).click();
@@ -293,15 +303,18 @@ try {
     const rest = sql(`select rehearsal.accept_rest('${EV}')`);
     // Gideon (33) withdraws himself after being accepted
     const wd = await rpc('f33', 'withdraw_registration', { p_reg: regOf(33) });
-    check('32. an accepted fighter withdraws himself; his entries are withdrawn with him', wd.status === 200 && sql(`select status from public.registrations where id = '${regOf(33)}'`) === 'withdrawn' && sql(`select count(*) from public.entries where fighter_id = '${fid(33)}' and status <> 'withdrawn'`) === '0', outcome(wd));
+    check('32. an accepted fighter withdraws himself; his entries are withdrawn with him', wd.status < 300 && sql(`select status from public.registrations where id = '${regOf(33)}'`) === 'withdrawn' && sql(`select count(*) from public.entries where fighter_id = '${fid(33)}' and status <> 'withdrawn'`) === '0', outcome(wd));
     // Emmett (31) stays pending for the whole weekend
     await rpc('organizer', 'decide_registration', { p_reg: regOf(31), p_status: 'pending' });
     note('review.accepted_by_function', rest);
     note('review.by_status_after_review', sql(`select string_agg(status || '=' || c, ', ') from (select status, count(*) c from public.registrations where event_id = '${EV}' group by 1) x`));
-    check('33. accepting created the entries: one per fighter per competition, one per team per team competition', Number(sql(`select count(*) from public.entries e join public.competitions k on k.id = e.competition_id where k.event_id = '${EV}' and e.status = 'active'`)) >= 40, sql(`select string_agg(k.name || '=' || (select count(*) from public.entries e where e.competition_id = k.id and e.status = 'active'), ', ' order by k.sort) from public.competitions k where k.event_id = '${EV}'`));
-    note('review.entries_per_competition', sql(`select string_agg(k.name || '=' || (select count(*) from public.entries e where e.competition_id = k.id and e.status = 'active'), ', ' order by k.sort) from public.competitions k where k.event_id = '${EV}'`));
-    // the filters: withdrawn, declined, accepted
-    await search.fill('');
+    check('33. accepting created the entries: one per fighter per competition, one per team per team competition', Number(sql(`select count(*) from public.entries e join public.competitions k on k.id = e.competition_id where k.event_id = '${EV}' and e.status not in ('withdrawn', 'disqualified')`)) >= 40, sql(`select string_agg(k.name || '=' || (select count(*) from public.entries e where e.competition_id = k.id and e.status not in ('withdrawn', 'disqualified')), ', ' order by k.sort) from public.competitions k where k.event_id = '${EV}'`));
+    note('review.entries_per_competition', sql(`select string_agg(k.name || '=' || (select count(*) from public.entries e where e.competition_id = k.id and e.status not in ('withdrawn', 'disqualified')), ', ' order by k.sort) from public.competitions k where k.event_id = '${EV}'`));
+    // the filters: withdrawn, declined, accepted (the page is reloaded first: decisions made elsewhere are not pushed to an open Registrations tool)
+    await go(o, `${E_PATH}/control?mode=setup&tool=registrations`);
+    await until(async () => (await o.locator('section[aria-label="Registrations"] article').count()) > 0, 30000);
+    await until(async () => (await o.getByLabel('Search by name, team or category').count()) === 1, 10000);
+    await o.getByLabel('Search by name, team or category').fill('');
     for (const [filterWord, status] of [['Withdrawn', 'withdrawn'], ['Declined', 'declined'], ['Accepted', 'accepted'], ['Pending', 'pending']]) {
       const btn = o.getByRole('button', { name: new RegExp(`^${filterWord}`) }).first();
       if (await btn.count()) await btn.click();
@@ -312,7 +325,7 @@ try {
     // fees and insurance from the card: the organizer marks the mercenary's insurance as received, and fees
     note('review.fees_marked_paid', sql(`select rehearsal.mark_fees('${EV}')`));
     const ins = await rpc('organizer', 'set_registration_insurance', { p_reg: regOf(53), p_insurance: 'proof_received' });
-    check('35. insurance can be updated by the organizer (proof received for the mercenary)', ins.status === 200 && sql(`select insurance from public.registrations where id = '${regOf(53)}'`) === 'proof_received', outcome(ins));
+    check('35. insurance can be updated by the organizer (proof received for the mercenary)', ins.status < 300 && sql(`select insurance from public.registrations where id = '${regOf(53)}'`) === 'proof_received', outcome(ins));
     note('review.rosters_set', sql(`select rehearsal.set_rosters('${EV}')`));
     // the mercenary: where does the organizer see "asked to be placed"?
     await search.fill('Rook');
@@ -414,7 +427,7 @@ try {
     check('55. the desk with the whole list at 390: nothing sideways, no covered control, the search stays reachable', await fits(d) && (await covered(d)).length === 0, JSON.stringify(await covered(d)));
     await d.evaluate(() => window.scrollTo(0, 1200));
     await sleep(300);
-    check('56. ... after scrolling, the search box is still on screen (sticky) and nothing sits under a bar', await aboveFold(d, '.desk-find input') && (await covered(d)).length === 0, JSON.stringify(await covered(d)));
+    check('56. ... after scrolling, the search box is still on screen (sticky)', await aboveFold(d, '.desk-find input'), '');
     await shot(d, 'desk-scrolled');
     check('57. no page errors at the desk', d.errors.length === 0 && i.errors.length === 0 && h.errors.length === 0, [...d.errors, ...i.errors, ...h.errors].join(' | '));
   }
@@ -423,9 +436,12 @@ try {
   if (phase('build')) {
     const o = (await open('desktop', 'organizer')).page;
     await go(o, `${E_PATH}/control?mode=setup`);
-    check('58. with registration reviewed, Set up says the ONE next step is Build tournament', await until(async () => /build tournament/.test(await body(o, '[data-testid=journey-primary]')), 30000), await body(o, '.eh-next'));
+    await until(async () => (await o.getByTestId('journey-primary').count()) === 1, 30000);
     note('build.journey_headline', (await body(o, '.eh-next')).slice(0, 300));
-    await o.getByTestId('journey-primary').click();
+    const primaryIsBuild = /build tournament/.test(await body(o, '[data-testid=journey-primary]'));
+    check('58. with registration reviewed (one straggler still pending), Set up offers Build tournament: as the next step, or right beside "Review 1 registration"', primaryIsBuild || (await o.locator('.eh-next').getByRole('button', { name: /Build tournament/ }).count()) === 1, await body(o, '.eh-next'));
+    note('build.primary_step_with_one_pending', primaryIsBuild ? 'Build tournament' : (await body(o, '[data-testid=journey-primary]')).slice(0, 80));
+    if (primaryIsBuild) await o.getByTestId('journey-primary').click(); else await o.locator('.eh-next').getByRole('button', { name: /Build tournament/ }).click();
     await o.locator('section[aria-label="Build tournament"]').waitFor({ timeout: 45000 });
     await until(async () => await has(o, 'tournament plan ready', 'section[aria-label="Build tournament"]'), 60000);
     const fieldsShown = await o.locator('output[aria-label="Fields"]').innerText().catch(() => '');
@@ -896,7 +912,7 @@ try {
       let n = 0;
       for (let guard = 0; guard < 300; guard += 1) {
         const open = sql(`select m.id from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state <> 'final' and m.entry_a is not null and m.entry_b is not null
-          and not exists (select 1 from public.entries e where e.id in (m.entry_a, m.entry_b) and e.status <> 'active') order by m.queue_state = 'active' desc, m.plan_order nulls last, m.position limit 1`);
+          and not exists (select 1 from public.entries e where e.id in (m.entry_a, m.entry_b) and e.status in ('withdrawn', 'disqualified')) order by m.queue_state = 'active' desc, m.plan_order nulls last, m.position limit 1`);
         if (!open) break;
         if (sql(`select queue_state from public.matches where id = '${open}'`) !== 'active') await rpc('organizer', 'set_match_queue', { p_match: open, p_state: 'active', p_field: null });
         const [ea, eb] = sql(`select entry_a || ',' || entry_b from public.matches where id = '${open}'`).split(',');
@@ -909,7 +925,7 @@ try {
     };
     note('close.fights_run_before_bracket', await runAll());
     // withdrawn-side fights (Sword & Shield walkovers were settled by the withdrawal; anything left with a withdrawn side is recorded as a walkover by the organizer)
-    note('close.open_with_withdrawn_side', sql(`select string_agg(m.id::text, ',') from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state <> 'final' and exists (select 1 from public.entries e where e.id in (m.entry_a, m.entry_b) and e.status <> 'active')`));
+    note('close.open_with_withdrawn_side', sql(`select string_agg(m.id::text, ',') from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state <> 'final' and exists (select 1 from public.entries e where e.id in (m.entry_a, m.entry_b) and e.status in ('withdrawn', 'disqualified'))`));
     // Longsword: pools done → build the bracket on the real screen
     const o = (await open('tablet', 'organizer')).page;
     await go(o, `${E_PATH}/control?mode=live`);
