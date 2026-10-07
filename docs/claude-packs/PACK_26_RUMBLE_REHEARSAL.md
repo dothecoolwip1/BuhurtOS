@@ -81,7 +81,7 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | `npm run typecheck` | clean |
 | `npx vitest run` | see §10 (final numbers) |
 | `npm run build` | see §10 |
-| `supabase/tests/run_all.sh` | see §10 (`pack26_gate` 18 checks added to the list) |
+| `supabase/tests/run_all.sh` (15:10–15:25, beside the browser runs) | **DATABASE GATE PASSED**, 50 ok lines: every gate as in the baseline (security 709 … pack24 followups 28) plus **pack26_gate 18 checks**; pack12_gate 122 and pack15_gate 61 with the Lyst wording; vectors agree; fingerprint matches (2891 objects); simulation; league verifier; the six concurrency suites (build, pack09a queue, pack09c finalize, pack12 push, lyst control, pack13 commit) |
 
 ### The rehearsal (`scripts/e2e/pack26-live.sh`, 15 phases, 178 checks + 2 run-level checks)
 
@@ -109,6 +109,9 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | `pack15-live` | 14 / 21 | the alert wording is now "Lyst" (this pack's migration) and the Announcements section folds; expectations updated; re-run in §10 |
 | `pack16-live` | 30 / 33 | the captain's team panel and the check-in code are on the Overview view; the suite opens the bare event address, which is the Live view on the day: not rewritten (recorded) |
 | `arena-live` | 4 / 7 | "Field 1" words and the `Event day` section; updated; re-run in §10 |
+| `represented-team-live` | 0 / 1 | waits for a "Team discipline leaders" heading that no longer exists (the team discipline table lives under Rankings › Teams › Disciplines since Pack 22); the suite, not the product; not rewritten (recorded) |
+| `broadcast-realtime` | 14 / 15 | check 14 looked for "Field 1" on the Lyst screen; accepts "Lyst 1" now; re-run in §10 |
+| `device-reliability-live` | see §10 | |
 | `finalize-live`, `pack09d-live`, `rumble-live`, `live-stability`, `eventday-live` | stopped on Pack 09A–09D / 18 screens that Pack 25 replaced (`?tab=finalize`, `?tab=home`, `section.eventday`) | the obvious addresses were updated where one line did it; these suites are superseded by `pack25-live` and `pack26-live` for those screens and are recorded as such (§9) |
 
 ## 7. Browser verification, screenshots, viewports

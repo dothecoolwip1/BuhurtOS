@@ -124,7 +124,7 @@ try {
   const keeper = await open('scorekeeper', { width: 768, height: 1024 });
   await keeper.goto(`${BASE}/events/test-stuff-test/field/Field%201`);
   const t5 = await settledText(keeper);
-  check('14. the field / Lyst screen (Pack 13) still loads with realtime connected', /Aldric Stone|Field 1/i.test(t5) && keeper.errors.length === 0, t5.slice(0, 200) + ' | ' + keeper.errors.join(' | '));
+  check('14. the field / Lyst screen (Pack 13) still loads with realtime connected', /Aldric Stone|Lyst 1|Field 1/i.test(t5) && keeper.errors.length === 0, t5.slice(0, 200) + ' | ' + keeper.errors.join(' | '));
 } catch (e) {
   check('the run completed without an exception', false, e?.stack ?? e);
 } finally {

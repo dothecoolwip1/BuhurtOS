@@ -1,8 +1,8 @@
 # BuhurtOS Rumble pack status
 
-Branch: `ccr-a435c5f7-pmrfxr`
+Branch: `ccr-ba2f7d4b-7bn1n5` (Pack 26)
 
-Last updated: 2026-10-04 (main's Pack 1 merged; Pack 07 / Pack 1 reconciled; Pack 08 added)
+Last updated: 2026-10-07 (Pack 26: full Rumble rehearsal, event-day hardening and product polish; see the Pack 26 entry at the end)
 
 ## Pack status
 
