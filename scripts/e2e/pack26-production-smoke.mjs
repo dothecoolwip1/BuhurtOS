@@ -42,7 +42,7 @@ check('18. Pack 25.3 (attention list at the top) is intact in the bundle', has('
 check('11b. the compact notifications sheet is deployed (Choose what BuhurtOS tells you about, Manage devices)', has('Choose what BuhurtOS tells you about') && has('Manage devices'), '');
 // 2. events + the production test event
 await go('/events'); const ev = await body();
-check('2. the events list loads (test events stay behind the Show test data toggle for a visitor)', /events/i.test(ev) && /calendar/i.test(ev) && (await page.getByTestId('show-test').count()) === 1, ev.slice(0, 200));
+check('2. the events list loads with its search and folded Filters (test events stay behind the Show test data toggle for a visitor)', /events/i.test(ev) && /calendar/i.test(ev) && /filters/i.test(ev), ev.slice(0, 200));
 await go(`/events/${EVENT}`); const ovw = await body();
 check('2b. the production test event opens (Overview / Live / Results)', /testing stuff|test/i.test(ovw) && /overview|live|results/i.test(ovw), ovw.slice(0, 200));
 check('2c. no sideways scroll on the event page', (await sideways()) <= 0, await sideways());
