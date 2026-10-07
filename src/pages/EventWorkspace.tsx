@@ -234,11 +234,10 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
           {mine.data?.isOrganizer && <Link className="btn btn-ink btn-sm" to={`/events/${event.slug}/control?mode=setup`}>Finish setting up and publish</Link>}
         </section>
       )}
-      {event.statsExcludedAt && <p className="panel info" role="note"><Chip tone="live">Not counted</Chip> <b>This event is not counted in official statistics.</b> Its results are kept here for the record but do not count in rankings, medals or career totals.</p>}
-      {isTest && <p className="panel info" role="note"><TestBadge synthetic /> <b>This is a fictional test event.</b> Its teams, fighters and results are made up. They are not official records and are excluded from rankings and statistics.</p>}
-
       {/* the fighter's own fight comes before everything while the event runs */}
       {showLive && (view === 'live' || phase === 'live') && <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />}
+      {event.statsExcludedAt && <p className="panel info ev-note" role="note"><Chip tone="live">Not counted</Chip> <span><b>Not counted in official statistics.</b> Results are kept for the record but do not count in rankings, medals or career totals.</span></p>}
+      {isTest && <p className="panel info ev-note" role="note"><TestBadge synthetic /> <span><b>A fictional test event.</b> Its teams, fighters and results are made up and count nowhere.</span></p>}
 
       {view === 'overview' && (
         <>

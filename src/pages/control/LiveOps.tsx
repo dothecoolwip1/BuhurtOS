@@ -273,9 +273,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
       <div className="cc-camera"><CameraOffControl eventId={event.id} /></div>
 
       <Section id="cc-attention" title="Needs attention" count={items.filter(i => i.urgency !== 'info').length} open>
-        {items.length === 0 ? <p className="cc-empty">{snap ? 'Nothing needs you right now. Fights, check-in and armour are in order.' : 'Checking…'}</p> : (
-          <ul className="cc-items">{items.map(i => <Item key={i.id} item={i} />)}</ul>
-        )}
+        {items.length === 0 ? <p className="cc-empty">{snap ? 'Nothing needs you right now. Fights, check-in and armour are in order.' : 'Checking…'}</p> : <AttentionList items={items} />}
         {organizer && (conflicts.data?.length ?? 0) > 0 && <div id="review" tabIndex={-1}><ResultConflicts eventId={event.id} onChanged={() => { void live.refresh(); void load(); }} /></div>}
       </Section>
 
@@ -345,7 +343,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
         </div>
       </nav>
 
-      <Section id="cc-counters" title="Counter QR" badge={organizer ? 'organizer' : undefined} open={fieldNames.length > 0}>
+      <Section id="cc-counters" title="Counter QR" open={fieldNames.length > 0}>
         <CounterQrCard eventId={event.id} compact />
         {organizer && <p><Link className="btn btn-line cc-btn" to={controlPath(slug, 'live', 'devices')}>All counters and devices</Link></p>}
       </Section>
@@ -423,6 +421,21 @@ function soonestWarnings(warnings: readonly FightWarning[], boards: readonly Fie
   const best = new Map<string, { w: FightWarning; rank: number; field: string | null }>();
   for (const w of warnings) { const p = where(w.matchId); const cur = best.get(w.fighterId); if (!cur || p.rank < cur.rank) best.set(w.fighterId, { w, ...p }); }
   return [...best.values()].sort((a, b) => a.rank - b.rank || a.w.name.localeCompare(b.w.name)).map(x => ({ w: x.w, slot: SLOTS[x.rank], field: x.field }));
+}
+
+/** The urgent items first and in full; the rest fold, so the fields are never pushed off a phone screen by a long list. */
+function AttentionList({ items }: { items: CommandItem[] }) {
+  const [all, setAll] = useState(false);
+  const urgent = items.filter(i => i.urgency === 'now' || i.urgency === 'soon');
+  const shown = all ? items : (urgent.length > 0 ? urgent.slice(0, 3) : items.slice(0, 2));
+  const rest = items.length - shown.length;
+  return (
+    <>
+      <ul className="cc-items">{shown.map(i => <Item key={i.id} item={i} />)}</ul>
+      {rest > 0 && <p><button type="button" className="btn btn-line btn-sm" aria-expanded={all} onClick={() => setAll(true)} data-testid="attention-more">{rest} more</button></p>}
+      {all && items.length > 3 && <p><button type="button" className="btn btn-line btn-sm" onClick={() => setAll(false)}>Fewer</button></p>}
+    </>
+  );
 }
 
 const URGENCY_WORD: Record<CommandItem['urgency'], string> = { now: 'Now', soon: 'Soon', later: 'Later', info: 'FYI' };

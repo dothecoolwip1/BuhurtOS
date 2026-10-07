@@ -23,7 +23,7 @@ export function EventHeader({ event, phase, view, cta, control, synthetic, conne
     <header className={`ev-head phase-${phase}`} data-testid="event-header">
       <div className="ev-top">
         <div className="ev-status">
-          <Chip tone={PHASE_TONE[phase]}>{phase === 'live' ? '● Live' : PHASE_WORD[phase]}</Chip>
+          <Chip tone={PHASE_TONE[phase]}>{PHASE_WORD[phase]}</Chip>
           {event.status === 'cancelled' && <Chip>Cancelled</Chip>}
           {event.archivedAt && <Chip tone="brass">Archived</Chip>}
           <TestBadge synthetic={synthetic} />

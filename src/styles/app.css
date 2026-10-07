@@ -1510,3 +1510,9 @@ main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:
 .cq-row{grid-column:1 / -1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .cq-row b{font-size:16px}
 .cq .linklike{justify-self:start;margin-top:4px}
+.ev-note{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;font-size:14px;line-height:1.4}
+.ev-note .chip{flex:none;margin-top:1px}
+.ev-note span{min-width:0}
+.cq .ly-qr{width:min(60vw,220px)}
+.cq .ly-code{font-size:20px}
+@media (max-width:599px){.cq{grid-template-columns:1fr;justify-items:start}.cq .ly-qr{justify-self:center}}
