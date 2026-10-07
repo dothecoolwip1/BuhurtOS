@@ -160,7 +160,7 @@ function Side({ k, fight, showScore }: { k: 'a' | 'b'; fight: ArenaFight; showSc
     <div className={`ar-side ${k}${side.winner ? ' won' : ''}`}>
       <span className="ar-name">{side.name}</span>
       {fight.lyst && fight.lyst.marks.filter(m => m.side === k).length > 0 && <span className="ar-marks">{fight.lyst.marks.filter(m => m.side === k).map((m, i) => <b key={i} className="ar-mark">{m.text}</b>)}</span>}
-      {showScore && <span className="ar-score" aria-label={`${side.name}: ${side.score ?? 0}${fight.unit === 'rounds' ? ' rounds won' : ''}`}>{side.score ?? 0}{fight.unit === 'rounds' && <small className="ar-score-unit" aria-hidden="true">rounds</small>}{side.winner && <span className="sr-only"> (winner)</span>}</span>}
+      {showScore && <span className="ar-score" aria-label={`${side.name}: ${side.score ?? 0}${fight.unit === 'rounds' ? ((side.score ?? 0) === 1 ? ' round won' : ' rounds won') : ''}`}>{side.score ?? 0}{fight.unit === 'rounds' && <small className="ar-score-unit" aria-hidden="true">{(side.score ?? 0) === 1 ? 'round' : 'rounds'}</small>}{side.winner && <span className="sr-only"> (winner)</span>}</span>}
     </div>
   );
 }
