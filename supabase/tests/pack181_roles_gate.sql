@@ -62,21 +62,33 @@ select t.expect_ok('... and makes a join code', format($$select public.create_ly
 select t.as_admin();
 select code as jcode from public.lyst_join_codes where event_id = t.ev(1) and revoked_at is null limit 1 \gset
 select t.as_device(t.sid('counter1'));
-select t.expect_eq('Counter Phone 1 joins with the code: waiting for the operator, nothing granted', (public.request_counter_seat(:'jcode') ->> 'status'), 'pending');
+select t.expect_eq('Counter Phone 1 (a legacy single-session counter code) binds itself to Field 1, red, as Garrett: seated at once on the open fight', (public.counter_bind('Field 1', 'a', 'Garrett') -> 'seat' ->> 'match_id'), t.m(1)::text);
 select t.expect_error('a Counter cannot open a Lyst', format($$select public.lyst_open(%L)$$, t.m(1)), '42501');
 select t.expect_error('... read the tablet state (tallies of everyone)', format($$select public.lyst_state(%L)$$, t.m(1)), '42501');
-select t.expect_error('... make a join code', format($$select public.create_lyst_join_code(%L, 'Field 1')$$, t.ev(1)), '42501');
+select t.expect_error('... make a training code', format($$select public.create_lyst_join_code(%L, 'Field 1')$$, t.ev(1)), '42501');
 select t.expect_error('... call a fight', format($$select public.set_match_queue(%L, 'active', null)$$, t.m(2)), '42501');
 select t.expect_error('... turn the cameras off (a Counter does not get Camera Off)', format($$select public.camera_off_activate(%L)$$, t.ev(1)), '42501');
 select t.expect_error('... read counter tallies directly', 'select * from public.lyst_counts', '42501');
+select t.expect_error('... show the Counter QR (that is for scoring staff)', format($$select public.counter_pool_code(%L)$$, t.ev(1)), '42501');
+select t.expect_error('... list the event''s phones', format($$select public.list_event_device_sessions(%L)$$, t.ev(1)), '42501');
+select t.expect_error('... move another phone', format($$select public.move_counter_session(%L, 'Field 2', 'b')$$, t.sid('counter2')), '42501');
+select t.expect_error('... or sign another phone out', format($$select public.end_event_session(%L)$$, t.sid('counter2')), '42501');
 select t.as_admin();
-select t.expect_eq('the seat carries the device name, not a person', (select display_name from public.lyst_counter_seats where user_id = t.sid('counter1')), 'Counter Phone 1');
+select t.expect_eq('the seat carries the operator''s name, not a person''s account', (select display_name from public.lyst_counter_seats where user_id = t.sid('counter1')), 'Garrett');
 select id as seat1 from public.lyst_counter_seats where user_id = t.sid('counter1') \gset
 select t.as_device(t.sid('e2counter'));
-select t.expect_eq('an Event 2 Counter device with Event 1''s join code is told "not valid" (no hint the code exists)', (public.request_counter_seat(:'jcode') ->> 'status'), 'invalid');
+select t.expect_eq('an Event 2 Counter device binds to ITS OWN event''s Field 1 (no fight open there): never Event 1''s', (public.counter_bind('Field 1', 'a', 'Ghost') -> 'event' ->> 'slug') || '|' || jsonb_typeof(public.counter_state() -> 'seat' -> 'match_id'), 'p181-e2|null');
+select t.as_admin();
+select t.expect_eq('... and nothing of Event 1 was touched by it', (select count(*) from public.lyst_counter_seats where event_id = t.ev(1)), 1::bigint);
 select t.as_device(t.sid('secretary'));
-select t.expect_eq('a Secretary device cannot be a counter either', (public.request_counter_seat(:'jcode') ->> 'status'), 'invalid');
-select t.expect_ok('the Secretary / Scorekeeper assigns Counter Phone 1 to a corner (scoring authority)', format($$select public.assign_counter_seat(%L, %L, 'a', 'official', 'A')$$, :'seat1', t.m(1)));
+select t.expect_error('a Secretary device is not a counter: it cannot bind as one', $$select public.counter_bind('Field 1', 'a', 'Sec')$$, '42501');
+select t.expect_eq('the Secretary / Scorekeeper shows the Counter QR state (none yet) and may not create one (that is the permanent organizer)', (public.counter_pool_code(t.ev(1)) ->> 'can_create'), 'false');
+select t.expect_eq('... and may move Counter Phone 1 to blue (scoring authority)', public.move_counter_session(t.sid('counter1'), 'Field 1', 'b') -> 'binding' ->> 'side', 'b');
+select t.as_device(t.sid('counter1'));
+select t.expect_eq('... the phone sees the change at once', public.counter_state() -> 'binding' ->> 'side', 'b');
+select public.counter_bind('Field 1', 'a', 'Garrett');
+select t.as_admin();
+select id as seat1 from public.lyst_counter_seats where user_id = t.sid('counter1') and status = 'active' \gset
 select t.as_device(t.sid('counter1'));
 select t.expect_ok('the active Counter counts (own seat, running round)', format($$select public.counter_record(gen_random_uuid(), %L, 1, 1)$$, :'seat1'));
 select t.expect_ok('... and reads its own state', 'select public.counter_state()');
@@ -84,8 +96,33 @@ select t.as_device(t.sid('counter2'));
 select t.expect_error('another Counter cannot count on Phone 1''s seat', format($$select public.counter_record(gen_random_uuid(), %L, 1, 1)$$, :'seat1'));
 select t.as_admin();
 select t.expect_eq('the audit shows the Marshal device by name', (select count(*) from public.audit_log where action = 'lyst.timer' and actor = t.sid('marshal') and details -> 'device' ->> 'label' = 'Marshal Phone' and details -> 'device' ->> 'role' = 'marshal')::int, 1);
-select t.expect_eq('... and the seat assignment names the Secretary device', (select count(*) from public.audit_log where action = 'lyst.counter_assigned' and details -> 'device' ->> 'label' = 'Secretary Tablet')::int, 1);
+select t.expect_eq('... and the move names the Secretary device', (select count(*) from public.audit_log where action = 'counter.moved' and details -> 'device' ->> 'label' = 'Secretary Tablet')::int, 1);
 select t.expect_eq('no device or session id appears as an auth account anywhere', (select count(*) from auth.users where id in (select sid from t.s))::int, 0);
+
+-- the event's reusable Counter QR: the permanent organizer makes it; a Temporary Organizer cannot (device management stays with the organizer)
+select t.as_device(t.sid('admin'));
+select t.expect_error('the Event Admin device cannot create the Counter QR', format($$select public.create_event_credential(%L, 'counter_pool', 'Counter QR', 'counter', %L, null, 'ABCDEFGH2345')$$, t.ev(1), t.h(60)), '42501');
+select t.as_user(t.u(1));
+select t.expect_ok('the organizer creates it', format($$select public.create_event_credential(%L, 'counter_pool', 'Counter QR', 'counter', %L, null, 'ABCDEFGH2345')$$, t.ev(1), t.h(60)));
+select t.as_admin();
+select t.open(60, 'ip-q', 61) as q1 \gset
+select t.open(60, 'ip-q', 62) as q2 \gset
+select t.expect_eq('two phones scan it: two sessions, both alive', (select count(*) from public.event_sessions where credential_id = (select id from public.event_credentials where code_hash = t.h(60)) and ended_at is null), 2::bigint);
+select t.as_device(:'q1');
+select t.expect_eq('a pool phone reads as a counter device of Event 1', (public.device_whoami() ->> 'role') || '|' || (public.device_whoami() ->> 'kind') || '|' || (public.device_whoami() -> 'event' ->> 'slug'), 'counter|device|p181-e1');
+select t.expect_eq('... binds like any counter', (public.counter_bind('Field 1', 'b', 'Taylor') -> 'seat' ->> 'side'), 'b');
+select t.expect_error('... and has no more authority than that', format($$select public.lyst_open(%L)$$, t.m(1)), '42501');
+select t.as_device(t.sid('secretary'));
+select t.expect_eq('the Secretary device shows the Counter QR for its own event', public.counter_pool_code(t.ev(1)) ->> 'code', 'ABCDEFGH2345');
+select t.as_device(t.sid('e2marshal'));
+select t.expect_error('an Event 2 marshal device cannot show Event 1''s Counter QR', format($$select public.counter_pool_code(%L)$$, t.ev(1)), '42501');
+select t.as_device(t.sid('admin'));
+select t.expect_eq('the Event Admin device lists the event''s phones (with field, side and operator)', (select count(*) from jsonb_array_elements(public.list_event_device_sessions(t.ev(1))) x where x -> 'binding' ->> 'operator' = 'Taylor'), 1::bigint);
+select t.expect_eq('... and signs one pool phone out; the other pool phone and the QR carry on', public.end_event_session(:'q2', 'dropped') ->> 'status', 'ended');
+select t.as_device(:'q2');
+select t.expect_error('the signed-out pool phone has no authority', 'select public.counter_state()', '42501');
+select t.as_device(:'q1');
+select t.expect_ok('the other pool phone still reads its state', 'select public.counter_state()');
 
 -- a DEAD session has no authority even in the functions that only ask "is this your own seat?" (revocation and expiry are immediate, not at seat expiry)
 select t.as_user(t.u(1));
@@ -96,12 +133,14 @@ select t.expect_error('... undo', format($$select public.counter_undo(gen_random
 select t.expect_error('... submit', format($$select public.counter_submit(%L, 1)$$, :'seat1'), '42501');
 select t.expect_error('... read its state', 'select public.counter_state()', '42501');
 select t.expect_error('... end the seat', format($$select public.end_counter_seat(%L, false)$$, :'seat1'), '42501');
-select t.expect_error('... or ask for a new seat with a fresh code', format($$select public.request_counter_seat(%L)$$, :'jcode'), '42501');
+select t.expect_error('... or bind again', $$select public.counter_bind('Field 1', 'a', 'Garrett')$$, '42501');
 select t.as_admin();
 select t.expect_eq('... the seat itself was not touched by any of that', (select status from public.lyst_counter_seats where id = :'seat1'), 'active');
 update public.events set starts_on = '2026-01-01', ends_on = '2026-01-01' where id = t.ev(1);
 select t.as_device(t.sid('counter2'));
-select t.expect_error('after the event + 24 h an expired Counter cannot ask for a seat either', format($$select public.request_counter_seat(%L)$$, :'jcode'), '42501');
+select t.expect_error('after the event + 24 h an expired Counter cannot bind either', $$select public.counter_bind('Field 1', 'a', 'Late')$$, '42501');
+select t.as_device(:'q1');
+select t.expect_error('... nor can a pool phone', 'select public.counter_state()', '42501');
 select t.as_admin();
 update public.events set starts_on = current_date, ends_on = current_date where id = t.ev(1);
 

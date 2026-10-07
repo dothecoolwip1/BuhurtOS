@@ -151,8 +151,11 @@ export async function handleRequest(req: Request, deps: Deps): Promise<Response>
     if (!jwt) return reply({ error: 'sign in as an organizer' }, 401);
     const code = generateCode(deps.randomBytes);
     const verifier = await codeVerifier(deps.env.pepper, code);
+    // The event's reusable Counter QR (kind counter_pool) keeps its plaintext on the credential, so scoring staff can show it again: it signs in
+    // counters only (no staff role, an allow-list of counter functions), so it is low privilege by construction. Every other kind keeps a verifier only.
+    const pool = body.kind === 'counter_pool';
     const r = action === 'create'
-      ? await deps.rpc('create_event_credential', { p_event: body.event, p_kind: body.kind ?? 'device', p_label: body.label, p_role: body.role, p_code_hash: verifier, p_expires_at: body.expires_at ?? null }, { jwt })
+      ? await deps.rpc('create_event_credential', { p_event: body.event, p_kind: body.kind ?? 'device', p_label: body.label ?? (pool ? 'Counter QR' : undefined), p_role: pool ? 'counter' : body.role, p_code_hash: verifier, p_expires_at: body.expires_at ?? null, p_pool_code: pool ? code : null }, { jwt })
       : await deps.rpc('replace_event_credential', { p_credential: body.credential, p_code_hash: verifier }, { jwt });
     if (!r.ok) {
       const msg = typeof asObject(r.data).message === 'string' ? String(asObject(r.data).message) : 'could not create the code';

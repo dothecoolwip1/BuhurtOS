@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_PRESETS, ServerClock, formatClock, nextMode, presetOf, remainingMs, timerFor, timerTone, timerWord, type LystTimer } from './timer';
 import { leadRule, roundSeconds, activeDiscipline, allRoundsConfirmed, bump, clampScore, currentRound, describeDiscipline, disciplineCounts, entryStart, hasDq, isChange, officialTotals, resultSupportedByTotals, type LystRound } from './rounds';
-import { JOIN_CODE_LENGTH, TapQueue, counterBanner, flushTaps, joinUrl, parseJoinCode, type CountAction } from './counters';
+import { JOIN_CODE_LENGTH, TapQueue, counterBanner, counterInputFor, flushTaps, nextStep, onlyField, parseJoinCode, sideLabel, standingLeft, trainingUrl, type CountAction } from './counters';
 
 const T0 = Date.parse('2026-10-07T12:00:00.000Z');
 const timer = (o: Partial<LystTimer> = {}): LystTimer => ({ event_id: 'e', field_key: 'field 1', match_id: 'm', round_no: 1, mode: 'fight', status: 'running', duration_ms: 60000, remaining_ms: 60000, started_at: new Date(T0).toISOString(), rev: 1, ...o });
@@ -160,16 +160,33 @@ describe('counter phone', () => {
   it('reads a code from a bare code, a pasted link or messy text; nothing else', () => {
     expect(parseJoinCode('ab12cd34ef')).toBe('AB12CD34EF');
     expect(parseJoinCode('https://x.test/BuhurtOS/lyst/join/AB12CD34EF?x=1')).toBe('AB12CD34EF');
+    expect(parseJoinCode('https://x.test/BuhurtOS/lyst/train/AB12CD34EF')).toBe('AB12CD34EF');
     expect(parseJoinCode(' ab12-cd34-ef ')).toBe('AB12CD34EF');
     expect(parseJoinCode('short')).toBeNull();
     expect(parseJoinCode('')).toBeNull();
     expect(parseJoinCode(null)).toBeNull();
     expect('AB12CD34EF'.length).toBe(JOIN_CODE_LENGTH);
   });
-  it('builds the QR address under the app\'s base path', () => {
-    expect(joinUrl('https://x.test', '/BuhurtOS/', 'AB12CD34EF')).toBe('https://x.test/BuhurtOS/lyst/join/AB12CD34EF');
-    expect(joinUrl('http://localhost:5173', '/', 'AB12CD34EF')).toBe('http://localhost:5173/lyst/join/AB12CD34EF');
-    expect(joinUrl('https://x.test', '/BuhurtOS', 'AB12CD34EF')).toBe('https://x.test/BuhurtOS/lyst/join/AB12CD34EF');
+  it('builds the TRAINING QR address under the app\'s base path (Pack 25: the Lyst code is for trainees)', () => {
+    expect(trainingUrl('https://x.test', '/BuhurtOS/', 'AB12CD34EF')).toBe('https://x.test/BuhurtOS/lyst/train/AB12CD34EF');
+    expect(trainingUrl('http://localhost:5173', '/', 'AB12CD34EF')).toBe('http://localhost:5173/lyst/train/AB12CD34EF');
+    expect(trainingUrl('https://x.test', '/BuhurtOS', 'AB12CD34EF')).toBe('https://x.test/BuhurtOS/lyst/train/AB12CD34EF');
+  });
+  it('the first-run steps: who, which Lyst (only with more than one), which side; then count', () => {
+    const two = [{ key: 'field 1' }, { key: 'field 2' }], one = [{ key: 'field 1' }];
+    expect(nextStep(null, two)).toBe('operator');
+    expect(nextStep({ operator: 'Garrett' }, two)).toBe('field');
+    expect(nextStep({ operator: 'Garrett' }, one)).toBe('side');
+    expect(nextStep({ operator: 'Garrett', field_key: 'field 1' }, two)).toBe('side');
+    expect(nextStep({ operator: 'Garrett', field_key: 'field 1', side: 'a' }, two)).toBe('count');
+    expect(onlyField(one)).toBe('field 1'); expect(onlyField(two)).toBeNull();
+  });
+  it('a team fight counts fighters standing: a tap is a fighter down, never below zero', () => {
+    expect(counterInputFor('5v5', 'auto')).toBe('standing');
+    expect(counterInputFor('longsword', 'auto', 'buhurt')).toBe('standing');
+    expect(counterInputFor('longsword', 'auto', 'duels')).toBe('weighted');
+    expect(standingLeft(5, 2)).toBe(3); expect(standingLeft(5, 9)).toBe(0); expect(standingLeft(null, 1)).toBe(0);
+    expect(sideLabel('a')).toBe('Red'); expect(sideLabel('b')).toBe('Blue'); expect(sideLabel(null)).toBe('Side');
   });
   it('every tap answers at once: the display is the server total plus what is waiting', () => {
     let n = 0; const q = new TapQueue(() => `id${++n}`);
@@ -213,11 +230,13 @@ describe('counter phone', () => {
     expect(q.pending.map(p => p.round)).toEqual([2]);
   });
   it('the banner tells a counter what to do in each situation', () => {
-    expect(counterBanner({ seat: null })).toMatch(/scan/i);
-    expect(counterBanner({ seat: { status: 'pending' } })).toMatch(/waiting for the lyst/i);
-    expect(counterBanner({ seat: { status: 'expired' } })).toMatch(/ended/i);
+    expect(counterBanner({ seat: null })).toMatch(/choose your lyst and side/i);
+    expect(counterBanner({ seat: null, binding: { field_key: 'field 1', side: null } })).toMatch(/red or blue/i);
+    expect(counterBanner({ seat: { status: 'expired' } })).toMatch(/run out/i);
+    expect(counterBanner({ seat: { status: 'active' }, waiting: true })).toMatch(/waiting for the next fight/i);
     expect(counterBanner({ seat: { status: 'active' }, final: true })).toMatch(/finished/i);
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'confirming' } })).toMatch(/confirming/i);
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'running' }, can_count: true })).toMatch(/tap count/i);
+    expect(counterBanner({ seat: { status: 'active' }, round: { status: 'running' }, can_count: true, counter_input: 'standing' })).toMatch(/fighter down/i);
   });
 });

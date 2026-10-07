@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import {
+import { sessionLine, sideWord, sortSessions, type DeviceSession,
   USUAL_SET, accessEndsLabel, deviceQrUrl, groupCode, hasDeviceSession, lastSeenLabel, normalizeCode, roleWord, signedInElsewhereLabel, sortCredentials, splitCredentials,
   staffRoleChoices, staffRoleWord, statusWord, usualSetToCreate, type Credential
 } from './devices';
 
 const cred = (over: Partial<Credential> = {}): Credential => ({
   id: 'c', kind: 'device', label: 'Counter Phone 1', role: 'counter', status: 'active', used: false, expiresAt: null, createdAt: '2026-10-10T12:00:00Z',
-  lastSigninAt: null, lastSeenAt: null, signedInElsewhereAt: null, revokedAt: null, replaced: false, ...over
+  lastSigninAt: null, lastSeenAt: null, signedInElsewhereAt: null, revokedAt: null, replaced: false, openSessions: 0, ...over
 });
 
 describe('devices in words', () => {
@@ -119,17 +119,49 @@ describe('sorting and the usual set', () => {
     expect(s.pastControllers.map(c => c.id)).toEqual(['c']);
     expect(splitCredentials([]).controller).toBeNull();
   });
-  it('the usual set is Counter Phone 1 to 4, Secretary, Marshal, Announcer and Event Admin tablets', () => {
-    expect(USUAL_SET.map(d => d.label)).toEqual(['Counter Phone 1', 'Counter Phone 2', 'Counter Phone 3', 'Counter Phone 4', 'Secretary Tablet', 'Marshal Phone', 'Announcer Tablet', 'Event Admin Tablet']);
-    expect(USUAL_SET.map(d => d.role)).toEqual(['counter', 'counter', 'counter', 'counter', 'scorekeeper', 'marshal', 'announcer', 'temporary_organizer']);
+  it('the usual set is the Secretary, Marshal, Announcer and Event Admin devices; counter phones come from the one Counter QR (Pack 25), not named codes', () => {
+    expect(USUAL_SET.map(d => d.label)).toEqual(['Secretary Tablet', 'Marshal Phone', 'Announcer Tablet', 'Event Admin Tablet']);
+    expect(USUAL_SET.map(d => d.role)).toEqual(['scorekeeper', 'marshal', 'announcer', 'temporary_organizer']);
+    expect(USUAL_SET.some(d => d.role === 'counter')).toBe(false);
   });
   it('asking for the usual set twice does not try to make a name that is already in use (the database would refuse it)', () => {
     const all = usualSetToCreate([]);
-    expect(all.toCreate).toHaveLength(8);
-    const again = usualSetToCreate([cred({ label: 'counter phone 1' }), cred({ label: 'Marshal Phone', status: 'revoked' }), cred({ label: 'Secretary Tablet', status: 'expired' })]);
-    expect(again.skipped).toEqual(['Counter Phone 1', 'Secretary Tablet']);       // a revoked name is free again; an expired one is still taken
+    expect(all.toCreate).toHaveLength(4);
+    const again = usualSetToCreate([cred({ label: 'announcer tablet' }), cred({ label: 'Marshal Phone', status: 'revoked' }), cred({ label: 'Secretary Tablet', status: 'expired' })]);
+    expect(again.skipped).toEqual(['Secretary Tablet', 'Announcer Tablet']);       // a revoked name is free again; an expired one is still taken
     expect(again.toCreate.map(d => d.label)).toContain('Marshal Phone');
-    expect(again.toCreate).toHaveLength(6);
+    expect(again.toCreate).toHaveLength(2);
+  });
+  it('the Counter QR sits first and apart from the named devices; a revoked QR is past', () => {
+    const s = splitCredentials([
+      cred({ id: 'q', label: 'Counter QR', kind: 'counter_pool' }), cred({ id: 'a', label: 'Marshal Phone', role: 'marshal' }),
+      cred({ id: 'q0', label: 'Counter QR', kind: 'counter_pool', status: 'revoked', revokedAt: '2026-10-10T13:00:00Z' })
+    ]);
+    expect(s.pool?.id).toBe('q');
+    expect(s.devices.map(c => c.id)).toEqual(['a']);
+    expect(s.pastDevices.map(c => c.id)).toEqual(['q0']);
+    expect(sortCredentials([cred({ id: 'a', label: 'Marshal Phone', role: 'marshal' }), cred({ id: 'q', label: 'Counter QR', kind: 'counter_pool' })]).map(c => c.id)).toEqual(['q', 'a']);
+  });
+});
+
+describe('the phones as sessions (Pack 25)', () => {
+  const sess = (o: Partial<DeviceSession> = {}): DeviceSession => ({
+    sessionId: 's', credentialId: 'c', eventId: 'e', event: { slug: 'rumble', name: 'Rumble', timezone: 'America/Edmonton' }, kind: 'counter_pool', label: 'Counter QR', role: 'counter',
+    createdAt: '2026-10-10T10:00:00Z', lastSeenAt: '2026-10-10T12:00:00Z', online: true, endedAt: null, endedReason: null, expiresAt: null, status: 'active', binding: null, seat: null, ...o
+  });
+  it('says what a phone is doing in one line, in sporting words (Red / Blue, never a / b)', () => {
+    expect(sessionLine(sess())).toBe('Counter · not set up yet');
+    expect(sessionLine(sess({ binding: { fieldKey: 'field 1', fieldLabel: 'Field 1', side: 'a', operator: 'Garrett', updatedAt: null } }))).toBe('Counter · Field 1 · Red · Garrett');
+    expect(sessionLine(sess({ binding: { fieldKey: 'field 2', fieldLabel: 'Field 2', side: null, operator: 'Nathan', updatedAt: null } }))).toBe('Counter · Field 2 · no side · Nathan');
+    expect(sessionLine(sess({ role: 'scorekeeper', kind: 'device', label: 'Secretary Tablet' }))).toBe('Secretary / Scorekeeper');
+    expect(sideWord('b')).toBe('Blue'); expect(sideWord(null)).toBe('No side');
+  });
+  it('sorts active before expired, revoked and ended; online first; then by event and name', () => {
+    const rows = [
+      sess({ sessionId: '1', status: 'ended', endedAt: 'x' }), sess({ sessionId: '2', online: false }), sess({ sessionId: '3', online: true, event: { slug: 'b', name: 'B Cup', timezone: 'UTC' } }),
+      sess({ sessionId: '4', online: true, event: { slug: 'a', name: 'A Cup', timezone: 'UTC' } }), sess({ sessionId: '5', status: 'revoked' })
+    ];
+    expect(sortSessions(rows).map(r => r.sessionId)).toEqual(['4', '3', '2', '5', '1']);
   });
 });
 

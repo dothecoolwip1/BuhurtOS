@@ -67,7 +67,9 @@ function SiteApp() {
       {/* The broadcast overlay (OBS browser source): public, read-only, no site chrome. */}
       <Route path="broadcast/:eventId" element={<BroadcastPage />} />
       <Route path="broadcast/:eventId/:field" element={<BroadcastPage />} />
-      {/* The counter's phone: no site chrome, one screen, one huge button. */}
+      {/* The counter's phone: no site chrome, one screen, one huge button. A signed-in trainee joins through the Lyst's training QR (/lyst/train/:code; the old /lyst/join address still works). */}
+      <Route path="lyst/train" element={<CounterPage />} />
+      <Route path="lyst/train/:code" element={<CounterPage />} />
       <Route path="lyst/join" element={<CounterPage />} />
       <Route path="lyst/join/:code" element={<CounterPage />} />
       <Route path="lyst/counter" element={<CounterPage />} />

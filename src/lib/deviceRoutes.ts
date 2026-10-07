@@ -65,7 +65,7 @@ export function pathAllowed({ role, slug }: RouteSubject, rawPath: string): bool
   const underPrefix = (rest: string) => path.startsWith(`${own}${rest}/`) || path.startsWith(`${decoded}${rest}/`);
   if (under(own, '')) return role !== 'counter';                     // the event's home for this device (field picker); a counter has none
   switch (role) {
-    case 'counter': return path === '/lyst/counter' || path === '/lyst/join' || /^\/lyst\/join\/[^/]+$/.test(path);
+    case 'counter': return path === '/lyst/counter' || /^\/lyst\/(join|train)(\/[^/]+)?$/.test(path);
     case 'scorekeeper': return under(own, '/command') || underPrefix('/field');
     case 'marshal': return underPrefix('/field');
     case 'announcer': return under(own, '/announcer');
