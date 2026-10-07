@@ -113,7 +113,7 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | `pack14-live` | 62 / 63 | the broadcast setup link moved to Set up › Broadcast in Pack 25; check updated; re-run in §10 |
 | `pack15-live` | 14 / 21 | the alert wording is now "Lyst" (this pack's migration) and the Announcements section folds; expectations updated; re-run in §10 |
 | `pack16-live` | 30 / 33 | the captain's team panel and the check-in code are on the Overview view; the suite opens the bare event address, which is the Live view on the day: not rewritten (recorded) |
-| `arena-live` | 4 / 7 | "Field 1" words and the `Event day` section; updated; re-run in §10 |
+| `arena-live` | 4 / 7 → **50 / 51** after the Lyst words and the Pack 25 section and link names | the last step drives the Pack 09B classic scoreboard ("Head or torso +2"), which the Lyst board replaced as the default; covered by `pack26-live`'s duel phase; not rewritten |
 | `represented-team-live` | 0 / 1 | waits for a "Team discipline leaders" heading that no longer exists (the team discipline table lives under Rankings › Teams › Disciplines since Pack 22); the suite, not the product; not rewritten (recorded) |
 | `broadcast-realtime` | 14 / 15 | check 14 looked for "Field 1" on the Lyst screen; accepts "Lyst 1" now; re-run in §10 |
 | `device-reliability-live` | see §10 | |
