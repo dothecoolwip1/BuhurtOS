@@ -96,7 +96,8 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | 18 | **213 / 217**, the first run through every phase including the permission matrix and the viewport sweep (208 PASS) | the matrix checks stated the rule wrongly for a fighter's own rows and for the marshal (a scoring role); the bad training code is checked when the trainee starts (all script) |
 | 19 | aborted at 50 | the local stack's background process reached its time limit mid-run; restarted with the longest allowed lifetime |
 | 20 | **216 / 217** through every phase (viewport sweep 208 PASS: 108 screen-size pairs, all fit, nothing covered, no errors) | the training-code check matched the side button case-sensitively (script) |
-| 21 | see §10 | the final run, with the "2 fights away" hint |
+| 21 | see below | the branch's own build with the "2 fights away" hint; `origin/main` (Pack 25.2 sides and colours, Pack 25.3 attention list) was merged into the branch while it ran |
+| 22 | see §10 | the final run, on the merged tree (new stack, merged migrations, rebuilt app) |
 
 ### The other real-stack suites, re-run on the branch (`/var/tmp/p26/side`, side ports, one at a time)
 
