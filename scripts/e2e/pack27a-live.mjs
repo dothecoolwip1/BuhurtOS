@@ -103,7 +103,8 @@ try {
     await p.getByRole('button', { name: lystRe }).click();
     if (!await until(async () => await has(p, 'choose your side on lyst 1') && await has(p, 'red') && await has(p, 'blue'), 15000)) return `no side chooser: ${(await body(p)).slice(0, 200)}`;
     await p.getByRole('button', { name: new RegExp(side) }).click();
-    if (!await until(async () => await has(p, expectName.toLowerCase()), 20000)) return `not on ${expectName}: ${(await body(p)).slice(0, 200)}`;
+    // the count screen: the fighter's name in the heading (the side chooser names the fighters too, so wait for the screen itself)
+    if (!await until(async () => (await p.getByTestId('cp-fighter').count()) > 0 && (await p.getByTestId('cp-fighter').innerText().catch(() => '')).toLowerCase().includes(expectName.toLowerCase()), 20000)) return `not on ${expectName}: ${(await body(p)).slice(0, 200)}`;
     if (!await clean(p)) return `forbidden word on the count screen: ${(await body(p)).slice(0, 300)}`;
     return 'ok';
   };
@@ -207,9 +208,9 @@ try {
   const tokenBefore = await d.evaluate(k => localStorage.getItem(k), STORAGE_KEY);
   const bd = await bind(d, 'Dana', /Lyst 1|Field 1/, 'BLUE', 'Dara Voss', 'cael rhodes vs dara voss');
   check('25. the same phone scans the Counter QR: Counter mode, Dana on Lyst 1 Blue, on Cael vs Dara at once; the account token is still stored underneath', bd === 'ok' && (await d.evaluate(k => localStorage.getItem(k), STORAGE_KEY)) === tokenBefore, bd);
-  check('25a. the screen fits a large Android phone (412 wide) and shows Exit Counter, not "stop" or "sign out of the account"', await fits(d) && await has(d, 'exit counter'), (await body(d)).slice(0, 300));
+  check('25a. the screen fits a large Android phone (412 wide); leaving is "Exit Counter" everywhere (the bar too), never "sign out" of anything', await fits(d) && await has(d, 'exit counter') && !await has(d, 'sign out') && (await d.locator('[data-testid=device-bar]').innerText()).includes('Exit Counter'), (await body(d)).slice(0, 300));
   await shot(d, 'personal-phone-counting');
-  await d.getByRole('button', { name: 'Exit Counter' }).click();
+  await d.locator('nav.cp-links').getByRole('button', { name: 'Exit Counter' }).click();
   check('26. Exit Counter asks once, in plain words (counts stay with the fight; scan again to count)', await until(async () => await has(d, 'exit counter?') && await has(d, 'scan the counter qr'), 8000), await body(d));
   await d.getByTestId('cp-exit').click();
   check('27. the phone leaves Counter mode: back on the ordinary site (not the device sign-in page), device session gone, the ACCOUNT TOKEN untouched', await until(async () => !d.url().includes('/device') && !d.url().includes('/lyst/counter') && (await d.evaluate(() => localStorage.getItem('bos-device-session'))) === null, 20000)

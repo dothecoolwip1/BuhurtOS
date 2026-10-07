@@ -221,7 +221,7 @@ function TrainingCounter({ userId, urlCode }: { userId: string; urlCode: string 
       <main className="cp cp-setup" aria-label="Join as a training counter">
         <div className="cp-setup-head"><span className="cp-event">Training counter</span><span className="src">Practice only. Your count never changes a score.</span></div>
         <form onSubmit={e => { e.preventDefault(); void join(); }} className="cp-form">
-          <h1 className="cp-q">Who is counting?</h1>
+          <h1 className="cp-q">Who's counting?</h1>
           <label htmlFor="cp-tname" className="src">Your name, as the Lyst will see it.</label>
           <input id="cp-tname" className="cp-name-in" value={name} maxLength={80} autoComplete="name" autoCapitalize="words" onChange={e => setName(e.target.value)} placeholder="Your name" autoFocus />
           <h2 className="cp-q">Which side?</h2>

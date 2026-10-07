@@ -101,6 +101,54 @@ Read from the code on `main` `3bccb4ed` (Pack 26 merged), not from earlier notes
 
 ## 2. Phase A: Official Counter Foundation
 
+**Scope (from §1.2 A1–A10, against spec §7–28).** Verification first, then the gaps. Nothing was rebuilt that already worked: `counter_bind` stays the "take a corner" operation (it already derives event, session, credential and current fight from the trusted session and takes only Lyst, side and name from the phone), the ceremony is already gone, follow / stale rejection / handoff / per-phone evidence already existed and were re-proven.
+
+### 2.1 Repository changes
+
+**Migration `supabase/migrations/20261022000100_pack27a_counter_foundation.sql`** (additive: one nullable column, one index, functions redefined; no grant, policy or allowlist change; not applied anywhere but local scratch databases).
+1. **Operator turns know the fight.** `counter_operator_log.match_id` (FK `matches`, set null). `private.counter_log_operator` gains a 6-argument form taking the fight; the 5-argument form derives it from the Lyst's current fight. `private.counter_rebind_field` closes the holder's turn and opens a new one on the new fight when a phone follows the Lyst. The append-only guard covers the new column. **Backfill** in the same migration: every open turn gets the fight its phone's active seat is on (hosted will have phones mid-fight whenever this is applied). Operator-turn model as now recorded: who (`operator_name`), session (`session_id`), event, Lyst (`field_key`), side, fight (`match_id`), start, end; taps and undos link through the phone's seat (session + fight) and carry the operator's name per row; "done with round" links through the seat.
+2. **The frozen evidence names every operator.** New `private.lyst_seat_operators(seat, match, round)`; `private.lyst_counter_snapshot` adds `operators: [{name, total}]` per seat; `lyst_state` adds `operators` to each round tally and `session_id` (a phone's session, null for an account) to each seat. The seat's `display_name` still becomes the new holder on a handoff (the tablet shows who holds the phone now); no tap is rewritten.
+3. **One current fight per Lyst.** New `private.lyst_field_claim(event, key, match, source)`: under the field's advisory lock, same fight → no-op; a current fight that is not final and has a **running** round → `P0001` "Lyst 1 is still in round N of A vs B. End that round there first."; otherwise the row is upserted, audited (`lyst.field_current` with `source` open / timer) and the phones follow. `lyst_open` uses it. The timer trigger `private.lyst_timer_field_current` now: claims on insert or when the clock's fight changes; on a status-only change it does nothing when the Lyst's recorded current fight is this one, claims when none is recorded (a fight opened by a path that skipped `lyst_open`, the Pack 25.1 case), and **refuses** (`P0001` "Lyst 1 has moved on to A vs B. This screen is on an earlier fight: open the fight that is on.") when another fight is recorded as current. A tablet left behind can no longer pull the phones back ("ping-pong" closed).
+4. **Counter messages for people.** `private.lyst_seat_for_counting`: "this phone is not counting on that fight" (42501) and "this phone is not counting now: choose your Lyst and side again" (P0001). No server message a counter can meet says "seat" any more (gate-checked by function source).
+5. `counter_undo` answers `nothing` (with the live total) when the insert was swallowed by `lyst_counts_one_undo` (two undos racing for one tap), instead of `ok`. The Pack 18.1 dead-session check is kept at the top.
+
+**Client.**
+- `src/lib/lyst/counters.ts`: `rememberedOperator` / `rememberOperator` (`localStorage['bos-counter-name']`, a name, never a sign-in), `dropStaleQueues` (removes `bos-lyst-taps:*` keys of fights the phone is no longer on, returns how many taps were still waiting), `tapsKey`, `EXIT_PATH = '/'`; the expired banner no longer speaks of the phone's "place".
+- `src/pages/lyst/CounterPage.tsx`: headings **Who's counting?** (prefilled with the current or remembered name) → **Choose your Lyst** (each Lyst with who is fighting there now) → **Choose your side on Lyst N** (RED / BLUE naming the fighters); footer **Change counter · Change side · Change Lyst · Exit Counter**; Exit Counter confirms once ("counts stay with the fight; scan again to count"), ends the binding (`counter_leave`, best effort), drops stale queues, signs the device session out and loads the ordinary site at `/`; "Done with round" shows **Round N sent ✓**; queues of earlier fights are removed when the seat changes, with one notice if taps were still waiting.
+- `src/lib/deviceSession.ts`: `signOut(to)` / `endLocally(withNote, to)` take the page to land on; the account token under `sb-…-auth-token` is never touched (test).
+- `src/components/DeviceBar.tsx`: on a counter phone the bar's link is **Exit Counter** (same confirm, same exit path); staff devices keep "Sign out this device".
+- `src/components/lyst/CountersPanel.tsx`: per-operator breakdown under a phone whose round had more than one counter (`data-testid="counter-operators"`); waiting phones matched to seats by **session id**, never by name. `LystScoring.tsx` passes the event's `sides` to the compact strip (custom side names showed as Red/Blue there).
+- `src/lib/friendlyError.ts`: the counter phone's own refusals are mapped before the generic 42501 text (the old mapping was unreachable); "this device session has ended" → "This counter session has ended. Scan the Counter QR again to keep counting."
+
+**Tests.**
+- `supabase/tests/pack27_gate.sql` (53 checks; in `run_all.sh`): three phones on one QR; turns with the fight; counting per phone; the tablet's `session_id` and `operators`; another phone cannot count or undo on your place (and the refusal has no "seat"); handoff keeps the tally, closes/opens turns, the frozen evidence reads `Taylor:5[Garrett=3,Taylor=2]`; per-phone undo, `nothing` when nothing is left; the marshal's 6-5 against 5/0/2; following the Lyst: old places ended, taps / undo / done with the old place refused ("not counting now"), turns move to the new fight, round-2-before-it-exists refused; **one current fight**: `lyst_open` of another fight mid-round refused with the Lyst's words, idempotent re-open, allowed between rounds, a tablet left on the earlier fight refused at its clock ("has moved on to"), the right tablet's clock proceeds; the claim helpers are private and not on the device allowlist; a trainee's account id never appears in `lyst_state`; no counter refusal says "seat".
+- `supabase/tests/pack13_commit.sh` check 8: two undos at once for one tap → `nothing,ok`, the tap undone once, tally 0 (real commits, parallel sessions).
+- `pack13_gate.sql` :475 expects the new wording; `schema.fingerprint.txt` regenerated.
+- Unit: `lyst.test.ts` (remembered name, stale queues, exit path, banner has no "seat"/"place"), `friendlyError.test.ts` (counter refusals before the generic 42501), `deviceSession.test.ts` (exit to `/` leaves the account token).
+- Browser: `scripts/e2e/pack27a-live.mjs` / `.sh` (the Phase A completion gate, §2.3). Older suites follow the wording: `pack13-live`, `pack25-live`, `pack26-live`, `device-live` (Who's counting / Choose your Lyst / Choose your side / Change counter).
+
+### 2.2 Decisions and things deliberately left
+
+- `counter_bind` is not renamed to `counter_take_corner`: it is the direct, trusted-context operation the spec asks for, on the device allowlist, exercised by every suite; a rename would churn the allowlist and the hosted verify for no behaviour.
+- The seat's `display_name` still follows the current holder (the tablet names who holds the phone); attribution lives on the taps and in the snapshot's `operators`.
+- `RoundEntry`'s one-tap hint (copying a single counter's number into the awarded score, recorded as `recommended`) is an explicit marshal choice and stays; the result is still never computed from counters.
+- The submission model stays manual and informational ("Done with round" → ✓ on the tablet; it never stops the round or sets a score). Documented here as the §22 answer.
+- Counter QR revoke / regenerate UI and `revoke_all_event_devices` covering pool sessions (gap A9) move to **Phase C** (device operations).
+- "Stop counting" (unbind but stay in Counter mode) is gone: Change Lyst / Change side cover reassignment, Exit Counter covers leaving.
+
+### 2.3 Verification (local only)
+
+| Level | Result |
+| --- | --- |
+| Repository | commits on `ccr-ba2f7d4b-7bn1n5` (see git log; Pack 27A) |
+| Local database | `supabase/tests/run_all.sh` from zero on `bos_gate27`: **DATABASE GATE PASSED** (every gate incl. `pack27_gate` 53 checks, `pack13_gate` 284, `pack181_*`, fingerprint, simulation, league verifier, all concurrency scripts incl. the new undo race) |
+| Build / tests | `tsc` clean; vitest **1417 passed, 6 skipped**; `vite build` clean |
+| Browser (real stack, pack13 fixture, Chromium) | `pack27a-live.mjs` **46 / 46** (runs 2 and 3 on fresh databases; run 1 was 31/35 with two false failures in the script itself: the strip read before the poll, a fixed "now fighting" text); screenshots at 390, 360, 740×360 landscape, 412 (large Android), 768 and 1024 tablets in `/var/tmp/p27/shots` |
+| Hosted database | **untouched** |
+| Deployment | **none** |
+
+The 20-step completion gate, as run by the suite: 1 one QR · 2 the tablet makes the fight current · 3–5 three phones bind by name / Lyst (with the fight on now) / side, two on red, no forbidden words · 6 turns name the fight · 7 waiting with the clock · 8 round 1 live on every phone · 9 independent counting 5 / 2 / 6 · 10 the tablet shows all three per side, never summed · 11 Joe's undo touches only Joe · 12–15 Change Counter keeps the tally, the taps keep their names, the turn closes and opens, the tablet shows "Garrett Robson 5 · Taylor Robson 1" · 16 a second tablet cannot switch Lyst 1 mid-round (told in the Lyst's words) · 17 Done with round · 18–19 the marshal's 7–4 stands against 6 / 2 / 5, frozen evidence per operator · 20 Finish ignores counters · 21 the next fight moves every phone and every turn · 22–23 a stale tap with the old place is refused ("not counting now"), an offline phone's old taps never land · 24–28 a signed-in person's phone enters Counter mode and leaves it with Exit Counter, back on the ordinary site, still signed in, the server side tidy · 29 the phone remembers its name · 30 the other phones unaffected · 31 public state and tables clean for anon · 32 no page errors.
+
 ## 3. Phase B: Training Counters
 
 ## 4. Phase C: Counter and Device Operations
@@ -115,4 +163,18 @@ Read from the code on `main` `3bccb4ed` (Pack 26 merged), not from earlier notes
 
 ## 9. Known issues, deferred work, owner questions
 
+- **Landscape phone (740×360) count screen**: the big count buttons sit below the fold under the fight context; the phone counts after a scroll. Portrait is the expected grip; recorded for Phase E's responsive pass (§63).
+- The tablet's compact counter strip sits under the score and rounds, above the clock, not literally beside the score (§24 "compactly"): acceptable on 768 / 1024; revisit in Phase E if the layout pass touches `LystScoring`.
+- On a refusal while sending, the phone's notice still says "The round had already ended" for every refusal other than the standing bound (Phase E, E1); the server guarantees nothing stale lands either way (Phase A gate 22–23).
+- Counter QR revoke / regenerate and "sign every device out" covering pool sessions: Phase C.
+- Seen in the Phase A screenshots, outside Pack 27's scope: the Home "Your day" card still says "Field 1" ("Longsword (men) · Field 1 · vs Cael Rhodes") where every other screen says Lyst 1 (Pack 26's `fieldLabel` pass missed `MyDay`). Not changed here (no unrelated cleanup); one line for the owner.
+
 ## 10. STATUS of each phase
+
+| Phase | Repository | Local DB gate | Unit / build | Browser | Hosted | Deployed |
+| --- | --- | --- | --- | --- | --- | --- |
+| A Official Counter Foundation | implemented on `ccr-ba2f7d4b-7bn1n5` (PR 27A to open) | PASSED (run_all incl. pack27_gate 53) | tsc clean, vitest 1417 | pack27a-live 46/46 | untouched | none |
+| B Training Counters | not started | | | | untouched | none |
+| C Counter and Device Operations | not started | | | | untouched | none |
+| D Team Fight Counters | not started | | | | untouched | none |
+| E Event Day Device UX and Resilience | not started | | | | untouched | none |
