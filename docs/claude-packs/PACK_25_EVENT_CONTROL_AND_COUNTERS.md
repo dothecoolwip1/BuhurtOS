@@ -111,7 +111,7 @@ All run on 2026-10-07 in this container (Linux, Node 22, Chromium 1194, Postgres
 | `scripts/e2e/device-live.sh` (Pack 18.1 devices) | first run: check 22 expected the full identity bar on a counter phone (Pack 25 gives counters the compact bar); fixed in the script and re-run: RESULT_DEVICE |
 | `scripts/e2e/pack181-live.sh` | RESULT_PACK181 |
 | `scripts/e2e/cc181-live.sh` (Command Centre panels, now Live ops) | RESULT_CC181 |
-| `scripts/e2e/pack18-live.sh` (Command Centre on a realistic event, now Live ops) | RESULT_PACK18 |
+| `scripts/e2e/pack18-live.sh` (Command Centre on a realistic event, now Live ops) | NOT RUN: it needs a real Supabase Auth (GoTrue) binary (`AUTH_BIN`), which this container does not have. Its addresses were rewritten to Event Control; its checks on the Command Centre page itself overlap `cc181-live` and `pack25-live`. |
 
 ## 7. Browser verification and screenshots
 Real stack, real Chromium; `scripts/e2e/pack25-live.mjs` is the record. Screenshots under `docs/reviews/assets/2026-10-07-pack25/`:
@@ -139,6 +139,7 @@ Every page above was checked for sideways scroll at its viewport and for page er
 - The Arena (public big screen) prefers Lyst official totals once a round exists; for group fights the confirmed rounds equal rounds won, so a 5v5 shows rounds, not fighters standing. Accepted for this pack.
 - `private.event_field_keys` is the server's field list for a move; the Move sheet offers `Field 1..field_count` plus fields seen on other phones and a free-text field. A typo is refused by the database with a plain message.
 - The local-only live scripts other than `pack25`, `pack13`, `device`, `pack181`, `cc181` and `pack18` had their addresses rewritten mechanically (`/manage?tab=…` → Event Control) but were not re-run in this pack.
+- `scripts/e2e/pack18-live.sh` could not run here (no GoTrue binary); see section 6.
 - Nothing here was tried on a physical phone, iOS Safari or the hosted stack.
 
 ## 9. Hosted database and deployment
