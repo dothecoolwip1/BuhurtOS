@@ -164,6 +164,7 @@ try {
 
   // ================================================================ 10. notification settings on a phone: the two switches apart
   const acct = await open('aldric');
+  await acct.addInitScript(() => { try { localStorage.setItem('bos-push-ask', String(Date.now())); } catch { /* ignore */ } });   // the first-time ask was answered on another day; this is the settings sheet
   await acct.goto(`${BASE}/account#notifications`);
   if (!(await acct.getByTestId('ns-perm').isVisible().catch(() => false))) {   // Pack 26: the settings are a small sheet behind the Account row "Notifications"
     await acct.getByRole('button', { name: /^Notifications/ }).first().click({ timeout: 30000 }).catch(() => acct.getByRole('link', { name: /^Notifications/ }).first().click({ timeout: 30000 }));
