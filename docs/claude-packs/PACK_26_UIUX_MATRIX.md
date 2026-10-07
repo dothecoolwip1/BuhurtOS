@@ -40,6 +40,8 @@ Verified sizes: 360×800 (S), 390×844 (P), 740×360 landscape phone (L), 768×1
 
 ## 2. Screens (routes)
 
+**Viewport sweep (the `states` phase of `pack26-live`, run 18 and the final run):** 22 screens × 6 viewports = 132 screen-size pairs (360×800 "S", 390×844 "P", 844×390 landscape phone "L", 768×1024 "T", 1024×768 tablet landscape "TL", 1280×900 "D"; 1920×1080 for the big screen separately): **no sideways scroll, no control covered by a fixed bar at the top or bottom edge, no "undefined" / "NaN" text, no page error on any of them** (`viewport-sweep.json`). Live ops is the heaviest screen at 55 requests on first load (the public Live view 40, everything else 3–23); it refreshes by polling every few seconds on the local stack because there is no realtime socket there. The columns below mark the sizes at which each screen was also looked at by eye in the screenshots (✓) on top of the sweep.
+
 | Screen | Route | Audience | Primary job / action | Problems found (severity → outcome) | S | P | L | T | TL | D | A11y |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Home | `/` | everyone; signed-in fighters see "your day" first | what BuhurtOS is; events soon; a fighter's next thing | onboarding dialog and the install card can show together on Home (P3, recorded) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | landmarks ✓ |
