@@ -95,7 +95,8 @@ All on the local throwaway stack (Postgres 16 from every migration, PostgREST 12
 | 17 | stopped at 76 | the running-order step picked a called slot's row by one name (script) |
 | 18 | **213 / 217**, the first run through every phase including the permission matrix and the viewport sweep (208 PASS) | the matrix checks stated the rule wrongly for a fighter's own rows and for the marshal (a scoring role); the bad training code is checked when the trainee starts (all script) |
 | 19 | aborted at 50 | the local stack's background process reached its time limit mid-run; restarted with the longest allowed lifetime |
-| 20 | see §10 | the final run |
+| 20 | **216 / 217** through every phase (viewport sweep 208 PASS: 108 screen-size pairs, all fit, nothing covered, no errors) | the training-code check matched the side button case-sensitively (script) |
+| 21 | see §10 | the final run, with the "2 fights away" hint |
 
 ### The other real-stack suites, re-run on the branch (`/var/tmp/p26/side`, side ports, one at a time)
 
@@ -166,3 +167,17 @@ Screenshots from the final run (`docs/reviews/assets/2026-10-07-pack26/`, `p26-N
 - Old real-stack suites that encode screens replaced by Pack 25 (`eventday-live.mjs` Pack 09A Event day, `finalize-live.mjs` Pack 09C Review tab) are superseded by `pack25-live` and `pack26-live`; they were not rewritten. Their stack runner (`eventday-live.sh`) is still the shared runner for every suite.
 
 ## 10. Final verification
+
+Levels kept apart. **Hosted database: not touched. Deployment: none.**
+
+| Level | Result |
+| --- | --- |
+| Repository | branch `ccr-ba2f7d4b-7bn1n5`, every change committed and pushed; one additive migration (`20261021000100_pack26_test_push.sql`), 18 problems fixed (§3), the rehearsal fixture and script, the UI/UX matrix, this log, the README and TEST_PLAN corrections, suite updates |
+| Types, unit tests, build | `npm run typecheck` clean · `npx vitest run` **112 files, 1407 tests passed, 6 skipped** (one run on the loaded machine showed a single failure that two re-runs did not reproduce; recorded as a flake) · `npm run build` clean (the two chunk-size warnings as before) |
+| Local database gate | `supabase/tests/run_all.sh` **DATABASE GATE PASSED** (50 ok; `pack26_gate` 18 checks; details §6) |
+| The rehearsal in the running app | `pack26-live` run 20: **216 / 217** through all 15 phases; run 18: 213 / 217 with the first complete viewport sweep; every miss in runs 13–20 was either fixed in the product (§3 14, 15, 17, 18) or was the script's assumption (§6); the final run 21 is recorded below when it finishes |
+| Permission matrix (run 20, `permission-matrix.json`) | 15 personas × 14 probes: a stranger is refused or sees nothing everywhere; a fighter and a volunteer see only their own registration row and taps; the desk, inspector, medic and announcer cannot write a result or move the queue; no day-staff role lists conflicts, grants roles or sees device codes or sessions; the head marshal lists conflicts and shows the Counter QR but cannot grant roles or see codes; the scorekeeper and marshal may score; the other event's organizer is refused everything; anonymous reads only the public Lyst state (official columns), the public event and fighter rows carry no account id, e-mail, phone or health column; no public page shows an operator name, e-mail, phone, medical or insurance detail |
+| Viewport sweep (run 20, `viewport-sweep.json`) | 22 screens × 6 sizes = 108 pairs (+ the big screen at 1920): all fit, no covered control, no undefined / NaN text, no page errors |
+| The other real-stack suites (final state) | `pack181` 176/176 · `pack10` 135/135 · `pack22` 71/71 · `pack22-history` 32/32 · `pack22-discipline` 56/56 · `pack22-review` 13/13 · `pack24a1` 83/83 · `pack24a0` 22/22 (then the superseded public block) · `device` 82/82 · `cc181` 148/148 · `pack14` 63/63 · `pack25` 81/81 · `pack13` 89/89 · `broadcast-realtime` 15/15 · `pack15` 41/42 (check 34 wanted "2 fights away" in the hint: the hint now says it; re-run pending the rebuilt app) · `arena` 50/51 (the superseded classic-scoreboard tail) · `announcer` 180/181 (its own `counter_state` expectation) · `pack16` 30/33, `live-stability` 42/45 (two follow-up findings, §9), `finalize`, `pack09d`, `rumble`, `eventday`, `represented-team`: superseded screens (§6, §9) |
+| Browser evidence | `docs/reviews/assets/2026-10-07-pack26/`: 64 phase screenshots, the device and matrix screenshots, the phone-width sweep screenshots, `evidence.json`, `permission-matrix.json`, `viewport-sweep.json` (run 20; 256-colour PNGs) |
+| Hosted | inspected read-only earlier in the pack (`notification_text` body compared); nothing written; the migration is **not applied**; nothing deployed |

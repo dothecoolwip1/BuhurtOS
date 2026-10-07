@@ -1,0 +1,1082 @@
+[
+ {
+  "screen": "public-live",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 40,
+  "chars": 679
+ },
+ {
+  "screen": "liveops",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 55,
+  "chars": 3724
+ },
+ {
+  "screen": "setup",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 17,
+  "chars": 1501
+ },
+ {
+  "screen": "results-mode",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 2138
+ },
+ {
+  "screen": "desk",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 8,
+  "chars": 5952
+ },
+ {
+  "screen": "lyst",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 10,
+  "chars": 420
+ },
+ {
+  "screen": "my-events",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 14,
+  "chars": 737
+ },
+ {
+  "screen": "account",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 13,
+  "chars": 994
+ },
+ {
+  "screen": "home",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 1510
+ },
+ {
+  "screen": "events",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 623
+ },
+ {
+  "screen": "teams",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1476
+ },
+ {
+  "screen": "fighters",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 2118
+ },
+ {
+  "screen": "registrations-tool",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 882
+ },
+ {
+  "screen": "devices-tool",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 16,
+  "chars": 2264
+ },
+ {
+  "screen": "announcer",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 23,
+  "chars": 902
+ },
+ {
+  "screen": "arena",
+  "viewport": "small",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 262
+ },
+ {
+  "screen": "public-live",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 40,
+  "chars": 679
+ },
+ {
+  "screen": "liveops",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 55,
+  "chars": 3724
+ },
+ {
+  "screen": "setup",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 17,
+  "chars": 1501
+ },
+ {
+  "screen": "results-mode",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 2138
+ },
+ {
+  "screen": "desk",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 8,
+  "chars": 5952
+ },
+ {
+  "screen": "lyst",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 10,
+  "chars": 420
+ },
+ {
+  "screen": "my-events",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 14,
+  "chars": 737
+ },
+ {
+  "screen": "account",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 13,
+  "chars": 994
+ },
+ {
+  "screen": "home",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 1510
+ },
+ {
+  "screen": "events",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 623
+ },
+ {
+  "screen": "teams",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1476
+ },
+ {
+  "screen": "fighters",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 2118
+ },
+ {
+  "screen": "rankings",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 4,
+  "chars": 1033
+ },
+ {
+  "screen": "rules",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 2305
+ },
+ {
+  "screen": "team-page",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 18,
+  "chars": 1673
+ },
+ {
+  "screen": "fighter-page",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 1770
+ },
+ {
+  "screen": "registrations-tool",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 882
+ },
+ {
+  "screen": "devices-tool",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 16,
+  "chars": 2264
+ },
+ {
+  "screen": "announcer",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 23,
+  "chars": 902
+ },
+ {
+  "screen": "arena",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 262
+ },
+ {
+  "screen": "team-manager",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 11,
+  "chars": 608
+ },
+ {
+  "screen": "platform",
+  "viewport": "phone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1272
+ },
+ {
+  "screen": "public-live",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 40,
+  "chars": 679
+ },
+ {
+  "screen": "liveops",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 55,
+  "chars": 3733
+ },
+ {
+  "screen": "setup",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 17,
+  "chars": 1510
+ },
+ {
+  "screen": "results-mode",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 2147
+ },
+ {
+  "screen": "desk",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 8,
+  "chars": 5953
+ },
+ {
+  "screen": "lyst",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 10,
+  "chars": 420
+ },
+ {
+  "screen": "my-events",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 14,
+  "chars": 746
+ },
+ {
+  "screen": "account",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 13,
+  "chars": 1003
+ },
+ {
+  "screen": "home",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 1510
+ },
+ {
+  "screen": "events",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 623
+ },
+ {
+  "screen": "teams",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1476
+ },
+ {
+  "screen": "fighters",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 2118
+ },
+ {
+  "screen": "registrations-tool",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 891
+ },
+ {
+  "screen": "devices-tool",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 16,
+  "chars": 2273
+ },
+ {
+  "screen": "announcer",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 23,
+  "chars": 902
+ },
+ {
+  "screen": "arena",
+  "viewport": "landscapePhone",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 262
+ },
+ {
+  "screen": "public-live",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 40,
+  "chars": 679
+ },
+ {
+  "screen": "liveops",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 55,
+  "chars": 3733
+ },
+ {
+  "screen": "setup",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 17,
+  "chars": 1510
+ },
+ {
+  "screen": "results-mode",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 2147
+ },
+ {
+  "screen": "desk",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 8,
+  "chars": 5953
+ },
+ {
+  "screen": "lyst",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 10,
+  "chars": 420
+ },
+ {
+  "screen": "my-events",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 14,
+  "chars": 746
+ },
+ {
+  "screen": "account",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 13,
+  "chars": 1003
+ },
+ {
+  "screen": "home",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 1510
+ },
+ {
+  "screen": "events",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 623
+ },
+ {
+  "screen": "teams",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1476
+ },
+ {
+  "screen": "fighters",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 2118
+ },
+ {
+  "screen": "rankings",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 4,
+  "chars": 1033
+ },
+ {
+  "screen": "rules",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 2305
+ },
+ {
+  "screen": "team-page",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 18,
+  "chars": 1673
+ },
+ {
+  "screen": "fighter-page",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 1770
+ },
+ {
+  "screen": "registrations-tool",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 891
+ },
+ {
+  "screen": "devices-tool",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 16,
+  "chars": 2273
+ },
+ {
+  "screen": "announcer",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 23,
+  "chars": 902
+ },
+ {
+  "screen": "arena",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 262
+ },
+ {
+  "screen": "team-manager",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 11,
+  "chars": 617
+ },
+ {
+  "screen": "platform",
+  "viewport": "tablet",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1281
+ },
+ {
+  "screen": "public-live",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 40,
+  "chars": 688
+ },
+ {
+  "screen": "liveops",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 55,
+  "chars": 3814
+ },
+ {
+  "screen": "setup",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 17,
+  "chars": 1518
+ },
+ {
+  "screen": "results-mode",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 2155
+ },
+ {
+  "screen": "desk",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 8,
+  "chars": 5953
+ },
+ {
+  "screen": "lyst",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 10,
+  "chars": 420
+ },
+ {
+  "screen": "my-events",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 14,
+  "chars": 754
+ },
+ {
+  "screen": "account",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 13,
+  "chars": 1011
+ },
+ {
+  "screen": "home",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 1519
+ },
+ {
+  "screen": "events",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 632
+ },
+ {
+  "screen": "teams",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1485
+ },
+ {
+  "screen": "fighters",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 2127
+ },
+ {
+  "screen": "registrations-tool",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 899
+ },
+ {
+  "screen": "devices-tool",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 16,
+  "chars": 2281
+ },
+ {
+  "screen": "announcer",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 23,
+  "chars": 902
+ },
+ {
+  "screen": "arena",
+  "viewport": "landscape",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 262
+ },
+ {
+  "screen": "public-live",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 40,
+  "chars": 688
+ },
+ {
+  "screen": "liveops",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 55,
+  "chars": 3814
+ },
+ {
+  "screen": "setup",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 17,
+  "chars": 1518
+ },
+ {
+  "screen": "results-mode",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 2155
+ },
+ {
+  "screen": "desk",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 8,
+  "chars": 5953
+ },
+ {
+  "screen": "lyst",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 10,
+  "chars": 420
+ },
+ {
+  "screen": "my-events",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 14,
+  "chars": 754
+ },
+ {
+  "screen": "account",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 13,
+  "chars": 1011
+ },
+ {
+  "screen": "home",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 3,
+  "chars": 1519
+ },
+ {
+  "screen": "events",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 632
+ },
+ {
+  "screen": "teams",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 1485
+ },
+ {
+  "screen": "fighters",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 5,
+  "chars": 2127
+ },
+ {
+  "screen": "registrations-tool",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 15,
+  "chars": 899
+ },
+ {
+  "screen": "devices-tool",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 16,
+  "chars": 2281
+ },
+ {
+  "screen": "announcer",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 23,
+  "chars": 902
+ },
+ {
+  "screen": "arena",
+  "viewport": "desktop",
+  "fits": true,
+  "covered": [],
+  "bad": [],
+  "errors": 0,
+  "requests": 19,
+  "chars": 262
+ }
+]
