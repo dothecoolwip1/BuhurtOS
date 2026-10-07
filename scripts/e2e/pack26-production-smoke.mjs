@@ -3,13 +3,13 @@
 // idle-Lyst jump, rounds-won labels, the closed Register window, the notification hints, the second-tablet guard, the pools-done rule) and the
 // Pack 25.2 / 25.3 work; the public pages of the owner's test event open with the Lyst wording and leak no personal detail; the counter and
 // device pages load; the staff screens ask for a sign-in when signed out. Run by .github/workflows/pack26-production-smoke.yml.
-//   BASE=https://dothecoolwip1.github.io/BuhurtOS EXPECT_COMMIT=27c0df2 EVENT=${EVENT} CHROME=/path/to/chrome node scripts/e2e/pack26-production-smoke.mjs
+//   BASE=https://dothecoolwip1.github.io/BuhurtOS EXPECT_COMMIT=27c0df2 EVENT=testing-stuff-v3 CHROME=/path/to/chrome node scripts/e2e/pack26-production-smoke.mjs
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 const { chromium } = createRequire(import.meta.url)('playwright-core');
 const BASE = (process.env.BASE ?? 'https://dothecoolwip1.github.io/BuhurtOS').replace(/\/$/, '');
 const EXPECT_COMMIT = process.env.EXPECT_COMMIT || '';
-const EVENT = process.env.EVENT || '${EVENT}';
+const EVENT = process.env.EVENT || 'testing-stuff-v3';
 const SHOTS = process.env.SHOTS || '';
 if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
 const results = []; const check = (n, ok, d = '') => { results.push(ok); console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}${ok ? '' : '  <-- ' + String(d).slice(0, 300)}`); };
