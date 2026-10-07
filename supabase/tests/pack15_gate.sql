@@ -92,10 +92,10 @@ select public.set_match_queue(t.m(2), 'on_deck');
 select public.set_match_queue(t.m(3), 'in_the_hole');
 select t.settle();
 select t.as_admin();
-select t.expect_eq('IN THE HOLE with a fight on the field and one on deck: "You''re 2 fights away"', t.words(t.u(4), 'fight_called', 'in_the_hole'), 'You''re 2 fights away | Start getting ready for Longsword on Field 1.');
+select t.expect_eq('IN THE HOLE with a fight on the field and one on deck: "You''re 2 fights away"', t.words(t.u(4), 'fight_called', 'in_the_hole'), 'You''re 2 fights away | Start getting ready for Longsword on Lyst 1.');
 select t.expect_eq('... the count is stored on the alert (the real line at that moment)', (select payload ->> 'ahead' from public.notifications where user_id = t.u(1) and kind = 'fight_called' and payload ->> 'match_id' = t.m(3)::text), '2');
-select t.expect_eq('ON DECK: "You''re up next · Report to Field 1"', t.words(t.u(5), 'fight_called', 'on_deck'), 'You''re up next | Report to Field 1 and be ready to fight.');
-select t.expect_eq('NOW: "Your fight is ready · Report to Field 1 now"', t.words(t.u(2), 'fight_called', 'active'), 'Your fight is ready | Report to Field 1 now.');
+select t.expect_eq('ON DECK: "You''re up next · Report to Lyst 1"', t.words(t.u(5), 'fight_called', 'on_deck'), 'You''re up next | Report to Lyst 1 and be ready to fight.');
+select t.expect_eq('NOW: "Your fight is ready · Report to Lyst 1 now"', t.words(t.u(2), 'fight_called', 'active'), 'Your fight is ready | Report to Lyst 1 now.');
 select t.expect_eq('every fight alert carries a durable dedupe key', (select count(*) from public.notifications where kind in ('fight_called', 'fight_moved') and dedupe_key is null), 0::bigint);
 select t.expect_eq('... in the form fight:<match>:<person>:<number>:<kind>:<stage>', (select dedupe_key from public.notifications where user_id = t.u(4) and payload ->> 'match_id' = t.m(3)::text), 'fight:' || t.m(3) || ':' || t.u(4) || ':0:fight_called:in_the_hole');
 -- the same transition produced again (a retried or concurrent producer) cannot write a second row
@@ -124,7 +124,7 @@ select t.as_admin();
 update public.matches set field = 'Field 2' where id = t.m(3);
 select t.settle();
 select t.expect_eq('a fight back in the line moving field: people already alerted about it are told (both fighters)', array[t.cnt(t.u(1), 'fight_moved', 'field', 3), t.cnt(t.u(4), 'fight_moved', 'field', 3)], array[1::bigint, 1::bigint]);
-select t.expect_eq('... "Your fight changed field · It is now on Field 2"', t.words(t.u(4), 'fight_moved', 'field'), 'Your fight changed field | It is now on Field 2. Report there.');
+select t.expect_eq('... "Your fight changed Lyst · It is now on Lyst 2"', t.words(t.u(4), 'fight_moved', 'field'), 'Your fight changed Lyst | It is now on Lyst 2. Report there.');
 update public.matches set field = 'Field 3' where id = t.m(9);
 select t.settle();
 select t.expect_eq('a waiting fight nobody was alerted about changing field sends nothing', t.cnt(t.u(12), 'fight_moved'), 0::bigint);
@@ -157,8 +157,8 @@ values ('00000000-0000-0000-0000-0000000d1502', t.m(2), t.ev(1), 'device', t.u(7
 select t.expect_eq('a CONFLICT reaches the organizer and the head marshal once each', array[t.cnt(t.u(9), 'result_needs_review'), t.cnt(t.u(8), 'result_needs_review')], array[1::bigint, 1::bigint]);
 select t.expect_eq('... not the scorekeeper, not the fighters, not another event''s organizer; a duplicate result alerts nobody',
   t.cnt(t.u(7), 'result_needs_review') + t.cnt(t.u(4), 'result_needs_review') + t.cnt(t.u(10), 'result_needs_review'), 0::bigint);
-select t.expect_eq('... opens Event day, says what to do', (select route from public.notifications where user_id = t.u(9) and kind = 'result_needs_review') || ' | ' || t.words(t.u(9), 'result_needs_review'),
-  '/events/p15-e1/manage?tab=eventday | Result needs review | Two results disagree in Longsword. Open Event day to decide.');
+select t.expect_eq('... opens Live ops (through the legacy address), says what to do', (select route from public.notifications where user_id = t.u(9) and kind = 'result_needs_review') || ' | ' || t.words(t.u(9), 'result_needs_review'),
+  '/events/p15-e1/manage?tab=eventday | Result needs review | Two results disagree in Longsword. Open Live ops to decide.');
 
 -- ================================================================ 5. announcements: who may send
 select t.as_anon();

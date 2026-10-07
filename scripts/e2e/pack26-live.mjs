@@ -65,7 +65,14 @@ const label = (m) => sql(`select k.name || ' · ' || m.round_label || ' · ' || 
 const activeOn = (field) => sql(`select m.id from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state = 'active' and private.field_key(m.field) = '${field.toLowerCase()}' order by m.id limit 1`);
 const today = sql(`select (now() at time zone 'America/Edmonton')::date`);
 const day = (n) => sql(`select ('${today}'::date + ${n})::text`);
-const setDates = (start, end) => sql(`update public.events set starts_on = '${start}', ends_on = '${end}' where id = '${EV}'`);
+/** Move the event to other days. Everyone registered for the event's days moves with it (they said they could attend the event, not a calendar date): the
+ *  rehearsal plays the weeks before the weekend and the weekend itself on one database. A real organizer changing dates after registration is a product
+ *  question recorded in the work log (the planner then holds every fight because nobody is "here" on the new days; Build tournament says so). */
+const setDates = (start, end) => {
+  const from = sql(`select starts_on::text from public.events where id = '${EV}'`);
+  sql(`update public.events set starts_on = '${start}', ends_on = '${end}' where id = '${EV}'`);
+  if (from && from !== start) sql(`update public.registrations set attend_dates = array(select (d::date + ('${start}'::date - '${from}'::date))::text from unnest(attend_dates) d) where event_id = '${EV}' and attend_dates is not null and array_length(attend_dates, 1) > 0`);
+};
 
 const browser = await chromium.launch({ executablePath: process.env.CHROME ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--proxy-bypass-list=127.0.0.1;localhost'] });
 const VIEW = {
@@ -113,6 +120,7 @@ const covered = (page, root = 'main') => page.evaluate((r) => {
   const y0 = scrollY;
   const probe = () => {
     for (const e of document.querySelectorAll(`${r} button, ${r} a, ${r} input, ${r} select, ${r} summary`)) {
+      if (e.tagName !== 'SUMMARY' && e.closest('details:not([open])')) continue;   // folded away: Chromium keeps a layout box for closed <details> content
       const b = e.getBoundingClientRect(); if (b.width === 0 || b.height === 0 || b.top < 0 || b.bottom > innerHeight) continue;   // only controls wholly inside the viewport: a partly scrolled-out one is uncovered by scrolling
       const top = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
       if (top && !e.contains(top) && !top.contains(e) && getComputedStyle(top).pointerEvents !== 'none') out.add((e.getAttribute('aria-label') || e.textContent || e.tagName).trim().slice(0, 30));
@@ -328,6 +336,7 @@ try {
     check('35. insurance can be updated by the organizer (proof received for the mercenary)', ins.status < 300 && sql(`select insurance from public.registrations where id = '${regOf(53)}'`) === 'proof_received', outcome(ins));
     note('review.rosters_set', sql(`select rehearsal.set_rosters('${EV}')`));
     // the mercenary: where does the organizer see "asked to be placed"?
+    await o.locator('[aria-label="Show"] button', { hasText: /^All$/ }).click();
     await search.fill('Rook');
     await until(async () => (await o.locator('section[aria-label="Registrations"] article').count()) === 1);
     const merc = await body(o, 'section[aria-label="Registrations"] article');

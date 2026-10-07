@@ -1,4 +1,5 @@
 -- Pack 26 gate (full Rumble rehearsal, 2026-10-07): the server-side fixes of the pack, each tested as allowed and denied.
+--   2. The alert text says Lyst N for the stored Field N, like every screen (private.field_label).
 --   1. "Send me a test" always pushes: a test push is claimed even when the person switched the BuhurtOS category off (migration 20261021000100);
 --      an ordinary notification of that category is still held back by the switch.
 -- LOCAL THROWAWAY DATABASE ONLY; everything is rolled back.
@@ -65,6 +66,20 @@ select t.expect_eq('... as done', (select push_state from public.notifications w
 -- who may claim at all is unchanged
 select t.as_user('00000000-0000-0000-0000-0000000026a1');
 select t.expect_error('a signed-in person still cannot claim pushes', 'select public.push_claim(10)', '42501');
+select t.as_admin();
+
+-- ================================================================ 2. the word for a field in an alert is Lyst (private.field_label, notification_text)
+select t.as_admin();
+select t.expect_eq('the stored default Field 1 reads Lyst 1', private.field_label('Field 1'), 'Lyst 1');
+select t.expect_eq('a blank field is the default: Lyst 1', private.field_label(null), 'Lyst 1');
+select t.expect_eq('a bare number someone typed reads Lyst 10', private.field_label('10'), 'Lyst 10');
+select t.expect_eq('a lowercase key reads Lyst 2', private.field_label('field 2'), 'Lyst 2');
+select t.expect_eq('a custom name is kept as written', private.field_label('Arena A'), 'Arena A');
+select t.expect_eq('an alert says Lyst, like the screens', (select body from private.notification_text('fight_called', '{"stage": "active", "field": "Field 2"}'::jsonb)), 'Report to Lyst 2 now.');
+select t.expect_eq('... and a custom name stays the organizer''s word', (select body from private.notification_text('fight_called', '{"stage": "on_deck", "field": "Arena A"}'::jsonb)), 'Report to Arena A and be ready to fight.');
+select t.expect_eq('a moved fight says Lyst too', (select title from private.notification_text('fight_moved', '{"stage": "field", "field": "Field 1"}'::jsonb)), 'Your fight changed Lyst');
+select t.as_user('00000000-0000-0000-0000-0000000026a1');
+select t.expect_error('the label helper is private', 'select private.field_label(''Field 1'')', '42501');
 select t.as_admin();
 
 -- ================================================================ result

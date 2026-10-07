@@ -203,8 +203,9 @@ export function commandAttention(i: {
         who: due ? `${matchTitle(due)} was due ${timeLabel(due.scheduledAt!, tz)}` : null, where: fieldLabel(f.name), action: 'Open Lyst Control', href: fieldHref(L.slug, f.name) });
     }
     if (f.state === 'idle' && f.next && !f.current && L.organizer) {
+      // the organizer reads this ON Live ops: the link jumps to that Lyst's board a little further down, where "Start next ready match" is
       out.push({ id: `idle-${f.key}`, urgency: 'soon', what: `${fieldLabel(f.name)} has no fight on`, who: `Next ready: ${matchTitle(f.next)}`, where: fieldLabel(f.name),
-        action: 'Call it in Live ops', href: manageHref(L.slug, 'eventday') });
+        action: 'Start it', href: `#${boardAnchor(f.key)}` });
     }
   }
 
@@ -252,3 +253,5 @@ export function unassignedRoles(staff: readonly { role: string; names: string[] 
 }
 
 export const sameField = (a: string | null | undefined, b: string | null | undefined) => fieldKey(a) === fieldKey(b);
+/** The id of a Lyst's board on Live ops (`field 1` → `lyst-field-1`), so an attention item can jump to it. */
+export const boardAnchor = (key: string): string => `lyst-${key.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;

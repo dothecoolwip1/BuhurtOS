@@ -4,6 +4,7 @@ import { Chip } from '../ui';
 import type { CompetitionMatch } from '../../data/matches';
 import type { QueueMove } from '../../data/eventDay';
 import { matchContext, type FieldBoard, type AdvancePlan, fieldLabel } from '../../lib/eventDay';
+import { boardAnchor } from '../../lib/commandCentre';
 import { sideLabel } from '../../lib/entryLabel';
 import { timeLabel } from '../../lib/runSchedule';
 
@@ -73,7 +74,7 @@ export function FieldBoardView({ board, plan, c, next }: { board: FieldBoard; pl
   const upcoming = all ? board.upcoming : board.upcoming.slice(0, SHOWN);
   const canStart = plan.promote.length > 0;
   return (
-    <section className="ed-field" aria-label={fieldLabel(board.name)}>
+    <section className="ed-field" id={boardAnchor(board.key)} aria-label={fieldLabel(board.name)} style={{ scrollMarginTop: 72 }}>
       <h2 className="ed-field-name">{fieldLabel(board.name)}<span className="ed-count">{board.done} of {board.total} fights done</span></h2>
 
       {board.now.length > 0 ? board.now.map(m => (

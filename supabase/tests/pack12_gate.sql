@@ -116,7 +116,7 @@ select t.expect_eq('the alert is meant for the lock screen, pending, in the figh
   (select row(category, push, push_state, route) from public.notifications where user_id = t.u(1) and kind = 'fight_called')::text, '(fights,t,pending,/events/e1#my-next-fight)');
 select t.expect_eq('the alert says no more than the fighter needs (no opponent, no account data)',
   (select payload from public.notifications where user_id = t.u(1) and kind = 'fight_called') - 'match_id', jsonb_build_object('stage', 'in_the_hole', 'field', 'Field 1', 'competition_name', 'Longsword', 'event_name', 'Event One', 'event_slug', 'e1', 'ahead', 0));   -- Pack 15: + fights ahead on that field
-select t.expect_eq('lock-screen wording', (select t.title || ' | ' || t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1)), 'Your fight is coming up | Start getting ready for Longsword on Field 1.');   -- Pack 15 wording (nothing ahead on the field yet)
+select t.expect_eq('lock-screen wording', (select t.title || ' | ' || t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1)), 'Your fight is coming up | Start getting ready for Longsword on Lyst 1.');   -- Pack 15 wording (nothing ahead on the field yet)
 
 -- the same state written again (realtime churn, a second tap, advance_field_queue run twice) changes nothing and sends nothing
 select t.as_user(t.u(9));
@@ -136,7 +136,7 @@ select public.set_match_queue(t.m(1), 'on_deck');
 select t.settle();
 select t.as_admin();
 select t.expect_eq('ON DECK: one more alert each, with the field', array[t.cnt(t.u(1), 'fight_called', 'on_deck', 1), t.cnt(t.u(2), 'fight_called', 'on_deck', 1)], array[1::bigint, 1::bigint]);
-select t.expect_eq('on-deck wording says where to report (Pack 15)', (select t.title || ' | ' || t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1) and n.payload ->> 'stage' = 'on_deck'), 'You''re up next | Report to Field 1 and be ready to fight.');
+select t.expect_eq('on-deck wording says where to report (Pack 15)', (select t.title || ' | ' || t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1) and n.payload ->> 'stage' = 'on_deck'), 'You''re up next | Report to Lyst 1 and be ready to fight.');
 select t.expect_eq('a newer alert marks the older unread one for that match as read, so the list does not contradict itself', t.unread(t.u(1), 1), 1::bigint);
 
 select t.as_user(t.u(9));
@@ -144,7 +144,7 @@ select public.set_match_queue(t.m(1), 'active');
 select t.settle();
 select t.as_admin();
 select t.expect_eq('NOW: one alert each', array[t.cnt(t.u(1), 'fight_called', 'active', 1), t.cnt(t.u(2), 'fight_called', 'active', 1)], array[1::bigint, 1::bigint]);
-select t.expect_eq('now wording', (select t.title || ' | ' || t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1) and n.payload ->> 'stage' = 'active'), 'Your fight is ready | Report to Field 1 now.');   -- Pack 15 wording
+select t.expect_eq('now wording', (select t.title || ' | ' || t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1) and n.payload ->> 'stage' = 'active'), 'Your fight is ready | Report to Lyst 1 now.');   -- Pack 15 wording
 select t.expect_eq('three states, three alerts, exactly one per transition', t.cnt(t.u(1), 'fight_called', null, 1), 3::bigint);
 select t.expect_eq('the fight screen and the alert read the same column: the match really is active', (select queue_state from public.matches where id = t.m(1)), 'active');
 
@@ -184,7 +184,7 @@ select public.set_match_queue(t.m(3), 'on_deck', 'Field 2');
 select t.settle();
 select t.as_admin();
 select t.expect_eq('FIELD CHANGE of a called fight: one "your field changed" naming the new field', array[t.cnt(t.u(1), 'fight_moved', 'field', 3), t.cnt(t.u(4), 'fight_moved', 'field', 3)], array[1::bigint, 1::bigint]);
-select t.expect_eq('... saying Field 2', (select t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1) and n.payload ->> 'stage' = 'field'), 'It is now on Field 2. Report there.');   -- Pack 15 wording
+select t.expect_eq('... saying Lyst 2 (the word on every screen)', (select t.body from public.notifications n cross join lateral private.notification_text(n.kind, n.payload) t where n.user_id = t.u(1) and n.payload ->> 'stage' = 'field'), 'It is now on Lyst 2. Report there.');   -- Pack 15 wording
 select t.as_user(t.u(9));
 select public.set_match_queue(t.m(2), 'scheduled', 'Field 9');
 select t.settle();

@@ -74,7 +74,7 @@ describe('attention: only real, actionable problems', () => {
     const late = [m('m1', { queueState: 'on_deck', scheduledAt: '2026-10-10T16:30:00Z' })];
     const items = commandAttention(input(late, snap()));
     expect(items.find(i => i.id === 'behind-field 1')).toMatchObject({ what: 'Lyst 1 is 30 min behind schedule' });
-    expect(items.find(i => i.id === 'idle-field 1')).toMatchObject({ what: 'Lyst 1 has no fight on', href: '/events/rumble/control?mode=live' });
+    expect(items.find(i => i.id === 'idle-field 1')).toMatchObject({ what: 'Lyst 1 has no fight on', action: 'Start it', href: '#lyst-field-1' });
     // a fight that is on with its clock running is not "behind", even if it started late
     const running = commandAttention(input([m('m1', { queueState: 'active', scheduledAt: '2026-10-10T16:30:00Z' })], snap(), [lyst('m1', 'running')]));
     expect(running.some(i => i.id.startsWith('behind-'))).toBe(false);
