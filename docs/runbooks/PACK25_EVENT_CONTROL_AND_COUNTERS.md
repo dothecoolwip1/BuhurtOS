@@ -25,7 +25,7 @@ A tool opens inside Event Control and has a **← back** to its mode. The old ad
 ## Counters: one QR, no seats, no approval
 1. **Before the day** an organizer makes the event's **Counter QR** once: Event Control › Live ops › Counter QR › *Make the Counter QR* (also under *Counters and devices*). It is one code for every counter phone of the event. It is not a secret code to guard: it can only count.
 2. **Show it** from Live ops (organizer, head marshal, secretary), from the Lyst's **Counters** sheet (*Counter QR* tab), or from the Counters and devices tool. Any number of phones can scan it.
-3. **A counter phone**: scan → *Who is counting?* (their name, for the log) → *Which Lyst?* (only if the event has several fields) → **RED** or **BLUE** → count. The phone follows that Lyst by itself: when the Lyst opens the next fight, the phone is on it, same side. Nobody assigns a fighter.
+3. **A counter phone**: scan → *Who is counting?* (their name, for the log) → *Which Lyst?* (only if the event has several fields) → **RED** or **BLUE** → count. The phone follows that Lyst by itself: when the Lyst opens the next fight, the phone is on it, same side. Nobody assigns a fighter. Under the fight the phone lists **Last fight / Now fighting / Next fight** on that Lyst. A fight that was already on the Lyst when the clock started counts as the Lyst's fight too (Pack 25.1).
 4. **Handoff**: tap **New counter**, type the new name. Same Lyst, same side, the tally of the fight carries on; every tap carries the name of whoever held the phone.
 5. **Change side or Lyst**: the links under the count button. A phone can also be moved by staff (below).
 6. **Lost or dead phone**: scan the Counter QR on another phone. Nothing else to do.
