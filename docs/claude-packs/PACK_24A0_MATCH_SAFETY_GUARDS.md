@@ -60,7 +60,7 @@ Hosted was checked read-only on 2026-10-06. The 11 functions this branch replace
 ### 0.5 Owner decisions this leaves open
 
 1. Should marshals and the head marshal stop calling waiting fights by hand (the first 24A0 draft's rule)? Doing so contradicts the Pack 18.1 matrix, so it is not done here.
-2. Cleanup of `test-stuff-test` and `test-new-test`, including whether to tag the fighters created for them as test data (query in 0.2). Not touched.
+2. ~~Cleanup of `test-stuff-test` and `test-new-test`.~~ The owner approved full deletion as a one-time exception; both events were deleted from hosted on 2026-10-07 (section 0.8). Their fighters were kept (all four are real people with accounts or a real team membership); none was tagged as test data.
 3. ~~Applying the three migrations to hosted, after review.~~ Done 2026-10-07 (section 0.6).
 
 ### 0.6 Applying to hosted: done on 2026-10-07
@@ -146,6 +146,59 @@ Direct DELETE refusal on `matches` is proven by the grant and policy state above
 - The staff screens with a live fight: Command Centre content, the desk list, the scoring screen with Start round / End round, and marshal and scorekeeper device sessions. These need staff credentials or device codes. Creating those would be a production write, and no fight may be created for UI testing.
 
 Those screens are covered locally only (`pack24a1-live` 83/83, `pack24a0-live` 40/40, `device-live` 82/82, `pack181-live` 176/176). Physical phones and tablets: not tested.
+
+### 0.8 One-time deletion of the two test events (2026-10-07)
+
+**Decision.** The owner approved full deletion of `test-stuff-test` (`feec4fde-ea8c-4eaa-86f2-9538b5c61785`) and `test-new-test` (`1acb67d3-db5f-40a5-bce7-682e0aa6edb3`) as a one-time exception to "history is never deleted". The approval applied only to these two event UUIDs. `public.delete_event` refused both, because they were published, had fights fought and had official results. Four append-only logs refuse any DELETE.
+
+**Script.** `supabase/manual/hosted_delete_test_events_2026-10-07.sql`, run once by the owner in the Supabase SQL Editor. The Supabase MCP tool cancels SQL containing DELETE; nothing was split or routed around that.
+- One REPEATABLE READ transaction, targeted by exact UUID; slugs are checked, never pattern-matched.
+- Refuses if any other event's row references these events' rows, or if a history table whose delete guard is not bypassed has rows for them.
+- Disables exactly four triggers and re-enables them before commit: `result_revisions_no_change`, `lyst_round_revisions_no_change`, `match_discipline_guard`, `registration_inspections_append_only`. No FK, constraint, RLS or other trigger was touched, and `session_replication_role` was not used.
+- Deletes results first (`results.entry_id` is RESTRICT), then the two events (FK cascades do the rest), then the rows with no FK: the events' audit rows, record-source links and notifications. A notification is deleted only when its `event_slug` equals one of the two slugs AND every id it carries belongs to the same events.
+- Before committing it verifies: no target row left; every affected table lost exactly the expected rows; every other table's total unchanged; protected fighters, team, organization and accounts present; every trigger in its earlier state.
+
+**Local test first.** `supabase/manual/test_delete_test_events.sh` ran against a copy of the hosted rows (a read-only export with private fields replaced; not committed) plus a control copy of both events sharing the same fighters, team and accounts. All 7 cases passed: success, rerun refused, slug changed, cross-event reference, app session, failure after the deletes, and failure during the deletes while the triggers were disabled. Both failure cases rolled back fully, with all triggers enabled.
+
+**Production result (owner ran the script; verification read-only by Claude, 2026-10-07):**
+
+| Table | Deleted |
+| --- | --- |
+| score_events | 112 |
+| audit_log | 92 |
+| competitions | 21 |
+| notifications | 16 (all provably owned by `test-new-test`; none ambiguous) |
+| matches | 12 |
+| result_proposals | 11 |
+| entries | 10 |
+| push_deliveries | 6 |
+| lyst_rounds, lyst_round_revisions | 6 each |
+| results, result_revisions | 4 each |
+| lyst_matches, event_invitations, event_invitation_competitions, registration_checks, registration_competitions | 3 each |
+| events, event_staff, registrations, registration_private, match_discipline, match_discipline_private | 2 each |
+| lyst_timer, registration_inspections, event_announcements, event_sponsors, waiver_versions | 1 each |
+| **Total** | **332** (exactly the predicted figure) |
+
+- **Table counts:** all 115 tables (public, private, `auth.users`, `auth.identities`, `storage.objects`) compared with a baseline taken read-only before the run. The 28 tables above changed by exactly the predicted amounts; every other table is unchanged. Unchanged tables include fighters 124, teams 20, team memberships 124, `auth.users` 21, record sources 1006, entry_fighters 453 and results outside the events. After: events 20, competitions 122, matches 851, entries 652, results 596.
+- **Nothing left behind:** no row in any public/private table contains either event UUID or slug, except analytics page-view rows (`activity_views` 91, `activity_sessions` 12, `activity_events` 5: the visited `path`). These are visit history, not event data, and were outside the approval, so they were kept.
+- **No orphans:** none in `audit_log.event_id`, `result_revisions.entry_id`, `record_sources` entities, or notification payload ids/slugs.
+- **Protected records present:**
+  - Garrett, Odin, Taylor and Bjorn Robson
+  - Red Deer Reavers, with Bjorn's membership (4 members)
+  - the organization
+  - all 4 linked Auth accounts
+  - the 3 fighter-account links
+- **Triggers and schema:** the four bypassed triggers are enabled, and no trigger in public/private is disabled.
+  - Triggers, policies, RLS flags, grants and constraints on the 32 affected/shared tables match a build of `main` (`4298aec`).
+  - Only `notifications` differs: the `reavers_discord_membership_alert` trigger and the `club_membership_submitted` notification kind. Both come from Red Deer Reavers migrations applied on hosted on 2026-10-06/07 and are not part of this cleanup.
+- **Live site** (read-only `scripts/e2e/test-events-removed-check.mjs`, one-shot workflow run 37569077017, then removed): **16/16 passed**, signed out at 390x844.
+  - The public API returns no row for either event.
+  - Events, Calendar, homepage, Rankings and the HACSA organization page show neither event and link to neither.
+  - `/events/test-stuff-test` and `/events/test-new-test` show the 404 page.
+  - A real event (`red-deer-rumble-2026`) still loads.
+- **Not checked in the browser:** the signed-in organizer/admin lists (My events, platform Events), because the `SMOKE_X` secrets are empty. Those lists are built from the `events` table and the `my_events` / `my_event_relations` RPCs, and the underlying event, staff and registration rows no longer exist.
+- **Not deleted:** the test event's sponsor logo file in Storage (`1acb67d3-db5f-40a5-bce7-682e0aa6edb3/1791246848783.png`). Files are removed in the Storage UI, not by SQL.
+- **Replacement test event:** not created.
 
 ---
 
