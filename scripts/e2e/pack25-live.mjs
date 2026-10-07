@@ -286,8 +286,8 @@ try {
   check('66. the phone that was signed out can simply scan the QR again', (await go(p2, `/device#c=${poolCode}`), await until(async () => await has(p2, 'who is counting'), 30000)), await body(p2));
 
   // ───────────── a team fight: standing count, evidence only
-  await rpc('organizer', 'set_match_queue', { p_match: mid(41), p_state: 'active', p_order: null });
-  await go(tab.page, `${E}/field/Field%202?open=${mid(41)}&from=control`);
+  await rpc('organizer', 'set_match_queue', { p_match: mid(42), p_state: 'active', p_order: null });
+  await go(tab.page, `${E}/field/Field%202?open=${mid(42)}&from=control`);
   check('67. the group board offers counters for this fight (standing count)', await until(async () => (await tab.page.getByTestId('group-counter-rounds').count()) === 1, 30000), await body(tab.page));
   const p3 = await phone('p3');
   await go(p3, `/device#c=${poolCode}`);
@@ -305,7 +305,7 @@ try {
   await p3.getByRole('button', { name: 'Fighter down' }).click();
   check('71. the Lyst shows the standing counter as evidence on the group board', await until(async () => await has(tab.page, 'morgan'), 20000), await body(tab.page));
   await shot(tab.page, 'team-board-evidence-768');
-  check('72. counters never touch the official result: no round, no score was written by a counter', sql(`select count(*) from public.lyst_rounds where match_id = '${mid(41)}' and status = 'confirmed'`) === '0' && sql(`select result from public.matches where id = '${mid(41)}'`) === '');
+  check('72. counters never touch the official result: no round, no score was written by a counter', sql(`select count(*) from public.lyst_rounds where match_id = '${mid(42)}' and status = 'confirmed'`) === '0' && sql(`select result from public.matches where id = '${mid(42)}'`) === '');
   check('73. no page errors on the phones, the Lyst tablet, the devices tool or the platform page', [p1, p2, p3, tab.page, own.page].every(p => p.errors.length === 0), JSON.stringify([p1.errors, p2.errors, p3.errors, tab.page.errors, own.page.errors]));
 } catch (e) {
   check('script ran to the end', false, e && e.stack ? e.stack : String(e));

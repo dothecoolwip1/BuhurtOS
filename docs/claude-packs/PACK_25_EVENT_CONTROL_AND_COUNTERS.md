@@ -97,10 +97,43 @@ One additive migration, `supabase/migrations/20261020000100_pack25_counter_pool.
 Removed pages: `ManagePage`, `CommandCentrePage`, `EventHomeTab`, `EventDayTab`, `CommandEntry`. Device landing for a scorekeeper or Event Admin tablet is `control?mode=live`.
 
 ## 6. Tests
-(exact commands and results)
+All run on 2026-10-07 in this container (Linux, Node 22, Chromium 1194, Postgres 16, PostgREST 12.2.3). Nothing ran against hosted Supabase.
+
+| Command | Result |
+| --- | --- |
+| `npm run typecheck` | clean |
+| `npm test` (vitest) | 112 files passed, 6 skipped; 1403 tests passed, 6 skipped (new: `src/lib/eventPhaseView.test.ts` 6, `src/lib/eventControl.test.ts` 2; updated: `deviceRoutes`, `commandCentre`, `pushSupport`, `analytics`, `admin`, `teamManager`, `eventJourney`, `devices`, `lyst`, `deviceSession` tests) |
+| `npm run build` | clean (chunk-size warnings as before) |
+| `supabase/tests/run_all.sh` | DATABASE GATE PASSED: `pack13_gate.sql` 259 checks, `pack181_roles_gate.sql` 133 checks, allow-list check against `device_allowlist.txt` (76 entries), fingerprint matches `schema.fingerprint.txt`; every earlier suite unchanged. (Re-run at the end of the pack: see the summary line below.) |
+| CI browser scripts (mocked Supabase, built app on :4180/:4181) | `field-pack03` 28/28, `sw-update` 28/28, `pack07-ux` 89/89, `pack08-entrants` 54/54, `pack12-app` 78/78 |
+| `scripts/e2e/pack25-live.sh` (real local stack, pack13 fixture + the 5v5 fight) | **81/81** |
+| `scripts/e2e/pack13-live.sh` (Lyst Control, counter sections rewritten for the Counter QR) | first run 86/89: three wording / audit-action expectations were stale (the trainee's "never changes any score", the finished fight now reads "waiting for the next fight on this Lyst", `counter.bound` replaces `lyst.counter_assigned`); fixed in the script and re-run: RESULT_PACK13 |
+| `scripts/e2e/device-live.sh` (Pack 18.1 devices) | first run: check 22 expected the full identity bar on a counter phone (Pack 25 gives counters the compact bar); fixed in the script and re-run: RESULT_DEVICE |
+| `scripts/e2e/pack181-live.sh` | RESULT_PACK181 |
+| `scripts/e2e/cc181-live.sh` (Command Centre panels, now Live ops) | RESULT_CC181 |
+| `scripts/e2e/pack18-live.sh` (Command Centre on a realistic event, now Live ops) | RESULT_PACK18 |
 
 ## 7. Browser verification and screenshots
-(journeys, viewports, paths under `docs/reviews/assets/2026-10-07-pack25/`)
+Real stack, real Chromium; `scripts/e2e/pack25-live.mjs` is the record. Screenshots under `docs/reviews/assets/2026-10-07-pack25/`:
+
+| Journey | Screenshot(s) |
+| --- | --- |
+| Public event while LIVE (visitor, 390×844): status, dates, venue, Overview / Live / Results, per-field NOW / ON DECK / IN THE HOLE | `p25-public-live-390.png`, `p25-public-live-390-full.png` |
+| Overview and Results while live | `p25-public-overview-390.png`, `p25-public-results-390.png` |
+| Public event UPCOMING (leads with Overview, register CTA) and COMPLETED (leads with Results) | `p25-public-upcoming-390.png`, `p25-public-completed-390.png` |
+| A signed-in fighter: MY NEXT FIGHT · UP NOW first, their fight marked on the field | `p25-fighter-on-deck-390.png` |
+| Event Control › Live ops (organizer) | `p25-control-live-390.png`, `p25-control-live-390-full.png` |
+| Event Control › Set up (journey, next step, tools) and › Results | `p25-control-setup-390.png`, `p25-control-results-390.png` |
+| Live ops for the head marshal (no mode switch) | `p25-control-live-headmarshal-390.png` |
+| The Counter QR shown from Live ops | `p25-control-counter-qr-390.png` |
+| Counter phone: who → which Lyst → which side → waiting → counting → handoff → second phone (blue) → next fight followed | `p25-counter-01-who-390.png` … `p25-counter-08-next-fight-390.png` |
+| The Lyst (768): counters as evidence; the Counters sheet | `p25-lyst-evidence-768.png`, `p25-lyst-counters-sheet-768.png` |
+| Counters and devices tool; device preview (read only) | `p25-devices-tool-390.png`, `p25-devices-preview-390.png` |
+| Platform › Devices (owner) | `p25-platform-devices-390.png` |
+| Team fight: RED 5 STANDING / FIGHTER DOWN; the group board's counter evidence | `p25-team-standing-390.png`, `p25-team-board-evidence-768.png` |
+| Other viewports: public Live, Live ops and Set up at 360×800, 768×1024, 1024×768, 1280×900 | `p25-public-live-*.png`, `p25-control-live-*.png`, `p25-control-setup-*.png` |
+
+Every page above was checked for sideways scroll at its viewport and for page errors (none).
 
 ## 8. Unresolved problems
 - The Arena (public big screen) prefers Lyst official totals once a round exists; for group fights the confirmed rounds equal rounds won, so a 5v5 shows rounds, not fighters standing. Accepted for this pack.
@@ -110,3 +143,33 @@ Removed pages: `ManagePage`, `CommandCentrePage`, `EventHomeTab`, `EventDayTab`,
 
 ## 9. Hosted database and deployment
 Not applied, not deployed. The migration is additive and must be applied in order after `20261019000300`. The Edge Function `device-session` must be redeployed (it learns the `counter_pool` kind).
+
+## 10. Final handoff (the 27 items)
+
+1. **Problems found before the redesign.** One event had seven overlapping staff surfaces: the public Event page with an organizer panel, Manage with 13 tabs (four "primary" plus "More options"), Event home, Event day, the Command Centre at its own address, Build tournament and Run as separate tabs doing adjacent jobs, and device entries (CommandEntry, DeskEntry, ScorekeepingPanel) scattered on the public page. The public page mixed the fighter's own fight, registration, live fights and results in one scroll with no phase awareness. Counters needed a device code per phone, then a Lyst join QR, a seat request, operator approval and a manual fighter A/B assignment (9 steps), and a phone was bound to a fighter, so every new fight needed re-seating or a carry-over.
+2. **New public IA.** `/events/:slug` leads with its phase (Overview before, Live during, Results after); `/overview`, `/live`, `/results` are the three destinations, one tap apart in a sticky switch under a compact header (status, name, dates, venue, one primary CTA, the staff door). Live shows NOW / ON DECK / IN THE HOLE per field with the official clock and score (`LiveFields`, from `useLiveMatches` + `lyst_public_state`); MY NEXT FIGHT comes first for a signed-in fighter while live; Results is the record when complete. Phase is decided by `eventPhaseOf` in the event's time zone.
+3. **Event Control.** `/events/:slug/control`, the one staff door, phase aware: Set up (the Pack 09D journey plus the set-up tools), Live ops (the Command Centre and Event day merged: attention, fields with queue commands, workstations, Counter QR, readiness, progress, fights, broadcast, announcements, staff, device codes), Results (finalization and closeout). Tools open with `?tool=` and return to their mode. Non-organizer staff (head marshal, secretary, Event Admin tablet) get Live ops only; strangers are told plainly.
+4. **Fate of the old screens.** Event home → Set up mode (`SetupMode.tsx`). Event day → merged into Live ops (`LiveOps.tsx`). Command Centre → merged into Live ops. The 13 Manage tabs → 11 tools (`src/lib/eventControl.ts`) plus the three modes; `ManagePage.tsx`, `CommandCentrePage.tsx`, `EventHomeTab.tsx`, `EventDayTab.tsx` and `CommandEntry` are deleted. The organizer panel, scorekeeping panel and desk entry are gone from the public page (devices keep their own home, `DeviceHome`, which now points at Live ops).
+5. **Legacy routes.** `/manage?tab=…` → `legacyManageTarget(tab)` → Event Control mode + tool, carrying `match`, `competition`, `focus`, `closeout`, `created`, `notes`; `/command` → `control?mode=live` (in the device app too). Every in-app link was rewired (`commandCentre.ts`, `FieldBoardView`, `ReviewSheet`, `SetupTab`, `FightersTab`, `BuildTournamentTab`, `FinalizeTab`, `RunTab`, `MyEventsPage`, `NewEventPage`, `notificationView`, `DisciplineLogPage`, `BroadcastPanel`, `DeviceHome`); `pushSupport`, `analytics` and the admin page labels know the new address. Browser checks 23–26.
+6. **Counter architecture.** One `counter_pool` credential per event with a plaintext code (the Counter QR). Each scan opens its own `event_sessions` row (`multi = true`), never signing another out. The phone binds itself: `counter_bind(field, side, operator)` writes `counter_bindings` and creates an official seat on the field's current match (`lyst_field_current`). `lyst_open` sets the field's current match under an advisory lock and `private.counter_rebind_field` re-seats every bound phone on it (a field never binds counters to two open matches); a final match clears the field. `counter_record` writes `operator_name` on every tap. Counters are evidence only: the snapshot is frozen into `lyst_round_revisions`, never used for a score.
+7. **The Counter QR.** Made once by the organizer (Live ops › Counter QR or Counters and devices; the Lyst offers the same card and says who may make it). Shown by anyone who may score (`counter_pool_code`), from Live ops, the Lyst's Counters sheet and the devices tool. Low privilege: a pool session can only count (`bos_event_device`, allow-listed functions only).
+8. **Operator logging.** The operator name is asked once at scan (and on every handoff via NEW COUNTER); it is written on every tap (`lyst_counts.operator_name`), kept in `counter_operator_log` (append-only, previous turn closed at the handoff), readable through `counter_operator_history` ("Who held it"). The tally of the fight carries on through a handoff; nothing is reset.
+9. **Multiple counters per side.** Any number of phones per side; each is its own seat with its own tally; the Lyst lists them one by one (operator, side, tally, online, submitted). Nothing is summed, averaged or voted; the marshal's confirmed rounds are the only score (browser checks 52–56; gate `pack13_gate.sql`).
+10. **Training.** The Lyst's join code is now the training QR (`/lyst/train/:code`, 12 h): a signed-in trainee gives a name and a side, counts along, is listed apart as learning, never official, never on the public display (Pack 13 live checks 20–22, 38, 71–76).
+11. **Team fights.** `counter_input = 'standing'` for buhurt/NvN: the group board offers Start/End round for counters (`GroupCounterRounds`), a counter phone shows RED 5 STANDING / FIGHTER DOWN / UNDO (`per_side` from the category), evidence only (browser checks 67–72).
+12. **Device management.** Event Control › Counters and devices (organizer): the Counter QR, every phone signed in (operator, Lyst, side, online), Move, Device preview (read only), Who held it, Sign out, plus the Pack 18.1 device codes. Platform › Devices (owner): the same list across events. No impersonation: `move_counter_session`, `end_event_session` write with an audit entry; `device_session_preview` reads `private.counter_state_for(session, touch=false)`.
+13. **Migrations.** One, additive: `20261020000100_pack25_counter_pool.sql` (section 4). Allow-list and fingerprint regenerated.
+14. **Security.** Own session / own seat only (`private.counter_session`, `lyst_seat_for_counting`), own event (`device_ctx`), live round and round number checked by `counter_record`, final matches refuse, idempotent commands, revocation and expiry (`assert_session_alive`, 24 h after the event), public Arena shows no counter data, training seats are learning-only, the pool can only count. Directly tested in `pack13_gate.sql` (259) and `pack181_roles_gate.sql` (133) and in the browser (Pack 13 live checks 69–76).
+15. **Files changed.** `git diff --stat fcda313^..HEAD` on the branch; the main ones: `supabase/migrations/20261020000100_pack25_counter_pool.sql`, `supabase/functions/_shared/deviceSession.ts`, `src/lib/{eventPhaseView,eventControl,devices,commandCentre,deviceRoutes,pushSupport}.ts`, `src/lib/lyst/counters.ts`, `src/data/{devices,lyst,api}.ts`, `src/pages/EventWorkspace.tsx`, `src/pages/event/{EventHeader,LiveFields}.tsx`, `src/pages/control/{EventControlPage,LiveOps,SetupMode,RegistrationsTool,ProgressPanel,LegacyRedirects}.tsx`, `src/pages/lyst/CounterPage.tsx`, `src/pages/platform/PlatformDevicesPage.tsx`, `src/components/command/{CounterQrCard,DeviceSessions}.tsx`, `src/components/lyst/{CountersPanel,LystScoring}.tsx`, `src/components/scoring/GroupCounterRounds.tsx`, `src/components/DeviceBar.tsx`, `src/App.tsx`, `src/DeviceApp.tsx`, styles, tests, scripts, docs.
+16. **Tests and exact results.** Section 6.
+17. **Browser journeys verified.** Section 7 and the two live scripts (`pack25-live.mjs` 81 checks; `pack13-live.mjs` 89 checks).
+18. **Viewports.** 390×844 and 360×800 (phones), 768×1024, 1024×768, 1280×900; no sideways scroll on any page checked.
+19. **Screenshot paths.** `docs/reviews/assets/2026-10-07-pack25/p25-*.png` (40 files; section 7).
+20. **Known limitations.** Section 8.
+21. **Incomplete.** Nothing in the requested scope is left unbuilt. The other local-only live scripts (rumble, pack09d, pack23r, finalize, …) had their addresses rewritten but were not re-run.
+22. **Not verified.** Physical phones/tablets, iOS Safari, a real camera scan, hosted Supabase (Auth, Realtime, the deployed Edge Function), production data.
+23. **Production database touched?** No. Nothing was applied to hosted Supabase.
+24. **Deployed?** No.
+25. **Accessibility.** RED/BLUE are words as well as colours on every counter screen, the Lyst's evidence lists and the device rows; buttons carry `aria-label`s; the live field list is `aria-live="polite"`; the official score has a spoken label; the counter's standing number is an `<output>`.
+26. **Documentation.** This file; `docs/runbooks/PACK25_EVENT_CONTROL_AND_COUNTERS.md`; superseded notes on Packs 09A, 09D, 13, 18, 18.1 (Command Centre, Devices); runbooks `PACK181_DEVICES.md`, `PACK13_REAL_DEVICE_CHECKLIST.md`, `PACK181_REHEARSAL_CHECKLIST.md`; `STATUS.md`.
+27. **Hosted rollout, when the owner decides.** Apply the migration after `20261019000300` (SQL Editor or CLI; it holds `drop function` and constraint changes, which the hosted migration tool refuses), redeploy `device-session`, make the Counter QR once per event, hand the staff tablets their codes as before.

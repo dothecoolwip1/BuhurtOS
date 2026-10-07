@@ -190,7 +190,7 @@ try {
   check('20. four phones scanned the one QR and chose Red or Blue themselves; nobody is pending, nobody was seated by hand', await waitDb(seatRows, 'Counter Ash:a:official,Counter Birch:a:official,Counter Cedar:b:official,Counter Dune:b:official,Counter Elm:a:learning', 30000) === 'Counter Ash:a:official,Counter Birch:a:official,Counter Cedar:b:official,Counter Dune:b:official,Counter Elm:a:learning' && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '0', seatRows());
   check('21. 4 official counters (Ash, Birch on Aldric; Cedar, Dune on Brann) and 1 learner on the same fight; every one is its own evidence', sql(`select count(*) from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}' and role = 'official'`) === '4' && sql(`select count(*) from public.event_sessions where ended_at is null and multi`) === '4');
   for (const p of Object.values(phones)) await p.getByText(/Aldric Stone|Brann Oakley/).first().waitFor({ timeout: 30000 });
-  check('22. a counter\'s phone: the fighter, their side in words, who is counting, and a huge COUNT button', (await has(phones.ash, 'Aldric Stone')) && (await has(phones.ash, 'Counting')) && (await has(phones.ash, 'Red')) && (await has(phones.ash, 'Counter Ash')) && (await has(phones.elm, 'never changes a score')), (await body(phones.ash)) + ' || ' + (await body(phones.elm)));
+  check('22. a counter\'s phone: the fighter, their side in words, who is counting, and a huge COUNT button', (await has(phones.ash, 'Aldric Stone')) && (await has(phones.ash, 'Counting')) && (await has(phones.ash, 'Red')) && (await has(phones.ash, 'Counter Ash')) && (await has(phones.elm, 'never changes any score')), (await body(phones.ash)) + ' || ' + (await body(phones.elm)));
   const big = await phones.ash.getByRole('button', { name: 'Count one point, arm leg or hand' }).boundingBox();
   check('23. the COUNT button is big (at least 150 px tall) and in thumb reach', big && big.height >= 150 && big.y + big.height > 450, JSON.stringify(big));
   await shot(phones.ash, '05-counter-phone');
@@ -325,7 +325,7 @@ try {
   await fix.click();
   await waitDb(() => roundRow(1, 1), 'confirmed:7-5', 12000);
   check('52. the correction is official, and the audit trail keeps the old numbers and the reason', official(1) === '7-5,6-4' && sql(`select previous_a || '-' || previous_b || ' ' || reason from public.lyst_round_revisions where match_id = '${mid(1)}' and round_no = 1 and kind = 'correct'`) === '6-5 Marshal re-counted after the break');
-  check('53. the audit log names the people and actions (timer, counters, rounds, discipline)', Number(sql(`select count(distinct action) from public.audit_log where event_id = '${EVENT}' and action in ('lyst.timer','lyst.counter_assigned','lyst.round_confirmed','lyst.round_corrected','lyst.discipline','lyst.discipline_voided','lyst.join_code','lyst.settings')`)) === 8);
+  check('53. the audit log names the people and actions (timer, counters, rounds, discipline)', Number(sql(`select count(distinct action) from public.audit_log where event_id = '${EVENT}' and action in ('lyst.timer','counter.bound','lyst.round_confirmed','lyst.round_corrected','lyst.discipline','lyst.discipline_voided','lyst.join_code','lyst.settings')`)) === 8);
   check('54. NO notification was created or changed by anything Lyst Control did (count unchanged since the queue was called)', notifCount() === notifBefore, `${notifBefore} -> ${notifCount()}`);
   check('55. the lyst never touched the queue: the match is still the active one', sql(`select queue_state from public.matches where id = '${mid(1)}'`) === 'active');
 
@@ -341,7 +341,7 @@ try {
   check('59. the finish stopped the Field 1 clock; Field 2 is untouched', /^idle:/.test(timerRow('field 1')) && /^running:/.test(timerRow('field 2')), `${timerRow('field 1')} / ${timerRow('field 2')}`);
   check('60. [tv] the result shows with the winner, then the display moves on', await waitFor(tv, () => /result/i.test(document.querySelector('.ar-main')?.innerText ?? '') && /Winner/i.test(document.querySelector('.ar-main')?.innerText ?? ''), null, 30000), await arenaText());
   await shot(tab, '11-official'); await shot(tv, '23-tv-result');
-  check('61. the counters\' phone says the fight is finished and COUNT is disabled', await waitFor(phones.ash, () => /finished/i.test(document.querySelector('.cp-msg')?.textContent ?? '') && document.querySelector('.cp-weighted button')?.disabled === true, null, 20000), await body(phones.ash));
+  check('61. the counters\' phone leaves the finished fight by itself (waiting for the next one on this Lyst) and COUNT is disabled', await waitFor(phones.ash, () => /finished|waiting for the next fight/i.test(document.querySelector('.cp-msg')?.textContent ?? '') && document.querySelector('.cp-count, .cp-weighted button')?.disabled === true, null, 20000), await body(phones.ash));
 
   // ================================================================ 10. NEXT FIGHT: the phones follow the Lyst by themselves (bound to the field and side, never to a fighter)
   await tab.getByRole('button', { name: /Next fight on Field 1/ }).click();

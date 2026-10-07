@@ -787,3 +787,19 @@ Full account: `PACK_24A0_MATCH_SAFETY_GUARDS.md` sections 0.6 and 0.7, and the s
 | Not verified | physical phone/tablet, iOS Safari safe areas and keyboard (keyboard simulated by a smaller viewport), real Supabase Auth/realtime, landscape phone |
 | Left for later packs | field queue title and sync wording duplicated by the header; tall readiness strip on phones; desk filter row scrolls sideways on phones; whether Event day/Run/secretary controller become focus screens (24A4) |
 
+
+## Pack 25: Event Control and the Counter QR (2026-10-07)
+
+Branch `ccr-cf597ddb-ehfkck`. Read `PACK_25_EVENT_CONTROL_AND_COUNTERS.md` (the full handoff) and `docs/runbooks/PACK25_EVENT_CONTROL_AND_COUNTERS.md` (the day-of sheet).
+
+| | |
+| --- | --- |
+| Status | REPO COMPLETE. HOSTED MIGRATION NOT APPLIED. NOT DEPLOYED. |
+| Commits | see `git log` on the branch (Pack 25 commits from `fcda313`) |
+| Migrations added | `supabase/migrations/20261020000100_pack25_counter_pool.sql` (additive; after `20261019000300`); `supabase/tests/device_allowlist.txt` and `supabase/schema.fingerprint.txt` regenerated |
+| Hosted database | NOT touched. The Edge Function `device-session` must be redeployed with the migration (it learns the `counter_pool` kind). |
+| Deployment | none |
+| Automated tests | `npm run typecheck` clean; `npm test` 1403 passed, 6 skipped; `npm run build` clean; `supabase/tests/run_all.sh` DATABASE GATE PASSED (pack13_gate 259 checks, pack181_roles_gate 133 checks, the rest unchanged); CI browser scripts against a mocked Supabase: field-pack03 28/28, sw-update 28/28, pack07-ux 89/89, pack08-entrants 54/54, pack12-app 78/78 |
+| Browser verification (real local stack: Postgres + PostgREST + the device-session function + the built app, Chromium) | `scripts/e2e/pack25-live.sh` 81/81 (public views by phase, fighter on deck, Event Control modes and tools, legacy redirects, workstation Exit, roles, Counter QR, counter phones, handoff, second phone, auto-follow, Lyst evidence, device management, platform devices, team standing count; 390×844, 360×800, 768×1024, 1024×768, 1280×900). `pack13-live`, `device-live`, `pack181-live`, `cc181-live`, `pack18-live` re-run after the address change: see `PACK_25_EVENT_CONTROL_AND_COUNTERS.md` §6. |
+| Screenshots | `docs/reviews/assets/2026-10-07-pack25/` (`p25-*.png`) |
+| Not verified | physical phones and tablets, iOS Safari, hosted Supabase (auth, realtime, the deployed Edge Function), a real camera scanning the QR |

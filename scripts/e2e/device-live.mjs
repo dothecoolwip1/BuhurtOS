@@ -175,7 +175,8 @@ try {
   for (const [key, label, role] of DEVICES) {
     const bar = await text(P[key], '[data-testid="device-bar"]');
     const lo = bar.toLowerCase();
-    const ok = lo.includes('test stuff test') && lo.includes('temporary device') && lo.includes(label.toLowerCase()) && lo.includes(ROLE[role].toLowerCase()) && lo.includes(`access ends ${ENDS}`.toLowerCase()) && /sign out this device/i.test(bar);
+    // Pack 25: a counter phone has the compact one-line bar (event · label · role · access ends · Sign out), without the "Temporary Device" tag
+    const ok = lo.includes('test stuff test') && (role === 'counter' || lo.includes('temporary device')) && lo.includes(label.toLowerCase()) && lo.includes(ROLE[role].toLowerCase()) && lo.includes(`access ends ${ENDS}`.toLowerCase()) && (role === 'counter' ? /sign out/i.test(bar) : /sign out this device/i.test(bar));
     if (!ok) { barOk = false; barDetail.push(`${key}: ${bar}`); }
   }
   check(`22. every device shows its identity bar: event, "Temporary Device", its label, "Role: ...", "Access ends ${ENDS}" in the EVENT's time zone, and Sign out`, barOk, barDetail.join(' || '));
@@ -230,6 +231,7 @@ try {
   check('42. the Event Admin device opens Live ops too', await (async () => { await P.admin.goto(BASE + COMMAND); return until(async () => /needs attention/i.test(await text(P.admin, '.cmd-centre')), 30000); })(), await text(P.admin));
   await P.admin.goto(BASE + CHECKIN);
   await P.admin.waitForSelector('.desk-counts', { timeout: 30000 }).catch(() => undefined);
+  await until(async () => /[1-9]\d* expected/.test(await text(P.admin, '.desk-counts')), 20000);
   const counts = await text(P.admin, '.desk-counts');
   check('43. the Event Admin / Temporary Organizer opens the CHECK-IN DESK: 4 expected, readiness counts, cards of fighters', /4 expected/.test(counts) && (await P.admin.locator('article.desk-card').count()) >= 1, counts + ' / ' + (await text(P.admin)).slice(0, 300));
   await shot(P.admin, '07-admin-checkin');
@@ -269,32 +271,32 @@ try {
   await P.marshal.getByRole('button', { name: /Score Aldric Stone against Brann Oakley/ }).click();
   await P.marshal.waitForSelector('.ly-timer', { timeout: 30000 });
   check('54. the marshal device opens the fight on the Lyst screen (a duel)', (await P.marshal.locator('.ly-timer').count()) === 1, await text(P.marshal));
+  // Pack 25: no join code, no seat request, no seating. The marshal can show the event's Counter QR; a counter device binds itself to a Lyst and a side.
   await P.marshal.getByRole('button', { name: /^Counters/ }).click();
-  await P.marshal.getByRole('dialog').getByRole('button', { name: 'Show join code' }).click();
-  await P.marshal.getByRole('dialog').locator('.ly-code').waitFor({ timeout: 15000 });
-  const joinCode = (await P.marshal.getByRole('dialog').locator('.ly-code').innerText()).trim();
-  check('55. the MARSHAL device shows a join code for the field', /^[A-Z0-9]{10}$/.test(joinCode), joinCode);
+  await P.marshal.getByRole('dialog').getByTestId('counters-tab-qr').click();
+  const qrSeen = await P.marshal.getByRole('dialog').getByTestId('counter-qr').waitFor({ timeout: 15000 }).then(() => true, () => false);
+  check('55. the MARSHAL device can open the Counter QR card for the event (a pool is made by the organizer; the marshal only shows it)', qrSeen && /Counter QR|no Counter QR yet/i.test(await text(P.marshal, '[data-testid="counter-qr"]')), await text(P.marshal, '[role=dialog]'));
   await P.marshal.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
   await P.counter1.goto(BASE + '/lyst/counter');
-  await P.counter1.waitForSelector('#cp-code', { timeout: 20000 });
-  await P.counter1.fill('#cp-code', joinCode);
-  await P.counter1.getByRole('button', { name: 'Join', exact: true }).click();
-  const waiting = await P.counter1.getByText(/Waiting for the lyst to seat you/).waitFor({ timeout: 30000 }).then(() => true, () => false);
-  check('56. the COUNTER device types the code: it is only PENDING ("Waiting for the lyst to seat you"); a code grants nothing by itself', waiting && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '1', await text(P.counter1));
-  await shot(P.counter1, '09-counter-waiting');
-  // the Secretary device seats it
+  await P.counter1.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
+  await P.counter1.fill('#cp-name', 'Pat');
+  await P.counter1.getByRole('button', { name: 'Continue' }).click();
+  await P.counter1.getByRole('button', { name: /Field 1/ }).click();
+  await P.counter1.getByRole('button', { name: /RED/ }).click();
+  const bound = await until(async () => sql(`select string_agg(role || ':' || side || ':' || display_name, ',') from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}'`) === 'official:a:Pat', 30000);
+  check('56. the COUNTER device (its own Pack 18.1 code) says who holds it, picks Field 1 and RED and is on the fight at once: no pending seat, no approval', bound && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '0', await text(P.counter1));
+  await shot(P.counter1, '09-counter-bound');
+  // the Secretary device sees it as evidence
   await P.secretary.goto(BASE + FIELD1); await P.secretary.waitForSelector('.fq-row', { timeout: 30000 });
   await P.secretary.getByRole('button', { name: /Score Aldric Stone against Brann Oakley/ }).click();
   await P.secretary.waitForSelector('.ly-timer', { timeout: 30000 });
   await P.secretary.getByRole('button', { name: /^Counters/ }).click();
-  const seatGroup = P.secretary.getByRole('dialog').getByRole('group', { name: /^Seat Counter Phone 1$/ });
-  await seatGroup.waitFor({ timeout: 30000 });
-  check('57. the SECRETARY device sees the pending counter by the device\'s label ("Counter Phone 1"), not a person\'s name', true);
-  await seatGroup.getByRole('button', { name: 'Counts Aldric Stone' }).click();
-  check('58. the Secretary seats it: an official counter for Aldric (slot A) on the server', await until(async () => sql(`select string_agg(slot || ':' || role || ':' || side, ',') from public.lyst_counter_seats where status = 'active'`) === 'A:official:a'), sql(`select string_agg(slot || ':' || role || ':' || side || ':' || status, ',') from public.lyst_counter_seats`));
+  const row = P.secretary.getByRole('dialog').getByTestId('counter-row').filter({ hasText: 'Pat' });
+  check('57. the SECRETARY device sees the counter by the name its holder gave ("Pat"), under the Red corner, online', await row.waitFor({ timeout: 30000 }).then(() => true, () => false) && /online/i.test(await row.innerText()), await text(P.secretary, '[role=dialog]'));
+  check('58. on the server it is an official counter on Aldric\'s side, created by the phone itself', sql(`select string_agg(role || ':' || side, ',') from public.lyst_counter_seats where status = 'active'`) === 'official:a');
   await P.secretary.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
   await P.marshal.getByRole('button', { name: /Start round 1/ }).click();
-  check('59. the marshal starts round 1; the counter\'s phone shows its fighter, its slot and a COUNT button that is live', await until(async () => /counting · A/i.test(await text(P.counter1)) && /aldric stone/i.test(await text(P.counter1)), 30000) && await until(async () => (await P.counter1.getByRole('button', { name: 'Count two points, head or torso' }).isEnabled()), 20000), await text(P.counter1));
+  check('59. the marshal starts round 1; the counter\'s phone shows its fighter, its side and a COUNT button that is live', await until(async () => /counting/i.test(await text(P.counter1)) && /red/i.test(await text(P.counter1)) && /aldric stone/i.test(await text(P.counter1)), 30000) && await until(async () => (await P.counter1.getByRole('button', { name: 'Count two points, head or torso' }).isEnabled().catch(() => false)), 20000), await text(P.counter1));
   const plus2 = P.counter1.getByRole('button', { name: 'Count two points, head or torso' }), plus1 = P.counter1.getByRole('button', { name: 'Count one point, arm leg or hand' });
   await plus2.click(); await plus2.click(); await plus1.click();
   const seatTotal = () => sql(`select coalesce((select private.lyst_seat_total(s.id, 1) from public.lyst_counter_seats s where s.status = 'active' and s.match_id = '${mid(1)}' limit 1), 0)`);
