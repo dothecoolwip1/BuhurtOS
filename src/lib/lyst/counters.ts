@@ -89,6 +89,15 @@ export function counterBanner(state: {
   return state.counter_input === 'standing' ? 'Tap FIGHTER DOWN each time one of your side goes down.' : 'Tap COUNT for every valid strike.';
 }
 
+/** The three lines a counter sees under the fight: "Last fight", "Now fighting", "Next fight". A finished fight carries its official score. */
+export function fightLine(f: { a: string | null; b: string | null; result?: string | null; score_a?: number | null; score_b?: number | null } | null | undefined): string | null {
+  if (!f) return null;
+  const names = `${f.a ?? 'Fighter'} vs ${f.b ?? 'Fighter'}`;
+  if (f.score_a == null || f.score_b == null) return names;
+  const score = `${f.score_a}-${f.score_b}`;
+  return f.result === 'draw' ? `${names} · ${score} draw` : f.result === 'a' || f.result === 'b' ? `${names} · ${score} to ${f.result === 'a' ? f.a ?? 'Red' : f.b ?? 'Blue'}` : `${names} · ${score}`;
+}
+
 /** One tap per valid strike, or two buttons (+2 head/torso, +1 limbs) where the ruleset scores that way; group fights count fighters standing. 'auto' follows the category. */
 export function counterInputFor(category: string, setting: 'auto' | 'simple' | 'weighted' | undefined, league?: string): 'simple' | 'weighted' | 'standing' {
   if (league === 'buhurt' || /^\d+v\d+$/.test(category)) return 'standing';

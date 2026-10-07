@@ -586,5 +586,35 @@ select t.expect_eq('every public lyst function sets an empty search path (no pat
   (select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace and p.prosecdef and (p.proname like 'lyst\_%' or p.proname like 'counter\_%' or p.proname in ('create_lyst_join_code','join_training_counter','end_counter_seat','set_lyst_settings','move_counter_session','end_event_session','device_session_preview'))
      and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')), 0::bigint);
 
+-- ================================================================ 14. a fight opened BEFORE Pack 25 (its Lyst row and clock, no lyst_field_current): counters still find it; the clock makes it current; last / now / next
+select t.as_admin();
+insert into public.matches (id, competition_id, stage, round_label, position, field, entry_a, entry_b, queue_state) values
+  (t.m(6), '00000000-0000-0000-0000-00000000b102', 'round_robin', 'Round 3', 0, 'Field 3', '00000000-0000-0000-0000-00000000ee05', '00000000-0000-0000-0000-00000000ee06', 'active'),
+  (t.m(7), '00000000-0000-0000-0000-00000000b102', 'round_robin', 'Round 4', 1, 'Field 3', '00000000-0000-0000-0000-00000000ee06', '00000000-0000-0000-0000-00000000ee05', 'on_deck');
+insert into t.ph select 26, t.open(50, 'ip-p26', 76);
+select t.as_user(t.u(87));
+select public.lyst_open(t.m(6), 'simple');
+select t.tc(87, 'Field 3', 6, -1, 'start', 'fight', 60000, 1);
+select t.as_admin();
+delete from public.lyst_field_current where match_id = t.m(6);   -- exactly the state of every fight opened before the Pack 25 migration
+select t.expect_eq('a fight with only its Lyst row and its clock is still the field''s current fight', private.field_current_match(t.e1(), 'field 3'), t.m(6));
+select t.as_device(t.u(26));
+select t.expect_eq('phone 26 binds to that field: seated on the fight at once, counting allowed', (public.counter_bind('Field 3', 'a', 'Fern') -> 'seat' ->> 'match_id') || '|' || (public.counter_state() ->> 'waiting') || '|' || (public.counter_state() ->> 'can_count'), t.m(6)::text || '|false|true');
+select t.expect_eq('... and its tap counts on that fight', t.cr(26, 1) ->> 'total', '1');
+select t.as_device(t.u(26));
+select t.expect_eq('the phone sees NOW and NEXT on its field (names only)', (public.counter_state() -> 'fights' -> 'now' ->> 'a') || ' vs ' || (public.counter_state() -> 'fights' -> 'now' ->> 'b') || ' / next ' || (public.counter_state() -> 'fights' -> 'next' ->> 'match_id'), 'Fighter 5 vs Fighter 6 / next ' || t.m(7)::text);
+select t.expect_eq('no fight has finished on this field yet: LAST is empty', (public.counter_state() -> 'fights' -> 'last')::text, 'null');
+select t.expect_eq('the fights block carries no counter, seat, account or score of a running fight', (public.counter_state() -> 'fights')::text ~* 'seat|operator|tally|user_id|count', false);
+-- the marshal's clock makes the fight the field's current one (the row is written, the bound phones seated), with its own audit entry
+select t.as_admin();
+delete from public.lyst_field_current where match_id = t.m(6);
+update public.lyst_counter_seats set status = 'ended', decided_at = clock_timestamp() where user_id = t.u(26) and status = 'active';
+select t.tc(87, 'Field 3', 6, -1, 'pause');
+select t.as_admin();
+select t.expect_eq('the clock on a Lyst fight makes it the field''s current fight (audited as such)', (select count(*) from public.lyst_field_current where match_id = t.m(6) and field_key = 'field 3') || '|' || (select count(*) from public.audit_log where event_id = t.e1() and action = 'lyst.field_current' and subject = t.m(6)::text and details ->> 'source' = 'timer'), '1|1');
+select t.expect_eq('... and the bound phone was seated on it again', (select count(*) from public.lyst_counter_seats where user_id = t.u(26) and match_id = t.m(6) and status = 'active'), 1::bigint);
+select t.expect_eq('the clock on a finished fight changes nothing', (select count(*) from public.lyst_field_current where match_id = t.m(4)), 0::bigint);
+select t.expect_eq('the new trigger and helpers are private (no client role may call them)', (select count(*) from pg_proc p where p.pronamespace = 'private'::regnamespace and p.proname in ('field_fights', 'lyst_timer_field_current', 'field_current_match') and (has_function_privilege('authenticated', p.oid, 'execute') or has_function_privilege('anon', p.oid, 'execute'))), 0::bigint);
+
 select 'PACK13 GATE PASSED ' || count(*) || ' checks' from t.log;
 rollback;

@@ -94,6 +94,8 @@ export const saveLystSettings = (eventId: string, settings: Partial<LystSettings
  * never an official score, never an account id.
  */
 export interface CounterField { key: string; label: string; open: boolean }
+/** One fight on the phone's field, names only: what the public Live view shows anyway. */
+export interface CounterFight { match_id: string; a: string | null; b: string | null; competition: string | null; round_label: string | null; result?: string | null; score_a?: number | null; score_b?: number | null; state?: string | null }
 export interface CounterState {
   kind: 'device' | 'training';
   session_id?: string | null; device_label?: string | null;
@@ -107,7 +109,10 @@ export interface CounterState {
   match_id?: string | null; competition?: string | null; round_label?: string | null; final?: boolean; fighter?: string | null; opponent?: string | null;
   counter_input?: CounterInput; per_side?: number | null; standing?: number | null;
   round?: { no: number; status: 'running' | 'confirming' | 'confirmed' } | null; my_total?: number; submitted?: boolean; can_count?: boolean;
-  timer?: (LystTimer & { now_remaining_ms: number }) | null; server_now: string;
+  timer?: (LystTimer & { now_remaining_ms: number }) | null;
+  /** The field's last finished fight, the one on now and the next in its running order (null each when there is none). */
+  fights?: { last: CounterFight | null; now: CounterFight | null; next: CounterFight | null } | null;
+  server_now: string;
 }
 export async function fetchCounterState(): Promise<{ state: CounterState; sentAt: number; receivedAt: number }> {
   const sentAt = Date.now();
