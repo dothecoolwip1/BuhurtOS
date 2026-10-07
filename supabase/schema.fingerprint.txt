@@ -1868,7 +1868,7 @@ function private.counter_log_operator(p_session uuid, p_event uuid, p_name text,
 function private.counter_rebind_field(p_event uuid, p_key text, p_match uuid) secdef=true 3957313a223403526a1bf2aaea4dbbfc
 function private.counter_seat_create(p_event uuid, p_key text, p_user uuid, p_name text, p_match uuid, p_side text, p_role text) secdef=true f4f60872e82ea775b69f42a035618b34
 function private.counter_session() secdef=true 91fbb04b8336cef890df6ca8132b6c5f
-function private.counter_state_for(p_sub uuid, p_touch boolean) secdef=true a77cb61853745a54a07b365d0d72dc83
+function private.counter_state_for(p_sub uuid, p_touch boolean) secdef=true f6ca3f8bd49f2cda06196fd77969004b
 function private.desk_registration(p_reg uuid) secdef=true 6ed7235eaeb8726033676520c273fcd0
 function private.device_credential_expiry(p_credential uuid) secdef=true 5343c07fa8137052c09eb2fa124d4844
 function private.device_ctx() secdef=true c2a3e3b16122826b1f6cd0f707727c1c
@@ -1917,7 +1917,8 @@ function private.event_sanction_guard() secdef=false c116fe00746a58f123b6c42d27e
 function private.event_staff_active(p_event uuid) secdef=true 71026b1be397979811ad4b73690bfba0
 function private.events_lifecycle_guard() secdef=true 88bfa82eb0351953860439fe74d20c4f
 function private.events_lock_guard() secdef=true 082e9ecafa11f83ff71f75f34dc4e64e
-function private.field_current_match(p_event uuid, p_key text) secdef=true ab769c83a6cb3246ad4e1afdf9ff4903
+function private.field_current_match(p_event uuid, p_key text) secdef=true 61572f9dd6cbbe934fdf309a526bd58e
+function private.field_fights(p_event uuid, p_key text) secdef=true b25517bbffc88d6aeab63a1940bf0d19
 function private.field_key(p_field text) secdef=false ade521fb30ab90007c974949ffdfd761
 function private.fighter_home_team(p_fighter uuid) secdef=true 4886031aee1f8c3c3878937f6eaee00f
 function private.fighter_users(p_fighter uuid) secdef=true 7eef641048c945f97d5412bbf42561ce
@@ -1957,6 +1958,7 @@ function private.lyst_seat_for_counting(p_seat uuid, p_round integer, p_need_run
 function private.lyst_seat_total(p_seat uuid, p_round integer) secdef=true 22d4f3bb5dd56076cb2a354aec4cd98b
 function private.lyst_settings_for(p_event uuid) secdef=true 57956c189bcd8c035bebd07023cf55da
 function private.lyst_side_name(p_entry uuid) secdef=true 398aeeef894bfda31a76870212d810d1
+function private.lyst_timer_field_current() secdef=true df19407e6771e4e4c8e8585ae8db625e
 function private.lyst_timer_json(t lyst_timer) secdef=false 673688cd560b7b896e48e8bd8efce7cf
 function private.match_discipline_fill() secdef=true ab2df12524efb4dd6f2e95c6f96b185b
 function private.match_history_reason(p_match uuid) secdef=true af10b66136fce7f114269a325f847793
@@ -2811,6 +2813,7 @@ trigger public.fighters fighters_discipline_delete_guard 5b89e8fb7634527dd7ce9a9
 trigger public.fighters fighters_profile_check e7e82807a0fa9ec51263909bf9a9392c
 trigger public.lyst_counts lyst_counts_no_change e580546fd84cecba5dc4c460fe1e8858
 trigger public.lyst_round_revisions lyst_round_revisions_no_change d680c171e0bffd9bd5a4f6f18a0d1814
+trigger public.lyst_timer lyst_timer_field_current 7a9e995ba67214ffe238ad354b462254
 trigger public.match_discipline match_discipline_fill 52a73410e50f54e4edd7cedf95fb2f79
 trigger public.match_discipline match_discipline_guard 5d5e823503013f074fd831af9f11d373
 trigger public.match_discipline_rules match_discipline_rules_guard 4a59787a2d314c470ea5d1ba152e775e

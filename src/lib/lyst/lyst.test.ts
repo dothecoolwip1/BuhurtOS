@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_PRESETS, ServerClock, formatClock, nextMode, presetOf, remainingMs, timerFor, timerTone, timerWord, type LystTimer } from './timer';
 import { leadRule, roundSeconds, activeDiscipline, allRoundsConfirmed, bump, clampScore, currentRound, describeDiscipline, disciplineCounts, entryStart, hasDq, isChange, officialTotals, resultSupportedByTotals, type LystRound } from './rounds';
-import { JOIN_CODE_LENGTH, TapQueue, counterBanner, counterInputFor, flushTaps, nextStep, onlyField, parseJoinCode, sideLabel, standingLeft, trainingUrl, type CountAction } from './counters';
+import { JOIN_CODE_LENGTH, TapQueue, counterBanner, counterInputFor, fightLine, flushTaps, nextStep, onlyField, parseJoinCode, sideLabel, standingLeft, trainingUrl, type CountAction } from './counters';
 
 const T0 = Date.parse('2026-10-07T12:00:00.000Z');
 const timer = (o: Partial<LystTimer> = {}): LystTimer => ({ event_id: 'e', field_key: 'field 1', match_id: 'm', round_no: 1, mode: 'fight', status: 'running', duration_ms: 60000, remaining_ms: 60000, started_at: new Date(T0).toISOString(), rev: 1, ...o });
@@ -238,5 +238,16 @@ describe('counter phone', () => {
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'confirming' } })).toMatch(/confirming/i);
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'running' }, can_count: true })).toMatch(/tap count/i);
     expect(counterBanner({ seat: { status: 'active' }, round: { status: 'running' }, can_count: true, counter_input: 'standing' })).toMatch(/fighter down/i);
+  });
+});
+
+describe('fightLine: last / now / next on the counter phone', () => {
+  it('names the two sides, and the official score of a finished fight with who it went to', () => {
+    expect(fightLine(null)).toBeNull();
+    expect(fightLine({ a: 'Odin Robson', b: 'Bjorn Robson' })).toBe('Odin Robson vs Bjorn Robson');
+    expect(fightLine({ a: 'Odin Robson', b: 'Bjorn Robson', result: 'a', score_a: 3, score_b: 1 })).toBe('Odin Robson vs Bjorn Robson · 3-1 to Odin Robson');
+    expect(fightLine({ a: 'Odin Robson', b: 'Bjorn Robson', result: 'b', score_a: 1, score_b: 2 })).toBe('Odin Robson vs Bjorn Robson · 1-2 to Bjorn Robson');
+    expect(fightLine({ a: 'Odin Robson', b: 'Bjorn Robson', result: 'draw', score_a: 2, score_b: 2 })).toBe('Odin Robson vs Bjorn Robson · 2-2 draw');
+    expect(fightLine({ a: null, b: 'Bjorn Robson' })).toBe('Fighter vs Bjorn Robson');
   });
 });

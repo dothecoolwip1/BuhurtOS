@@ -174,6 +174,7 @@
 .cp-lyst{font:700 13px/1 var(--f-data);letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;background:var(--raised);border:1px solid var(--line)}
 .cp-op{font-weight:600;font-size:14px;color:var(--muted);overflow-wrap:anywhere}
 .cp-ctx,.cp-vs{margin:0}
+.cp-fights{margin:.35rem 0 0;display:grid;gap:.15rem;font-size:.9rem}.cp-fights div{display:grid;grid-template-columns:7.5rem 1fr;gap:.5rem;align-items:baseline}.cp-fights dt{margin:0;font:600 .7rem/1.2 var(--mono,ui-monospace,monospace);letter-spacing:.06em;text-transform:uppercase;color:var(--muted,#8a8f98)}.cp-fights dd{margin:0;overflow-wrap:anywhere}.cp-fights .is-now dd{font-weight:600}
 .cp-fighter-wait{color:var(--muted)}
 .cp-on-a .cp-count{background:#B42318;box-shadow:0 8px 0 #7a1710}
 .cp-on-b .cp-count{background:#2C4A8C;box-shadow:0 8px 0 #1b2f5c}

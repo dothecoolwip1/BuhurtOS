@@ -7,7 +7,7 @@ import { isDeviceMode, storedWhoami } from '../../lib/deviceSession';
 import { classifyRpcError } from '../../lib/scoreSender';
 import { friendlyError } from '../../lib/friendlyError';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
-import { TapQueue, counterBanner, flushTaps, nextStep, onlyField, parseJoinCode, sideLabel, standingLeft, type CountAction, type CounterSend, type CounterStep } from '../../lib/lyst/counters';
+import { TapQueue, counterBanner, flushTaps, nextStep, onlyField, parseJoinCode, sideLabel, standingLeft, type CountAction, type CounterSend, type CounterStep, fightLine } from '../../lib/lyst/counters';
 import { formatClock, remainingMs } from '../../lib/lyst/timer';
 import { useCounterState, useNow } from '../../lib/lyst/useLystState';
 
@@ -336,6 +336,13 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         {state.competition && <p className="src cp-ctx">{state.competition}{state.round_label ? ` · ${state.round_label}` : ''}</p>}
         {state.fighter ? <h1 className="cp-fighter" data-testid="cp-fighter">{state.fighter}</h1> : <h1 className="cp-fighter cp-fighter-wait">{state.field_label ?? 'Your Lyst'}</h1>}
         {state.opponent && <p className="src cp-vs">vs {state.opponent}</p>}
+        {state.fights && (state.fights.last || state.fights.now || state.fights.next) && (
+          <dl className="cp-fights" data-testid="cp-fights" aria-label="This Lyst: last, now, next">
+            <div><dt>Last fight</dt><dd data-testid="cp-fight-last">{fightLine(state.fights.last) ?? '—'}</dd></div>
+            <div className="is-now"><dt>Now fighting</dt><dd data-testid="cp-fight-now">{fightLine(state.fights.now) ?? 'Nothing on yet'}</dd></div>
+            <div><dt>Next fight</dt><dd data-testid="cp-fight-next">{fightLine(state.fights.next) ?? '—'}</dd></div>
+          </dl>
+        )}
         {state.timer && !state.waiting && <output className="cp-clock mono" aria-label={`Time left ${formatClock(timeLeft)}`}>{formatClock(timeLeft)}</output>}
         <p className={`cp-msg${offline || !canCount ? ' is-warn' : ''}`} role="status" aria-live="polite" data-testid="cp-banner">{banner}</p>
         {training && <p className="cp-msg" role="note">Practice: your count is kept for training and never changes any score.</p>}

@@ -132,6 +132,12 @@ Keeping the test accounts does not mean preserving accidental global permissions
 - Do not build 20,000-viewer infrastructure now.
 - Broadcast plus CDN snapshots are a post-Rumble scaling option if usage justifies them.
 
+## Updates during a running event (owner decision, 2026-10-07)
+
+- The owner updates BuhurtOS mid-tournament on purpose. If a change is asked for while an event is live, there is a good reason for it; treat it as normal work, not as something to postpone until the event ends.
+- Until the owner declares full production, everything is still being tested on the hosted project, so every update must also carry what is already in progress on hosted (open events, Lysts, fights, clocks, device sessions, counter bindings) across the change. Migrations backfill in-flight state in the same file; functions fall back to the state that exists; nothing may leave a running fight, a seated counter or a signed-in device behind.
+- Background: on the first day of Pack 25 a fight opened before the migration left the counter phones waiting (Pack 25.1 in `PACK_25_EVENT_CONTROL_AND_COUNTERS.md` §9.8). That class of fault is what this rule prevents.
+
 ## Priority rule
 
 Reliability and new features may proceed in balance, but a proven security, data-loss or sporting-integrity blocker outranks cosmetic or convenience work.
