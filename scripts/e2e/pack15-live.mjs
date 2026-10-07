@@ -77,7 +77,7 @@ try {
 
   // ================================================================ 3. what the fighter sees: My next fight and the bell (phone)
   const card = await text(fighter, '#my-next-fight');
-  check('8. Edric\'s phone: My next fight shows the called fight', /edric|fenna/i.test(card) && /field 1/i.test(card), card.slice(0, 200));
+  check('8. Edric\'s phone: My next fight shows the called fight', /edric|fenna/i.test(card) && /lyst 1|field 1/i.test(card), card.slice(0, 200));
   const bell = await bellText(fighter);
   check('9. Edric\'s bell lists the same words as the push ("You\'re 2 fights away")', /2 fights away/i.test(bell), bell.slice(0, 300));
   check('10. no sideways scrolling on the fighter\'s phone', await noSideways(fighter));
@@ -116,7 +116,8 @@ try {
   // ================================================================ 7. organizer announcement from the phone (Manage › Event day)
   const org = await open('organizer');
   await org.goto(`${BASE}/events/test-stuff-test/control?mode=live`);
-  if (await org.locator('#cc-announce summary').count()) await org.locator('#cc-announce summary').click();   // Pack 25: the Announcements section of Live ops folds
+  await org.locator('#cc-announce').waitFor({ timeout: 30000 });
+  if (!(await org.locator('#cc-announce').evaluate(d => d.open))) await org.locator('#cc-announce summary').click();   // Pack 25: the Announcements section of Live ops folds; open it if it is closed
   await org.getByRole('heading', { name: /Announce to the event/i }).waitFor({ timeout: 30000 });
   const box = org.getByLabel(/Message/);
   await box.fill('Lyst 2 is running 20 minutes behind.');

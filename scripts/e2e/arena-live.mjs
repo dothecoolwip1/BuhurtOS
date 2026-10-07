@@ -85,7 +85,7 @@ try {
   // ================================================================ 2. the organizer calls Field 1 from Event day, on a desktop
   const { ctx: dctx, page: org } = await open('desktop', 'organizer');
   await org.goto(BASE + MANAGE); await org.waitForSelector('section.ed-field[aria-label="Lyst 1"]', { timeout: 30000 });
-  check('Event day offers the big-screen display', (await org.getByRole('link', { name: /Live display/ }).count()) >= 1);
+  check('Live ops offers the big-screen display', (await org.getByRole('link', { name: /Live display|Big screen/ }).count()) >= 1);
   await org.locator('section.ed-field[aria-label="Lyst 1"]').getByRole('button', { name: /^(Run this fight|Run anyway)$/ }).click();
   await waitText(org, 'section.ed-field[aria-label="Lyst 1"] .ed-now', 'Aldric Stone');
   check('Field 1 is called: 1 active, 2 on deck, 3 in the hole (no field written: the default stays blank)', states(1, 2, 3) === '1:active,2:on_deck,3:in_the_hole' && sql(`select count(*) from public.matches where field is null`) === '10', states(1, 2, 3));
@@ -137,7 +137,7 @@ try {
   await ph.getByText('Official: saved on the server').waitFor({ timeout: 20000 });
   check('[phone] OFFICIAL, with the winner', (await has(ph, 'Official: saved on the server')) && (await has(ph, 'Winner: Aldric Stone')), await body(ph));
   check('the database: match 1 final 4-0 to A, the queue advanced, the running score was cleared by the server', sql(`select queue_state || result || score_a || '-' || score_b from public.matches where id = '${mid(1)}'`) === 'finala4-0' && states(2, 3, 4) === '2:active,3:on_deck,4:in_the_hole' && live(1) === 'none', `${states(1, 2, 3, 4)} live=${live(1)}`);
-  check('[phone] after OFFICIAL the next fight on this field is one tap away, and so is Event day', (await ph.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).count()) === 1 && (await has(ph, 'Cael Rhodes vs Dara Voss')) && (await ph.getByRole('link', { name: 'Back to Event day' }).count()) === 1, await body(ph));
+  check('[phone] after OFFICIAL the next fight on this field is one tap away, and so is Event day', (await ph.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).count()) === 1 && (await has(ph, 'Cael Rhodes vs Dara Voss')) && (await ph.getByRole('link', { name: /Back to (Event day|Event Control)/ }).count() + await ph.getByRole('button', { name: 'Back to the queue' }).count()) >= 1, await body(ph));
   await shot(ph, '3-phone-official');
   // the display: result, then the next fight
   const sawResult = await waitText(tv, '.ar-main', 'Winner: Aldric Stone');
