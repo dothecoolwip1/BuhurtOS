@@ -1269,6 +1269,8 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .cc-title{margin:0;font:800 clamp(26px,7vw,40px)/1.05 var(--f-display);text-transform:uppercase;overflow-wrap:anywhere}
 .cc-meta{margin:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:14px}
 .cc-overall{margin:0;font-size:18px;font-weight:700}
+.cc-overall-link{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in oklab,currentColor 40%,transparent);text-underline-offset:3px}.cc-overall-link:hover{text-decoration-color:currentColor}
+.cc-glance{list-style:none;margin:0;padding:0;display:grid;gap:4px}.cc-glance li a{display:block;color:inherit;text-decoration:none;font-size:14px;padding:4px 8px;border-radius:8px;border-left:3px solid var(--brass);background:color-mix(in oklab,var(--brass) 10%,transparent)}.cc-glance li.u-now a{border-left-color:var(--live);background:color-mix(in oklab,var(--live) 10%,transparent)}.cc-glance li a:hover{background:color-mix(in oklab,var(--brass) 18%,transparent)}.cc-glance li b{font-weight:600}
 .cc-fresh{margin:0;font-size:13.5px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .cc-fresh.is-stale,.cc-fresh.is-offline{color:var(--live);font-weight:700}
 .cc-fresh .linklike{min-height:32px}

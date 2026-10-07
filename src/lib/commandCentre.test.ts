@@ -1,8 +1,9 @@
+import type { CommandItem } from './commandCentre';
 import { describe, expect, it } from 'vitest';
 import type { CompetitionMatch } from '../data/matches';
 import type { LystPublic } from '../data/lyst';
 import { buildFieldBoards, competitionProgress } from './eventDay';
-import { commandAttention, eventProgress, fieldSummaries, fightsOverview, freshness, overallState, unassignedRoles, type CommandSnapshot } from './commandCentre';
+import { commandAttention, eventProgress, fieldSummaries, fightsOverview, freshness, overallState, unassignedRoles, type CommandSnapshot, glance } from './commandCentre';
 
 const NOW = new Date('2026-10-10T17:00:00Z');
 const m = (id: string, over: Partial<CompetitionMatch>): CompetitionMatch => ({
@@ -109,5 +110,17 @@ describe('fields, fights, progress and staff', () => {
   });
   it('unassigned key roles are a fact about assignments, not presence', () => {
     expect(unassignedRoles([{ role: 'organizer', names: ['A'] }, { role: 'scorekeeper', names: ['B'] }])).toEqual(['head_marshal', 'check_in', 'inspector', 'medic']);
+  });
+});
+
+describe('glance: the lines at the very top of Live ops', () => {
+  const item = (id: string, urgency: 'now' | 'soon' | 'later' | 'info', what = id): CommandItem => ({ id, urgency, what, who: null, where: null, action: 'Open', href: '#x' });
+  it('shows the most urgent few, by urgency, never the FYIs, and counts the rest', () => {
+    const g = glance([item('later1', 'later'), item('fyi', 'info'), item('soon1', 'soon'), item('now1', 'now'), item('soon2', 'soon'), item('later2', 'later')]);
+    expect(g.shown.map(i => i.id)).toEqual(['now1', 'soon1', 'soon2']);
+    expect(g.more).toBe(2);
+  });
+  it('is empty when nothing but FYIs is listed', () => {
+    expect(glance([item('fyi', 'info')])).toEqual({ shown: [], more: 0 });
   });
 });
