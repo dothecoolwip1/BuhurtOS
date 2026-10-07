@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_PRESETS, ServerClock, formatClock, nextMode, presetOf, remainingMs, timerFor, timerTone, timerWord, type LystTimer } from './timer';
 import { leadRule, roundSeconds, activeDiscipline, allRoundsConfirmed, bump, clampScore, currentRound, describeDiscipline, disciplineCounts, entryStart, hasDq, isChange, officialTotals, resultSupportedByTotals, type LystRound } from './rounds';
-import { JOIN_CODE_LENGTH, TapQueue, counterBanner, counterInputFor, fightLine, flushTaps, nextStep, onlyField, parseJoinCode, sideLabel, standingLeft, trainingUrl, type CountAction } from './counters';
+import { DEFAULT_SIDES, JOIN_CODE_LENGTH, TapQueue, counterBanner, counterInputFor, fightLine, flushTaps, inkFor, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, trainingUrl, type CountAction } from './counters';
 
 const T0 = Date.parse('2026-10-07T12:00:00.000Z');
 const timer = (o: Partial<LystTimer> = {}): LystTimer => ({ event_id: 'e', field_key: 'field 1', match_id: 'm', round_no: 1, mode: 'fight', status: 'running', duration_ms: 60000, remaining_ms: 60000, started_at: new Date(T0).toISOString(), rev: 1, ...o });
@@ -249,5 +249,22 @@ describe('fightLine: last / now / next on the counter phone', () => {
     expect(fightLine({ a: 'Odin Robson', b: 'Bjorn Robson', result: 'b', score_a: 1, score_b: 2 })).toBe('Odin Robson vs Bjorn Robson · 1-2 to Bjorn Robson');
     expect(fightLine({ a: 'Odin Robson', b: 'Bjorn Robson', result: 'draw', score_a: 2, score_b: 2 })).toBe('Odin Robson vs Bjorn Robson · 2-2 draw');
     expect(fightLine({ a: null, b: 'Bjorn Robson' })).toBe('Fighter vs Bjorn Robson');
+  });
+});
+
+describe('the sides: the event names and colours them (Pack 25.2)', () => {
+  it('defaults to Red and Blue, and one side can be changed on its own', () => {
+    expect(mergeSides(null)).toEqual(DEFAULT_SIDES);
+    const yellow = mergeSides({ a: { name: 'Yellow', color: '#F2B233' } });
+    expect(yellow.a.name).toBe('Yellow'); expect(yellow.b).toEqual(DEFAULT_SIDES.b);
+    expect(sideLabel('a', yellow)).toBe('Yellow'); expect(sideLabel('b', yellow)).toBe('Blue'); expect(sideLabel('a')).toBe('Red'); expect(sideLabel(null, yellow)).toBe('Side');
+    expect(counterBanner({ seat: null, binding: { field_key: 'field 1', side: null } }, yellow)).toBe('Choose Yellow or Blue.');
+  });
+  it('picks dark ink on light colours and white ink on dark ones', () => {
+    expect(inkFor('#F2B233')).toBe('#111111'); expect(inkFor('#F4F4F2')).toBe('#111111');
+    expect(inkFor('#B42318')).toBe('#ffffff'); expect(inkFor('#111111')).toBe('#ffffff'); expect(inkFor('not a colour')).toBe('#fff');
+  });
+  it('turns the sides into the four CSS variables a screen needs', () => {
+    expect(sideVars({ a: { name: 'White', color: '#F4F4F2' }, b: { name: 'Black', color: '#111111' } })).toEqual({ '--side-a': '#F4F4F2', '--side-a-ink': '#111111', '--side-b': '#111111', '--side-b-ink': '#ffffff' });
   });
 });

@@ -2,6 +2,7 @@
  * Lyst Control, as the app calls it. Every write is a controlled database function (public.lyst_* / counter_*): nothing here writes a table.
  * The marshal's call is the only official score; counter functions only ever touch the counter's own provisional tally.
  */
+import type { EventSides, SideSpec } from '../lib/lyst/counters';
 import { supabase } from '../lib/supabase';
 import type { LystTimer, TimerAction, TimerMode } from '../lib/lyst/timer';
 import type { LystDiscipline, LystRound, LystSettings } from '../lib/lyst/rounds';
@@ -93,7 +94,7 @@ export const saveLystSettings = (eventId: string, settings: Partial<LystSettings
  * field and a side; the fight it counts is whatever the Lyst has open on that field. Only the caller's own seat and tally come back: never another counter,
  * never an official score, never an account id.
  */
-export interface CounterField { key: string; label: string; open: boolean }
+export interface CounterField { key: string; label: string; open: boolean; /** who is fighting there right now (names), or null */ now?: { a: string | null; b: string | null } | null }
 /** One fight on the phone's field, names only: what the public Live view shows anyway. */
 export interface CounterFight { match_id: string; a: string | null; b: string | null; competition: string | null; round_label: string | null; result?: string | null; score_a?: number | null; score_b?: number | null; state?: string | null }
 export interface CounterState {
@@ -112,8 +113,12 @@ export interface CounterState {
   timer?: (LystTimer & { now_remaining_ms: number }) | null;
   /** The field's last finished fight, the one on now and the next in its running order (null each when there is none). */
   fights?: { last: CounterFight | null; now: CounterFight | null; next: CounterFight | null } | null;
+  /** Pack 25.2: the event's names and colours for the two sides. */
+  sides?: EventSides | null;
   server_now: string;
 }
+/** Pack 25.2: anyone who runs the Lyst (or the platform owner) sets the sides' names and colours for the event; either side may be sent alone. */
+export const setEventSides = (eventId: string, sides: { a?: SideSpec; b?: SideSpec }) => rpc<EventSides>('set_event_sides', { p_event: eventId, p_sides: sides });
 export async function fetchCounterState(): Promise<{ state: CounterState; sentAt: number; receivedAt: number }> {
   const sentAt = Date.now();
   const state = await rpc<CounterState>('counter_state', {});

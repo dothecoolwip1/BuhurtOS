@@ -73,6 +73,8 @@ export function disciplineCounts(list: readonly LystDiscipline[], side: 'a' | 'b
 export interface LystSettings {
   presets: TimerPreset[]; auto_break: boolean; regular_rounds: number; extra_round_seconds: number; counter_input: 'auto' | 'simple' | 'weighted';
   cards: { key: string; label: string }[]; deduction_amounts: number[]; reasons: string[];
+  /** Pack 25.2: the sides' names and colours as stored (either side may be missing: fill from the defaults with mergeSides). */
+  sides?: { a?: { name: string; color: string }; b?: { name: string; color: string } } | null;
 }
 
 /** Duel rounds: the regular rounds run at the full length; once those are done and nobody leads by enough, extra rounds run at the shorter length. Both numbers are the event's settings. */
