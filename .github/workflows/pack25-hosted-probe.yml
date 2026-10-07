@@ -1,0 +1,28 @@
+name: Pack 25 hosted probe (one-shot)
+# Read-only probe of what this repository's Actions environment can reach for the Pack 25 rollout: whether a database URL / access token / smoke
+# account secret EXISTS (never its value), and whether the live site and the hosted API answer. Removed again after the rollout.
+on:
+  workflow_dispatch:
+  push:
+    branches: [ccr-cf597ddb-ehfkck]
+    paths: [.github/workflows/pack25-hosted-probe.yml]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      HAS_DB_URL: ${{ secrets.SUPABASE_DB_URL != '' }}
+      HAS_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN != '' }}
+      HAS_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+      HAS_SMOKE_X: ${{ secrets.SMOKE_X_EMAIL != '' && secrets.SMOKE_X_PASSWORD != '' }}
+      HAS_SMOKE_Y: ${{ secrets.SMOKE_Y_EMAIL != '' && secrets.SMOKE_Y_PASSWORD != '' }}
+      HAS_SMOKE_Z: ${{ secrets.SMOKE_Z_EMAIL != '' && secrets.SMOKE_Z_PASSWORD != '' }}
+    steps:
+      - run: |
+          echo "db_url=$HAS_DB_URL access_token=$HAS_ACCESS_TOKEN service_key=$HAS_SERVICE_KEY smoke_x=$HAS_SMOKE_X smoke_y=$HAS_SMOKE_Y smoke_z=$HAS_SMOKE_Z"
+          echo "site=$(curl -s -o /dev/null -w '%{http_code}' https://dothecoolwip1.github.io/BuhurtOS/)"
+          echo "api=$(curl -s -o /dev/null -w '%{http_code}' https://mvbxlebznlgroptwwdsm.supabase.co/rest/v1/)"
+          echo "fn=$(curl -s -o /dev/null -w '%{http_code}' -X OPTIONS https://mvbxlebznlgroptwwdsm.supabase.co/functions/v1/device-session)"
+          curl -s https://dothecoolwip1.github.io/BuhurtOS/ | grep -o 'assets/index-[A-Za-z0-9_-]*\.js' | head -1
