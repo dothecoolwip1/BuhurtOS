@@ -197,7 +197,7 @@ try {
     const review = await text(page, 'main');
     check('the review names the dates, venue, fields and every competition', review.includes(`${TODAY} to ${TOMORROW}`) && /Westerner Park/.test(review) && /2 fields/.test(review) && /5v5.*Team competition/.test(review), review.slice(0, 300));
     await page.getByRole('button', { name: 'Create event' }).click();
-    await page.waitForURL(/manage\?tab=home/, { timeout: 30000 });
+    await page.waitForURL(/manage\?tab=home|\/control(\?mode=setup)?$/, { timeout: 30000 });   // Pack 25: Event Control › Set up
     await page.locator('section[aria-label="Event home"]').waitFor({ timeout: 30000 });
     EV = sql(`select id from public.events where slug = '${SLUG}'`);
     check('the event exists as a draft with 2 fields and 14 competitions', sql(`select status || '|' || field_count || '|' || (select count(*) from public.competitions k where k.event_id = e.id) from public.events e where id = '${EV}'`) === 'draft|2|14');

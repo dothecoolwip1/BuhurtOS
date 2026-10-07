@@ -219,8 +219,8 @@ try {
   check('43. then which Lyst (the event has more than one field)', await until(async () => await has(p1, 'which lyst')), await body(p1));
   check('43a. each Lyst in the chooser says who is fighting there (Pack 25.2)', await until(async () => await has(p1, 'aldric stone vs brann oakley')), await body(p1));
   await shot(p1, 'counter-02-lyst-390');
-  await p1.getByRole('button', { name: /Field 1/ }).click();
-  check('44. then RED or BLUE, in words not just colour', await until(async () => await has(p1, 'which side on field 1') && await has(p1, 'red') && await has(p1, 'blue')), await body(p1));
+  await p1.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
+  check('44. then RED or BLUE, in words not just colour', await until(async () => await has(p1, 'which side on lyst 1') && await has(p1, 'red') && await has(p1, 'blue')), await body(p1));
   check('44a. the side buttons name the fighter on each side, and the fight on now', await until(async () => /aldric stone/i.test(await p1.getByTestId('cp-pick-a').innerText().catch(() => '')) && /brann oakley/i.test(await p1.getByTestId('cp-pick-b').innerText().catch(() => '')) && /now fighting/i.test(await p1.getByTestId('cp-side-now').innerText().catch(() => ''))), await body(p1));
   await shot(p1, 'counter-03-side-390');
   await p1.getByRole('button', { name: /RED/ }).click();
@@ -250,7 +250,7 @@ try {
   await go(p2, `/device#c=${poolCode}`);
   await until(async () => await has(p2, 'who is counting'), 30000);
   await p2.fill('#cp-name', 'Taylor'); await p2.getByRole('button', { name: 'Continue' }).click();
-  await until(async () => await has(p2, 'which lyst')); await p2.getByRole('button', { name: /Field 1/ }).click();
+  await until(async () => await has(p2, 'which lyst')); await p2.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
   await until(async () => await has(p2, 'which side')); await p2.getByRole('button', { name: /BLUE/ }).click();
   check('52. a second phone on the SAME QR counts blue: no fixed number of phones', await until(async () => await has(p2, 'brann oakley')) && sql(`select count(*) from public.event_sessions where ended_at is null and multi`) === '2', await body(p2));
   await shot(p2, 'counter-07-blue-390');
@@ -291,7 +291,7 @@ try {
 
   // ───────────── device management: the organizer's tool and the platform owner's page
   await go(o.page, `${E}/control?mode=live&tool=devices`);
-  check('60. the devices tool lists the two counter phones with Lyst, side and operator', await until(async () => (await o.page.getByTestId('session-row').count()) >= 2 && await has(o.page, 'nathan toth') && await has(o.page, 'field 1 · blue · taylor'), 20000), await body(o.page));
+  check('60. the devices tool lists the two counter phones with Lyst, side and operator', await until(async () => (await o.page.getByTestId('session-row').count()) >= 2 && await has(o.page, 'nathan toth') && await has(o.page, 'lyst 1 · blue · taylor'), 20000), await body(o.page));
   await shot(o.page, 'devices-tool-390');
   await o.page.getByTestId('session-preview').first().click();
   check('61. device preview is read only and shows what the phone shows', await until(async () => (await o.page.getByTestId('device-preview').count()) === 1 && await has(o.page, 'read only')), await body(o.page));
@@ -320,7 +320,7 @@ try {
   await go(p3, `/device#c=${poolCode}`);
   await until(async () => await has(p3, 'who is counting'), 30000);
   await p3.fill('#cp-name', 'Morgan'); await p3.getByRole('button', { name: 'Continue' }).click();
-  await until(async () => await has(p3, 'which lyst')); await p3.getByRole('button', { name: /Field 2/ }).click();
+  await until(async () => await has(p3, 'which lyst')); await p3.getByRole('button', { name: /Lyst 2|Field 2/ }).click();
   await until(async () => await has(p3, 'which side')); await p3.getByRole('button', { name: /RED/ }).click();
   check('68. the phone binds to Field 2 red and waits for the round', await until(async () => await has(p3, 'ankle biters') || await has(p3, 'waiting'), 20000), await body(p3));
   await tab.page.getByRole('button', { name: /Start round 1 for counters/ }).click();

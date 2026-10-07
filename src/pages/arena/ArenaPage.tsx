@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { fetchEvent } from '../../data/api';
 import { arenaFields, buildArena, nextArenaTick, pickField, type ArenaFight, type ArenaView } from '../../lib/arena';
+import { fieldLabel } from '../../lib/eventDay';
 import { dateRange } from '../../lib/dates';
 import { eventPhase, todayIso } from '../../lib/careerView';
 import { friendlyError } from '../../lib/friendlyError';
@@ -42,7 +43,7 @@ export function ArenaPage() {
   }, [live.matches, field, now]);
   useEffect(() => { setNow(Date.now()); }, [live.updatedAt]);
   const view = useMemo(() => buildArena({ matches: live.matches, scores: live.scores, competitions, field, now, lyst: lyst.rows }), [live.matches, live.scores, competitions, field, now, lyst.rows]);
-  useDocumentTitle(event ? `${view.field} · ${event.name}` : 'Live display');
+  useDocumentTitle(event ? `${view.label} · ${event.name}` : 'Live display');
 
   // ---- fullscreen, and a bar that gets out of the way while nobody is touching the screen
   const root = useRef<HTMLDivElement>(null);
@@ -84,7 +85,7 @@ export function ArenaPage() {
         <Link className="ar-exit" to={`/events/${event.slug}`} aria-label={`Exit the live display, back to ${event.name}`}>← {event.name}</Link>
         {fields.length > 1 && (
           <nav className="ar-fields" aria-label="Field">
-            {fields.map(f => <Link key={f} to={`/events/${event.slug}/arena/${encodeURIComponent(f)}`} aria-current={f === view.field ? 'page' : undefined}>{f}</Link>)}
+            {fields.map(f => <Link key={f} to={`/events/${event.slug}/arena/${encodeURIComponent(f)}`} aria-current={f === view.field ? 'page' : undefined}>{fieldLabel(f)}</Link>)}
           </nav>
         )}
         <div className="ar-tools">
@@ -94,7 +95,7 @@ export function ArenaPage() {
       </header>
 
       <main className="ar-main" aria-live="polite">
-        <p className="ar-field">{view.field}<span className="ar-count">{view.total > 0 ? `${view.done} of ${view.total} fights done` : ''}</span></p>
+        <p className="ar-field">{view.label}<span className="ar-count">{view.total > 0 ? `${view.done} of ${view.total} fights done` : ''}</span></p>
         {event.closedAt
           ? <div className="ar-center ar-enter" key="closed"><p className="ar-label">Event complete</p><h1 className="ar-big">{event.name}</h1><p className="ar-note">Every competition is official.</p><Link className="ar-btn" to={`/events/${event.slug}`}>View results</Link></div>
           : <Stage clock={lyst.clock} view={view} phase={phase} eventStarts={dateRange(event.startsOn, event.endsOn)} timeNote={event.timeNote} loading={live.loading && live.updatedAt === null} resultsTo={competitions.some(c => c.status === 'finished') ? `/events/${event.slug}` : null} />}
@@ -116,13 +117,13 @@ function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo, clock }
   if (s.kind === 'result') {
     return <Fight key={`r-${s.result.id}`} label="Result" fight={s.result} result winner={s.drawn ? 'Draw' : s.winnerName ? <>Winner: <b>{s.winnerName}</b></> : 'Result official'} />;
   }
-  if (s.kind === 'finished') return <div className="ar-center ar-enter" key="finished"><p className="ar-label">Field complete</p><h1 className="ar-big">{view.field} is complete</h1>{resultsTo && <Link className="ar-btn" to={resultsTo}>View results</Link>}</div>;
+  if (s.kind === 'finished') return <div className="ar-center ar-enter" key="finished"><p className="ar-label">Lyst complete</p><h1 className="ar-big">{view.label} is complete</h1>{resultsTo && <Link className="ar-btn" to={resultsTo}>View results</Link>}</div>;
   if (s.kind === 'no_matches') {
     return (
       <div className="ar-center ar-enter" key="none">
         {phase === 'upcoming'
           ? <><p className="ar-label">Fighting begins</p><h1 className="ar-big">{eventStarts}</h1>{timeNote && <p className="ar-note">{timeNote}</p>}</>
-          : <><p className="ar-label">{view.field}</p><h1 className="ar-big">Matches have not been posted yet</h1></>}
+          : <><p className="ar-label">{view.label}</p><h1 className="ar-big">Matches have not been posted yet</h1></>}
       </div>
     );
   }
@@ -144,7 +145,7 @@ function Fight({ label, fight, result = false, muted = false, winner = null, clo
         <div className="ar-vs" aria-hidden="true">vs</div>
         <Side k="b" fight={fight} showScore={showScore} />
       </div>
-      <p className="ar-ctx">{fight.competition} · {fight.stage}</p>
+      <p className="ar-ctx">{fight.competition} · {fight.stage}{fight.unit === 'rounds' && showScore ? <span className="ar-unit"> · rounds won</span> : null}</p>
       {fight.lyst?.timer && clock && !result && <ArenaClock timer={fight.lyst.timer} clock={clock} />}
       {fight.phase && <p className="ar-phase">{fight.phase}</p>}
       {winner && <p className="ar-winner">{winner}</p>}
@@ -159,7 +160,7 @@ function Side({ k, fight, showScore }: { k: 'a' | 'b'; fight: ArenaFight; showSc
     <div className={`ar-side ${k}${side.winner ? ' won' : ''}`}>
       <span className="ar-name">{side.name}</span>
       {fight.lyst && fight.lyst.marks.filter(m => m.side === k).length > 0 && <span className="ar-marks">{fight.lyst.marks.filter(m => m.side === k).map((m, i) => <b key={i} className="ar-mark">{m.text}</b>)}</span>}
-      {showScore && <span className="ar-score" aria-label={`${side.name}: ${side.score ?? 0}`}>{side.score ?? 0}{side.winner && <span className="sr-only"> (winner)</span>}</span>}
+      {showScore && <span className="ar-score" aria-label={`${side.name}: ${side.score ?? 0}${fight.unit === 'rounds' ? ((side.score ?? 0) === 1 ? ' round won' : ' rounds won') : ''}`}>{side.score ?? 0}{fight.unit === 'rounds' && <small className="ar-score-unit" aria-hidden="true">{(side.score ?? 0) === 1 ? 'round' : 'rounds'}</small>}{side.winner && <span className="sr-only"> (winner)</span>}</span>}
     </div>
   );
 }

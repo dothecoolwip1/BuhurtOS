@@ -19,8 +19,6 @@ export function trainingUrl(origin: string, base: string, code: string): string 
   const b = base.endsWith('/') ? base : `${base}/`;
   return `${origin}${b}lyst/train/${code}`;
 }
-/** @deprecated the old name of trainingUrl; the /lyst/join/:code address still opens the training flow. */
-export const joinUrl = trainingUrl;
 
 export type CountAction = { kind: 'tap'; id: string; weight: number; round: number } | { kind: 'undo'; id: string; round: number };
 
@@ -66,7 +64,6 @@ export async function flushTaps(q: TapQueue, send: CounterSend): Promise<{ sent:
   return { sent, total, stopped: 'empty' };
 }
 
-export const SEAT_WORD = { official: 'Counting', learning: 'Learning' } as const;
 export const SIDE_LABEL = { a: 'Red', b: 'Blue' } as const;
 /** The two sides of a fight as the event names and colours them (the flag colours of the day). Pack 25.2: chosen by whoever runs the Lyst. */
 export interface SideSpec { name: string; color: string }
@@ -105,7 +102,7 @@ export function counterBanner(state: {
     if (state.binding?.field_key && !state.binding.side) return `Choose ${sideLabel('a', sides)} or ${sideLabel('b', sides)}.`;
     return 'Choose your Lyst and side.';
   }
-  if (state.seat.status === 'expired') return 'This seat has run out. Choose your Lyst and side again.';
+  if (state.seat.status === 'expired') return 'This phone\'s place on the Lyst has run out. Choose your Lyst and side again.';
   if (state.seat.status === 'ended' || state.seat.status === 'declined') return 'You are not counting right now. Choose your Lyst and side.';
   if (state.waiting) return 'Waiting for the next fight on this Lyst. It opens here by itself.';
   if (state.final) return 'This fight is finished. The next one opens here by itself.';

@@ -3,7 +3,7 @@ import { publishChecklist, toPatch, validateSetup, type SetupForm } from './setu
 import { localToIso } from '../lib/dates';
 
 const form = (o: Partial<SetupForm> = {}): SetupForm => ({
-  name: 'Red Deer Rumble 2026', description: '', venue: 'Horse In Hand Ranch', address: '', city: 'Blackfalds', region: 'AB', country: 'CA', latitude: null, longitude: null, startsOn: '2026-11-14', endsOn: '2026-11-15',
+  name: 'Red Deer Rumble 2026', description: '', venue: 'Horse In Hand Ranch', address: '', city: 'Blackfalds', region: 'AB', country: 'CA', latitude: null, longitude: null, fieldCount: '2', startsOn: '2026-11-14', endsOn: '2026-11-15',
   opensLocal: '', closesLocal: '2026-11-08T23:59', feeDollars: '40', feeProvince: 'AB', feeNote: '',
   eventType: 'tournament', registrationMode: 'buhuros', externalUrl: '', timeNote: '', volunteerInfo: '', ...o
 });

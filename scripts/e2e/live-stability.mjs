@@ -94,7 +94,7 @@ try {
 
     const ed = await open(kind, 'organizer'); pages.push(ed);
     await ed.goto(BASE + `/events/${SLUG}/control?mode=live`);
-    screens.push({ kind, name: 'Event day (Manage)', page: ed, root: 'section.eventday', typeInto: { sel: 'textarea', value: `Unsent note ${kind}` } });
+    screens.push({ kind, name: 'Event day (Manage)', page: ed, root: 'section[aria-label="Fields"]', typeInto: { sel: 'textarea', value: `Unsent note ${kind}` } });
 
     const cc = await open(kind, 'organizer'); pages.push(cc);
     await cc.goto(BASE + `/events/${SLUG}/control?mode=live`);

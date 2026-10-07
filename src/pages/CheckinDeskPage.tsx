@@ -45,7 +45,7 @@ export function CheckinDeskPage() {
     return (
       <section className="panel info" role="status" style={{ display: 'grid', gap: 10 }}>
         <PageHead eyebrow="Event Control" title="Check-in desk" />
-        <p><b>This screen is for {event.name}'s check-in desk and armour inspectors.</b> A check-in code does not open it by itself: an organizer adds staff under Manage › People.</p>
+        <p><b>This screen is for {event.name}'s check-in desk and armour inspectors.</b> A check-in code does not open it by itself: an organizer adds staff under Event Control › Staff and roles.</p>
         <p><Link className="btn btn-line" to={`/events/${event.slug}`}>Back to the event</Link></p>
       </section>
     );

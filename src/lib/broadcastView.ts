@@ -3,6 +3,7 @@
  * database holds (the control row) and what the stream controller last reported (a small heartbeat), and says it plainly. A controller that is
  * missing, silent or reports odd or partial data never breaks the screen; the panel says what it does not know.
  */
+import { fieldLabel } from './eventDay';
 import { fieldKey } from './eventDay';
 import type { CameraState } from './cameraOff';
 
@@ -33,9 +34,7 @@ const bool = (v: unknown): boolean | null => (typeof v === 'boolean' ? v : null)
 /** "Field 2" / "field 2" -> "Lyst 2"; any other name stays as it is ("Ring A"). */
 export function lystLabel(field: string | null | undefined): string {
   const f = (field ?? '').trim();
-  if (!f) return 'a Lyst';
-  const m = /^(?:field|lyst)\s*(\d+)$/i.exec(f);
-  return m ? `Lyst ${m[1]}` : f;
+  return f ? fieldLabel(f) : 'a Lyst';
 }
 
 export interface Heartbeat {

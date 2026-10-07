@@ -16,6 +16,15 @@ export const DEFAULT_FIELD = 'Field 1';
 export const fieldName = (f: string | null | undefined): string => f?.trim() || DEFAULT_FIELD;
 /** One field is one name, trimmed and case-insensitive. */
 export const fieldKey = (f: string | null | undefined): string => fieldName(f).toLowerCase();
+/**
+ * The word a person reads for a field (Pack 26): the stored default "Field N" (and a bare "N" or "lyst N" someone typed) is shown as "Lyst N", the
+ * sport's own word; a custom name is shown as the organizer wrote it. DISPLAY ONLY: routes, RPC arguments and keys keep the stored name.
+ */
+export function fieldLabel(f: string | null | undefined): string {
+  const name = fieldName(f);
+  const m = /^\s*(?:field|lyst)?\s*(\d{1,2})\s*$/i.exec(name);
+  return m ? `Lyst ${Number(m[1])}` : name;
+}
 
 const natural = (a: string, b: string) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 const plainCompare = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);   // the database compares pools with collation "C"
@@ -173,11 +182,16 @@ const isPoolStage = (s: string) => s === 'pool' || s === 'round_robin';
 const countText = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /** Operational progress from real match state only. Nothing here says a competition is "complete" in the record sense; that is a later pack. */
-export function competitionProgress(comp: { id: string; name: string }, matches: readonly CompetitionMatch[]): CompetitionProgress {
+export function competitionProgress(comp: { id: string; name: string; structure?: string | null }, matches: readonly CompetitionMatch[]): CompetitionProgress {
   const total = matches.length, final = matches.filter(m => m.queueState === 'final').length;
   const percent = total === 0 ? 0 : Math.round((final / total) * 100);
   const base = { id: comp.id, name: comp.name, total, final, percent, needsBracket: false };
   if (total === 0) return { ...base, phase: 'no_draw', label: 'No draw yet', detail: null };
+  // "Pools, then a bracket" with every pool fight scored and no bracket drawn yet: the bracket is still owed (the database refuses to make such a
+  // competition official for the same reason), so this is the organizer's next step, not "all scored".
+  if (final === total && comp.structure === 'pools_elimination' && matches.some(m => m.stage === 'pool') && !matches.some(m => !isPoolStage(m.stage))) {
+    return { ...base, phase: 'pools_done', label: 'Pools complete, bracket needs building', detail: `${final} of ${total} pool fights scored`, needsBracket: true };
+  }
   if (final === total) return { ...base, phase: 'all_scored', label: 'All matches scored', detail: `${total} of ${total} fights` };
   const live = matches.some(m => (LIVE_STATES as readonly string[]).includes(m.queueState));
   const pools = matches.filter(m => isPoolStage(m.stage)), bracket = matches.filter(m => !isPoolStage(m.stage));
@@ -233,7 +247,7 @@ export function checkinGaps(boards: readonly FieldBoard[], entries: readonly Sid
           if (!reg) continue;
           const problem = reg.status === 'accepted' ? (reg.checkedIn ? null : 'not_checked_in') : 'registration_not_accepted';
           if (!problem) continue;
-          const gap: CheckinGap = { fighterId: p.fighterId, name: p.name, problem, matchId: m.id, field: b.name, slot, teamName: entry?.teamId ? entry.name : null, registrationStatus: reg.status };
+          const gap: CheckinGap = { fighterId: p.fighterId, name: p.name, problem, matchId: m.id, field: fieldLabel(b.name), slot, teamName: entry?.teamId ? entry.name : null, registrationStatus: reg.status };
           const have = best.get(p.fighterId);
           if (!have || SLOT_RANK[slot] < SLOT_RANK[have.slot]) best.set(p.fighterId, gap);
         }
@@ -277,17 +291,17 @@ export function attentionItems(i: AttentionInput): AttentionItem[] {
   }
   for (const b of i.boards) {
     if (b.now.length > 1) {
-      out.push({ id: `two-active-${b.key}`, kind: 'two_active', urgency: 'now', title: `${b.now.length} fights are marked active on ${b.name}`, detail: b.now.map(versus).join(' · '), target: { to: 'run', matchId: b.now[1].id }, targetLabel: 'Fix in Run' });
+      out.push({ id: `two-active-${b.key}`, kind: 'two_active', urgency: 'now', title: `${b.now.length} fights are marked active on ${fieldLabel(b.name)}`, detail: b.now.map(versus).join(' · '), target: { to: 'run', matchId: b.now[1].id }, targetLabel: 'Fix in Draws and schedule' });
     }
     for (const m of [...b.now, ...b.onDeck, ...b.inTheHole]) {
       const blocked = blockedReason(m, i.withdrawn);
-      if (blocked) out.push({ id: `live-blocked-${m.id}`, kind: 'withdrawn_in_live', urgency: 'now', title: `${versus(m)} cannot go ahead on ${b.name}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Run' });
+      if (blocked) out.push({ id: `live-blocked-${m.id}`, kind: 'withdrawn_in_live', urgency: 'now', title: `${versus(m)} cannot go ahead on ${fieldLabel(b.name)}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Draws and schedule' });
     }
     for (const { match: m, blocked } of b.waiting) {
       if (blocked.code === 'withdrawn' && m.entryA && m.entryB) {
-        out.push({ id: `walkover-${m.id}`, kind: 'walkover_needed', urgency: 'soon', title: `${versus(m)}: an entrant has withdrawn`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Run' });
+        out.push({ id: `walkover-${m.id}`, kind: 'walkover_needed', urgency: 'soon', title: `${versus(m)}: an entrant has withdrawn`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Draws and schedule' });
       } else if (m.scheduledAt && new Date(m.scheduledAt).getTime() <= i.now.getTime() + (i.dueMinutes ?? 20) * 60000) {
-        out.push({ id: `due-${m.id}`, kind: 'due_but_blocked', urgency: 'soon', title: `${versus(m)} was due ${timeLabel(m.scheduledAt, i.timeZone)} on ${b.name}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Run' });
+        out.push({ id: `due-${m.id}`, kind: 'due_but_blocked', urgency: 'soon', title: `${versus(m)} was due ${timeLabel(m.scheduledAt, i.timeZone)} on ${fieldLabel(b.name)}`, detail: blocked.text, target: { to: 'run', matchId: m.id }, targetLabel: 'Open in Draws and schedule' });
       }
     }
   }
@@ -313,7 +327,7 @@ export function attentionItems(i: AttentionInput): AttentionItem[] {
     if (notAccepted.length) out.push({ id: 'checkin-not-accepted', kind: 'not_checked_in', urgency: worst(notAccepted), title: `${countText(notAccepted.length, 'fighter', 'fighters')} without an accepted registration`, detail: names(notAccepted), target: { to: 'checkin' }, targetLabel: 'Review' });
   }
   for (const p of i.progress) {
-    if (p.needsBracket) out.push({ id: `bracket-${p.id}`, kind: 'bracket_needed', urgency: 'later', title: `${p.name}: pools are finished`, detail: 'The bracket needs building.', target: { to: 'run' }, targetLabel: 'Build bracket' });
+    if (p.needsBracket) out.push({ id: `bracket-${p.id}`, kind: 'bracket_needed', urgency: 'soon', title: `${p.name}: pools are finished`, detail: 'The bracket needs building.', target: { to: 'run' }, targetLabel: 'Build bracket' });
   }
   return out.sort((a, b) => URGENCY_RANK[a.urgency] - URGENCY_RANK[b.urgency] || KIND_RANK[a.kind] - KIND_RANK[b.kind] || a.id.localeCompare(b.id));
 }
@@ -324,7 +338,7 @@ export function fightingNow(matches: Iterable<Pick<CompetitionMatch, 'queueState
   const out = new Map<string, string>();
   for (const m of matches) {
     if (m.queueState !== 'active') continue;
-    for (const entry of [m.entryA, m.entryB]) for (const p of (entry ? sides.get(entry) ?? [] : [])) if (!out.has(p)) out.set(p, fieldName(m.field));
+    for (const entry of [m.entryA, m.entryB]) for (const p of (entry ? sides.get(entry) ?? [] : [])) if (!out.has(p)) out.set(p, fieldLabel(m.field));
   }
   return out;
 }

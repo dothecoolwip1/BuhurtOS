@@ -24,6 +24,7 @@ import { fieldOverview } from '../lib/fieldOverview';
 import { NotFoundPage } from './NotFoundPage';
 import { realtimeChannel } from '../lib/realtimeChannel';
 import { useFocusBar } from '../components/FocusLayout';
+import { fieldLabel } from '../lib/eventDay';
 
 /** Mirrors private.can_score: organizer, marshal, scorekeeper, plus the platform owner. The database enforces it again on every call. */
 const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'owner', 'operator'];
@@ -52,6 +53,24 @@ function SyncBar({ waiting, stuck = 0, heldForOthers = 0, durable = true }: { wa
 const sideName = (m: CompetitionMatch) => ({ a: sideLabel(m.entryA, m.nameA, 'Side A'), b: sideLabel(m.entryB, m.nameB, 'Side B') });
 
 interface Adjust { canEarlier: boolean; canLater: boolean; onMove: (action: QueueMove) => void }
+
+/** The fight was finished on another device while this board was open: show the official result, offer the next fight, change nothing. */
+function FinalElsewhere({ m, fieldName, nextFight, onOpenNext, onBack }: { m: CompetitionMatch; fieldName: string; nextFight: CompetitionMatch | null; onOpenNext: (m: CompetitionMatch) => void; onBack: () => void }) {
+  const n = sideName(m);
+  const score = m.scoreA !== null && m.scoreB !== null ? `${m.scoreA}–${m.scoreB}` : null;
+  const summary = m.result === 'draw' ? `Draw${score ? `, ${score}` : ''}` : m.result === 'a' || m.result === 'b' ? `${m.result === 'a' ? n.a : n.b} win${score ? `, ${score}` : ''}` : 'Result recorded';
+  const next = nextFight ? sideName(nextFight) : null;
+  return (
+    <section className="panel info" aria-label="This fight is final" style={{ display: 'grid', gap: 12 }} data-testid="final-elsewhere">
+      <h2 style={{ margin: 0 }}>This fight is final</h2>
+      <p style={{ margin: 0 }}><b>{n.a} vs {n.b}</b>: {summary}. It was finished on another device. The result stands; nothing on this screen can change it. If it is wrong, an organizer corrects it from Live ops.</p>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {nextFight && next && <button type="button" className="btn btn-ink fq-big" onClick={() => onOpenNext(nextFight)}><span className="sk-after-k">Next fight on {fieldLabel(fieldName)}</span><span>{next.a} vs {next.b}</span></button>}
+        <button type="button" className="btn btn-line fq-big" onClick={onBack}>Back to the queue</button>
+      </div>
+    </section>
+  );
+}
 
 function QueueRow({ m, comp, busy, onOpen, adjust }: { m: CompetitionMatch; comp: FieldCompetition | undefined; busy: boolean; onOpen: () => void; adjust?: Adjust }) {
   const n = sideName(m);
@@ -93,6 +112,7 @@ export function FieldPage() {
   const { waiting, stuck, heldForOthers, durable } = useOutbox();
   const [reloadKey, setReloadKey] = useState(0);
   const [opened, setOpened] = useState<Opened | null>(null);
+  const [officialHere, setOfficialHere] = useState<string | null>(null);   // the fight this device itself finished (its board shows the result and the next fight)
   const [notice, setNotice] = useState<string | null>(null);
   const [opening, setOpening] = useState(false);
   const [openError, setOpenError] = useState<string | null>(null);
@@ -108,10 +128,9 @@ export function FieldPage() {
   const [moving, setMoving] = useState(false);
   const comps = useAsync(() => (eventId && canScore ? fetchFieldCompetitions(eventId) : Promise.resolve([] as FieldCompetition[])), [eventId, canScore]);
   const matches = useAsync(() => (comps.data?.length ? fetchEventMatches(comps.data) : Promise.resolve([] as CompetitionMatch[])), [comps.data], [reloadKey]);
-  useDocumentTitle(event ? `${field} · ${event.name}` : 'Field scoring');
-  const lystOpen = opened !== null && boardModeFor(opened.comp.league, opened.comp.category) === 'duel' && !classic;
+  useDocumentTitle(event ? `${fieldLabel(field)} · ${event.name}` : 'Lyst Control');
   useFocusBar({
-    eventName: event?.name, context: lystOpen ? `Lyst · ${field}` : field,
+    eventName: event?.name, context: fieldLabel(field),
     exit: fromControl ? { to: `/events/${slug}/control?mode=live`, label: 'Event Control' } : { to: `/events/${slug}/live`, label: 'Event' },
     pending: canScore ? waiting : undefined
   });
@@ -175,7 +194,7 @@ export function FieldPage() {
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted">Loading…</p>;
   if (loaded.error != null) return <p role="alert">{friendlyError(loaded.error)}</p>;
   if (!loaded.data || !event) return <NotFoundPage />;
-  if (!session) return <><PageHead eyebrow="Field scoring" title={`${event.name} · ${field}`} /><SignIn reason="Sign in with the account that scores this event." /></>;
+  if (!session) return <><PageHead eyebrow="Lyst Control" title={`${event.name} · ${fieldLabel(field)}`} /><SignIn reason="Sign in with the account that scores this event." /></>;
   if (mine.loading && !mine.data) return <p className="muted">Loading…</p>;
   if (!canScore) {
     return (
@@ -197,11 +216,16 @@ export function FieldPage() {
             backHref: fromControl ? { to: `/events/${event.slug}/control?mode=live`, label: 'Back to Event Control' } : null,
             onExit: () => { closeOpened(); reload(); },
             onFinished: () => { closeOpened(); reload(); },
-            onOfficial: reload,
+            onOfficial: () => { setOfficialHere(opened.match.id); reload(); },
             onOpenNext: (m: CompetitionMatch) => { closeOpened(); void open(m); },
             onStale: (message: string) => { closeOpened(); setNotice(message); reload(); }
           };
           const isDuel = boardModeFor(opened.comp.league, opened.comp.category) === 'duel';
+          // Another device finished this fight while it was open here: the result stands; this board must not offer another round or a second result.
+          const fresh = matches.data?.find(m => m.id === opened.match.id);
+          if (fresh && fresh.queueState === 'final' && officialHere !== opened.match.id) {
+            return <FinalElsewhere m={fresh} fieldName={field} nextFight={common.nextFight} onOpenNext={common.onOpenNext} onBack={common.onFinished} />;
+          }
           return <>
             <ReadinessStrip key={`ready-${opened.match.id}`} matchId={opened.match.id} />
             {isDuel && !classic
@@ -211,14 +235,14 @@ export function FieldPage() {
         })()
       ) : (
         <>
-          <PageHead eyebrow={event.name} title={field} lede="Matches for this field, in running order. Pick one to start scoring." />
+          <PageHead eyebrow={event.name} title={fieldLabel(field)} lede="Fights on this Lyst, in running order. Pick one to start scoring." />
           {notice && <p role="alert" className="panel info">{notice}</p>}
           {canResolve && <ResultConflicts eventId={event.id} onChanged={reload} />}
           {openError && <p role="alert" style={{ color: 'var(--live)' }}>{openError}</p>}
           {(comps.error != null || matches.error != null) && <p role="alert">{friendlyError(comps.error ?? matches.error, 'Could not load the queue. Retrying.')}</p>}
           {(comps.loading || matches.loading) && !matches.data && <p className="muted">Loading the queue…</p>}
           {matches.data && queue.length === 0 && (
-            <div className="panel info"><h3>Nothing queued on {field}</h3><p>Matches show here once an organizer puts them on deck, in the hole or active for this field.</p></div>
+            <div className="panel info"><h3>Nothing queued on {fieldLabel(field)}</h3><p>Fights show here once an organizer puts them on deck, in the hole or on this Lyst.</p></div>
           )}
           <div style={{ display: 'grid', gap: 12 }}>
             {queue.map(m => {
@@ -232,10 +256,10 @@ export function FieldPage() {
           </div>
           {canResolve && <EnterOfficialResult matches={matches.data ?? []} names={new Map((comps.data ?? []).map(c => [c.id, c.name]))} onDone={reload} />}
           {otherFields.length > 0 && (
-            <nav aria-label="Other fields" className="panel info" style={{ display: 'grid', gap: 8 }}>
-              <b>Other fields</b>
+            <nav aria-label="Other Lysts" className="panel info" style={{ display: 'grid', gap: 8 }}>
+              <b>Other Lysts</b>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {otherFields.map(f => <Link key={f.field} className={`btn btn-sm ${f.queued > 0 ? 'btn-ink' : 'btn-line'}`} to={`/events/${event.slug}/field/${encodeURIComponent(f.field)}`}>{f.field}{f.queued > 0 ? ` (${f.queued})` : ''}</Link>)}
+                {otherFields.map(f => <Link key={f.field} className={`btn btn-sm ${f.queued > 0 ? 'btn-ink' : 'btn-line'}`} to={`/events/${event.slug}/field/${encodeURIComponent(f.field)}`}>{fieldLabel(f.field)}{f.queued > 0 ? ` (${f.queued})` : ''}</Link>)}
               </div>
             </nav>
           )}

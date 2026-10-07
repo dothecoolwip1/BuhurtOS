@@ -141,7 +141,7 @@ try {
     await p.keyboard.press('Escape').catch(() => undefined);
     await p.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
     await p.locator('nav.bottom').getByRole('button', { name: /More/ }).click();
-    const settings = p.getByRole('button', { name: 'Notification Settings' });
+    const settings = p.locator('nav.more-list').getByRole('button', { name: 'Notifications', exact: true });   // Pack 26: the row is "Notifications"
     check('8d the notification settings entry point is in the More menu', await until(async () => await settings.isVisible()), '');
     await settings.click();
     check('8e it opens the notification settings dialog', await until(async () => (await p.locator('[role=dialog]').count()) > 0 && /notif/i.test(await text(p, '[role=dialog]'))), (await text(p, '[role=dialog]')).slice(0, 200));

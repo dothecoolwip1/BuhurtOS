@@ -59,9 +59,9 @@ try {
   const start = await rpc('organizer', 'advance_field_queue', { p_event: EVENT, p_field: null, p_start: true });
   check('1. the organizer starts Field 1 through the existing queue (Aldric v Brann now, Cael v Dara on deck, Edric v Fenna in the hole)',
     start.status === 200 && sql(`select string_agg(queue_state, ',' order by position, round_label) from public.matches where id in ('${mid(1)}','${mid(2)}','${mid(3)}')`) !== '', JSON.stringify(start));
-  check('2. Edric (in the hole) is told "You\'re 2 fights away" with the field', (await words('edric', 'fight_called')) === 'You\'re 2 fights away | Start getting ready for Longsword (men) on Field 1.', await words('edric', 'fight_called'));
-  check('3. Cael and Dara (on deck) are told "You\'re up next · Report to Field 1"', (await words('cael', 'fight_called')) === 'You\'re up next | Report to Field 1 and be ready to fight.' && (await words('dara', 'fight_called')).startsWith('You\'re up next'), await words('cael', 'fight_called'));
-  check('4. Aldric and Brann (on the field) are told "Your fight is ready · Report to Field 1 now"', (await words('aldric', 'fight_called')) === 'Your fight is ready | Report to Field 1 now.' && (await words('brann', 'fight_called')).startsWith('Your fight is ready'), await words('aldric', 'fight_called'));
+  check('2. Edric (in the hole) is told "You\'re 2 fights away" with the Lyst', (await words('edric', 'fight_called')) === 'You\'re 2 fights away | Start getting ready for Longsword (men) on Lyst 1.', await words('edric', 'fight_called'));
+  check('3. Cael and Dara (on deck) are told "You\'re up next · Report to Lyst 1"', (await words('cael', 'fight_called')) === 'You\'re up next | Report to Lyst 1 and be ready to fight.' && (await words('dara', 'fight_called')).startsWith('You\'re up next'), await words('cael', 'fight_called'));
+  check('4. Aldric and Brann (on the field) are told "Your fight is ready · Report to Lyst 1 now"', (await words('aldric', 'fight_called')) === 'Your fight is ready | Report to Lyst 1 now.' && (await words('brann', 'fight_called')).startsWith('Your fight is ready'), await words('aldric', 'fight_called'));
   check('5. each alert opens My next fight; this is a TEST event, so alerts stay in the app and are never pushed to a lock screen', sql(`select bool_and(route = '/events/test-stuff-test#my-next-fight') and not bool_or(push) from public.notifications where kind = 'fight_called'`) === 't');
   check('5b. the same alert for a real (non-test) event is pushed: the push decision is the database\'s, per event', sql(`select private.notification_pushable('fight_called') and not private.notification_is_synthetic('{"event_slug":"no-such-event"}'::jsonb)`) === 't');
 
@@ -77,7 +77,7 @@ try {
 
   // ================================================================ 3. what the fighter sees: My next fight and the bell (phone)
   const card = await text(fighter, '#my-next-fight');
-  check('8. Edric\'s phone: My next fight shows the called fight', /edric|fenna/i.test(card) && /field 1/i.test(card), card.slice(0, 200));
+  check('8. Edric\'s phone: My next fight shows the called fight', /edric|fenna/i.test(card) && /lyst 1|field 1/i.test(card), card.slice(0, 200));
   const bell = await bellText(fighter);
   check('9. Edric\'s bell lists the same words as the push ("You\'re 2 fights away")', /2 fights away/i.test(bell), bell.slice(0, 300));
   check('10. no sideways scrolling on the fighter\'s phone', await noSideways(fighter));
@@ -100,9 +100,9 @@ try {
   await fighter.ctx.setOffline(false);
   await sleep(2500);
   const moved = await words('edric', 'fight_moved');
-  check('15. while Edric was offline his fight changed field: one "Your fight changed field · It is now on Field 2"', moved === 'Your fight changed field | It is now on Field 2. Report there.' && alerts(U(5), 'fight_moved') === 1, moved);
+  check('15. while Edric was offline his fight changed field: one "Your fight changed Lyst · It is now on Lyst 2"', moved === 'Your fight changed Lyst | It is now on Lyst 2. Report there.' && alerts(U(5), 'fight_moved') === 1, moved);
   const bell2 = await bellText(fighter);
-  check('16. back online: the offline notice is gone and the bell shows the change without a refresh', !/you are offline/i.test(await text(fighter)) && /changed field/i.test(bell2), bell2.slice(0, 200));
+  check('16. back online: the offline notice is gone and the bell shows the change without a refresh', !/you are offline/i.test(await text(fighter)) && /changed lyst/i.test(bell2), bell2.slice(0, 200));
   check('17. reconnecting created no duplicate', alerts(U(5), 'fight_moved') === 1);
   await shot(fighter, '02-after-reconnect');
 
@@ -116,6 +116,8 @@ try {
   // ================================================================ 7. organizer announcement from the phone (Manage › Event day)
   const org = await open('organizer');
   await org.goto(`${BASE}/events/test-stuff-test/control?mode=live`);
+  await org.locator('#cc-announce').waitFor({ timeout: 30000 });
+  if (!(await org.locator('#cc-announce').evaluate(d => d.open))) await org.locator('#cc-announce summary').click();   // Pack 25: the Announcements section of Live ops folds; open it if it is closed
   await org.getByRole('heading', { name: /Announce to the event/i }).waitFor({ timeout: 30000 });
   const box = org.getByLabel(/Message/);
   await box.fill('Lyst 2 is running 20 minutes behind.');
@@ -162,7 +164,13 @@ try {
 
   // ================================================================ 10. notification settings on a phone: the two switches apart
   const acct = await open('aldric');
+  await acct.addInitScript(() => { try { localStorage.setItem('bos-push-ask', String(Date.now())); } catch { /* ignore */ } });   // the first-time ask was answered on another day; this is the settings sheet
   await acct.goto(`${BASE}/account#notifications`);
+  if (!(await acct.getByTestId('ns-perm').isVisible().catch(() => false))) {   // Pack 26: the settings are a small sheet behind the Account row "Notifications"
+    if (await acct.getByRole('button', { name: 'More', exact: true }).count()) await acct.getByRole('button', { name: 'More', exact: true }).click();   // the phone's More sheet holds the row (the header bell is the inbox, not the settings)
+    await acct.getByRole('button', { name: 'Notifications', exact: true }).last().click({ timeout: 30000 });
+    await acct.getByRole('button', { name: 'Manage devices' }).click({ timeout: 30000 });   // the device status (permission, this device) is the sheet's second view
+  }
   await acct.getByTestId('ns-perm').waitFor({ timeout: 30000 });
   await acct.waitForFunction(() => /^(On|Off)$/.test(document.querySelector('[data-testid="ns-device"]')?.textContent?.trim() ?? ''), null, { timeout: 15000 }).catch(() => undefined);
   check('33. Settings show the browser permission and the BuhurtOS switch separately', (await acct.getByTestId('ns-perm').innerText()).length > 0 && /^(On|Off)$/.test((await acct.getByTestId('ns-device').innerText()).trim()), `${await acct.getByTestId('ns-perm').innerText()} / ${await acct.getByTestId('ns-device').innerText()}`);

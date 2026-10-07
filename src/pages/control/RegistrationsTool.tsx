@@ -16,11 +16,12 @@ import { ExportRegistrations } from '../ExportRegistrations';
 function useAction(reload: () => void) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const run = async (id: string, fn: () => Promise<void>) => {
+  const [done, setDone] = useState<string | null>(null);   // "Accepted Aldric Stone": the card may leave the list, the organizer still sees what happened (Pack 26)
+  const run = async (id: string, fn: () => Promise<void>, said?: string) => {
     setBusy(id); setError(null);
-    try { await fn(); reload(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(null); }
+    try { await fn(); if (said) setDone(said); reload(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(null); }
   };
-  return { busy, error, run };
+  return { busy, error, done, run };
 }
 
 function Contact({ r }: { r: ManagedRegistration }) {
@@ -53,12 +54,35 @@ function ReviewCard({ r, act, block }: { r: ManagedRegistration; act: ReturnType
       {block && <p className="desk-block" role="status"><b>Blocked:</b> {block}. They cannot be accepted, checked in or entered until it is lifted.</p>}
 
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-        {r.status !== 'accepted' && <button type="button" className="btn btn-ink" disabled={disabled || !!block} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'accepted'))}>{block ? 'Blocked' : 'Accept'}</button>}
-        {r.status !== 'declined' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'declined'))}>Decline</button>}
-        {r.status === 'accepted' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'pending'))}>Back to pending</button>}
+        {r.status !== 'accepted' && <button type="button" className="btn btn-ink" disabled={disabled || !!block} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'accepted'), `Accepted ${r.fullName}.`)}>{block ? 'Blocked' : 'Accept'}</button>}
+        {r.status !== 'declined' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'declined'), `Declined ${r.fullName}.`)}>Decline</button>}
+        {r.status === 'accepted' && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => act.run(r.id, () => decideRegistration(r.id, 'pending'), `${r.fullName} is back in the pending list.`)}>Back to pending</button>}
         {(r.status === 'accepted' || r.status === 'pending') && <button type="button" className="btn btn-line" disabled={disabled} onClick={() => { if (window.confirm(`Withdraw ${r.fullName} from this event? They can register again later.`)) void act.run(r.id, () => withdrawRegistration(r.id)); }}>Withdraw</button>}
       </div>
 
+      {/* fee and insurance: shown in full on an accepted registration (that is where they are settled); folded on a pending one, where the decision comes first */}
+      {r.status === 'accepted' && <FeeInsurance r={r} act={act} disabled={disabled} />}
+
+      <details>
+        <summary>{r.status === 'accepted' ? 'Contact, availability and notes' : 'Fee, insurance, contact and notes'}</summary>
+        <div style={{ display: 'grid', gap: 6, marginTop: 8 }}>
+          {r.status !== 'accepted' && <FeeInsurance r={r} act={act} disabled={disabled} />}
+          <p style={{ overflowWrap: 'anywhere' }}>Email: {r.email}</p>
+          <Contact r={r} />
+          <p>Can attend: {attendanceText(r.attendDates, r.days)} · shares equipment: {r.sharesEquipment ? 'yes' : 'no'}</p>
+          {r.availabilityNotes && <p>Availability note: {r.availabilityNotes}</p>}
+          {r.notes && <p>Notes: {r.notes}</p>}
+          {r.medicalNote && (showHealth
+            ? <p>Private medical note: {r.medicalNote} <button type="button" className="linklike" onClick={() => setShowHealth(false)}>Hide</button></p>
+            : <button type="button" className="btn btn-line" onClick={() => setShowHealth(true)}>Show private medical note</button>)}
+        </div>
+      </details>
+    </article>
+  );
+}
+
+function FeeInsurance({ r, act, disabled }: { r: ManagedRegistration; act: ReturnType<typeof useAction>; disabled: boolean }) {
+  return (
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
         {r.feeDueCents > 0 ? (
           <button type="button" className="btn btn-line" disabled={disabled} aria-pressed={r.feePaid} onClick={() => act.run(r.id, () => setRegistrationPaid(r.id, !r.feePaid))}>
@@ -71,21 +95,6 @@ function ReviewCard({ r, act, block }: { r: ManagedRegistration; act: ReturnType
           </select>
         </label>
       </div>
-
-      <details>
-        <summary>Contact, availability and notes</summary>
-        <div style={{ display: 'grid', gap: 6, marginTop: 8 }}>
-          <p style={{ overflowWrap: 'anywhere' }}>Email: {r.email}</p>
-          <Contact r={r} />
-          <p>Can attend: {attendanceText(r.attendDates, r.days)} · shares equipment: {r.sharesEquipment ? 'yes' : 'no'}</p>
-          {r.availabilityNotes && <p>Availability note: {r.availabilityNotes}</p>}
-          {r.notes && <p>Notes: {r.notes}</p>}
-          {r.medicalNote && (showHealth
-            ? <p>Private medical note: {r.medicalNote} <button type="button" className="linklike" onClick={() => setShowHealth(false)}>Hide</button></p>
-            : <button type="button" className="btn btn-line" onClick={() => setShowHealth(true)}>Show private medical note</button>)}
-        </div>
-      </details>
-    </article>
   );
 }
 
@@ -104,18 +113,19 @@ export function RegistrationsTool({ event, regs, loading, error, onChanged }: { 
   return (
     <section style={{ display: 'grid', gap: 14 }} aria-label="Registrations">
       <AttentionStrip regs={regs} onPick={k => setFilter(k === 'pending' ? 'pending' : 'accepted')} />
-      <ExportRegistrations slug={event.slug} registrations={regs} />
       <Seg scroll label="Show" value={filter} options={[['pending', `Pending ${counts.pending}`], ['accepted', `Accepted ${counts.accepted}`], ['declined', `Declined ${counts.declined}`], ['withdrawn', `Withdrawn ${counts.withdrawn}`], ['all', 'All']] as const} onChange={setFilter} />
       <label className="field-in">Search by name, team or category
         <input type="search" value={query} onChange={e => setQuery(e.target.value)} />
       </label>
       {act.error && <p role="alert" style={{ color: 'var(--live)' }}>{act.error}</p>}
+      {act.done && !act.error && <p role="status" className="src" data-testid="review-done">{act.done}</p>}
       {error != null && <p role="alert">{friendlyError(error, 'Could not load registrations.')}</p>}
       {loading && <p className="muted">Loading registrations…</p>}
       {!loading && list.length === 0 && <div className="panel info"><h3>{regs.length === 0 ? 'No registrations yet' : 'Nothing here'}</h3></div>}
       <div style={{ display: 'grid', gap: 12 }}>
         {list.map(r => <ReviewCard key={r.id} r={r} act={act} block={blocks.data?.get(r.id) ?? null} />)}
       </div>
+      <ExportRegistrations slug={event.slug} registrations={regs} />
     </section>
   );
 }

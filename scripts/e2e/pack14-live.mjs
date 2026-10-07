@@ -283,10 +283,10 @@ try {
     await p.goto(BASE + '/events/test-stuff-test/control?mode=setup&tool=broadcast'); await sleep(2500);
     check(`61. ${who}: the broadcast admin is not offered (organizers only)`, !(await text(p)).includes('OBS overlay') && (await p.getByLabel('Link for OBS').count()) === 0, (await text(p)).slice(0, 200));
   }
-  // the Event day screen links to it
+  // Event Control › Set up lists it among the tools (Pack 25: the Broadcast tool, "Livestream, OBS overlay and sponsors")
   const day = await open('phone', 'organizer');
-  await day.goto(BASE + '/events/test-stuff-test/control?mode=live');
-  check('62. the Event day screen links to the broadcast setup', await day.getByRole('link', { name: /Livestream and OBS overlay/ }).first().waitFor({ timeout: 30000 }).then(() => true, () => false));
+  await day.goto(BASE + '/events/test-stuff-test/control?mode=setup');
+  check('62. Event Control links to the broadcast setup', await day.getByTestId('tool-broadcast').filter({ hasText: /Livestream, OBS overlay/ }).first().waitFor({ timeout: 30000 }).then(() => true, () => false));
 
 } catch (e) {
   check('the run completed without an exception', false, e?.stack ?? e);

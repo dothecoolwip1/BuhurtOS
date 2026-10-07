@@ -161,7 +161,7 @@ try {
   for (const [key, want] of Object.entries(LANDING)) landed[key] = await until(async () => path(P[key]) === want && (await P[key].locator('[data-testid="device-bar"]').count()) === 1, 45000);
   check('15. every valid code lands on the right screen with no fighter onboarding: counters on the counter screen', ['counter1', 'counter2', 'counter3', 'counter4'].every(k => landed[k]), JSON.stringify(landed));
   check('16. ... Secretary / Scorekeeper on Event Control › Live ops (QR link, nothing typed)', landed.secretary, path(P.secretary));
-  check('17. ... Marshal on the event home with the field picker', landed.marshal && (await until(async () => /Field 1/.test(await text(P.marshal, '[data-testid="device-home"]')))), await text(P.marshal));
+  check('17. ... Marshal on the event home with the field picker', landed.marshal && (await until(async () => /Lyst 1|Field 1/.test(await text(P.marshal, '[data-testid="device-home"]')))), await text(P.marshal));
   check('18. ... Announcer on the announcer view', landed.announcer, path(P.announcer));
   check('19. ... Event Admin / Temporary Organizer on Event Control › Live ops', landed.admin, path(P.admin));
   check('20. QR link: the fragment is gone and the page is signed in; the code reached the network only in the sign-in POST body', !P.secretary.url().includes('#') && !net.filter(n => n.who === 'secretary').some(n => n.url.includes(norm(dev.secretary.code)) || n.url.includes(dev.secretary.code) || JSON.stringify(n.headers).includes(norm(dev.secretary.code))), P.secretary.url());
@@ -281,7 +281,7 @@ try {
   await P.counter1.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
   await P.counter1.fill('#cp-name', 'Pat');
   await P.counter1.getByRole('button', { name: 'Continue' }).click();
-  await P.counter1.getByRole('button', { name: /Field 1/ }).click();
+  await P.counter1.getByRole('button', { name: /Lyst 1|Field 1/ }).click();
   await P.counter1.getByRole('button', { name: /RED/ }).click();
   const bound = await until(async () => sql(`select string_agg(role || ':' || side || ':' || display_name, ',') from public.lyst_counter_seats where status = 'active' and match_id = '${mid(1)}'`) === 'official:a:Pat', 30000);
   check('56. the COUNTER device (its own Pack 18.1 code) says who holds it, picks Field 1 and RED and is on the fight at once: no pending seat, no approval', bound && sql(`select count(*) from public.lyst_counter_seats where status = 'pending'`) === '0', await text(P.counter1));

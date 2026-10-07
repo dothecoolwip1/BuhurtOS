@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { fetchFighterBookings } from '../data/conflicts';
 import { saveMatchSchedule } from '../data/runSchedule';
 import { isoToLocal, localToIso } from '../lib/dates';
+import { fieldLabel } from '../lib/eventDay';
 import { friendlyError } from '../lib/friendlyError';
 import { DEFAULT_DURATION, bookingLine, parseDuration, timeLabel, type Person } from '../lib/runSchedule';
 
@@ -46,8 +47,8 @@ export function MatchSchedule({ eventId, matchId, scheduledAt, field, duration, 
   };
 
   const summary = scheduledAt
-    ? `${timeLabel(scheduledAt, timeZone)} for ${duration} min${field ? ` on ${field}` : ''}`
-    : field ? `No time yet, on ${field}` : 'No time or field yet';
+    ? `${timeLabel(scheduledAt, timeZone)} for ${duration} min${field ? ` on ${fieldLabel(field)}` : ''}`
+    : field ? `No time yet, on ${fieldLabel(field)}` : 'No time or Lyst yet';
 
   if (!editing) {
     return (

@@ -6,7 +6,7 @@ import { buildSchedule, fetchCompetitionMatchesOrdered, fetchEntries, type Compe
 import { updateEvent } from '../data/setup';
 import { DEFAULT_TIME_ZONE, fetchEventTimeZone } from '../data/runSchedule';
 import { FORMAT_WORD, planTotals, previewPlan, propose, type BuildCompetition, type FormatChoice } from '../lib/buildPlan';
-import { competitionSorts, withdrawnEntryIds } from '../lib/eventDay';
+import { competitionSorts, withdrawnEntryIds, fieldLabel } from '../lib/eventDay';
 import { heldMatches, planEvent } from '../lib/eventPlan';
 import { friendlyError } from '../lib/friendlyError';
 import { REST_TARGET } from '../lib/planner';
@@ -92,7 +92,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
         <p>{done.built > 0 ? `${done.built} competition${done.built === 1 ? '' : 's'}, ${done.fights} fights. The fight order is planned for rest; Live ops keeps it up to date as results come in.` : 'No competition could be built.'}</p>
         {problems.length > 0 && <ul role="alert" style={{ color: 'var(--live)', margin: 0, paddingLeft: 18 }}>{problems.map(p => <li key={p}>{p}</li>)}</ul>}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <Link className="btn btn-ink eh-primary" to={`/events/${event.slug}/control?mode=live`}><span>Open Live ops</span><small>Who fights next, on every field</small></Link>
+          <Link className="btn btn-ink eh-primary" to={`/events/${event.slug}/control?mode=live`}><span>Open Live ops</span><small>Who fights next, on every Lyst</small></Link>
           <Link className="btn btn-line" to={`/events/${event.slug}/control?mode=setup&tool=run`}>See the draws</Link>
         </div>
       </section>
@@ -112,7 +112,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
                 <li><b>{totals.people}</b> fighters</li>
                 <li><b>{totals.competitions}</b> competition{totals.competitions === 1 ? '' : 's'}</li>
                 <li><b>{totals.fights}</b> fights</li>
-                <li><b>{fields}</b> field{fields === 1 ? '' : 's'}</li>
+                <li><b>{fields}</b> Lyst{fields === 1 ? '' : 's'}</li>
               </ul>
               <p className="bt-rest">
                 Preferred rest: {REST_TARGET} fights between appearances.<br />
@@ -128,11 +128,11 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
       </div>
 
       <div className="panel info qs-fields">
-        <span id="bt-fields-l"><b>Fields</b><span className="src">Competitions are spread so every field has about the same number of fights.</span></span>
+        <span id="bt-fields-l"><b>Lysts</b><span className="src">Competitions are spread so every Lyst has about the same number of fights.</span></span>
         <div className="qs-stepper" role="group" aria-labelledby="bt-fields-l">
-          <button type="button" className="btn btn-line" aria-label="One field fewer" disabled={fields <= 1 || !!busy} onClick={() => setFields(n => Math.max(1, n - 1))}>−</button>
-          <output aria-label="Fields">{fields}</output>
-          <button type="button" className="btn btn-line" aria-label="One field more" disabled={fields >= 12 || !!busy} onClick={() => setFields(n => Math.min(12, n + 1))}>+</button>
+          <button type="button" className="btn btn-line" aria-label="One Lyst fewer" disabled={fields <= 1 || !!busy} onClick={() => setFields(n => Math.max(1, n - 1))}>−</button>
+          <output aria-label="Lysts">{fields}</output>
+          <button type="button" className="btn btn-line" aria-label="One Lyst more" disabled={fields >= 12 || !!busy} onClick={() => setFields(n => Math.min(12, n + 1))}>+</button>
         </div>
       </div>
 
@@ -140,7 +140,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
         <ul className="bt-list" aria-label="Competitions to build">
           {toBuild.map(p => (
             <li key={p.id} className="panel info">
-              <div className="bt-row"><b>{p.name}</b><span className="chip">{p.field}</span></div>
+              <div className="bt-row"><b>{p.name}</b><span className="chip">{fieldLabel(p.field)}</span></div>
               <span>{p.entrants} entrants · {FORMAT_WORD[p.choice.format]}{p.choice.format === 'pools' ? ` (${p.choice.poolCount} pools)` : ''} · {p.matches.length} fights</span>
               <span className="src">{p.why}</span>
               <details>
@@ -159,9 +159,9 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
                   {p.choice.format === 'single_elimination' && p.entrants >= 4 && (
                     <label className="qs-check"><input type="checkbox" checked={p.choice.thirdPlace} onChange={e => setOverride(p.id, { thirdPlace: e.target.checked })} /> Third-place fight</label>
                   )}
-                  <label className="field-in">Field
+                  <label className="field-in">Lyst
                     <select value={p.field} onChange={e => setOverride(p.id, { field: e.target.value })}>
-                      {fieldNames.map(f => <option key={f} value={f}>{f}</option>)}
+                      {fieldNames.map(f => <option key={f} value={f}>{fieldLabel(f)}</option>)}
                     </select>
                   </label>
                   <p className="src">Draw number {p.seed}. <button type="button" className="linklike" onClick={() => setSeeds(m => new Map(m).set(p.id, randomSeed()))}>Draw again</button> · Need manual seeding? Use <Link to={`/events/${event.slug}/control?mode=setup&tool=run`}>Draws and schedule</Link>.</p>
@@ -178,7 +178,7 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
           <div className="bt-lanes">
             {[...plan.lanes.entries()].map(([field, lane]) => (
               <div key={field}>
-                <b>{field.replace(/^field/, 'Field')}</b>
+                <b>{fieldLabel(field)}</b>
                 <ol>
                   {lane.slice(0, 40).map(f => {
                     const [compId, key] = f.matchId.split(':');

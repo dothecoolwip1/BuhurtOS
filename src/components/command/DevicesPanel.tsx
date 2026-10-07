@@ -47,7 +47,7 @@ export function DevicesPanel({ eventId, eventName, timezone, refreshKey }: { eve
   const create = (e: React.FormEvent) => {
     e.preventDefault();
     const name = label.trim();
-    if (!name) { setMsg({ ok: false, text: 'Give the device a name, for example "Counter Phone 5".' }); return; }
+    if (!name) { setMsg({ ok: false, text: 'Give the device a name, for example "Secretary Tablet".' }); return; }
     void run(async () => {
       const n = await createCredential(eventId, 'device', name, role);
       setLabel('');
@@ -95,13 +95,13 @@ export function DevicesPanel({ eventId, eventName, timezone, refreshKey }: { eve
 
       <div className="dev-bar">
         <button type="button" className="btn btn-ink cc-btn" disabled={busy} onClick={() => void usualSet()}>Add the usual set for an event</button>
-        <p className="src">Counter Phone 1 to 4, Secretary Tablet, Marshal Phone, Announcer Tablet, Event Admin Tablet. All the codes come up together to print.</p>
+        <p className="src">Secretary Tablet, Marshal Phone, Announcer Tablet, Event Admin Tablet. All the codes come up together to print. Counter phones need no code of their own: they scan the event's Counter QR.</p>
       </div>
 
       <form className="dev-form" onSubmit={create} noValidate>
         <h3>Add one device</h3>
         <label className="field-in">Name
-          <input value={label} maxLength={LABEL_MAX} placeholder="Counter Phone 5" autoComplete="off" onChange={e => { setLabel(e.target.value); setMsg(null); }} />
+          <input value={label} maxLength={LABEL_MAX} placeholder="Second Secretary Tablet" autoComplete="off" onChange={e => { setLabel(e.target.value); setMsg(null); }} />
         </label>
         <label className="field-in">Role
           <select value={role} onChange={e => setRole(e.target.value as DeviceRole)}>{DEVICE_ROLES.map(r => <option key={r} value={r}>{roleWord(r)}</option>)}</select>

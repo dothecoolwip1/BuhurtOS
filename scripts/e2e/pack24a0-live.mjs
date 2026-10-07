@@ -124,7 +124,7 @@ try {
       sql(`update public.matches m set plan_order = null from public.competitions k where k.id = m.competition_id and k.event_id = '${EV}' and m.queue_state = 'scheduled'`);
       const { ctx, page } = await open(kind, 'organizer');
       await page.goto(BASE + `/events/${SLUG}/control?mode=live`);
-      await page.locator('section[aria-label="Event day"]').waitFor({ timeout: 45000 });
+      await page.locator('section[aria-label="Fields"]').waitFor({ timeout: 45000 });
       await sleep(7000);   // the page saves its plan about a second after it has loaded it
       const planned = Number(sql(`select count(*) from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state = 'scheduled' and m.plan_order is not null`));
       check(`[${kind}] opening Event day saved the plan (so the page really did write: ${planned} fights planned)`, planned > 20, String(planned));
@@ -135,7 +135,7 @@ try {
     const rel = await rpc('organizer', 'set_match_hold', { p_match: H, p_held: false });
     check('the organizer releases it explicitly', rel.status === 200 && sql(`select plan_hold || '/' || hold_manual from public.matches where id = '${H}'`) === 'false/false', JSON.stringify(rel));
     const { ctx, page } = await open('desktop', 'organizer');
-    await page.goto(BASE + `/events/${SLUG}/control?mode=live`); await page.locator('section[aria-label="Event day"]').waitFor({ timeout: 45000 }); await sleep(5000);
+    await page.goto(BASE + `/events/${SLUG}/control?mode=live`); await page.locator('section[aria-label="Fields"]').waitFor({ timeout: 45000 }); await sleep(5000);
     check('... and opening Event day does not hold it again by itself', sql(`select plan_hold::text || '/' || hold_manual::text from public.matches where id = '${H}'`) === 'false/false');
     await ctx.close();
     note('hold.audit', sql(`select string_agg(action || ' by ' || coalesce((select email from auth.users where id = actor), '?'), ', ' order by id) from public.audit_log where subject = '${H}' and action like 'queue.hold%'`));
