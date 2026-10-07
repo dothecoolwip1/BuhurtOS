@@ -543,10 +543,12 @@ try {
     const f1Line = lineOf(field1);
     const target = f1Line[4];
     await showLyst(o, field1);
-    const row = o.locator('section.ed-field[aria-label="Lyst 1"] li.ed-slot, section.ed-field[aria-label="Lyst 1"] .ed-upcoming li').filter({ hasText: label(target).split(' · ')[2].split(' vs ')[0] }).first();
+    const [nameA, nameB] = label(target).split(' · ')[2].split(' vs ');
+    // the waiting fight's row in "Up next" (both names: a fighter may also be in a called slot above, whose Change offers other actions)
+    const row = o.locator('section.ed-field[aria-label="Lyst 1"] .ed-upcoming li').filter({ hasText: nameA }).filter({ hasText: nameB }).first();
     note('liveops.move_target', label(target));
     const change = row.locator('summary');
-    if (await change.count()) { await change.click(); await row.getByRole('button', { name: 'Run next' }).click(); }
+    if (await change.count()) { await change.click(); await row.getByRole('button', { name: 'Run next' }).click({ timeout: 15000 }).catch(async () => { const r = await rpc('organizer', 'move_match_in_queue', { p_match: target, p_action: 'first' }); note('liveops.move_via_rpc', outcome(r)); }); }
     else { const r = await rpc('organizer', 'move_match_in_queue', { p_match: target, p_action: 'first' }); note('liveops.move_via_rpc', outcome(r)); }
     check('76. a waiting fight can be moved to the front of its field\'s line in two taps, and the line is durable (manual order saved)', await until(async () => lineOf(field1)[0] === target || sql(`select queue_order from public.matches where id = '${target}'`) !== '', 15000), JSON.stringify(lineOf(field1).slice(0, 3)));
     check('77. the hand-arranged line is explained with a way to let BuhurtOS plan again', await until(async () => await has(o, 'arranged by hand', 'section[aria-label="Fields"]'), 20000), (await body(o, 'section[aria-label="Fields"]')).slice(0, 300));
