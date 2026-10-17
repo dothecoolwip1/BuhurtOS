@@ -22,6 +22,7 @@ import { SocialLinksRow } from '../components/SocialLinks';
 import { FighterGallery } from '../components/FighterGallery';
 import { ClaimRequest } from '../components/ClaimRequest';
 import { FighterDisciplineRecord } from '../components/discipline/FighterDisciplineRecord';
+import { PastMedals } from '../components/PastMedals';
 import { fetchClaimStates } from '../data/entrants';
 import { Block, DisciplineList, FightRow, FilterBar, FormStrip, HighlightList, MedalChip, RankingLines, SummaryTiles } from '../components/CareerBlocks';
 
@@ -57,9 +58,11 @@ function Career({ p }: { p: FighterProfile }) {
   const isMine = mine.data === id;
   const claim = useAsync(() => fetchClaimStates([id]), [id]);
   const lifecycle = useAsync(() => fetchFighterLifecycle(id), [id]);
-  const career = useAsync(() => fetchFighterCareer(id), [id]);
+  // Past medals the fighter adds themself (PastMedals) change the career summary and the results: both re-read in place.
+  const [medalKey, setMedalKey] = useState(0);
+  const career = useAsync(() => fetchFighterCareer(id), [id], [medalKey]);
   const fights = useAsync(() => fetchFighterFights(id), [id]);
-  const results = useAsync(() => fetchFighterResults(id), [id]);
+  const results = useAsync(() => fetchFighterResults(id), [id], [medalKey]);
   const h2h = useAsync(() => fetchFighterHeadToHead(id), [id]);
   const rankings = useAsync(() => fetchFighterRankings(id), [id]);
   const memberships = useAsync(() => fetchFighterMemberships(id), [id]);
@@ -160,6 +163,7 @@ function Career({ p }: { p: FighterProfile }) {
       )}
 
       {session && <FighterDisciplineRecord fighterId={id} isMine={isMine} />}
+      {isMine && !fictional && <PastMedals fighterId={id} results={results.data ?? []} onChanged={() => setMedalKey(k => k + 1)} />}
 
       {nothingYet && (
         <section className="panel info" data-testid="career-empty">

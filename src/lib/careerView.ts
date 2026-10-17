@@ -8,7 +8,7 @@ export type Outcome = 'win' | 'loss' | 'draw';
 
 const CATEGORY_LABEL: Record<string, string> = {
   '3v3': '3v3', '5v5': '5v5', '12v12': '12v12', '30v30': '30v30', sword_shield: 'Sword and shield', buckler: 'Sword and buckler',
-  longsword: 'Longsword', polearm: 'Polearm', profight: 'Profight', sabre: 'Sabre', greatsword: 'Greatsword'
+  longsword: 'Longsword', polearm: 'Polearm', profight: 'Profight', sabre: 'Sabre', greatsword: 'Greatsword', axe: 'Axe (short / long)'
 };
 export const categoryLabel = (code: string | null | undefined): string => (code ? CATEGORY_LABEL[code] ?? code.replace(/_/g, ' ') : 'All categories');
 /** The five categories the rankings page leads with; the rest are offered after them. */

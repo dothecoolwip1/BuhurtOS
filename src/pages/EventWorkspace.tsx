@@ -28,6 +28,7 @@ import { fetchMyFighterId } from '../data/fighters';
 import { fetchMyInvitation, withdrawMyInvitation, withdrawRegistration, type MyInvitation } from '../data/invitations';
 import { fetchMyEventEntryIds } from '../data/myFight';
 import { OfficialResults } from '../components/OfficialResults';
+import { AddMyMedalLink } from '../components/PastMedals';
 import { CheckinCode } from '../components/CheckinCode';
 import { useEventRecordWatch } from '../lib/useEventRecordWatch';
 import { defaultViewFor, eventPhaseOf, viewPath, type PublicView } from '../lib/eventPhaseView';
@@ -304,9 +305,16 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
 
       {view === 'results' && (
         <>
-          {completed && <p className="panel info" role="status" data-testid="event-closed"><Chip tone="win">Official results</Chip> <b>{event.closedAt ? 'This event is complete.' : 'This event is over.'}</b> The placings here are its permanent record.</p>}
+          {completed && event.medalsOnly && (
+            <div className="panel info" role="status" data-testid="event-medals-only" style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>
+              <p style={{ margin: 0 }}><Chip>Past tournament</Chip> <b>Medals only.</b> This tournament was not run in BuhurtOS: no fights or scores were recorded here. The medals below were added by the fighters themselves from their own results and are not verified; they earn no ranking points.{event.timeNote ? ` ${event.timeNote}.` : ''}</p>
+              <AddMyMedalLink />
+            </div>
+          )}
+          {completed && !event.medalsOnly && <p className="panel info" role="status" data-testid="event-closed"><Chip tone="win">Official results</Chip> <b>{event.closedAt ? 'This event is complete.' : 'This event is over.'}</b> The placings here are its permanent record.</p>}
           {!showLive && <p className="panel info muted">Results appear here once the event is published.</p>}
-          {showLive && completed && competitions.length > 0 && <EventHistory eventId={event.id} competitions={competitions} live={live} recordKey={recordKey} />}
+          {showLive && completed && event.medalsOnly && <OfficialResults competitions={competitions} version={recordKey} heading="Medals" emptyText="No medals have been added for this tournament yet." reported />}
+          {showLive && completed && !event.medalsOnly && competitions.length > 0 && <EventHistory eventId={event.id} competitions={competitions} live={live} recordKey={recordKey} />}
           {showLive && !completed && (
             <section className="live-results" aria-labelledby="res-h">
               <h2 id="res-h">Results</h2>
@@ -327,7 +335,7 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
               })}
             </section>
           )}
-          {showLive && completed && competitions.length === 0 && <p className="muted">This event had no competitions.</p>}
+          {showLive && completed && !event.medalsOnly && competitions.length === 0 && <p className="muted">This event had no competitions.</p>}
         </>
       )}
     </section>

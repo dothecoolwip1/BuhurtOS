@@ -15,8 +15,10 @@ const sinceText = (iso: string | null | undefined): string | null => (iso ? new 
  * results, read from one public view. Team competitions name the team as it was at the event (and its roster on request); individual competitions
  * name the fighter, with the team they represented underneath. Only competitions that are official are shown; `version` re-reads after a change.
  */
-export function OfficialResults({ competitions, version = 0, heading = 'Official results', emptyText }: {
+export function OfficialResults({ competitions, version = 0, heading = 'Official results', emptyText, reported = false }: {
   competitions: readonly LiveCompetition[]; version?: number; heading?: string | null; emptyText?: string;
+  /** Past medals (medals-only tournaments): the placings were reported by the fighters, not fought here, so they are not called official. */
+  reported?: boolean;
 }) {
   const official = useMemo(() => competitions.filter(c => c.status === 'finished'), [competitions]);
   const ids = official.map(c => c.id);
@@ -27,22 +29,22 @@ export function OfficialResults({ competitions, version = 0, heading = 'Official
       {heading && <h2 id="official-h">{heading}</h2>}
       {rows.loading && rows.data === undefined && <p className="muted">Loading the official results…</p>}
       {rows.error != null && <p role="alert">{friendlyError(rows.error, 'Could not load the official results.')}</p>}
-      {rows.data && official.map(c => <CompetitionResults key={c.id} competition={c} rows={rows.data!.filter(r => r.competitionId === c.id)} />)}
+      {rows.data && official.map(c => <CompetitionResults key={c.id} competition={c} rows={rows.data!.filter(r => r.competitionId === c.id)} reported={reported} />)}
     </section>
   );
 }
 
-export function CompetitionResults({ competition, rows }: { competition: LiveCompetition; rows: OfficialResult[] }) {
+export function CompetitionResults({ competition, rows, reported = false }: { competition: LiveCompetition; rows: OfficialResult[]; reported?: boolean }) {
   const podium = useMemo(() => buildPodium(rows), [rows]);
-  const since = sinceText(competition.finalizedAt);
+  const since = reported ? null : sinceText(competition.finalizedAt);
   return (
     <section id={`results-${competition.id}`} className="panel info ofc" aria-labelledby={`ofc-h-${competition.id}`}>
       <div className="ofc-head">
         <h3 id={`ofc-h-${competition.id}`}>{competition.name}</h3>
-        <Chip tone="win">Official</Chip>
+        {reported ? <Chip>Reported by the fighters</Chip> : <Chip tone="win">Official</Chip>}
         {since && <span className="src">since {since}</span>}
       </div>
-      {rows.length === 0 && <p className="muted">No placings are recorded.</p>}
+      {rows.length === 0 && <p className="muted">{reported ? 'No medals have been added in this discipline yet.' : 'No placings are recorded.'}</p>}
       {podium.steps.length > 0 && (
         <ol className={`podium ${podium.steps.length === 1 ? 'one' : podium.steps.length === 2 ? 'two' : ''}`.trim()} aria-label={`${competition.name}: podium`}>
           {podium.steps.map(s => <Step key={s.place} step={s} />)}
