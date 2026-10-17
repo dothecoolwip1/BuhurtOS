@@ -25,6 +25,8 @@ medals only.
 - `public.past_medal_records` (view, security invoker): which placings are reports and whether each is verified. No account ids.
 - `private.record_past_medal` does the work with no permission check (the public function and the migration's data section call it);
   `private.discard_past_medal_report` holds the removal, as Pack 09C keeps every removal of result rows in `private.discard_result`.
+- `20261022000200_kings_cup_2025_dates.sql`: Kings Cup 2025 moves from the placeholder to June 28-29, 2025 (the owner's dates), its medal
+  competitions' "official since" day follows, a source row records who gave the dates, and the change is audited (`event.dates_set`).
 
 Everything that already reads results reads these rows unchanged: the fighter's career summary (5 gold, 3 silver, 4 bronze for Keston), the
 Disciplines block, Event history, the tournament's podium (`competition_results`), the HACSA organization view. Rankings see 0 points.
@@ -43,7 +45,7 @@ Disciplines block, Event history, the tournament's podium (`competition_results`
 
 | Tournament | Slug | Dates recorded | How sure | Source recorded on the event |
 | --- | --- | --- | --- | --- |
-| Kings Cup 2025 | `kings-cup-2025` | **placeholder** 2025-01-01, time note "Exact date to be confirmed" | not found online after ten searches (no HACSA, Buhurt International, buhurt-ranking or news listing) | none; the event text says the date is a placeholder |
+| Kings Cup 2025 | `kings-cup-2025` | June 28-29, 2025 (venue not recorded) | given by the owner on 2026-10-17; not found online after ten searches (no HACSA, Buhurt International, buhurt-ranking or news listing). Created with a placeholder date first, corrected by `20261022000200_kings_cup_2025_dates.sql` | `imported` (source: the owner's statement) |
 | Strathmore Summer Siege 2025 | `strathmore-summer-siege-2025` | Aug 22-24, 2025, Strathmore Ag Grounds (Medieval Faire), HACSA | confirmed: HACSA event page listing + faire dates in local news | `imported` |
 | Geeky Market 2025 (Edmonton) | `geeky-market-2025` | Nov 22-23, 2025, Edmonton EXPO Centre Hall E (the market's dates) | market dates confirmed; the tournament itself is not on any page found | `unverified`, time note "Market dates; tournament day to be confirmed" |
 | Coulee Clash 2026 | `coulee-clash-2026` | May 30-31, 2026, Servus Sports Centre, Lethbridge (Company of the Black Spears; HACSA rules) | confirmed: Lethbridge Herald (June 2, 2026), Buhurt International and buhurt-ranking listings (May 30) | `imported` |
@@ -59,7 +61,8 @@ them himself from his profile once he remembers, or tell the owner.
 The whole file was cancelled by the tool's confirmation gate (as in Pack 09C: a function body that both logs a revision and removes result rows);
 the removal was moved into `private.discard_past_medal_report`, and the migration went on in parts: `past_medals_schema`,
 `past_medals_withdraw_view`, `past_medals_data`, then `past_medals_keep_entries` (the entry is kept as `withdrawn` instead of deleted; the
-repository file carries the same final text).
+repository file carries the same final text), and `kings_cup_2025_dates` once the owner gave the dates (verified: event June 28-29, 2025, no time
+note, both competitions official since June 30, 2025, source row and audit row present, Keston's profile shows the new dates).
 
 Verified read-only after: 4 events `medals_only`, 12 competitions (finished, no tier), 12 results for Keston with points 0, 12 `reported`
 revisions, 12 `result.reported` and 12 `competition.created_for_past_medals` audit rows, 12 `past_medal_records` rows `unverified`;
