@@ -117,7 +117,7 @@ export function EventControlPage() {
       {tool?.key === 'settings' && <SetupTab key={event.id} event={event} onChanged={changed} />}
       {tool?.key === 'competitions' && <CompetitionsTab key={event.id} event={event} onChanged={changed} />}
       {tool?.key === 'registrations' && <RegistrationsTool event={event} regs={all} loading={regs.loading} error={regs.error} onChanged={() => setRegsKey(k => k + 1)} />}
-      {tool?.key === 'entrants' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} regs={all} slug={event.slug} />}
+      {tool?.key === 'entrants' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} regs={all} slug={event.slug} startsOn={event.startsOn} timeZone={event.timezone} />}
       {tool?.key === 'staff' && <PeopleTab eventId={event.id} myUserId={userId} />}
       {tool?.key === 'teams' && <TeamsTab />}
       {tool?.key === 'broadcast' && <BroadcastTab key={event.id} event={event} />}

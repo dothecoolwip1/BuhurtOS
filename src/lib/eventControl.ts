@@ -11,7 +11,7 @@ export interface Tool { key: ToolKey; label: string; help: string; home: Control
 export const TOOLS: readonly Tool[] = [
   { key: 'competitions', label: 'Competitions', help: 'What is fought: category, ruleset, rounds to win, structure', home: 'setup', organizer: true },
   { key: 'registrations', label: 'Registrations', help: 'Accept, decline, fees, insurance, withdrawals, export', home: 'setup', organizer: true },
-  { key: 'entrants', label: 'Entrants', help: 'Add or remove entrants by hand; invitations', home: 'setup', organizer: true },
+  { key: 'entrants', label: 'Entrants', help: 'Enter anyone by hand, registered or not; take entrants out; invitations', home: 'setup', organizer: true },
   { key: 'build', label: 'Build tournament', help: 'Formats, draws, fields and fight order from the registrations', home: 'setup', organizer: true },
   { key: 'run', label: 'Draws and schedule', help: 'Each draw by hand: times, fields, withdrawals, teams represented', home: 'setup', organizer: true },
   { key: 'settings', label: 'Event settings', help: 'Dates, venue, fees, waiver, registration, publish, archive', home: 'setup', organizer: true },
