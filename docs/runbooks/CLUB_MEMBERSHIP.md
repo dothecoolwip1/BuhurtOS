@@ -326,5 +326,30 @@ Verification: the migration plus 40 checks (anon refused; member sees public mee
 sees the leadership meeting and its 6 attendees; outsider sees no membership, video or agenda; executive creates, updates, invites, cancels
 and restores; second AGM, unknown kind, bad time zone, end-before-start, foreign invitee, cancel-with-open-vote and day-change-after-open
 refused; a question opens on a `vote` session; audit rows written) ran against the hosted project inside one transaction that was rolled
-back, 2026-10-18. **The migration is not applied to the hosted project**: apply it with `supabase/migrations/20261018040000_club_meetings_reusable.sql`.
-Until then the members page falls back to the AGM and leadership reads and the executive cannot schedule meetings from the page.
+back, 2026-10-18. Applied to the hosted project 2026-10-18 (owner: "let's make it live now"), as version `20261018135914`: the Pre-AGM
+Leadership Meeting became kind `leadership`, invite-only, with its 6 invitees; the AGM row is unchanged.
+
+## 15. Part 5 (2026-10-18): close nominations and topic submissions at a set time
+
+Owner, 2026-10-18: "Make it so you can close nominations and concerns at a set date and time … I meant to say close the submission."
+Migration `20261018150000_club_meeting_deadlines.sql`. Additive.
+
+- `club_meetings.nominations_close_at` / `topics_close_at` (timestamptz, NULL). NULL keeps the old rule: both close when the meeting
+  starts, so nothing already on hosted changes until an executive sets a time.
+- **Nominations deadline** stops new nominations (`nominate_for_club_office`). A nominee can still accept, decline or withdraw until the
+  meeting starts (`respond_to_club_nomination` is unchanged).
+- **Topics deadline** stops submitting and editing (`submit_club_agm_topic`, `update_club_agm_topic`). Withdrawing one's own topic stays
+  open until the meeting starts (`withdraw_club_agm_topic`; `private.club_my_topic_for(uuid, text)` takes the action and the old
+  `club_my_open_topic(uuid)` now means 'edit').
+- `club_agm_member_view` adds `topics_close_at/_text`, `nominations_open`, `nominations_close_at/_text` and `my_topics[].can_withdraw`;
+  `nominate_blocked` reads "Nominations closed Sunday, October 18 at 5:30 PM." `private.club_meeting_json` (so `club_meetings_list`,
+  `club_meeting_view` and the AGM meeting JSON) adds `nominations_close_set/_at/_text`, `nominations_open` and the same four for topics.
+- `set_club_meeting_deadlines(p_meeting, p_nominations_close_at, p_topics_close_at)` → meeting JSON. President, Secretary or Treasurer
+  only; a past time closes now; NULL clears. Audited as `club.meeting_deadlines` with before/after.
+- Page: the meeting form (Details) has "New nominations close" (AGM) and "Topic submissions close" fields; the Topics and Nominations
+  sections show the deadline with **Close … now**; members see the real close time on the meeting page and in the help.
+
+Verification: the migration plus checks (outsider and plain member refused `set_club_meeting_deadlines`; executive closes nominations
+and topics; then nominate, submit and edit refused with the time in the message, withdraw topic and withdraw candidacy still allowed;
+`can_edit` false and `can_withdraw` true; clearing both returns to the meeting start; the leadership meeting untouched; `club_meeting_view`
+and `club_meetings_list` still work) ran against the hosted project inside one transaction that was rolled back, 2026-10-18.
