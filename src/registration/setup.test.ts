@@ -5,11 +5,21 @@ import { localToIso } from '../lib/dates';
 const form = (o: Partial<SetupForm> = {}): SetupForm => ({
   name: 'Red Deer Rumble 2026', description: '', venue: 'Horse In Hand Ranch', address: '', city: 'Blackfalds', region: 'AB', country: 'CA', latitude: null, longitude: null, fieldCount: '2', startsOn: '2026-11-14', endsOn: '2026-11-15',
   opensLocal: '', closesLocal: '2026-11-08T23:59', feeDollars: '40', feeProvince: 'AB', feeNote: '',
-  eventType: 'tournament', registrationMode: 'buhuros', externalUrl: '', timeNote: '', volunteerInfo: '', ...o
+  eventType: 'tournament', registrationMode: 'buhuros', externalUrl: '', timeNote: '', volunteerInfo: '', biTournamentUrl: '', ...o
 });
 
 describe('setup validation', () => {
   it('accepts the Rumble as set up', () => expect(validateSetup(form())).toEqual({}));
+  it('takes the Buhurt International tournament page only from buhurtinternational.com', () => {
+    expect(validateSetup(form({ biTournamentUrl: 'https://www.buhurtinternational.com/tournament/red-deer-rumble' })).biTournamentUrl).toBeUndefined();
+    expect(validateSetup(form({ biTournamentUrl: ' https://buhurtinternational.com/tournament/red-deer-rumble ' })).biTournamentUrl).toBeUndefined();
+    expect(validateSetup(form({ biTournamentUrl: 'https://example.com/tournament/red-deer-rumble' })).biTournamentUrl).toBeTruthy();
+    expect(validateSetup(form({ biTournamentUrl: 'http://www.buhurtinternational.com/tournament/x' })).biTournamentUrl).toBeTruthy();
+    expect(validateSetup(form({ biTournamentUrl: 'https://buhurtinternational.com.evil.test/x' })).biTournamentUrl).toBeTruthy();
+    expect(validateSetup(form({ biTournamentUrl: 'javascript:alert(1)' })).biTournamentUrl).toBeTruthy();
+    expect(toPatch(form({ biTournamentUrl: ' https://www.buhurtinternational.com/tournament/red-deer-rumble ' })).bi_tournament_url).toBe('https://www.buhurtinternational.com/tournament/red-deer-rumble');
+    expect(toPatch(form()).bi_tournament_url).toBeNull();
+  });
   it('catches a short name, backwards dates and close before open', () => {
     expect(validateSetup(form({ name: 'ab' })).name).toBeTruthy();
     expect(validateSetup(form({ endsOn: '2026-11-13' })).endsOn).toBeTruthy();

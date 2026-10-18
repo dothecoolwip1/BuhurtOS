@@ -19,7 +19,7 @@ const fromEvent = (e: LiveEvent): SetupForm => ({
   startsOn: e.startsOn, endsOn: e.endsOn, opensLocal: isoToLocal(e.registrationOpensAt), closesLocal: isoToLocal(e.registrationClosesAt),
   feeDollars: e.feeCents ? String(e.feeCents / 100) : '', feeProvince: e.feeCents ? (e.feeProvince ?? 'ALL') : '', feeNote: e.feeNote ?? '',
   eventType: e.eventType as EventType, registrationMode: e.registrationMode, externalUrl: e.externalUrl ?? '', timeNote: e.timeNote ?? '', volunteerInfo: e.volunteerInfo ?? '',
-  fieldCount: String(e.fieldCount ?? 1)
+  biTournamentUrl: e.biTournamentUrl ?? '', fieldCount: String(e.fieldCount ?? 1)
 });
 
 /** Where each requirement on this page is satisfied, so the checklist can point straight at it. Competitions live in their own tab. */
@@ -143,6 +143,13 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
           </label>
         )}
         {text('timeNote', 'Times to show (for example "Doors 6 pm, karaoke 9:30 pm")')}
+        {f.eventType === 'tournament' && (
+          <label className="field-in">Buhurt International tournament page (optional)
+            <input type="url" inputMode="url" placeholder="https://www.buhurtinternational.com/tournament/…" value={f.biTournamentUrl} onChange={e => set('biTournamentUrl', e.target.value)} aria-invalid={Boolean(show && errors.biTournamentUrl)} />
+            <span className="src">Shown on the event page so fighters can find the BI announcement and make their BI profile.</span>
+            {err('biTournamentUrl')}
+          </label>
+        )}
         <label className="field-in">How do people sign up
           <select value={f.registrationMode} onChange={e => set('registrationMode', e.target.value as RegistrationMode)}>{REGISTRATION_MODES.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select>
         </label>

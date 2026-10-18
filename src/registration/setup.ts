@@ -6,9 +6,17 @@ export interface SetupForm {
   startsOn: string; endsOn: string; opensLocal: string; closesLocal: string;
   feeDollars: string; feeProvince: string; feeNote: string;
   eventType: EventType; registrationMode: RegistrationMode; externalUrl: string; timeNote: string; volunteerInfo: string;
+  /** The tournament's page on Buhurt International (Pack 26), or empty when it is not announced there. */
+  biTournamentUrl: string;
   /** How many Lysts (fighting areas) the event runs at once, 1 to 12: the default list of fields for the draws, the counter phones and Live ops (Pack 26). */
   fieldCount: string;
 }
+
+/** A page on buhurtinternational.com (any subdomain) over https, under 500 characters: the same rule the database enforces. */
+export const isBiTournamentUrl = (url: string): boolean => {
+  const u = url.trim();
+  return u.length <= 500 && /^https:\/\/([a-z0-9-]+\.)*buhurtinternational\.com(\/\S*)?$/i.test(u);
+};
 
 /** Messages in plain words, keyed by field. */
 export function validateSetup(f: SetupForm): Record<string, string> {
@@ -27,6 +35,7 @@ export function validateSetup(f: SetupForm): Record<string, string> {
   if (fee > 0 && f.registrationMode === 'buhuros' && !f.feeProvince) e.feeProvince = 'Say who pays: choose a province, or "Everyone".';
   if (f.registrationMode === 'external' && !/^https?:\/\/\S+$/i.test(f.externalUrl.trim())) e.externalUrl = 'Paste the full link, starting with https://';
   if (f.timeNote.length > 200) e.timeNote = 'Keep this under 200 characters.';
+  if (f.biTournamentUrl.trim() && !isBiTournamentUrl(f.biTournamentUrl)) e.biTournamentUrl = 'Paste the tournament page from buhurtinternational.com, starting with https://';
   const lysts = Number(f.fieldCount);
   if (!Number.isInteger(lysts) || lysts < 1 || lysts > 12) e.fieldCount = 'How many Lysts: a whole number from 1 to 12.';
   if (f.volunteerInfo.length > 2000) e.volunteerInfo = 'Keep this under 2000 characters.';
@@ -46,7 +55,7 @@ export function toPatch(f: SetupForm) {
     fee_cents: cents, fee_province: cents > 0 && f.registrationMode === 'buhuros' && f.feeProvince && f.feeProvince !== 'ALL' ? f.feeProvince : null, fee_note: f.feeNote.trim() || null,
     event_type: f.eventType, registration_mode: f.registrationMode,
     external_url: f.registrationMode === 'external' ? f.externalUrl.trim() : null, time_note: f.timeNote.trim() || null, volunteer_info: f.volunteerInfo.trim() || null,
-    field_count: Number(f.fieldCount)
+    field_count: Number(f.fieldCount), bi_tournament_url: f.biTournamentUrl.trim() || null
   };
 }
 
