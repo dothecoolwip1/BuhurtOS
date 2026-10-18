@@ -30,7 +30,7 @@ export function CompetitionEntrants({ comp, eventId, eventDay, drawsTo }: { comp
   const changed = () => setReload(k => k + 1);
 
   return (
-    <section className="panel" style={{ display: 'grid', gap: 10, padding: 14 }} aria-label={`${comp.name} entrants`} data-testid={`competition-entrants-${comp.id}`}>
+    <section className="panel" style={{ display: 'grid', gap: 10, padding: 14 }} data-testid={`competition-entrants-${comp.id}`}>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         <h4 style={{ margin: 0 }}>{comp.name}</h4>
         <Chip tone="steel">{entries.loading && !entries.data ? 'Counting…' : `${inList.length} ${inList.length === 1 ? 'entrant' : 'entrants'}`}</Chip>
