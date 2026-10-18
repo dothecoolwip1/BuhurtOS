@@ -82,7 +82,7 @@ select t.as_admin();
 select t.expect_eq('... and nothing of Event 1 was touched by it', (select count(*) from public.lyst_counter_seats where event_id = t.ev(1)), 1::bigint);
 select t.as_device(t.sid('secretary'));
 select t.expect_error('a Secretary device is not a counter: it cannot bind as one', $$select public.counter_bind('Field 1', 'a', 'Sec')$$, '42501');
-select t.expect_eq('the Secretary / Scorekeeper shows the Counter QR state (none yet) and may not create one (that is the permanent organizer)', (public.counter_pool_code(t.ev(1)) ->> 'can_create'), 'false');
+select t.expect_eq('the Secretary / Scorekeeper shows the Counter QR state (none yet) and may create one: whoever runs the day may (Pack 26)', (public.counter_pool_code(t.ev(1)) ->> 'can_create'), 'true');
 select t.expect_eq('... and may move Counter Phone 1 to blue (scoring authority)', public.move_counter_session(t.sid('counter1'), 'Field 1', 'b') -> 'binding' ->> 'side', 'b');
 select t.as_device(t.sid('counter1'));
 select t.expect_eq('... the phone sees the change at once', public.counter_state() -> 'binding' ->> 'side', 'b');
@@ -99,11 +99,14 @@ select t.expect_eq('the audit shows the Marshal device by name', (select count(*
 select t.expect_eq('... and the move names the Secretary device', (select count(*) from public.audit_log where action = 'counter.moved' and details -> 'device' ->> 'label' = 'Secretary Tablet')::int, 1);
 select t.expect_eq('no device or session id appears as an auth account anywhere', (select count(*) from auth.users where id in (select sid from t.s))::int, 0);
 
--- the event's reusable Counter QR: the permanent organizer makes it; a Temporary Organizer cannot (device management stays with the organizer)
+-- the event's reusable Counter QR: whoever runs the day makes it (Pack 26): the Event Admin device too. What stays with the permanent organizer:
+-- an Event Admin or stream controller code (nobody hands out more authority than they hold).
 select t.as_device(t.sid('admin'));
-select t.expect_error('the Event Admin device cannot create the Counter QR', format($$select public.create_event_credential(%L, 'counter_pool', 'Counter QR', 'counter', %L, null, 'ABCDEFGH2345')$$, t.ev(1), t.h(60)), '42501');
+select t.expect_error('the Event Admin device cannot mint another Event Admin code', format($$select public.create_event_credential(%L, 'device', 'Second Admin', 'temporary_organizer', %L)$$, t.ev(1), t.h(66)), '42501');
+select t.expect_error('... nor a stream controller code', format($$select public.create_event_credential(%L, 'controller', 'Laptop 2', 'broadcast_controller', %L)$$, t.ev(1), t.h(67)), '42501');
+select t.expect_ok('the Event Admin device creates the Counter QR', format($$select public.create_event_credential(%L, 'counter_pool', 'Counter QR', 'counter', %L, null, 'ABCDEFGH2345')$$, t.ev(1), t.h(60)));
 select t.as_user(t.u(1));
-select t.expect_ok('the organizer creates it', format($$select public.create_event_credential(%L, 'counter_pool', 'Counter QR', 'counter', %L, null, 'ABCDEFGH2345')$$, t.ev(1), t.h(60)));
+select t.expect_error('one Counter QR per event: the organizer cannot make a second', format($$select public.create_event_credential(%L, 'counter_pool', 'Counter QR 2', 'counter', %L, null, 'ABCDEFGH2346')$$, t.ev(1), t.h(68)), '22023');
 select t.as_admin();
 select t.open(60, 'ip-q', 61) as q1 \gset
 select t.open(60, 'ip-q', 62) as q2 \gset
@@ -216,8 +219,12 @@ select t.expect_eq('... the names listing has no email column', pg_get_function_
 select t.expect_eq('... and shows nobody''s email', (select count(*) from public.list_event_staff_names(t.ev(1)) where name like '%@%')::int, 0);
 select t.expect_error('... cannot touch another event''s staff', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(2)), '42501');
 select t.as_device(t.sid('secretary'));
-select t.expect_error('the Secretary cannot manage staff', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(1)), '42501');
-select t.expect_error('... nor see the staff', format($$select * from public.list_event_staff_names(%L)$$, t.ev(1)), '42501');
+select t.expect_ok_undo('the Secretary device adds a scorekeeper: whoever runs the day may add staff (Pack 26)', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(1)));
+select t.expect_error('... but cannot make anyone an ORGANIZER', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'organizer')$$, t.ev(1)), '42501');
+select t.expect_error('... cannot remove the organizer', format($$select public.remove_event_role(%L, %L, 'organizer')$$, t.ev(1), t.u(1)), '42501');
+select t.expect_error('... cannot touch another event''s staff', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(2)), '42501');
+select t.expect_ok('... and sees the staff by name', format($$select * from public.list_event_staff_names(%L)$$, t.ev(1)));
+select t.expect_error('... never with emails (those stay with the permanent organizer)', format($$select * from public.list_event_staff(%L)$$, t.ev(1)), '42501');
 select t.as_user(t.u(1));
 select t.expect_ok_undo('the permanent organizer still adds an organizer', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'organizer')$$, t.ev(1)));
 select t.expect_ok_undo('... and the new announcer role', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'announcer')$$, t.ev(1)));

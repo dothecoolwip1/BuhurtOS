@@ -5,7 +5,8 @@
 -- Event Admin tablet (a Temporary Organizer device) stood in front of "This event has no Counter QR yet" with no way forward.
 --
 -- Now: everyone private.can_command says runs the day (organizer, head marshal, Secretary / Scorekeeper, and the Event Admin tablet through its
--- device roles) may make and show the Counter QR, make / replace / revoke ordinary device codes, see the device list, and add or remove staff.
+-- device roles) may make and show the Counter QR, make / replace / revoke ordinary device codes, see the device list, add or remove staff and see
+-- the staff by name (the listing with emails stays with the permanent organizer).
 -- What stays with the permanent organizer: making or replacing an Event Admin (temporary_organizer) or stream controller code, and adding or removing
 -- another organizer. Nobody can hand out more authority than they hold.
 --
@@ -58,6 +59,7 @@ select pg_temp.bos_patch('public.grant_event_role_by_email(uuid, text, text)'::r
 select pg_temp.bos_patch('public.remove_event_role(uuid, uuid, text)'::regprocedure,
   $a$if not private.is_event_operator(p_event) or (p_role = 'organizer' and not private.is_organizer(p_event))$a$,
   $b$if not (private.is_event_operator(p_event) or private.can_command(p_event)) or (p_role = 'organizer' and not private.is_organizer(p_event))$b$);
-select pg_temp.bos_patch('public.list_event_staff(uuid)'::regprocedure,
-  $a$if not private.is_organizer(p_event) then raise exception 'only an organizer can see the staff' using errcode = '42501'; end if;$a$,
-  $b$if not (private.is_event_operator(p_event) or private.can_command(p_event)) then raise exception 'only the people who run this event can see the staff' using errcode = '42501'; end if;$b$);
+-- the staff WITH emails (list_event_staff) stays with the permanent organizer; the people who run the day see the staff BY NAME
+select pg_temp.bos_patch('public.list_event_staff_names(uuid)'::regprocedure,
+  $a$if p_event is null or not private.is_event_operator(p_event) then raise exception 'only an organizer of this event can see the staff' using errcode = '42501'; end if;$a$,
+  $b$if p_event is null or not (private.is_event_operator(p_event) or private.can_command(p_event)) then raise exception 'only the people who run this event can see the staff' using errcode = '42501'; end if;$b$);

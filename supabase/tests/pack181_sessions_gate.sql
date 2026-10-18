@@ -89,10 +89,11 @@ insert into public.events (id, slug, name, status, starts_on, ends_on, timezone)
   (t.ev(5), 'p181-e5', 'Clock Change Cup', 'published', '2026-10-31', '2026-10-31', 'America/Edmonton'),
   (t.ev(6), 'p181-e6', 'Long Past Cup', 'published', '2026-01-01', '2026-01-01', 'America/Edmonton'),
   (t.ev(7), 'p181-e7', 'Two Day Cup', 'published', '2026-10-10', '2026-10-11', 'America/Edmonton');
-insert into public.event_credentials (id, event_id, kind, label, role, code_hash) values
-  ('00000000-0000-0000-0000-00000000cd03', t.ev(3), 'device', 'Cal', 'counter', t.h(60)), ('00000000-0000-0000-0000-00000000cd04', t.ev(4), 'device', 'Utc', 'counter', t.h(61)),
-  ('00000000-0000-0000-0000-00000000cd05', t.ev(5), 'device', 'Dst', 'counter', t.h(62)), ('00000000-0000-0000-0000-00000000cd06', t.ev(6), 'device', 'Past', 'counter', t.h(63)),
-  ('00000000-0000-0000-0000-00000000cd07', t.ev(7), 'device', 'Two', 'counter', t.h(64));
+-- created_at is fixed too: a code is valid from its creation, and these calendar checks must not depend on the day the gate runs
+insert into public.event_credentials (id, event_id, kind, label, role, code_hash, created_at) values
+  ('00000000-0000-0000-0000-00000000cd03', t.ev(3), 'device', 'Cal', 'counter', t.h(60), '2025-12-01 00:00:00+00'), ('00000000-0000-0000-0000-00000000cd04', t.ev(4), 'device', 'Utc', 'counter', t.h(61), '2025-12-01 00:00:00+00'),
+  ('00000000-0000-0000-0000-00000000cd05', t.ev(5), 'device', 'Dst', 'counter', t.h(62), '2025-12-01 00:00:00+00'), ('00000000-0000-0000-0000-00000000cd06', t.ev(6), 'device', 'Past', 'counter', t.h(63), '2025-12-01 00:00:00+00'),
+  ('00000000-0000-0000-0000-00000000cd07', t.ev(7), 'device', 'Two', 'counter', t.h(64), '2025-12-01 00:00:00+00');
 select t.expect_eq('Edmonton Saturday: the day ends 06:00Z the next day', private.device_event_end(t.ev(3)), '2026-10-11 06:00:00+00'::timestamptz);
 select t.expect_eq('... access ends exactly 24 h later', private.device_credential_expiry('00000000-0000-0000-0000-00000000cd03'), '2026-10-12 06:00:00+00'::timestamptz);
 select t.expect_eq('end + 23:59 (one minute before expiry): VALID', private.device_valid_at('00000000-0000-0000-0000-00000000cd03', '2026-10-12 05:59:00+00'), true);
@@ -109,7 +110,11 @@ select t.expect_eq('clock-change week: day ends 2026-11-01 00:00 MDT = 06:00Z', 
 select t.expect_eq('... access ends 24 exact hours later (2026-11-02 06:00Z, 23:00 MST on the 1st)', private.device_credential_expiry('00000000-0000-0000-0000-00000000cd05'), '2026-11-02 06:00:00+00'::timestamptz);
 select t.expect_eq('a two-day event ends after its LAST day', private.device_event_end(t.ev(7)), '2026-10-12 06:00:00+00'::timestamptz);
 select t.expect_eq('an event long past: a code for it opens nothing', public.device_open_session(t.h(63), t.sh(63), 'ip-p') ->> 'ok', 'false');
-select t.expect_eq('a credential created now for an upcoming event opens', t.open(60) is not null, true);
+-- an event that is upcoming WHENEVER the gate runs (the calendar events above are fixed dates, so they age)
+insert into public.events (id, slug, name, status, starts_on, ends_on, timezone) values
+  (t.ev(8), 'p181-e8', 'Next Month Cup', 'published', current_date + 30, current_date + 30, 'America/Edmonton');
+insert into public.event_credentials (id, event_id, kind, label, role, code_hash) values ('00000000-0000-0000-0000-00000000cd08', t.ev(8), 'device', 'Next', 'counter', t.h(65));
+select t.expect_eq('a credential created now for an upcoming event opens', t.open(65) is not null, true);
 -- rescheduling the event moves the expiry (nothing is stored)
 update public.events set ends_on = '2026-10-11' where id = t.ev(3);
 select t.expect_eq('... extending ends_on by a day extends access by a day', private.device_credential_expiry('00000000-0000-0000-0000-00000000cd03'), '2026-10-13 06:00:00+00'::timestamptz);
@@ -157,9 +162,12 @@ select t.expect_error('another event''s organizer cannot create a code for this 
 select t.expect_error('... nor revoke a device of this event', format($$select public.revoke_event_credential(%L)$$, t.cred('marshal')), '42501');
 select t.expect_error('... nor list them', format($$select * from public.list_event_credentials(%L)$$, t.ev(1)), '42501');
 select t.as_user(t.u(2));
-select t.expect_error('the head marshal cannot create device codes', format($$select public.create_event_credential(%L, 'device', 'X', 'counter', t.h(70))$$, t.ev(1)), '42501');
+select t.expect_ok_undo('the head marshal makes an ordinary device code: whoever runs the day may (Pack 26)', format($$select public.create_event_credential(%L, 'device', 'HM Made', 'counter', t.h(70))$$, t.ev(1)));
+select t.expect_error('... but not an Event Admin code (never more authority than they hold)', format($$select public.create_event_credential(%L, 'device', 'HM Admin', 'temporary_organizer', t.h(71))$$, t.ev(1)), '42501');
+select t.expect_error('... nor a stream controller code', format($$select public.create_event_credential(%L, 'controller', 'HM Laptop', 'broadcast_controller', t.h(72))$$, t.ev(1)), '42501');
 select t.as_user(t.u(4));
-select t.expect_error('a scorekeeper cannot', format($$select public.create_event_credential(%L, 'device', 'X', 'counter', t.h(70))$$, t.ev(1)), '42501');
+select t.expect_ok_undo('a scorekeeper makes an ordinary device code too', format($$select public.create_event_credential(%L, 'device', 'SK Made', 'counter', t.h(70))$$, t.ev(1)));
+select t.expect_error('... but not an Event Admin code', format($$select public.create_event_credential(%L, 'device', 'SK Admin', 'temporary_organizer', t.h(71))$$, t.ev(1)), '42501');
 select t.as_user(t.u(12));
 select t.expect_ok_undo('the platform owner can (the owner passes every event check)', format($$select public.create_event_credential(%L, 'device', 'Owner Made', 'counter', t.h(70))$$, t.ev(1)));
 select t.as_user(t.u(1));
@@ -170,10 +178,13 @@ select t.expect_error('a device cannot be a controller role', format($$select pu
 select t.expect_error('an unknown role is refused', format($$select public.create_event_credential(%L, 'device', 'X', 'organizer', t.h(75))$$, t.ev(1)), '22023');
 select t.expect_error('a verifier of the wrong size is refused', format($$select public.create_event_credential(%L, 'device', 'X', 'counter', '\x01'::bytea)$$, t.ev(1)), '22023');
 select t.as_device(t.sid('admin'));
-select t.expect_error('the Temporary Organizer cannot create device codes', format($$select public.create_event_credential(%L, 'device', 'X', 'counter', t.h(76))$$, t.ev(1)), '42501');
-select t.expect_error('... nor revoke a device', format($$select public.revoke_event_credential(%L)$$, t.cred('marshal')), '42501');
-select t.expect_error('... nor list them', format($$select * from public.list_event_credentials(%L)$$, t.ev(1)), '42501');
-select t.expect_error('... nor sign everything out', format($$select public.revoke_all_event_devices(%L)$$, t.ev(1)), '42501');
+select t.expect_ok_undo('the Temporary Organizer makes an ordinary device code: it runs the day (Pack 26)', format($$select public.create_event_credential(%L, 'device', 'TO Made', 'counter', t.h(76))$$, t.ev(1)));
+select t.expect_error('... but not another Event Admin code', format($$select public.create_event_credential(%L, 'device', 'TO Admin', 'temporary_organizer', t.h(77))$$, t.ev(1)), '42501');
+select t.expect_error('... nor a stream controller code', format($$select public.create_event_credential(%L, 'controller', 'TO Laptop', 'broadcast_controller', t.h(78))$$, t.ev(1)), '42501');
+select t.expect_ok_undo('... may revoke an ordinary device', format($$select public.revoke_event_credential(%L)$$, t.cred('marshal')));
+select t.expect_error('... but not the stream controller', format($$select public.revoke_event_credential(%L)$$, t.cred('controller')), '42501');
+select t.expect_ok('... and lists them', format($$select * from public.list_event_credentials(%L)$$, t.ev(1)));
+select t.expect_error('... but cannot sign everything out (the organizer only)', format($$select public.revoke_all_event_devices(%L)$$, t.ev(1)), '42501');
 select t.as_device(t.sid('marshal'));
 select t.expect_error('a marshal device cannot call the door functions', $$select public.device_open_session(t.h(5), t.sh(5), 'x')$$, '42501');
 select t.as_ctrl(t.sid('controller'));

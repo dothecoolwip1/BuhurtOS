@@ -418,7 +418,9 @@ select t.expect_error('anon cannot list staff', format($q$select * from public.l
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_error('a stranger cannot list staff', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
-select t.expect_error('a scorekeeper cannot list staff', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
+select t.expect_error('a scorekeeper cannot list staff (emails stay with the organizer)', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
+select t.expect_ok('... but sees the staff by name: they run the day too (Pack 26)', format($q$select * from public.list_event_staff_names(%L)$q$, current_setting('t.event')));
+select t.expect_error('... and cannot make anyone an organizer', format($q$select public.grant_event_role_by_email(%L, 'nobody@example.test', 'organizer')$q$, current_setting('t.event')), '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_eq('the organizer sees the staff with emails', (select count(*) from public.list_event_staff(current_setting('t.event')::uuid) where email like '%@example.test'), (select count(*) from public.event_staff where event_id = current_setting('t.event')::uuid));
 
