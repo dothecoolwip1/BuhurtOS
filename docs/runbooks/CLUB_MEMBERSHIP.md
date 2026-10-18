@@ -376,3 +376,26 @@ Verification (rolled-back dry run on hosted, 2026-10-18): open sets `closes_at` 
 passes the list reports both questions closed with their tallies, a late ballot is refused "voting closed Sunday, October 18 at 12:53 PM",
 the sweep closes 2 then 0, an early manual close records `auto=false` and the executive as `closed_by`, and the cron job is scheduled.
 Applied to the hosted project the same day. No question was open at the time, so nothing was backfilled.
+
+## 17. Part 7 (2026-10-18): nominations open at a set moment and close 24 hours later
+
+Owner, 2026-10-18: "Nominations should also close 24 hours after they open. And let's change opening time to two pm MST."
+Migration `20261018180000_club_nominations_window.sql`.
+
+- `club_meetings.nominations_open_at` (NULL = open from the moment the meeting exists). Effective close: `nominations_close_at` if set,
+  else `nominations_open_at + 24 hours` if an opening time is set, else the meeting start (`private.club_nominations_close_at`;
+  `private.club_nominations_open` says whether nominations are open right now).
+- `nominate_for_club_office` refuses before the opening time ("nominations open Sunday, October 18 at 2:00 PM"). Accepting, declining
+  and withdrawing stay open until the meeting starts.
+- `set_club_nominations_open(meeting, opens_at)`: any current executive; a close time that is not after the new opening time is cleared
+  (it was a hand-made close); audited as `club.nominations_open_at`.
+- `club_agm_member_view` / `club_meeting_json` add `nominations_open_at`, `nominations_opens_text`, `nominations_not_yet`;
+  `nominate_blocked` reads "Nominations open … and close …".
+- Page: the meeting card's nominations line shows the window with **Open nominations now**; Details has "New nominations open";
+  members see the window in the blocked message and the help.
+- Data: the 2026 AGM's nominations open 2026-10-18 14:00 America/Edmonton and close 2026-10-19 14:00. The executive had closed them by
+  hand at 12:45 PM; that close was cleared by the migration. Topic submissions were also closed by hand at 12:45 PM and were left as they were.
+
+Verification: rolled-back dry run on hosted (member blocked before opening with the window in the message; member cannot set the opening
+time; executive can), then applied; `club_meeting_json` on the AGM reads opens "Sunday, October 18 at 2:00 PM", closes "Monday, October 19
+at 2:00 PM", `nominations_not_yet` true at 13:09 Mountain.
