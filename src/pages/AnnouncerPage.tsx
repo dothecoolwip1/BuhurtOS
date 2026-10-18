@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import '../styles/announcer.css';
+import { AnnouncerSounds } from '../components/AnnouncerSounds';
 import { CameraOffControl } from '../components/CameraOffControl';
 import { Crest } from '../components/Crest';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -20,6 +21,7 @@ import { buildAnnouncerView, orderLysts, slotWord, type AnnFight, type AnnMark, 
 import { buildEntryInfo, type EntryInfo } from '../lib/announcer/info';
 import { loadFocus, saveFocus } from '../lib/announcer/focus';
 import { latest, staleLine, staleness } from '../lib/announcer/stale';
+import { isBeta } from '../lib/realm';
 
 const MARK_ICON: Record<AnnMark['kind'], string> = { warning: '⚠', card: '▮', deduction: '−', dq: '⊘' };
 
@@ -134,6 +136,7 @@ function AnnouncerScreen() {
       <div className="an-stale-slot" role="status" aria-live="polite">{staleWords && <p className="an-stale" data-testid="stale-banner"><span aria-hidden="true">⏸ </span>{staleWords}</p>}</div>
 
       <ErrorBoundary>
+        {isBeta() && <AnnouncerSounds />}
         {view.lysts.length > 1 && (
           <nav className="an-focus" aria-label="Focus Lyst (this screen only)">
             <button type="button" className="an-chip" aria-pressed={view.focus === null} onClick={() => setFocus(null)}>All Lysts</button>

@@ -166,3 +166,13 @@ body:has(.ann) .dlg-bg{grid-template-columns:minmax(0,1fr)}
 body:has(.ann) .dlg-bg.drawer .dlg{min-width:0}
 body:has(.ann) .dlg-bg .btn{display:block;white-space:normal;text-align:left;height:auto;min-height:48px;padding:10px 18px;border-radius:24px;line-height:1.25}
 body:has(.ann) .dlg-bg .btn .muted{color:inherit;opacity:.85}
+
+/* ---- Hype calls (beta realm): pre-recorded ring-announcer lines. One row that scrolls sideways on a phone, wraps on a tablet. Big targets. */
+.an-sounds{margin-top:12px;padding:12px 14px;border:1px solid var(--an-line);border-radius:14px;background:var(--an-card)}
+.an-sounds-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.an-beta{font:800 10px/1 var(--f-data);letter-spacing:.14em;padding:4px 7px;border-radius:999px;background:var(--an-b);color:var(--an-bg)}
+.an-sounds-row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:4px;scrollbar-width:thin}
+.an-sound{flex:0 0 auto;scroll-snap-align:start;min-height:56px;padding:0 18px;border-radius:14px;border:2px solid var(--an-line);background:var(--an-raised);color:var(--an-fg);font:900 clamp(16px,2vw,20px)/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.03em;cursor:pointer;white-space:nowrap}
+.an-sound:hover{border-color:var(--an-mute)}
+.an-sound.is-playing{background:var(--an-live);border-color:var(--an-live);color:#fff}
+@media (min-width:768px){.an-sounds-row{flex-wrap:wrap;overflow:visible}}
