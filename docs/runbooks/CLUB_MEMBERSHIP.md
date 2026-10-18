@@ -344,10 +344,13 @@ Migration `20261018150000_club_meeting_deadlines.sql`. Additive.
 - `club_agm_member_view` adds `topics_close_at/_text`, `nominations_open`, `nominations_close_at/_text` and `my_topics[].can_withdraw`;
   `nominate_blocked` reads "Nominations closed Sunday, October 18 at 5:30 PM." `private.club_meeting_json` (so `club_meetings_list`,
   `club_meeting_view` and the AGM meeting JSON) adds `nominations_close_set/_at/_text`, `nominations_open` and the same four for topics.
-- `set_club_meeting_deadlines(p_meeting, p_nominations_close_at, p_topics_close_at)` → meeting JSON. President, Secretary or Treasurer
-  only; a past time closes now; NULL clears. Audited as `club.meeting_deadlines` with before/after.
-- Page: the meeting form (Details) has "New nominations close" (AGM) and "Topic submissions close" fields; the Topics and Nominations
-  sections show the deadline with **Close … now**; members see the real close time on the meeting page and in the help.
+- `set_club_meeting_deadlines(p_meeting, p_nominations_close_at, p_topics_close_at)` → meeting JSON. **Any current executive** of the
+  team (president, vice_president, secretary, treasurer, director; owner 2026-10-18: "accessible by all executive roles", migration
+  `20261018160000_club_meeting_deadlines_any_executive.sql`); a past time closes now; NULL clears. Audited as `club.meeting_deadlines`
+  with before/after. Changing the meeting itself stays with the President, Secretary or Treasurer.
+- Page: the Topics and Nominations sections show the deadline with **Close … now** for every executive; under Details the President,
+  Secretary or Treasurer see the fields in the meeting form and every other executive sees a small "When submissions close" form;
+  members see the real close time on the meeting page and in the help.
 
 Verification: the migration plus checks (outsider and plain member refused `set_club_meeting_deadlines`; executive closes nominations
 and topics; then nominate, submit and edit refused with the time in the message, withdraw topic and withdraw candidacy still allowed;
