@@ -2379,6 +2379,7 @@ function public.set_fighter_active(p_fighter uuid, p_active boolean, p_reason te
 function public.set_lyst_settings(p_event uuid, p_settings jsonb) secdef=true 7649ee51e0d3dcf159d11eef5fbeecf5
 function public.set_match_hold(p_match uuid, p_held boolean, p_reason text) secdef=true 299e9f79391dcafe33fd2bc2be883202
 function public.set_match_queue(p_match uuid, p_state text, p_field text) secdef=true 5563c35795c26a3007ffb290764b38b6
+function public.set_match_schedule(p_match uuid, p_scheduled_at timestamp with time zone, p_field text, p_duration_minutes integer) secdef=true c918a14614b18917bbc1aaeecbdcf9cb
 function public.set_my_fighter_avatar(p_path text) secdef=true eeed532419ebff7e93a0899d34d6407a
 function public.set_notification_settings(p_fights boolean, p_team boolean, p_events boolean, p_system boolean) secdef=true 5bb934647d8d9410ae602be684dd26c4
 function public.set_organization_enabled(p_org uuid, p_enabled boolean, p_reason text) secdef=true cc86f24d78e6f8ab5d7d8e2b4124c0b6

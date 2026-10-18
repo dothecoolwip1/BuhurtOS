@@ -6,7 +6,8 @@ import type { QueueMove } from '../../data/eventDay';
 import { matchContext, type FieldBoard, type AdvancePlan, fieldLabel } from '../../lib/eventDay';
 import { boardAnchor } from '../../lib/commandCentre';
 import { sideLabel } from '../../lib/entryLabel';
-import { timeLabel } from '../../lib/runSchedule';
+import { DEFAULT_DURATION, timeLabel } from '../../lib/runSchedule';
+import { MatchSchedule } from '../MatchSchedule';
 
 export interface BoardActions {
   /** One action at a time per screen: every button is disabled while one runs, so a double tap can never send two. */
@@ -15,7 +16,11 @@ export interface BoardActions {
   move: (match: CompetitionMatch, action: QueueMove) => void;
   sendBack: (match: CompetitionMatch) => void;
 }
-interface Ctx { slug: string; timeZone: string; competitionNames: ReadonlyMap<string, string>; actions: BoardActions }
+interface Ctx {
+  slug: string; eventId: string; timeZone: string; competitionNames: ReadonlyMap<string, string>; actions: BoardActions;
+  /** After a fight was moved to another Lyst or time (Pack 26): the boards re-read. */
+  onChanged: () => void;
+}
 
 const TBD = 'To be decided';
 const names = (m: CompetitionMatch) => ({ a: sideLabel(m.entryA, m.nameA, TBD), b: sideLabel(m.entryB, m.nameB, TBD) });
@@ -46,7 +51,8 @@ function Change({ m, c, live }: { m: CompetitionMatch; c: Ctx; live: boolean }) 
         {!live && <button type="button" className="btn btn-line" disabled={actions.busy} onClick={() => actions.move(m, 'later')}>Run later</button>}
         {live && <button type="button" className="btn btn-line" disabled={actions.busy} onClick={() => actions.move(m, 'skip')}>Skip for now</button>}
         {live && <button type="button" className="btn btn-line" disabled={actions.busy} onClick={() => actions.sendBack(m)}>Back to the line</button>}
-        <Link className="btn btn-line" to={runLink(c.slug, m.id)}>Change field or time</Link>
+        {/* Pack 26: the Lyst and time change right here, for whoever runs the day (the database decides through set_match_schedule); the match keeps its length */}
+        <MatchSchedule eventId={c.eventId} matchId={m.id} scheduledAt={m.scheduledAt} field={m.field} duration={DEFAULT_DURATION} keepDuration people={[]} uncheckedSides={[]} timeZone={c.timeZone} jump={false} onSaved={c.onChanged} />
       </div>
     </details>
   );

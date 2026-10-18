@@ -9,10 +9,12 @@ import { DEFAULT_DURATION, bookingLine, parseDuration, timeLabel, type Person } 
 const errorStyle = { color: 'var(--live)' } as const;
 
 /** When and where one match is held. Shows a clash with another competition BEFORE saving, and lets the organizer schedule anyway. */
-export function MatchSchedule({ eventId, matchId, scheduledAt, field, duration, people, uncheckedSides, timeZone, jump, onSaved }: {
+export function MatchSchedule({ eventId, matchId, scheduledAt, field, duration, people, uncheckedSides, timeZone, jump, onSaved, keepDuration = false }: {
   eventId: string; matchId: string; scheduledAt: string | null; field: string | null; duration: number; people: Person[];
   /** Team sides with no roster yet: their fighters cannot be checked. */
   uncheckedSides: string[]; timeZone: string; jump: boolean; onSaved: () => void;
+  /** Time and Lyst only (the field board): the match keeps its length, which this caller does not know. */
+  keepDuration?: boolean;
 }) {
   const [editing, setEditing] = useState(jump);
   const [when, setWhen] = useState(isoToLocal(scheduledAt, timeZone));
@@ -24,13 +26,13 @@ export function MatchSchedule({ eventId, matchId, scheduledAt, field, duration, 
 
   useEffect(() => { if (jump) setEditing(true); }, [jump]);
 
-  const minutes = parseDuration(mins);
+  const minutes = keepDuration ? duration : parseDuration(mins);
   const iso = when ? localToIso(when, timeZone) : null;
   const problem = when && !iso ? 'Pick a date and time.' : minutes === null ? 'Length must be a whole number of minutes, 1 to 720.' : null;
 
   const write = async () => {
     setBusy(true); setError(null);
-    try { await saveMatchSchedule(matchId, { scheduledAt: iso, field: where, durationMinutes: minutes ?? DEFAULT_DURATION }); setWarnings(null); setEditing(false); onSaved(); }
+    try { await saveMatchSchedule(matchId, { scheduledAt: iso, field: where, durationMinutes: keepDuration ? null : (minutes ?? DEFAULT_DURATION) }); setWarnings(null); setEditing(false); onSaved(); }
     catch (e) { setError(friendlyError(e, 'Could not save the schedule.')); } finally { setBusy(false); }
   };
 
@@ -47,14 +49,14 @@ export function MatchSchedule({ eventId, matchId, scheduledAt, field, duration, 
   };
 
   const summary = scheduledAt
-    ? `${timeLabel(scheduledAt, timeZone)} for ${duration} min${field ? ` on ${fieldLabel(field)}` : ''}`
+    ? `${timeLabel(scheduledAt, timeZone)}${keepDuration ? '' : ` for ${duration} min`}${field ? ` on ${fieldLabel(field)}` : ''}`
     : field ? `No time yet, on ${fieldLabel(field)}` : 'No time or Lyst yet';
 
   if (!editing) {
     return (
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
         <span style={{ flex: '1 1 160px' }}>{summary}</span>
-        <button type="button" className="btn btn-line" onClick={() => setEditing(true)}>{scheduledAt ? 'Change time' : 'Set time'}</button>
+        <button type="button" className="btn btn-line" onClick={() => setEditing(true)}>{keepDuration ? 'Change field or time' : scheduledAt ? 'Change time' : 'Set time'}</button>
       </div>
     );
   }
@@ -67,9 +69,9 @@ export function MatchSchedule({ eventId, matchId, scheduledAt, field, duration, 
         <label className="field-in" style={{ flex: '1 1 120px' }}>Field
           <input value={where} maxLength={40} placeholder="Field 1" onChange={e => setWhere(e.target.value)} />
         </label>
-        <label className="field-in" style={{ flex: '1 1 90px' }}>Minutes
+        {!keepDuration && <label className="field-in" style={{ flex: '1 1 90px' }}>Minutes
           <input inputMode="numeric" value={mins} aria-invalid={minutes === null} onChange={e => { setMins(e.target.value); setWarnings(null); }} />
-        </label>
+        </label>}
       </div>
       {uncheckedSides.length > 0 && <p className="src">{uncheckedSides.join(' and ')} {uncheckedSides.length === 1 ? 'has' : 'have'} no roster yet, so clashes for {uncheckedSides.length === 1 ? 'that team' : 'those teams'} cannot be checked. Add a roster below.</p>}
       {problem && <p role="alert" style={errorStyle}>{problem}</p>}
