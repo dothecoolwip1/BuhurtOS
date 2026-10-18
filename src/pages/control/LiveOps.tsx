@@ -352,10 +352,10 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
 
       <Section id="cc-counters" title="Counter QR" open={fieldNames.length > 0}>
         <CounterQrCard eventId={event.id} compact />
-        {organizer && <p><Link className="btn btn-line cc-btn" to={controlPath(slug, 'live', 'devices')}>Phones signed in, move or sign one out</Link></p>}
+        {allowed && <p><Link className="btn btn-line cc-btn" to={controlPath(slug, 'live', 'devices')}>Phones signed in, move or sign one out</Link></p>}
       </Section>
-      {/* the organizer's device codes (Pack 18.1), folded: the day's phones are managed from the Counters and devices tool */}
-      {organizer && <DevicesPanel eventId={event.id} eventName={event.name} timezone={tz} refreshKey={tick} />}
+      {/* the day's device codes (Pack 18.1), folded: whoever runs the day may make them (the database decides each code); the day's phones are managed from the Counters and devices tool */}
+      {allowed && <DevicesPanel eventId={event.id} eventName={event.name} timezone={tz} refreshKey={tick} />}
 
       {r && (
         <Section id="cc-fighters" title="Fighters" count={r.notReady} countLabel="not ready">
