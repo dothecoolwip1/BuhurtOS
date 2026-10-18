@@ -48,7 +48,7 @@ export function CounterQrCard({ eventId, compact = false }: { eventId: string; c
           <p><b>This event has no Counter QR yet.</b> One code for every counter phone of the event.</p>
           {p.canCreate
             ? <button type="button" className="btn btn-ink" disabled={making} onClick={() => void make()} data-testid="make-counter-qr">{making ? 'Making…' : 'Make the Counter QR'}</button>
-            : <p className="src">An organizer makes it once, under Event Control › Counters and devices. Then it shows here.</p>}
+            : <p className="src">Whoever runs the day makes it once (an organizer, the head marshal, the Secretary or the Event Admin tablet), under Event Control › Counters and devices. Then it shows here.</p>}
         </div>
       )}
       {problem && <p role="alert" className="ly-error">{problem}</p>}

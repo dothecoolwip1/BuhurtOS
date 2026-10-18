@@ -8,7 +8,7 @@ import { DeviceSessions } from '../../components/command/DeviceSessions';
 import { Chip, PageHead, Seg } from '../../components/ui';
 import { fetchEvent, fetchMyEventContext } from '../../data/api';
 import { fetchRegistrations, type ManagedRegistration } from '../../data/manage';
-import { TOOLS, modesFor, toolFor } from '../../lib/eventControl';
+import { TOOLS, modesFor, toolForViewer } from '../../lib/eventControl';
 import { MODE_WORD, PHASE_TONE, PHASE_WORD, controlPath, defaultModeFor, eventPath, eventPhaseOf, isControlMode, type ControlMode } from '../../lib/eventPhaseView';
 import { hasDeviceSession, isDeviceToken } from '../../lib/devices';
 import { friendlyError } from '../../lib/friendlyError';
@@ -59,7 +59,7 @@ export function EventControlPage() {
   const wantedMode = params.get('mode');
   const modes = modesFor(organizer);
   const mode: ControlMode = isControlMode(wantedMode) && modes.includes(wantedMode) ? wantedMode : modes.includes(defaultModeFor(phase)) ? defaultModeFor(phase) : 'live';
-  const tool = organizer ? toolFor(params.get('tool')) : undefined;
+  const tool = toolForViewer(params.get('tool'), organizer);
   useDocumentTitle(event ? `${tool ? tool.label : MODE_WORD[mode]} · ${event.name}` : 'Event Control');
 
   if (authLoading || (loaded.loading && !loaded.data)) return <p className="muted" role="status">Loading…</p>;
@@ -117,7 +117,7 @@ export function EventControlPage() {
       {tool?.key === 'settings' && <SetupTab key={event.id} event={event} onChanged={changed} />}
       {tool?.key === 'competitions' && <CompetitionsTab key={event.id} event={event} onChanged={changed} />}
       {tool?.key === 'registrations' && <RegistrationsTool event={event} regs={all} loading={regs.loading} error={regs.error} onChanged={() => setRegsKey(k => k + 1)} />}
-      {tool?.key === 'entrants' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} regs={all} slug={event.slug} />}
+      {tool?.key === 'entrants' && <FightersTab key={`${event.id}-${competitions.length}`} eventId={event.id} competitions={competitions} registrationMode={event.registrationMode} regs={all} slug={event.slug} startsOn={event.startsOn} timeZone={event.timezone} />}
       {tool?.key === 'staff' && <PeopleTab eventId={event.id} myUserId={userId} />}
       {tool?.key === 'teams' && <TeamsTab />}
       {tool?.key === 'broadcast' && <BroadcastTab key={event.id} event={event} />}

@@ -244,6 +244,7 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
       {view === 'overview' && (
         <>
           {event.description && <p className="ev-lede">{event.description}</p>}
+          {event.biTournamentUrl && <p><a className="btn btn-line" href={event.biTournamentUrl} target="_blank" rel="noopener noreferrer" data-testid="bi-tournament-link">This tournament on Buhurt International</a></p>}
           <EventOrganization meta={meta.data} />
           {invitation.data && <InvitationCard event={event} invitation={invitation.data} onChanged={changed} />}
           {!completed && <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} onChanged={changed} entered={enteredNames} headerLeads={cta?.to === `/events/${event.slug}/register`} />}

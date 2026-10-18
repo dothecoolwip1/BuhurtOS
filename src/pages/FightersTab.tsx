@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { CompetitionEntrants } from '../components/CompetitionEntrants';
 import { Chip } from '../components/ui';
 import type { LiveCompetition } from '../data/api';
 import type { ManagedRegistration } from '../data/manage';
 import { cancelInvitation, fetchEventInvitations, inviteFighter, type EventInvitation } from '../data/invitations';
-import { searchFighters, type FighterOption } from '../data/runSchedule';
+import { DEFAULT_TIME_ZONE, searchFighters, type FighterOption } from '../data/runSchedule';
+import { isEventDayOrLater } from '../lib/autoResolve';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { countInvitationStates, INVITATION_STATE_LABEL, invitationState, invitationTodo, type InvitationState } from '../registration/invitationView';
@@ -13,10 +15,16 @@ const bad: React.CSSProperties = { color: 'var(--live)' };
 const TONE: Record<InvitationState, '' | 'win' | 'brass' | 'steel' | 'live'> = { ready: 'win', pending_confirmation: 'brass', no_account: 'steel', withdrawn: '', cancelled: '' };
 
 /**
- * Organizer → Event → Fighters: add a known fighter record to the event (this is NOT staff; staff live on the People tab), see what
- * each added fighter still has to do themselves, and take an invitation back. Real registrations are reviewed on the Review tab.
+ * Organizer → Event → Entrants. Three things, in the order the organizer needs them on the day:
+ *   1. Enter anyone into a competition by hand, registered on BuhurtOS or not (search, or create a fighter profile for someone with no account).
+ *   2. Add a known fighter record to the event as an invitation (this is NOT staff; staff live on the People tab) and see what they still have to do.
+ *   3. See who registered themselves. Real registrations are reviewed on the Registrations tool.
  */
-export function FightersTab({ eventId, competitions, registrationMode, regs = [], slug }: { eventId: string; competitions: LiveCompetition[]; registrationMode: string; regs?: ManagedRegistration[]; slug?: string }) {
+export function FightersTab({ eventId, competitions, registrationMode, regs = [], slug, startsOn, timeZone }: {
+  eventId: string; competitions: LiveCompetition[]; registrationMode: string; regs?: ManagedRegistration[]; slug?: string;
+  /** The event's first day and time zone: from the event day on, taking an entrant out gives their matches away as walkovers instead of rebuilding the draw. */
+  startsOn?: string; timeZone?: string;
+}) {
   const [key, setKey] = useState(0);
   const list = useAsync(() => fetchEventInvitations(eventId), [eventId], [key]);
   const [adding, setAdding] = useState(false);
@@ -32,15 +40,24 @@ export function FightersTab({ eventId, competitions, registrationMode, regs = []
     setBusy(i.id); setProblem(null);
     try { await cancelInvitation(i.id); setKey(k => k + 1); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(null); }
   };
+  const eventDay = startsOn ? isEventDayOrLater(startsOn, timeZone ?? DEFAULT_TIME_ZONE) : false;
+  const drawsTo = slug ? `/events/${slug}/control?mode=setup&tool=run` : null;
   return (
     <div style={{ display: 'grid', gap: 18 }}>
+      <section className="panel info" style={{ display: 'grid', gap: 12 }} aria-labelledby="ent-h" data-testid="competition-entrants">
+        <h3 id="ent-h" style={{ margin: 0 }}>Entrants in each competition</h3>
+        <p className="src">Anyone can be entered here, whether or not they registered on BuhurtOS. Search for them first; if they are not on BuhurtOS yet, create their fighter profile and they are in. They can claim the profile later and keep their history.</p>
+        {competitions.length === 0 && <p className="muted">This event has no competitions yet. Add one in Competitions first.</p>}
+        {competitions.map(c => <CompetitionEntrants key={c.id} comp={c} eventId={eventId} eventDay={eventDay} drawsTo={drawsTo} />)}
+      </section>
+
       <section className="panel info" style={{ display: 'grid', gap: 10 }} aria-labelledby="addf-h">
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h3 id="addf-h" style={{ margin: 0 }}>Fighters you added</h3>
-          {!adding && <button type="button" className="btn btn-ink" data-testid="add-fighter" disabled={registrationMode !== 'buhuros'} onClick={() => { setAdding(true); setNotice(null); }}>+ Add fighter</button>}
+          <h3 id="addf-h" style={{ margin: 0 }}>Fighters you invited to register</h3>
+          {!adding && <button type="button" className="btn btn-line" data-testid="add-fighter" disabled={registrationMode !== 'buhuros'} onClick={() => { setAdding(true); setNotice(null); }}>+ Invite a fighter</button>}
         </div>
-        <p className="src">Adding a fighter is not the same as adding staff: they are expected to fight, and they still complete the registration form and sign the waiver themselves. Marshals, scorekeepers and medics go on the People tab.</p>
-        {registrationMode !== 'buhuros' && <p role="status" className="src">This event does not take registrations on BuhurtOS, so fighters cannot be added here. Change "How do people sign up" in Setup first.</p>}
+        <p className="src">An invitation asks a fighter with a BuhurtOS record to register themselves: they still complete the form and sign the waiver. To put someone straight into a competition, use the section above. Marshals, scorekeepers and medics go on the People tab.</p>
+        {registrationMode !== 'buhuros' && <p role="status" className="src">This event does not take registrations on BuhurtOS, so there is nothing to invite fighters to. Enter them in a competition above instead.</p>}
         {adding && (
           <AddFighterForm eventId={eventId} competitions={competitions} registeredNames={registeredNames} onDone={(n, notified) => { setAdding(false); setKey(k => k + 1); setNotice(notified ? `${n} was added and told in BuhurtOS.` : `${n} was added. This record has no BuhurtOS account, so nobody was notified; the fighter cannot confirm until they claim it.`); }} onCancel={() => setAdding(false)} />
         )}
