@@ -356,3 +356,23 @@ Verification: the migration plus checks (outsider and plain member refused `set_
 and topics; then nominate, submit and edit refused with the time in the message, withdraw topic and withdraw candidacy still allowed;
 `can_edit` false and `can_withdraw` true; clearing both returns to the meeting start; the leadership meeting untouched; `club_meeting_view`
 and `club_meetings_list` still work) ran against the hosted project inside one transaction that was rolled back, 2026-10-18.
+
+## 16. Part 6 (2026-10-18): a vote closes on its own 24 hours after it opens
+
+Owner, 2026-10-18: "I want the voting to close 24 hours after the voting starts." Migration `20261018170000_club_votes_close_after_24h.sql`.
+
+- `club_meeting_questions.closes_at` = `opened_at + 24 hours`, set by `open_club_question`. The executive can still close earlier with
+  `close_club_question` ("Close and count now").
+- `private.club_close_question(question, by, at)` is the one way a question closes (manual or automatic): status closed, `closed_at`,
+  `result` = tally plus `auto` (true when nobody closed it by hand). `club_question_guard` keeps a closed question final.
+- `private.club_questions_autoclose()` closes every open question past its time; pg_cron job `club-votes-autoclose` runs it every minute.
+  `cast_club_ballot` refuses a ballot once `closes_at` has passed (a refusal cannot persist a close, so the sweep does the closing).
+- `club_question_list` adds `closes_at`, `closes_text` and `auto_closed`; an open question past its time is already reported as closed with
+  its tally, so members and the executive see the same result from the closing second even before the sweep has run.
+- Page: members see "Voting closes Monday, October 19 at 5:40 PM (24 hours after it opened), or earlier if the executive closes it"; the
+  executive's Voting section shows "Closes on its own …" and the button reads "Close and count now".
+
+Verification (rolled-back dry run on hosted, 2026-10-18): open sets `closes_at` one day out; a member votes while open; after the time
+passes the list reports both questions closed with their tallies, a late ballot is refused "voting closed Sunday, October 18 at 12:53 PM",
+the sweep closes 2 then 0, an early manual close records `auto=false` and the executive as `closed_by`, and the cron job is scheduled.
+Applied to the hosted project the same day. No question was open at the time, so nothing was backfilled.
