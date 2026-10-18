@@ -102,6 +102,25 @@ column public.club_meeting_attendance_history.previous_status text
 column public.club_meeting_attendance_history.recorded_at timestamp with time zone not null
 column public.club_meeting_attendance_history.recorded_by uuid not null
 column public.club_meeting_attendance_history.recorded_by_name text not null
+column public.club_meeting_ballot_history.cast_by_membership_id uuid not null
+column public.club_meeting_ballot_history.changed_at timestamp with time zone not null
+column public.club_meeting_ballot_history.changed_by uuid not null
+column public.club_meeting_ballot_history.id bigint not null
+column public.club_meeting_ballot_history.new_choice text not null
+column public.club_meeting_ballot_history.previous_choice text
+column public.club_meeting_ballot_history.question_id uuid not null
+column public.club_meeting_ballot_history.voter_membership_id uuid not null
+column public.club_meeting_ballots.cast_at timestamp with time zone not null
+column public.club_meeting_ballots.cast_by uuid not null
+column public.club_meeting_ballots.cast_by_membership_id uuid not null
+column public.club_meeting_ballots.changed_at timestamp with time zone not null
+column public.club_meeting_ballots.choice text not null
+column public.club_meeting_ballots.id uuid not null
+column public.club_meeting_ballots.question_id uuid not null
+column public.club_meeting_ballots.voter_membership_id uuid not null
+column public.club_meeting_invitees.invited_at timestamp with time zone not null
+column public.club_meeting_invitees.meeting_id uuid not null
+column public.club_meeting_invitees.membership_id uuid not null
 column public.club_meeting_nomination_history.action text not null
 column public.club_meeting_nomination_history.changed_at timestamp with time zone not null
 column public.club_meeting_nomination_history.changed_by uuid not null
@@ -132,6 +151,22 @@ column public.club_meeting_proxies.holder_membership_id uuid not null
 column public.club_meeting_proxies.id uuid not null
 column public.club_meeting_proxies.meeting_id uuid not null
 column public.club_meeting_proxies.status text not null
+column public.club_meeting_questions.closed_at timestamp with time zone
+column public.club_meeting_questions.closed_by uuid
+column public.club_meeting_questions.closes_at timestamp with time zone
+column public.club_meeting_questions.created_at timestamp with time zone not null
+column public.club_meeting_questions.created_by uuid not null
+column public.club_meeting_questions.details text
+column public.club_meeting_questions.id uuid not null
+column public.club_meeting_questions.kind text not null
+column public.club_meeting_questions.meeting_id uuid not null
+column public.club_meeting_questions.office text
+column public.club_meeting_questions.opened_at timestamp with time zone
+column public.club_meeting_questions.options jsonb not null
+column public.club_meeting_questions.result jsonb
+column public.club_meeting_questions.sort_order integer not null
+column public.club_meeting_questions.status text not null
+column public.club_meeting_questions.title text not null
 column public.club_meeting_records.id bigint not null
 column public.club_meeting_records.meeting_id uuid not null
 column public.club_meeting_records.recorded_at timestamp with time zone not null
@@ -167,15 +202,24 @@ column public.club_meeting_topics.status_changed_at timestamp with time zone not
 column public.club_meeting_topics.status_changed_by uuid
 column public.club_meeting_topics.subject text not null
 column public.club_meeting_topics.updated_at timestamp with time zone not null
+column public.club_meetings.cancelled_at timestamp with time zone
+column public.club_meetings.cancelled_by uuid
 column public.club_meetings.created_at timestamp with time zone not null
+column public.club_meetings.created_by uuid
+column public.club_meetings.details text
+column public.club_meetings.ends_at timestamp with time zone
 column public.club_meetings.id uuid not null
+column public.club_meetings.invite_only boolean not null
 column public.club_meetings.kind text not null
 column public.club_meetings.location text
 column public.club_meetings.membership_year integer not null
+column public.club_meetings.nominations_close_at timestamp with time zone
+column public.club_meetings.nominations_open_at timestamp with time zone
 column public.club_meetings.starts_at timestamp with time zone not null
 column public.club_meetings.team_id uuid not null
 column public.club_meetings.timezone text not null
 column public.club_meetings.title text not null
+column public.club_meetings.topics_close_at timestamp with time zone
 column public.club_meetings.video_details text
 column public.club_meetings.video_link text
 column public.club_membership_years.applications_open boolean not null
@@ -202,6 +246,10 @@ column public.club_memberships.status_changed_by uuid
 column public.club_memberships.status_note text
 column public.club_memberships.team_id uuid not null
 column public.club_memberships.user_id uuid
+column public.club_vote_officers.added_at timestamp with time zone not null
+column public.club_vote_officers.email text not null
+column public.club_vote_officers.note text
+column public.club_vote_officers.team_id uuid not null
 column public.competition_rulesets.added_at timestamp with time zone not null
 column public.competition_rulesets.added_by uuid
 column public.competition_rulesets.competition_id uuid not null
@@ -450,6 +498,7 @@ column public.event_staff.role text not null
 column public.event_staff.user_id uuid not null
 column public.events.address text
 column public.events.archived_at timestamp with time zone
+column public.events.bi_tournament_url text
 column public.events.city text
 column public.events.closed_at timestamp with time zone
 column public.events.country text
@@ -1115,6 +1164,19 @@ constraint club_meeting_attendance club_meeting_attendance_status_check CHECK ((
 constraint club_meeting_attendance_history club_meeting_attendance_history_meeting_id_fkey FOREIGN KEY (meeting_id) REFERENCES club_meetings(id)
 constraint club_meeting_attendance_history club_meeting_attendance_history_membership_id_fkey FOREIGN KEY (membership_id) REFERENCES club_memberships(id)
 constraint club_meeting_attendance_history club_meeting_attendance_history_pkey PRIMARY KEY (id)
+constraint club_meeting_ballot_history club_meeting_ballot_history_cast_by_membership_id_fkey FOREIGN KEY (cast_by_membership_id) REFERENCES club_memberships(id)
+constraint club_meeting_ballot_history club_meeting_ballot_history_pkey PRIMARY KEY (id)
+constraint club_meeting_ballot_history club_meeting_ballot_history_question_id_fkey FOREIGN KEY (question_id) REFERENCES club_meeting_questions(id)
+constraint club_meeting_ballot_history club_meeting_ballot_history_voter_membership_id_fkey FOREIGN KEY (voter_membership_id) REFERENCES club_memberships(id)
+constraint club_meeting_ballots club_meeting_ballots_cast_by_membership_id_fkey FOREIGN KEY (cast_by_membership_id) REFERENCES club_memberships(id)
+constraint club_meeting_ballots club_meeting_ballots_choice_check CHECK (((char_length(choice) >= 1) AND (char_length(choice) <= 120)))
+constraint club_meeting_ballots club_meeting_ballots_pkey PRIMARY KEY (id)
+constraint club_meeting_ballots club_meeting_ballots_question_id_fkey FOREIGN KEY (question_id) REFERENCES club_meeting_questions(id)
+constraint club_meeting_ballots club_meeting_ballots_question_id_voter_membership_id_key UNIQUE (question_id, voter_membership_id)
+constraint club_meeting_ballots club_meeting_ballots_voter_membership_id_fkey FOREIGN KEY (voter_membership_id) REFERENCES club_memberships(id)
+constraint club_meeting_invitees club_meeting_invitees_meeting_id_fkey FOREIGN KEY (meeting_id) REFERENCES club_meetings(id)
+constraint club_meeting_invitees club_meeting_invitees_membership_id_fkey FOREIGN KEY (membership_id) REFERENCES club_memberships(id)
+constraint club_meeting_invitees club_meeting_invitees_pkey PRIMARY KEY (meeting_id, membership_id)
 constraint club_meeting_nomination_history club_meeting_nomination_history_action_check CHECK ((action = ANY (ARRAY['nominated'::text, 'also_nominated'::text, 'accepted'::text, 'declined'::text, 'withdrawn'::text])))
 constraint club_meeting_nomination_history club_meeting_nomination_history_nomination_id_fkey FOREIGN KEY (nomination_id) REFERENCES club_meeting_nominations(id)
 constraint club_meeting_nomination_history club_meeting_nomination_history_pkey PRIMARY KEY (id)
@@ -1135,6 +1197,16 @@ constraint club_meeting_proxies club_meeting_proxies_holder_membership_id_fkey F
 constraint club_meeting_proxies club_meeting_proxies_meeting_id_fkey FOREIGN KEY (meeting_id) REFERENCES club_meetings(id)
 constraint club_meeting_proxies club_meeting_proxies_pkey PRIMARY KEY (id)
 constraint club_meeting_proxies club_meeting_proxies_status_check CHECK ((status = ANY (ARRAY['active'::text, 'cancelled'::text, 'replaced'::text])))
+constraint club_meeting_questions club_meeting_questions_check CHECK (((kind = 'election'::text) = (office IS NOT NULL)))
+constraint club_meeting_questions club_meeting_questions_check1 CHECK (((status = 'draft'::text) = (opened_at IS NULL)))
+constraint club_meeting_questions club_meeting_questions_check2 CHECK (((status = 'closed'::text) = (closed_at IS NOT NULL)))
+constraint club_meeting_questions club_meeting_questions_details_check CHECK (((details IS NULL) OR (char_length(details) <= 2000)))
+constraint club_meeting_questions club_meeting_questions_kind_check CHECK ((kind = ANY (ARRAY['election'::text, 'motion'::text])))
+constraint club_meeting_questions club_meeting_questions_meeting_id_fkey FOREIGN KEY (meeting_id) REFERENCES club_meetings(id) ON DELETE CASCADE
+constraint club_meeting_questions club_meeting_questions_office_check CHECK (((office IS NULL) OR (office = ANY (ARRAY['president'::text, 'secretary'::text, 'treasurer'::text]))))
+constraint club_meeting_questions club_meeting_questions_pkey PRIMARY KEY (id)
+constraint club_meeting_questions club_meeting_questions_status_check CHECK ((status = ANY (ARRAY['draft'::text, 'open'::text, 'closed'::text])))
+constraint club_meeting_questions club_meeting_questions_title_check CHECK (((char_length(btrim(title)) >= 3) AND (char_length(btrim(title)) <= 160)))
 constraint club_meeting_records club_meeting_records_meeting_id_fkey FOREIGN KEY (meeting_id) REFERENCES club_meetings(id)
 constraint club_meeting_records club_meeting_records_pkey PRIMARY KEY (id)
 constraint club_meeting_rsvp_history club_meeting_rsvp_history_meeting_id_fkey FOREIGN KEY (meeting_id) REFERENCES club_meetings(id)
@@ -1153,11 +1225,12 @@ constraint club_meeting_topics club_meeting_topics_membership_id_fkey FOREIGN KE
 constraint club_meeting_topics club_meeting_topics_pkey PRIMARY KEY (id)
 constraint club_meeting_topics club_meeting_topics_status_check CHECK ((status = ANY (ARRAY['submitted'::text, 'on_agenda'::text, 'addressed'::text, 'withdrawn'::text])))
 constraint club_meeting_topics club_meeting_topics_subject_check CHECK (((char_length(btrim(subject)) >= 3) AND (char_length(btrim(subject)) <= 120)))
-constraint club_meetings club_meetings_kind_check CHECK ((kind = ANY (ARRAY['agm'::text, 'special'::text])))
+constraint club_meetings club_meetings_details_check CHECK (((details IS NULL) OR (char_length(details) <= 4000)))
+constraint club_meetings club_meetings_ends_after_start CHECK (((ends_at IS NULL) OR (ends_at > starts_at)))
+constraint club_meetings club_meetings_kind_check CHECK ((kind = ANY (ARRAY['agm'::text, 'special'::text, 'general'::text, 'leadership'::text, 'vote'::text])))
 constraint club_meetings club_meetings_location_check CHECK (((location IS NULL) OR (char_length(location) <= 200)))
 constraint club_meetings club_meetings_pkey PRIMARY KEY (id)
 constraint club_meetings club_meetings_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
-constraint club_meetings club_meetings_team_id_kind_membership_year_key UNIQUE (team_id, kind, membership_year)
 constraint club_meetings club_meetings_team_id_membership_year_fkey FOREIGN KEY (team_id, membership_year) REFERENCES club_membership_years(team_id, year)
 constraint club_meetings club_meetings_title_check CHECK (((char_length(title) >= 3) AND (char_length(title) <= 120)))
 constraint club_meetings club_meetings_video_details_check CHECK (((video_details IS NULL) OR (char_length(video_details) <= 500)))
@@ -1178,6 +1251,9 @@ constraint club_memberships club_memberships_status_check CHECK ((status = ANY (
 constraint club_memberships club_memberships_status_note_check CHECK (((status_note IS NULL) OR (char_length(status_note) <= 300)))
 constraint club_memberships club_memberships_team_id_membership_year_fkey FOREIGN KEY (team_id, membership_year) REFERENCES club_membership_years(team_id, year)
 constraint club_memberships club_memberships_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint club_vote_officers club_vote_officers_email_check CHECK (((email = lower(email)) AND (email ~ '^[^@[:space:]]+@[^@[:space:]]+$'::text)))
+constraint club_vote_officers club_vote_officers_pkey PRIMARY KEY (team_id, email)
+constraint club_vote_officers club_vote_officers_team_id_fkey FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
 constraint competition_rulesets competition_rulesets_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE
 constraint competition_rulesets competition_rulesets_pkey PRIMARY KEY (competition_id, ruleset_version_id)
 constraint competition_rulesets competition_rulesets_ruleset_version_id_fkey FOREIGN KEY (ruleset_version_id) REFERENCES ruleset_versions(id) ON DELETE RESTRICT
@@ -1362,6 +1438,7 @@ constraint event_staff event_staff_event_id_fkey FOREIGN KEY (event_id) REFERENC
 constraint event_staff event_staff_pkey PRIMARY KEY (event_id, user_id, role)
 constraint event_staff event_staff_role_check CHECK ((role = ANY (ARRAY['organizer'::text, 'head_marshal'::text, 'marshal'::text, 'scorekeeper'::text, 'medic'::text, 'check_in'::text, 'inspector'::text, 'announcer'::text])))
 constraint event_staff event_staff_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint events events_bi_tournament_url_shape CHECK (((bi_tournament_url IS NULL) OR ((char_length(bi_tournament_url) <= 500) AND (bi_tournament_url ~* '^https://([a-z0-9-]+\.)*buhurtinternational\.com(/|$)'::text))))
 constraint events events_check CHECK ((ends_on >= starts_on))
 constraint events events_check1 CHECK (((registration_closes_at IS NULL) OR (registration_opens_at IS NULL) OR (registration_closes_at > registration_opens_at)))
 constraint events events_description_check CHECK ((char_length(description) <= 4000))
@@ -1842,19 +1919,37 @@ function private.clear_live_score() secdef=true 0039b6e520fb696cde330ed8b9ee9bf4
 function private.clear_orphan_next_slots() secdef=true 46af868b29895c0b4c523740c1976149
 function private.clear_tie_decisions() secdef=true b7c59c40208031d422d138cea7492660
 function private.club_append_only() secdef=false 2827b2980efe7b531255b554e76f48d4
+function private.club_ballot_guard() secdef=false dda182e7e16ffc9c96ccdb0ba6403b26
+function private.club_close_question(p_question uuid, p_by uuid, p_at timestamp with time zone) secdef=true c078a2d9cb79d5869c254fb25b627a89
 function private.club_current_officer_name(p_team uuid, p_year integer, p_office text) secdef=true 2878bfdea626bf9875f529c93ce91d22
 function private.club_current_year(p_team uuid) secdef=true 3abf5d894cf675406a3e7545ba647d00
 function private.club_dues_history_immutable() secdef=false 3cd53f48c425e4d6ffc538e9a0ee2300
+function private.club_is_vote_officer(p_team uuid) secdef=true 72657eac3c6d09e352d86f36144c36ae
+function private.club_meeting_can_see(p_meeting uuid) secdef=true 0c8c6fbadf00d49d7177fbf2c944a2af
+function private.club_meeting_check_fields(p_kind text, p_title text, p_starts_at timestamp with time zone, p_timezone text, p_location text, p_details text, p_ends_at timestamp with time zone) secdef=false 2ff974d287ec212baf18dd5b14a22602
 function private.club_meeting_day(p_meeting uuid) secdef=true 42c9f4c03e970d1ca7e7589e29e64c7f
+function private.club_meeting_json(mt club_meetings) secdef=true 3f7766da60dcab8a66723a59604c084e
 function private.club_meeting_my_membership(p_meeting uuid) secdef=true 96c9931a19d2d6a4bff08aa84377c9f1
 function private.club_meeting_team(p_meeting uuid) secdef=true 277603d835462c362096bded459cb6d5
-function private.club_my_open_topic(p_topic uuid) secdef=true b88519a6764d3310fb39e3c718921a5d
+function private.club_meeting_tz(p_meeting uuid) secdef=true 0c6b7852e7ac0a49c67e384301549440
+function private.club_my_open_topic(p_topic uuid) secdef=true 07a2910bb8a45d8deba62ad050ca2960
+function private.club_my_topic_for(p_topic uuid, p_action text) secdef=true 1291b41b0b142cf2cb089993ebc59b5b
 function private.club_no_delete() secdef=false ed68b3ce38e28eb933a46c32e386e96d
 function private.club_nomination_guard() secdef=false 0337b45954ae441ce61da620992bf5a5
+function private.club_nominations_close_at(mt club_meetings) secdef=false 747e138cf770dd95f63e49259da707c8
+function private.club_nominations_open(mt club_meetings) secdef=false 26f8c5bdf681b24328976bdd923389e9
 function private.club_office_label(p_office text) secdef=false 73d636a0527a85fdea520e5191dc8a3d
 function private.club_proxy_guard() secdef=false 9cc18cb57005374c77e3ed3fa3b36c50
 function private.club_proxy_problem(p_proxy uuid) secdef=true 457b4277d67b1be6fe240d5cba60db85
+function private.club_question(p_question uuid) secdef=true 251e3dcf45d62c2e86e89d6507ed0ff3
+function private.club_question_guard() secdef=false 35039fdaccbd0036bc60d6c90e5b8263
+function private.club_question_manage_check(p_team uuid) secdef=true 7a420b78ac1b31630e7dda91daf9a041
+function private.club_question_options(q club_meeting_questions) secdef=true 107470e81b0f47cff1a88ad8775baefd
+function private.club_question_tally(p_question uuid) secdef=true 89fdd275160ff86e63ff80dddb5938bc
+function private.club_questions_autoclose() secdef=true 4d6be1d9ddb343dda3f6de2e2d03a3dd
+function private.club_topics_close_at(mt club_meetings) secdef=false 362877ff5a9f3b5957fae66c3a328d67
 function private.club_vote_check(p_membership uuid, p_as_of date) secdef=true 6f6f1d1d665764453678b8ec8416459f
+function private.club_when_text(p_at timestamp with time zone, p_tz text) secdef=false 4e0be6c235fd212d656056a3c31311a8
 function private.command_schema_ok(p_schema integer) secdef=false f2865c592704878cd24bbdbfe3b8b711
 function private.competition_blockers(p_comp uuid) secdef=true 3efa6033dc97dd30f26ba8f62b7ad84d
 function private.competition_placements(p_comp uuid, p_source text) secdef=true c84795a9d79e7fbc37c0e2fc6390b95c
@@ -1993,6 +2088,8 @@ function private.queue_notify() secdef=true 47bcb968ed6b4fc02a67d00c6e1e735a
 function private.queue_ordered(p_event uuid, p_key text, p_states text[]) secdef=true 016132f2320938825d7e2fd01596cdf0
 function private.readiness_append_only() secdef=false 2754437439ba3c3fbacfffb9dc276366
 function private.readiness_rows(p_event uuid, p_detail boolean) secdef=true 469f7b463f0a0652864ba1b65617427e
+function private.reavers_discord_rsvp_alert() secdef=true e7e7a85ffc39a9195743c1bc7ac4d013
+function private.reavers_discord_topic_alert() secdef=true 67b8552d4aa64a4021945056f3bc6df5
 function private.reg_event(p_reg uuid) secdef=true 1e820f9b13a790f8c07b2bcb0791ff44
 function private.reg_owner(p_reg uuid) secdef=true d6dd57ec37aa2e687b5ead1387f479e4
 function private.registration_category_gender() secdef=true 46931e64a9f8d6dc93bd021db81f0604
@@ -2068,27 +2165,36 @@ function public.camera_state(p_event uuid) secdef=true 795d10e5389ea57fae3e62245
 function public.can_edit_team(p_team uuid) secdef=true 1df5a2f62ba8298f5a7e1aa38a24b6eb
 function public.can_manage_fighter(p_fighter uuid) secdef=true 4a0bebf1cc997246f2209855b3c1450c
 function public.can_rename_team(p_team uuid) secdef=true fe0861b39bd82c4808de3ed8abbe1d93
+function public.cancel_club_meeting(p_meeting uuid, p_cancelled boolean) secdef=true 4c33c52011ac568ce3ab358c848636cc
 function public.cancel_club_meeting_proxy(p_meeting uuid) secdef=true f41cab7af2a9b807b5b6349b5c286afc
 function public.cancel_fighter_claim(p_request uuid) secdef=true 59d8cac2b09d8396355e621e95873e7c
 function public.cancel_invitation(p_invitation uuid) secdef=true eaffdc35b9e6b6a5844718645c906301
 function public.cancel_team_join(p_request uuid) secdef=true 844b25e37cc7dbcabf5050602d4da76a
+function public.cast_club_ballot(p_question uuid, p_choice text, p_for_membership uuid) secdef=true d5c8fb55daa1fb469a331f3da892ea23
 function public.change_suspension(p_command uuid, p_id uuid, p_ends_at timestamp with time zone, p_reason text) secdef=true 1e253c97638701bccb15fd0fcfcc1377
 function public.clear_manual_queue(p_event uuid, p_field text) secdef=true d334a043661617d6e2832f138983193f
 function public.clear_readiness_override(p_reg uuid) secdef=true fe7a0c867441620a866d6b8a7c14dedd
 function public.close_authenticity_finding(p_id uuid, p_status text, p_reason text) secdef=true cbc5a0ce31750072908fc0f8e9c1a059
+function public.close_club_question(p_question uuid) secdef=true 57daa34ac2f8694969da46209e53c429
 function public.close_event(p_event uuid, p_note text) secdef=true 2835279399e490855aa2d51678517eaf
-function public.club_agm_member_view(p_meeting uuid) secdef=true 8e5e1118db6184081d0578bfb0199a3e
+function public.club_agm_member_view(p_meeting uuid) secdef=true 820c4e46d759032589d457acb5290bf0
 function public.club_agm_nominations_admin(p_meeting uuid) secdef=true 417f0502ba13601b84aaf8182f23b80c
 function public.club_agm_topics_admin(p_meeting uuid) secdef=true 3db79c57e2033a8f443fd8a363e4d9f1
 function public.club_dues_history(p_team uuid, p_year integer, p_membership uuid) secdef=true 7c1d1c2c425ef5677d006522496b094e
+function public.club_leadership_meeting(p_team uuid) secdef=true 4f80da71bd83965fc8b456f4110ce584
 function public.club_meeting_admin_info(p_meeting uuid) secdef=true 9cdd22bf949fed20a686dfc046ecb5d4
 function public.club_meeting_dashboard(p_meeting uuid) secdef=true f3694d07b917d1dbd01a1f158caf3299
+function public.club_meeting_invitee_ids(p_meeting uuid) secdef=true 0378b2087339b27df7ec84c5abe943a3
 function public.club_meeting_member_view(p_team uuid) secdef=true 084a70eb1d79fba0b89739fafee996ec
 function public.club_meeting_proxy_list(p_meeting uuid) secdef=true 3d1dcc673711461426df33f79f6f3e44
 function public.club_meeting_records(p_meeting uuid) secdef=true 568959dffd9e111319697e6766092029
+function public.club_meeting_view(p_meeting uuid) secdef=true 19f571ac2aa3a6dca2ee137dd3dd8198
+function public.club_meetings_list(p_team uuid) secdef=true 96d90b1576deb47d8c018d084adca808
 function public.club_member_profile_links(p_team uuid, p_year integer) secdef=true 2cf3fea2b5a78c8cc26dfa3efb9350a4
 function public.club_member_roster(p_team uuid, p_year integer, p_as_of date) secdef=true 02775bf13cfbd299a98e3f6cda50dd8a
 function public.club_membership_overview(p_team uuid) secdef=true c5ee141319f2088f6452f19bb7cc8967
+function public.club_question_ballots(p_question uuid) secdef=true 93217748294b221ef884a556582cfc6d
+function public.club_question_list(p_meeting uuid) secdef=true a5a1d200f1c0ecaac705be089eaa5614
 function public.competition_finalize_preflight(p_competition uuid, p_multiplier_source text) secdef=true 194ee55ccb4232da13950f246d32a74c
 function public.complete_my_profile(p_name text, p_interests text[], p_city text, p_region text, p_country text) secdef=true 2c2692a2c5db2e6131d70458c87292bc
 function public.controller_state() secdef=true f17c2d91f5888f3c268c6231bd90556b
@@ -2097,15 +2203,17 @@ function public.correct_rule_provision(p_provision uuid, p_title text, p_body te
 function public.counter_bind(p_field text, p_side text, p_operator text) secdef=true a8e062b4d5a6692761597896a5ab63e5
 function public.counter_leave() secdef=true c12985308466dda38876fde983ea5522
 function public.counter_operator_history(p_event uuid, p_session uuid) secdef=true ba3f99512819848b3a73c65d6ca03824
-function public.counter_pool_code(p_event uuid) secdef=true 0439d9b9f6e34b1644e5d4c307ea54ec
+function public.counter_pool_code(p_event uuid) secdef=true 6ff69cb72cb98e237228e7e833a10887
 function public.counter_record(p_id uuid, p_seat uuid, p_round integer, p_weight integer) secdef=true fcf1a4e6638ad4be74bf73133c30c4ff
 function public.counter_set_operator(p_name text) secdef=true dbb8cd2f45621e21a7d6f615ec07aa68
 function public.counter_state() secdef=true adbf113a8112f9900cffb338bbe42092
 function public.counter_submit(p_seat uuid, p_round integer) secdef=true c70c52cc8a6e4a75f4791d48e96f8f48
 function public.counter_undo(p_id uuid, p_seat uuid, p_round integer) secdef=true 9a36f9d2b9da5a31704b1d778873b0ef
+function public.create_club_meeting(p_team uuid, p_kind text, p_title text, p_starts_at timestamp with time zone, p_timezone text, p_location text, p_details text, p_invite_only boolean, p_ends_at timestamp with time zone) secdef=true 56123da0f502f8df48c2496bdaf5f37b
+function public.create_club_question(p_meeting uuid, p_kind text, p_title text, p_details text, p_office text) secdef=true 80e1dc3afbd37d9f29aeafcf5ab7b12c
 function public.create_competition(p_event uuid, p_name text, p_category text, p_gender text, p_ruleset text, p_structure text, p_rounds_to_win integer) secdef=true f504e21cabc32c7c1bb789c4d83e7ec6
 function public.create_event(p_slug text, p_name text, p_starts_on date, p_ends_on date, p_venue text, p_address text) secdef=true 47881c4d019464790b52a7b237eab48a
-function public.create_event_credential(p_event uuid, p_kind text, p_label text, p_role text, p_code_hash bytea, p_expires_at timestamp with time zone, p_pool_code text) secdef=true 80ca1b30d510ff56fc5143915da8761f
+function public.create_event_credential(p_event uuid, p_kind text, p_label text, p_role text, p_code_hash bytea, p_expires_at timestamp with time zone, p_pool_code text) secdef=true 40e31a5ec99c11d2a4de1d5b868594e6
 function public.create_lyst_join_code(p_event uuid, p_field text) secdef=true 9c4ef61b2248ede5e580026c4a52c3bf
 function public.create_season(p_org uuid, p_slug text, p_name text, p_starts_on date, p_ends_on date) secdef=true f5d2ba24f26876c98918aec3efcae63d
 function public.create_team(p_slug text, p_name text, p_city text, p_region text, p_country text) secdef=true e4e4ecf117d4e1c4f9f5742a5d2e7234
@@ -2145,7 +2253,7 @@ function public.fighter_schedule_conflicts(p_event uuid) secdef=true 3ce6c7882a6
 function public.finalize_competition(p_competition uuid, p_multiplier_source text) secdef=true 72c5750935ad9d7b10fa4af0a816cf43
 function public.finalize_match(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer) secdef=true 44def16037b7712018d30b89b698220f
 function public.finish_competition(p_competition uuid, p_multiplier_source text) secdef=true 9d2172354280dfbf96a10ac0d675c504
-function public.grant_event_role_by_email(p_event uuid, p_email text, p_role text) secdef=true fd2bb3123059460e55e108236c5b551a
+function public.grant_event_role_by_email(p_event uuid, p_email text, p_role text) secdef=true 4c6f0982993f0cec528d42c814ee6c8c
 function public.grant_organization_admin(p_org uuid, p_email text) secdef=true ca41db721214c28b4939bdd336986d89
 function public.inspection_history(p_reg uuid) secdef=true ddbb545429ea50256098dff6669d97d0
 function public.invite_fighter_to_event(p_event uuid, p_fighter uuid, p_competitions uuid[], p_note text) secdef=true e8b3cf9a73829d8c73ec88c4918db3a2
@@ -2155,11 +2263,11 @@ function public.join_training_counter(p_code text, p_name text, p_side text) sec
 function public.lift_suspension(p_id uuid, p_reason text) secdef=true 6b3b1310f733248678344cc3d2c70bbb
 function public.list_active_organizations() secdef=true 4eb5989632bc53c657e6d46e490727d0
 function public.list_event_announcements(p_event uuid) secdef=true 4b50a23f232575ce9146c414650f251a
-function public.list_event_credentials(p_event uuid) secdef=true 8bcfe0fd1c7c9a4556f1c7a5ee214c79
+function public.list_event_credentials(p_event uuid) secdef=true d363ba84deaa7f75191967c1ff5c7f6b
 function public.list_event_device_sessions(p_event uuid, p_include_ended boolean) secdef=true 9ff9151d4bc0fa3ae4d42f7183204e89
 function public.list_event_invitations(p_event uuid) secdef=true 3362914173f527eceb1fd907eca05683
 function public.list_event_staff(p_event uuid) secdef=true eae1f2c481e4f021e4a09bc7958a8bd2
-function public.list_event_staff_names(p_event uuid) secdef=true 54626f6797ab3f6a2bcb8b657e2c7284
+function public.list_event_staff_names(p_event uuid) secdef=true 7f16a2214b0800a139dc5c873eada47a
 function public.list_fighter_claims() secdef=true b83fba548dd9ef1cfc6005586a153000
 function public.list_fighter_identity_reviews() secdef=true 1cd64be43eb4a1a1fdb2e0d9d3dd5725
 function public.list_organization_staff(p_org uuid) secdef=true 3148e2f3a5cee3c9187925692ce4c868
@@ -2196,8 +2304,9 @@ function public.my_push_devices() secdef=true 6cf8470b7ef5a2720c468c63b10452cb
 function public.my_team_ids() secdef=true 2e515a55e5b67e1265978888534c9a3c
 function public.my_team_requests() secdef=true a6e88a25fc0a79a4fbd27621a8bc20ef
 function public.new_team_request_details(p_team uuid) secdef=true ad83db5bbcbdfdc1e5782c4d51a9fe9d
-function public.nominate_for_club_office(p_meeting uuid, p_office text, p_nominee uuid) secdef=true d0d63c190fe78bd76727f013802b1556
+function public.nominate_for_club_office(p_meeting uuid, p_office text, p_nominee uuid) secdef=true 938bb9d95e690c7e827f5b8c9136f913
 function public.note_rule_conflict(p_version_a uuid, p_provision_a uuid, p_version_b uuid, p_provision_b uuid, p_description text) secdef=true b239f36b17ccafbbdc5c12510bd590f1
+function public.open_club_question(p_question uuid) secdef=true 4b1181852e10a61555b09954f124d4bd
 function public.platform_device_sessions(p_include_ended boolean) secdef=true b0de25cd3786369e438ca3cd6e1f0a65
 function public.pool_standings(p_competition uuid) secdef=true b1f41fde5830d12578118986ca51733d
 function public.publish_historical_version(p_version uuid, p_note text) secdef=true 2f404706189b0288a51428ae78c8ce6e
@@ -2214,7 +2323,7 @@ function public.record_score_event(p_id uuid, p_match uuid, p_kind text, p_paylo
 function public.record_tie_decision(p_competition uuid, p_part text, p_order uuid[], p_note text) secdef=true f007f918d6907ea4acf4c30a71245c55
 function public.record_weigh_in(p_reg uuid, p_weight_kg numeric) secdef=true 2803a514161ea2657dfaf496b5d870de
 function public.register_push_device(p_endpoint text, p_p256dh text, p_auth text, p_label text) secdef=true 24a7bc1e56f1c58192f93f1c80aa17d6
-function public.remove_event_role(p_event uuid, p_user uuid, p_role text) secdef=true 9893c074d678641211922fd5eefeee78
+function public.remove_event_role(p_event uuid, p_user uuid, p_role text) secdef=true c4d84a4ccff52250d50d3fcb46cd1c9f
 function public.remove_event_sponsor(p_id uuid) secdef=true 628fd8a30d4325e86dccf68007f153fb
 function public.remove_my_gallery_photo(p_id uuid) secdef=true ab7a6ee27d45efac2687a0b041f4b338
 function public.remove_organization_admin(p_org uuid, p_user uuid) secdef=true e779cb189f7d474cf16f6c404de5dd54
@@ -2224,7 +2333,7 @@ function public.reopen_competition(p_competition uuid, p_reason text) secdef=tru
 function public.reopen_event(p_event uuid, p_reason text) secdef=true 764d74c72a493dbf2cdf6a79c8be9e26
 function public.reopen_match(p_match uuid, p_reason text) secdef=true 2bfb6353b4a4176e607845aadbe67c72
 function public.reorder_my_gallery(p_ids uuid[]) secdef=true 6e9aff3795e805846d0fe351724c00db
-function public.replace_event_credential(p_credential uuid, p_code_hash bytea) secdef=true 1169fc3613eca47707b6ea24e7397d22
+function public.replace_event_credential(p_credential uuid, p_code_hash bytea) secdef=true e79fb7e3d01166daf7d0a7a1fa80b5ba
 function public.report_bug(p jsonb) secdef=true 7d1ea860d4335a1060158e8f78c967fb
 function public.report_live_score(p_match uuid, p_device text, p_seq bigint, p_score_a integer, p_score_b integer, p_phase text, p_detail jsonb, p_expected_version integer) secdef=true 7b1df6e1c638d9d09de343c9b425229f
 function public.request_fighter_claim(p_fighter uuid, p_message text) secdef=true 9d87cfb1d0d29b597c2905cd402956b4
@@ -2238,7 +2347,7 @@ function public.respond_to_club_nomination(p_nomination uuid, p_response text) s
 function public.restore_event_stats(p_event uuid, p_reason text) secdef=true cb61938b6c8e5a48337573b627ba8622
 function public.review_rule_provision(p_provision uuid, p_status text, p_note text, p_topics text[], p_keywords text[]) secdef=true 7695f2b82161abbdd872df482c5e750d
 function public.revoke_all_event_devices(p_event uuid) secdef=true 851ae759e1fe20f90d7e354250abee3a
-function public.revoke_event_credential(p_credential uuid, p_reason text) secdef=true 634e92d0c0eff0cddd4706ffeec2c02c
+function public.revoke_event_credential(p_credential uuid, p_reason text) secdef=true b0bf05a5510d3ecaeb2bf6c928894845
 function public.save_event_sponsor(p_event uuid, p_id uuid, p_name text, p_logo_path text, p_link text, p_tier text, p_sort integer, p_on_broadcast boolean) secdef=true 9011253bc58523d376e89da176845e6e
 function public.save_queue_plan(p_event uuid, p_order uuid[], p_hold uuid[]) secdef=true 9db9ecf1c2bfd536f9bad2063a2ab0e7
 function public.search_fighters_for_entry(p_competition uuid, p_query text) secdef=true 38479287e0c6b86c25454cc616d337b1
@@ -2252,10 +2361,13 @@ function public.set_bug_status(p_report uuid, p_status text) secdef=true 3545542
 function public.set_club_agm_topic_status(p_topic uuid, p_status text) secdef=true c2bb9b9dee525d77c718953fbaae191c
 function public.set_club_dues(p_membership uuid, p_status text, p_amount_cents integer, p_note text) secdef=true ba684e50d2d8fef42bcfe02b4645cccc
 function public.set_club_meeting_attendance(p_meeting uuid, p_membership uuid, p_status text) secdef=true 8eca34018d1cc57b433e50830df4c29f
+function public.set_club_meeting_deadlines(p_meeting uuid, p_nominations_close_at timestamp with time zone, p_topics_close_at timestamp with time zone) secdef=true f6385027efefbe09da4ee294c72d227c
+function public.set_club_meeting_invitees(p_meeting uuid, p_memberships uuid[]) secdef=true 30c85af79ad57b9f91e0ada5d7a42e02
 function public.set_club_meeting_rsvp(p_meeting uuid, p_response text, p_proxy_holder uuid, p_authorize boolean) secdef=true 99d99b03d6cf5f84232923c9d37368b9
 function public.set_club_meeting_video(p_meeting uuid, p_link text, p_details text) secdef=true 5c416b7551fa2d4235b3b34d9f0903b6
 function public.set_club_membership_status(p_membership uuid, p_status text, p_note text) secdef=true bb44c15428937f8d9c0de864ef440ded
 function public.set_club_membership_year(p_team uuid, p_year integer, p_dues_cents integer, p_starts_on date, p_ends_on date, p_applications_open boolean) secdef=true 63a4420fae6c750c3e7cb034c8297d89
+function public.set_club_nominations_open(p_meeting uuid, p_opens_at timestamp with time zone) secdef=true 38d54c9c85d76031a99a09322c720679
 function public.set_competition_ruleset_version(p_competition uuid, p_version uuid) secdef=true 8477f702d39bfc687a5d755b50c77e1e
 function public.set_competition_rulesets(p_competition uuid, p_versions uuid[]) secdef=true 6c31459976300a03b5054447d773906b
 function public.set_competition_tier(p_comp uuid, p_tier text) secdef=true 189d3ad0190176efc17f876544ab4e1f
@@ -2277,7 +2389,7 @@ function public.set_registration_paid(p_reg uuid, p_paid boolean) secdef=true d1
 function public.set_represented_team(p_entry uuid, p_team uuid, p_reason text) secdef=true d789373f15b05b4b26a92c3704f6f75b
 function public.set_roster_visibility(p_team uuid, p_fighter uuid, p_visible boolean) secdef=true 1686c386b465903bc40b407520610a57
 function public.set_team_emblem(p_team uuid, p_path text) secdef=true 1b753f492fba3b9d3ee75534ba5a1bff
-function public.submit_club_agm_topic(p_meeting uuid, p_subject text, p_details text) secdef=true dfb617556203f8bfb038e134bd7b8401
+function public.submit_club_agm_topic(p_meeting uuid, p_subject text, p_details text) secdef=true fe79fe12b2c025eef8e1089b0c51ef86
 function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 11dba67abfcb68f4628112aab5eb696d
 function public.submit_registration(p_event uuid, p_data jsonb) secdef=true 7e0c26d573d1fe442983b2b4b833c0f3
 function public.team_career(p_team uuid) secdef=false 57c0e276f6eec12cedd3129d7f0d2053
@@ -2291,12 +2403,14 @@ function public.team_roster_manage(p_team uuid) secdef=true 56ac3dfe393d737bc858
 function public.track_activity(p_session uuid, p_path text, p_device text, p_meta jsonb) secdef=true e80431e458fee3a3f875ead8cffabc97
 function public.track_event(p_session uuid, p_name text, p_props jsonb) secdef=true a3c29b8891b5c54a27492178919f9166
 function public.unarchive_event(p_event uuid) secdef=true 5507bed64d501285f46f225682109397
-function public.update_club_agm_topic(p_topic uuid, p_subject text, p_details text) secdef=true 7080c8c2dc6b22d13e2ad79d1d690352
+function public.update_club_agm_topic(p_topic uuid, p_subject text, p_details text) secdef=true 3da314dd5f13c240f4c5475da619d16f
+function public.update_club_meeting(p_meeting uuid, p_title text, p_starts_at timestamp with time zone, p_timezone text, p_location text, p_details text, p_invite_only boolean, p_ends_at timestamp with time zone) secdef=true edea248e70981c572937dee73f9882ea
+function public.update_club_question(p_question uuid, p_title text, p_details text) secdef=true e7908edaa36445c64208da6b49714011
 function public.update_competition(p_comp uuid, p_name text, p_category text, p_gender text, p_ruleset text, p_structure text, p_rounds_to_win integer) secdef=true d5724a8512bee3e5b23a639e8c761c4b
 function public.update_my_fighter_profile(p jsonb) secdef=true 7b8d9a4073e6b0fd6fa635e225969e6a
 function public.update_team_profile(p_team uuid, p jsonb) secdef=true f9cff7a70e57aecc107e3d2db25b2cbc
 function public.void_result(p_competition uuid, p_entry uuid, p_reason text) secdef=true 47bda96b2ba79e40007629b84b0decd4
-function public.withdraw_club_agm_topic(p_topic uuid) secdef=true 57d444406e997ad13b589532a7baa22f
+function public.withdraw_club_agm_topic(p_topic uuid) secdef=true 1619de3d8b7333f89e1d8c1172ad8268
 function public.withdraw_entry(p_entry uuid, p_reason text, p_walkovers boolean) secdef=true cc9832e8658a563eed2f1e3ad2924cde
 function public.withdraw_my_invitation(p_invitation uuid) secdef=true 66c892ec5d5c1dba3b8cf14cad831b9d
 function public.withdraw_registration(p_reg uuid) secdef=true 40db3227077b7b16bd8d9f675c1997ea
@@ -2325,6 +2439,10 @@ index public.club_dues_history CREATE INDEX ON public.club_dues_history USING bt
 index public.club_dues_history CREATE UNIQUE INDEX ON public.club_dues_history USING btree (id)
 index public.club_meeting_attendance CREATE UNIQUE INDEX ON public.club_meeting_attendance USING btree (meeting_id, membership_id)
 index public.club_meeting_attendance_history CREATE UNIQUE INDEX ON public.club_meeting_attendance_history USING btree (id)
+index public.club_meeting_ballot_history CREATE UNIQUE INDEX ON public.club_meeting_ballot_history USING btree (id)
+index public.club_meeting_ballots CREATE UNIQUE INDEX ON public.club_meeting_ballots USING btree (id)
+index public.club_meeting_ballots CREATE UNIQUE INDEX ON public.club_meeting_ballots USING btree (question_id, voter_membership_id)
+index public.club_meeting_invitees CREATE UNIQUE INDEX ON public.club_meeting_invitees USING btree (meeting_id, membership_id)
 index public.club_meeting_nomination_history CREATE UNIQUE INDEX ON public.club_meeting_nomination_history USING btree (id)
 index public.club_meeting_nominations CREATE INDEX ON public.club_meeting_nominations USING btree (nominee_membership_id)
 index public.club_meeting_nominations CREATE UNIQUE INDEX ON public.club_meeting_nominations USING btree (id)
@@ -2333,6 +2451,8 @@ index public.club_meeting_nominators CREATE UNIQUE INDEX ON public.club_meeting_
 index public.club_meeting_proxies CREATE INDEX ON public.club_meeting_proxies USING btree (meeting_id, holder_membership_id) WHERE (status = 'active'::text)
 index public.club_meeting_proxies CREATE UNIQUE INDEX ON public.club_meeting_proxies USING btree (id)
 index public.club_meeting_proxies CREATE UNIQUE INDEX ON public.club_meeting_proxies USING btree (meeting_id, grantor_membership_id) WHERE (status = 'active'::text)
+index public.club_meeting_questions CREATE INDEX ON public.club_meeting_questions USING btree (meeting_id, sort_order, created_at)
+index public.club_meeting_questions CREATE UNIQUE INDEX ON public.club_meeting_questions USING btree (id)
 index public.club_meeting_records CREATE UNIQUE INDEX ON public.club_meeting_records USING btree (id)
 index public.club_meeting_rsvp_history CREATE UNIQUE INDEX ON public.club_meeting_rsvp_history USING btree (id)
 index public.club_meeting_rsvps CREATE UNIQUE INDEX ON public.club_meeting_rsvps USING btree (meeting_id, membership_id)
@@ -2340,12 +2460,14 @@ index public.club_meeting_topic_history CREATE UNIQUE INDEX ON public.club_meeti
 index public.club_meeting_topics CREATE INDEX ON public.club_meeting_topics USING btree (meeting_id, created_at)
 index public.club_meeting_topics CREATE INDEX ON public.club_meeting_topics USING btree (membership_id)
 index public.club_meeting_topics CREATE UNIQUE INDEX ON public.club_meeting_topics USING btree (id)
+index public.club_meetings CREATE INDEX ON public.club_meetings USING btree (team_id, starts_at)
 index public.club_meetings CREATE UNIQUE INDEX ON public.club_meetings USING btree (id)
-index public.club_meetings CREATE UNIQUE INDEX ON public.club_meetings USING btree (team_id, kind, membership_year)
+index public.club_meetings CREATE UNIQUE INDEX ON public.club_meetings USING btree (team_id, membership_year) WHERE (kind = 'agm'::text)
 index public.club_membership_years CREATE UNIQUE INDEX ON public.club_membership_years USING btree (team_id, year)
 index public.club_memberships CREATE INDEX ON public.club_memberships USING btree (user_id)
 index public.club_memberships CREATE UNIQUE INDEX ON public.club_memberships USING btree (id)
 index public.club_memberships CREATE UNIQUE INDEX ON public.club_memberships USING btree (team_id, membership_year, user_id)
+index public.club_vote_officers CREATE UNIQUE INDEX ON public.club_vote_officers USING btree (team_id, email)
 index public.competition_rulesets CREATE INDEX ON public.competition_rulesets USING btree (ruleset_version_id)
 index public.competition_rulesets CREATE UNIQUE INDEX ON public.competition_rulesets USING btree (competition_id, ruleset_version_id)
 index public.competitions CREATE INDEX ON public.competitions USING btree (event_id)
@@ -2676,10 +2798,14 @@ table public.club_dues rls=true
 table public.club_dues_history rls=true
 table public.club_meeting_attendance rls=true
 table public.club_meeting_attendance_history rls=true
+table public.club_meeting_ballot_history rls=true
+table public.club_meeting_ballots rls=true
+table public.club_meeting_invitees rls=true
 table public.club_meeting_nomination_history rls=true
 table public.club_meeting_nominations rls=true
 table public.club_meeting_nominators rls=true
 table public.club_meeting_proxies rls=true
+table public.club_meeting_questions rls=true
 table public.club_meeting_records rls=true
 table public.club_meeting_rsvp_history rls=true
 table public.club_meeting_rsvps rls=true
@@ -2688,6 +2814,7 @@ table public.club_meeting_topics rls=true
 table public.club_meetings rls=true
 table public.club_membership_years rls=true
 table public.club_memberships rls=true
+table public.club_vote_officers rls=true
 table public.competition_rulesets rls=true
 table public.competitions rls=true
 table public.counter_bindings rls=true
@@ -2778,12 +2905,16 @@ table public.waiver_versions rls=true
 trigger public.authenticity_findings authenticity_findings_guard bddbc8a2a2b7730e5fadf436a5952b24
 trigger public.club_dues_history club_dues_history_append_only 50b72b1bcae402d6c04339d8e22688ed
 trigger public.club_meeting_attendance_history club_meeting_attendance_history_append_only 763a32192c2b06aff7cfa5e9470e87f3
+trigger public.club_meeting_ballot_history club_meeting_ballot_history_append_only df1e0436fd75eb43a4bb5a89062a9dcf
+trigger public.club_meeting_ballots club_meeting_ballots_guard 9bf4faa3afafc7736456b2299e4307f1
+trigger public.club_meeting_ballots club_meeting_ballots_no_delete 684b6c28f35f9fccf5831f20eb5de81f
 trigger public.club_meeting_nomination_history club_meeting_nomination_history_append_only ce6178eb9af8e2d7948038723d3de41a
 trigger public.club_meeting_nominations club_meeting_nominations_guard 6887b51499e1856cd671a36db759c1a0
 trigger public.club_meeting_nominations club_meeting_nominations_no_delete 040f30411e2d441b6ae9198e6e92e543
 trigger public.club_meeting_nominators club_meeting_nominators_append_only 7f5517da9e9ef5822d49443997fdf82a
 trigger public.club_meeting_nominators club_meeting_nominators_no_delete 2b35f14a2a295d7c4972c24ec8c30c29
 trigger public.club_meeting_proxies club_meeting_proxies_guard 1176675819dff958dd0c39844267ffc2
+trigger public.club_meeting_questions club_meeting_questions_guard 23667692dafa5135ba06467ca2b53727
 trigger public.club_meeting_records club_meeting_records_append_only b8d5297eddedfb3d51a9ee0de49404ae
 trigger public.club_meeting_rsvp_history club_meeting_rsvp_history_append_only 12c43946f90f57f4530234e5381e2f00
 trigger public.club_meeting_topic_history club_meeting_topic_history_append_only 3002d0632cc04991f44279a4805e457f

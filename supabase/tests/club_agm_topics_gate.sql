@@ -335,7 +335,8 @@ select t.as_user(t.u(6));
 select t.expect_error('nominations close when the meeting starts', format($q$select public.nominate_for_club_office(%L, 'secretary', %L)$q$, t.mt(), t.m(6)), '22023');
 select t.as_user(t.u(10));
 select t.expect_error('a nominee cannot answer after the meeting starts', format($q$select public.respond_to_club_nomination(%L, 'withdraw')$q$, t.id('fay_trea')), '22023');
-select t.expect_eq('the member view says nominations are closed', (t.view(6) ->> 'can_nominate') || '|' || (t.view(6) ->> 'nominate_blocked'), 'false|Nominations closed when the AGM started.');
+-- since the deadlines (2026-10-18) the reason names the moment they closed (the meeting's start here), in the club's time zone
+select t.expect_eq('the member view says nominations are closed', (t.view(6) ->> 'can_nominate') = 'false' and (t.view(6) ->> 'nominate_blocked') ~ '^Nominations closed .+ at .+\.$', true);
 select t.as_user(t.u(3));
 select public.set_club_agm_topic_status(t.id('cy_topic'), 'addressed');
 select t.ok('the executive can still mark topics Addressed during the meeting');

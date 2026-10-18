@@ -19,10 +19,17 @@ export async function fetchPublishFacts(eventId: string): Promise<{ competitions
 }
 
 export interface StaffMember { userId: string; email: string; role: 'organizer' | 'head_marshal' | 'marshal' | 'scorekeeper' | 'medic' | 'check_in' | 'inspector' | 'announcer' }
+/**
+ * The event's staff. The permanent organizer gets them with emails (list_event_staff); everyone else who runs the day (head marshal, Secretary /
+ * Scorekeeper, the Event Admin tablet) gets them by name only (list_event_staff_names: the database refuses the emails to them), shown in the same place.
+ */
 export async function fetchStaff(eventId: string): Promise<StaffMember[]> {
   const { data, error } = await supabase.rpc('list_event_staff', { p_event: eventId });
-  if (error) throw error;
-  return (data as { user_id: string; email: string; role: StaffMember['role'] }[]).map(r => ({ userId: r.user_id, email: r.email, role: r.role }));
+  if (!error) return (data as { user_id: string; email: string; role: StaffMember['role'] }[]).map(r => ({ userId: r.user_id, email: r.email, role: r.role }));
+  if ((error as { code?: string }).code !== '42501') throw error;
+  const names = await supabase.rpc('list_event_staff_names', { p_event: eventId });
+  if (names.error) throw names.error;
+  return (names.data as { user_id: string; name: string; role: StaffMember['role'] }[]).map(r => ({ userId: r.user_id, email: r.name, role: r.role }));
 }
 export async function addStaff(eventId: string, email: string, role: StaffMember['role']): Promise<void> {
   const { error } = await supabase.rpc('grant_event_role_by_email', { p_event: eventId, p_email: email.trim(), p_role: role });
