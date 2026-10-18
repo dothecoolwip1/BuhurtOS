@@ -28,8 +28,10 @@ export function CounterEvidence({ seats, names, round, compact = false, sides }:
       </li>
     );
   };
-  const official = seats.filter(s => s.role === 'official' && s.status === 'active');
-  const learning = seats.filter(s => s.role === 'learning' && s.status === 'active');
+  // only the counters that are actually here: a phone that has gone quiet (closed, asleep, no signal) is left out until it is back online
+  const here = seats.filter(s => s.status === 'active' && s.online !== false);
+  const official = here.filter(s => s.role === 'official');
+  const learning = here.filter(s => s.role === 'learning');
   const bySide = (side: 'a' | 'b') => official.filter(s => s.side === side);
   return (
     <div className="ly-evidence">
@@ -58,7 +60,9 @@ export function CountersPanel({ state, names, round, eventId, fieldName, busy, o
   const trainUrl = code ? trainingUrl(window.location.origin, import.meta.env.BASE_URL, code.code) : '';
   const bound = state.field_counters ?? [];
   const onFight = new Set(state.seats.filter(s => s.status === 'active').map(s => s.name));
-  const waitingPhones = bound.filter(b => b.operator && !onFight.has(b.operator));
+  // Pack 26: only active counters are shown. A phone not seen for a while is counted, not listed; it comes back by itself when it is online again.
+  const waitingPhones = bound.filter(b => b.operator && b.online && !onFight.has(b.operator));
+  const quiet = state.seats.filter(s => s.status === 'active' && s.online === false).length + bound.filter(b => b.operator && !b.online && !onFight.has(b.operator)).length;
   return (
     <Dialog title="Counters" variant="drawer" onClose={onClose}>
       <div className="ly-counters">
@@ -71,7 +75,8 @@ export function CountersPanel({ state, names, round, eventId, fieldName, busy, o
           <>
             <p className="src">Evidence only: the marshal's call is the only official score. Each counter's number is shown on its own, never combined.</p>
             <CounterEvidence seats={state.seats} names={names} round={round} sides={sides} />
-            {waitingPhones.length > 0 && <p className="src">On this Lyst, not on this fight yet: {waitingPhones.map(b => `${b.operator} (${b.side ? sideLabel(b.side, sides) : 'no side'})`).join(', ')}. They join the next fight that opens here.</p>}
+            {quiet > 0 && <p className="src" data-testid="counters-quiet">{quiet === 1 ? 'One counter phone has' : `${quiet} counter phones have`} not been seen for a while and {quiet === 1 ? 'is' : 'are'} not shown. {quiet === 1 ? 'It comes' : 'They come'} back here by {quiet === 1 ? 'itself' : 'themselves'} when online again.</p>}
+            {waitingPhones.length > 0 && <p className="src">On this Lyst, not on this fight yet:{waitingPhones.map(b => `${b.operator} (${b.side ? sideLabel(b.side, sides) : 'no side'})`).join(', ')}. They join the next fight that opens here.</p>}
             {state.seats.length === 0 && bound.length === 0 && <p className="src">No counters yet. Show the Counter QR to any phone that should count on this Lyst.</p>}
           </>
         )}

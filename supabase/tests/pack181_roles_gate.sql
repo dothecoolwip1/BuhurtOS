@@ -64,6 +64,7 @@ select code as jcode from public.lyst_join_codes where event_id = t.ev(1) and re
 select t.as_device(t.sid('counter1'));
 select t.expect_eq('Counter Phone 1 (a legacy single-session counter code) binds itself to Field 1, red, as Garrett: seated at once on the open fight', (public.counter_bind('Field 1', 'a', 'Garrett') -> 'seat' ->> 'match_id'), t.m(1)::text);
 select t.expect_error('a Counter cannot open a Lyst', format($$select public.lyst_open(%L)$$, t.m(1)), '42501');
+select t.expect_error('... nor move a fight to another Lyst or time', format($$select public.set_match_schedule(%L, null, 'Field 2', null)$$, t.m(2)), '42501');
 select t.expect_error('... read the tablet state (tallies of everyone)', format($$select public.lyst_state(%L)$$, t.m(1)), '42501');
 select t.expect_error('... make a training code', format($$select public.create_lyst_join_code(%L, 'Field 1')$$, t.ev(1)), '42501');
 select t.expect_error('... call a fight', format($$select public.set_match_queue(%L, 'active', null)$$, t.m(2)), '42501');
@@ -83,6 +84,12 @@ select t.expect_eq('... and nothing of Event 1 was touched by it', (select count
 select t.as_device(t.sid('secretary'));
 select t.expect_error('a Secretary device is not a counter: it cannot bind as one', $$select public.counter_bind('Field 1', 'a', 'Sec')$$, '42501');
 select t.expect_eq('the Secretary / Scorekeeper shows the Counter QR state (none yet) and may create one: whoever runs the day may (Pack 26)', (public.counter_pool_code(t.ev(1)) ->> 'can_create'), 'true');
+select t.expect_eq('... and moves a waiting fight to a time, keeping its Lyst and length (Pack 26: set_match_schedule)',
+  (public.set_match_schedule(t.m(2), '2026-10-10 20:00:00+00', (select field from public.matches where id = t.m(2)), null) ->> 'scheduled_at') is not null
+  and (select duration_minutes from public.matches where id = t.m(2)) between 1 and 720, true);
+select t.as_admin();
+select t.expect_eq('... the move is audited with before and after', (select count(*) from public.audit_log where action = 'match.rescheduled' and subject = t.m(2)::text)::int, 1);
+select t.as_device(t.sid('secretary'));
 select t.expect_eq('... and may move Counter Phone 1 to blue (scoring authority)', public.move_counter_session(t.sid('counter1'), 'Field 1', 'b') -> 'binding' ->> 'side', 'b');
 select t.as_device(t.sid('counter1'));
 select t.expect_eq('... the phone sees the change at once', public.counter_state() -> 'binding' ->> 'side', 'b');

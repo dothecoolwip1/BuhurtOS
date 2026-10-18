@@ -313,7 +313,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
           <div className="ed-fields">
             {boards.map(b => (
               <div key={b.key} className={`ed-field-wrap${b.key === pickedKey ? ' picked' : ''}`}>
-                <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, timeZone: tz, competitionNames: names, actions }} next={<>
+                <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, eventId: event.id, timeZone: tz, competitionNames: names, actions, onChanged: () => { void live.refresh(); void load(); } }} next={<>
                   <NextFight field={b.key} label={fieldLabel(b.name)} plan={plan} matches={byMatch} fighting={b.now.length > 0} called={b.onDeck.length > 0} sides={sides} names={people} competitionNames={names} notReady={notReady} actions={nextActions} />
                   {b.upcoming.some(m => m.queueOrder != null) && (
                     <p className="src ed-manual">This Lyst's line was arranged by hand, so BuhurtOS follows it. <button type="button" className="linklike" disabled={busy} onClick={() => replanField(b)}>Let BuhurtOS plan it again</button></p>

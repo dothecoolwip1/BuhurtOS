@@ -19,10 +19,13 @@ export async function fetchMatchDurations(competitionId: string): Promise<Map<st
   return new Map((data as { id: string; duration_minutes: number }[]).map(r => [r.id, Number(r.duration_minutes)]));
 }
 
-export interface ScheduleChange { scheduledAt: string | null; field: string | null; durationMinutes: number }
-/** Sets time, field and length of one match. A null time or field clears it. Final matches are refused by the database triggers/policies as usual. */
+export interface ScheduleChange { scheduledAt: string | null; field: string | null; /** null keeps the match's current length. */ durationMinutes: number | null }
+/**
+ * Sets time, field and length of one match through set_match_schedule (Pack 26): whoever runs the day may (organizer, head marshal, Secretary /
+ * Scorekeeper, the Event Admin tablet), not only the organizer's account. A null time or field clears it; a final match is refused.
+ */
 export async function saveMatchSchedule(matchId: string, c: ScheduleChange): Promise<void> {
-  const { error } = await supabase.from('matches').update({ scheduled_at: c.scheduledAt, field: c.field && c.field.trim() ? c.field.trim() : null, duration_minutes: c.durationMinutes }).eq('id', matchId);
+  const { error } = await supabase.rpc('set_match_schedule', { p_match: matchId, p_scheduled_at: c.scheduledAt, p_field: c.field && c.field.trim() ? c.field.trim() : null, p_duration_minutes: c.durationMinutes });
   if (error) throw error;
 }
 
