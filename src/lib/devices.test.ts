@@ -119,6 +119,15 @@ describe('sorting and the usual set', () => {
     expect(s.pastControllers.map(c => c.id)).toEqual(['c']);
     expect(splitCredentials([]).controller).toBeNull();
   });
+  it('the two pools are told apart (Pack 27B): the Counter QR and the Training Counter QR', () => {
+    const s = splitCredentials([
+      cred({ id: 'p', label: 'Counter QR', kind: 'counter_pool', openSessions: 3 }), cred({ id: 't', label: 'Training Counter QR', kind: 'counter_pool', training: true, openSessions: 1 }),
+      cred({ id: 'old', label: 'Old training', kind: 'counter_pool', training: true, status: 'revoked' })
+    ]);
+    expect(s.pool?.id).toBe('p');
+    expect(s.trainingPool?.id).toBe('t');
+    expect(s.pastDevices.map(c => c.id)).toEqual(['old']);
+  });
   it('the usual set is the Secretary, Marshal, Announcer and Event Admin devices; counter phones come from the one Counter QR (Pack 25), not named codes', () => {
     expect(USUAL_SET.map(d => d.label)).toEqual(['Secretary Tablet', 'Marshal Phone', 'Announcer Tablet', 'Event Admin Tablet']);
     expect(USUAL_SET.map(d => d.role)).toEqual(['scorekeeper', 'marshal', 'announcer', 'temporary_organizer']);

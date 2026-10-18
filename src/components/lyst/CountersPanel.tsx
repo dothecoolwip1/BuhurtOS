@@ -1,18 +1,9 @@
-import { useMemo, useState } from 'react';
-import qrcode from 'qrcode-generator';
+import { useState } from 'react';
 import { Dialog } from '../Dialog';
 import { setEventSides, type LystSeat, type LystState } from '../../data/lyst';
 import { CounterQrCard } from '../command/CounterQrCard';
-import { DEFAULT_SIDES, SIDE_PRESETS, inkFor, mergeSides, sideLabel, trainingUrl, type EventSides, type SideSpec } from '../../lib/lyst/counters';
+import { DEFAULT_SIDES, SIDE_PRESETS, inkFor, mergeSides, sideLabel, type EventSides, type SideSpec } from '../../lib/lyst/counters';
 import { friendlyError } from '../../lib/friendlyError';
-
-function Qr({ value, label }: { value: string; label: string }) {
-  const svg = useMemo(() => {
-    try { const q = qrcode(0, 'M'); q.addData(value); q.make(); return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true }); } catch { return ''; }
-  }, [value]);
-  // the markup comes from the QR library for OUR url only
-  return <div className="ly-qr" role="img" aria-label={label} dangerouslySetInnerHTML={{ __html: svg }} />;
-}
 
 /** The counters on this fight as EVIDENCE: operator, side, tally, online, done. Official phones and trainees are listed apart. Never a combined number. */
 export function CounterEvidence({ seats, names, round, compact = false, sides }: { seats: readonly LystSeat[]; names: { a: string; b: string }; round: number; compact?: boolean; sides?: EventSides | null }) {
@@ -22,7 +13,8 @@ export function CounterEvidence({ seats, names, round, compact = false, sides }:
     return (
       <li key={s.id} className={`ly-seat ly-seat-${s.side ?? 'none'}${s.role === 'learning' ? ' is-learning' : ''}`} data-testid="counter-row" data-side={s.side ?? ''} data-role={s.role}>
         <span className={`ly-corner ly-corner-${s.side ?? 'none'}`}>{s.side ? sideLabel(s.side, sides) : '–'}</span>
-        <span className="ly-seat-main"><b>{s.name}</b>{!compact && <span className="src">{s.side ? (s.side === 'a' ? names.a : names.b) : 'no side yet'}{s.role === 'learning' ? ' · training' : ''}</span>}</span>
+        <span className="ly-seat-main"><b>{s.name}</b>{!compact && <span className="src">{s.side ? (s.side === 'a' ? names.a : names.b) : 'no side yet'}{s.role === 'learning' ? ' · training' : ''}</span>}
+          {(t?.operators?.length ?? 0) > 1 && <span className="src ly-seat-ops" data-testid="counter-operators">{t!.operators!.map(o => `${o.name} ${o.total}`).join(' · ')}</span>}</span>
         <span className="ly-seat-n mono" aria-label={`Round ${round} count ${t?.total ?? 0}${t?.submitted ? ', done' : ''}`}>{t?.total ?? 0}{t?.submitted ? ' ✓' : ''}</span>
         <span className={`ly-online${s.device ? (s.online ? ' is-on' : ' is-off') : ''}`}>{s.device ? (s.online ? 'online' : 'offline') : 'own phone'}</span>
       </li>
@@ -45,20 +37,19 @@ export function CounterEvidence({ seats, names, round, compact = false, sides }:
 }
 
 /**
- * The Lyst's counters sheet (Pack 25). What the operator needs: who is counting which side, each tally, online or not, done or not. The two ways
- * onto a counter: the event's one COUNTER QR (a phone scans it once, picks this Lyst and a side, and follows the fights here by itself) and this
- * field's TRAINING QR (a trainee's own phone; learning only). Nothing here seats, approves, assigns a fighter or carries anyone: the phones do that themselves.
+ * The Lyst's counters sheet (Pack 25, Pack 27B). What the operator needs: who is counting which side, each tally, online or not, done or not. The two
+ * ways onto a counter: the event's one COUNTER QR (a phone scans it once, picks this Lyst and a side, and follows the fights here by itself) and the
+ * event's TRAINING COUNTER QR (the same, for someone learning: their count is practice, listed apart, never official). Nothing here seats, approves,
+ * assigns a fighter or carries anyone: the phones do that themselves.
  */
-export function CountersPanel({ state, names, round, eventId, fieldName, busy, onNewTrainingCode, onClose, sides, onSidesSaved }: {
-  state: LystState; names: { a: string; b: string }; round: number; eventId: string; fieldName: string; busy: boolean;
-  onNewTrainingCode: () => void; onClose: () => void; sides?: EventSides | null; onSidesSaved?: () => void;
+export function CountersPanel({ state, names, round, eventId, onClose, sides, onSidesSaved }: {
+  state: LystState; names: { a: string; b: string }; round: number; eventId: string; onClose: () => void; sides?: EventSides | null; onSidesSaved?: () => void;
 }) {
   const [tab, setTab] = useState<'counters' | 'qr' | 'training' | 'sides'>('counters');
-  const code = state.join_code;
-  const trainUrl = code ? trainingUrl(window.location.origin, import.meta.env.BASE_URL, code.code) : '';
   const bound = state.field_counters ?? [];
-  const onFight = new Set(state.seats.filter(s => s.status === 'active').map(s => s.name));
-  const waitingPhones = bound.filter(b => b.operator && !onFight.has(b.operator));
+  // a phone is matched to its seat by its session (Pack 27A), never by the operator's name (two phones may carry the same name)
+  const onFight = new Set(state.seats.filter(s => s.status === 'active' && s.session_id).map(s => s.session_id));
+  const waitingPhones = bound.filter(b => b.operator && !onFight.has(b.session_id));
   return (
     <Dialog title="Counters" variant="drawer" onClose={onClose}>
       <div className="ly-counters">
@@ -77,13 +68,7 @@ export function CountersPanel({ state, names, round, eventId, fieldName, busy, o
         )}
         {tab === 'qr' && <CounterQrCard eventId={eventId} />}
         {tab === 'sides' && <SidesEditor eventId={eventId} sides={sides ?? DEFAULT_SIDES} names={names} onSaved={() => { onSidesSaved?.(); setTab('counters'); }} />}
-        {tab === 'training' && (
-          <div className="ly-join panel info" data-testid="training-qr">
-            {code ? <><Qr value={trainUrl} label="This Lyst's training QR" /><div><b className="mono ly-code">{code.code}</b><span className="src">For someone learning to count on their own phone: scan, say your name, pick Red or Blue, count along. It is practice: never official, listed apart. Expires {new Date(code.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.</span></div></>
-              : <p>No training code yet for {fieldName}.</p>}
-            <button type="button" className="btn btn-line" disabled={busy} onClick={onNewTrainingCode}>{code ? 'New training code' : 'Show training QR'}</button>
-          </div>
-        )}
+        {tab === 'training' && <CounterQrCard eventId={eventId} training />}
       </div>
     </Dialog>
   );

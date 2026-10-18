@@ -278,7 +278,7 @@ try {
   check('55. the MARSHAL device can open the Counter QR card for the event (a pool is made by the organizer; the marshal only shows it)', qrSeen && /Counter QR|no Counter QR yet/i.test(await text(P.marshal, '[data-testid="counter-qr"]')), await text(P.marshal, '[role=dialog]'));
   await P.marshal.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
   await P.counter1.goto(BASE + '/lyst/counter');
-  await P.counter1.getByText(/Who is counting/i).waitFor({ timeout: 30000 });
+  await P.counter1.getByText(/Who.s counting/i).waitFor({ timeout: 30000 });
   await P.counter1.fill('#cp-name', 'Pat');
   await P.counter1.getByRole('button', { name: 'Continue' }).click();
   await P.counter1.getByRole('button', { name: /Lyst 1|Field 1/ }).click();

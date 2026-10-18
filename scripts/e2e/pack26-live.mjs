@@ -618,10 +618,10 @@ try {
     const phone = async (name, who) => { const p = (await open('phone', who)).page; p.name = name; return p; };
     const bind = async (p, operator, fieldName, side) => {
       await go(p, `/device#c=${poolCode}`);
-      await until(async () => await has(p, 'who is counting'), 30000);
+      await until(async () => await has(p, "who's counting"), 30000);
       await p.fill('#cp-name', operator); await p.getByRole('button', { name: 'Continue' }).click();
-      await until(async () => await has(p, 'which lyst'), 15000); await p.getByRole('button', { name: new RegExp(fieldName.replace('Field', 'Lyst')) }).click();
-      await until(async () => await has(p, 'which side'), 15000); await p.getByRole('button', { name: new RegExp(side) }).click();
+      await until(async () => await has(p, 'choose your lyst'), 15000); await p.getByRole('button', { name: new RegExp(fieldName.replace('Field', 'Lyst')) }).click();
+      await until(async () => await has(p, 'choose your side'), 15000); await p.getByRole('button', { name: new RegExp(side) }).click();
       return until(async () => await has(p, names[side === 'RED' ? 0 : 1].toLowerCase()), 20000);
     };
     const r1 = await phone('r1'), r2 = await phone('r2'), b1 = await phone('b1');
@@ -632,16 +632,20 @@ try {
     // the training QR from the Counters sheet
     await tab.getByRole('button', { name: /^Counters/ }).click();
     await tab.getByTestId('counters-tab-training').click();
-    await tab.getByRole('dialog').getByRole('button', { name: /Show training QR|New training code/ }).click();
-    await tab.getByRole('dialog').getByTestId('training-qr').locator('.ly-code').waitFor({ timeout: 15000 });
-    const train = (await tab.getByRole('dialog').getByTestId('training-qr').locator('.ly-code').innerText()).trim();
+    const trainCard = tab.getByRole('dialog').getByTestId('training-qr');
+    await trainCard.waitFor({ timeout: 15000 });
+    if ((await trainCard.getByTestId('make-training-qr').count()) > 0) await trainCard.getByTestId('make-training-qr').click();
+    await trainCard.getByTestId('training-qr-code').waitFor({ timeout: 15000 });
+    const train = (await trainCard.getByTestId('training-qr-code').innerText()).replace(/-/g, '').trim();
     await shot(tab, 'lyst-training-qr');
     await tab.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
-    const tr = await phone('trainee', 'volunteer');
-    await go(tr, `/lyst/train/${train}`);
-    await until(async () => await has(tr, 'who is counting'), 30000);
-    await tr.fill('#cp-tname', 'Trainee Vee'); await tr.getByRole('button', { name: /RED/ }).click(); await tr.getByRole('button', { name: 'Start counting' }).click();
-    check('93. a trainee scans the TRAINING QR with their own account: name, side, counting, told it is practice', await until(async () => await has(tr, 'practice') && await has(tr, names[0].toLowerCase()), 20000) && sql(`select role from public.lyst_counter_seats where display_name = 'Trainee Vee' and status = 'active'`) === 'learning', (await body(tr)).slice(0, 300));
+    const tr = await phone('trainee', 'volunteer');   // a person's own phone (signed in as themselves) scans the Training Counter QR: Pack 27B, no account needed for it
+    await go(tr, `/device#c=${train}`);
+    await until(async () => await has(tr, "who's counting"), 30000);
+    await tr.fill('#cp-name', 'Trainee Vee'); await tr.getByRole('button', { name: 'Continue' }).click();
+    await until(async () => await has(tr, 'choose your lyst'), 15000); await tr.getByRole('button', { name: new RegExp(field1.replace('Field', 'Lyst')) }).click();
+    await until(async () => await has(tr, 'choose your side'), 15000); await tr.getByRole('button', { name: /RED/ }).click();
+    check('93. a learner scans the TRAINING COUNTER QR: name, Lyst, side, counting, told it is practice (Training badge), a learning seat', await until(async () => await has(tr, 'practice') && await has(tr, 'training') && await has(tr, names[0].toLowerCase()), 20000) && sql(`select role from public.lyst_counter_seats where display_name = 'Trainee Vee' and status = 'active'`) === 'learning', (await body(tr)).slice(0, 300));
     await shot(tr, 'training-counter');
     // round 1
     await tab.getByRole('button', { name: /Start round 1/ }).click();
@@ -657,8 +661,8 @@ try {
     check('94. every phone\'s taps are its own evidence on the server: Ash 5, Birch 3, Cedar 4, trainee 4', await untilDb(() => [tot('Counter Ash'), tot('Counter Birch'), tot('Counter Cedar'), tot('Trainee Vee')].join(','), '5,3,4,4') === '5,3,4,4', [tot('Counter Ash'), tot('Counter Birch'), tot('Counter Cedar'), tot('Trainee Vee')].join(','));
     await shot(r1, 'counter-active');
     // handoff on r1: the tally carries on, both names on the taps
-    await r1.getByRole('button', { name: 'New counter' }).click();
-    await until(async () => await has(r1, 'who is counting'));
+    await r1.getByRole('button', { name: 'Change counter' }).click();
+    await until(async () => await has(r1, "who's counting"));
     await r1.fill('#cp-name', 'Counter Dune'); await r1.getByRole('button', { name: 'Continue' }).click();
     check('95. HANDOFF: the new counter takes the phone, same Lyst and side, the tally still 5 (nothing reset)', await until(async () => await has(r1, 'counter dune') && (await r1.locator('.cp-total output').innerText().catch(() => '')) === '5', 15000), (await body(r1)).slice(0, 200));
     await tapOne(r1);
@@ -690,7 +694,7 @@ try {
     await until(async () => /Round 2/.test(await tab.locator('.ly-mode').innerText().catch(() => '')), 10000);
     await until(async () => r1.getByRole('button', { name: 'Count two points, head or torso' }).isEnabled().catch(() => false), 20000);
     await tapTwo(r1);
-    check('103. round 2 starts at zero on every phone; round 1\'s evidence is frozen in the revision with the trainee marked learning', await untilDb(() => tot('Counter Dune', 2), '2') === '2' && sql(`select count(*) from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.match_id = '${m1}' and r.round_no = 1 and c ->> 'role' = 'learning'`) === '1');
+    check('103. round 2 starts at zero on every phone; round 1\'s official evidence is frozen in the revision (three official phones), the trainee\'s practice kept apart from it (Pack 27B)', await untilDb(() => tot('Counter Dune', 2), '2') === '2' && sql(`select count(*) from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.match_id = '${m1}' and r.round_no = 1 and c ->> 'role' = 'learning'`) === '0' && sql(`select count(*) from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.match_id = '${m1}' and r.round_no = 1 and c ->> 'role' = 'official'`) === '3' && sql(`select count(*) from public.lyst_counter_seats where display_name = 'Trainee Vee' and match_id = '${m1}' and role = 'learning'`) === '1');
     // a stale second tablet: the head marshal opens the same fight late and sees the live state, not a fresh one
     const hd = (await open('tablet', 'head')).page;
     await go(hd, `${E_PATH}/field/Field%201?open=${m1}&from=control`);
@@ -763,10 +767,10 @@ try {
     const p3 = (await open('phone')).page, p4 = (await open('phone')).page;
     for (const [p, nm, side] of [[p3, 'Counter Elm', 'RED'], [p4, 'Counter Fir', 'BLUE']]) {
       await go(p, `/device#c=${poolCode}`);
-      await until(async () => await has(p, 'who is counting'), 30000);
+      await until(async () => await has(p, "who's counting"), 30000);
       await p.fill('#cp-name', nm); await p.getByRole('button', { name: 'Continue' }).click();
-      await until(async () => await has(p, 'which lyst')); await p.getByRole('button', { name: /Lyst 2/ }).click();
-      await until(async () => await has(p, 'which side')); await p.getByRole('button', { name: new RegExp(side) }).click();
+      await until(async () => await has(p, 'choose your lyst')); await p.getByRole('button', { name: /Lyst 2/ }).click();
+      await until(async () => await has(p, 'choose your side')); await p.getByRole('button', { name: new RegExp(side) }).click();
     }
     check('118. two phones bind to Field 2 (red and blue) and wait for the round', await until(async () => await has(p3, tn[0].toLowerCase()) || await has(p3, 'waiting'), 20000) && await until(async () => await has(p4, tn[1].toLowerCase()) || await has(p4, 'waiting'), 20000));
     await tab2.getByRole('button', { name: /Start round 1 for counters/ }).click();

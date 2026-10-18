@@ -102,7 +102,7 @@ export function counterBanner(state: {
     if (state.binding?.field_key && !state.binding.side) return `Choose ${sideLabel('a', sides)} or ${sideLabel('b', sides)}.`;
     return 'Choose your Lyst and side.';
   }
-  if (state.seat.status === 'expired') return 'This phone\'s place on the Lyst has run out. Choose your Lyst and side again.';
+  if (state.seat.status === 'expired') return 'Your time counting on this Lyst has run out. Choose your Lyst and side again.';
   if (state.seat.status === 'ended' || state.seat.status === 'declined') return 'You are not counting right now. Choose your Lyst and side.';
   if (state.waiting) return 'Waiting for the next fight on this Lyst. It opens here by itself.';
   if (state.final) return 'This fight is finished. The next one opens here by itself.';
@@ -141,3 +141,33 @@ export function nextStep(b: { operator?: string | null; field_key?: string | nul
 export const onlyField = (fields: readonly { key: string }[]): string | null => (fields.length === 1 ? fields[0].key : null);
 /** What the standing counter shows: fighters still up on this side (bounded at zero). */
 export const standingLeft = (perSide: number | null | undefined, downs: number): number => Math.max(0, (perSide ?? 0) - downs);
+
+/* ---------------- Pack 27A: the phone remembers its last counter, tidies old fights' queues, and leaves cleanly ---------------- */
+export const OPERATOR_KEY = 'bos-counter-name';
+export const TAPS_PREFIX = 'bos-lyst-taps:';
+export const tapsKey = (seat: string) => `${TAPS_PREFIX}${seat}`;
+type KeyStore = { getItem(k: string): string | null; setItem(k: string, v: string): void; removeItem(k: string): void; key(i: number): string | null; readonly length: number };
+/** The last name typed on this phone, offered again on the next scan (a name, not a sign-in; kept on the phone only). */
+export function rememberedOperator(st: Pick<KeyStore, 'getItem'> | null | undefined): string {
+  try { return (st?.getItem(OPERATOR_KEY) ?? '').trim().slice(0, 80); } catch { return ''; }
+}
+export function rememberOperator(st: Pick<KeyStore, 'setItem' | 'removeItem'> | null | undefined, name: string): void {
+  try { const n = name.trim().slice(0, 80); if (n) st?.setItem(OPERATOR_KEY, n); else st?.removeItem(OPERATOR_KEY); } catch { /* the phone just asks again */ }
+}
+/**
+ * Queues of fights this phone is no longer on (an earlier fight's seat, a Lyst or side it left): their taps can never count (the server refuses a tap on
+ * an ended seat), so they are removed instead of lingering for ever. Returns how many taps were still waiting in them, so the phone can say so once.
+ */
+export function dropStaleQueues(st: KeyStore | null | undefined, keepSeat: string | null): number {
+  if (!st) return 0;
+  const stale: string[] = [];
+  try { for (let i = 0; i < st.length; i += 1) { const k = st.key(i); if (k && k.startsWith(TAPS_PREFIX) && k !== (keepSeat ? tapsKey(keepSeat) : null)) stale.push(k); } } catch { return 0; }
+  let waiting = 0;
+  for (const k of stale) {
+    try { const raw = st.getItem(k); if (raw) { const items: unknown = JSON.parse(raw); if (Array.isArray(items)) waiting += items.length; } } catch { /* unreadable: still removed */ }
+    try { st.removeItem(k); } catch { /* ignore */ }
+  }
+  return waiting;
+}
+/** Where a phone goes when its counter session ends by choice: back to the ordinary site, where a signed-in person's own account is still there. */
+export const EXIT_PATH = '/';

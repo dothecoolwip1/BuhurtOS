@@ -17,6 +17,8 @@ export interface Credential {
   signedInElsewhereAt: string | null; revokedAt: string | null; replaced: boolean;
   /** Pack 25: phones signed in on this credential right now (many for the Counter QR, at most one otherwise). */
   openSessions: number;
+  /** Pack 27B: a counter pool that is the event's Training Counter QR (its phones only ever hold learning seats). */
+  training?: boolean;
 }
 
 // ---------------------------------------------------------------- words
@@ -49,6 +51,8 @@ export const USUAL_SET: { label: string; role: DeviceRole }[] = [
 export const CONTROLLER_LABEL = 'Stream laptop';
 /** Pack 25: the one reusable Counter QR of an event (kind counter_pool). Any number of phones scan it; each gets its own session. */
 export const COUNTER_POOL_LABEL = 'Counter QR';
+/** Pack 27B: the event's one reusable Training Counter QR (a counter pool marked training). */
+export const TRAINING_POOL_LABEL = 'Training Counter QR';
 
 /** The usual set minus the names this event already has in use (case-insensitive: the database refuses duplicates among non-revoked codes). */
 export function usualSetToCreate(existing: readonly Pick<Credential, 'label' | 'status'>[]): { toCreate: typeof USUAL_SET; skipped: string[] } {
@@ -132,7 +136,8 @@ export function splitCredentials(rows: readonly Credential[]) {
   const controllers = sorted.filter(c => c.kind === 'controller');
   const pools = sorted.filter(c => c.kind === 'counter_pool');
   return {
-    pool: pools.find(c => c.status === 'active') ?? null,
+    pool: pools.find(c => c.status === 'active' && !c.training) ?? null,
+    trainingPool: pools.find(c => c.status === 'active' && c.training === true) ?? null,
     devices: devices.filter(c => c.status === 'active'),
     pastDevices: [...pools.filter(c => c.status !== 'active'), ...devices.filter(c => c.status !== 'active')],
     controller: controllers.find(c => c.status === 'active') ?? null,

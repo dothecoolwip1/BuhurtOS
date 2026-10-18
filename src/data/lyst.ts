@@ -16,9 +16,10 @@ async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
 /** One counter on this fight, as evidence: who (the operator's name), which side, official or learning, on a phone (and whether it is online) or a trainee's own account. */
 export interface LystSeat {
   id: string; name: string; slot: string | null; side: 'a' | 'b' | null; role: 'official' | 'learning'; status: string;
-  /** Pack 25: a counter phone (an event session) rather than a person's account; `online` is null for an account. */
-  device?: boolean; online?: boolean | null;
-  tallies: { round_no: number; total: number; submitted: boolean }[];
+  /** Pack 25: a counter phone (an event session) rather than a person's account; `online` is null for an account. Pack 27A: the phone's session id (null for an account). */
+  device?: boolean; online?: boolean | null; session_id?: string | null;
+  /** Pack 27A: `operators` is who tapped what during the round on this phone (a handoff keeps the tally; the names stay with their taps). */
+  tallies: { round_no: number; total: number; submitted: boolean; operators?: { name: string; total: number }[] }[];
 }
 /** Pack 25: a phone bound to this field (whether or not it has a seat on the fight yet). */
 export interface FieldCounter { session_id: string; operator: string | null; side: 'a' | 'b' | null; online: boolean }
@@ -110,6 +111,8 @@ export interface CounterState {
   match_id?: string | null; competition?: string | null; round_label?: string | null; final?: boolean; fighter?: string | null; opponent?: string | null;
   counter_input?: CounterInput; per_side?: number | null; standing?: number | null;
   round?: { no: number; status: 'running' | 'confirming' | 'confirmed' } | null; my_total?: number; submitted?: boolean; can_count?: boolean;
+  /** Pack 27B: a training phone (the Training Counter QR) or a trainee's account; `officials` is the same side's official counters in the live round, one line each, never a combined number. */
+  training?: boolean; officials?: { name: string; total: number }[] | null;
   timer?: (LystTimer & { now_remaining_ms: number }) | null;
   /** The field's last finished fight, the one on now and the next in its running order (null each when there is none). */
   fights?: { last: CounterFight | null; now: CounterFight | null; next: CounterFight | null } | null;
