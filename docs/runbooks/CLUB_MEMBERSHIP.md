@@ -303,3 +303,28 @@ confirmation email bounced to the owner (14 accounts that day). **Production tes
   SECTION 2 (arm: X and Y approved, Z pending) just before a test and SECTION 3 (disarm: withdraw leftover test candidacies, all three back to
   Removed) right after. Every change writes an audit row; nothing is deleted. SECTION 4 shows the current state.
 - Do not point `buhurtos.ca` mail anywhere as part of this; that is the owner's decision.
+
+## 14. Part 4 (2026-10-18): meetings become reusable (club website only)
+
+Migration `20261018040000_club_meetings_reusable.sql` (additive). Owner request: the members area "will be used for dozens of meetings and
+anytime we need to vote for stuff". BuhurtOS has no screens for this; the Red Deer Reavers members page (`members.html`) is the only UI.
+
+| Change | What it does |
+| --- | --- |
+| `club_meetings.kind` | `agm` (one per membership year, partial unique index), `general`, `leadership`, `vote` (a voting session with no gathering). `special` stays allowed; the existing Pre-AGM Leadership Meeting becomes `leadership` + `invite_only`. The old `unique (team, kind, year)` is gone. |
+| New columns | `details` (≤ 4000), `ends_at` (> `starts_at`), `invite_only`, `created_by`, `cancelled_at` / `cancelled_by`. A cancelled meeting keeps its RSVPs, topics, questions and ballots. |
+| `club_meetings_list(team)` | Every meeting the caller may see (public ones; invite-only ones for invitees and the executive) with their RSVP, check-in, open questions and `to_vote` (open questions still waiting for their own or a proxy ballot). |
+| `club_meeting_view(meeting)` | One meeting by id: the `club_meeting_member_view` shape plus kind, details, attendees (invite-only), agenda (topics on the agenda, members and executive only, no names). Refuses an invite-only meeting to anyone not invited (42501). |
+| `create_club_meeting`, `update_club_meeting`, `cancel_club_meeting`, `set_club_meeting_invitees`, `club_meeting_invitee_ids` | President, Secretary or Treasurer. The membership year comes from the start date. The kind never changes; the day cannot change once a question has opened; a meeting with an open question cannot be cancelled. Every call writes an audit row. |
+| `club_leadership_meeting` | Unchanged shape; also finds kind `leadership`. `club_meeting_member_view` is unchanged (old `?view=agm` links). |
+| `private.reavers_discord_rsvp_alert` | Names the meeting and links to its page; invite-only meetings are not announced. |
+
+Everything that decides who may RSVP, hold a proxy, nominate, run or cast a vote is untouched: those functions take a meeting id and never
+cared which kind it was.
+
+Verification: the migration plus 40 checks (anon refused; member sees public meetings only and cannot create, invite or cancel; invitee
+sees the leadership meeting and its 6 attendees; outsider sees no membership, video or agenda; executive creates, updates, invites, cancels
+and restores; second AGM, unknown kind, bad time zone, end-before-start, foreign invitee, cancel-with-open-vote and day-change-after-open
+refused; a question opens on a `vote` session; audit rows written) ran against the hosted project inside one transaction that was rolled
+back, 2026-10-18. **The migration is not applied to the hosted project**: apply it with `supabase/migrations/20261018040000_club_meetings_reusable.sql`.
+Until then the members page falls back to the AGM and leadership reads and the executive cannot schedule meetings from the page.
