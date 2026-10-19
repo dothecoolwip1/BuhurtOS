@@ -33,7 +33,7 @@ SQL
 uuid() { node -e "console.log(require('node:crypto').randomUUID())"; }
 as_user() { printf "set role authenticated; set request.jwt.claim.sub = '%s';" "$1"; }
 q() { psql -X -At -d $DB -c "$1"; }
-run() { psql -X -q -At -d $DB -c "$(as_user "$1") $2" 2>&1 | tr -d '\n'; echo; }
+run() { psql -X -q -At -d $DB -c "$(as_user "$1") $2" 2>&1 | tr -d '\r\n'; echo; }
 check() { if [ "$2" = "$3" ]; then echo "ok   $1"; else echo "FAIL $1"; echo "       got:  $2"; echo "       want: $3"; FAIL=$((FAIL+1)); fi; }
 
 run $U1 "select public.lyst_open('$M', 'simple');" >/dev/null
