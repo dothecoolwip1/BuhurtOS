@@ -12,11 +12,11 @@ Implemented with Codex integration and Claude Code backend work and review, Octo
 ## Evidence
 
 - Unit suite: 1,422 passing, six existing skipped tests; production build and TypeScript pass.
-- Actual Chromium role rehearsal against disposable PostgreSQL, PostgREST and the real device-session handler: 29 checks pass. Includes reorder, cancel, replacement, scorekeeper restrictions, Counter QR, offline taps/reconnect, recount preservation, manual override reason, warning, official result, next-fight handoff/reload, team clock without counters, announcer team/experience, and responsive overflow checks.
+- Actual Chromium role rehearsal against disposable PostgreSQL, PostgREST and the real device-session handler: 34 checks pass. Includes reorder, cancel, replacement, scorekeeper restrictions, Counter QR, offline taps/reconnect, recount preservation, manual override reason, warning, official result, next-fight handoff/reload, team clock without counters, standing counter taps/recount/round confirmation/reload, announcer team/experience, and responsive overflow checks.
 - Public audit: 46 route/viewport visits at 390, 768 and 1280 pixels, including actual public team, fighter, event and organization details. No uncaught JavaScript errors, load errors or horizontal overflow after the calendar fix.
 - Classic scoring browser regression: 28 checks pass. Classic fixtures use marshal roles; secretaries intentionally enter the simplified Lyst workflow.
 - New permission/integrity gates: secretary boundary 81 checks; organizer lineup 61 checks, including restricted editable reads, stale snapshots, immutable history, eligibility and audited replacement.
-- Full fresh database regression, simulation, concurrent commits and GitHub CI must be green before merge/deployment. Record the exact commit and workflow in the PR.
+- GitHub fresh database gate passed on the initial candidate, including all SQL suites, tournament simulation, fictional league, concurrent mutations and fingerprint. Final CI must also pass before merge/deployment. Record the exact commit and workflow in the PR.
 - Claude final integrated review: findings about permanently stale lineups, field-name rewriting and encoding resolved; no blocking findings. Reviewed code only, not hosted behavior.
 
 ## Reproduce

@@ -6,7 +6,7 @@ import path from 'node:path';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.json': 'application/json' };
 
 export function startStaticServer(initialDir) {
-  const state = { dir: initialDir, hits: [] };
+  const state = { dir: path.resolve(initialDir), hits: [] };
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://x');
     state.hits.push(url.pathname);
@@ -16,6 +16,6 @@ export function startStaticServer(initialDir) {
     fs.createReadStream(file).pipe(res);
   });
   return new Promise(resolve => server.listen(0, '127.0.0.1', () => resolve({
-    state, base: `http://127.0.0.1:${server.address().port}`, switchTo(dir) { state.dir = dir; }, close: () => new Promise(r => server.close(() => r()))
+    state, base: `http://127.0.0.1:${server.address().port}`, switchTo(dir) { state.dir = path.resolve(dir); }, close: () => new Promise(r => server.close(() => r()))
   })));
 }

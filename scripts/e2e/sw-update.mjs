@@ -21,7 +21,8 @@ async function session(label) {
   server.switchTo(`${OUT}/a`);
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
   await ctx.addInitScript(() => { try { localStorage.setItem('bos-lyst-mode', 'classic'); } catch { /* ignore */ } });   // these journeys drive the classic duel board; Lyst Control has its own journey (pack13-live)
-  const mock = createMock();
+  // This journey tests classic-board update safety; secretary devices use Lyst Control.
+  const mock = createMock({ roles: { [IDS.userA]: ['marshal'], [IDS.head]: ['head_marshal'] } });
   await ctx.route(`https://${REF}.supabase.co/**`, mock.handle);
   await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [storageKey, sessionFor(IDS.userA, 'scorer-a@example.test')]);
   const page = await ctx.newPage();

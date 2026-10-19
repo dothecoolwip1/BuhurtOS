@@ -42,7 +42,7 @@ try {
   // ---- 1. open, score while online
   await page.goto(url);
   await openMatch();
-  check('field screen opens for a scorekeeper and shows the match as Pending until saved', await has('Pending: not official until you save'));
+  check('classic field screen opens for a marshal and shows the match as Pending until saved', await has('Pending: not official until you save'));
 
   // ---- 2. short loss of signal while the screen stays open
   await goOffline();
@@ -141,7 +141,7 @@ try {
   await setSession(sessA);
   await page.goto(url);
   await page.getByRole('button', { name: 'Score Iron Wolves against Ash Guard' }).waitFor();
-  check('a plain scorekeeper does not see Needs review or the paper form', !(await has('Enter official result from paper')));
+  check('a marshal without result-review authority does not see Needs review or the paper form', !(await has('Enter official result from paper')));
 } catch (e) {
   check('script ran to the end', false, String(e).slice(0, 300));
 } finally {

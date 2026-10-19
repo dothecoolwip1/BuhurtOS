@@ -141,7 +141,31 @@ try{
  await group.getByRole('button',{name:'Resume',exact:true}).waitFor();
  check('secretary pauses a team-fight clock',true);
  await shot(team,'secretary-team-clock-768');
- for(const p of [org,secretary,counter,ann,team]){
+ await group.getByRole('button',{name:'Resume',exact:true}).click();
+ const tc=await pageFor(null);await tc.goto(`${BASE}/device#c=${made.code.replaceAll('-','')}`);
+ await tc.locator('#cp-name').fill('Team Regression Counter');await tc.getByRole('button',{name:'Continue',exact:true}).click();
+ await tc.getByRole('button',{name:/Lyst 2|Field 2/}).click();await tc.getByTestId('cp-pick-a').click();
+ await tc.getByRole('button',{name:'Fighter down',exact:true}).click();
+ await tc.getByTestId('cp-standing').filter({hasText:'4'}).waitFor();
+ check('team counter records standing fighters',true);
+ await tc.getByRole('button',{name:'Done with round',exact:true}).click();
+ await group.getByRole('button',{name:'End round 1',exact:true}).click();
+ await group.getByText('Return for recount',{exact:true}).click();
+ await group.getByLabel('Reason',{exact:true}).fill('Team marshal requested recount');
+ await group.getByRole('button',{name:'Return scores to counters',exact:true}).click();
+ await group.getByRole('button',{name:'End round 1',exact:true}).waitFor();
+ const rt=await rpc(4,'lyst_state',{p_match:mid(42)});
+ check('team recount preserves standing evidence',rt.rounds.find(r=>r.round_no===1)?.status==='running'&&rt.seats.some(s=>s.tallies.some(t=>t.total===1&&!t.submitted)));
+ await tc.getByRole('button',{name:'Done with round',exact:true}).click();
+ await group.getByRole('button',{name:'End round 1',exact:true}).click();
+ for(let i=1;i<=5;i++)await team.getByRole('button',{name:`Red Deer Reavers fighter ${i} standing`,exact:true}).click();
+ await team.getByRole('button',{name:'Confirm round',exact:true}).click();
+ await group.getByRole('button',{name:'Start round 2',exact:true}).waitFor();
+ const gr=await rpc(4,'lyst_state',{p_match:mid(42)});
+ check('team awarded round confirms with counter phones present',gr.rounds.some(r=>r.round_no===1&&r.status==='confirmed'&&r.awarded_a===1&&r.awarded_b===0));
+ await team.reload();await team.getByTestId('group-counter-rounds').getByRole('button',{name:'Start round 2',exact:true}).waitFor();
+ check('team round survives reload without guessing its winner',true);
+ for(const p of [org,secretary,counter,ann,team,tc]){
   const overflow=await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
   check(`role screen has no horizontal overflow (${p.url().split('/').at(-1)})`,!overflow);
  }

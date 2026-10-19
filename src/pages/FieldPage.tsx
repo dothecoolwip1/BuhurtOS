@@ -176,8 +176,8 @@ export function FieldPage() {
       const fresh = (await fetchEventMatches([comp])).find(x => x.id === m.id);
       if (!fresh || fresh.queueState === 'final') { setNotice('That match is already final.'); reload(); return; }
       setOpened({ match: fresh, comp, version: fresh.version });
-      // a refresh of the lyst screen comes back to this fight (the clock and rounds live on the server). The classic board keeps its own behaviour: a refresh returns to the queue.
-      if (boardModeFor(comp.league, comp.category) === 'duel' && (secretary || !classic)) setSearch(prev => { const n = new URLSearchParams(prev); n.delete('match'); n.set('open', m.id); return n; }, { replace: true });
+      // Secretary and Lyst screens reopen the current fight after refresh. Other classic-board roles keep their queue landing; their board remains saved locally.
+      if (secretary || (boardModeFor(comp.league, comp.category) === 'duel' && !classic)) setSearch(prev => { const n = new URLSearchParams(prev); n.delete('match'); n.set('open', m.id); return n; }, { replace: true });
       reload();
     } catch (e) { setOpenError(friendlyError(e)); } finally { setOpening(false); }
   };
