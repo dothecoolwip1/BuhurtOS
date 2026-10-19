@@ -14,6 +14,8 @@ Implemented with Codex integration and Claude Code backend work and review, Octo
 - Unit suite: 1,422 passing, six existing skipped tests; production build and TypeScript pass.
 - Actual Chromium role rehearsal against disposable PostgreSQL, PostgREST and the real device-session handler: 34 checks pass. Includes reorder, cancel, replacement, scorekeeper restrictions, Counter QR, offline taps/reconnect, recount preservation, manual override reason, warning, official result, next-fight handoff/reload, team clock without counters, standing counter taps/recount/round confirmation/reload, announcer team/experience, and responsive overflow checks.
 - Public audit: 46 route/viewport visits at 390, 768 and 1280 pixels, including actual public team, fighter, event and organization details. No uncaught JavaScript errors, load errors or horizontal overflow after the calendar fix.
+- Role rehearsal also passes all 34 checks against a production bundle, including team round recovery after reload.
+- Service-worker update safety: 28 checks pass, including safe activation, emergency handover, durable outbox delivery and fallback recovery.
 - Classic scoring browser regression: 28 checks pass. Classic fixtures use marshal roles; secretaries intentionally enter the simplified Lyst workflow.
 - New permission/integrity gates: secretary boundary 81 checks; organizer lineup 61 checks, including restricted editable reads, stale snapshots, immutable history, eligibility and audited replacement.
 - GitHub fresh database gate passed on the initial candidate, including all SQL suites, tournament simulation, fictional league, concurrent mutations and fingerprint. Final CI must also pass before merge/deployment. Record the exact commit and workflow in the PR.

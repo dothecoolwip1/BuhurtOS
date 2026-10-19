@@ -104,6 +104,7 @@ try{
  await shot(secretary,'secretary-scoring-390');
  const ann=await pageFor(null,768);await ann.goto(`${BASE}/events/${SLUG}/announcer`);await ann.getByTestId('now-fighting').first().waitFor();await ann.getByTestId('up-next').first().waitFor();
  check('announcer shows current and next fights',await text(ann).then(s=>/Now fighting/i.test(s)&&/Up next/i.test(s)));
+ await ann.getByText(/Fighting since 2018/).first().waitFor();
  check('announcer shows recorded team and fighting experience',await text(ann).then(s=>s.includes('Ravens of Calgary')&&s.includes('Fighting since 2018')));
  check('announcer has no event-changing controls',await ann.locator('input,textarea,select').count()===0 && await ann.getByText('Camera Off',{exact:true}).count()===0);
  check('extra queue and results start collapsed',await ann.locator('.an-coming[open],.an-recent[open]').count()===0);
