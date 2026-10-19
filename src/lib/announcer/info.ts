@@ -10,6 +10,13 @@ import { TBD, basisOf, lystLabel, scoreText, type AnnSide } from './viewModel';
  * totals, this event's final matches); there is no field here that could hold an email, a phone number, an account id, an inspection or weigh-in
  * note, anything medical, an admin note or a readiness reason.
  */
+/** Calendar-year estimate from the fighter's recorded start year, never from their first result. */
+export function experienceLine(joinedYear: number | null | undefined, currentYear = new Date().getFullYear()): string | null {
+  if (!Number.isInteger(joinedYear) || joinedYear! < 1990 || joinedYear! > currentYear) return null;
+  const years = currentYear - joinedYear!;
+  return years === 0 ? `Fighting since ${joinedYear}` : `Fighting since ${joinedYear} · about ${years} ${years === 1 ? 'year' : 'years'}`;
+}
+
 export interface EarlierFight {
   matchId: string; competition: string; stage: string; lyst: string; opponent: string;
   outcome: 'Won' | 'Lost' | 'Drew'; scoreText: string | null; basis: string | null;

@@ -9,7 +9,7 @@ import { LogPanel } from './LogPanel';
 import { LystSettingsDialog } from './LystSettingsDialog';
 import { RulesSheet } from '../rules/RulesSheet';
 import { fetchCitations } from '../../data/rules';
-import { createJoinCode, finalizeFromLyst, openLyst, timerCommand } from '../../data/lyst';
+import { createJoinCode, finalizeFromLyst, openLyst, returnRound, timerCommand } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
 import { fieldLabel } from '../../lib/eventDay';
@@ -34,14 +34,14 @@ const readCalledBy = () => { try { return localStorage.getItem(CALLED_BY_KEY) ??
 const sideName = (m: { entryA: string | null; entryB: string | null; nameA: string | null; nameB: string | null }) => ({ a: sideLabel(m.entryA, m.nameA, 'Side A'), b: sideLabel(m.entryB, m.nameB, 'Side B') });
 const roundText = (m: ScoringScreenProps['opened']['match']) => `${m.roundLabel || m.stage}${m.pool ? ` · Pool ${m.pool}` : ''}`;
 
-export interface LystScoringProps extends ScoringScreenProps { canResolve: boolean; onClassic: () => void }
+export interface LystScoringProps extends ScoringScreenProps { secretary?: boolean; canResolve: boolean; onClassic: () => void }
 
 /**
  * The lyst tablet. One screen for the whole fight: the clock (server state), the round zone (start, end, confirm), the marshal's call (cards, deductions, DQ), the optional counters, and
  * finishing through the existing human-confirmed result path. THE MARSHAL'S CALL IS THE ONLY OFFICIAL SCORE: this screen never derives a score from counters or from the clock.
  * Confirmed rounds, penalties and voids go through the existing scoring outbox (saved on the device first, sent in order, kept if refused); the clock is online-only on purpose.
  */
-export function LystScoring({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, canResolve, onClassic }: LystScoringProps) {
+export function LystScoring({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, canResolve, onClassic, secretary = false }: LystScoringProps) {
   const { match, comp } = opened;
   const names = sideName(match);
   const lyst = useLystState(match.id, eventId);
@@ -61,6 +61,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const [pendingRound, setPendingRound] = useState<{ round: number; a: number; b: number } | null>(null);
   const [saved, setSaved] = useState<{ summary: string; a: number; b: number; winner: 'a' | 'b' | 'draw' } | null>(null);
   const commandId = useRef<string | undefined>(undefined);
+  const returnCommand = useRef<{ key: string; id: string } | null>(null);
+  const returning = useRef(false);
   const [choice, setChoice] = useState<{ result: 'a' | 'b' | 'draw'; basis: FinishBasis } | null>(null);
   const [technicalReason, setTechnicalReason] = useState('');
   const [calledBy, setCalledBy] = useState(readCalledBy);
@@ -312,7 +314,20 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
   /* ---------------- the lyst ---------------- */
   const zone: 'loading' | 'start' | 'fighting' | 'confirm' | 'between' = !st ? 'loading' : !cur ? 'start' : cur.status === 'running' ? 'fighting' : cur.status === 'confirming' ? 'confirm' : 'between';
-  const hintsFor = (side: 'a' | 'b', round: number): Hint[] => (st?.seats ?? []).filter(s => s.role === 'official' && s.side === side && s.status === 'active').map(s => ({ slot: s.name, total: s.tallies.find(t => t.round_no === round)?.total ?? 0 }));
+  const hintsFor = (side: 'a' | 'b', round: number): Hint[] => (st?.seats ?? []).filter(s => s.role === 'official' && s.side === side && s.status === 'active' && s.tallies.some(t => t.round_no === round && t.submitted)).map(s => ({ slot: s.name, total: s.tallies.find(t => t.round_no === round)!.total }));
+  const returnForRecount = async (round: LystRound, reason: string) => {
+    if (returning.current || lyst.offline) return;
+    returning.current = true; setBusy(true); setError(null);
+    const key = JSON.stringify([match.id, round.round_no, round.rev, reason]);
+    if (returnCommand.current?.key !== key) returnCommand.current = { key, id: crypto.randomUUID() };
+    try {
+      const reply = await returnRound({ command: returnCommand.current.id, matchId: match.id, round: round.round_no, expectedRev: round.rev, reason });
+      if (reply.status === 'stale') setError('This round changed on another device. Check the latest scores before returning it.');
+      else { setEarly(false); setCorrecting(null); returnCommand.current = null; }
+      await lyst.refresh();
+    } catch (e) { setError(friendlyError(e, 'Could not return these scores. Check your connection and try again.')); }
+    finally { returning.current = false; setBusy(false); }
+  };
   const correctingRound = correcting !== null ? rounds.find(r => r.round_no === correcting) ?? null : null;
   const showEntry = zone === 'confirm' || (zone === 'fighting' && early);
   const bannerStatus = pendingRound || waiting > 0 ? 'pending' : finishReady ? 'ready' : 'scoring';
@@ -352,7 +367,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         </ul>
       )}
 
-      {st && st.seats.some(s => s.status === 'active') && zone !== 'loading' && (
+      {!secretary && st && st.seats.some(s => s.status === 'active') && zone !== 'loading' && (
         <section className="ly-evidence-strip" aria-label="Counters on this fight" data-testid="counter-evidence">
           <CounterEvidence seats={st.seats} names={names} round={cur?.round_no ?? 1} compact />
         </section>
@@ -374,7 +389,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       )}
 
       {correctingRound && (
-        <RoundEntry round={correctingRound.round_no} names={names} initial={entryStart(correctingRound)} correcting hintsA={hintsFor('a', correctingRound.round_no)} hintsB={hintsFor('b', correctingRound.round_no)} busy={busy}
+        <RoundEntry secretary={secretary} round={correctingRound.round_no} names={names} initial={entryStart(correctingRound)} correcting hintsA={hintsFor('a', correctingRound.round_no)} hintsB={hintsFor('b', correctingRound.round_no)} busy={busy}
           onConfirm={(a, b, x) => void confirm(correctingRound, a, b, x)} onCancel={() => setCorrecting(null)} />
       )}
 
@@ -398,8 +413,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       )}
 
       {!correctingRound && showEntry && entryRound && !pendingRound && (
-        <RoundEntry round={entryRound.round_no} names={names} initial={null} correcting={false} hintsA={hintsFor('a', entryRound.round_no)} hintsB={hintsFor('b', entryRound.round_no)} busy={busy}
-          onConfirm={(a, b, x) => void confirm(entryRound, a, b, x)} onCancel={early ? () => setEarly(false) : undefined} />
+        <RoundEntry secretary={secretary} round={entryRound.round_no} names={names} initial={null} correcting={false} hintsA={hintsFor('a', entryRound.round_no)} hintsB={hintsFor('b', entryRound.round_no)} busy={busy}
+          onConfirm={(a, b, x) => void confirm(entryRound, a, b, x)} onReturn={!lyst.offline ? reason => void returnForRecount(entryRound, reason) : undefined} onCancel={early ? () => setEarly(false) : undefined} />
       )}
 
       {!correctingRound && pendingRound && (
@@ -424,9 +439,9 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
       <nav className="ly-tools" aria-label="Lyst tools">
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('discipline')} disabled={!st || !cur}>Marshal's call{discipline.length ? ` · ${activeDiscipline(discipline).length}` : ''}</button>
-        <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('counters')} disabled={!st}>Counters{st && st.seats.length ? ` · ${st.seats.filter(s => s.status === 'active').length}` : ''}</button>
-        <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('log')} disabled={!st}>Record</button>
-        <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('rules')}>Rules</button>
+        {!secretary && <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('counters')} disabled={!st}>Counters{st && st.seats.length ? ` · ${st.seats.filter(s => s.status === 'active').length}` : ''}</button>}
+        {!secretary && <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('log')} disabled={!st}>Record</button>}
+        {!secretary && <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('rules')}>Rules</button>}
         {canResolve && <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('settings')} disabled={!st}>Lyst settings</button>}
       </nav>
       {discipline.length > 0 && (
@@ -437,7 +452,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
       <div className="mactions sk-actions">
         <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
-        <button type="button" className="btn btn-line fq-big" onClick={onClassic}>Use the classic scoreboard</button>
+        {!secretary && <button type="button" className="btn btn-line fq-big" onClick={onClassic}>Use the classic scoreboard</button>}
       </div>
 
       {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}

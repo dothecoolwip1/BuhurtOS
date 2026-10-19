@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { confirmRound, openLyst, timerCommand } from '../../data/lyst';
+import { confirmRound, openLyst, returnRound, timerCommand } from '../../data/lyst';
+import { TimerBar, type TimerSend } from '../lyst/TimerBar';
+import { DisciplineSheet, type DisciplineDraft } from '../lyst/DisciplineSheet';
+import { useOutbox } from '../../lib/useOutbox';
+import { pendingGroupWinner } from '../../lib/lyst/groupRound';
 import type { GroupState } from '../../lib/scoring';
 import { friendlyError } from '../../lib/friendlyError';
 import { isNoSignalError } from '../../lib/fieldScoring';
@@ -16,11 +20,14 @@ import { useLystState, useNow } from '../../lib/lyst/useLystState';
  * "fighter down" only while a round is live. When the board's round is confirmed, the same call is written to the Lyst round (1 to the side that won it)
  * so the next round can open. The phones' numbers are evidence beside the board: nothing here reads them into the result.
  */
-export function GroupCounterRounds({ matchId, eventId, fieldName, board }: { matchId: string; eventId: string; fieldName: string; board: GroupState }) {
+export function GroupCounterRounds({ matchId, eventId, fieldName, board, secretary = false, names = { a: 'Red', b: 'Blue' } }: { matchId: string; eventId: string; fieldName: string; board: GroupState; secretary?: boolean; names?: { a: string; b: string } }) {
   const lyst = useLystState(matchId, eventId);
   const st = lyst.state;
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const [callOpen, setCallOpen] = useState(false);
+  const [returnReason, setReturnReason] = useState('');
+  const { record, drain } = useOutbox({ eventId });
   const opened = useRef(false);
   useEffect(() => {
     if (!st || st.lyst || opened.current) return;
@@ -37,22 +44,16 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, board }: { mat
   const presets = st?.settings.presets ?? [];
   const confirmedOnLyst = rounds.filter(r => r.status === 'confirmed').length;
   const boardRounds = board.rounds.a + board.rounds.b;
-  const names = { a: 'Red', b: 'Blue' };
 
   // the board's round was confirmed (one side's rounds won moved up): write the same call to the Lyst round, once, so counters can move to the next round
   const syncing = useRef(false);
-  const prev = useRef(board.rounds);
-  const lastWinner = useRef<'a' | 'b' | null>(null);
-  useEffect(() => {
-    if (board.rounds.a > prev.current.a) lastWinner.current = 'a'; else if (board.rounds.b > prev.current.b) lastWinner.current = 'b';
-    prev.current = board.rounds;
-  }, [board.rounds]);
   useEffect(() => {
     if (!st || syncing.current || boardRounds <= confirmedOnLyst || !cur || cur.status === 'confirmed') return;
-    const winner: 'a' | 'b' = lastWinner.current ?? (board.rounds.a >= board.rounds.b ? 'a' : 'b');
+    const winner = pendingGroupWinner(board.rounds, rounds);
+    if (!winner) { setNote('The board and counter rounds need checking before another round can be confirmed.'); return; }
     syncing.current = true;
     void confirmRound({ command: crypto.randomUUID(), matchId, round: cur.round_no, a: winner === 'a' ? 1 : 0, b: winner === 'b' ? 1 : 0, expectedRev: cur.rev })
-      .then(() => lyst.refresh()).catch(() => undefined).finally(() => { syncing.current = false; });
+      .then(() => lyst.refresh()).catch(e => setNote(friendlyError(e, 'Could not confirm the round for the counter phones.'))).finally(() => { syncing.current = false; });
   }, [st, boardRounds, confirmedOnLyst, cur, board.rounds.a, board.rounds.b, matchId, lyst]);
 
   const send = async (action: 'start' | 'break') => {
@@ -69,25 +70,55 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, board }: { mat
   };
 
   if (!st) return null;
+  const clockCommand: TimerSend = (action, o = {}) => {
+    if (busy) return;
+    setBusy(true); setNote(null);
+    void timerCommand({ eventId, field: fieldName, matchId, expectedRev: st.timer?.rev ?? 0, command: crypto.randomUUID(), action, ...o })
+      .then(({ answer }) => { if (answer.status === 'stale') setNote('The clock changed on another device. Check it before trying again.'); return lyst.refresh(); })
+      .catch(e => setNote(friendlyError(e))).finally(() => setBusy(false));
+  };
+  const recordCall = async (d: DisciplineDraft) => {
+    if (busy || !cur) return;
+    setBusy(true); setNote(null);
+    try {
+      const id = await record('lyst.discipline', matchId, { matchId, round: cur.round_no, side: d.side, kind: d.kind, label: d.label, amount: d.amount, reason: d.reason, calledBy: d.calledBy, related: null });
+      if (!id) throw new Error('Sign in again to record the call.');
+      if (d.ruleId) await record('lyst.cite_rule', matchId, { disciplineId: id, provisionId: d.ruleId });
+      if (d.kind === 'card' && d.alsoDeduct > 0) await record('lyst.discipline', matchId, { matchId, round: cur.round_no, side: d.side, kind: 'deduction', label: null, amount: d.alsoDeduct, reason: d.reason ?? 'With the card', calledBy: d.calledBy, related: id });
+      setCallOpen(false);
+      const sent = await drain(matchId);
+      if (!sent.clear || sent.rejected.length > 0) setNote('The marshal’s call is saved on this device and is not yet official. Keep the paper record and check the connection.');
+      await lyst.refresh();
+    } catch (e) { setNote(friendlyError(e)); } finally { setBusy(false); }
+  };
   const live = cur?.status === 'running';
   const activeSeats = st.seats.filter(s => s.status === 'active');
   return (
-    <section className="panel info gc-rounds" aria-label="Counters for this fight" data-testid="group-counter-rounds">
+    <section className="panel info gc-rounds" aria-label={secretary ? 'Clock and marshal calls' : 'Counters for this fight'} data-testid="group-counter-rounds">
       <div className="gc-head">
-        <b>Counters</b>
-        <span className="src">{activeSeats.length === 0 ? 'No counter phone on this Lyst yet. They scan the event\'s Counter QR and pick this Lyst.' : `${activeSeats.length} counting fighters standing per side`}</span>
+        <b>{secretary ? 'Clock & marshal calls' : 'Counters'}</b>
+        {!secretary && <span className="src">{activeSeats.length === 0 ? 'No counter phone on this Lyst yet. They scan the event\'s Counter QR and pick this Lyst.' : `${activeSeats.length} counting fighters standing per side`}</span>}
       </div>
+      {secretary && <>
+        <TimerBar timer={timer} leftMs={leftMs} roundNo={cur?.round_no ?? 1} presets={presets} busy={busy} offline={lyst.offline} note={null} onSend={clockCommand} startHere={false} />
+        <button type="button" className="btn btn-line" disabled={busy || !cur} onClick={() => setCallOpen(true)}>Marshal's call</button>
+      </>}
       <div className="gc-clock-row">
         <span className="gc-round">{cur ? `Round ${cur.round_no}` : 'Round not started'}{cur ? ` · ${live ? 'live' : cur.status === 'confirming' ? 'ended' : 'confirmed'}` : ''}</span>
-        {timer && <output className="mono gc-clock" aria-label={`Clock ${formatClock(leftMs)}`}>{formatClock(leftMs)}</output>}
+        {timer && !secretary && <output className="mono gc-clock" aria-label={`Clock ${formatClock(leftMs)}`}>{formatClock(leftMs)}</output>}
         {live
-          ? <button type="button" className="btn btn-line" disabled={busy || lyst.offline} onClick={() => void send('break')}>End round {cur?.round_no} for counters</button>
+          ? <button type="button" className="btn btn-line" disabled={busy || lyst.offline} onClick={() => void send('break')}>End round {cur?.round_no}{secretary ? '' : ' for counters'}</button>
           : <button type="button" className="btn btn-ink" disabled={busy || lyst.offline || !!board.winner || (!!cur && cur.status === 'confirming' && boardRounds <= confirmedOnLyst)} onClick={() => void send('start')}>
-              {cur && cur.status === 'confirming' ? `Round ${cur.round_no}: confirm on the board first` : `Start round ${cur && cur.status !== 'confirmed' ? cur.round_no : (cur?.round_no ?? 0) + 1} for counters`}
+              {cur && cur.status === 'confirming' ? `Round ${cur.round_no}: confirm on the board first` : `Start round ${cur && cur.status !== 'confirmed' ? cur.round_no : (cur?.round_no ?? 0) + 1}${secretary ? '' : ' for counters'}`}
             </button>}
       </div>
       {note && <p className="src" role="status">{note}</p>}
-      {activeSeats.length > 0 && <CounterEvidence seats={st.seats} names={names} round={cur?.round_no ?? 1} compact />}
+      {!secretary && activeSeats.length > 0 && <CounterEvidence seats={st.seats} names={names} round={cur?.round_no ?? 1} compact />}
+      {secretary && cur?.status === 'confirming' && <details><summary className="btn btn-line">Return for recount</summary><label>Reason<input value={returnReason} onChange={e => setReturnReason(e.target.value)} maxLength={200} /></label><button type="button" className="btn btn-line" disabled={busy || lyst.offline || returnReason.trim().length < 3} onClick={() => {
+        setBusy(true); void returnRound({ command: crypto.randomUUID(), matchId, round: cur.round_no, expectedRev: cur.rev, reason: returnReason })
+          .then(r => { if (r.status === 'stale') setNote('The round changed on another device. Check its latest state.'); return lyst.refresh(); }).catch(e => setNote(friendlyError(e))).finally(() => setBusy(false));
+      }}>Return scores to counters</button></details>}
+      {callOpen && cur && <DisciplineSheet names={names} round={cur.round_no} settings={st.settings} calledByDefault="" busy={busy} onClose={() => setCallOpen(false)} onRecord={d => void recordCall(d)} />}
     </section>
   );
 }

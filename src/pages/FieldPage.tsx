@@ -24,6 +24,7 @@ import { fieldOverview } from '../lib/fieldOverview';
 import { NotFoundPage } from './NotFoundPage';
 import { realtimeChannel } from '../lib/realtimeChannel';
 import { useFocusBar } from '../components/FocusLayout';
+import { isSecretaryOnly } from '../lib/eventStaff';
 import { fieldLabel } from '../lib/eventDay';
 
 /** Mirrors private.can_score: organizer, marshal, scorekeeper, plus the platform owner. The database enforces it again on every call. */
@@ -31,7 +32,7 @@ const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'own
 /** Mirrors private.can_resolve_results: who may settle a disagreement or enter an official result from paper. */
 const RESOLVE_ROLES = ['organizer', 'head_marshal', 'owner', 'operator'];
 /** Mirrors private.can_adjust_queue (Pack 18.1): who may change the running order. The head marshal and marshals may not; an event admin (Temporary Organizer) is an operator. */
-const QUEUE_ROLES = ['organizer', 'owner', 'scorekeeper', 'operator'];
+const QUEUE_ROLES = ['organizer', 'owner', 'operator'];
 const POLL_MS = 10000;
 /** Duels are scored through Lyst Control (clock, rounds, marshal's call). A marshal can fall back to the classic board; the choice is remembered on this device only. */
 const LYST_MODE_KEY = 'bos-lyst-mode';
@@ -123,6 +124,7 @@ export function FieldPage() {
   const eventId = event?.id;
   const mine = useAsync(() => (eventId && userId ? fetchMyEventContext(eventId, userId) : Promise.resolve(undefined)), [eventId, userId]);
   const canScore = mine.data?.roles.some(r => SCORE_ROLES.includes(r)) === true;
+  const secretary = isSecretaryOnly(mine.data?.roles ?? [], mine.data?.isOrganizer);
   const canResolve = mine.data?.roles.some(r => RESOLVE_ROLES.includes(r)) === true;
   const canAdjust = mine.data?.roles.some(r => QUEUE_ROLES.includes(r)) === true;
   const [moving, setMoving] = useState(false);
@@ -137,7 +139,7 @@ export function FieldPage() {
 
   // Keep the queue fresh: poll, and reload when anybody changes a match (realtime is a nudge, polling is the safety net).
   const reload = useCallback(() => setReloadKey(k => k + 1), []);
-  const closeOpened = useCallback(() => { setOpened(null); setSearch(prev => { const n = new URLSearchParams(prev); n.delete('open'); return n; }, { replace: true }); }, [setSearch]);
+  const closeOpened = useCallback(() => { setOpened(null); setSearch(prev => { const n = new URLSearchParams(prev); n.delete('match'); n.delete('open'); return n; }, { replace: true }); }, [setSearch]);
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (!canScore) return;
@@ -150,7 +152,7 @@ export function FieldPage() {
   }, [canScore, slug, field, reload, comps.data]);
 
   const compById = useMemo(() => new Map((comps.data ?? []).map(c => [c.id, c])), [comps.data]);
-  const queue = useMemo(() => fieldQueue(matches.data ?? [], field), [matches.data, field]);
+  const queue = useMemo(() => fieldQueue(matches.data ?? [], field).filter(m => !secretary || ['active', 'on_deck', 'in_the_hole'].includes(m.queueState)), [matches.data, field, secretary]);
   const otherFields = useMemo(() => fieldOverview(matches.data ?? []).filter(f => f.field !== field), [matches.data, field]);
 
   // Running order (organizer, secretary / scorekeeper, event admin): the database checks who you are again and refuses a fight that is being fought or has no place in the line yet.
@@ -168,13 +170,14 @@ export function FieldPage() {
     if (!comp) return;
     setOpening(true); setOpenError(null); setNotice(null);
     try {
-      if (m.queueState !== 'active') await setQueue(m.id, 'active', field);
+      if (secretary && !['active', 'on_deck', 'in_the_hole'].includes(m.queueState)) { setOpenError('The organizer has not called this fight yet.'); return; }
+      if (m.queueState !== 'active') await setQueue(m.id, 'active', secretary ? null : field);
       // Read it fresh so the version we finalize against is the one we actually scored.
       const fresh = (await fetchEventMatches([comp])).find(x => x.id === m.id);
       if (!fresh || fresh.queueState === 'final') { setNotice('That match is already final.'); reload(); return; }
       setOpened({ match: fresh, comp, version: fresh.version });
       // a refresh of the lyst screen comes back to this fight (the clock and rounds live on the server). The classic board keeps its own behaviour: a refresh returns to the queue.
-      if (boardModeFor(comp.league, comp.category) === 'duel' && !classic) setSearch(prev => { const n = new URLSearchParams(prev); n.set('open', m.id); return n; }, { replace: true });
+      if (boardModeFor(comp.league, comp.category) === 'duel' && (secretary || !classic)) setSearch(prev => { const n = new URLSearchParams(prev); n.delete('match'); n.set('open', m.id); return n; }, { replace: true });
       reload();
     } catch (e) { setOpenError(friendlyError(e)); } finally { setOpening(false); }
   };
@@ -227,15 +230,15 @@ export function FieldPage() {
             return <FinalElsewhere m={fresh} fieldName={field} nextFight={common.nextFight} onOpenNext={common.onOpenNext} onBack={common.onFinished} />;
           }
           return <>
-            <ReadinessStrip key={`ready-${opened.match.id}`} matchId={opened.match.id} />
-            {isDuel && !classic
-              ? <LystScoring key={opened.match.id} {...common} canResolve={canResolve} onClassic={() => { writeClassic(true); setClassic(true); }} />
-              : <ScoringScreen key={opened.match.id} {...common} onLyst={isDuel ? () => { writeClassic(false); setClassic(false); } : undefined} />}
+            {!secretary && <ReadinessStrip key={`ready-${opened.match.id}`} matchId={opened.match.id} />}
+            {isDuel && (secretary || !classic)
+              ? <LystScoring key={opened.match.id} {...common} secretary={secretary} canResolve={canResolve} onClassic={() => { writeClassic(true); setClassic(true); }} />
+              : <ScoringScreen key={opened.match.id} {...common} secretary={secretary} onLyst={isDuel ? () => { writeClassic(false); setClassic(false); } : undefined} />}
           </>;
         })()
       ) : (
         <>
-          <PageHead eyebrow={event.name} title={fieldLabel(field)} lede="Fights on this Lyst, in running order. Pick one to start scoring." />
+          <PageHead eyebrow={event.name} title={fieldLabel(field)} lede={secretary ? 'Current fight, next and in the hole.' : 'Fights on this Lyst, in running order. Pick one to start scoring.'} />
           {notice && <p role="alert" className="panel info">{notice}</p>}
           {canResolve && <ResultConflicts eventId={event.id} onChanged={reload} />}
           {openError && <p role="alert" style={{ color: 'var(--live)' }}>{openError}</p>}

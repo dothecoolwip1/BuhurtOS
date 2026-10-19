@@ -99,10 +99,15 @@ select t.expect_ok('the entrants of a match are swapped (by the harness; the org
 select t.as_admin();
 select t.expect_eq('swapping an entrant increments the version', (select version from public.matches where competition_id = t.eid('b102')), (select v + 1 from t.v where k = 'before'));
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
+-- secretary boundary (20261022000100): the scorekeeper scores only a called fight; the organizer calls it (a queue call never moves the version)
+select t.expect_error('a scorekeeper cannot finalize a fight that was never called', format($q$select public.finalize_match(%L, 'b', 3, 5, '{}'::jsonb, %s)$q$, (select id from public.matches where competition_id = t.eid('b102')), (select version from public.matches where competition_id = t.eid('b102'))), '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('the organizer calls it on now', format($q$select public.set_match_queue(%L, 'active')$q$, (select id from public.matches where competition_id = t.eid('b102'))));
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_error('a stale scoring command (old version) cannot be applied to the replacement entrant',
   format($q$select public.finalize_match(%L, 'b', 3, 5, '{}'::jsonb, %s)$q$, (select id from public.matches where competition_id = t.eid('b102')), (select v from t.v where k = 'before')), 'P0001');
 select t.as_admin();
-select t.expect_eq('... and nothing was scored', (select queue_state from public.matches where competition_id = t.eid('b102')), 'scheduled');
+select t.expect_eq('... and nothing was scored', (select queue_state || '/' || coalesce(result, 'none') from public.matches where competition_id = t.eid('b102')), 'active/none');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_ok('the current version is accepted', format($q$select public.finalize_match(%L, 'b', 3, 5, '{}'::jsonb, %s)$q$, (select id from public.matches where competition_id = t.eid('b102')), (select version from public.matches where competition_id = t.eid('b102'))));
 
@@ -132,7 +137,8 @@ select t.expect_eq('building was audited', (select count(*) from public.audit_lo
 select t.expect_eq('the seed is readable by anonymous visitors only as part of the public competition, no account id', (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'competitions' and column_name in ('drawn_by', 'created_by', 'user_id')), 0::bigint);
 
 -- ================================================================ 6+7. pool ties: pool A is a three-way cycle, pool B is clear
-select t.as_user('00000000-0000-0000-0000-0000000000a4');
+-- generic setup: the organizer plays the pools (a scorekeeper scores only called fights since the secretary boundary)
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.fin(t.mid('b101', 'A', 'e101', 'e102'), 'a', 5, 3);
 select t.fin(t.mid('b101', 'A', 'e101', 'e103'), 'b', 3, 5);
 select t.fin(t.mid('b101', 'A', 'e102', 'e103'), 'a', 5, 3);
@@ -176,7 +182,7 @@ select t.expect_eq('the bracket from the decided standings (advance 2: e103, e10
     jsonb_build_object('key','f','stage','final','round_label','Final','position',0)), 'append', null, 2), 3);
 select t.expect_error('the bracket cannot be built twice', $q$select public.build_schedule(t.eid('b101'), '[]'::jsonb, 'append', null, 2)$q$, 'P0001');
 -- play the bracket; e102 (third in pool A by decision) and e106 (third in pool B) are eliminated in the pools
-select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.fin((select id from public.matches where competition_id = t.eid('b101') and stage = 'elimination' and position = 0), 'a', 5, 2);
 select t.fin((select id from public.matches where competition_id = t.eid('b101') and stage = 'elimination' and position = 1), 'a', 5, 2);
 select t.fin((select id from public.matches where competition_id = t.eid('b101') and stage = 'final'), 'a', 5, 4);

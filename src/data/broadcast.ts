@@ -38,7 +38,7 @@ export async function fetchBroadcastConfig(eventId: string): Promise<{ settings:
 
 // ---------------------------------------------------------------- the two sides of a fight
 type TeamRow = { id: string; name: string; colors: string[]; crest_division: CrestDivision; initial: string; emblem_path: string | null; city: string | null; region: string | null; country: string | null };
-type EntryRow = { id: string; team_id: string | null; fighter_id: string | null; teams: TeamRow | TeamRow[] | null; fighters: { display_name: string; avatar_path: string | null; teams: TeamRow | TeamRow[] | null } | { display_name: string; avatar_path: string | null; teams: TeamRow | TeamRow[] | null }[] | null };
+type EntryRow = { id: string; team_id: string | null; fighter_id: string | null; teams: TeamRow | TeamRow[] | null; fighters: { display_name: string; joined_year?: number | null; avatar_path: string | null; teams: TeamRow | TeamRow[] | null } | { display_name: string; joined_year?: number | null; avatar_path: string | null; teams: TeamRow | TeamRow[] | null }[] | null };
 const one = <T,>(v: T | T[] | null | undefined): T | null => (Array.isArray(v) ? v[0] ?? null : v ?? null);
 const TEAM = 'id,name,colors,crest_division,initial,emblem_path,city,region,country';
 const toTeam = (t: TeamRow | null): SideSource['team'] => (t ? {
@@ -55,10 +55,10 @@ const careerRecord = (rows: CareerRow[] | null): SideSource['record'] => {
 };
 
 /** Both sides of the fights on screen, from public records only. One request for the entries, one record lookup per side. */
-export async function fetchSides(entryIds: readonly string[], withRecords: boolean): Promise<Record<string, SideSource>> {
+export async function fetchSides(entryIds: readonly string[], withRecords: boolean, withProfile = false): Promise<Record<string, SideSource>> {
   const ids = [...new Set(entryIds.filter(Boolean))];
   if (ids.length === 0) return {};
-  const { data, error } = await supabase.from('entries').select(`id,team_id,fighter_id,teams(${TEAM}),fighters(display_name,avatar_path,teams(${TEAM}))`).in('id', ids);
+  const { data, error } = await supabase.from('entries').select(`id,team_id,fighter_id,teams(${TEAM}),fighters(display_name,avatar_path,${withProfile ? 'joined_year,' : ''}teams(${TEAM}))`).in('id', ids);
   if (error) throw error;
   const out: Record<string, SideSource> = {};
   await Promise.all(((data ?? []) as unknown as EntryRow[]).map(async r => {
@@ -72,7 +72,7 @@ export async function fetchSides(entryIds: readonly string[], withRecords: boole
       } catch { /* a record is a nicety: the graphic goes on without it */ }
     }
     out[r.id] = {
-      entryId: r.id, kind, name: (kind === 'team' ? entryTeam?.name : f?.display_name) ?? '', team: toTeam(kind === 'team' ? entryTeam : one(f?.teams)), avatarUrl: kind === 'fighter' ? avatarUrl(f?.avatar_path) : null, record
+      entryId: r.id, kind, name: (kind === 'team' ? entryTeam?.name : f?.display_name) ?? '', team: toTeam(kind === 'team' ? entryTeam : one(f?.teams)), joinedYear: withProfile && kind === 'fighter' ? f?.joined_year ?? null : null, avatarUrl: kind === 'fighter' ? avatarUrl(f?.avatar_path) : null, record
     };
   }));
   return out;

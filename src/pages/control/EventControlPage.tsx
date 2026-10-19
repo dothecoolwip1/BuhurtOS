@@ -29,6 +29,9 @@ import { TeamsTab } from '../TeamsTab';
 import { LiveOps } from './LiveOps';
 import { SetupMode } from './SetupMode';
 import { RegistrationsTool } from './RegistrationsTool';
+import { SecretaryDesk } from './SecretaryDesk';
+import { isSecretaryOnly } from '../../lib/eventStaff';
+import { storedWhoami } from '../../lib/deviceSession';
 
 /** Who may open Event Control at all (display only; the database decides every read and write): organizers and the people who run the day. */
 export const CONTROL_ROLES = ['organizer', 'head_marshal', 'scorekeeper', 'operator', 'owner'];
@@ -80,6 +83,7 @@ export function EventControlPage() {
     );
   }
   const { competitions } = loaded.data;
+  if (isSecretaryOnly(mine.data?.roles ?? (storedWhoami()?.role === 'scorekeeper' ? ['scorekeeper'] : []), organizer)) return <SecretaryDesk event={event} competitions={competitions} />;
   const changed = () => { setEventKey(k => k + 1); setRegsKey(k => k + 1); };
   const setMode = (m: ControlMode) => setParams({ mode: m }, { replace: true });
   const all = regs.data ?? [];

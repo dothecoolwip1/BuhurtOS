@@ -156,6 +156,15 @@ select t.expect_eq('the starting settings are only starting values: the cards li
 select t.expect_eq('the event''s own presets replaced the starting ones', private.lyst_settings_for(t.e1()) #>> '{presets,1,seconds}', '45');
 
 -- ================================================================ 2. open a match; the timer (field 1)
+-- secretary boundary (20261022000100): the scorekeeper runs only called fights (on now, on deck, in the hole); the organizer calls them first
+select t.as_user(t.u(88));
+select t.expect_error('a scorekeeper cannot open a fight that was never called', format($$select public.lyst_open(%L, 'weighted')$$, t.m(1)), '42501');
+select t.expect_error('... nor run its clock', format($$select public.lyst_timer_command(%L, 'Field 1', %L, 0, gen_random_uuid(), 'start')$$, t.e1(), t.m(1)), '42501');
+select t.as_admin();
+select t.expect_eq('... nothing was opened', (select count(*) from public.lyst_matches), 0::bigint);
+select t.as_user(t.u(90));
+select t.expect_ok('the organizer calls the fights: semifinals on now (Field 1, Field 2), buckler on deck and in the hole (Field 1)',
+  format($$select public.set_match_queue(%L, 'active'); select public.set_match_queue(%L, 'active'); select public.set_match_queue(%L, 'on_deck'); select public.set_match_queue(%L, 'in_the_hole')$$, t.m(1), t.m(2), t.m(4), t.m(5)));
 select t.as_user(t.u(88));
 select t.expect_ok('a scorekeeper opens a match in Lyst Control', format($$select public.lyst_open(%L, 'weighted')$$, t.m(1)));
 select t.expect_ok('opening again is harmless', format($$select public.lyst_open(%L, 'simple')$$, t.m(1)));
@@ -222,9 +231,9 @@ insert into t.ph select n, t.open(50, 'ip-p' || n, 50 + n) from generate_series(
 select t.expect_eq('four phones scan the same QR: four open sessions, none signed the others out', (select count(*) from public.event_sessions s join public.event_credentials c on c.id = s.credential_id where c.kind = 'counter_pool' and s.ended_at is null and s.multi), 4::bigint);
 select t.expect_eq('... and the credential is not flagged "signed in elsewhere"', (select elsewhere_at is null from public.event_credentials where kind = 'counter_pool'), true);
 select t.as_user(t.u(88));
-select t.expect_eq('the Secretary / Scorekeeper shows the Counter QR (the plaintext, with how many phones are on it)', (public.counter_pool_code(t.e1()) ->> 'code') || '|' || (public.counter_pool_code(t.e1()) ->> 'open_sessions'), 'ABCDEFGH2345|4');
+select t.expect_error('the Secretary / Scorekeeper does not handle the Counter QR (secretary boundary)', format('select public.counter_pool_code(%L)', t.e1()), '42501');
 select t.as_user(t.u(87));
-select t.expect_eq('a marshal shows it too', public.counter_pool_code(t.e1()) ->> 'code', 'ABCDEFGH2345');
+select t.expect_eq('a marshal shows the Counter QR (the plaintext, with how many phones are on it)', (public.counter_pool_code(t.e1()) ->> 'code') || '|' || (public.counter_pool_code(t.e1()) ->> 'open_sessions'), 'ABCDEFGH2345|4');
 select t.as_user(t.u(1));
 select t.expect_error('a fighter cannot', format('select public.counter_pool_code(%L)', t.e1()), '42501');
 select t.as_user(t.u(70));
@@ -257,6 +266,8 @@ select t.expect_eq('the phones have no slots and are not limited to four: two on
 select t.expect_eq('the operator history has one line per phone', (select count(*) from public.counter_operator_log where event_id = t.e1()), 4::bigint);
 -- trainees: the Lyst's join code is the TRAINING QR; a signed-in person joins at once (no approval, no waiting), always as LEARNING
 select t.as_user(t.u(88));
+select t.expect_error('the secretary cannot make a training code (secretary boundary)', format($$select public.create_lyst_join_code(%L, 'Field 1')$$, t.e1()), '42501');
+select t.as_user(t.u(87));
 select public.create_lyst_join_code(t.e1(), 'Field 1') ->> 'code' as code1 \gset
 select t.as_user(t.u(25));
 select t.expect_eq('a wrong training code is answered "invalid" (not an error, so the try is counted)', public.join_training_counter('NOT-A-CODE', 'Elm', 'a') ->> 'status', 'invalid');
@@ -321,7 +332,9 @@ select t.expect_eq('every tap names the operator who made it (32 by Ash, 1 by Oa
 select t.expect_eq('the operator log keeps both (Ash ended, Oak open)', (select string_agg(operator_name || ':' || (ended_at is not null)::text, ',' order by started_at) from public.counter_operator_log where session_id = t.u(21)), 'Ash:true,Oak:false');
 select t.expect_error('the operator log is append-only', format('delete from public.counter_operator_log where session_id = %L', t.u(21)), '42501');
 select t.as_user(t.u(88));
-select t.expect_eq('the operator history is readable by the Lyst (who counted red on this phone)', (select string_agg(x ->> 'operator', ',' order by x ->> 'started_at') from jsonb_array_elements(public.counter_operator_history(t.e1(), t.u(21))) x), 'Ash,Oak');
+select t.expect_error('the secretary does not read the counters'' operator history (secretary boundary)', format('select public.counter_operator_history(%L, %L)', t.e1(), t.u(21)), '42501');
+select t.as_user(t.u(89));
+select t.expect_eq('the operator history is readable by the head marshal (who counted red on this phone)', (select string_agg(x ->> 'operator', ',' order by x ->> 'started_at') from jsonb_array_elements(public.counter_operator_history(t.e1(), t.u(21))) x), 'Ash,Oak');
 select t.as_device(t.u(21));
 select public.counter_submit(t.seatof(21), 1);
 select t.as_admin();
@@ -333,7 +346,7 @@ select t.as_user(t.u(88));
 select t.expect_eq('a stale revision on the round is told so', public.lyst_confirm_round(gen_random_uuid(), t.m(1), 1, 6, 5, t.round_rev(1, 1) + 5) ->> 'status', 'stale');
 select t.expect_error('scores are bounded', format('select public.lyst_confirm_round(gen_random_uuid(), %L, 1, 100, 5, 1)', t.m(1)), '22023');
 select t.cmd() as conf \gset
-select public.lyst_confirm_round(:'conf'::uuid, t.m(1), 1, 6, 5, t.round_rev(1, 1), 7, 5) ->> 'status' as s1 \gset
+select public.lyst_confirm_round(:'conf'::uuid, t.m(1), 1, 6, 5, t.round_rev(1, 1), 7, 5, 'Marshal awarded 6-5 after review') ->> 'status' as s1 \gset
 select t.expect_eq('CONFIRM ROUND records the marshal''s 6-5 (counters recommended 7-5: that is only recorded)', :'s1'::text, 'ok');
 select t.as_admin();
 select t.expect_eq('the official round score is exactly what the marshal awarded', t.official(1, 1), '6-5');
@@ -381,7 +394,7 @@ select t.expect_ok('a configured card is recorded', format($$select public.lyst_
 select t.expect_ok('a deduction can be related to the card that came with it', format($$select public.lyst_record_discipline(gen_random_uuid(), %L, 2, 'a', 'deduction', null, 1, 'With the yellow card', 'Marshal Lee', %L)$$, t.m(1), :'card'));
 select t.as_admin();
 select t.as_user(t.u(88));
-select t.expect_eq('confirm round 2 awarded 7-4', public.lyst_confirm_round(gen_random_uuid(), t.m(1), 2, 7, 4, t.round_rev(1, 2)) ->> 'status', 'ok');
+select t.expect_eq('confirm round 2 awarded 7-4 with the override reason', public.lyst_confirm_round(gen_random_uuid(), t.m(1), 2, 7, 4, t.round_rev(1, 2), p_reason => 'Marshal awarded 7-4 after review') ->> 'status', 'ok');
 select t.as_admin();
 select t.expect_eq('round 2 official: 7 minus two deductions against A = 5, B untouched = 4', t.official(1, 2), '5-4');
 select t.expect_eq('the awarded score is kept as the marshal gave it (7-4); the deductions are separate official records', (select awarded_a || '-' || awarded_b || '/' || deduct_a || '-' || deduct_b from public.lyst_round_scores where match_id = t.m(1) and round_no = 2), '7-4/2-0');
@@ -452,7 +465,7 @@ update public.events set status = 'published' where id = t.e1();
 
 -- ================================================================ 8. Pack 12 and the queue are untouched
 select t.expect_eq('nothing the lyst did created a notification', t.notif_count(), 0::bigint);
-select t.expect_eq('... or moved the queue (the match is still scheduled: only the existing queue functions move it)', t.qstate(1), 'scheduled');
+select t.expect_eq('... or moved the queue beyond the active fight called by the fixture', t.qstate(1), 'active');
 
 -- ================================================================ 9. the field has ONE current fight; a phone changes field or side itself; expiry
 select t.as_admin();
@@ -511,7 +524,7 @@ select t.expect_eq('finishing stopped the field-1 timer for that match', t.timer
 select t.expect_eq('finishing the match ended the fight; the second field is untouched', t.timer_status('field 2'), 'running');
 select t.as_device(t.u(21));
 select t.expect_error('counters cannot count a final match', format('select public.counter_record(gen_random_uuid(), %L, 2, 1)', t.seatof(21)), 'P0001');
-select t.as_user(t.u(88));
+select t.as_user(t.u(89));
 select t.expect_error('a final match''s rounds are locked (reopen it first)', format('select public.lyst_confirm_round(gen_random_uuid(), %L, 2, 9, 9, %s, null, null, ''x1x'')', t.m(1), t.round_rev(1, 2)), 'P0001');
 select t.expect_error('... its timer too', $$select t.tc(88, 'Field 1', 1, -1, 'start')$$, 'P0001');
 select t.expect_error('... and no discipline can be added', format($$select public.lyst_record_discipline(gen_random_uuid(), %L, 2, 'a', 'warning')$$, t.m(1)), 'P0001');
@@ -528,6 +541,9 @@ select t.as_admin();
 select t.expect_eq('the earlier official result was superseded into the existing revision log, not erased', (select count(*) >= 0 from public.result_revisions), true);
 
 -- ================================================================ 11. a pool match with a draw, a DQ and a technical result
+select t.as_user(t.u(90));
+select public.set_match_queue(t.m(4), 'on_deck');
+select public.set_match_queue(t.m(5), 'in_the_hole');
 select t.as_user(t.u(88));
 select t.expect_eq('NEXT FIGHT: the Lyst opens m4 on Field 1', public.lyst_open(t.m(4), 'simple') ->> 'status', 'ok');
 select t.as_admin();
@@ -627,7 +643,9 @@ select t.expect_error('a side name is 1 to 20 characters', format($$select publi
 select t.expect_error('an empty change is refused', format($$select public.set_event_sides(%L, '{}')$$, t.e1()), '22023');
 select t.expect_eq('a marshal sets side A to yellow (the colour is kept upper-case)', public.set_event_sides(t.e1(), '{"a": {"name": "Yellow", "color": "#f2b233"}}') -> 'a' ->> 'color', '#F2B233');
 select t.as_user(t.u(88));
-select t.expect_eq('the secretary sets side B to green; side A keeps yellow', (select (x -> 'a' ->> 'name') || '|' || (x -> 'b' ->> 'name') from public.set_event_sides(t.e1(), '{"b": {"name": "Green", "color": "#1B7F3B"}}') x), 'Yellow|Green');
+select t.expect_error('the secretary cannot change the side colours (secretary boundary)', format($$select public.set_event_sides(%L, '{"b": {"name": "Green", "color": "#1B7F3B"}}')$$, t.e1()), '42501');
+select t.as_user(t.u(89));
+select t.expect_eq('the head marshal sets side B to green; side A keeps yellow', (select (x -> 'a' ->> 'name') || '|' || (x -> 'b' ->> 'name') from public.set_event_sides(t.e1(), '{"b": {"name": "Green", "color": "#1B7F3B"}}') x), 'Yellow|Green');
 select t.as_user(t.u(90));
 select t.expect_eq('the organizer sees the sides in the Lyst state (settings.sides)', (public.lyst_state(t.m(6)) -> 'settings' -> 'sides' -> 'a' ->> 'name') || '/' || (public.lyst_state(t.m(6)) -> 'settings' -> 'sides' -> 'b' ->> 'color'), 'Yellow/#1B7F3B');
 select t.expect_eq('the other settings survived the colour change (presets still there)', jsonb_typeof(public.lyst_state(t.m(6)) -> 'settings' -> 'presets'), 'array');

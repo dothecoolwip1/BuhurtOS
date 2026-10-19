@@ -624,6 +624,19 @@ column public.lyst_matches.created_at timestamp with time zone not null
 column public.lyst_matches.event_id uuid not null
 column public.lyst_matches.field_key text not null
 column public.lyst_matches.match_id uuid not null
+column public.lyst_round_returns.counters jsonb not null
+column public.lyst_round_returns.event_id uuid not null
+column public.lyst_round_returns.id uuid not null
+column public.lyst_round_returns.match_id uuid not null
+column public.lyst_round_returns.previous_a integer
+column public.lyst_round_returns.previous_b integer
+column public.lyst_round_returns.previous_rev integer not null
+column public.lyst_round_returns.previous_status text not null
+column public.lyst_round_returns.reason text
+column public.lyst_round_returns.returned_at timestamp with time zone not null
+column public.lyst_round_returns.returned_by uuid not null
+column public.lyst_round_returns.round_no integer not null
+column public.lyst_round_returns.submissions jsonb not null
 column public.lyst_round_revisions.awarded_a integer not null
 column public.lyst_round_revisions.awarded_b integer not null
 column public.lyst_round_revisions.changed_at timestamp with time zone not null
@@ -1530,6 +1543,12 @@ constraint lyst_matches lyst_matches_counter_input_check CHECK ((counter_input =
 constraint lyst_matches lyst_matches_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 constraint lyst_matches lyst_matches_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
 constraint lyst_matches lyst_matches_pkey PRIMARY KEY (match_id)
+constraint lyst_round_returns lyst_round_returns_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+constraint lyst_round_returns lyst_round_returns_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint lyst_round_returns lyst_round_returns_pkey PRIMARY KEY (id)
+constraint lyst_round_returns lyst_round_returns_previous_status_check CHECK ((previous_status = ANY (ARRAY['confirming'::text, 'confirmed'::text])))
+constraint lyst_round_returns lyst_round_returns_reason_check CHECK (((reason IS NULL) OR (char_length(reason) <= 200)))
+constraint lyst_round_returns lyst_round_returns_round_no_check CHECK (((round_no >= 1) AND (round_no <= 20)))
 constraint lyst_round_revisions lyst_round_revisions_kind_check CHECK ((kind = ANY (ARRAY['confirm'::text, 'correct'::text])))
 constraint lyst_round_revisions lyst_round_revisions_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
 constraint lyst_round_revisions lyst_round_revisions_pkey PRIMARY KEY (id)
@@ -1875,13 +1894,14 @@ function private.audit_schedule_changes() secdef=true d6fe7d1c47bc664b7840fc59c4
 function private.authenticity_finding_guard() secdef=false 5d8f867b36da96eb7687c2de4f021a27
 function private.backfill_official_metadata() secdef=true b584fd712e3a4990022a6b404854471d
 function private.base_points(p_pool_wins integer, p_elim_wins integer, p_place integer) secdef=false 5be728d1b01fe159d9999434a8e6a825
+function private.board_fight(p_match uuid) secdef=true 3ca897920b930eaf7e13bf1309c317b8
 function private.broadcast_control_json(p_event uuid) secdef=true d901a5fee0e0d0e3a7d73d68295e2eec
 function private.bump_match_version() secdef=false fc1c88c9944bd987140f4a5bf7951872
 function private.camera_log_append_only() secdef=false e62df7c68c6444ff9015feea5c5e4c72
 function private.camera_state_json(p_event uuid) secdef=true e80cf0fe4f38aff56a02f852e7e05fd2
-function private.can_adjust_queue(p_event uuid) secdef=true 11e9ab485e5b019c5cbbf9381b3ea5b4
+function private.can_adjust_queue(p_event uuid) secdef=true 3f64148cc4648f16e3420ecb40a82458
 function private.can_admin_team(p_team uuid) secdef=true 3133dc9dc44e316ce4e7710333eeed9b
-function private.can_announce(p_event uuid) secdef=true 27f0b87815baf5b04b7fa0a573d19e28
+function private.can_announce(p_event uuid) secdef=true ba36769d757496d096d7115f113709d9
 function private.can_assign_captain(p_team uuid) secdef=true 88fc8ffadd78c85eb8f782e4665d4f03
 function private.can_assign_team_officers(p_team uuid) secdef=true 12d3685e98184021d999bae9f15ba331
 function private.can_broadcast_control(p_event uuid) secdef=true 91898e27f2f804cc0842790e23714853
@@ -1889,7 +1909,7 @@ function private.can_camera_off_activate(p_event uuid) secdef=true d00e19312df95
 function private.can_camera_off_release(p_event uuid) secdef=true 34c77fcf17101e75b3d3ec4c6e5809fe
 function private.can_change_club_dues(p_team uuid) secdef=true d579838d56d77aed7302dd53511b849b
 function private.can_check_in(p_event uuid) secdef=true 14650a89d79ddefc7183f648fe474049
-function private.can_command(p_event uuid) secdef=true be5601e7d9914974cbb75552523b69cb
+function private.can_command(p_event uuid) secdef=true 4c6205eb74fc78b319fc5d1dec534b8e
 function private.can_decide_review(p_kind text, p_event uuid, p_org uuid) secdef=true 73b1accf053a335d38b94f55df3519be
 function private.can_edit_team(p_team uuid) secdef=true ae9a86684f87ac5bda04e308c444ab03
 function private.can_govern_event_stats(p_event uuid) secdef=true d862289ba1b70f03cfcc6b37e2b4e311
@@ -1902,9 +1922,11 @@ function private.can_read_findings(p_event uuid) secdef=true bd3112b74c10c23bf0d
 function private.can_read_health(p_event uuid) secdef=true 450285efe65d103715556850b372c0dc
 function private.can_resolve_results(p_event uuid) secdef=true acdd037dcb4c4cb9e95636137d490a69
 function private.can_score(p_event uuid) secdef=true 62d880a4f5dbbbf603fcbdba8566f0ed
+function private.can_score_match(p_match uuid) secdef=true 4b60a6e91897d35fd8a8a5701ed2c0a7
 function private.can_see_discipline(p_event uuid) secdef=true bb46558a53c66d4ae3bc47db21fc8521
 function private.can_see_readiness_detail(p_event uuid) secdef=true 902e90d2b4cf1141f46b0a0ed1278b8d
 function private.can_view_club_roster(p_team uuid) secdef=true 890bec543998f873064cfa304e41eb0e
+function private.can_view_match(p_match uuid) secdef=true 1db43c79e92f94366bc7a42f102169f3
 function private.can_withdraw_review(p_kind text, p_event uuid, p_org uuid) secdef=true d37dbbb26307ba5fd618b3e8a91db3f4
 function private.check_cited_provision(p_provision uuid, p_event uuid) secdef=true a96f0ee6f74c533c10829ae504028bfd
 function private.check_entry_kind() secdef=false e34a023371c122f52595ce640ed1da53
@@ -1994,6 +2016,7 @@ function private.entries_history_guard() secdef=true aef1a2a55d5d32d8c2153a6fc2e
 function private.entries_lock_guard() secdef=true 83b851ca9433a92887fb09c75ee78e7e
 function private.entries_represented_team() secdef=true 3dd15fad35aaeeab4dee838897471206
 function private.entry_discipline_check() secdef=true 66c6d719990a0e109ea0ced16d097d42
+function private.entry_fighter_ids(p_entry uuid) secdef=true 2f5d21593235966162272d927616bd51
 function private.entry_fighters_fill() secdef=true 895466129a528be643ba0f961719899b
 function private.entry_recipient_users(p_entry uuid) secdef=true 567a36dad96aa195e0d412920fafccd6
 function private.event_audience(p_event uuid, p_audience text) secdef=true d19d0726a38f979bc0e743020f6b159f
@@ -2037,17 +2060,20 @@ function private.is_org_admin_of_event(p_event uuid) secdef=true a294a50ce20a3b7
 function private.is_organizer(p_event uuid) secdef=true 31d30092d6b69692ff228137b26567b3
 function private.is_owner() secdef=true f756209dde5e03800b739714ab713457
 function private.is_platform_organizer() secdef=true 5606252b35e858c4d7271c5123be6eb1
+function private.is_secretary_only(p_event uuid) secdef=true c58406a35488d02a10250239c3f061a2
 function private.is_synthetic(p_type text, p_id uuid) secdef=true 6441e62409975f930ec59ceb1246112c
 function private.is_team_captain(p_team uuid) secdef=true d2b750c229f83737920703b5a54ea632
 function private.is_team_member(p_team uuid, p_user uuid) secdef=true e6e5f1ae0985af565901fb1b89453915
 function private.join_request_org_guard() secdef=true e1b5ac0af3eeefcb26d3e12b3960b887
+function private.lineup_editable(p_event uuid, p_key text) secdef=true 5fd0dae7a07ae824eb55228a4df21cfa
 function private.lock_matches_nowait(p_ids uuid[]) secdef=false a4c4d7f9d094948a5db4db119c5bdcb6
 function private.log_result_revision(p_comp uuid, p_entry uuid, p_action text, p_old_place integer, p_old_points numeric, p_new_place integer, p_new_points numeric, p_reason text) secdef=true 33ee1e41e9e2edbe085fd315505bda5e
 function private.lyst_append_only() secdef=false 6e5364bf7b39e37321b5b74881765724
+function private.lyst_confirm_overrides(p_match uuid, p_round integer, p_a integer, p_b integer) secdef=true 393dee7b9cc914872253b47c387a6dff
 function private.lyst_counter_snapshot(p_match uuid, p_round integer) secdef=true 366bbc5fc7c5de13fde9e4e1d3c4853b
 function private.lyst_default_settings() secdef=false 8e1b912819c490667070d325ac74e5ca
 function private.lyst_discipline_guard() secdef=false eda307b99ff146575fef29f91d36534b
-function private.lyst_match_check(p_event uuid, p_match uuid, p_field text) secdef=true 08d1a1e2835d4965c9a92c0046a9b417
+function private.lyst_match_check(p_event uuid, p_match uuid, p_field text) secdef=true 342690c0bd86b6f4e5a48de69debe797
 function private.lyst_match_final() secdef=true 5b6f8acfe546e0d3fbf8b1f7f2583216
 function private.lyst_per_side(p_match uuid) secdef=true 4f3033091146ed57d5db8a1c959e5fce
 function private.lyst_remaining_ms(p_status text, p_remaining integer, p_started timestamp with time zone) secdef=false e12ef476375c9b746db508ace187a6ef
@@ -2059,6 +2085,7 @@ function private.lyst_timer_field_current() secdef=true df19407e6771e4e4c8e8585a
 function private.lyst_timer_json(t lyst_timer) secdef=false 673688cd560b7b896e48e8bd8efce7cf
 function private.match_discipline_fill() secdef=true ab2df12524efb4dd6f2e95c6f96b185b
 function private.match_history_reason(p_match uuid) secdef=true af10b66136fce7f114269a325f847793
+function private.match_on_secretary_board(p_match uuid) secdef=true a4bbd5a5392ebeb6ad4b353d5abb6c8c
 function private.match_runnable(p_match matches) secdef=true 81da90f84be5089aa4b51cf225561375
 function private.matches_lock_guard() secdef=true 3cdc8faa4801657851a4765cf2fec0ec
 function private.membership_notify() secdef=true 43715be119aa516af20272eb9513bbc2
@@ -2202,8 +2229,8 @@ function public.correct_result(p_competition uuid, p_entry uuid, p_place integer
 function public.correct_rule_provision(p_provision uuid, p_title text, p_body text, p_reason text) secdef=true afa8a6761027d655f7c842900a66d1b9
 function public.counter_bind(p_field text, p_side text, p_operator text) secdef=true a8e062b4d5a6692761597896a5ab63e5
 function public.counter_leave() secdef=true c12985308466dda38876fde983ea5522
-function public.counter_operator_history(p_event uuid, p_session uuid) secdef=true ba3f99512819848b3a73c65d6ca03824
-function public.counter_pool_code(p_event uuid) secdef=true 6ff69cb72cb98e237228e7e833a10887
+function public.counter_operator_history(p_event uuid, p_session uuid) secdef=true 386ec2037f580e11990ad2f96660fc4e
+function public.counter_pool_code(p_event uuid) secdef=true 2e0171d78732d24b9fe7625fc8237ba9
 function public.counter_record(p_id uuid, p_seat uuid, p_round integer, p_weight integer) secdef=true fcf1a4e6638ad4be74bf73133c30c4ff
 function public.counter_set_operator(p_name text) secdef=true dbb8cd2f45621e21a7d6f615ec07aa68
 function public.counter_state() secdef=true adbf113a8112f9900cffb338bbe42092
@@ -2214,7 +2241,7 @@ function public.create_club_question(p_meeting uuid, p_kind text, p_title text, 
 function public.create_competition(p_event uuid, p_name text, p_category text, p_gender text, p_ruleset text, p_structure text, p_rounds_to_win integer) secdef=true f504e21cabc32c7c1bb789c4d83e7ec6
 function public.create_event(p_slug text, p_name text, p_starts_on date, p_ends_on date, p_venue text, p_address text) secdef=true 47881c4d019464790b52a7b237eab48a
 function public.create_event_credential(p_event uuid, p_kind text, p_label text, p_role text, p_code_hash bytea, p_expires_at timestamp with time zone, p_pool_code text) secdef=true 40e31a5ec99c11d2a4de1d5b868594e6
-function public.create_lyst_join_code(p_event uuid, p_field text) secdef=true 9c4ef61b2248ede5e580026c4a52c3bf
+function public.create_lyst_join_code(p_event uuid, p_field text) secdef=true ed1dc2f2fd6919659af4afa8f2c08799
 function public.create_season(p_org uuid, p_slug text, p_name text, p_starts_on date, p_ends_on date) secdef=true f5d2ba24f26876c98918aec3efcae63d
 function public.create_team(p_slug text, p_name text, p_city text, p_region text, p_country text) secdef=true e4e4ecf117d4e1c4f9f5742a5d2e7234
 function public.create_unclaimed_fighter(p_event uuid, p_name text, p_home_team uuid, p_city text, p_region text, p_gender text, p_confirmed_distinct boolean, p_competition uuid, p_entry_team uuid) secdef=true 85b7265ea53abd6f8600249f28b43858
@@ -2230,7 +2257,8 @@ function public.device_session_preview(p_session uuid) secdef=true 692511a759a80
 function public.device_whoami() secdef=true 75eeb53833817af3b0f7f944c4a741f7
 function public.discipline_eligibility(p_event uuid, p_fighter uuid, p_team uuid) secdef=true 4a129cbd53e330e3445ecc51e95414ee
 function public.discipline_record_history(p_entity text, p_id uuid) secdef=true b59c3ef0728e92a460ea2f65f726924b
-function public.end_counter_seat(p_seat uuid, p_decline boolean) secdef=true c5997222e276a2bf0b80fa81a5518e33
+function public.editable_field_lineup(p_event uuid, p_field text) secdef=true 9d696cc2c405bc76a150cf91cfeeaa95
+function public.end_counter_seat(p_seat uuid, p_decline boolean) secdef=true 69fd74837e78cdafb6f13e74438e6339
 function public.end_event_sanction(p_id uuid, p_status text, p_reason text) secdef=true 01bd2dcb85f2587433984f9339b92058
 function public.end_event_session(p_session uuid, p_reason text) secdef=true f63a9f1945edd5d5ffaa630e20fa7bd9
 function public.end_team_officer(p_officer uuid, p_note text) secdef=true 1d010773eb42a28d2b33e35e66dc4ce1
@@ -2238,8 +2266,8 @@ function public.enter_official_result(p_match uuid, p_result text, p_score_a int
 function public.event_close_preflight(p_event uuid) secdef=true fbb652344a86144b8b97bf2221949808
 function public.event_command_snapshot(p_event uuid) secdef=true d8ea0398e79377375ce89dfbfa65df93
 function public.event_delete_check(p_event uuid) secdef=true 64d96ed05ff3325d92e77fe3c0950d8e
-function public.event_discipline_log(p_event uuid) secdef=true c62deb35d003f5b6661cefda67eabc1f
-function public.event_discipline_overview(p_event uuid) secdef=true c6d9b9baf61023fe899f49c1a543a173
+function public.event_discipline_log(p_event uuid) secdef=true 6b3884c45dce79cb926de99ffec7e6c9
+function public.event_discipline_overview(p_event uuid) secdef=true c81ebc8e4e41dae041d0bd963facf6e1
 function public.event_readiness(p_event uuid) secdef=true 01b7717e2334798be3f3382a5add5589
 function public.exclude_event_from_stats(p_event uuid, p_reason text) secdef=true 05ab2f6918d8d94a0513ef3f7e3b9fe9
 function public.fighter_bookings(p_event uuid, p_fighter uuid, p_at timestamp with time zone, p_minutes integer, p_exclude_match uuid) secdef=true 42f25793e5ca9afeb59d18cb0bfe36f7
@@ -2251,7 +2279,7 @@ function public.fighter_is_booked(p_event uuid, p_fighter uuid, p_at timestamp w
 function public.fighter_profile(p_fighter uuid) secdef=true 3af81ff3100ce8b5e13f92d2da28bd38
 function public.fighter_schedule_conflicts(p_event uuid) secdef=true 3ce6c7882a6c10645eaafae5aae1e8eb
 function public.finalize_competition(p_competition uuid, p_multiplier_source text) secdef=true 72c5750935ad9d7b10fa4af0a816cf43
-function public.finalize_match(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer) secdef=true 44def16037b7712018d30b89b698220f
+function public.finalize_match(p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer) secdef=true b068a6e987fbad31d89cb0612bd199eb
 function public.finish_competition(p_competition uuid, p_multiplier_source text) secdef=true 9d2172354280dfbf96a10ac0d675c504
 function public.grant_event_role_by_email(p_event uuid, p_email text, p_role text) secdef=true 4c6f0982993f0cec528d42c814ee6c8c
 function public.grant_organization_admin(p_org uuid, p_email text) secdef=true ca41db721214c28b4939bdd336986d89
@@ -2275,20 +2303,21 @@ function public.list_result_conflicts(p_event uuid) secdef=true 09f0a3a6a2cb7138
 function public.list_team_captains(p_team uuid) secdef=true 29f36411f6e5b56c893fb49db03a2b75
 function public.list_team_officers(p_team uuid) secdef=true f96cb33ccdc15e13e061b16491dcdff2
 function public.lodge_review(p_command uuid, p_kind text, p_lodged_by text, p_grounds text, p_match_discipline uuid, p_event_sanction uuid, p_suspension uuid, p_match uuid, p_governing_body text, p_from timestamp with time zone) secdef=true ab42aafef99bff5a6e8fb69d8fb732c0
-function public.lyst_cite_rule(p_command uuid, p_discipline uuid, p_provision uuid) secdef=true b5c8919c1f4c2d48110ef5cdbc8c7b88
-function public.lyst_confirm_round(p_command uuid, p_match uuid, p_round integer, p_awarded_a integer, p_awarded_b integer, p_expected_rev integer, p_recommended_a integer, p_recommended_b integer, p_reason text) secdef=true 8e23f1488377eeea26e67a060003d17d
+function public.lyst_cite_rule(p_command uuid, p_discipline uuid, p_provision uuid) secdef=true 3206c050f30da8b3171d14f1026346fb
+function public.lyst_confirm_round(p_command uuid, p_match uuid, p_round integer, p_awarded_a integer, p_awarded_b integer, p_expected_rev integer, p_recommended_a integer, p_recommended_b integer, p_reason text) secdef=true 8acf8076e3a6737e842ee4ac078434d0
 function public.lyst_end_round(p_match uuid, p_round integer) secdef=true 76c3e40d91ef161a3820106fc4237407
 function public.lyst_finalize(p_command uuid, p_match uuid, p_expected_version integer, p_result text, p_basis text, p_reason text) secdef=true 33d966b648895818b64ee77fd8393c5b
 function public.lyst_open(p_match uuid, p_counter_input text) secdef=true 6c78d24e465ccf2e136719d12bfb4e5f
 function public.lyst_record_discipline(p_command uuid, p_match uuid, p_round integer, p_side text, p_kind text, p_label text, p_amount integer, p_reason text, p_called_by text, p_related uuid) secdef=true e90dd405222358679114be32550675f2
-function public.lyst_state(p_match uuid) secdef=true 8b4794f38835225631938acaf25fed6c
+function public.lyst_return_round(p_command uuid, p_match uuid, p_round integer, p_expected_rev integer, p_reason text) secdef=true 218c26b8e9adb0ad20dbddc257e07b76
+function public.lyst_state(p_match uuid) secdef=true f082b6f03e4451f2b5ee9c76a174694b
 function public.lyst_timer_command(p_event uuid, p_field text, p_match uuid, p_expected_rev integer, p_command uuid, p_action text, p_mode text, p_duration_ms integer, p_round integer, p_delta_ms integer) secdef=true 3d55aa11e42bed1f99a514269ad0aa0b
-function public.lyst_void_discipline(p_command uuid, p_id uuid, p_reason text) secdef=true 53a3445e175187906aa0cbe83d898db0
+function public.lyst_void_discipline(p_command uuid, p_id uuid, p_reason text) secdef=true 6c3c55d450e2f73539c086341e968604
 function public.managed_suspensions(p_organization uuid) secdef=true a43a21bfdf1108538b1a075ee6b23dc8
 function public.mark_notifications_read(p_ids uuid[]) secdef=true 84b3bf7f83d766241f919b05b3ea2e48
 function public.match_readiness(p_match uuid) secdef=true 755c7f37da6b367be7de90a7dff8ac33
 function public.merge_teams(p_keep uuid, p_remove uuid) secdef=true 569347d4b59acc94d19ae3a85a414bce
-function public.move_counter_session(p_session uuid, p_field text, p_side text) secdef=true 81d46f786ef6aa9662362090784fb945
+function public.move_counter_session(p_session uuid, p_field text, p_side text) secdef=true 2c08b24d49403352b62ab44c91ef29b5
 function public.move_match_in_queue(p_match uuid, p_action text) secdef=true 67d31406846ccb5fb330fcf0b9a3a4b6
 function public.my_desk_roles(p_event uuid) secdef=true 725d209beff9ec7fdbb9304b403a43e9
 function public.my_event_entries(p_event uuid) secdef=true 89a56aabc35651b16824f4213ce82e53
@@ -2319,7 +2348,7 @@ function public.push_store_vapid(p_public text, p_private text) secdef=true 9c6c
 function public.record_authenticity_finding(p_command uuid, p_registration uuid, p_severity text, p_item text, p_provision uuid, p_note text) secdef=true 4b031d62b005c904a2d7de7d24f49583
 function public.record_club_meeting_snapshot(p_meeting uuid) secdef=true 57b623dc77ef5a172fdfc7e6398f4c22
 function public.record_inspection(p_reg uuid, p_result text, p_issues text[], p_note text) secdef=true 180b6756a81f222f9c6de6f1dfa4743b
-function public.record_score_event(p_id uuid, p_match uuid, p_kind text, p_payload jsonb, p_client_at timestamp with time zone) secdef=true 2eea2ddd0830bd770b864710afabc0b6
+function public.record_score_event(p_id uuid, p_match uuid, p_kind text, p_payload jsonb, p_client_at timestamp with time zone) secdef=true fc2f72c2add39b767f7865879585757e
 function public.record_tie_decision(p_competition uuid, p_part text, p_order uuid[], p_note text) secdef=true f007f918d6907ea4acf4c30a71245c55
 function public.record_weigh_in(p_reg uuid, p_weight_kg numeric) secdef=true 2803a514161ea2657dfaf496b5d870de
 function public.register_push_device(p_endpoint text, p_p256dh text, p_auth text, p_label text) secdef=true 24a7bc1e56f1c58192f93f1c80aa17d6
@@ -2334,8 +2363,9 @@ function public.reopen_event(p_event uuid, p_reason text) secdef=true 764d74c72a
 function public.reopen_match(p_match uuid, p_reason text) secdef=true 2bfb6353b4a4176e607845aadbe67c72
 function public.reorder_my_gallery(p_ids uuid[]) secdef=true 6e9aff3795e805846d0fe351724c00db
 function public.replace_event_credential(p_credential uuid, p_code_hash bytea) secdef=true e79fb7e3d01166daf7d0a7a1fa80b5ba
+function public.replace_match_entrant(p_match uuid, p_side text, p_entry uuid, p_reason text, p_version integer) secdef=true 9e5cd6b7daca8b2b304dc899e0528914
 function public.report_bug(p jsonb) secdef=true 7d1ea860d4335a1060158e8f78c967fb
-function public.report_live_score(p_match uuid, p_device text, p_seq bigint, p_score_a integer, p_score_b integer, p_phase text, p_detail jsonb, p_expected_version integer) secdef=true 7b1df6e1c638d9d09de343c9b425229f
+function public.report_live_score(p_match uuid, p_device text, p_seq bigint, p_score_a integer, p_score_b integer, p_phase text, p_detail jsonb, p_expected_version integer) secdef=true 5ea72c9aa0adffa0a04a15485eef81b5
 function public.request_fighter_claim(p_fighter uuid, p_message text) secdef=true 9d87cfb1d0d29b597c2905cd402956b4
 function public.request_new_team(p_payload jsonb) secdef=true ad52e737cbca78ece235bf3209050c6c
 function public.request_team_join(p_team uuid, p_message text) secdef=true 25d5ab4ac2dac9fdb871282ced04ca1c
@@ -2349,9 +2379,11 @@ function public.review_rule_provision(p_provision uuid, p_status text, p_note te
 function public.revoke_all_event_devices(p_event uuid) secdef=true 851ae759e1fe20f90d7e354250abee3a
 function public.revoke_event_credential(p_credential uuid, p_reason text) secdef=true b0bf05a5510d3ecaeb2bf6c928894845
 function public.save_event_sponsor(p_event uuid, p_id uuid, p_name text, p_logo_path text, p_link text, p_tier text, p_sort integer, p_on_broadcast boolean) secdef=true 9011253bc58523d376e89da176845e6e
+function public.save_field_lineup(p_event uuid, p_field text, p_order uuid[], p_versions jsonb) secdef=true 1026088e8f20e460fd0e917dfa2ebb8b
 function public.save_queue_plan(p_event uuid, p_order uuid[], p_hold uuid[]) secdef=true 9db9ecf1c2bfd536f9bad2063a2ab0e7
 function public.search_fighters_for_entry(p_competition uuid, p_query text) secdef=true 38479287e0c6b86c25454cc616d337b1
 function public.search_unclaimed_fighters(p_query text) secdef=true 4a0498bbb3477c7389b5e0e473fc9083
+function public.secretary_board(p_event uuid, p_field text) secdef=true 0f4b5bfe8982ab820bfcd5ee7666e1c2
 function public.send_event_announcement(p_event uuid, p_message text, p_audience text) secdef=true 44000c4a49dd5c602813661d05ff775d
 function public.send_test_notification() secdef=true 04031894edca2f3c5d81e8d655feeecc
 function public.set_attendance(p_reg uuid, p_state text) secdef=true baff3e65beae5aab6e20515dc8a8ecf7
@@ -2374,11 +2406,11 @@ function public.set_competition_tier(p_comp uuid, p_tier text) secdef=true 189d3
 function public.set_entry_roster(p_entry uuid, p_fighters jsonb) secdef=true 76456d0588cd40fe128f21f59f2d8ab1
 function public.set_event_organization(p_event uuid, p_org uuid) secdef=true 5a4ffe1f50b98f8407ac15e04b629ab1
 function public.set_event_season(p_event uuid, p_season uuid) secdef=true 6a41dbf442e65c78d1fe1ac4757a535b
-function public.set_event_sides(p_event uuid, p_sides jsonb) secdef=true 66076b992387e8571118917d7f9e37d0
+function public.set_event_sides(p_event uuid, p_sides jsonb) secdef=true 889f450099dc12c443a65619a0c7fcb8
 function public.set_fighter_active(p_fighter uuid, p_active boolean, p_reason text) secdef=true d3b40a0593965f4440b747fd3d9e39f6
 function public.set_lyst_settings(p_event uuid, p_settings jsonb) secdef=true 7649ee51e0d3dcf159d11eef5fbeecf5
 function public.set_match_hold(p_match uuid, p_held boolean, p_reason text) secdef=true 299e9f79391dcafe33fd2bc2be883202
-function public.set_match_queue(p_match uuid, p_state text, p_field text) secdef=true 5563c35795c26a3007ffb290764b38b6
+function public.set_match_queue(p_match uuid, p_state text, p_field text) secdef=true e0e2cb13b0c9f05d38487872ec8c8459
 function public.set_match_schedule(p_match uuid, p_scheduled_at timestamp with time zone, p_field text, p_duration_minutes integer) secdef=true c918a14614b18917bbc1aaeecbdcf9cb
 function public.set_my_fighter_avatar(p_path text) secdef=true eeed532419ebff7e93a0899d34d6407a
 function public.set_notification_settings(p_fights boolean, p_team boolean, p_events boolean, p_system boolean) secdef=true 5bb934647d8d9410ae602be684dd26c4
@@ -2391,7 +2423,7 @@ function public.set_represented_team(p_entry uuid, p_team uuid, p_reason text) s
 function public.set_roster_visibility(p_team uuid, p_fighter uuid, p_visible boolean) secdef=true 1686c386b465903bc40b407520610a57
 function public.set_team_emblem(p_team uuid, p_path text) secdef=true 1b753f492fba3b9d3ee75534ba5a1bff
 function public.submit_club_agm_topic(p_meeting uuid, p_subject text, p_details text) secdef=true fe79fe12b2c025eef8e1089b0c51ef86
-function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 11dba67abfcb68f4628112aab5eb696d
+function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 8fe5d19452fb87146ff36e3403bbc769
 function public.submit_registration(p_event uuid, p_data jsonb) secdef=true 7e0c26d573d1fe442983b2b4b833c0f3
 function public.team_career(p_team uuid) secdef=false 57c0e276f6eec12cedd3129d7f0d2053
 function public.team_clearance(p_event uuid, p_team uuid) secdef=true a0219d10be26cc870881fa950d5b36dd
@@ -2572,6 +2604,8 @@ index public.lyst_join_codes CREATE INDEX ON public.lyst_join_codes USING btree 
 index public.lyst_join_codes CREATE UNIQUE INDEX ON public.lyst_join_codes USING btree (code)
 index public.lyst_matches CREATE INDEX ON public.lyst_matches USING btree (event_id)
 index public.lyst_matches CREATE UNIQUE INDEX ON public.lyst_matches USING btree (match_id)
+index public.lyst_round_returns CREATE INDEX ON public.lyst_round_returns USING btree (match_id, round_no, returned_at)
+index public.lyst_round_returns CREATE UNIQUE INDEX ON public.lyst_round_returns USING btree (id)
 index public.lyst_round_revisions CREATE INDEX ON public.lyst_round_revisions USING btree (match_id, round_no, changed_at)
 index public.lyst_round_revisions CREATE UNIQUE INDEX ON public.lyst_round_revisions USING btree (id)
 index public.lyst_rounds CREATE INDEX ON public.lyst_rounds USING btree (event_id)
@@ -2719,21 +2753,22 @@ policy public.events events_read SELECT roles=anon,authenticated using=(private.
 policy public.fighter_accounts fighter_accounts_own SELECT roles=authenticated using=(user_id = auth.uid()) check=
 policy public.fighter_gallery fighter_gallery_public_read SELECT roles=anon,authenticated using=true check=
 policy public.fighters fighters_public_read SELECT roles=anon,authenticated using=true check=
-policy public.lyst_counter_rounds lyst_counter_rounds_read SELECT roles=authenticated using=(EXISTS ( SELECT 1
+policy public.lyst_counter_rounds lyst_counter_rounds_read SELECT roles=authenticated using=(private.can_view_match(match_id) OR (EXISTS ( SELECT 1
    FROM lyst_counter_seats s
-  WHERE ((s.id = lyst_counter_rounds.seat_id) AND ((s.user_id = ( SELECT auth.uid() AS uid)) OR private.can_score(s.event_id))))) check=
-policy public.lyst_counter_seats lyst_counter_seats_read SELECT roles=authenticated using=((user_id = ( SELECT auth.uid() AS uid)) OR private.can_score(event_id)) check=
-policy public.lyst_counts lyst_counts_read SELECT roles=authenticated using=(private.can_score(private.event_of_match(match_id)) OR (EXISTS ( SELECT 1
+  WHERE ((s.id = lyst_counter_rounds.seat_id) AND (s.user_id = ( SELECT auth.uid() AS uid)))))) check=
+policy public.lyst_counter_seats lyst_counter_seats_read SELECT roles=authenticated using=((user_id = ( SELECT auth.uid() AS uid)) OR ((match_id IS NOT NULL) AND private.can_view_match(match_id)) OR ((match_id IS NULL) AND private.can_score(event_id) AND (NOT private.is_secretary_only(event_id)))) check=
+policy public.lyst_counts lyst_counts_read SELECT roles=authenticated using=(private.can_view_match(match_id) OR (EXISTS ( SELECT 1
    FROM lyst_counter_seats s
   WHERE ((s.id = lyst_counts.seat_id) AND (s.user_id = ( SELECT auth.uid() AS uid)))))) check=
 policy public.lyst_field_current lyst_field_current_read SELECT roles=authenticated using=private.can_score(event_id) check=
-policy public.lyst_join_codes lyst_join_codes_read SELECT roles=authenticated using=private.can_score(event_id) check=
+policy public.lyst_join_codes lyst_join_codes_read SELECT roles=authenticated using=(private.can_score(event_id) AND (NOT private.is_secretary_only(event_id))) check=
 policy public.lyst_matches lyst_matches_read SELECT roles=authenticated using=private.can_score(event_id) check=
-policy public.lyst_round_revisions lyst_round_revisions_read SELECT roles=authenticated using=private.can_score(private.event_of_match(match_id)) check=
+policy public.lyst_round_returns lyst_round_returns_read SELECT roles=authenticated using=private.can_view_match(match_id) check=
+policy public.lyst_round_revisions lyst_round_revisions_read SELECT roles=authenticated using=private.can_view_match(match_id) check=
 policy public.lyst_rounds lyst_rounds_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
 policy public.lyst_timer lyst_timer_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
 policy public.match_discipline match_discipline_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
-policy public.match_discipline_private match_discipline_private_read SELECT roles=authenticated using=private.can_score(( SELECT d.event_id
+policy public.match_discipline_private match_discipline_private_read SELECT roles=authenticated using=private.can_view_match(( SELECT d.match_id
    FROM match_discipline d
   WHERE (d.id = match_discipline_private.discipline_id))) check=
 policy public.match_discipline_rules match_discipline_rules_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.can_score(event_id)) check=
@@ -2768,7 +2803,7 @@ policy public.ruleset_versions ruleset_versions_read SELECT roles=anon,authentic
 policy public.ruleset_versions ruleset_versions_read_published SELECT roles=anon,authenticated using=((status = ANY (ARRAY['published'::text, 'superseded'::text, 'withdrawn'::text])) OR ( SELECT private.is_owner() AS is_owner)) check=
 policy public.rulesets rulesets_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
 policy public.rulesets rulesets_read SELECT roles=anon,authenticated using=true check=
-policy public.score_events score_events_read SELECT roles=authenticated using=private.can_score(private.event_of_match(match_id)) check=
+policy public.score_events score_events_read SELECT roles=authenticated using=private.can_view_match(match_id) check=
 policy public.seasons seasons_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
 policy public.seasons seasons_read SELECT roles=anon,authenticated using=true check=
 policy public.sources sources_owner_write ALL roles=authenticated using=private.is_owner() check=private.is_owner()
@@ -2856,6 +2891,7 @@ table public.lyst_field_current rls=true
 table public.lyst_join_attempts rls=true
 table public.lyst_join_codes rls=true
 table public.lyst_matches rls=true
+table public.lyst_round_returns rls=true
 table public.lyst_round_revisions rls=true
 table public.lyst_rounds rls=true
 table public.lyst_timer rls=true
@@ -2947,6 +2983,7 @@ trigger public.fighter_gallery fighter_gallery_limit 649ed07e4ca64aa5d7b322678bd
 trigger public.fighters fighters_discipline_delete_guard 5b89e8fb7634527dd7ce9a91e8689717
 trigger public.fighters fighters_profile_check e7e82807a0fa9ec51263909bf9a9392c
 trigger public.lyst_counts lyst_counts_no_change e580546fd84cecba5dc4c460fe1e8858
+trigger public.lyst_round_returns lyst_round_returns_no_change 4eaf9a33d9f56d44ec81df785d2de566
 trigger public.lyst_round_revisions lyst_round_revisions_no_change d680c171e0bffd9bd5a4f6f18a0d1814
 trigger public.lyst_timer lyst_timer_field_current 7a9e995ba67214ffe238ad354b462254
 trigger public.match_discipline match_discipline_fill 52a73410e50f54e4edd7cedf95fb2f79

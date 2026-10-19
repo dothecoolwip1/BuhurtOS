@@ -166,7 +166,7 @@ select t.expect_ok_undo('the head marshal makes an ordinary device code: whoever
 select t.expect_error('... but not an Event Admin code (never more authority than they hold)', format($$select public.create_event_credential(%L, 'device', 'HM Admin', 'temporary_organizer', t.h(71))$$, t.ev(1)), '42501');
 select t.expect_error('... nor a stream controller code', format($$select public.create_event_credential(%L, 'controller', 'HM Laptop', 'broadcast_controller', t.h(72))$$, t.ev(1)), '42501');
 select t.as_user(t.u(4));
-select t.expect_ok_undo('a scorekeeper makes an ordinary device code too', format($$select public.create_event_credential(%L, 'device', 'SK Made', 'counter', t.h(70))$$, t.ev(1)));
+select t.expect_error('a secretary cannot create device codes', format($$select public.create_event_credential(%L, 'device', 'SK Made', 'counter', t.h(70))$$, t.ev(1)), '42501');
 select t.expect_error('... but not an Event Admin code', format($$select public.create_event_credential(%L, 'device', 'SK Admin', 'temporary_organizer', t.h(71))$$, t.ev(1)), '42501');
 select t.as_user(t.u(12));
 select t.expect_ok_undo('the platform owner can (the owner passes every event check)', format($$select public.create_event_credential(%L, 'device', 'Owner Made', 'counter', t.h(70))$$, t.ev(1)));

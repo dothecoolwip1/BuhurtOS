@@ -15,4 +15,6 @@ for f in $(ls "$ROOT"/migrations/*.sql | sort); do
   case "$f" in *20261001001300*) continue;; esac   # needs pg_cron, which a plain local Postgres does not have
   psql -X -q -d "$DB" -v ON_ERROR_STOP=1 -f "$f" > /dev/null 2>&1 || { echo "migration failed: $f" >&2; exit 1; }
 done
-psql -X -d "$DB" -v ON_ERROR_STOP=1 "$@" -f "$ROOT/tests/simulate_tournament.sql"
+SINK=/dev/null
+[ "${OS:-}" != "Windows_NT" ] || SINK=NUL
+psql -X -d "$DB" -v ON_ERROR_STOP=1 -v "output_sink=$SINK" "$@" -f "$ROOT/tests/simulate_tournament.sql"

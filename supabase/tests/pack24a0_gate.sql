@@ -142,7 +142,9 @@ select t.expect_eq('... and the fights are intact', t.n(4), 6);
 
 -- 2e. an official result protects the draw, and so does the history that stays after the result is reopened
 select t.as_user(t.u(4));
-select t.expect_eq('a scorekeeper finishes a fight in comp 6 through the command', public.submit_match_result(t.cmd(1), t.mid(6, 'Round 1', 0), 'a', 5, 3, '{}'::jsonb, t.ver(t.mid(6, 'Round 1', 0)), 1) ->> 'status', 'accepted');
+select t.expect_error('a scorekeeper cannot finish a waiting fight (secretary boundary: on now / on deck / in the hole only)', format($q$select public.submit_match_result(gen_random_uuid(), %L, 'a', 5, 3, '{}'::jsonb, %s, 1)$q$, t.mid(6, 'Round 1', 0), t.ver(t.mid(6, 'Round 1', 0))), '42501');
+select t.as_user(t.u(3));
+select t.expect_eq('the head marshal finishes a fight in comp 6 through the command', public.submit_match_result(t.cmd(1), t.mid(6, 'Round 1', 0), 'a', 5, 3, '{}'::jsonb, t.ver(t.mid(6, 'Round 1', 0)), 1) ->> 'status', 'accepted');
 select t.as_user(t.u(2));
 select t.expect_error('a draw with an official result cannot be replaced', format($q$select public.build_schedule(%L, %L::jsonb, 'replace', null)$q$, t.comp(6), t.rr(6)), 'P0001');
 select t.expect_ok('the organizer reopens the result', format($q$select public.reopen_match(%L, 'wrong score entered')$q$, t.mid(6, 'Round 1', 0)));
@@ -260,11 +262,12 @@ create temp table t_q2 as select t.audits('queue.state_set') as n;
 -- Who may call set_match_queue is unchanged from main (private.can_score; Pack 18.1 matrix: "call fight" for every scoring role). Reconciled with Pack
 -- 18.1: the first Pack 24A0 draft refused scorekeepers and marshals here; that narrowing is an owner decision and is not made by this migration.
 select t.as_user(t.u(4));
-select t.expect_ok('a scorekeeper may call a waiting fight on deck (Pack 18.1 matrix) and send it back', format($q$select public.set_match_queue(%L, 'on_deck'); select public.set_match_queue(%L, 'scheduled')$q$, t.mid(1, 'Round 2', 0), t.mid(1, 'Round 2', 0)));
+-- secretary boundary (20261022000100): the secretary no longer calls a waiting fight; the head marshal still does
+select t.expect_error('a scorekeeper cannot call a waiting fight on deck (secretary boundary)', format($q$select public.set_match_queue(%L, 'on_deck')$q$, t.mid(1, 'Round 2', 0)), '42501');
 select t.as_user(t.u(3));
 select t.expect_ok('... so may the head marshal', format($q$select public.set_match_queue(%L, 'in_the_hole'); select public.set_match_queue(%L, 'scheduled')$q$, t.mid(1, 'Round 2', 0), t.mid(1, 'Round 2', 0)));
 select t.as_admin();
-select t.expect_eq('... each of those calls is on the audit trail with the caller''s role', (select string_agg(details ->> 'by', ',' order by id) from public.audit_log where action = 'queue.state_set' and subject = t.mid(1, 'Round 2', 0)::text), 'scorekeeper,scorekeeper,head_marshal,head_marshal');
+select t.expect_eq('... each of those calls is on the audit trail with the caller''s role', (select string_agg(details ->> 'by', ',' order by id) from public.audit_log where action = 'queue.state_set' and subject = t.mid(1, 'Round 2', 0)::text), 'head_marshal,head_marshal');
 create temp table t_q3 as select t.audits('queue.state_set') as n;
 select t.as_user(t.u(8));
 select t.expect_error('check-in staff cannot touch the queue', format($q$select public.set_match_queue(%L, 'active')$q$, t.mid(1, 'Round 1', 0)), '42501');
@@ -281,10 +284,10 @@ select t.expect_eq('... and are not on the audit trail', t.audits('queue.state_s
 select t.as_user(t.u(4));
 select t.expect_ok('a scorekeeper opens the fight on deck (field given as the page does)', format($q$select public.set_match_queue(%L, 'active', 'Field 1')$q$, t.mid(1, 'Round 1', 0)));
 select t.expect_ok('... and opens the one in the hole', format($q$select public.set_match_queue(%L, 'active')$q$, t.mid(1, 'Round 1', 1)));
-select t.expect_ok('... and sends an active fight back to the line', format($q$select public.set_match_queue(%L, 'scheduled')$q$, t.mid(1, 'Round 1', 1)));
+select t.expect_error('... but no longer sends an active fight back to the line (secretary boundary)', format($q$select public.set_match_queue(%L, 'scheduled')$q$, t.mid(1, 'Round 1', 1)), '42501');
 select t.expect_ok('... repeating a state that already holds is harmless', format($q$select public.set_match_queue(%L, 'active')$q$, t.mid(1, 'Round 1', 0)));
 select t.as_admin();
-select t.expect_eq('... the audit trail names the scorekeeper''s own calls (2 above, 3 here; the repeat wrote none)', (select count(*)::int from public.audit_log where action = 'queue.state_set' and actor = t.u(4)), 5);
+select t.expect_eq('... the audit trail names the scorekeeper''s own calls (the two starts; the refusals and the repeat wrote none)', (select count(*)::int from public.audit_log where action = 'queue.state_set' and actor = t.u(4)), 2);
 select t.as_user(t.u(4));
 select t.expect_ok('a scorekeeper still starts the next fight through advance_field_queue (the queue picks it, not the scorekeeper)', format($q$select public.advance_field_queue(%L, 'Field 1', true)$q$, '00000000-0000-0000-0000-00000000e101'));
 select t.as_user(t.u(2));
@@ -310,7 +313,7 @@ select t.as_user(t.u(2));
 select t.expect_ok('Event day saves its plan with no hold in it (the page was only opened)', format($q$select public.save_queue_plan(%L, %L::uuid[], '{}'::uuid[])$q$, '00000000-0000-0000-0000-00000000e101', (select array_agg(id order by id) from public.matches where competition_id = t.comp(1) and queue_state = 'scheduled')));
 select t.as_admin();
 select t.expect_eq('... and the deliberate hold is still there', (select plan_hold from public.matches where id = t.mid(1, 'Round 2', 1)), true);
-select t.expect_eq('... while the planner order was saved', (select count(*)::int from public.matches where competition_id = t.comp(1) and plan_order is not null), 4);
+select t.expect_eq('... while the three waiting fights received their planner order', (select count(*)::int from public.matches where competition_id = t.comp(1) and plan_order is not null), 3);
 -- planner-derived holds still follow the planner
 select t.as_user(t.u(2));
 select t.expect_ok('the planner holds another fight (attendance)', format($q$select public.save_queue_plan(%L, %L::uuid[], %L::uuid[])$q$, '00000000-0000-0000-0000-00000000e101', (select array_agg(id order by id) from public.matches where competition_id = t.comp(1) and queue_state = 'scheduled'), array[t.mid(1, 'Round 3', 0)]));
@@ -354,11 +357,14 @@ select t.expect_ok('Event day saving the plan can hold it again by itself now (t
 select t.as_admin();
 select t.expect_eq('... it does', (select plan_hold from public.matches where id = t.mid(1, 'Round 2', 1)), true);
 select t.as_user(t.u(4));
-select t.expect_ok('the Secretary / Scorekeeper may hold a waiting fight (Pack 18.1 queue adjustment)', format($q$select public.set_match_hold(%L, true, 'Waiting on a helmet repair')$q$, t.mid(5, 'Round 2', 0)));
+select t.expect_error('the Secretary / Scorekeeper cannot hold a waiting fight (secretary boundary)', format($q$select public.set_match_hold(%L, true, 'Waiting on a helmet repair')$q$, t.mid(5, 'Round 2', 0)), '42501');
+select t.expect_error('... nor save a plan', format($q$select public.save_queue_plan(%L, '{}'::uuid[], '{}'::uuid[])$q$, '00000000-0000-0000-0000-00000000e101'), '42501');
+select t.as_user(t.u(2));
+select t.expect_ok('the organizer holds a waiting fight', format($q$select public.set_match_hold(%L, true, 'Waiting on a helmet repair')$q$, t.mid(5, 'Round 2', 0)));
 select t.expect_ok('... the plan they save keeps it held', format($q$select public.save_queue_plan(%L, '{}'::uuid[], '{}'::uuid[])$q$, '00000000-0000-0000-0000-00000000e101'));
 select t.as_admin();
 select t.expect_eq('... still held', (select m.plan_hold and coalesce((to_jsonb(m) ->> 'hold_manual')::boolean, false) from public.matches m where m.id = t.mid(5, 'Round 2', 0)), true);
-select t.as_user(t.u(4));
+select t.as_user(t.u(2));
 select t.expect_ok('... and may release it', format($q$select public.set_match_hold(%L, false)$q$, t.mid(5, 'Round 2', 0)));
 select t.as_user(t.u(3));
 select t.expect_error('the head marshal cannot save a plan (Pack 18.1 kept save_queue_plan at can_adjust_queue; this migration patches, never replaces it)', format($q$select public.save_queue_plan(%L, '{}'::uuid[], '{}'::uuid[])$q$, '00000000-0000-0000-0000-00000000e101'), '42501');

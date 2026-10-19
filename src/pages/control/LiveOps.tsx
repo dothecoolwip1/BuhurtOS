@@ -134,9 +134,10 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
   const byMatch = useMemo(() => new Map(live.matches.map(m => [m.id, m])), [live.matches]);
   const saving = useRef<string | null>(null);
   const [planOff, setPlanOff] = useState(false);
+  const [editingField, setEditingField] = useState<string | null>(null);
   const busyRef = useRef(false);
   useEffect(() => {
-    if (!organizer || planOff || live.loading || roster.loading || !roster.data || planIsSaved(plan, live.matches)) return;
+    if (!organizer || editingField !== null || planOff || live.loading || roster.loading || !roster.data || planIsSaved(plan, live.matches)) return;
     const signature = JSON.stringify([plan.upcoming, heldMatches(plan)]);
     if (saving.current === signature) return;
     const t = window.setTimeout(() => {
@@ -150,7 +151,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
       });
     }, 1200);
     return () => window.clearTimeout(t);
-  }, [organizer, plan, live.matches, live.loading, roster.loading, roster.data, planOff, event.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [organizer, editingField, plan, live.matches, live.loading, roster.loading, roster.data, planOff, event.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const notReady = useMemo(() => {
     const m = new Map<string, string[]>();
     for (const g of checkinGaps(boards, live.entries, roster.data ?? [], regs.data ?? [], 6)) m.set(g.matchId, [...(m.get(g.matchId) ?? []), g.name]);
@@ -174,7 +175,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
     finally { busyRef.current = false; setBusy(false); }
   };
   const actions: BoardActions = {
-    busy,
+    busy: busy || editingField !== null,
     startNext: board => void run(async () => {
       const r = await advanceFieldQueue(event.id, board.name, true);
       const started = r.promoted.find(p => p.to === 'active');
@@ -276,14 +277,6 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
       {notice && <p role={notice.kind === 'error' ? 'alert' : 'status'} className="panel info ed-notice" style={notice.kind === 'error' ? { color: 'var(--live)' } : undefined}>{notice.text}</p>}
       {snapError != null && !snap && <p className="src" role="status">Readiness and staff could not be read just now. It will try again.</p>}
 
-      {/* Camera Off: the livestream's safety control, for everyone who may protect the broadcast (Pack 18.1 placed it first; whether it should hide when no broadcast is set up is an owner question, Pack 26 §9) */}
-      <div className="cc-camera"><CameraOffControl eventId={event.id} /></div>
-
-      <Section id="cc-attention" title="Needs attention" count={items.filter(i => i.urgency !== 'info').length} open>
-        {items.length === 0 ? <p className="cc-empty">{snap ? 'Nothing needs you right now. Fights, check-in and armour are in order.' : 'Checking…'}</p> : <AttentionList items={items} />}
-        {organizer && (conflicts.data?.length ?? 0) > 0 && <div id="review" tabIndex={-1}><ResultConflicts eventId={event.id} onChanged={() => { void live.refresh(); void load(); }} /></div>}
-      </Section>
-
       {/* the fields: the operator's boards (start the next fight, change the line); for the others, what is on and what is next */}
       <section className="lo-fields" aria-label="Fields">
         <h2 className="cc-h lo-h">Lysts{boards.length > 0 && <span className="cc-count">{boards.length} {boards.length === 1 ? 'Lyst' : 'Lysts'}</span>}</h2>
@@ -313,7 +306,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
           <div className="ed-fields">
             {boards.map(b => (
               <div key={b.key} className={`ed-field-wrap${b.key === pickedKey ? ' picked' : ''}`}>
-                <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, eventId: event.id, timeZone: tz, competitionNames: names, actions, onChanged: () => { void live.refresh(); void load(); } }} next={<>
+                <FieldBoardView board={b} plan={plans.get(b.key)!} c={{ slug, eventId: event.id, timeZone: tz, competitionNames: names, actions, editor: organizer ? { entries: live.entries, open: editingField === b.key, onOpen: () => setEditingField(b.key), onClose: () => setEditingField(null) } : undefined, onChanged: () => { void live.refresh(); void load(); } }} next={<>
                   <NextFight field={b.key} label={fieldLabel(b.name)} plan={plan} matches={byMatch} fighting={b.now.length > 0} called={b.onDeck.length > 0} sides={sides} names={people} competitionNames={names} notReady={notReady} actions={nextActions} />
                   {b.upcoming.some(m => m.queueOrder != null) && (
                     <p className="src ed-manual">This Lyst's line was arranged by hand, so BuhurtOS follows it. <button type="button" className="linklike" disabled={busy} onClick={() => replanField(b)}>Let BuhurtOS plan it again</button></p>
@@ -338,6 +331,15 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
         )}
       </section>
 
+      <details className="lo-tools"><summary className="btn btn-line">Event tools and details</summary>
+      {/* Camera Off: the livestream's safety control, for everyone who may protect the broadcast (Pack 18.1 placed it first; whether it should hide when no broadcast is set up is an owner question, Pack 26 §9) */}
+      <div className="cc-camera"><CameraOffControl eventId={event.id} /></div>
+
+      <Section id="cc-attention" title="Needs attention" count={items.filter(i => i.urgency !== 'info').length} open>
+        {items.length === 0 ? <p className="cc-empty">{snap ? 'Nothing needs you right now. Fights, check-in and armour are in order.' : 'Checking…'}</p> : <AttentionList items={items} />}
+        {organizer && (conflicts.data?.length ?? 0) > 0 && <div id="review" tabIndex={-1}><ResultConflicts eventId={event.id} onChanged={() => { void live.refresh(); void load(); }} /></div>}
+      </Section>
+
       <nav className="panel info lo-stations" aria-label="Workstations">
         <h2 className="cc-h lo-h">Workstations</h2>
         <p className="src">Each one is a full-screen job for one person and one phone. Exit brings them back here.</p>
@@ -350,7 +352,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
         </div>
       </nav>
 
-      <Section id="cc-counters" title="Counter QR" open={fieldNames.length > 0}>
+      <Section id="cc-counters" title="Counter QR">
         <CounterQrCard eventId={event.id} compact />
         {allowed && <p><Link className="btn btn-line cc-btn" to={controlPath(slug, 'live', 'devices')}>Phones signed in, move or sign one out</Link></p>}
       </Section>
@@ -413,6 +415,7 @@ export function LiveOps({ event, competitions, organizer, onEventChanged }: { ev
           {organizer && <p><Link className="btn btn-line cc-btn" to={controlPath(slug, 'setup', 'staff')}>Staff and roles</Link></p>}
         </Section>
       )}
+      </details>
     </section>
   );
 }

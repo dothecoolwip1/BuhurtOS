@@ -10,6 +10,8 @@ export interface SideSource {
   name: string;
   /** The team the fighter belongs to (or the entry's own team), for the crest and the sub-line. */
   team: { id: string; name: string; colors: [string, string]; division: CrestDivision; initial: string; emblemUrl: string | null; city: string | null; region: string | null; country: string | null } | null;
+  /** Public profile start year, requested only for the announcer. */
+  joinedYear?: number | null;
   avatarUrl: string | null;
   record: { wins: number; losses: number; draws: number; test: boolean } | null;
 }

@@ -21,9 +21,13 @@
   \set old_pool_seeding 0
 \endif
 
+\if :{?output_sink}
+\else
+  \set output_sink /dev/null
+\endif
 begin;
 \ir ../seed/test_tournament.sql
-\o /dev/null
+\o :output_sink
 
 create schema sim;
 -- Results can no longer be inserted directly by organizers (Pack 02). The simulation records fixture results as the database owner.

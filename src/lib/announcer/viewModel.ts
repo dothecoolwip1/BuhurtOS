@@ -30,6 +30,7 @@ export interface AnnSide {
   name: string;
   /** The fighter's team (a team entry has none: its name is the team). */
   teamName: string | null;
+  joinedYear?: number | null;
   photoUrl: string | null;
   crest: Team | null;
   record: string | null;
@@ -143,6 +144,7 @@ export function buildAnnouncerView(input: AnnouncerInput): AnnouncerView {
     return {
       side, corner: side === 'a' ? 'RED' : 'BLUE', entryId, kind: src ? src.kind : null, name: p.name,
       teamName: src?.kind === 'fighter' ? p.subtitle : null,
+      joinedYear: src?.kind === 'fighter' ? src.joinedYear ?? null : null,
       photoUrl: p.avatarUrl, crest: p.crest, record: p.record, recordIsTest: p.recordNote === 'test record',
       score: slot === 'fighting' && row ? num(side === 'a' ? row.official_a : row.official_b) : null,
       marks,

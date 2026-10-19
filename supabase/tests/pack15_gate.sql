@@ -168,7 +168,7 @@ select t.expect_error('a stranger cannot', $$select public.send_event_announceme
 select t.as_user(t.u(1));
 select t.expect_error('a fighter cannot', $$select public.send_event_announcement(t.ev(1), 'Lunch ends at 1:15 PM.')$$, '42501');
 select t.as_user(t.u(7));
-select t.expect_ok_undo('a scorekeeper (the secretary) may send an announcement (Pack 18.1)', $$select public.send_event_announcement(t.ev(1), 'Lunch ends at 1:15 PM.')$$);
+select t.expect_error('a secretary cannot send event announcements', $$select public.send_event_announcement(t.ev(1), 'Lunch ends at 1:15 PM.')$$, '42501');
 select t.as_user(t.u(8));
 select t.expect_error('a head marshal cannot (organizers only)', $$select public.send_event_announcement(t.ev(1), 'Lunch ends at 1:15 PM.')$$, '42501');
 select t.as_user(t.u(10));

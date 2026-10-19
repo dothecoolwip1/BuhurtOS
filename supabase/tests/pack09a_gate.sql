@@ -158,7 +158,7 @@ select t.as_anon();
 select t.expect_error('anonymous visitors cannot call either function', $q$select public.advance_field_queue('00000000-0000-0000-0000-00000000e101', null, true)$q$, '42501');
 select t.expect_error('... the reorder either', $q$select public.move_match_in_queue(t.m(1), 'first')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
-select t.expect_ok_undo('a scorekeeper (the secretary) may reorder the line (Pack 18.1: Secretary and Scorekeeper are one role)', $q$select public.move_match_in_queue(t.m(1), 'first')$q$);
+select t.expect_error('a secretary cannot reorder the line', $q$select public.move_match_in_queue(t.m(1), 'first')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a3');
 select t.expect_error('a head marshal cannot reorder either; they keep setting a match''s state', $q$select public.move_match_in_queue(t.m(1), 'first')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
@@ -313,10 +313,12 @@ select t.expect_eq('the order is public information like the rest of the queue',
 
 -- ================================================================ 9. set_match_queue keeps working
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
-select t.expect_ok('a scorekeeper still calls a match by hand', $q$select public.set_match_queue(t.m(13), 'active')$q$);
+select t.expect_error('a secretary cannot call an arbitrary waiting fight', $q$select public.set_match_queue(t.m(13), 'active')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('an organizer calls a match by hand', $q$select public.set_match_queue(t.m(13), 'active')$q$);
 select t.as_admin();
 select t.expect_eq('... and a called match forgets its manual order', t.s(13) || '/' || coalesce(t.ord(13)::text, 'none'), 'active/none');
-select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_ok('a field can still be changed or cleared through it', $q$select public.set_match_queue(t.m(13), 'scheduled', '')$q$);
 select t.expect_error('a final match cannot be put back by it', $q$select public.set_match_queue(t.m(22), 'scheduled')$q$, 'P0001');
 select t.as_user('00000000-0000-0000-0000-0000000000a7');

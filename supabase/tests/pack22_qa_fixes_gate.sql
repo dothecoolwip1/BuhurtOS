@@ -190,7 +190,7 @@ select t.as_admin();
 select t.expect_eq('8. merging the other way works and the records stay with the kept team', (select count(*) from public.teams where id = '00000000-0000-0000-0000-0000000d5a02')::int || '/' || (select count(*) from public.discipline_suspensions where team_id = t.team())::int, '0/1');
 
 -- ---------------------------------------------------------------- 4, 5 and 10. appeals
-select t.as_user(t.u(3));
+select t.as_user(t.u(2));
 select t.expect_eq('10. the desk lists the event''s fights (an appeal can be about a fight where nothing was recorded)',
   (select count(*) from jsonb_array_elements(public.event_discipline_overview(t.ev(1)) -> 'fights') x where x ->> 'id' = '00000000-0000-0000-0000-0000000f5d01' and x ->> 'a' = 'D Fighter 1')::int, 1);
 select t.as_admin();
@@ -212,7 +212,7 @@ select t.expect_eq('5. the Secretary records the withdrawal with the reason', pu
 select t.as_admin();
 select t.expect_eq('5. the withdrawal is audited', (select count(*) from public.audit_log where action = 'discipline.review_withdrawn' and subject = t.x(931)::text)::int, 1);
 select t.as_user(t.u(3));
-select t.expect_eq('5. the desk is told who may withdraw', (public.event_discipline_overview(t.ev(1)) -> 'can' ->> 'withdraw_appeal') || '/' || (select (public.event_discipline_overview(t.ev(1)) -> 'can' ->> 'decide_appeal')), 'true/false');
+select t.expect_error('5. the secretary cannot open the event-wide discipline desk', $$select public.event_discipline_overview(t.ev(1))$$, '42501');
 select t.as_user(t.u(6));
 select t.expect_eq('5. ... and a marshal is told they may not', public.event_discipline_overview(t.ev(1)) -> 'can' ->> 'withdraw_appeal', 'false');
 select t.as_admin();

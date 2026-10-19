@@ -359,7 +359,9 @@ select t.expect_error('a cited rule can never be deleted, even from a draft', $$
 
 -- ---------------------------------------------------------------- 11. the discipline log
 select t.as_user(t.u(7));
-select t.expect_eq('the scorekeeper reads the test event''s log (2 records, voided one included)', jsonb_array_length(public.event_discipline_log(t.ev(2))), 2);
+select t.expect_error('the secretary cannot read the event-wide discipline log', $$select public.event_discipline_log(t.ev(2))$$, '42501');
+select t.as_user(t.u(8));
+select t.expect_eq('the head marshal reads the test event''s log (2 records, voided one included)', jsonb_array_length(public.event_discipline_log(t.ev(2))), 2);
 select t.expect_eq('the log names who it was against, the reason, the marshal and the rule cited',
   (select x ->> 'against' || ' | ' || (x ->> 'reason') || ' | ' || (x ->> 'called_by') || ' | ' || (x ->> 'rule_number') || ' ' || (x ->> 'rule_title') || ' | ' || (x ->> 'rule_version') || ' | ' || (x ->> 'citation_changes')
    from jsonb_array_elements(public.event_discipline_log(t.ev(2))) x where x ->> 'kind' = 'card'),
