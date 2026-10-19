@@ -70,7 +70,7 @@ reset; start_field
 ( psql -X -q -At -d $DB -c "begin; $(as_user $A4) $(finish 1) select pg_sleep(2.5); commit;" > /tmp/p9-1.out 2>&1 ) &
 sleep 0.7
 T0=$(date +%s.%N)
-psql -X -q -At -d $DB -c "$(as_user $A4) select public.set_match_queue('$(m 1)', 'scheduled');" > /tmp/p9-2.out 2>&1
+psql -X -q -At -d $DB -c "$(as_user $A2) select public.set_match_queue('$(m 1)', 'scheduled');" > /tmp/p9-2.out 2>&1
 T1=$(date +%s.%N)
 wait
 check "4a the hand call was told to try again (55P03)" "$(grep -c 'try again' /tmp/p9-2.out | tr -d ' ')" "1"

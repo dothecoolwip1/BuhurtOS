@@ -33,19 +33,24 @@ function Picker({ label, value, onChange, hints, onUseHint, name, side }: { labe
  * evidence the marshal may look at: they are never combined, averaged or pre-selected, and using one is an explicit tap (recorded only as a "recommended" note).
  * A correction to a confirmed round needs a reason, and the old numbers stay on the record.
  */
-export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, busy, disabledReason, onConfirm, onCancel }: {
+export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, busy, disabledReason, onConfirm, onCancel, onReturn, secretary = false }: {
+  secretary?: boolean;
   round: number; names: { a: string; b: string }; initial: { a: number; b: number } | null; correcting: boolean; hintsA: Hint[]; hintsB: Hint[]; busy: boolean; disabledReason?: string | null;
   onConfirm: (a: number, b: number, extra: { reason: string | null; recommendedA: number | null; recommendedB: number | null }) => void; onCancel?: () => void;
+  onReturn?: (reason: string) => void;
 }) {
   const [a, setA] = useState<number | null>(initial ? initial.a : null);
   const [b, setB] = useState<number | null>(initial ? initial.b : null);
   const [recA, setRecA] = useState<number | null>(null);
   const [recB, setRecB] = useState<number | null>(null);
   const [reason, setReason] = useState('');
+  const [returnReason, setReturnReason] = useState('');
   // a different round (or a fresh start) begins from nothing chosen, never from the last round's numbers
   useEffect(() => { setA(initial ? initial.a : null); setB(initial ? initial.b : null); setRecA(null); setRecB(null); setReason(''); }, [round, initial?.a, initial?.b, correcting]);   // eslint-disable-line react-hooks/exhaustive-deps
   const changed = useMemo(() => !correcting || !initial || a !== initial.a || b !== initial.b, [correcting, initial, a, b]);
-  const reasonOk = !correcting || reason.trim().length >= 3;
+  const overriding = (a !== null && hintsA.length > 0 && !hintsA.some(h => h.total === a)) || (b !== null && hintsB.length > 0 && !hintsB.some(h => h.total === b));
+  const needsReason = correcting || overriding;
+  const reasonOk = !needsReason || reason.trim().length >= 3;
   const ready = a !== null && b !== null && changed && reasonOk && !busy && !disabledReason;
   return (
     <section className="ly-entry panel" aria-label={correcting ? `Correct round ${round}` : `Confirm round ${round}`}>
@@ -55,8 +60,8 @@ export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, 
         <Picker label="Fighter A" side="a" name={names.a} value={a} onChange={v => { setA(clampScore(v)); setRecA(null); }} hints={hintsA} onUseHint={h => { setA(clampScore(h.total)); setRecA(h.total); }} />
         <Picker label="Fighter B" side="b" name={names.b} value={b} onChange={v => { setB(clampScore(v)); setRecB(null); }} hints={hintsB} onUseHint={h => { setB(clampScore(h.total)); setRecB(h.total); }} />
       </div>
-      {correcting && (
-        <label className="ly-reason"><span>Why is it being corrected?</span>
+      {needsReason && (
+        <label className="ly-reason"><span>Reason for the score change</span>
           <input value={reason} maxLength={200} onChange={e => setReason(e.target.value)} placeholder="For example: marshal re-counted after the break" aria-required="true" />
         </label>
       )}
@@ -64,10 +69,14 @@ export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, 
       <div className="ly-confirm-row">
         {onCancel && <button type="button" className="btn btn-line fq-big" disabled={busy} onClick={onCancel}>Cancel</button>}
         <button type="button" className="btn btn-win fq-big ly-confirm" disabled={!ready}
-          onClick={() => a !== null && b !== null && onConfirm(a, b, { reason: correcting ? reason.trim() : null, recommendedA: recA, recommendedB: recB })}>
-          {busy ? 'Saving…' : a === null || b === null ? 'Choose both scores' : correcting ? `Save correction ${a}–${b}` : `Confirm round ${a}–${b}`}
+          onClick={() => a !== null && b !== null && onConfirm(a, b, { reason: needsReason ? reason.trim() : null, recommendedA: recA, recommendedB: recB })}>
+          {busy ? 'Saving…' : a === null || b === null ? 'Choose both scores' : correcting ? `Save correction ${a}–${b}` : `${secretary ? 'Accept scores' : 'Confirm round'} ${a}–${b}`}
         </button>
       </div>
+      {onReturn && <details className="ly-return"><summary className="btn btn-line">Return for recount</summary>
+        <label className="ly-reason">Reason<input value={returnReason} onChange={e => setReturnReason(e.target.value)} maxLength={200} disabled={busy} /></label>
+        <button type="button" className="btn btn-line fq-big" disabled={busy || !!disabledReason || returnReason.trim().length < 3} onClick={() => onReturn(returnReason.trim())}>Return scores to counters</button>
+      </details>}
     </section>
   );
 }

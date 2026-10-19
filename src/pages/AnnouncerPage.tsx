@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import '../styles/announcer.css';
-import { CameraOffControl } from '../components/CameraOffControl';
 import { Crest } from '../components/Crest';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { fetchEvent } from '../data/api';
@@ -17,7 +16,7 @@ import { useLystPublic } from '../lib/lyst/useLystPublic';
 import { useNow } from '../lib/lyst/useLystState';
 import { MODE_LABEL, formatClock, remainingMs, timerTone, timerWord, type ServerClock, type TimerMode } from '../lib/lyst/timer';
 import { buildAnnouncerView, orderLysts, slotWord, type AnnFight, type AnnMark, type AnnSide, type AnnTimer, type LystCard, type RecentResult } from '../lib/announcer/viewModel';
-import { buildEntryInfo, type EntryInfo } from '../lib/announcer/info';
+import { experienceLine, buildEntryInfo, type EntryInfo } from '../lib/announcer/info';
 import { loadFocus, saveFocus } from '../lib/announcer/focus';
 import { latest, staleLine, staleness } from '../lib/announcer/stale';
 
@@ -70,7 +69,7 @@ function AnnouncerScreen() {
   const finals = useMemo(() => live.matches.filter(m => m.queueState === 'final').length, [live.matches]);
   const first = useMemo(() => buildAnnouncerView({ matches: live.matches, competitions, lyst: lyst.rows, sides: {}, readiness: readiness.data ?? null, focus: focusRaw }), [live.matches, competitions, lyst.rows, readiness.data, focusRaw]);
   const wanted = first.entryIds.join(',');
-  const sidesLoad = useAsync(() => (wanted ? fetchSides(wanted.split(','), true) : Promise.resolve({} as Record<string, SideSource>)), [wanted], [finals]);
+  const sidesLoad = useAsync(() => (wanted ? fetchSides(wanted.split(','), false, true) : Promise.resolve({} as Record<string, SideSource>)), [wanted], [finals]);
   const sidesSeen = useRef<Record<string, SideSource>>({});
   if (sidesLoad.data) sidesSeen.current = { ...sidesSeen.current, ...sidesLoad.data };
   const view = useMemo(
@@ -109,7 +108,7 @@ function AnnouncerScreen() {
   if (!published) {
     return (
       <div className="ann">
-        <header className="an-bar"><span className="an-event">{event.name}</span><div className="an-tools"><CameraOffControl eventId={event.id} compact /></div></header>
+        <header className="an-bar"><span className="an-event">{event.name}</span></header>
         <div className="an-center">
           <p className="an-label">Announcer</p><h1 className="an-big">{event.status === 'cancelled' ? 'This event was cancelled' : 'This event is not public yet'}</h1>
           <p className="an-note">{event.status === 'cancelled' ? 'There is nothing to announce.' : 'The announcer view shows fights once the organizer publishes the event.'}</p>
@@ -129,7 +128,6 @@ function AnnouncerScreen() {
       <header className="an-bar">
         <span className="an-event" title={event.name}>{event.name}</span>
         <span className="an-conn" role="status">{connectionWord}</span>
-        <div className="an-tools"><CameraOffControl eventId={event.id} compact /></div>
       </header>
       <div className="an-stale-slot" role="status" aria-live="polite">{staleWords && <p className="an-stale" data-testid="stale-banner"><span aria-hidden="true">⏸ </span>{staleWords}</p>}</div>
 
@@ -150,10 +148,10 @@ function AnnouncerScreen() {
             {shownLysts.map(l => <LystColumn key={l.key} card={l} clock={lyst.clock} compact={view.focus !== null && view.focus !== l.key} picked={picked} onPick={pick} />)}
           </div>
 
-          <section className="an-recent" aria-labelledby="an-recent-h">
+          <details className="an-recent"><summary className="an-btn">Recent results</summary>
             <h2 className="an-h" id="an-recent-h">Recent results</h2>
             {view.recent.length === 0 ? <p className="an-note">No finished fights yet.</p> : <ul className="an-results">{view.recent.map(r => <ResultRow key={r.id} r={r} />)}</ul>}
-          </section>
+          </details>
         </main>
       </ErrorBoundary>
 
@@ -182,13 +180,13 @@ function LystColumn({ card, clock, compact, picked, onPick }: { card: LystCard; 
       </div>
 
       {!compact && (
-        <div className="an-coming">
+        <details className="an-coming"><summary className="an-btn">More upcoming fights</summary>
           <p className="an-label">Coming up</p>
           {card.coming.length === 0 ? <p className="an-none">Nothing else lined up</p> : (
             <ol className="an-queue">{card.coming.map(f => <li key={f.id}><UpFight f={f} picked={picked} onPick={onPick} /></li>)}</ol>
           )}
           {card.more > 0 && <p className="an-more">+ {card.more} more after these</p>}
-        </div>
+        </details>
       )}
     </section>
   );
@@ -216,7 +214,7 @@ function SideButton({ f, s, score = false, picked, onPick }: { f: AnnFight; s: A
   const inner = (
     <>
       <span className="an-corner"><span aria-hidden="true">{s.side === 'a' ? '▲' : '■'}</span> {s.corner}</span>
-      <span className="an-who"><Badge s={s} size={score ? 64 : 44} /><span className="an-names"><span className="an-name">{s.name}</span>{s.teamName && <span className="an-team">{s.teamName}</span>}{s.record && <span className="an-rec">{s.record}{s.recordIsTest ? ' · Test' : ''}</span>}</span></span>
+      <span className="an-who"><Badge s={s} size={score ? 64 : 44} /><span className="an-names"><span className="an-name">{s.name}</span>{s.teamName && <span className="an-team">{s.teamName}</span>}{experienceLine(s.joinedYear) && <span className="an-rec">{experienceLine(s.joinedYear)}</span>}</span></span>
       {score && <span className="an-score" aria-label={`${s.name} official score ${s.score ?? 0}`}>{s.score ?? '–'}</span>}
       {s.marks.length > 0 && <span className="an-marks">{s.marks.map((m, i) => <b key={i} className={`an-mark ${m.kind}`}><span aria-hidden="true">{MARK_ICON[m.kind]} </span>{m.text}</b>)}</span>}
     </>
@@ -246,7 +244,7 @@ function UpFight({ f, big = false, picked, onPick }: { f: AnnFight; big?: boolea
         {[f.a, f.b].map((s, i) => (
           <div className="an-up-side" key={s.side}>
             {s.entryId
-              ? <button type="button" className="an-up-btn" aria-expanded={!!picked && picked.entryId === s.entryId} aria-haspopup="dialog" onClick={() => onPick(f, s)}><Badge s={s} size={big ? 44 : 32} /><span className="an-names"><span className="an-name"><span className="an-corner-i" aria-hidden="true">{s.side === 'a' ? '▲' : '■'}</span><span className="sr-only">{s.corner}: </span>{s.name}</span>{s.teamName && <span className="an-team">{s.teamName}</span>}</span></button>
+              ? <button type="button" className="an-up-btn" aria-expanded={!!picked && picked.entryId === s.entryId} aria-haspopup="dialog" onClick={() => onPick(f, s)}><Badge s={s} size={big ? 44 : 32} /><span className="an-names"><span className="an-name"><span className="an-corner-i" aria-hidden="true">{s.side === 'a' ? '▲' : '■'}</span><span className="sr-only">{s.corner}: </span>{s.name}</span>{s.teamName && <span className="an-team">{s.teamName}</span>}{experienceLine(s.joinedYear) && <span className="an-rec">{experienceLine(s.joinedYear)}</span>}</span></button>
               : <span className="an-up-btn"><span className="an-names"><span className="an-name">{s.name}</span></span></span>}
             <Readiness s={s} />
             {i === 0 && <span className="an-vs-i" aria-hidden="true">vs</span>}

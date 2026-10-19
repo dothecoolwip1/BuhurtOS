@@ -27,11 +27,13 @@ insert into public.entries (id, competition_id, fighter_id) select ('00000000-00
 insert into public.matches (id, competition_id, stage, round_label, position, field, entry_a, entry_b) values
   ('00000000-0000-0000-0000-0000000f0001', '00000000-0000-0000-0000-00000000b101', 'round_robin', 'Round 1', 0, 'Field 1', '00000000-0000-0000-0000-00000000ee01', '00000000-0000-0000-0000-00000000ee02'),
   ('00000000-0000-0000-0000-0000000f0002', '00000000-0000-0000-0000-00000000b101', 'round_robin', 'Round 2', 0, 'Field 1', '00000000-0000-0000-0000-00000000ee03', '00000000-0000-0000-0000-00000000ee04');
+-- The scoring tablets may operate called fights only; generic timer/concurrency tests start with both fights called.
+update public.matches set queue_state = case when position = 0 and round_label = 'Round 1' then 'active' else 'on_deck' end;
 SQL
-uuid() { cat /proc/sys/kernel/random/uuid; }
+uuid() { node -e "console.log(require('node:crypto').randomUUID())"; }
 as_user() { printf "set role authenticated; set request.jwt.claim.sub = '%s';" "$1"; }
 q() { psql -X -At -d $DB -c "$1"; }
-run() { psql -X -q -At -d $DB -c "$(as_user "$1") $2" 2>&1 | tr -d '\n'; echo; }
+run() { psql -X -q -At -d $DB -c "$(as_user "$1") $2" 2>&1 | tr -d '\r\n'; echo; }
 check() { if [ "$2" = "$3" ]; then echo "ok   $1"; else echo "FAIL $1"; echo "       got:  $2"; echo "       want: $3"; FAIL=$((FAIL+1)); fi; }
 
 run $U1 "select public.lyst_open('$M', 'simple');" >/dev/null

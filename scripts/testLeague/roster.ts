@@ -48,7 +48,7 @@ function joinDateFor(name: string, year: number, late2024: boolean): string {
 }
 
 export function parseRoster(path = process.env.NACL_ROSTER ?? 'scripts/testLeague/roster.md'): { teams: TeamDef[]; fighters: FighterDef[] } {
-  const lines = readFileSync(path, 'utf8').split('\n');
+  const lines = readFileSync(path, 'utf8').split(/\r?\n/);
   const teams: TeamDef[] = [];
   const fighters: FighterDef[] = [];
   for (const line of lines) {

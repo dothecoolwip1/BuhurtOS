@@ -71,6 +71,23 @@ export const confirmRoundArgs = (c: ConfirmRoundArgs) => ({
 });
 export const confirmRound = (c: ConfirmRoundArgs) => rpc<{ status: 'ok' | 'duplicate' | 'stale'; kind?: string }>('lyst_confirm_round', confirmRoundArgs(c));
 
+/** The latest round goes back to the counters: it runs again, their taps stay, their "done" marks reset. A confirmed round needs a reason. */
+export interface ReturnRoundArgs { command: string; matchId: string; round: number; expectedRev: number; reason?: string | null }
+export const returnRoundArgs = (c: ReturnRoundArgs) => ({ p_command: c.command, p_match: c.matchId, p_round: c.round, p_expected_rev: c.expectedRev, p_reason: c.reason ?? null });
+export const returnRound = (c: ReturnRoundArgs) =>
+  rpc<{ status: 'ok' | 'duplicate' | 'stale' | 'unchanged'; round?: LystRound; submissions_reset?: number }>('lyst_return_round', returnRoundArgs(c));
+
+/** One fight on the secretary's board: names only. */
+export interface BoardFight { match_id: string; a: string | null; b: string | null; competition: string | null; round_label: string | null; stage: string; queue_state: string; version: number; field_key: string; lyst_open: boolean }
+export interface SecretaryBoard {
+  event_id: string;
+  fields: { key: string; label: string; now: BoardFight | null; on_deck: BoardFight | null; in_the_hole: BoardFight | null }[];
+  /** What the viewer may do; the server checks every call regardless. */
+  viewer: { secretary_only: boolean; organizer: boolean; operator: boolean; command: boolean; adjust_queue: boolean; announce: boolean; resolve_results: boolean; camera_off: boolean };
+  server_now: string;
+}
+export const fetchSecretaryBoard = (eventId: string, field: string | null = null) => rpc<SecretaryBoard>('secretary_board', { p_event: eventId, p_field: field });
+
 export interface DisciplineArgs { command: string; matchId: string; round: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq'; label?: string | null; amount?: number; reason?: string | null; calledBy?: string | null; related?: string | null }
 export const disciplineArgs = (d: DisciplineArgs) => ({
   p_command: d.command, p_match: d.matchId, p_round: d.round, p_side: d.side, p_kind: d.kind, p_label: d.label ?? null, p_amount: d.amount ?? 0, p_reason: d.reason ?? null, p_called_by: d.calledBy ?? null, p_related: d.related ?? null

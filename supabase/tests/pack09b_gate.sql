@@ -95,7 +95,10 @@ select t.expect_eq('a long phase is truncated, not refused', t.report(1, 'd2', 3
 select t.as_admin();
 select t.expect_eq('... to 80 characters', (select char_length(phase) from public.match_live_scores where match_id = t.m(1)), 80);
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
-select t.expect_eq('a snapshot can be reported for a match that is on deck or waiting too (the board may be opened early)', t.report(2, 'd1', 1, 0, 0, 'Round 1'), 'ok');
+select t.expect_eq('a snapshot can be reported for a match that is on deck too (the board may be opened early)', t.report(2, 'd1', 1, 0, 0, 'Round 1'), 'ok');
+select t.expect_error('... but not by the scorekeeper for a fight that was never called (secretary boundary)', $q$select t.report(3, 'd1', 1, 0, 0, 'Round 2')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_eq('the organizer may report on a waiting fight', t.report(3, 'd1', 1, 0, 0, 'Round 2'), 'ok');
 
 -- ================================================================ 3. who may read: the same rule as the match
 select t.as_anon();
@@ -119,6 +122,8 @@ select t.as_admin();
 select t.expect_eq('the live score is gone the moment the match is final', t.score(1), 'none');
 select t.expect_eq('the official result is exactly what was submitted, untouched by the live score', (select result || score_a || '-' || score_b from public.matches where id = t.m(1)), 'a5-3');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a final match has left the scorekeeper''s board: refused (secretary boundary)', $q$select t.report(1, 'd1', 9, 1, 1)$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_eq('reporting on a final match is refused softly, nothing written', t.report(1, 'd1', 9, 1, 1), 'final');
 select t.as_admin();
 select t.expect_eq('... still nothing', t.score(1), 'none');
@@ -126,6 +131,8 @@ select t.expect_eq('... still nothing', t.score(1), 'none');
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_ok('match 2 is called (active)', $q$select public.set_match_queue(t.m(2), 'active')$q$);
 select t.expect_eq('... and gets a live score', t.report(2, 'd1', 5, 1, 0, 'Round 1'), 'ok');
+select t.expect_error('the scorekeeper cannot send it back to the line (secretary boundary)', $q$select public.set_match_queue(t.m(2), 'scheduled')$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_ok('the organizer sends it back to the line', $q$select public.set_match_queue(t.m(2), 'scheduled')$q$);
 select t.as_admin();
 select t.expect_eq('the live score of a match sent back is dropped', t.score(2), 'none');

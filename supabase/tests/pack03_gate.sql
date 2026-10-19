@@ -35,7 +35,9 @@ grant execute on all functions in schema t to anon, authenticated;
 grant all on t.log to anon, authenticated;
 grant usage on all sequences in schema t to anon, authenticated;
 
--- a1 owner; a2 organizer E1; a3 head marshal E1; a4 scorekeeper E1 (device A); a5 scorekeeper E1 (device B); a6 scorekeeper of E2; a7 stranger
+-- a1 owner; a2 organizer E1; a3 head marshal E1; a4 scorekeeper E1 (device A); a5 marshal E1 (device B); a6 scorekeeper of E2; a7 stranger
+-- Secretary boundary (20261022000100): a scorekeeper scores only called fights (on now, on deck, in the hole), so the organizer calls them first; device B
+-- is a marshal's phone, because a late result for a fight that is already final reaches a marshal as a conflict, while a scorekeeper is refused.
 insert into auth.users (id, email) select ('00000000-0000-0000-0000-0000000000a' || n)::uuid, 'u' || n || '@example.test' from generate_series(1, 7) n;
 insert into public.platform_roles (user_id, role) values ('00000000-0000-0000-0000-0000000000a1', 'owner');
 insert into public.events (id, slug, name, status, starts_on, ends_on) values
@@ -45,7 +47,7 @@ insert into public.event_staff (event_id, user_id, role) values
   ('00000000-0000-0000-0000-00000000e101', '00000000-0000-0000-0000-0000000000a2', 'organizer'),
   ('00000000-0000-0000-0000-00000000e101', '00000000-0000-0000-0000-0000000000a3', 'head_marshal'),
   ('00000000-0000-0000-0000-00000000e101', '00000000-0000-0000-0000-0000000000a4', 'scorekeeper'),
-  ('00000000-0000-0000-0000-00000000e101', '00000000-0000-0000-0000-0000000000a5', 'scorekeeper'),
+  ('00000000-0000-0000-0000-00000000e101', '00000000-0000-0000-0000-0000000000a5', 'marshal'),
   ('00000000-0000-0000-0000-00000000e102', '00000000-0000-0000-0000-0000000000a6', 'scorekeeper');
 insert into public.teams (id, slug, name, status, city, country) select ('00000000-0000-0000-0000-00000000c1' || lpad(n::text, 2, '0'))::uuid, 'team-' || n, 'Team ' || n, 'approved', 'Red Deer', 'CA' from generate_series(1, 4) n;
 insert into public.competitions (id, event_id, name, category, gender, tier, structure) values
@@ -77,6 +79,12 @@ select t.expect_eq('a scorekeeper cannot resolve results', private.can_resolve_r
 
 -- ================================================================ idempotent finalization
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a scorekeeper cannot finalize a fight that was never called', $q$select public.submit_match_result(t.cmd(97), t.m(1), 'a', 5, 3, '{}'::jsonb, t.ver(1), 1)$q$, '42501');
+select t.as_admin();
+select t.expect_eq('... the refusal left no proposal row', (select count(*) from public.result_proposals where id = t.cmd(97)), 0::bigint);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('the organizer calls match 1 on now, 2 on deck, 3 in the hole', $q$select public.set_match_queue(t.m(1), 'active'); select public.set_match_queue(t.m(2), 'on_deck'); select public.set_match_queue(t.m(3), 'in_the_hole')$q$);
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('device A finalizes match 1', public.submit_match_result(t.cmd(1), t.m(1), 'a', 5, 3, '{}'::jsonb, t.ver(1), 1) ->> 'status', 'accepted');
 select t.expect_eq('the same command again is a repeat, not a second result', public.submit_match_result(t.cmd(1), t.m(1), 'a', 5, 3, '{}'::jsonb, 0, 1) ->> 'status', 'accepted');
 select t.expect_eq('... flagged as repeat', (public.submit_match_result(t.cmd(1), t.m(1), 'a', 5, 3, '{}'::jsonb, 0, 1) ->> 'repeat')::boolean, true);
@@ -106,10 +114,12 @@ select t.expect_ok('an entrant of match 2 is replaced after device A opened it (
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('a stale command is refused safely (status stale, not applied)', public.submit_match_result(t.cmd(2), t.m(2), 'a', 5, 3, '{}'::jsonb, 0, 1) ->> 'status', 'stale');
 select t.as_admin();
-select t.expect_eq('match 2 is untouched', (select queue_state from public.matches where id = t.m(2)), 'scheduled');
+select t.expect_eq('match 2 is untouched', (select queue_state || '/' || coalesce(result, 'none') from public.matches where id = t.m(2)), 'on_deck/none');
 select t.expect_eq('the stale proposal is kept as evidence', (select status from public.result_proposals where id = t.cmd(2)), 'stale');
 
 -- ================================================================ two devices disagree
+select t.as_user('00000000-0000-0000-0000-0000000000a4');
+select t.expect_error('a scorekeeper''s late result for a fight that is already final is refused (it left the board)', $q$select public.submit_match_result(t.cmd(98), t.m(1), 'b', 3, 5, '{}'::jsonb, 0, 1)$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
 select t.expect_eq('device B sends the SAME result: no conflict', public.submit_match_result(t.cmd(3), t.m(1), 'a', 5, 3, '{}'::jsonb, 0, 1) ->> 'status', 'duplicate');
 select t.expect_eq('device B sends a DIFFERENT result: kept as a conflict, never applied', public.submit_match_result(t.cmd(4), t.m(1), 'b', 3, 5, '{"sheet":"B"}'::jsonb, 0, 1) ->> 'status', 'conflict');
@@ -118,8 +128,8 @@ select t.expect_eq('the official result is still device A''s (no last-write-wins
 select t.expect_eq('device B''s evidence is preserved with the official result it lost to', (select (official_before ->> 'result') || '/' || result || '/' || (detail ->> 'sheet') from public.result_proposals where id = t.cmd(4)), 'a/b/B');
 select t.expect_eq('the conflict was audited', (select count(*) from public.audit_log where action = 'result.conflict' and subject = t.m(1)::text), 1::bigint);
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
-select t.expect_error('a scorekeeper cannot list conflicts', $q$select * from public.list_result_conflicts('00000000-0000-0000-0000-00000000e101')$q$, '42501');
-select t.expect_error('a scorekeeper cannot resolve a conflict', $q$select public.resolve_result_conflict(t.cmd(4), 'use_proposal', 'my result is right')$q$, '42501');
+select t.expect_error('a marshal cannot list conflicts', $q$select * from public.list_result_conflicts('00000000-0000-0000-0000-00000000e101')$q$, '42501');
+select t.expect_error('a marshal cannot resolve a conflict', $q$select public.resolve_result_conflict(t.cmd(4), 'use_proposal', 'my result is right')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a6');
 select t.expect_error('another event''s scorekeeper cannot list them either', $q$select * from public.list_result_conflicts('00000000-0000-0000-0000-00000000e101')$q$, '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a3');
@@ -165,6 +175,8 @@ select t.expect_eq('the new official result stands', (select result from public.
 select t.expect_eq('the replaced value is kept in the audit trail', (select details -> 'replaced' ->> 'result' from public.audit_log where action = 'result.paper_entered' and details ->> 'result' = 'b' and subject = t.m(4)::text), 'a');
 select t.expect_eq('both reopen and re-finalize were audited by the normal path', (select count(*) from public.audit_log where action in ('match.reopened', 'match.finalized') and subject = t.m(4)::text), 3::bigint);
 -- paper entry into a competition that was already finished supersedes its results (Pack 02), never deletes them silently
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('the organizer calls matches 5 and 6', $q$select public.set_match_queue(t.m(5), 'active'); select public.set_match_queue(t.m(6), 'on_deck')$q$);
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_eq('A finalizes the remaining matches (5 and 6) so the competition can finish', public.submit_match_result(t.cmd(7), t.m(5), 'a', 5, 1, '{}'::jsonb, t.ver(5), 1) ->> 'status', 'accepted');
 select t.expect_eq('... 6', public.submit_match_result(t.cmd(8), t.m(6), 'a', 5, 1, '{}'::jsonb, t.ver(6), 1) ->> 'status', 'accepted');

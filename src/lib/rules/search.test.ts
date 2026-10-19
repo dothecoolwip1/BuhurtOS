@@ -95,6 +95,13 @@ describe('text helpers', () => {
     for (let i = 0; i < 5; i++) searchRules(many, 'back of knee');
     expect((performance.now() - t0) / 5).toBeLessThan(200);
   });
+  it('refreshes cached text after a rule is corrected', () => {
+    const rule = { ...R[0], title: 'uniqueamber', body: 'uniqueamber', keywords: [], path: [], document: '' };
+    expect(searchRules([rule], 'uniqueamber').hits).toHaveLength(1);
+    rule.title = 'uniquecobalt'; rule.body = 'uniquecobalt';
+    expect(searchRules([rule], 'uniqueamber').hits).toHaveLength(0);
+    expect(searchRules([rule], 'uniquecobalt').hits).toHaveLength(1);
+  });
 });
 
 describe('the questions people ask at the side of the list (Pack 22 import)', () => {

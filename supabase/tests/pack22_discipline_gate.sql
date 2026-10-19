@@ -332,7 +332,9 @@ select t.as_user(t.u(13));
 select t.expect_error('a stranger cannot read the discipline desk', $$select public.event_discipline_overview(t.ev(1))$$, '42501');
 select t.expect_error('nor anyone''s eligibility', $$select * from public.discipline_eligibility(t.ev(1), t.f(1))$$, '42501');
 select t.as_user(t.u(3));
-select t.expect_eq('the scorekeeper reads the desk but may not sanction, suspend or decide',
+select t.expect_error('the secretary cannot read the event-wide discipline desk', $$select public.event_discipline_overview(t.ev(1))$$, '42501');
+select t.as_user(t.u(6));
+select t.expect_eq('the marshal reads the desk but may not sanction, suspend or decide',
   (select (o -> 'can' ->> 'sanction') || (o -> 'can' ->> 'suspend') || (o -> 'can' ->> 'decide_appeal') || (o -> 'can' ->> 'lodge_appeal') from public.event_discipline_overview(t.ev(1)) o), 'falsefalsefalsetrue');
 select t.expect_eq('card tallies are facts by concept, voided cards excluded (green 1 for Fighter 3, Fighter 1''s yellow voided)',
   (select string_agg((x ->> 'against') || ':' || (x -> 'cards')::text, ' ') from jsonb_array_elements(public.event_discipline_overview(t.ev(1)) -> 'tallies') x), 'D Fighter 3:{"green_card": 1}');

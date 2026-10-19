@@ -86,6 +86,16 @@ export function numberQuery(q: string): string | null {
 
 interface Prepared { phrase: string; stems: Set<string>; text: string }
 const prep = (s: string): Prepared => { const n = normalize(s); return { phrase: ` ${n} `, stems: new Set(n.split(' ').filter(Boolean).map(stem)), text: n }; };
+// Rules are reused while a person types. Reuse their normalized search fields, but refresh when any source text changes.
+const preparedRules = new WeakMap<SearchableRule, { source: string[]; fields: Prepared[] }>();
+function prepareRule(it: SearchableRule): Prepared[] {
+  const source = [it.title ?? '', (it.keywords ?? []).join(' · '), [...(it.path ?? []), it.document ?? ''].join(' · '), it.body];
+  const cached = preparedRules.get(it);
+  if (cached && source.every((s, i) => cached.source[i] === s)) return cached.fields;
+  const fields = source.map(prep);
+  preparedRules.set(it, { source, fields });
+  return fields;
+}
 
 /** The query as groups of alternatives: each group must be found. Synonym phrases are matched before single words. */
 export function queryGroups(q: string): { label: string; alts: string[] }[] {
@@ -105,7 +115,7 @@ export function queryGroups(q: string): { label: string; alts: string[] }[] {
   return groups;
 }
 
-const altFound = (alt: string, p: Prepared) => (alt.includes(' ') ? p.phrase.includes(` ${alt} `) : p.stems.has(stem(alt)) || (alt.length >= 4 && p.text.includes(alt)));
+const altFound = (alt: string, p: Prepared, word: string) => (alt.includes(' ') ? p.phrase.includes(` ${alt} `) : p.stems.has(word) || (alt.length >= 4 && p.text.includes(alt)));
 
 /** About 160 characters of the text around the first match, on word boundaries. */
 export function snippet(body: string, matched: string[], size = 160): string {
@@ -134,19 +144,17 @@ export function searchRules<T extends SearchableRule>(items: readonly T[], q: st
   }
   const groups = queryGroups(query);
   if (!groups.length) return { hits: [], partial: false, numberQuery: nq };
+  const alternatives = groups.map(g => ({ label: g.label, alts: g.alts.map(alt => ({ alt, word: stem(alt) })) }));
   const phraseQ = normalize(query);
   const scored: SearchHit<T>[] = [];
   for (const it of items) {
-    const title = prep(it.title ?? '');
-    const kw = prep((it.keywords ?? []).join(' · '));
-    const path = prep([...(it.path ?? []), it.document ?? ''].join(' · '));
-    const body = prep(it.body);
+    const [title, kw, path, body] = prepareRule(it);
     let score = 0; let found = 0; const matched: string[] = [];
-    for (const g of groups) {
+    for (const g of alternatives) {
       let best = 0; let hit: string | null = null;
-      for (const alt of g.alts) {
+      for (const { alt, word } of g.alts) {
         const direct = alt === g.label ? 1 : 0.7;   // a synonym counts a little less than the word typed
-        const s = (altFound(alt, title) ? 12 : 0) + (altFound(alt, kw) ? 9 : 0) + (altFound(alt, path) ? 4 : 0) + (altFound(alt, body) ? 3 : 0);
+        const s = (altFound(alt, title, word) ? 12 : 0) + (altFound(alt, kw, word) ? 9 : 0) + (altFound(alt, path, word) ? 4 : 0) + (altFound(alt, body, word) ? 3 : 0);
         if (s * direct > best) { best = s * direct; hit = alt; }
       }
       if (best > 0) { found++; score += best; if (hit) matched.push(hit); }
@@ -157,14 +165,14 @@ export function searchRules<T extends SearchableRule>(items: readonly T[], q: st
       else if (body.phrase.includes(` ${phraseQ} `)) score += 15;
     }
     if (it.number && nq && it.number === nq) score += 50;
-    scored.push({ item: it, score, exact: found === groups.length, snippet: snippet(it.body, matched), matched });
+    scored.push({ item: it, score, exact: found === groups.length, snippet: '', matched });
   }
   const all = scored.filter(h => h.exact);
   const partial = all.length === 0;
   const need = Math.max(1, Math.ceil(groups.length / 2));
   const list = (partial ? scored.filter(h => h.matched.length >= need) : all)
     .sort((a, b) => b.score - a.score || cmpNumber(a.item.number ?? '', b.item.number ?? '') || (a.item.title ?? '').localeCompare(b.item.title ?? ''));
-  return { hits: list.slice(0, limit), partial: partial && list.length > 0, numberQuery: nq };
+  return { hits: list.slice(0, limit).map(h => ({ ...h, snippet: snippet(h.item.body, h.matched) })), partial: partial && list.length > 0, numberQuery: nq };
 }
 
 /** "2.10" after "2.9"; null numbers last. */

@@ -32,11 +32,12 @@ select t.expect_eq('can_score (scoring, timer, calling fights): organizer, head 
   t.truthset('can_score'), 'admin_dev,head_marshal,marshal_dev,marshal_staff,organizer,owner,scorekeeper_staff,secretary_dev');
 select t.expect_eq('can_resolve_results (conflicts, paper results, overrides): head marshal, organizer, owner, Temporary Organizer; NOT the secretary or marshal',
   t.truthset('can_resolve_results'), 'admin_dev,head_marshal,organizer,owner');
-select t.expect_eq('can_command (Command Centre, read only): organizer, head marshal, SCOREKEEPER (the secretary), owner, Temporary Organizer; not marshal',
-  t.truthset('can_command'), 'admin_dev,head_marshal,organizer,owner,scorekeeper_staff,secretary_dev');
-select t.expect_eq('can_adjust_queue: organizer, SCOREKEEPER (the secretary), owner, Temporary Organizer; not the head marshal, marshal or announcer',
-  t.truthset('can_adjust_queue'), 'admin_dev,organizer,owner,scorekeeper_staff,secretary_dev');
-select t.expect_eq('can_announce: organizer, SCOREKEEPER (the secretary), owner, Temporary Organizer', t.truthset('can_announce'), 'admin_dev,organizer,owner,scorekeeper_staff,secretary_dev');
+-- secretary boundary (20261022000100): the secretary no longer has the Command Centre, the running order or announcements
+select t.expect_eq('can_command (Command Centre, read only): organizer, head marshal, owner, Temporary Organizer; not the secretary or marshal',
+  t.truthset('can_command'), 'admin_dev,head_marshal,organizer,owner');
+select t.expect_eq('can_adjust_queue: organizer, owner, Temporary Organizer; not the secretary, head marshal, marshal or announcer',
+  t.truthset('can_adjust_queue'), 'admin_dev,organizer,owner');
+select t.expect_eq('can_announce: organizer, owner, Temporary Organizer; not the secretary', t.truthset('can_announce'), 'admin_dev,organizer,owner');
 select t.expect_eq('can_camera_off_activate: marshal, head marshal, scorekeeper, announcer, Temporary Organizer, organizer, owner; NOT counter, fighter, check-in, inspector, medic, stranger',
   t.truthset('can_camera_off_activate'), 'admin_dev,announcer_dev,announcer_staff,head_marshal,marshal_dev,marshal_staff,organizer,owner,scorekeeper_staff,secretary_dev');
 select t.expect_eq('can_camera_off_release: head marshal, Temporary Organizer, organizer, owner ONLY (marshal, secretary and announcer protect but cannot restore)',
@@ -83,14 +84,19 @@ select t.as_admin();
 select t.expect_eq('... and nothing of Event 1 was touched by it', (select count(*) from public.lyst_counter_seats where event_id = t.ev(1)), 1::bigint);
 select t.as_device(t.sid('secretary'));
 select t.expect_error('a Secretary device is not a counter: it cannot bind as one', $$select public.counter_bind('Field 1', 'a', 'Sec')$$, '42501');
-select t.expect_eq('the Secretary / Scorekeeper shows the Counter QR state (none yet) and may create one: whoever runs the day may (Pack 26)', (public.counter_pool_code(t.ev(1)) ->> 'can_create'), 'true');
+select t.expect_error('the Secretary / Scorekeeper does not handle the Counter QR (secretary boundary)', format($$select public.counter_pool_code(%L)$$, t.ev(1)), '42501');
+select t.expect_error('... nor moves a fight''s time (secretary boundary)', format($$select public.set_match_schedule(%L, '2026-10-10 20:00:00+00', null, null)$$, t.m(2)), '42501');
+select t.as_device(t.sid('admin'));
+select t.expect_eq('the Event Admin device shows the Counter QR state (none yet) and may create one (Pack 26)', (public.counter_pool_code(t.ev(1)) ->> 'can_create'), 'true');
 select t.expect_eq('... and moves a waiting fight to a time, keeping its Lyst and length (Pack 26: set_match_schedule)',
   (public.set_match_schedule(t.m(2), '2026-10-10 20:00:00+00', (select field from public.matches where id = t.m(2)), null) ->> 'scheduled_at') is not null
   and (select duration_minutes from public.matches where id = t.m(2)) between 1 and 720, true);
 select t.as_admin();
 select t.expect_eq('... the move is audited with before and after', (select count(*) from public.audit_log where action = 'match.rescheduled' and subject = t.m(2)::text)::int, 1);
 select t.as_device(t.sid('secretary'));
-select t.expect_eq('... and may move Counter Phone 1 to blue (scoring authority)', public.move_counter_session(t.sid('counter1'), 'Field 1', 'b') -> 'binding' ->> 'side', 'b');
+select t.expect_error('the Secretary device cannot move a counter phone (secretary boundary)', format($$select public.move_counter_session(%L, 'Field 1', 'b')$$, t.sid('counter1')), '42501');
+select t.as_device(t.sid('admin'));
+select t.expect_eq('the Event Admin device may move Counter Phone 1 to blue (scoring authority)', public.move_counter_session(t.sid('counter1'), 'Field 1', 'b') -> 'binding' ->> 'side', 'b');
 select t.as_device(t.sid('counter1'));
 select t.expect_eq('... the phone sees the change at once', public.counter_state() -> 'binding' ->> 'side', 'b');
 select public.counter_bind('Field 1', 'a', 'Garrett');
@@ -103,7 +109,7 @@ select t.as_device(t.sid('counter2'));
 select t.expect_error('another Counter cannot count on Phone 1''s seat', format($$select public.counter_record(gen_random_uuid(), %L, 1, 1)$$, :'seat1'));
 select t.as_admin();
 select t.expect_eq('the audit shows the Marshal device by name', (select count(*) from public.audit_log where action = 'lyst.timer' and actor = t.sid('marshal') and details -> 'device' ->> 'label' = 'Marshal Phone' and details -> 'device' ->> 'role' = 'marshal')::int, 1);
-select t.expect_eq('... and the move names the Secretary device', (select count(*) from public.audit_log where action = 'counter.moved' and details -> 'device' ->> 'label' = 'Secretary Tablet')::int, 1);
+select t.expect_eq('... and the move names the Event Admin device', (select count(*) from public.audit_log where action = 'counter.moved' and details -> 'device' ->> 'label' = 'Event Admin Tablet')::int, 1);
 select t.expect_eq('no device or session id appears as an auth account anywhere', (select count(*) from auth.users where id in (select sid from t.s))::int, 0);
 
 -- the event's reusable Counter QR: whoever runs the day makes it (Pack 26): the Event Admin device too. What stays with the permanent organizer:
@@ -123,7 +129,9 @@ select t.expect_eq('a pool phone reads as a counter device of Event 1', (public.
 select t.expect_eq('... binds like any counter', (public.counter_bind('Field 1', 'b', 'Taylor') -> 'seat' ->> 'side'), 'b');
 select t.expect_error('... and has no more authority than that', format($$select public.lyst_open(%L)$$, t.m(1)), '42501');
 select t.as_device(t.sid('secretary'));
-select t.expect_eq('the Secretary device shows the Counter QR for its own event', public.counter_pool_code(t.ev(1)) ->> 'code', 'ABCDEFGH2345');
+select t.expect_error('the Secretary device does not show the Counter QR (secretary boundary)', format($$select public.counter_pool_code(%L)$$, t.ev(1)), '42501');
+select t.as_device(t.sid('marshal'));
+select t.expect_eq('the Marshal device shows the Counter QR for its own event', public.counter_pool_code(t.ev(1)) ->> 'code', 'ABCDEFGH2345');
 select t.as_device(t.sid('e2marshal'));
 select t.expect_error('an Event 2 marshal device cannot show Event 1''s Counter QR', format($$select public.counter_pool_code(%L)$$, t.ev(1)), '42501');
 select t.as_device(t.sid('admin'));
@@ -156,10 +164,16 @@ update public.events set starts_on = current_date, ends_on = current_date where 
 
 -- ---------------------------------------------------------------- the queue (the existing line only)
 select t.as_device(t.sid('secretary'));
-select t.expect_ok_undo('the Secretary / Scorekeeper may call a fight', format($$select public.set_match_queue(%L, 'on_deck', null)$$, t.m(2)));
-select t.expect_ok_undo('... reorder the line', format($$select public.move_match_in_queue(%L, 'first')$$, t.m(2)));
-select t.expect_ok_undo('... save a plan', format($$select public.save_queue_plan(%L, array[%L]::uuid[], '{}')$$, t.ev(1), t.m(2)));
-select t.expect_ok_undo('... clear the hand-made order', format($$select public.clear_manual_queue(%L, 'Field 1')$$, t.ev(1)));
+-- secretary boundary: the secretary starts a fight already on the board; calling a waiting one and every running-order change are the organizer's
+select t.expect_error('the Secretary / Scorekeeper cannot call a waiting fight', format($$select public.set_match_queue(%L, 'on_deck', null)$$, t.m(2)), '42501');
+select t.expect_error('... reorder the line', format($$select public.move_match_in_queue(%L, 'first')$$, t.m(2)), '42501');
+select t.expect_error('... save a plan', format($$select public.save_queue_plan(%L, array[%L]::uuid[], '{}')$$, t.ev(1), t.m(2)), '42501');
+select t.expect_error('... clear the hand-made order', format($$select public.clear_manual_queue(%L, 'Field 1')$$, t.ev(1)), '42501');
+select t.expect_error('... or save a field lineup', format($$select public.save_field_lineup(%L, 'Field 1', array[]::uuid[], '{}'::jsonb)$$, t.ev(1)), '42501');
+select t.as_device(t.sid('admin'));
+select t.expect_ok_undo('the Temporary Organizer saves a plan', format($$select public.save_queue_plan(%L, array[%L]::uuid[], '{}')$$, t.ev(1), t.m(2)));
+select t.expect_ok_undo('... and clears the hand-made order', format($$select public.clear_manual_queue(%L, 'Field 1')$$, t.ev(1)));
+select t.as_device(t.sid('secretary'));
 select t.expect_error('... but not build a schedule', format($$select public.build_schedule(%L, '[]'::jsonb, 'new', null)$$, t.ev(1)), '42501');
 select t.as_device(t.sid('admin'));
 select t.expect_ok_undo('the Temporary Organizer may reorder the line', format($$select public.move_match_in_queue(%L, 'first')$$, t.m(2)));
@@ -186,13 +200,13 @@ select t.expect_error('... set Lyst settings', format($$select public.set_lyst_s
 
 -- ---------------------------------------------------------------- announcements (Pack 15): organizer, secretary, Temporary Organizer
 select t.as_device(t.sid('secretary'));
-select t.expect_eq('the Secretary / Scorekeeper sends an announcement', (select (public.send_event_announcement(t.ev(1), 'Lunch ends at 1:15 PM.') ->> 'id') is not null), true);
-select t.expect_error('... but cannot read the history', format($$select * from public.list_event_announcements(%L)$$, t.ev(1)), '42501');
+select t.expect_error('the Secretary / Scorekeeper cannot send an announcement (secretary boundary)', format($$select public.send_event_announcement(%L, 'Lunch ends at 1:15 PM.')$$, t.ev(1)), '42501');
+select t.expect_error('... nor read the history', format($$select * from public.list_event_announcements(%L)$$, t.ev(1)), '42501');
 select t.as_device(t.sid('marshal'));
 select t.expect_error('a Marshal device cannot announce', format($$select public.send_event_announcement(%L, 'Hello there everyone.')$$, t.ev(1)), '42501');
 select t.as_device(t.sid('admin'));
 select t.expect_eq('the Temporary Organizer announces too', (select (public.send_event_announcement(t.ev(1), 'Finals start at 4 PM.') ->> 'id') is not null), true);
-select t.expect_eq('... and reads the history, with the DEVICE named as the sender', (select string_agg(sent_by_name, ',' order by sent_by_name) from public.list_event_announcements(t.ev(1))), 'Event Admin Tablet,Secretary Tablet');
+select t.expect_eq('... and reads the history, with the DEVICE named as the sender', (select string_agg(sent_by_name, ',' order by sent_by_name) from public.list_event_announcements(t.ev(1))), 'Event Admin Tablet');
 select t.as_admin();
 select t.expect_eq('a device-sent announcement has no auth user behind it', (select count(*) from public.event_announcements where sent_by is not null and sent_by_label is not null)::int, 0);
 select t.as_device(t.sid('e2marshal'));
@@ -226,12 +240,15 @@ select t.expect_eq('... the names listing has no email column', pg_get_function_
 select t.expect_eq('... and shows nobody''s email', (select count(*) from public.list_event_staff_names(t.ev(1)) where name like '%@%')::int, 0);
 select t.expect_error('... cannot touch another event''s staff', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(2)), '42501');
 select t.as_device(t.sid('secretary'));
-select t.expect_ok_undo('the Secretary device adds a scorekeeper: whoever runs the day may add staff (Pack 26)', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(1)));
-select t.expect_error('... but cannot make anyone an ORGANIZER', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'organizer')$$, t.ev(1)), '42501');
+select t.expect_error('the Secretary device cannot add staff (secretary boundary)', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(1)), '42501');
+select t.expect_error('... cannot make anyone an ORGANIZER', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'organizer')$$, t.ev(1)), '42501');
 select t.expect_error('... cannot remove the organizer', format($$select public.remove_event_role(%L, %L, 'organizer')$$, t.ev(1), t.u(1)), '42501');
-select t.expect_error('... cannot touch another event''s staff', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(2)), '42501');
-select t.expect_ok('... and sees the staff by name', format($$select * from public.list_event_staff_names(%L)$$, t.ev(1)));
+select t.expect_error('... cannot remove a marshal', format($$select public.remove_event_role(%L, %L, 'marshal')$$, t.ev(1), t.u(3)), '42501');
+select t.expect_error('... does not see the staff by name', format($$select * from public.list_event_staff_names(%L)$$, t.ev(1)), '42501');
 select t.expect_error('... never with emails (those stay with the permanent organizer)', format($$select * from public.list_event_staff(%L)$$, t.ev(1)), '42501');
+select t.as_user(t.u(2));
+select t.expect_ok_undo('the head marshal still adds a scorekeeper (Pack 26)', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'scorekeeper')$$, t.ev(1)));
+select t.expect_ok('... and sees the staff by name', format($$select * from public.list_event_staff_names(%L)$$, t.ev(1)));
 select t.as_user(t.u(1));
 select t.expect_ok_undo('the permanent organizer still adds an organizer', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'organizer')$$, t.ev(1)));
 select t.expect_ok_undo('... and the new announcer role', format($$select public.grant_event_role_by_email(%L, 'p181u10@example.test', 'announcer')$$, t.ev(1)));
@@ -253,8 +270,9 @@ select t.expect_ok('... and clears it', $$select public.clear_readiness_override
 
 -- ---------------------------------------------------------------- Command Centre: read only, and what each viewer is told they may do
 select t.as_device(t.sid('secretary'));
-select t.expect_eq('the Secretary reads the Command Centre: may announce, may turn cameras off, may NOT release, is not an operator',
-  (select format('%s/%s/%s/%s/%s', v ->> 'organizer', v ->> 'announce', v ->> 'camera_off', v ->> 'camera_release', v ->> 'operator') from (select public.event_command_snapshot(t.ev(1)) -> 'viewer' v) x), 'false/true/true/false/false');
+select t.expect_error('the Secretary has no Command Centre (secretary boundary)', format($$select public.event_command_snapshot(%L)$$, t.ev(1)), '42501');
+select t.expect_eq('... its board says: may turn cameras off, may not announce, not an operator',
+  (select format('%s/%s/%s', v ->> 'camera_off', v ->> 'announce', v ->> 'operator') from (select public.secretary_board(t.ev(1)) -> 'viewer' v) x), 'true/false/false');
 select t.as_device(t.sid('admin'));
 select t.expect_eq('the Temporary Organizer: operator, may announce, activate and release, control the broadcast',
   (select format('%s/%s/%s/%s/%s/%s', v ->> 'organizer', v ->> 'announce', v ->> 'camera_off', v ->> 'camera_release', v ->> 'operator', v ->> 'broadcast') from (select public.event_command_snapshot(t.ev(1)) -> 'viewer' v) x), 'false/true/true/true/true/true');

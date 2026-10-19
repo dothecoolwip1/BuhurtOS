@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Chip } from '../ui';
-import type { CompetitionMatch } from '../../data/matches';
+import type { CompetitionEntry, CompetitionMatch } from '../../data/matches';
+import { FieldLineupEditor } from './FieldLineupEditor';
 import type { QueueMove } from '../../data/eventDay';
 import { matchContext, type FieldBoard, type AdvancePlan, fieldLabel } from '../../lib/eventDay';
 import { boardAnchor } from '../../lib/commandCentre';
@@ -20,6 +21,7 @@ interface Ctx {
   slug: string; eventId: string; timeZone: string; competitionNames: ReadonlyMap<string, string>; actions: BoardActions;
   /** After a fight was moved to another Lyst or time (Pack 26): the boards re-read. */
   onChanged: () => void;
+  editor?: { entries: readonly CompetitionEntry[]; open: boolean; onOpen: () => void; onClose: () => void };
 }
 
 const TBD = 'To be decided';
@@ -82,6 +84,8 @@ export function FieldBoardView({ board, plan, c, next }: { board: FieldBoard; pl
   return (
     <section className="ed-field" id={boardAnchor(board.key)} aria-label={fieldLabel(board.name)} style={{ scrollMarginTop: 72 }}>
       <h2 className="ed-field-name">{fieldLabel(board.name)}<span className="ed-count">{board.done} of {board.total} fights done</span></h2>
+      {c.editor && <button type="button" className="btn btn-line" disabled={actions.busy && !c.editor.open} onClick={c.editor.open ? c.editor.onClose : c.editor.onOpen}>{c.editor.open ? 'Close editor' : 'Edit lineup / order'}</button>}
+      {c.editor?.open && <FieldLineupEditor eventId={c.eventId} field={board.name} matches={[...board.onDeck, ...board.inTheHole, ...board.upcoming, ...board.waiting.map(w => w.match)]} entries={c.editor.entries} onClose={c.editor.onClose} onChanged={c.onChanged} />}
 
       {board.now.length > 0 ? board.now.map(m => (
         <article key={m.id} className="ed-now panel" aria-label={`Now on ${fieldLabel(board.name)}`}>

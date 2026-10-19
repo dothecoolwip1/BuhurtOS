@@ -107,6 +107,10 @@ select t.as_device(t.sid('marshal'));
 select public.lyst_open(t.m(2), 'simple');
 select public.lyst_timer_command(t.ev(1), 'Field 1', t.m(2), 0, gen_random_uuid(), 'start', 'fight', 60000, 1, 0);
 select t.as_device(t.sid('secretary'));
+select t.expect_error('the secretary cannot start a fight that was never called (secretary boundary)', format($$select public.set_match_queue(%L, 'active', null)$$, t.m(3)), '42501');
+select t.as_user(t.u(1));
+select public.set_match_queue(t.m(3), 'on_deck', null);
+select t.as_device(t.sid('secretary'));
 select public.set_match_queue(t.m(3), 'active', null);
 select t.as_admin();
 update public.matches set queue_state = 'final', result = 'a', score_a = 3, score_b = 1, finalized_at = now() where id = t.m(2);
@@ -199,7 +203,9 @@ select t.expect_eq('broadcast control left the tournament untouched (no score, t
 
 -- the Command Centre panel read: the control room's people, not everyone
 select t.as_device(t.sid('secretary'));
-select t.expect_eq('the Secretary reads the broadcast state (Command Centre): may NOT control it', (select (public.broadcast_control_state(t.ev(1)) ->> 'can_control')), 'false');
+select t.expect_error('the Secretary has no Command Centre, so no broadcast state (secretary boundary)', format($$select public.broadcast_control_state(%L)$$, t.ev(1)), '42501');
+select t.as_user(t.u(2));
+select t.expect_eq('the head marshal reads the broadcast state (Command Centre): may NOT control it', (select (public.broadcast_control_state(t.ev(1)) ->> 'can_control')), 'false');
 select t.as_device(t.sid('admin'));
 select t.expect_eq('the Temporary Organizer reads it: may control it', (select (public.broadcast_control_state(t.ev(1)) ->> 'can_control')), 'true');
 select t.expect_eq('... and sees that a controller is set up', (select (public.broadcast_control_state(t.ev(1)) ->> 'controller_exists')), 'true');

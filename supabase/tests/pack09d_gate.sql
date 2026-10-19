@@ -119,7 +119,8 @@ insert into public.registrations (event_id, user_id, status, full_name, gender, 
   values (t.id('d9e2'), t.uid(7), 'pending', 'Stranger Danger', 'male', 'HACSA', 'hacsa_member', t.id('d9a9'), 'Stranger Danger');
 
 -- E1 is fought and made official by the organizer.
-select t.as_user(t.uid(4));
+select t.as_user(t.uid(2));
+select t.as_user(t.uid(2));
 select t.fin('r1', 'a', 5, 1), t.fin('r2', 'a', 5, 2), t.fin('r3', 'a', 5, 3);
 select t.as_user(t.uid(2));
 select t.expect_eq('E1 longsword finalized through Pack 09C', public.finalize_competition(t.id('d901')) ->> 'status', 'official');
@@ -313,7 +314,7 @@ select t.mkm('q1', t.id('d903'), 'round_robin', 'Round 1', 1, 'p1', 'p2'), t.mkm
 update public.matches set queue_state = 'active' where id = t.gu('m:q1');
 select t.put('ver', (select string_agg(version::text, ',' order by id) from public.matches where competition_id = t.id('d903')));
 select t.as_user(t.uid(4));
-select t.expect_ok_undo('a scorekeeper (the secretary) may save a plan (Pack 18.1)', $$select public.save_queue_plan(t.id('d9e3'), array[t.gu('m:q4')], '{}')$$);
+select t.expect_error('a secretary cannot save a running-order plan', $$select public.save_queue_plan(t.id('d9e3'), array[t.gu('m:q4')], '{}')$$, '42501');
 select t.as_anon();
 select t.expect_error('anon cannot save a plan', $$select public.save_queue_plan(t.id('d9e3'), array[t.gu('m:q4')], '{}')$$);
 select t.as_user(t.uid(3));
@@ -332,7 +333,9 @@ select t.expect_eq('on deck = the first planned fight (q4), the held fight q2 is
 select t.expect_eq('in the hole = the next planned fight (q3)', (select queue_state from public.matches where id = t.gu('m:q3')), 'in_the_hole');
 select t.expect_eq('the held fight waits', (select queue_state from public.matches where id = t.gu('m:q2')), 'scheduled');
 select t.as_user(t.uid(4));
-select t.expect_ok('an organizer or scorekeeper can still call the held fight by hand', $$select public.set_match_queue(t.gu('m:q2'), 'in_the_hole', null)$$);
+select t.expect_error('a secretary cannot call a held waiting fight by hand', $$select public.set_match_queue(t.gu('m:q2'), 'in_the_hole', null)$$, '42501');
+select t.as_user(t.uid(2));
+select t.expect_ok('an organizer can still call the held fight by hand', $$select public.set_match_queue(t.gu('m:q2'), 'in_the_hole', null)$$);
 select t.as_admin();
 update public.matches set queue_state = 'scheduled', plan_order = null, plan_hold = false where competition_id = t.id('d903') and queue_state <> 'active';
 -- manual order beats the plan
@@ -343,7 +346,7 @@ select t.as_admin();
 select t.expect_eq('hand-made order first, then the plan', (select string_agg(x::text, ',') from private.queue_ordered(t.id('d9e3'), 'field 1', array['scheduled']) x),
   concat_ws(',', t.gu('m:q2'), t.gu('m:q4'), t.gu('m:q3')));
 select t.as_user(t.uid(4));
-select t.expect_ok_undo('a scorekeeper (the secretary) may clear the hand-made order (Pack 18.1)', $$select public.clear_manual_queue(t.id('d9e3'), 'Field 1')$$);
+select t.expect_error('a secretary cannot clear the organizer''s hand-made order', $$select public.clear_manual_queue(t.id('d9e3'), 'Field 1')$$, '42501');
 select t.as_user(t.uid(2));
 select t.expect_eq('the organizer lets BuhurtOS plan the field again', (public.clear_manual_queue(t.id('d9e3'), 'Field 1') ->> 'changed')::int, 3);
 select t.as_admin();
@@ -379,6 +382,7 @@ select t.expect_eq('the final is not ready before the semifinals', t.runnable('m
 select t.expect_eq('a fight with an unknown side is never in the line', (select count(*) from private.queue_ordered(t.id('d9e3'), 'field 1', array['scheduled']) x where x in (t.gu('m:bs2'), t.gu('m:bf'), t.gu('m:bt')))::int, 0);
 select t.as_user(t.uid(4));
 select t.put('v:bq1', (select version::text from public.matches where id = t.gu('m:bq1')));
+select t.as_user(t.uid(2));
 select t.fin('bq1', 'a', 5, 2);
 select t.as_admin();
 select t.expect_eq('winner advances automatically into the semifinal slot', (select entry_b from public.matches where id = t.gu('m:bs2')), t.gu('e:b4'));
@@ -388,20 +392,23 @@ select t.expect_error('a stale result (old version) is refused and changes nothi
 select t.as_admin();
 select t.expect_eq('the stale result did not corrupt the bracket', (select entry_b from public.matches where id = t.gu('m:bs2')), t.gu('e:b4'));
 select t.expect_eq('no duplicate advancement: the winner sits in exactly one later slot', (select count(*) from public.matches where competition_id = t.id('d904') and t.gu('e:b4') in (entry_a, entry_b) and queue_state <> 'final')::int, 1);
-select t.as_user(t.uid(4));
+select t.as_user(t.uid(2));
+select t.as_user(t.uid(2));
 select t.fin('bs1', 'a', 5, 3);
 select t.as_admin();
 select t.expect_eq('semifinal winner goes to the final', (select entry_a from public.matches where id = t.gu('m:bf')), t.gu('e:b1'));
 select t.expect_eq('semifinal loser goes to the third-place fight', (select t.gu('e:b2') in (entry_a, entry_b) from public.matches where id = t.gu('m:bt')), true);
 select t.expect_eq('the final waits for the other semifinal', t.runnable('m:bf'), false);
-select t.as_user(t.uid(4));
+select t.as_user(t.uid(2));
+select t.as_user(t.uid(2));
 select t.fin('bs2', 'a', 5, 4);
 select t.as_admin();
 select t.expect_eq('both finalists known: the final is ready', t.runnable('m:bf'), true);
 select t.expect_eq('both third-place fighters known: ready', t.runnable('m:bt'), true);
 select t.as_user(t.uid(2));
 select t.expect_eq('bracket not complete yet: still running', public.competition_finalize_preflight(t.id('d904')) ->> 'state', 'running');
-select t.as_user(t.uid(4));
+select t.as_user(t.uid(2));
+select t.as_user(t.uid(2));
 select t.fin('bt', 'a', 5, 1), t.fin('bf', 'b', 2, 5);
 select t.as_user(t.uid(2));
 select t.expect_eq('every required fight done: the competition is ready for review by itself', public.competition_finalize_preflight(t.id('d904')) ->> 'state', 'ready');

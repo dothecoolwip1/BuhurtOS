@@ -63,6 +63,7 @@ function ScoreStrip({ names, scoreA, scoreB, phase, decided, unit }: { names: Re
 const UNIT: Record<BoardState['mode'], string> = { group: 'rounds', duel: 'points', pro: 'points', marathon: 'points', series: 'points' };
 
 export interface ScoringScreenProps {
+  secretary?: boolean;
   opened: Opened; eventId: string; userId: string; fieldName: string;
   /** The field's next fight once this one is official (the queue has advanced), so the scorer can go straight on. */
   nextFight: CompetitionMatch | null;
@@ -77,7 +78,7 @@ export interface ScoringScreenProps {
  * this screen only changes what they see: the sides and the score dominate, one status banner says exactly where the result stands, and when the
  * server confirms it the next fight is one tap away.
  */
-export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, onLyst }: ScoringScreenProps) {
+export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, onLyst, secretary = false }: ScoringScreenProps) {
   const { match, comp, version } = opened;
   const mode = boardModeFor(comp.league, comp.category);
   const { waiting, record, drain, rejected, discardRejected, retryRejected } = useOutbox({ eventId });
@@ -265,7 +266,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
         </div>
       )}
       {board.mode === 'group' && <GroupBoard state={board.s} onChange={s => change({ mode: 'group', s })} record={rec} names={names} />}
-      {board.mode === 'group' && <GroupCounterRounds matchId={match.id} eventId={eventId} fieldName={fieldName} board={board.s} />}
+      {board.mode === 'group' && <GroupCounterRounds matchId={match.id} eventId={eventId} fieldName={fieldName} board={board.s} secretary={secretary} names={names} />}
       {board.mode === 'duel' && <DuelBoard headless state={board.s} onChange={s => change({ mode: 'duel', s })} record={rec} names={names} />}
       {board.mode === 'pro' && <ProBoard headless state={board.s} onChange={s => change({ mode: 'pro', s })} record={rec} names={names} />}
       {board.mode === 'marathon' && <MarathonBoard headless state={board.s} onChange={s => change({ mode: 'marathon', s })} record={rec} names={names} stage={match.stage} />}

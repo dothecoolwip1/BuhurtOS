@@ -15,7 +15,8 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 const browser = await chromium.launch({ executablePath: process.env.CHROME ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--proxy-bypass-list=127.0.0.1;localhost'] });
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, serviceWorkers: 'block' });
 await ctx.addInitScript(() => { try { localStorage.setItem('bos-lyst-mode', 'classic'); } catch { /* ignore */ } });   // these journeys drive the classic duel board; Lyst Control has its own journey (pack13-live)
-const mock = createMock();
+// This suite exercises the classic board. Secretary devices now always open their simpler Lyst screen; marshals retain the classic fallback.
+const mock = createMock({ roles: { [IDS.userA]: ['marshal'], [IDS.userB]: ['marshal'], [IDS.head]: ['head_marshal'] } });
 await ctx.route(`https://${REF}.supabase.co/**`, mock.handle);
 const sessA = sessionFor(IDS.userA, 'scorer-a@example.test'), sessB = sessionFor(IDS.userB, 'scorer-b@example.test'), sessHead = sessionFor(IDS.head, 'head@example.test');
 await ctx.addInitScript(([k, s]) => { if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify(s)); }, [storageKey, sessA]);
@@ -41,7 +42,7 @@ try {
   // ---- 1. open, score while online
   await page.goto(url);
   await openMatch();
-  check('field screen opens for a scorekeeper and shows the match as Pending until saved', await has('Pending: not official until you save'));
+  check('classic field screen opens for a marshal and shows the match as Pending until saved', await has('Pending: not official until you save'));
 
   // ---- 2. short loss of signal while the screen stays open
   await goOffline();
@@ -140,7 +141,7 @@ try {
   await setSession(sessA);
   await page.goto(url);
   await page.getByRole('button', { name: 'Score Iron Wolves against Ash Guard' }).waitFor();
-  check('a plain scorekeeper does not see Needs review or the paper form', !(await has('Enter official result from paper')));
+  check('a marshal without result-review authority does not see Needs review or the paper form', !(await has('Enter official result from paper')));
 } catch (e) {
   check('script ran to the end', false, String(e).slice(0, 300));
 } finally {

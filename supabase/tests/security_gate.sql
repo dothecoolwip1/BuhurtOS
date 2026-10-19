@@ -247,16 +247,26 @@ select t.expect_error('a medic cannot finalize', $q$select public.finalize_match
 
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
 create temp table ev (k text primary key, v text); grant all on ev to authenticated;
+-- secretary boundary (20261022000100): the scorekeeper scores only a fight that has been called (on now, on deck, in the hole)
+select t.expect_error('a scorekeeper cannot score a fight that was never called', $q$select public.record_score_event(gen_random_uuid(), '00000000-0000-0000-0000-0000000000f2', 'duel.strike', '{}'::jsonb)$q$, '42501');
+select t.expect_error('... nor finalize it', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 2, 1, '{}'::jsonb, 0)$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('the organizer calls the fight (on now)', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'active')$q$);
+select t.as_user('00000000-0000-0000-0000-0000000000a5');
 select t.expect_ok('a scorekeeper records a score event', $q$select public.record_score_event('00000000-0000-0000-0000-00000000aa01', '00000000-0000-0000-0000-0000000000f2', 'duel.strike', '{"side":"a","points":2}'::jsonb)$q$);
 select t.expect_eq('the same event id sent again is ignored, not counted twice', (public.record_score_event('00000000-0000-0000-0000-00000000aa01', '00000000-0000-0000-0000-0000000000f2', 'duel.strike', '{"side":"a","points":2}'::jsonb)), false);
 select t.expect_eq('only one score event is stored', (select count(*) from public.score_events), 1::bigint);
-select t.expect_ok('a scorekeeper can put a match on deck', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'on_deck', 'Field 2')$q$);
+select t.expect_error('a scorekeeper cannot send the fight back on deck or move it to another field (organizer only)', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'on_deck', 'Field 2')$q$, '42501');
 select t.expect_error('a stale result (wrong version) is refused', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 2, 1, '{}'::jsonb, 7)$q$, 'P0001');
 select t.expect_error('the winner cannot have the lower score', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 1, 4, '{}'::jsonb, 0)$q$, '22023');
 select t.expect_error('an elimination match cannot be a draw', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'draw', 2, 2, '{}'::jsonb, 0)$q$, '22023');
 select t.expect_eq('finalizing returns the new version', public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{"rounds":[2,1]}'::jsonb, 0), 1);
-select t.expect_error('a final match cannot be finalized twice', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'b', 5, 9, '{}'::jsonb, 1)$q$, 'P0001');
-select t.expect_error('a final match takes no more score events', $q$select public.record_score_event(gen_random_uuid(), '00000000-0000-0000-0000-0000000000f2', 'duel.strike', '{}'::jsonb)$q$, 'P0001');
+select t.expect_error('a final match has left the scorekeeper''s board: no second result', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'b', 5, 9, '{}'::jsonb, 1)$q$, '42501');
+select t.expect_error('a final match has left the scorekeeper''s board: no more score events', $q$select public.record_score_event(gen_random_uuid(), '00000000-0000-0000-0000-0000000000f2', 'duel.strike', '{}'::jsonb)$q$, '42501');
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_error('a final match cannot be finalized twice (even by the organizer)', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'b', 5, 9, '{}'::jsonb, 1)$q$, 'P0001');
+select t.expect_error('a final match takes no more score events (even from the organizer)', $q$select public.record_score_event(gen_random_uuid(), '00000000-0000-0000-0000-0000000000f2', 'duel.strike', '{}'::jsonb)$q$, 'P0001');
+select t.as_user('00000000-0000-0000-0000-0000000000a5');
 select t.expect_eq('the winner advanced into the final', (select entry_a::text from public.matches where id = '00000000-0000-0000-0000-0000000000f1'), current_setting('t.e1'));
 select t.expect_error('a scorekeeper cannot reopen a result', $q$select public.reopen_match('00000000-0000-0000-0000-0000000000f2', 'mistake')$q$, '42501');
 
@@ -274,8 +284,9 @@ select t.expect_ok('a second semifinal and a third-place match are in place (lai
   insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, next_match_id, next_slot) values ('00000000-0000-0000-0000-0000000000f3', %L, 'elimination', 'Semifinal', 2, '00000000-0000-0000-0000-00000000e004', %L, '00000000-0000-0000-0000-0000000000f1', 'b');
   insert into public.matches (id, competition_id, stage, round_label, position) values ('00000000-0000-0000-0000-0000000000f4', %L, 'third_place', 'Third place', 3)$q$,
   current_setting('t.comp_ls'), current_setting('t.e1'), current_setting('t.comp_ls')));
-select t.as_user('00000000-0000-0000-0000-0000000000a5');
-select t.expect_ok('a scorekeeper sets a field', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'on_deck', 'Field 3')$q$);
+-- generic queue and bracket mechanics: the organizer (a scorekeeper only starts called fights on their own field since the secretary boundary)
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('the organizer sets a field',$q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'on_deck', 'Field 3')$q$);
 select t.expect_ok('a null field keeps the field', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'in_the_hole', null)$q$);
 select t.expect_eq('the field was kept', (select field from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'Field 3'::text);
 select t.expect_ok('an empty field clears the field', $q$select public.set_match_queue('00000000-0000-0000-0000-0000000000f2', 'on_deck', '')$q$);
@@ -286,8 +297,8 @@ select t.expect_eq('the refused result left the match open', (select queue_state
 -- a third-place match that was already played blocks a semifinal result from feeding it
 select t.as_admin();
 select t.expect_ok('the third-place sides are set (by the harness; the organizer no longer has this table right, Pack 24A0)', $q$update public.matches set entry_a = '00000000-0000-0000-0000-00000000e002', entry_b = '00000000-0000-0000-0000-00000000e004' where id = '00000000-0000-0000-0000-0000000000f4'$q$);
-select t.as_user('00000000-0000-0000-0000-0000000000a5');
-select t.expect_ok('the third-place match is played', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f4', 'a', 3, 1, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f4'))$q$);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('the third-place match is played',$q$select public.finalize_match('00000000-0000-0000-0000-0000000000f4', 'a', 3, 1, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f4'))$q$);
 select t.expect_error('a semifinal cannot feed a third-place match that is already final', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f2'))$q$, 'P0001');
 select t.expect_eq('the refused semifinal changed nothing', (select queue_state from public.matches where id = '00000000-0000-0000-0000-0000000000f2'), 'on_deck'::text);
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
@@ -296,8 +307,8 @@ select t.as_admin();
 select t.expect_ok('the third-place sides are cleared (harness)', $q$update public.matches set entry_a = null, entry_b = null where id = '00000000-0000-0000-0000-0000000000f4'$q$);
 
 -- semifinal losers drop into the third-place match, first semifinal to slot a, second to slot b
-select t.as_user('00000000-0000-0000-0000-0000000000a5');
-select t.expect_ok('first semifinal is finalized', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{"rounds":[2,1]}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f2'))$q$);
+select t.as_user('00000000-0000-0000-0000-0000000000a2');
+select t.expect_ok('first semifinal is finalized',$q$select public.finalize_match('00000000-0000-0000-0000-0000000000f2', 'a', 5, 3, '{"rounds":[2,1]}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f2'))$q$);
 select t.expect_eq('the first loser goes to slot a of third place', (select entry_a::text from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), '00000000-0000-0000-0000-00000000e002');
 select t.expect_eq('slot b of third place is still empty', (select entry_b is null from public.matches where id = '00000000-0000-0000-0000-0000000000f4'), true);
 select t.expect_ok('second semifinal is finalized', $q$select public.finalize_match('00000000-0000-0000-0000-0000000000f3', 'a', 4, 0, '{}'::jsonb, (select version from public.matches where id = '00000000-0000-0000-0000-0000000000f3'))$q$);
@@ -419,7 +430,7 @@ select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_error('a stranger cannot list staff', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a5');
 select t.expect_error('a scorekeeper cannot list staff (emails stay with the organizer)', format($q$select * from public.list_event_staff(%L)$q$, current_setting('t.event')), '42501');
-select t.expect_ok('... but sees the staff by name: they run the day too (Pack 26)', format($q$select * from public.list_event_staff_names(%L)$q$, current_setting('t.event')));
+select t.expect_error('... nor by name: the secretary has no staff screen (secretary boundary)', format($q$select * from public.list_event_staff_names(%L)$q$, current_setting('t.event')), '42501');
 select t.expect_error('... and cannot make anyone an organizer', format($q$select public.grant_event_role_by_email(%L, 'nobody@example.test', 'organizer')$q$, current_setting('t.event')), '42501');
 select t.as_user('00000000-0000-0000-0000-0000000000a2');
 select t.expect_eq('the organizer sees the staff with emails', (select count(*) from public.list_event_staff(current_setting('t.event')::uuid) where email like '%@example.test'), (select count(*) from public.event_staff where event_id = current_setting('t.event')::uuid));

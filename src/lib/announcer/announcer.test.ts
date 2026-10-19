@@ -285,7 +285,7 @@ describe('no private field can appear', () => {
   });
   it('only whitelisted keys exist on a fight side', () => {
     const f = view.lysts[0].now as AnnFight;
-    expect(Object.keys(f.a).sort()).toEqual(['corner', 'crest', 'entryId', 'kind', 'marks', 'name', 'photoUrl', 'ready', 'record', 'recordIsTest', 'score', 'side', 'teamName']);
+    expect(Object.keys(f.a).sort()).toEqual(['corner', 'crest', 'entryId', 'joinedYear', 'kind', 'marks', 'name', 'photoUrl', 'ready', 'record', 'recordIsTest', 'score', 'side', 'teamName']);
     expect(Object.keys(f).sort()).toEqual(['a', 'b', 'competition', 'field', 'id', 'notReady', 'phase', 'round', 'slot', 'stage', 'timer']);
     expect(Object.keys(view.recent[0]).sort()).toEqual(['a', 'b', 'basis', 'competition', 'drawn', 'field', 'fieldLabel', 'finalizedAt', 'id', 'scoreText', 'stage', 'winnerName']);
     expect(Object.keys(view.lysts[0].now!.a.marks[0]).sort()).toEqual(['kind', 'side', 'text']);
