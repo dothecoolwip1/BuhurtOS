@@ -4,7 +4,6 @@ import { fetchEvent } from '../../data/api';
 import { arenaFields, buildArena, nextArenaTick, pickField, type ArenaFight, type ArenaView } from '../../lib/arena';
 import { fieldLabel } from '../../lib/eventDay';
 import { dateRange } from '../../lib/dates';
-import { eventPhase, todayIso } from '../../lib/careerView';
 import { friendlyError } from '../../lib/friendlyError';
 import { useArenaData } from '../../lib/useArenaData';
 import { useAsync } from '../../lib/useAsync';
@@ -13,6 +12,7 @@ import { useEventRecordWatch } from '../../lib/useEventRecordWatch';
 import { useLystPublic } from '../../lib/lyst/useLystPublic';
 import { useNow } from '../../lib/lyst/useLystState';
 import { MODE_LABEL, formatClock, remainingMs, type ServerClock, type TimerMode } from '../../lib/lyst/timer';
+import { publicEventPresentation } from '../../lib/eventPhaseView';
 
 /**
  * The venue display: what spectators see on a TV, projector or phone beside the list. Public, no sign-in, published events only, nothing but the
@@ -77,8 +77,9 @@ export function ArenaPage() {
     );
   }
 
-  const phase = eventPhase(event.startsOn, event.endsOn, todayIso());
-  const liveWord = live.connection === 'live' ? 'Live' : live.connection === 'polling' ? 'Updating every few seconds' : 'Connecting';
+  const presentation = publicEventPresentation(event);
+  const phase = presentation.phase === 'completed' ? 'past' : presentation.phase === 'live' ? 'current' : 'upcoming';
+  const liveWord = live.connection === 'live' ? 'Connected' : live.connection === 'polling' ? 'Updating every few seconds' : 'Connecting';
   return (
     <div ref={root} className={`arena${fs ? ' fs' : ''}${idle ? ' idle' : ''}`}>
       <header className="ar-bar">
@@ -89,31 +90,32 @@ export function ArenaPage() {
           </nav>
         )}
         <div className="ar-tools">
-          <span className={`ar-live ${live.connection}`} role="status">{liveWord}</span>
+          <span className={`ar-live ${live.connection}`} role="status" aria-label={`Connection: ${liveWord}`}>{liveWord}</span>
           {canFs && <button type="button" className="ar-btn" onClick={() => void toggleFs()}>{fs ? 'Exit fullscreen' : 'Enter fullscreen'}</button>}
         </div>
       </header>
 
       <main className="ar-main" aria-live="polite">
         <p className="ar-field">{view.label}<span className="ar-count">{view.total > 0 ? `${view.done} of ${view.total} fights done` : ''}</span></p>
+        {presentation.recorded && <p className="ar-note" role="status" data-testid="recorded-event-notice">{presentation.notice}</p>}
         {event.closedAt
-          ? <div className="ar-center ar-enter" key="closed"><p className="ar-label">Event complete</p><h1 className="ar-big">{event.name}</h1><p className="ar-note">Every competition is official.</p><Link className="ar-btn" to={`/events/${event.slug}`}>View results</Link></div>
-          : <Stage clock={lyst.clock} view={view} phase={phase} eventStarts={dateRange(event.startsOn, event.endsOn)} timeNote={event.timeNote} loading={live.loading && live.updatedAt === null} resultsTo={competitions.some(c => c.status === 'finished') ? `/events/${event.slug}` : null} />}
+          ? <div className="ar-center ar-enter" key="closed"><p className="ar-label">Event complete</p><h1 className="ar-big">{event.name}</h1><Link className="ar-btn" to={`/events/${event.slug}`}>View recorded results</Link></div>
+          : <Stage recorded={presentation.recorded} clock={lyst.clock} view={view} phase={phase} eventStarts={dateRange(event.startsOn, event.endsOn)} timeNote={event.timeNote} loading={live.loading && live.updatedAt === null} resultsTo={competitions.some(c => c.status === 'finished') ? `/events/${event.slug}` : null} />}
       </main>
 
       <footer className="ar-next">
         {view.state.kind === 'result' && view.state.next
           ? <><NextSlot label="Up next" fight={view.state.next} /><NextSlot label="On deck" fight={view.onDeck} /></>
-          : <><NextSlot label="On deck" fight={view.onDeck} /><NextSlot label="In the hole" fight={view.inTheHole} /></>}
+          : <><NextSlot label={presentation.recorded ? 'Recorded on deck' : 'On deck'} fight={view.onDeck} /><NextSlot label={presentation.recorded ? 'Recorded in the hole' : 'In the hole'} fight={view.inTheHole} /></>}
       </footer>
     </div>
   );
 }
 
-function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo, clock }: { clock: ServerClock; view: ArenaView; phase: 'past' | 'upcoming' | 'current'; eventStarts: string; timeNote: string | null; loading: boolean; resultsTo: string | null }) {
+function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo, clock, recorded }: { clock: ServerClock; view: ArenaView; phase: 'past' | 'upcoming' | 'current'; eventStarts: string; timeNote: string | null; loading: boolean; resultsTo: string | null; recorded: boolean }) {
   const s = view.state;
   if (loading) return <div className="ar-center" key="loading"><p className="ar-note">Loading…</p></div>;
-  if (s.kind === 'fighting') return <Fight key={s.now.id} label="Now fighting" fight={s.now} clock={clock} />;
+  if (s.kind === 'fighting') return <Fight key={s.now.id} label={recorded ? 'Last recorded fight' : 'Now fighting'} fight={s.now} clock={recorded ? undefined : clock} />;
   if (s.kind === 'result') {
     return <Fight key={`r-${s.result.id}`} label="Result" fight={s.result} result winner={s.drawn ? 'Draw' : s.winnerName ? <>Winner: <b>{s.winnerName}</b></> : 'Result official'} />;
   }
@@ -129,7 +131,7 @@ function Stage({ view, phase, eventStarts, timeNote, loading, resultsTo, clock }
   }
   return (
     <div className="ar-center ar-enter" key={`w-${s.next?.id ?? 'none'}`}>
-      <p className="ar-label">{s.next ? 'Next fight coming up' : phase === 'upcoming' ? 'Fighting begins' : 'Waiting for the next fight'}</p>
+      <p className="ar-label">{recorded ? 'Last recorded queue' : s.next ? 'Next fight coming up' : phase === 'upcoming' ? 'Fighting begins' : 'Waiting for the next fight'}</p>
       {s.next ? <Fight label={null} fight={s.next} muted /> : phase === 'upcoming' ? <h1 className="ar-big">{eventStarts}</h1> : <h1 className="ar-big">Stand by</h1>}
     </div>
   );

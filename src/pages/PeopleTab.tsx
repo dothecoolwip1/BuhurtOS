@@ -7,7 +7,7 @@ const ROLES: [StaffMember['role'], string, string][] = [
   ['organizer', 'Organizer', 'Runs the event: review, check-in, setup, people.'],
   ['head_marshal', 'Head marshal', 'Scores fights and settles it when two devices disagree about a result, or enters one from the paper sheet.'],
   ['marshal', 'Marshal', 'Scores fights.'],
-  ['scorekeeper', 'Secretary / Scorekeeper', 'Enters the agreed result of each fight, adjusts the running order, sends announcements and opens Event Control › Live ops. Can turn the cameras off, not back on.'],
+  ['scorekeeper', 'Secretary / Scorekeeper', 'Reviews or returns counter scores, enters the marshal’s awarded scores when needed, records marshal calls and follows the called fights. The organizer controls the running order.'],
   ['medic', 'Medic', 'Can read the check-in list and medical notes.'],
   ['check_in', 'Check-in desk', 'Checks fighters in at the desk. Cannot score or change results.'],
   ['inspector', 'Armour inspector', 'Inspects armour and kit, and records what needs fixing. Cannot score or change results.'],

@@ -43,6 +43,7 @@ export function EventFilters({ value, onChange, options, defaults = {}, mine = f
         </button>
       </div>
       <Seg label="When" value={value.when} options={[['upcoming', 'Upcoming'], ['past', 'Past'], ['all', 'All']] as const} onChange={v => set('when', v)} />
+      {(value.q || n > 0 || value.when !== (defaults.when ?? DEFAULT_FILTER.when)) && <button type="button" className="btn btn-line" style={{ justifySelf: 'start' }} onClick={() => onChange({ ...DEFAULT_FILTER, ...defaults })}>Clear search and filters</button>}
       {open && (
         <div id="event-filter-panel" className="panel filterpanel">
           <label className="field-in">Format

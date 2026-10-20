@@ -273,7 +273,7 @@ function Career({ p }: { p: FighterProfile }) {
           <ul className="plain">
             {upcoming(a, today).map(x => (
               <li key={x.entryId}>
-                <Link to={`/events/${x.eventSlug}`}><b>{x.eventName}</b></Link>{' '}{x.eventStatus === 'draft' && <Chip tone="brass">Draft: only visible to organizers</Chip>}
+                <Link to={`/events/${x.eventSlug}`}><b>{x.eventName}</b></Link>{' '}<TestBadge synthetic={isSynthetic(synthetic, 'event', x.eventSlug)} />{x.eventStatus === 'draft' && <Chip tone="brass">Draft: only visible to organizers</Chip>}
                 <div className="l">{dateRange(x.startsOn, x.endsOn)} · {x.competition}{x.forTeam && ` · ${x.role === 'mercenary' || x.role === 'guest' ? guestLabel(x.forTeam) : `for ${x.forTeam}`}`}</div>
               </li>
             ))}

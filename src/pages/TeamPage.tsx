@@ -185,7 +185,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
           const parts = ([['Men', groups.male], ['Women', groups.female], ['Other', groups.other], [groups.male.length + groups.female.length + groups.other.length > 0 ? 'Gender not stated' : 'Fighters', groups.unspecified]] as const).filter(([, list]) => list.length > 0);
           return (
             <>
-              <p className="muted">{plural((roster.data ?? []).length, 'fighter')}{groups.male.length + groups.female.length > 0 && ` · ${groups.male.length} men, ${groups.female.length} women`}</p>
+              <p className="muted">{plural((roster.data ?? []).length, 'fighter')} on the public roster</p>
               {parts.map(([title, list]) => (
                 <div key={title} className="rostergroup">
                   {parts.length > 1 && <p className="eyebrow">{title} ({list.length})</p>}
@@ -321,6 +321,7 @@ function Workspace({ t }: { t: DirectoryEntry }) {
           {upcomingEntries.map(e => (
             <li key={e.entryId}>
               <Link to={`/events/${e.eventSlug}`}><b>{e.eventName}</b></Link>{' '}
+              <TestBadge synthetic={isSynthetic(synthetic, 'event', e.eventSlug)} />
               {e.eventStatus === 'draft' && <Chip tone="brass">Draft: only visible to organizers</Chip>}
               <div className="muted" style={{ fontSize: 13 }}>{dateRange(e.startsOn, e.endsOn)} · {e.competitionName}</div>
             </li>

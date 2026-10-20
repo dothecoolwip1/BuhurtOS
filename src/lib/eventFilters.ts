@@ -3,6 +3,14 @@ import type { LeagueId } from '../data/types';
 import { eventPhase, orgName, type OrgLite, type Phase, type SeasonInfo } from './careerView';
 import type { SyntheticSet } from '../data/synthetic';
 import { isSynthetic } from '../data/synthetic';
+import { PROVINCES } from '../registration/model';
+
+/** Normalize filter choices only; the original event location remains intact. */
+export function canonicalRegion(value: string | null | undefined): string {
+  const trimmed = value?.trim() ?? '';
+  const province = PROVINCES.find(([code, name]) => code.toLowerCase() === trimmed.toLowerCase() || name.toLowerCase() === trimmed.toLowerCase());
+  return province?.[0] ?? trimmed;
+}
 
 /**
  * One set of search, filter, sort and grouping rules for every view over events: the public Events list, the Calendar, My events and
@@ -41,7 +49,7 @@ export function parseEventFilter(params: URLSearchParams, defaults: Partial<Even
   return {
     q: params.get('q') ?? d.q,
     format: pick(params.get('format'), FORMAT_FILTERS.map(([k]) => k), d.format),
-    org: params.get('org') ?? d.org, region: params.get('province') ?? d.region, type: params.get('type') ?? d.type,
+    org: params.get('org') ?? d.org, region: canonicalRegion(params.get('province') ?? d.region), type: params.get('type') ?? d.type,
     status: pick(params.get('status'), STATUS_FILTERS.map(([k]) => k), d.status),
     when: pick(params.get('when'), ['upcoming', 'past', 'all'] as const, d.when),
     test: params.has('test') ? params.get('test') === '1' : d.test,
@@ -114,7 +122,7 @@ export function applyEventFilter<T extends IndexedEvent>(events: readonly T[], f
     if (!matchesEventQuery(e, f.q)) return false;
     if (f.format !== 'all' && !e.leagues.includes(f.format)) return false;
     if (f.org && e.orgId !== f.org) return false;
-    if (f.region && e.region !== f.region) return false;
+    if (f.region && canonicalRegion(e.region).toLowerCase() !== canonicalRegion(f.region).toLowerCase()) return false;
     if (f.type && e.eventType !== f.type) return false;
     if (f.status === 'finished' ? !isFinished(e, today) : f.status && e.status !== f.status) return false;
     const past = e.endsOn < today;
@@ -160,7 +168,7 @@ export function filterOptions(events: readonly IndexedEvent[], orgs: readonly Or
   const orgIds = new Set(events.map(e => e.orgId).filter(Boolean));
   return {
     orgs: orgs.filter(o => orgIds.has(o.id)),
-    regions: [...new Set(events.map(e => e.region).filter((r): r is string => Boolean(r)))].sort(),
+    regions: [...new Set(events.map(e => canonicalRegion(e.region)).filter(Boolean))].sort(),
     types: [...new Set(events.map(e => e.eventType))].sort()
   };
 }

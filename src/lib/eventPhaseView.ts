@@ -43,6 +43,20 @@ export const defaultModeFor = (phase: EventPhase): ControlMode => (phase === 'li
 export const PHASE_WORD: Record<EventPhase, string> = { draft: 'Draft', upcoming: 'Upcoming', live: 'Live', completed: 'Complete' };
 export const PHASE_TONE: Record<EventPhase, 'brass' | 'steel' | 'live' | 'win'> = { draft: 'brass', upcoming: 'steel', live: 'live', completed: 'win' };
 
+/** Public wording only. A date passing must never stop clocks or remove an organizer's controls. */
+export function publicEventPresentation(e: PhaseFacts, now: Date = new Date()) {
+  const phase = eventPhaseOf(e, now);
+  const recorded = phase === 'completed';
+  const closed = Boolean(e.closedAt || e.archivedAt);
+  return {
+    phase, recorded,
+    label: e.status === 'cancelled' ? 'Cancelled' : recorded && !closed ? 'Schedule ended' : PHASE_WORD[phase],
+    notice: !recorded ? null : closed
+      ? 'Event complete. The fight order below is the last recorded state.'
+      : 'The scheduled dates have ended. This is the last recorded fight order; check with the organizer for any changes.'
+  };
+}
+
 export const VIEW_WORD: Record<PublicView, string> = { overview: 'Overview', live: 'Live', results: 'Results' };
 export const MODE_WORD: Record<ControlMode, string> = { setup: 'Set up', live: 'Live ops', results: 'Results' };
 

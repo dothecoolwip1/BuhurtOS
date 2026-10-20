@@ -14,6 +14,12 @@
 .rl-check input{width:20px;height:20px}
 .rl-h2{font-size:22px;display:flex;align-items:baseline;gap:10px}
 .rl-h2 .mono{font-size:13px;color:var(--muted);font-weight:500}
+/* jump targets sit below the sticky search box; focus lands on the heading without a box around it */
+.rl-h2[tabindex]{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 140px)}
+.rl-h2[tabindex]:focus{outline:none}
+.rl-h2[tabindex]:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+.rl-more{display:flex;flex-wrap:wrap;gap:8px}
+.rl-more .btn{min-height:44px}
 .rl-block{display:grid;gap:10px;min-width:0}
 .rl-results{display:grid;gap:22px}
 .rl-list{display:grid;gap:8px}

@@ -366,6 +366,9 @@ img.avatar{object-fit:cover;background:var(--raised)}
 .tier dd{margin:0;color:var(--ink)}
 .conflict{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;padding:14px 16px;border-radius:var(--r-sm);background:var(--brass-soft);border:1px solid color-mix(in oklab,var(--brass) 35%,transparent);font-size:14px}
 .conflict b{font-weight:600}
+.formats-source .seg{grid-column:1 / -1;justify-self:start}
+.formats-source .seg button{min-height:44px;white-space:normal}
+@media(max-width:600px){.formats-source{grid-template-columns:minmax(0,1fr)}.formats-source p{overflow-wrap:anywhere}}
 .range{width:100%;accent-color:var(--steel);height:44px}
 .nbig{font:900 72px/1 var(--f-display)}
 .flow{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
@@ -1498,3 +1501,13 @@ main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:
 .lineup-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}.lineup-list>li{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
 .lineup-list>li[draggable=true]{cursor:grab}.lineup-actions{display:flex;gap:8px;flex-wrap:wrap}.lineup-actions .btn{min-height:44px;white-space:normal}
 .lineup-editor input,.lineup-editor select{width:100%;min-width:0;min-height:44px}.lineup-editor small{font-weight:700}
+
+/* Keep practical decisions above long event details and leave every organizer tool reachable. */
+.ev-practical{display:grid;gap:10px;max-width:780px}
+.ev-practical p{display:grid;gap:3px;margin:0;font-size:15px}
+.ev-practical b{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ev-practical span{overflow-wrap:anywhere}
+.ev-description>summary,.directory-filters>summary{min-height:44px;cursor:pointer;font-weight:700;padding:10px 0;line-height:1.4}
+.directory-filters>summary.btn{padding:10px 18px;display:list-item;list-style-position:inside;width:max-content;max-width:100%}
+.directory-filters:not([open]){padding:8px 16px}
+@media(min-width:700px){.ev-practical{grid-template-columns:repeat(2,minmax(0,1fr))}}

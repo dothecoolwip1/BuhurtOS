@@ -32,7 +32,8 @@ function PersonProfileGate() {
   // The one-time "just signed in" wish is spent once setup is reached or turns out not to be needed.
   const done = pathname === '/welcome' || profile.data?.onboarded === true;
   useEffect(() => { if (done) clearOnboarding(); }, [done]);
-  if (!userId || pathname === '/welcome' || finishedProfiles.has(userId)) return null;
+  // Account must stay reachable so someone who chose the wrong sign-in can leave without creating a profile.
+  if (!userId || pathname === '/welcome' || /^\/account(\/|$)/.test(pathname) || finishedProfiles.has(userId)) return null;
   if (profile.error != null || !profile.data || profile.data.onboarded) return null;
   if (onboardingWanted(userId) || ACCOUNT_PATH.test(pathname)) {
     return <Navigate to={`/welcome?next=${encodeURIComponent(pathname + search)}`} replace />;

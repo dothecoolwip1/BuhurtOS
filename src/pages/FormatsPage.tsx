@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { LeagueIcon } from '../components/LeagueIcon';
 import { ZoneFigure } from '../components/ZoneFigure';
 import { Chip, Seg, Tabs } from '../components/ui';
 import { LEAGUES } from '../content/leagues';
-import { TIERS } from '../content/tiers';
+import { MULTIPLIER_SOURCES, sourceLabel, tierDisputed, tierPoints, TIERS } from '../content/tiers';
 import type { LeagueId } from '../data/types';
 import { leaguePoints, structureAdvice, zoneValues, type DuelCategory, type Grip, type MultiplierSource, type Placement, type TierName } from '../lib/tournament';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
@@ -12,6 +13,11 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 type Tab = 'styles' | 'tournaments';
 const TABS: readonly (readonly [Tab, string])[] = [['styles', 'Fighting styles'], ['tournaments', 'Tournaments and points']];
 const DUEL_CATS: readonly (readonly [DuelCategory, string])[] = [['swordShield', 'Sword & Shield'], ['buckler', 'Sword & Buckler'], ['longsword', 'Longsword'], ['polearm', 'Polearm']];
+
+/** Opens the current official documents in the Rules library, filtered to one format. */
+function RulesLink({ f, children }: { f?: LeagueId; children: ReactNode }) {
+  return <Link className="lnk" to={f ? `/rules?f=${f}` : '/rules'}>{children}</Link>;
+}
 
 /* ---------------- group fight ---------------- */
 function BuhurtDetail() {
@@ -26,7 +32,7 @@ function BuhurtDetail() {
           <tr><td><b>3v3</b></td><td className="num">7 to 20 m</td><td className="num">5 to 15 m</td><td>Men 3 to 5 · Women 3 to 5</td></tr>
           <tr><td><b>5v5</b></td><td className="num">9 to 20 m</td><td className="num">7 to 15 m</td><td>Men 5 to 8 · Women 3 to 8</td></tr>
           <tr><td><b>12v12</b></td><td className="num">15 to 20 m</td><td className="num">7 to 15 m</td><td>12 to 20 licensed competitors</td></tr>
-          <tr><td><b>30v30</b></td><td className="num">25 to 30 m</td><td className="num">12.5 to 20 m</td><td>Not stated in the files provided</td></tr></tbody></table></div></div>
+          <tr><td><b>30v30</b></td><td className="num">25 to 30 m</td><td className="num">12.5 to 20 m</td><td>See the <RulesLink f="buhurt">official group fight rules</RulesLink></td></tr></tbody></table></div></div>
       <div className="facts-grid" style={{ marginTop: 16 }}>
         <div className="fact"><small>Weight classes</small><b>None</b><span>No weight categories in group fights.</span></div>
         <div className="fact"><small>Rail and safety zone</small><b>0.9 to 1.3 m</b><span>Rail height, with a fenced 2 m safety zone around the list.</span></div>
@@ -34,7 +40,7 @@ function BuhurtDetail() {
         <div className="fact"><small>Officials</small><b>Knight + line</b><span>Knight Marshal, field marshals, line marshals, secretary and an Authenticity Committee rep.</span></div>
       </div>
       <div className="panel info" style={{ marginTop: 16 }}><h3>Stopped immediately</h3><ul className="bul no"><li>Thrusts, or threatening one.</li><li>Strikes to the neck, base of the skull, back of the knee, groin, feet and ankles.</li><li>Striking a grounded fighter, joint locks, suplex-style throws and spikes on the head or neck.</li><li>An inactive clinch lasting 10 seconds or more.</li></ul></div>
-      <p className="src" style={{ marginTop: 12 }}>Sources: Buhurt Rules V.26.4.1 §1, §4, §6; Buhurt Regulations V.26.4 §1 to §3; League Structure V2026.1 §3.1. The round and match structure (Regulations §4) was not readable in the files provided, so it is not shown.</p>
+      <p className="src" style={{ marginTop: 12 }}>Sources: Buhurt Rules V.26.4.1 §1, §4, §6; Buhurt Regulations V.26.4 §1 to §3; League Structure V2026.1 §3.1. For the round and match structure (Regulations §4), read the <RulesLink f="buhurt">official group fight rules</RulesLink>.</p>
     </>
   );
 }
@@ -74,7 +80,7 @@ function DuelsDetail({ cat, grip, onCat, onGrip }: { cat: DuelCategory; grip: Gr
         <div className="fact"><small>Officials</small><b>1 + 4</b><span>Knight Marshal plus four line marshals, timekeeper, AC rep and video supervisor.</span></div>
         <div className="fact"><small>Technical win</small><b>{F.tech}</b><span>Withdrawal, no-show, injury from an illegal strike, or 2 yellow / 1 red card.</span></div>
       </div>
-      <p className="src" style={{ marginTop: 12 }}>Source: Duels rules V.26.4 §1 to §4. The duel regulations also name a Triathlon category; no rules for it were in the files provided.</p>
+      <p className="src" style={{ marginTop: 12 }}>Source: Duels rules V.26.4 §1 to §4. The duel regulations also name a Triathlon category; for it and anything else, read the <RulesLink f="duels">official duel rules</RulesLink>.</p>
     </>
   );
 }
@@ -105,7 +111,7 @@ function OutranceDetail() {
         <div className="panel info"><h3>What judges weigh, in order</h3><ul className="bul"><li>Effective striking</li><li>Effective grappling: takedowns, reversals, clinch control</li><li>Effective list control</li><li>Effective aggression</li><li>Effective defence</li></ul></div>
         <div className="panel info"><h3>How a fight can end</h3><ul className="bul"><li>Unanimous, majority or split decision</li><li>Unanimous, majority or split draw</li><li>Technical knockout (TKO), including corner stoppage</li><li>Knockout (KO)</li></ul></div>
       </div>
-      <p className="src" style={{ marginTop: 12 }}>Source: Outrance Rules and Regulations V.26.4 §1, §4, §13, §15, §17. Profight rankings track win/loss record within a weight class; a fighter inactive for 1 year becomes retired.</p>
+      <p className="src" style={{ marginTop: 12 }}>Source: Outrance Rules and Regulations V.26.4 §1, §4, §13, §15, §17. Profight rankings track win/loss record within a weight class; a fighter inactive for 1 year becomes retired. Full text: <RulesLink f="outrance">official profight rules</RulesLink>.</p>
     </>
   );
 }
@@ -138,9 +144,8 @@ function Advisor() {
   );
 }
 
-function Calculator() {
+function Calculator({ source, onSource }: { source: MultiplierSource; onSource: (s: MultiplierSource) => void }) {
   const [tier, setTier] = useState<TierName>('Classic');
-  const [source, setSource] = useState<MultiplierSource>('tournamentStructure');
   const [pool, setPool] = useState(3);
   const [elim, setElim] = useState(2);
   const [place, setPlace] = useState<Placement>('second');
@@ -152,13 +157,14 @@ function Calculator() {
       <div className="calc">
         <div className="panel info">
           <label className="field-in"><span>Tier</span><select value={tier} onChange={e => setTier(e.target.value as TierName)}>{TIERS.map(t => <option key={t.name}>{t.name}</option>)}</select></label>
-          <label className="field-in"><span>Multiplier source</span><select value={source} onChange={e => setSource(e.target.value as MultiplierSource)}><option value="tournamentStructure">Tournament Structure §4.2 (×1.25 Regional, ×1.5 Conference)</option><option value="leagueStructure">League Structure §2.3 (150% Regional, 200% Conference)</option></select></label>
+          <label className="field-in"><span>Points source (same as the tier table)</span><select value={source} onChange={e => onSource(e.target.value as MultiplierSource)}>{MULTIPLIER_SOURCES.map(([k, l]) => <option key={k} value={k}>{l} ({tierPoints('Regional', k)} Regional, {tierPoints('Conference', k)} Conference)</option>)}</select></label>
           <label className="field-in"><span>Pool or round-robin wins</span><input type="number" min={0} max={12} value={pool} onChange={e => setPool(num(e.target.value))} /></label>
           <label className="field-in"><span>Elimination wins</span><input type="number" min={0} max={6} value={elim} onChange={e => setElim(num(e.target.value))} /></label>
           <label className="field-in"><span>Placement</span><select value={place} onChange={e => setPlace(e.target.value as Placement)}><option value="none">Did not place</option><option value="third">3rd place (+2)</option><option value="second">2nd place (+4)</option><option value="first">1st place (+6)</option></select></label>
         </div>
         <div className="result"><p className="eyebrow">League points</p><div className="nbig mono">{r.total}</div>
           <p style={{ fontSize: 14, opacity: 0.8 }}>({pool} pool + {elim}×2 elimination + {r.base - pool - 2 * elim} placement) = {r.base}, × {r.multiplier}</p>
+          <p style={{ fontSize: 13, opacity: 0.8 }}>{tier} multiplier from {sourceLabel(source)}.</p>
           {r.multiplier === 0 && <p style={{ fontSize: 13, opacity: 0.8 }}>Exhibition events award no points.</p>}</div>
       </div>
     </section>
@@ -169,18 +175,23 @@ const TIEBREAKS: [string, string][] = [['Head-to-head', 'Only when two are tied:
 const CARDS: [string, string, string][] = [['v', 'Verbal warning', 'Minor violation. Three verbal warnings in a profight become a yellow card.'], ['y', 'Yellow card', 'Systematic violations or a serious one. Costs a point in a profight. Affects only the tournament it happens in.'], ['r', 'Red card', 'Disqualification. A second yellow becomes a red. In duels, opponents then get technical wins.'], ['g', 'Green card', 'Breach of authenticity rules. Follows the competitor from tournament to tournament.']];
 
 function Tournaments() {
+  // One choice drives both the tier table and the calculator, so they never show different points.
+  const [source, setSource] = useState<MultiplierSource>('tournamentStructure');
+  const other: MultiplierSource = source === 'tournamentStructure' ? 'leagueStructure' : 'tournamentStructure';
   return (
     <div style={{ display: 'grid', gap: 36 }}>
       <section style={{ display: 'grid', gap: 16 }}>
         <div><h2 style={{ fontSize: 40 }}>Five tournament tiers</h2><p style={{ color: 'var(--muted)', marginTop: 8, maxWidth: '64ch' }}>A tier decides how many points an event awards, how far ahead it must be submitted, and what marshals, entrants and streaming it needs. One event can run several tiers at once.</p></div>
+        <div className="conflict formats-source"><span className="chip brass">Sources disagree</span><p><b>Two multipliers are in the documents.</b> League Structure §2.3 gives Regional 150% and Conference 200% of points. Its §3.3.2 and the Tournament Structure document give ×1.25 and ×1.5. BuhurtOS has not chosen one: pick which document the tier points and the calculator below use.</p>
+          <Seg label="Points source" value={source} options={MULTIPLIER_SOURCES} onChange={setSource} /></div>
         <div className="tiers">{TIERS.map(t => (
-          <div className="panel tier" key={t.name}><div><h3>{t.name}</h3></div><div className="pct">{t.pointsGiven}</div><p className="src">{t.note}</p>
+          <div className="panel tier" key={t.name}><div><h3>{t.name}</h3></div><div className="pct">{tierPoints(t.name, source)}</div>
+            <p className="src">{tierDisputed(t.name) ? <>Per {sourceLabel(source)}. {sourceLabel(other)} gives {tierPoints(t.name, other)}.</> : 'Both documents agree.'}</p><p className="src">{t.note}</p>
             <dl><div><dt>Submit to BI</dt><dd>{t.submitDays === 'No submission needed' ? t.submitDays : `${t.submitDays} ahead`}</dd></div><div><dt>Marshals</dt><dd>{t.marshals}</dd></div><div><dt>Group fight entrants</dt><dd>{t.groupEntrants}</dd></div><div><dt>Duel entrants</dt><dd>{t.duelEntrants}</dd></div><div><dt>Video</dt><dd>{t.video}</dd></div></dl></div>
         ))}</div>
-        <div className="conflict"><span className="chip brass">Sources disagree</span><p><b>Two multipliers are in the documents.</b> League Structure §2.3 gives Regional 150% and Conference 200% of points. Its §3.3.2 and the Tournament Structure document give ×1.25 and ×1.5. Both are shown in the calculator below until the owner decides which BuhurtOS follows.</p></div>
       </section>
       <Advisor />
-      <Calculator />
+      <Calculator source={source} onSource={setSource} />
       <section style={{ display: 'grid', gap: 16 }}><div><h2 style={{ fontSize: 40 }}>Breaking a tie</h2><p style={{ color: 'var(--muted)', marginTop: 8 }}>In order, until the tie is resolved.</p></div>
         <div className="steps">{TIEBREAKS.map(([a, b]) => <div className="panel step" key={a}><div><b>{a}</b><p>{b}</p></div></div>)}</div></section>
       <section style={{ display: 'grid', gap: 16 }}><div><h2 style={{ fontSize: 40 }}>Cards and penalties</h2></div>
@@ -194,7 +205,7 @@ function Tournaments() {
           <div className="fact"><small>Conferences</small><b>4</b><span>North America, South America, APAC, Europe. Each country is a region.</span></div>
           <div className="fact"><small>Divisions</small><b>1 and 2</b><span>Set by National Organisations for 2026, confirmed by the BI Committee.</span></div>
         </div>
-        <p className="src">Sources: League Structure V2026.1; Tournament Structure and Formats (Jan 2026); Marshal accreditation levels: Trainee (4), Regional (3), Conference (2), International (1).</p></section>
+        <p className="src">Sources: League Structure V2026.1; Tournament Structure and Formats (Jan 2026); Marshal accreditation levels: Trainee (4), Regional (3), Conference (2), International (1). Read the current <RulesLink>official documents</RulesLink>.</p></section>
     </div>
   );
 }
