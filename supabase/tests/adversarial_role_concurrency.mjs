@@ -93,6 +93,19 @@ try {
   assert.equal(sql("select queue_state from public.matches where id=t.m(4)"), 'final');
   assert.equal(sql("select status || ':' || awarded_a || '-' || awarded_b from public.lyst_rounds where match_id=t.m(4)"), 'confirmed:5-3');
   console.log('PASS round writer wins: finalization waits and completes without a deadlock');
+  sql("insert into public.matches(id,competition_id,stage,round_label,position,entry_a,entry_b,queue_state,field) values(t.m(5),t.comp(1),'round_robin','Retry',5,t.en(1),t.en(2),'active','Field 4');");
+  sql(`begin; ${as(1)} select public.lyst_confirm_round(gen_random_uuid(),t.m(5),1,5,3,0); commit;`);
+  g = await gate('role-race-controller', 820235);
+  const cmd = '00000000-0000-0000-0000-0000000adc99';
+  const saved = actor('role-race-save', `begin; ${as(1)} select public.submit_match_result('${cmd}',t.m(5),'a',5,3,'{}',0,1); select 'SAVED'; select pg_advisory_xact_lock(820235); commit;`);
+  await until(() => saved.out.includes('SAVED'), 'first result saved before commit');
+  const retry = actor('role-race-retry', `begin; ${as(1)} select public.lyst_finalize('${cmd}',t.m(5),0,'a'); commit;`); retry.p.stdin.end();
+  await blocked('role-race-retry'); await finish(g); saved.p.stdin.end();
+  assert.equal((await saved.exit).code, 0, saved.err); assert.equal((await retry.exit).code, 0, retry.err);
+  assert.match(retry.out, /"repeat": true/);
+  assert.equal(sql(`select count(*) from public.result_proposals where id='${cmd}'`), '1');
+  assert.equal(sql('select version from public.matches where id=t.m(5)'), '1');
+  console.log('PASS concurrent retry through another scoring path returns the same result exactly once');
   console.log('ADVERSARIAL ROLE CONCURRENCY OK');
 } finally {
   for (const a of actors) if (!a.done) a.p.kill();

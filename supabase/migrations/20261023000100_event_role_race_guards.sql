@@ -163,3 +163,11 @@ select pg_temp.bos_patch('public.lyst_return_round(uuid,uuid,integer,integer,tex
   $a$perform private.lyst_match_check(v_event, p_match, null);$a$,
   $b$perform private.lyst_match_check(v_event, p_match, null);
   perform private.lyst_lock_live_match(p_match);   -- race guard 20261023000100$b$);
+
+-- A lost-ack retry may have read "no proposal" before the first caller committed, then waited on the match row. Serialize the command BEFORE
+-- reading its proposal or locking a match, so every concurrent retry returns the stored answer rather than inserting the same primary key twice.
+-- lyst_finalize delegates without holding a match/round lock; all ordinary submission paths share this order.
+select pg_temp.bos_patch('public.submit_match_result(uuid,uuid,text,integer,integer,jsonb,integer,integer)'::regprocedure,
+  $a$select * into v_prop from public.result_proposals where id = p_command;$a$,
+  $b$perform pg_advisory_xact_lock(hashtextextended('bos:result-command:' || p_command::text, 0));
+  select * into v_prop from public.result_proposals where id = p_command;$b$);

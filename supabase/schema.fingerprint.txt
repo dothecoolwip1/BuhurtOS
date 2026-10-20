@@ -2425,7 +2425,7 @@ function public.set_represented_team(p_entry uuid, p_team uuid, p_reason text) s
 function public.set_roster_visibility(p_team uuid, p_fighter uuid, p_visible boolean) secdef=true 1686c386b465903bc40b407520610a57
 function public.set_team_emblem(p_team uuid, p_path text) secdef=true 1b753f492fba3b9d3ee75534ba5a1bff
 function public.submit_club_agm_topic(p_meeting uuid, p_subject text, p_details text) secdef=true fe79fe12b2c025eef8e1089b0c51ef86
-function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 8fe5d19452fb87146ff36e3403bbc769
+function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 973339eb96d61142a0b55d9bb5c5d788
 function public.submit_registration(p_event uuid, p_data jsonb) secdef=true 7e0c26d573d1fe442983b2b4b833c0f3
 function public.team_career(p_team uuid) secdef=false 57c0e276f6eec12cedd3129d7f0d2053
 function public.team_clearance(p_event uuid, p_team uuid) secdef=true a0219d10be26cc870881fa950d5b36dd
