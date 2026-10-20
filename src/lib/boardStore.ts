@@ -45,10 +45,10 @@ async function put(rec: StoredBoard): Promise<void> {
   if (db) { try { await tx(db, 'boards', 'readwrite', s => s.put(rec)); } catch { /* memory copy remains for this session */ } }
 }
 
-export function saveBoard(userId: string, eventId: string, matchId: string, board: BoardState, extra: Partial<Pick<StoredBoard, 'finalizeCommandId' | 'review'>> = {}): Promise<void> {
+export function saveBoard(userId: string, eventId: string, matchId: string, board: BoardState, extra: { finalizeCommandId?: string | null; review?: StoredBoard['review'] } = {}): Promise<void> {
   const k = key(userId, matchId);
   const prev = memory.get(k);
-  return put({ key: k, userId, eventId, matchId, board, finalizeCommandId: extra.finalizeCommandId ?? prev?.finalizeCommandId, review: extra.review ?? prev?.review, savedAt: Date.now() });
+  return put({ key: k, userId, eventId, matchId, board, finalizeCommandId: extra.finalizeCommandId === null ? undefined : extra.finalizeCommandId ?? prev?.finalizeCommandId, review: extra.review ?? prev?.review, savedAt: Date.now() });
 }
 
 /** How many matches have a part-scored board or an unconfirmed finalization on this device (any account). Used to decide whether an app update is safe. */

@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { DuelBoard, GroupBoard, MarathonBoard, ProBoard, SeriesBoard } from '../ScoreBoards';
 import { GroupCounterRounds } from './GroupCounterRounds';
 import type { FieldCompetition } from '../../data/field';
+import { fetchLystState } from '../../data/lyst';
+import type { LystRound } from '../../lib/lyst/rounds';
+import { groupRoundsAligned, recoverGroupBoard } from '../../lib/lyst/groupRecovery';
 import { submitMatchResult, type CompetitionMatch } from '../../data/matches';
 import { clearBoard, loadBoard, saveBoard } from '../../lib/boardStore';
 import { sideLabel } from '../../lib/entryLabel';
@@ -85,6 +88,9 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
   const names = sideName(match);
   const fresh = useCallback((): BoardState | null => (mode ? newBoard(mode, { perSide: perSideFor(comp.category), roundsToWin: comp.roundsToWin, seriesKind: comp.category === 'sabre' || comp.category === 'greatsword' ? comp.category : 'triathlon' }) : null), [mode, comp]);
   const [board, setBoard] = useState<BoardState | null | undefined>(undefined);   // undefined: still reading what was saved on this device
+  const [groupRounds, setGroupRounds] = useState<readonly LystRound[] | null>(null);
+  const [restoreError, setRestoreError] = useState<string | null>(null);
+  const [restoreKey, setRestoreKey] = useState(0);
   const commandId = useRef<string | undefined>(undefined);
   const [phase, setPhase] = useState<Phase>('scoring');
   // The board is long on a phone: when the screen changes to a confirm / official / pending / review step, start it at the top.
@@ -100,24 +106,63 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
   useEffect(() => {
     let live = true;
     if (!mode) { setBoard(null); return; }
-    void loadBoard(userId, eventId, match.id, mode).then(stored => {
+    setRestoreError(null);
+    void (async () => {
+      const stored = await loadBoard(userId, eventId, match.id, mode);
+      let restored = stored?.board ?? fresh();
+      let recorded: readonly LystRound[] | null = null;
+      let repaired = false;
+      if (restored?.mode === 'group' && !stored?.review) {
+        try {
+          const { state } = await fetchLystState(match.id);
+          recorded = state.rounds;
+          const recovered = recoverGroupBoard(restored.s, recorded);
+          repaired = recovered !== restored.s;
+          restored = { mode: 'group', s: recovered };
+        } catch (e) {
+          if (!live) return;
+          setRestoreError(friendlyError(e, 'Could not check recorded team rounds. Reconnect and try again before scoring.'));
+          if (!stored) return;
+        }
+      }
       if (!live) return;
-      commandId.current = stored?.finalizeCommandId;
+      commandId.current = repaired ? undefined : stored?.finalizeCommandId;
+      if (repaired && restored) await saveBoard(userId, eventId, match.id, restored, { finalizeCommandId: null });
+      if (!live) return;
       if (stored?.review === 'conflict') setPhase('review');
-      setBoard(stored?.board ?? fresh());
-    });
+      setGroupRounds(recorded);
+      setBoard(restored);
+    })().catch(e => { if (live) setRestoreError(friendlyError(e)); });
     return () => { live = false; };
-  }, [userId, eventId, match.id, mode, fresh]);
+  }, [userId, eventId, match.id, mode, fresh, restoreKey]);
 
-  const change = useCallback((next: BoardState) => { setBoard(next); void saveBoard(userId, eventId, match.id, next, { finalizeCommandId: commandId.current }); }, [userId, eventId, match.id]);
+  const change = useCallback((next: BoardState) => { setBoard(next); void saveBoard(userId, eventId, match.id, next, { finalizeCommandId: commandId.current ?? null }); }, [userId, eventId, match.id]);
   const rec = useCallback((kind: string, payload: unknown) => { void record(kind, match.id, payload); }, [record, match.id]);
+  const applyGroupRounds = useCallback((rounds: readonly LystRound[]) => {
+    if (board?.mode !== 'group') return;
+    try {
+      const recovered = recoverGroupBoard(board.s, rounds);
+      if (recovered !== board.s) { commandId.current = undefined; change({ mode: 'group', s: recovered }); }
+      setGroupRounds(rounds); setRestoreError(null);
+    } catch (e) { setRestoreError(friendlyError(e)); setGroupRounds(null); }
+  }, [board, change]);
+  const applyStanding = useCallback((side: 'a' | 'b', count: number) => {
+    if (board?.mode !== 'group' || board.s.winner) return;
+    const down = board.s.down[side].map((_, i) => i >= count);
+    for (let i = 0; i < down.length; i++) if (down[i] !== board.s.down[side][i]) rec('group.fighter', { side, index: i, down: down[i] });
+    change({ mode: 'group', s: { ...board.s, down: { ...board.s.down, [side]: down } } });
+  }, [board, change, rec]);
+  const groupReady = board?.mode !== 'group' || groupRounds !== null;
+  let groupAligned = true;
+  try { groupAligned = board?.mode !== 'group' || (groupRounds !== null && groupRoundsAligned(board.s, groupRounds)); }
+  catch { groupAligned = false; }
   // The venue display follows the board while the fight is being scored or checked; never after the server has an answer.
-  useLiveScoreReporter({ matchId: match.id, version, stage: match.stage, board: board ?? null, active: phase === 'scoring' || phase === 'confirming' });
+  useLiveScoreReporter({ matchId: match.id, version, stage: match.stage, board: board ?? null, active: groupReady && (phase === 'scoring' || phase === 'confirming') });
 
   if (!mode) {
     return <section className="panel info"><h3>This competition has no scoring board yet</h3><p>The rules for {comp.name} are not loaded, so there is nothing to score here. Ask an organizer to enter the result.</p><button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button></section>;
   }
-  if (board === undefined) return <p className="muted">Opening the scoreboard…</p>;
+  if (board === undefined) return restoreError ? <section className="panel info"><p role="alert">{restoreError}</p><button type="button" className="btn btn-line" onClick={() => setRestoreKey(k => k + 1)}>Retry recorded rounds</button></section> : <p className="muted">Opening the scoreboard…</p>;
   if (board === null) return <section className="panel info"><h3>This competition has no scoring board yet</h3><button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button></section>;
 
   const outcome = resultFromBoard(board, match.stage);
@@ -129,6 +174,14 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
     if (!outcome.ok) return;
     setBusy(true); setError(null);
     try {
+      if (board.mode === 'group') {
+        const { state } = await fetchLystState(match.id);
+        if (!groupRoundsAligned(board.s, state.rounds)) {
+          applyGroupRounds(state.rounds); setPhase('scoring');
+          setError('Recorded team rounds changed or are still being confirmed. Check the board before finishing.');
+          return;
+        }
+      }
       const sent = await drain(match.id);
       if (!sent.clear) { trackEvent('result_pending_no_signal', { waiting: sent.remaining }); setError(`${sent.remaining} score ${sent.remaining === 1 ? 'action is' : 'actions are'} still waiting to send, so the result cannot be made official yet. Nothing is lost.`); setPhase('pending'); return; }
       // One command id per board: pressing Save again after a lost signal sends the SAME command, so it can never create a second result.
@@ -249,11 +302,12 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
     );
   }
 
-  const ready = canOfferFinish(board, match.stage) && outcome.ok;
+  const ready = canOfferFinish(board, match.stage) && outcome.ok && groupAligned;
   return (
     <div className="sk field-run">
       {context}
       <StatusBanner status={ready ? 'ready' : 'scoring'} />
+      {restoreError && <p role="alert">{restoreError}</p>}
       <ScoreStrip names={names} scoreA={snap.scoreA} scoreB={snap.scoreB} phase={snap.phase} decided={snap.decided} unit={unit} />
       {mine.length > 0 && (
         <div className="panel info" role="alert" style={{ gap: 8 }}>
@@ -266,7 +320,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
         </div>
       )}
       {board.mode === 'group' && <GroupBoard state={board.s} onChange={s => change({ mode: 'group', s })} record={rec} names={names} />}
-      {board.mode === 'group' && <GroupCounterRounds matchId={match.id} eventId={eventId} fieldName={fieldName} board={board.s} secretary={secretary} names={names} />}
+      {board.mode === 'group' && <GroupCounterRounds matchId={match.id} eventId={eventId} fieldName={fieldName} board={board.s} secretary={secretary} names={names} onRounds={applyGroupRounds} onStanding={applyStanding} />}
       {board.mode === 'duel' && <DuelBoard headless state={board.s} onChange={s => change({ mode: 'duel', s })} record={rec} names={names} />}
       {board.mode === 'pro' && <ProBoard headless state={board.s} onChange={s => change({ mode: 'pro', s })} record={rec} names={names} />}
       {board.mode === 'marathon' && <MarathonBoard headless state={board.s} onChange={s => change({ mode: 'marathon', s })} record={rec} names={names} stage={match.stage} />}
@@ -274,7 +328,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
       <div className="mactions sk-actions">
         <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
         {onLyst && <button type="button" className="btn btn-line fq-big" onClick={onLyst}>Use the lyst screen</button>}
-        <button type="button" className={`btn fq-big ${ready ? 'btn-win' : 'btn-ink'}`} disabled={!canOfferFinish(board, match.stage)} onClick={() => { setPhase('confirming'); setError(null); }}>Finish match</button>
+        <button type="button" className={`btn fq-big ${ready ? 'btn-win' : 'btn-ink'}`} disabled={!canOfferFinish(board, match.stage) || !groupAligned} onClick={() => { setPhase('confirming'); setError(null); }}>Finish match</button>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ const rpc=async(user,name,args)=>{const r=await fetch(`${API}/rest/v1/rpc/${name
 const results=[];
 const check=(name,ok,detail='')=>{results.push({name,ok:!!ok});console.log(`${ok?'PASS':'FAIL'} ${name}${ok?'':': '+detail}`);if(!ok)throw new Error(name+' '+detail)};
 const browser=await chromium.launch({executablePath:process.env.CHROME});
-const shots=process.env.E2E_SHOTS??'../evidence/roles';await fs.mkdir(shots,{recursive:true});
+const shots=process.env.E2E_SHOTS??'../evidence/roles-adversarial';await fs.mkdir(shots,{recursive:true});
 const contexts=[];
 const errors=[];
 async function pageFor(user,width=390){
@@ -43,6 +43,15 @@ try{
  check('Cancel preserves the original order',await editor.locator('.lineup-list>li').nth(0).locator('b').innerText()===first);
  await editor.locator('.lineup-list>li').nth(1).dragTo(editor.locator('.lineup-list>li').nth(0));
  check('desktop drag-and-drop changes the draft',await editor.locator('.lineup-list>li').nth(0).locator('b').innerText()===second);
+ await rpc(2,'set_match_queue',{p_match:mid(36),p_state:'in_the_hole',p_field:'Field 3'});
+ await editor.getByRole('button',{name:'Save order',exact:true}).click();
+ await editor.getByRole('alert').filter({hasText:/changed on another device/}).waitFor();
+ check('a concurrent queue change refuses the organizer draft without closing it',await editor.isVisible());
+ await editor.getByRole('button',{name:'Cancel',exact:true}).click();
+ await rpc(2,'set_match_queue',{p_match:mid(36),p_state:'scheduled',p_field:'Field 3'});
+ await org.reload();await org.getByTestId('control-live').waitFor();
+ await board.getByRole('button',{name:'Edit lineup / order'}).click();editor=board.locator('.lineup-editor');
+ await editor.locator('.lineup-list>li').nth(1).dragTo(editor.locator('.lineup-list>li').nth(0));
  await editor.getByRole('button',{name:'Save order',exact:true}).click();await editor.waitFor({state:'hidden'});
  await board.getByRole('button',{name:'Edit lineup / order'}).click();editor=board.locator('.lineup-editor');
  await editor.locator('.lineup-list>li').last().getByRole('button',{name:/^Replace /}).first().click();
@@ -150,7 +159,15 @@ try{
  await tc.getByTestId('cp-standing').filter({hasText:'4'}).waitFor();
  check('team counter records standing fighters',true);
  await tc.getByRole('button',{name:'Done with round',exact:true}).click();
+ await group.getByRole('button',{name:'Use 4 standing for Ankle Biters',exact:true}).waitFor();
+ const evidence=await rpc(4,'lyst_state',{p_match:mid(42)});
+ check('team counter submission is recorded on the server',evidence.seats.some(s=>s.tallies.some(t=>t.total===1&&t.submitted)));
  await group.getByRole('button',{name:'End round 1',exact:true}).click();
+ await group.getByRole('button',{name:'Use 4 standing for Ankle Biters',exact:true}).waitFor();
+ await group.getByText('Return for recount',{exact:true}).waitFor();
+ await tc.context().setOffline(true);
+ check('submitted standing counts remain available when the counter loses signal',await group.getByRole('button',{name:'Use 4 standing for Ankle Biters',exact:true}).isEnabled());
+ await tc.context().setOffline(false);
  await group.getByText('Return for recount',{exact:true}).click();
  await group.getByLabel('Reason',{exact:true}).fill('Team marshal requested recount');
  await group.getByRole('button',{name:'Return scores to counters',exact:true}).click();
@@ -159,6 +176,9 @@ try{
  check('team recount preserves standing evidence',rt.rounds.find(r=>r.round_no===1)?.status==='running'&&rt.seats.some(s=>s.tallies.some(t=>t.total===1&&!t.submitted)));
  await tc.getByRole('button',{name:'Done with round',exact:true}).click();
  await group.getByRole('button',{name:'End round 1',exact:true}).click();
+ await group.getByRole('button',{name:'Use 4 standing for Ankle Biters',exact:true}).click();
+ await team.getByRole('button',{name:'Ankle Biters fighter 5 out',exact:true}).waitFor();
+ check('secretary accepts the submitted standing count onto the board',true);
  for(let i=1;i<=5;i++)await team.getByRole('button',{name:`Red Deer Reavers fighter ${i} standing`,exact:true}).click();
  await team.getByRole('button',{name:'Confirm round',exact:true}).click();
  await group.getByRole('button',{name:'Start round 2',exact:true}).waitFor();
@@ -166,7 +186,42 @@ try{
  check('team awarded round confirms with counter phones present',gr.rounds.some(r=>r.round_no===1&&r.status==='confirmed'&&r.awarded_a===1&&r.awarded_b===0));
  await team.reload();await team.getByTestId('group-counter-rounds').getByRole('button',{name:'Start round 2',exact:true}).waitFor();
  check('team round survives reload without guessing its winner',true);
- for(const p of [org,secretary,counter,ann,team,tc]){
+ const takeover=await pageFor(4,390);await takeover.goto(`${BASE}/events/${SLUG}/field/Field%202?match=${mid(42)}&from=control`);
+ await takeover.getByTestId('group-counter-rounds').waitFor();
+ await takeover.getByRole('button',{name:'Start round 2',exact:true}).waitFor();
+ await shot(takeover,'fresh-secretary-team-takeover');
+ const shown=await takeover.locator('.mboard').innerText();console.log('ADVERSARIAL fresh secretary group board:',shown);
+ check('fresh secretary device restores the authoritative team round score',/Rounds 1 [–-] 0/i.test(shown));
+ // Hold confirmation in flight: Finish must wait for the authoritative round write.
+ // The deciding round was scored manually without starting its clock (including boards saved by the previous build).
+ for(let i=1;i<=5;i++)await takeover.getByRole('button',{name:`Red Deer Reavers fighter ${i} standing`,exact:true}).click();
+ let release, observed;
+ const held=new Promise(r=>release=r), seen=new Promise(r=>observed=r);
+ await takeover.context().route('**/rest/v1/rpc/lyst_confirm_round',async route=>{observed();await held;await route.continue();});
+ await takeover.getByRole('button',{name:'Confirm round',exact:true}).click();
+ await seen;
+ check('Finish waits while the last team round is still saving',await takeover.getByRole('button',{name:'Finish match',exact:true}).isDisabled());
+ release();
+ await takeover.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(b=>b.textContent==='Finish match'&&!b.disabled));
+ await takeover.getByRole('button',{name:'Finish match',exact:true}).click();
+ await takeover.getByRole('button',{name:'Save result',exact:true}).click();
+ await takeover.getByText('Official',{exact:true}).first().waitFor();
+ const finalTeam=await fetch(`${API}/rest/v1/matches?id=eq.${mid(42)}&select=queue_state,score_a,score_b`,{headers:{authorization:`Bearer ${token(uid(2))}`}}).then(r=>r.json());
+ check('fresh device finishes the manually scored deciding round with the recorded 2-0 result',finalTeam[0]?.queue_state==='final'&&finalTeam[0]?.score_a===2&&finalTeam[0]?.score_b===0);
+ await shot(takeover,'team-fresh-device-official-390');
+ // Exhaust normal request retries; metadata must recover on the announcer's own poll.
+ let blocked=true,profileAttempts=0;
+ await ann.context().route(`${API}/rest/v1/entries?**`,async route=>{
+   if(new URL(route.request().url()).searchParams.get('select')?.includes('joined_year')){
+     profileAttempts++;if(blocked)return route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'Injected profile outage'})});
+   }
+   return route.continue();
+ });
+ await ann.reload();await ann.locator('.an-event').waitFor();await ann.waitForTimeout(20000);blocked=false;
+ await ann.getByTestId('now-fighting').getByText(/Fighting since 2017/).first().waitFor({timeout:20000});
+ check('announcer recovers fighter profiles after a sustained outage without reload',profileAttempts>1);
+ for(const p of [org,secretary,counter,ann,team,tc,takeover]){
+
   const overflow=await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
   check(`role screen has no horizontal overflow (${p.url().split('/').at(-1)})`,!overflow);
  }

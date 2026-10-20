@@ -35,7 +35,10 @@ describe('fieldQueue', () => {
       m({ id: 'hole', queueState: 'in_the_hole' }), m({ id: 'deck2', queueState: 'on_deck', position: 2 }), m({ id: 'deck1', queueState: 'on_deck', position: 1 }),
       m({ id: 'act', queueState: 'active', position: 9 }), m({ id: 'other', field: 'Field 2' }), m({ id: 'sched', queueState: 'scheduled' }), m({ id: 'done', queueState: 'final' }), m({ id: 'nofield', field: null })
     ], ' field 1 ');
-    expect(q.map(x => x.id)).toEqual(['act', 'deck1', 'deck2', 'hole']);
+    expect(q.map(x => x.id)).toEqual(['act', 'nofield', 'deck1', 'deck2', 'hole']);
+  });
+  it('keeps null and blank fields on the same default Lyst as the server', () => {
+    expect(fieldQueue([m({ id: 'null', field: null }), m({ id: 'blank', field: '  ' }), m({ id: 'other', field: 'Field 2' })], 'Field 1').map(m => m.id)).toEqual(['null', 'blank']);
   });
   it('breaks ties by scheduled time before position', () => {
     const q = fieldQueue([m({ id: 'late', scheduledAt: '2026-10-01T12:00:00Z', position: 1 }), m({ id: 'early', scheduledAt: '2026-10-01T09:00:00Z', position: 5 })], 'Field 1');

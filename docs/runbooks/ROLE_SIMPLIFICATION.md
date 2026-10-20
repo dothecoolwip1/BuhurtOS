@@ -21,6 +21,19 @@ Implemented with Codex integration and Claude Code backend work and review, Octo
 - GitHub fresh database gate passed on the initial candidate, including all SQL suites, tournament simulation, fictional league, concurrent mutations and fingerprint. Final CI must also pass before merge/deployment. Record the exact commit and workflow in the PR.
 - Claude final integrated review: findings about permanently stale lineups, field-name rewriting and encoding resolved; no blocking findings. Reviewed code only, not hosted behavior.
 
+## Adversarial follow-up (October 19)
+
+The follow-up found and repaired fresh-device team boards resetting recorded wins, missing submitted standing-count evidence for the secretary, simultaneous secretary starts, lineup eligibility changing between read and lock, round/Lyst writes racing finalization, announcer profiles failing to recover after an outage, and blank/case-varied field names splitting the queue.
+
+- A group board reads confirmed Lyst rounds before reporting live scores. Repaired cached boards are saved and obsolete result command IDs cleared. An interrupted 0-0 round advances without inventing a winner. One known pending manual round is synchronized even without its clock; several missing winners require an audited paper result.
+- The secretary can see and use submitted official standing counts, including evidence from a phone that subsequently loses signal. Finishing waits for round confirmation. The server independently checks team results against recorded rounds; manual scoring without Lyst rounds and audited organizer/head-marshal overrides remain available.
+- Queue changes recheck the secretary's called window under the queue lock. Lineup saves synchronize with field opening and recheck eligibility after locking. Clock/round/open commands lock and recheck the match before changing a finalized fight. The migration patches whichever timer overload exists, preserving the hosted press-time correction and grants.
+- Announcer profiles retry every 15 seconds and on reconnect/focus. Null/blank fields and mixed case use the same default-field grouping throughout the field screens.
+
+Evidence: 1,431 unit tests pass (six existing skips); TypeScript and production build pass. The expanded real PostgreSQL/PostgREST/device-handler browser rehearsal passes 43 checks against a production bundle, including stale organizer drafts, offline counts, fresh-device recovery, holding the deciding-round confirmation in flight, manual deciding-round recovery and a sustained 20-second profile API outage. Four coordinated multi-session checks pass, including two secretaries starting, lineup versus Lyst opening, and both orderings of finalization versus a round writer; late Lyst opening cannot rebind phones to a final fight. The new SQL gate passes 79 checks, also against an isolated copy of the actual hosted press-time clock function. A hosted public sweep passes 46 route/viewport visits. Destructive cases run only on disposable local databases.
+
+Apply `20261023000100_event_role_race_guards.sql` before publishing this frontend. It patches functions in place and adds two private guards; it does not reset or backfill sporting rows. Compare hosted function definitions and row hashes before/after. Candidate CI must replay the complete database gate and browser suite before merge. Hosted authenticated role flows, physical phones and real network/radio conditions remain outside the local rehearsal's evidence.
+
 ## Reproduce
 
 `npm ci`, `npm run typecheck`, `npm test`, `npm run build`.

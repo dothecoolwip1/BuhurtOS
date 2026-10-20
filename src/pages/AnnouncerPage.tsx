@@ -25,8 +25,7 @@ const MARK_ICON: Record<AnnMark['kind'], string> = { warning: '⚠', card: '▮'
 interface Picked { entryId: string; matchId: string; side: 'a' | 'b'; snapshot: AnnSide; competition: string }
 
 /**
- * The Announcer view: what the person with the microphone needs, on a tablet beside them. READ-ONLY: the only control that does anything to the event
- * is the shared Camera Off button. Official data only (marshal-confirmed lyst scores, final results); never a counter's tally, never a reason, a note
+ * The Announcer view: what the person with the microphone needs, on a tablet beside them. Read-only: focus changes and public fighter cards stay local. Official data only (marshal-confirmed lyst scores, final results); never a counter's tally, never a reason, a note
  * or a private detail. Every refresh updates the screen in place (nothing remounts, nothing flashes "Loading"), so scroll position, the Lyst you
  * focused on and the fighter card you opened all stay put while fights start and finish.
  */
@@ -61,6 +60,14 @@ function AnnouncerScreen() {
   const eventIdForReads = published ? event?.id : undefined;
   const readiness = useAsync(() => (eventIdForReads ? fetchReadiness(eventIdForReads) : Promise.resolve(null)), [eventIdForReads], [rdTick]);
 
+  // Profile reads must recover independently of score changes after a temporary outage.
+  const [profileTick, setProfileTick] = useState(0);
+  useEffect(() => {
+    const refresh = () => { if (!document.hidden) setProfileTick(n => n + 1); };
+    const timer = window.setInterval(refresh, 15000);
+    window.addEventListener('online', refresh); window.addEventListener('focus', refresh);
+    return () => { window.clearInterval(timer); window.removeEventListener('online', refresh); window.removeEventListener('focus', refresh); };
+  }, []);
   // local-only focus
   const [focusRaw, setFocusRaw] = useState<string | null>(() => loadFocus(slug));
   const setFocus = useCallback((f: string | null) => { setFocusRaw(f); saveFocus(slug, f); }, [slug]);
@@ -69,7 +76,7 @@ function AnnouncerScreen() {
   const finals = useMemo(() => live.matches.filter(m => m.queueState === 'final').length, [live.matches]);
   const first = useMemo(() => buildAnnouncerView({ matches: live.matches, competitions, lyst: lyst.rows, sides: {}, readiness: readiness.data ?? null, focus: focusRaw }), [live.matches, competitions, lyst.rows, readiness.data, focusRaw]);
   const wanted = first.entryIds.join(',');
-  const sidesLoad = useAsync(() => (wanted ? fetchSides(wanted.split(','), false, true) : Promise.resolve({} as Record<string, SideSource>)), [wanted], [finals]);
+  const sidesLoad = useAsync(() => (wanted ? fetchSides(wanted.split(','), false, true) : Promise.resolve({} as Record<string, SideSource>)), [wanted], [finals, profileTick]);
   const sidesSeen = useRef<Record<string, SideSource>>({});
   if (sidesLoad.data) sidesSeen.current = { ...sidesSeen.current, ...sidesLoad.data };
   const view = useMemo(

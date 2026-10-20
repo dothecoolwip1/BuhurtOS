@@ -1,3 +1,4 @@
+import { fieldKey } from './eventDay';
 import type { CompetitionMatch, MatchResult, QueueState } from '../data/matches';
 import { duelTotal, newDuel, newGroupFight, newPro, type DuelState, type GroupState, type ProState } from './scoring';
 import { newMarathon, newSeries, seriesDetail, seriesOutcome, type SeriesKind, type SeriesState } from './marathon';
@@ -39,12 +40,11 @@ export function newBoard(mode: BoardMode, opts: { perSide?: number; roundsToWin?
 
 /* ---------------- the queue ---------------- */
 const QUEUE_ORDER: Partial<Record<QueueState, number>> = { active: 0, on_deck: 1, in_the_hole: 2 };
-const sameField = (a: string | null, b: string) => (a ?? '').trim().toLowerCase() === b.trim().toLowerCase();
 
 /** The matches to run on one field: active first, then on deck, then in the hole; ties by start time, then position. */
 export function fieldQueue(matches: readonly CompetitionMatch[], field: string): CompetitionMatch[] {
   return matches
-    .filter(m => m.field !== null && sameField(m.field, field) && QUEUE_ORDER[m.queueState] !== undefined)
+    .filter(m => fieldKey(m.field) === fieldKey(field) && QUEUE_ORDER[m.queueState] !== undefined)
     .sort((x, y) =>
       QUEUE_ORDER[x.queueState]! - QUEUE_ORDER[y.queueState]!
       || (x.scheduledAt ?? '￿').localeCompare(y.scheduledAt ?? '￿')
