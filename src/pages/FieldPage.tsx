@@ -25,7 +25,7 @@ import { NotFoundPage } from './NotFoundPage';
 import { realtimeChannel } from '../lib/realtimeChannel';
 import { useFocusBar } from '../components/FocusLayout';
 import { isSecretaryOnly } from '../lib/eventStaff';
-import { fieldLabel } from '../lib/eventDay';
+import { fieldKey, fieldLabel } from '../lib/eventDay';
 
 /** Mirrors private.can_score: organizer, marshal, scorekeeper, plus the platform owner. The database enforces it again on every call. */
 const SCORE_ROLES = ['organizer', 'head_marshal', 'marshal', 'scorekeeper', 'owner', 'operator'];
@@ -153,7 +153,7 @@ export function FieldPage() {
 
   const compById = useMemo(() => new Map((comps.data ?? []).map(c => [c.id, c])), [comps.data]);
   const queue = useMemo(() => fieldQueue(matches.data ?? [], field).filter(m => !secretary || ['active', 'on_deck', 'in_the_hole'].includes(m.queueState)), [matches.data, field, secretary]);
-  const otherFields = useMemo(() => fieldOverview(matches.data ?? []).filter(f => f.field !== field), [matches.data, field]);
+  const otherFields = useMemo(() => fieldOverview(matches.data ?? []).filter(f => fieldKey(f.field) !== fieldKey(field)), [matches.data, field]);
 
   // Running order (organizer, secretary / scorekeeper, event admin): the database checks who you are again and refuses a fight that is being fought or has no place in the line yet.
   const move = async (m: CompetitionMatch, action: QueueMove) => {

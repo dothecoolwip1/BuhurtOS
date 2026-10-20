@@ -51,7 +51,7 @@ select t.expect_error('secretary cannot read a waiting fight''s Lyst', $q$select
 select t.expect_error('secretary cannot call a waiting fight', $q$select public.set_match_queue(t.m(5), 'active')$q$, '42501');
 select t.expect_error('secretary cannot send the on-deck fight back', $q$select public.set_match_queue(t.m(2), 'scheduled')$q$, '42501');
 select t.expect_error('secretary cannot move a fight to another Lyst', $q$select public.set_match_queue(t.m(2), 'active', 'Field 2')$q$, '42501');
-select t.expect_ok_undo('secretary starts the on-deck fight', $q$select public.set_match_queue(t.m(2), 'active')$q$);
+select t.expect_error('secretary cannot start the on-deck fight until the current fight finishes', $q$select public.set_match_queue(t.m(2), 'active')$q$, 'P0001');
 select t.expect_ok_undo('secretary may still fill the field''s line', $q$select public.advance_field_queue(t.ev(1), 'Field 1', false)$q$);
 select t.expect_error('secretary cannot reorder', $q$select public.move_match_in_queue(t.m(2), 'later')$q$, '42501');
 select t.expect_error('secretary cannot hold a fight', $q$select public.set_match_hold(t.m(5), true, 'not here')$q$, '42501');

@@ -282,12 +282,12 @@ select t.expect_eq('the refused attempts changed nothing', t.st(t.mid(1, 'Round 
 select t.expect_eq('... and are not on the audit trail', t.audits('queue.state_set'), (select n from t_q3));
 -- the legitimate scorekeeper workflow
 select t.as_user(t.u(4));
-select t.expect_ok('a scorekeeper opens the fight on deck (field given as the page does)', format($q$select public.set_match_queue(%L, 'active', 'Field 1')$q$, t.mid(1, 'Round 1', 0)));
-select t.expect_ok('... and opens the one in the hole', format($q$select public.set_match_queue(%L, 'active')$q$, t.mid(1, 'Round 1', 1)));
-select t.expect_error('... but no longer sends an active fight back to the line (secretary boundary)', format($q$select public.set_match_queue(%L, 'scheduled')$q$, t.mid(1, 'Round 1', 1)), '42501');
-select t.expect_ok('... repeating a state that already holds is harmless', format($q$select public.set_match_queue(%L, 'active')$q$, t.mid(1, 'Round 1', 0)));
+select t.expect_error('a scorekeeper cannot start the fight on deck while comp 3 is active on the same field', format($q$select public.set_match_queue(%L, 'active', 'Field 1')$q$, t.mid(1, 'Round 1', 0)), 'P0001');
+select t.expect_ok('... may start the called fight on the other, idle Field 2', format($q$select public.set_match_queue(%L, 'active')$q$, t.mid(1, 'Round 1', 1)));
+select t.expect_error('... and cannot send the active fight back to the line (secretary boundary)', format($q$select public.set_match_queue(%L, 'scheduled')$q$, t.mid(3, 'Round 1', 0)), '42501');
+select t.expect_ok('... repeating the current active state is harmless', format($q$select public.set_match_queue(%L, 'active')$q$, t.mid(3, 'Round 1', 0)));
 select t.as_admin();
-select t.expect_eq('... the audit trail names the scorekeeper''s own calls (the two starts; the refusals and the repeat wrote none)', (select count(*)::int from public.audit_log where action = 'queue.state_set' and actor = t.u(4)), 2);
+select t.expect_eq('... only the start on idle Field 2 was audited; refusals and repeat wrote none', (select count(*)::int from public.audit_log where action = 'queue.state_set' and actor = t.u(4)), 1);
 select t.as_user(t.u(4));
 select t.expect_ok('a scorekeeper still starts the next fight through advance_field_queue (the queue picks it, not the scorekeeper)', format($q$select public.advance_field_queue(%L, 'Field 1', true)$q$, '00000000-0000-0000-0000-00000000e101'));
 select t.as_user(t.u(2));
@@ -313,7 +313,7 @@ select t.as_user(t.u(2));
 select t.expect_ok('Event day saves its plan with no hold in it (the page was only opened)', format($q$select public.save_queue_plan(%L, %L::uuid[], '{}'::uuid[])$q$, '00000000-0000-0000-0000-00000000e101', (select array_agg(id order by id) from public.matches where competition_id = t.comp(1) and queue_state = 'scheduled')));
 select t.as_admin();
 select t.expect_eq('... and the deliberate hold is still there', (select plan_hold from public.matches where id = t.mid(1, 'Round 2', 1)), true);
-select t.expect_eq('... while the three waiting fights received their planner order', (select count(*)::int from public.matches where competition_id = t.comp(1) and plan_order is not null), 3);
+select t.expect_eq('... while the four waiting fights received their planner order (the refused Field 1 start stayed waiting)', (select count(*)::int from public.matches where competition_id = t.comp(1) and plan_order is not null), 4);
 -- planner-derived holds still follow the planner
 select t.as_user(t.u(2));
 select t.expect_ok('the planner holds another fight (attendance)', format($q$select public.save_queue_plan(%L, %L::uuid[], %L::uuid[])$q$, '00000000-0000-0000-0000-00000000e101', (select array_agg(id order by id) from public.matches where competition_id = t.comp(1) and queue_state = 'scheduled'), array[t.mid(1, 'Round 3', 0)]));
