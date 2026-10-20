@@ -30,7 +30,7 @@ import { fetchMyEventEntryIds } from '../data/myFight';
 import { OfficialResults } from '../components/OfficialResults';
 import { CheckinCode } from '../components/CheckinCode';
 import { useEventRecordWatch } from '../lib/useEventRecordWatch';
-import { defaultViewFor, eventPhaseOf, viewPath, type PublicView } from '../lib/eventPhaseView';
+import { defaultViewFor, eventPhaseOf, publicEventPresentation, viewPath, type PublicView } from '../lib/eventPhaseView';
 import { EventHeader, type HeaderCta } from './event/EventHeader';
 import { LiveFields } from './event/LiveFields';
 
@@ -217,6 +217,7 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
   const completed = phase === 'completed';
   const officialCount = competitions.filter(c => c.status === 'finished').length;
   const running = competitions.filter(c => c.status !== 'finished');
+  const awaitingDraws = running.filter(c => live.data[c.id]?.matches.length === 0);
   const isStaff = Boolean(mine.data && (mine.data.isOrganizer || mine.data.roles.some(r => STAFF_ROLES.includes(r))));
   const win = registrationWindow(event.registrationOpensAt, event.registrationClosesAt);
   const cta: HeaderCta | null = phase === 'live' && view !== 'live' ? { to: viewPath(event.slug, 'live'), label: 'What is happening now', tone: 'ink' }
@@ -229,7 +230,7 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
 
   return (
     <section className={`fade-in ev ev-${view}`} style={{ display: 'grid', gap: 18 }}>
-      <EventHeader event={event} phase={phase} view={view} cta={cta} control={isStaff} synthetic={isTest} connection={showLive ? live.connection : null} />
+      <EventHeader event={event} phase={phase} view={view} cta={cta} control={isStaff} synthetic={isTest} connection={showLive ? live.connection : null} cost={feeText(event)} />
       {event.status === 'draft' && (
         <section className="panel info" role="status" aria-label="Draft event" style={{ display: 'grid', gap: 8, justifyItems: 'start' }}>
           <p><Chip tone="brass">Draft</Chip> <b>{DRAFT_NOTICE}.</b></p>
@@ -243,24 +244,19 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
 
       {view === 'overview' && (
         <>
-          {event.description && <p className="ev-lede">{event.description}</p>}
           {event.biTournamentUrl && <p><a className="btn btn-line" href={event.biTournamentUrl} target="_blank" rel="noopener noreferrer" data-testid="bi-tournament-link">This tournament on Buhurt International</a></p>}
           <EventOrganization meta={meta.data} />
           {invitation.data && <InvitationCard event={event} invitation={invitation.data} onChanged={changed} />}
+          {(event.feeNote || event.volunteerInfo) && <section className="panel info" aria-labelledby="info-h"><h2 id="info-h">Fees and volunteering</h2>
+            {event.feeNote && <p>{event.feeNote}</p>}{event.volunteerInfo && <p>{event.volunteerInfo}</p>}
+          </section>}
           {!completed && <RegistrationCard event={event} mine={mine.data} signedIn={Boolean(session)} onChanged={changed} entered={enteredNames} headerLeads={cta?.to === `/events/${event.slug}/register`} />}
           {showLive && phase !== 'live' && <MyNextFight eventId={event.id} userId={userId} competitions={competitions} live={live} />}
           <EventDaySchedule timeNote={event.timeNote} description={event.description} />
+          {event.description && <details className="panel info ev-description"><summary>Event details and requirements</summary><div style={{ display: 'grid', gap: 12, marginTop: 14 }}>{event.description.split(/\n\s*\n/).filter(Boolean).map((p, i) => <p key={i} style={{ whiteSpace: 'pre-line', margin: 0 }}>{p}</p>)}</div></details>}
           {event.timeNote && !/\d/.test(event.timeNote) && <p className="panel info"><b>{event.timeNote}</b></p>}
           <Competitions event={event} competitions={competitions} canAdd={canAddCompetition} />
           <Livestream eventId={event.id} slug={event.slug} published={event.status === 'published'} />
-          {(feeText(event) || event.feeNote || event.volunteerInfo) && (
-            <section className="panel info" aria-labelledby="info-h">
-              <h3 id="info-h">Good to know</h3>
-              {feeText(event) && <p>{feeText(event)}</p>}
-              {event.feeNote && <p style={{ color: 'var(--muted)' }}>{event.feeNote}</p>}
-              {event.volunteerInfo && <p style={{ color: 'var(--muted)' }}>{event.volunteerInfo}</p>}
-            </section>
-          )}
           <MyTeamPanel eventId={event.id} userId={userId} />
           <div className="ev-tools"><ShareEventButton title={event.name} /><AddToCalendar event={event} />{showLive && competitions.length > 0 && <Link className="btn btn-line" to={`/events/${event.slug}/arena`}>Big screen</Link>}</div>
           <p className="src">{eventTypeLabel(event.eventType)}. Rulesets are named as the organizer announced them.</p>
@@ -272,7 +268,8 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
           {!showLive && <p className="panel info muted">Live fights appear here once the event is published.</p>}
           {showLive && live.loading && live.updatedAt === null && <p className="muted">Loading the fields…</p>}
           {showLive && live.error != null && live.updatedAt === null && <p role="alert">{friendlyError(live.error, 'Could not load the fights.')}</p>}
-          {showLive && <LiveFields matches={allMatches} competitionNames={names} lyst={lyst.rows} clock={lyst.clock} slug={event.slug} mine={myMatchIds} teamCompetitions={new Set(competitions.filter(c => c.league === 'buhurt').map(c => c.id))} />}
+          {showLive && completed && <p className="panel info" role="status" data-testid="recorded-event-notice">{publicEventPresentation(event).notice}</p>}
+          {showLive && <LiveFields recorded={completed} matches={allMatches} competitionNames={names} lyst={lyst.rows} clock={lyst.clock} slug={event.slug} mine={myMatchIds} teamCompetitions={new Set(competitions.filter(c => c.league === 'buhurt').map(c => c.id))} />}
           {showLive && live.updatedAt !== null && allMatches.every(m => m.queueState === 'scheduled' || m.queueState === 'final') && (
             <section className="panel info ev-quiet" data-testid="live-quiet">
               <h2>{phase === 'upcoming' ? 'Nothing is fighting yet' : phase === 'completed' ? 'The fighting is over' : 'Nothing on the fields right now'}</h2>
@@ -305,27 +302,27 @@ export function EventWorkspace({ view: wantedView }: { view?: PublicView }) {
 
       {view === 'results' && (
         <>
-          {completed && <p className="panel info" role="status" data-testid="event-closed"><Chip tone="win">Official results</Chip> <b>{event.closedAt ? 'This event is complete.' : 'This event is over.'}</b> The placings here are its permanent record.</p>}
+          {completed && <p className="panel info" role="status" data-testid="event-closed"><b>{event.closedAt || event.archivedAt ? 'This event is complete.' : 'The scheduled dates have ended.'}</b> Recorded results appear below. Only finalized placings are official.</p>}
           {!showLive && <p className="panel info muted">Results appear here once the event is published.</p>}
           {showLive && completed && competitions.length > 0 && <EventHistory eventId={event.id} competitions={competitions} live={live} recordKey={recordKey} />}
           {showLive && !completed && (
             <section className="live-results" aria-labelledby="res-h">
               <h2 id="res-h">Results</h2>
               {officialCount > 0 ? <OfficialResults competitions={competitions} version={recordKey} heading={null} /> : <p className="muted">No competition is official yet.</p>}
-              {running.length > 0 && <h3 style={{ margin: '6px 0 0' }}>Still being fought</h3>}
+              {running.length > 0 && <h3 style={{ margin: '6px 0 0' }}>{phase === 'upcoming' ? 'Not started' : 'Results pending'}</h3>}
               {live.loading && live.updatedAt === null && <p className="muted">Loading results…</p>}
               {live.updatedAt !== null && running.map(c => {
                 const d = live.data[c.id];
-                if (!d) return null;
+                if (!d || d.matches.length === 0) return null;
                 return (
                   <div key={c.id} className="panel info live-comp">
                     <h3>{c.name} <span className="src">not official yet</span></h3>
-                    {d.matches.length === 0 && <p className="muted">The draw has not been made yet.</p>}
                     {d.matches.length > 0 && <LivePools standings={d.standings} entries={d.entries} matches={d.matches} />}
                     {d.matches.length > 0 && <LiveBracket matches={d.matches} liveOk={live.connection === 'live'} />}
                   </div>
                 );
               })}
+              {live.updatedAt !== null && awaitingDraws.length > 0 && <div className="panel info"><p>{awaitingDraws.length === 1 ? 'One competition is waiting for its draw.' : `${awaitingDraws.length} competitions are waiting for their draws.`}</p><details><summary>View competitions awaiting draws</summary><ul>{awaitingDraws.map(c => <li key={c.id}>{c.name}</li>)}</ul></details></div>}
             </section>
           )}
           {showLive && completed && competitions.length === 0 && <p className="muted">This event had no competitions.</p>}

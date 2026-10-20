@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { LiveEvent } from '../data/api';
 import {
-  activeFilterCount, applyEventFilter, DEFAULT_FILTER, eventAttention, eventFilterParams, eventsOnDay, filterOptions, googleCalendarUrl, groupEvents, icsForEvent, indexEvents,
+  activeFilterCount, applyEventFilter, canonicalRegion, DEFAULT_FILTER, eventAttention, eventFilterParams, eventsOnDay, filterOptions, googleCalendarUrl, groupEvents, icsForEvent, indexEvents,
   monthGrid, parseEventFilter, sortEvents, addMonths, parseMonth
 } from './eventFilters';
 
@@ -40,6 +40,15 @@ describe('sorting and grouping', () => {
 });
 
 describe('filtering', () => {
+  it('offers one province for aliases and includes every matching event without rewriting stored locations', () => {
+    const original = ['AB', 'Ab', ' Alberta '];
+    const variants = indexEvents(original.map((region, i) => ev({ id: String(i), name: 'Event', startsOn: '2026-11-01', endsOn: '2026-11-01', region })), new Set(), new Map(), []);
+    expect(filterOptions(variants, []).regions).toEqual(['AB']);
+    expect(applyEventFilter(variants, { ...DEFAULT_FILTER, region: 'Alberta' }, today)).toHaveLength(3);
+    expect(variants.map(e => e.region)).toEqual(original);
+    expect(parseEventFilter(new URLSearchParams('province=Ab')).region).toBe('AB');
+    expect(canonicalRegion('New York')).toBe('New York');
+  });
   it('hides test events by default and shows them with the toggle', () => {
     expect(applyEventFilter(indexed, { ...DEFAULT_FILTER, when: 'all' }, today).map(e => e.id)).not.toContain('fake');
     expect(applyEventFilter(indexed, { ...DEFAULT_FILTER, when: 'all', test: true }, today).map(e => e.id)).toContain('fake');

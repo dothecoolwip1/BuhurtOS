@@ -3036,6 +3036,7 @@ view public.competition_results opts=security_invoker=true 9aabfbea73c8319cb8da5
 view public.competition_standings opts=security_invoker=true 8d4ca99c3fd9db2cf2cb8f7fd8b47047
 view public.entry_roster opts=security_invoker=true 336f4b4453c6c8849ae58ace7b889271
 view public.fighter_career_stats opts=security_invoker=true 5fc6bf366053a0a3619060919c6974bc
+view public.fighter_directory opts=security_invoker=true 92588dd5ead4037cf85852cb23a5669b
 view public.fighter_history opts=security_invoker=true 390ba4e5540a08b4f2fce00ff48bf552
 view public.fighter_match_rows opts=security_invoker=true 99eb84d266d00afc3cdd1bef730123c3
 view public.fighter_match_stats opts=security_invoker=true a0a8188fedc270c30c46afb6e014963e

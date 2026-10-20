@@ -100,22 +100,23 @@ export function RankingsPage() {
         <TeamDisciplineTotals scope={scope} organizationId={organizationId} seasonId={seasonId} params={params} setParams={p => setParams(p, { replace: true })} />
       )}
       {disciplinesView && scope === 'season' && !!organizationId && !seasons.loading && seasonList.length === 0 && (
-        <div className="panel info"><h3>No seasons yet</h3><p className="muted">This organization has no seasons yet.</p></div>
+        <div className="panel info"><h3>No seasons yet</h3><p className="muted">Season rankings are not available for this organization. You can still look up its recorded results.</p><button type="button" className="btn btn-ink" onClick={() => set('scope', 'career')}>See all-time rankings</button></div>
       )}
       {!disciplinesView && (orgs.loading || seasons.loading || list.loading || (leadersWanted && leaders.loading)) && (!missing || (teamsByCategory && leadersWanted)) && <p className="muted">Loading rankings…</p>}
-      {orgs.error != null && <p role="alert">{friendlyError(orgs.error, 'Could not load organizations.')}</p>}
-      {seasons.error != null && <p role="alert">{friendlyError(seasons.error, 'Could not load seasons.')}</p>}
-      {leaders.error != null && <p role="alert">{friendlyError(leaders.error, 'Could not load the team categories.')}</p>}
-      {list.error != null && <p role="alert">{friendlyError(list.error, 'Could not load rankings.')}</p>}
+      {orgs.error != null && <div role="alert"><p>{friendlyError(orgs.error, 'Could not load organizations.')}</p><button type="button" className="btn btn-line" onClick={orgs.reload}>Retry organizations</button></div>}
+      {seasons.error != null && <div role="alert"><p>{friendlyError(seasons.error, 'Could not load seasons.')}</p><button type="button" className="btn btn-line" onClick={seasons.reload}>Retry seasons</button></div>}
+      {leaders.error != null && <div role="alert"><p>{friendlyError(leaders.error, 'Could not load the team categories.')}</p><button type="button" className="btn btn-line" onClick={leaders.reload}>Retry team categories</button></div>}
+      {list.error != null && <div role="alert"><p>{friendlyError(list.error, 'Could not load rankings.')}</p><button type="button" className="btn btn-line" onClick={list.reload}>Retry rankings</button></div>}
       {showOverview && <TeamOverview cards={cards} selected={teamsByCategory && picked ? `${picked.category}|${picked.gender}` : null} byCategory={scope !== 'org_all'} onOpen={openLeaderboard} />}
       {noTeamRankings && (
         <div className="panel info"><h3>No team rankings yet</h3>
           <p className="muted">No team has a recorded result for this {scope === 'season' ? 'season' : 'organization'} yet. Categories appear here as soon as teams have results in them.</p></div>
       )}
       {!disciplinesView && listTitle && list.data && list.data.rows.length > 0 && <h2 style={{ fontSize: 22 }}>{listTitle}: full ranking</h2>}
-      {missing && !orgs.loading && !disciplinesView && !(teamsByCategory && leadersWanted) && (
+      {missing && !orgs.loading && !seasons.loading && orgs.error == null && seasons.error == null && !disciplinesView && !(teamsByCategory && leadersWanted) && (
         <div className="panel info"><h3>{orgList.length === 0 && scope !== 'career' ? 'No organizations yet' : 'Nothing to show yet'}</h3>
-          <p className="muted">{orgList.length === 0 && scope !== 'career' ? 'Rankings by organization appear once an organization exists.' : missing}{scope === 'season' && organizationId && seasonList.length === 0 && ' This organization has no seasons yet.'}</p></div>
+          <p className="muted">{scope === 'season' && organizationId && seasonList.length === 0 ? 'This organization has no seasons yet. You can still look up recorded results.' : orgList.length === 0 && scope !== 'career' ? 'Rankings by organization appear once an organization exists.' : missing}</p>
+          {scope === 'season' && organizationId && seasonList.length === 0 && seasons.error == null && <button type="button" className="btn btn-ink" onClick={() => set('scope', 'career')}>See all-time rankings</button>}</div>
       )}
       {!disciplinesView && list.data && list.data.rows.length === 0 && !noTeamRankings && (
         <div className="panel info"><h3>No rankings yet</h3><p className="muted">Nobody has a recorded result for this choice. Rankings come from finished competitions and nothing is estimated.</p></div>

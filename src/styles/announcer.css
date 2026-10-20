@@ -157,6 +157,17 @@ span.an-up-btn{cursor:default}
   .ann{font-size:17px}
   .an-card,.an-recent{padding:12px;border-radius:14px}
   .an-count{margin-left:0;flex-basis:100%}
+  .an-side{grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;padding:9px 10px}
+  .an-side .an-corner{grid-column:1;grid-row:1}
+  .an-side .an-who{grid-column:1;grid-row:2;gap:9px}
+  .an-side .an-score{grid-column:2;grid-row:1 / span 2;align-self:center;font-size:52px}
+  .an-side .an-marks{grid-column:1 / -1}
+  .an-side .an-photo,.an-side .an-crest{width:38px!important;height:38px!important;flex:none}
+  .an-side .an-crest svg{max-width:100%;max-height:100%}
+  .an-name{font-size:24px}
+  .an-team,.an-rec{font-size:14px}
+  .an-clock-n{font-size:44px}
+  .an-now{gap:8px}
 }
 @media print{.an-info,.an-bar{display:none}}
 

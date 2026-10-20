@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { finishedProfiles } from '../auth/ProfileGate';
 import { SignIn } from '../auth/SignIn';
@@ -12,7 +12,7 @@ import { useDocumentTitle } from '../lib/useDocumentTitle';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
 
-/** First sign-in: who you are and how you take part. Required before the rest of the site. */
+/** First sign-in: who you are and how you take part. Public browsing and account switching remain available. */
 export function WelcomePage() {
   useDocumentTitle('Set up your profile');
   const { session, loading } = useAuth();
@@ -80,7 +80,7 @@ function Form({ userId, next, firstTime, initial }: { userId: string; next: stri
         {show && errors.city && <span role="alert" style={bad}>{errors.city}</span>}
         <p className="src">This stays private to you. Your public fighter page is separate and is created when a team captain accepts your request to join a team, or when a registration of yours is accepted at an event.</p>
         {problem && <p role="alert" style={bad}>{problem}</p>}
-        <div className="formactions"><button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Continue'}</button></div>
+        <div className="formactions"><button type="submit" className="btn btn-ink" disabled={busy}>{busy ? 'Saving…' : 'Continue'}</button><Link className="btn btn-line" to="/account">Switch account or sign out</Link></div>
       </form>
     </section>
   );

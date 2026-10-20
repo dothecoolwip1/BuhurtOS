@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { Crest } from '../components/Crest';
 import { Chip, PageHead, TestBadge } from '../components/ui';
-import { isSynthetic, useSynthetic } from '../data/synthetic';
+import { isSynthetic, loadSyntheticStrict, useSynthetic } from '../data/synthetic';
 import { fetchDirectory, teamEmblemUrl, type DirectoryEntry } from '../data/teamDirectory';
 import type { CrestDivision, Team } from '../data/types';
 import { friendlyError } from '../lib/friendlyError';
@@ -28,11 +28,14 @@ export function TeamsPage() {
   const q = params.get('q') ?? '';
   useTrackSearch('teams', q);
   const org = params.get('org') ?? '';
+  const showTest = params.get('test') === '1';
+  const tags = useAsync(loadSyntheticStrict, []);
   const live = useAsync(fetchDirectory, []);
   const all = live.data ?? [];
-  const options = affiliationOptions(all);
-  const list = filterTeams(all, q, org);
-  const set = (key: 'q' | 'org', value: string) => {
+  const visible = showTest ? all : all.filter(t => !isSynthetic(tags.data ?? new Set(), 'team', t.id));
+  const options = tags.data || showTest ? affiliationOptions(visible) : [];
+  const list = tags.data || showTest ? filterTeams(visible, q, org) : [];
+  const set = (key: 'q' | 'org' | 'test', value: string) => {
     const next = new URLSearchParams(params);
     if (value) next.set(key, value); else next.delete(key);
     setParams(next, { replace: true });
@@ -56,9 +59,11 @@ export function TeamsPage() {
         )}
         <Link className="btn btn-line" to="/teams/new">Add your team</Link>
       </div>
-      {live.loading && <p className="muted">Loading teams…</p>}
+      <label className="toggle"><input type="checkbox" checked={showTest} onChange={e => set('test', e.target.checked ? '1' : '')} /> Show test data</label>
+      {(live.loading || (!showTest && tags.loading)) && <p className="muted">Loading teams…</p>}
+      {!showTest && tags.error != null && <div role="alert"><p>Could not check which teams are test data.</p><button type="button" className="btn btn-line" onClick={tags.reload}>Try again</button></div>}
       {live.error != null && <p role="alert">{friendlyError(live.error, 'Could not load teams.')}</p>}
-      {!live.loading && !live.error && (
+      {!live.loading && !live.error && (showTest || tags.data) && (
         <p className="muted" aria-live="polite">{list.length} {list.length === 1 ? 'team' : 'teams'}{q || org ? ' match' : ''}</p>
       )}
       {groupByOrganization(list, memberOrg).map(g => (
@@ -70,8 +75,8 @@ export function TeamsPage() {
       {!live.loading && !live.error && all.length === 0 && (
         <div className="panel info"><h3>No teams listed yet</h3><p style={{ color: 'var(--muted)' }}>Teams appear here once they are approved.</p></div>
       )}
-      {!live.loading && !live.error && all.length > 0 && list.length === 0 && (
-        <div className="panel info"><h3>No team matches</h3><p style={{ color: 'var(--muted)' }}>Try a different name or clear the filters.</p><button type="button" className="btn btn-line btn-sm" onClick={() => setParams({}, { replace: true })}>Clear filters</button></div>
+      {!live.loading && !live.error && (showTest || tags.data) && all.length > 0 && list.length === 0 && (
+        <div className="panel info"><h3>No team matches</h3><p style={{ color: 'var(--muted)' }}>Try a different name or clear the filters.</p><button type="button" className="btn btn-line btn-sm" onClick={() => setParams(showTest ? { test: '1' } : {}, { replace: true })}>Clear filters</button></div>
       )}
     </section>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Seg } from '../components/ui';
 import { Highlight, RuleRow, SourceNote } from '../components/rules/RuleBits';
@@ -18,6 +18,20 @@ const QUICK: readonly (readonly [string, string])[] = [
   ['Marshal accreditation', 'marshal accreditation']
 ];
 const SUMMARY_WORD: Record<Exclude<F, 'all'>, string> = { buhurt: 'Group fight', duels: 'Duels', outrance: 'Profight' };
+/** Official matches shown before "Show all": enough to answer most questions at the list without burying the summaries. */
+const FIRST = 5;
+
+/** Moves to a section heading (scrolled and focused), without touching the address, so Back still leaves the search as it was. */
+function JumpTo({ target, children }: { target: string; children: ReactNode }) {
+  return (
+    <button type="button" className="btn btn-line rl-jump" onClick={() => {
+      const el = document.getElementById(target);
+      if (!el) return;
+      el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      el.focus({ preventScroll: true });
+    }}>{children} ↓</button>
+  );
+}
 
 /** A document applies to a format when it names it, or names none (general documents apply to every format). */
 const docFits = (d: RuleDocument, f: F) => f === 'all' || d.applies_to.length === 0 || d.applies_to.includes(f);
@@ -68,6 +82,23 @@ export function RulesPage() {
   const sres = useMemo(() => (needle ? searchRules(summaries, needle, 20) : null), [summaries, needle]);
   const textCount = useMemo(() => new Set(official.map(e => e.version.id)).size, [official]);
   const anyOlder = (index?.data.versions ?? []).some(v => v.status === 'superseded' || v.status === 'withdrawn' || isHistorical(v));
+  // "Show all" belongs to one search: a new word, format or version scope starts again at the best few.
+  const scope = `${needle}|${f}|${older ? 1 : 0}`;
+  const [allFor, setAllFor] = useState<string | null>(null);
+  const showAll = allFor === scope;
+  const listRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLButtonElement>(null);
+  const total = res?.hits.length ?? 0;
+  const shown = res ? (showAll ? res.hits : res.hits.slice(0, FIRST)) : [];
+  const toggleAll = () => {
+    const next = !showAll;
+    setAllFor(next ? scope : null);
+    requestAnimationFrame(() => {
+      // Opening: continue from the first newly shown rule. Closing: stay on the button, brought back into view.
+      if (next) listRef.current?.querySelectorAll<HTMLElement>('.rl-row')[FIRST]?.focus();
+      else moreRef.current?.scrollIntoView({ block: 'nearest' });
+    });
+  };
 
   return (
     <section className="fade-in rl-page">
@@ -91,6 +122,7 @@ export function RulesPage() {
           {QUICK.map(([label, query]) => <button key={label} type="button" className="chip rl-qchip" onClick={() => set({ q: query })}>{label}</button>)}
         </div>
       )}
+      {!needle && summaries.length > 0 && <div className="rl-more"><JumpTo target="rl-quick">Quick summaries</JumpTo></div>}
       {stale && <p className="src" role="status">Showing the rules saved on this device; they could not be refreshed just now.</p>}
       {error != null && !index && <div className="panel rule"><h3>The rules could not be loaded</h3><p>Check the connection and try again.</p><button type="button" className="btn btn-line" onClick={reload}>Try again</button></div>}
       {loading && <p className="src" role="status">Loading the rules…</p>}
@@ -99,14 +131,22 @@ export function RulesPage() {
         <div className="rl-results" aria-live="polite">
           {textCount > 0 && (
             <section className="rl-block" aria-labelledby="rl-official">
-              <h2 id="rl-official" className="rl-h2">Official rules <span className="mono">{res.hits.length}{res.hits.length === 80 ? '+' : ''}</span></h2>
+              <h2 id="rl-official" className="rl-h2">Official rules <span className="mono">{total}{total === 80 ? '+' : ''}</span></h2>
               {res.partial && <p className="src">No rule has every word you typed. These are the closest.</p>}
-              {res.hits.length ? <div className="rl-list">{res.hits.map(h => <RuleRow key={h.item.id} e={h.item} matched={h.matched} snippet={h.snippet} />)}</div>
+              {total > FIRST && <p className="src">{showAll ? `All ${total} matches, best first.` : `The ${FIRST} best of ${total}${total === 80 ? '+' : ''} matches.`}</p>}
+              {total ? <div className="rl-list" id="rl-official-list" ref={listRef}>{shown.map(h => <RuleRow key={h.item.id} e={h.item} matched={h.matched} snippet={h.snippet} />)}</div>
                 : <p className="rl-none">No official rule matches “{needle}”.</p>}
+              {(total > FIRST || (sres?.hits.length ?? 0) > 0) && (
+                <div className="rl-more">
+                  {total > FIRST && <button ref={moreRef} type="button" className="btn btn-line" aria-expanded={showAll} aria-controls="rl-official-list" onClick={toggleAll}>
+                    {showAll ? 'Show fewer' : total === 80 ? 'Show the top 80' : `Show all ${total}`}</button>}
+                  {(sres?.hits.length ?? 0) > 0 && <JumpTo target="rl-sum">{sres!.hits.length} BuhurtOS summar{sres!.hits.length === 1 ? 'y' : 'ies'}</JumpTo>}
+                </div>
+              )}
             </section>
           )}
           <section className="rl-block" aria-labelledby="rl-sum">
-            <h2 id="rl-sum" className="rl-h2">BuhurtOS summaries <span className="mono">{sres?.hits.length ?? 0}</span></h2>
+            <h2 id="rl-sum" className="rl-h2" tabIndex={-1}>BuhurtOS summaries <span className="mono">{sres?.hits.length ?? 0}</span></h2>
             <p className="src">Short paraphrases written by BuhurtOS, not the official wording. Check the source shown on each.</p>
             {sres && sres.hits.length > 0 && <div className="rl-list">{sres.hits.map(h => (
               <article className="panel rule rl-summary" key={h.item.id}>
@@ -179,7 +219,7 @@ function Summaries({ list }: { list: ReturnType<typeof summaryEntries> }) {
   if (!list.length) return null;
   return (
     <section className="rl-block" aria-labelledby="rl-quick">
-      <h2 id="rl-quick" className="rl-h2">Quick summaries</h2>
+      <h2 id="rl-quick" className="rl-h2" tabIndex={-1}>Quick summaries</h2>
       <p className="src">Short paraphrases written by BuhurtOS, not the official wording. Each names the document and section it summarizes.</p>
       <div className="rl-groups">
         {list.map(s => (

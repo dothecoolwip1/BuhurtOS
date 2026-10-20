@@ -19,6 +19,7 @@ import { buildAnnouncerView, orderLysts, slotWord, type AnnFight, type AnnMark, 
 import { experienceLine, buildEntryInfo, type EntryInfo } from '../lib/announcer/info';
 import { loadFocus, saveFocus } from '../lib/announcer/focus';
 import { latest, staleLine, staleness } from '../lib/announcer/stale';
+import { publicEventPresentation } from '../lib/eventPhaseView';
 
 const MARK_ICON: Record<AnnMark['kind'], string> = { warning: '⚠', card: '▮', deduction: '−', dq: '⊘' };
 
@@ -127,16 +128,17 @@ function AnnouncerScreen() {
   const stale = staleness(latest(lyst.updatedAt, eventOkAt.current, live.updatedAt), now);
   const staleWords = staleLine(stale);
   const shownLysts = orderLysts(view.lysts, view.focus);
-  const connectionWord = live.connection === 'live' ? 'Live' : live.connection === 'polling' ? 'Updating every few seconds' : 'Connecting';
+  const presentation = publicEventPresentation(event);
+  const connectionWord = live.connection === 'live' ? 'Connected' : live.connection === 'polling' ? 'Updating every few seconds' : 'Connecting';
   const pick = (f: AnnFight, side: AnnSide) => { if (side.entryId) setPicked({ entryId: side.entryId, matchId: f.id, side: side.side, snapshot: side, competition: f.competition }); };
 
   return (
     <div className="ann">
       <header className="an-bar">
-        <span className="an-event" title={event.name}>{event.name}</span>
-        <span className="an-conn" role="status">{connectionWord}</span>
+        <Link className="an-event" title={event.name} to={`/events/${event.slug}`}>← {event.name}</Link>
+        <span className="an-conn" role="status" aria-label={`Connection: ${connectionWord}`}>{connectionWord}</span>
       </header>
-      <div className="an-stale-slot" role="status" aria-live="polite">{staleWords && <p className="an-stale" data-testid="stale-banner"><span aria-hidden="true">⏸ </span>{staleWords}</p>}</div>
+      <div className="an-stale-slot" role="status" aria-live="polite">{staleWords && <p className="an-stale" data-testid="stale-banner"><span aria-hidden="true">⏸ </span>{staleWords}</p>}{presentation.recorded && <p className="an-stale" data-testid="recorded-event-notice">{presentation.notice}</p>}</div>
 
       <ErrorBoundary>
         {view.lysts.length > 1 && (
@@ -152,7 +154,7 @@ function AnnouncerScreen() {
               <section className="an-card an-empty"><h2 className="an-h">{live.loading && live.updatedAt === null ? 'Loading fights…' : event.closedAt ? 'Event complete' : 'No fights waiting'}</h2>
                 <p className="an-note">{competitions.length === 0 ? 'No competitions have been set up yet.' : view.recent.length > 0 ? 'Every posted fight is finished. Results are below.' : 'Fights will appear here as soon as they are posted.'}</p></section>
             )}
-            {shownLysts.map(l => <LystColumn key={l.key} card={l} clock={lyst.clock} compact={view.focus !== null && view.focus !== l.key} picked={picked} onPick={pick} />)}
+            {shownLysts.map(l => <LystColumn key={l.key} recorded={presentation.recorded} card={l} clock={lyst.clock} compact={view.focus !== null && view.focus !== l.key} picked={picked} onPick={pick} />)}
           </div>
 
           <details className="an-recent"><summary className="an-btn">Recent results</summary>
@@ -168,27 +170,27 @@ function AnnouncerScreen() {
 }
 
 // ------------------------------------------------------------------------------------------------ parts
-function LystColumn({ card, clock, compact, picked, onPick }: { card: LystCard; clock: ServerClock; compact: boolean; picked: Picked | null; onPick: (f: AnnFight, s: AnnSide) => void }) {
+function LystColumn({ card, clock, compact, picked, onPick, recorded }: { card: LystCard; clock: ServerClock; compact: boolean; picked: Picked | null; onPick: (f: AnnFight, s: AnnSide) => void; recorded: boolean }) {
   return (
-    <section className={`an-card an-lyst${card.live ? ' is-live' : ''}${compact ? ' is-compact' : ''}`} aria-labelledby={`an-h-${card.key.replace(/\W+/g, '-')}`} data-lyst={card.key}>
+    <section className={`an-card an-lyst${card.live && !recorded ? ' is-live' : ''}${compact ? ' is-compact' : ''}`} aria-labelledby={`an-h-${card.key.replace(/\W+/g, '-')}`} data-lyst={card.key}>
       <header className="an-lyst-head">
         <h2 className="an-lyst-name" id={`an-h-${card.key.replace(/\W+/g, '-')}`}>{card.label}</h2>
-        <span className={`an-state ${card.live ? 'live' : 'idle'}`}><span aria-hidden="true">{card.live ? '●' : '○'}</span> {card.live ? 'Fighting now' : 'Between fights'}</span>
+        <span className={`an-state ${card.live && !recorded ? 'live' : 'idle'}`}><span aria-hidden="true">{card.live && !recorded ? '●' : '○'}</span> {recorded ? 'Last recorded state' : card.live ? 'Fighting now' : 'Between fights'}</span>
         <span className="an-count">{card.total > 0 ? `${card.done} of ${card.total} fights done` : ''}</span>
       </header>
 
       {card.now
-        ? <NowFight f={card.now} clock={clock} extra={card.alsoActive} picked={picked} onPick={onPick} />
-        : <div className="an-nonow"><p className="an-label">Now fighting</p><p className="an-none">Nobody on the Lyst yet</p></div>}
+        ? <NowFight recorded={recorded} f={card.now} clock={clock} extra={card.alsoActive} picked={picked} onPick={onPick} />
+        : <div className="an-nonow"><p className="an-label">{recorded ? 'Last recorded fight' : 'Now fighting'}</p><p className="an-none">{recorded ? 'No active fight was recorded' : 'Nobody on the Lyst yet'}</p></div>}
 
       <div className="an-next">
-        <p className="an-label">Up next</p>
+        <p className="an-label">{recorded ? 'Previously lined up' : 'Up next'}</p>
         {card.next ? <UpFight f={card.next} big picked={picked} onPick={onPick} /> : <p className="an-none">No fight called yet</p>}
       </div>
 
       {!compact && (
-        <details className="an-coming"><summary className="an-btn">More upcoming fights</summary>
-          <p className="an-label">Coming up</p>
+        <details className="an-coming"><summary className="an-btn">{recorded ? 'Recorded fight order' : 'More upcoming fights'}</summary>
+          <p className="an-label">{recorded ? 'Previously lined up' : 'Coming up'}</p>
           {card.coming.length === 0 ? <p className="an-none">Nothing else lined up</p> : (
             <ol className="an-queue">{card.coming.map(f => <li key={f.id}><UpFight f={f} picked={picked} onPick={onPick} /></li>)}</ol>
           )}
@@ -199,17 +201,17 @@ function LystColumn({ card, clock, compact, picked, onPick }: { card: LystCard; 
   );
 }
 
-function NowFight({ f, clock, extra, picked, onPick }: { f: AnnFight; clock: ServerClock; extra: number; picked: Picked | null; onPick: (f: AnnFight, s: AnnSide) => void }) {
+function NowFight({ f, clock, extra, picked, onPick, recorded }: { f: AnnFight; clock: ServerClock; extra: number; picked: Picked | null; onPick: (f: AnnFight, s: AnnSide) => void; recorded: boolean }) {
   return (
     <div className="an-now" data-testid="now-fighting">
-      <p className="an-label an-live-label"><span aria-hidden="true">● </span>Now fighting</p>
+      <p className={`an-label${recorded ? '' : ' an-live-label'}`}>{recorded ? 'Last recorded fight' : <><span aria-hidden="true">● </span>Now fighting</>}</p>
       <p className="an-ctx">{f.competition} · {f.stage}</p>
       <div className="an-sides">
         <SideButton f={f} s={f.a} score picked={picked} onPick={onPick} />
         <span className="an-vs" aria-hidden="true">vs</span>
         <SideButton f={f} s={f.b} score picked={picked} onPick={onPick} />
       </div>
-      {f.timer && <AnnClock timer={f.timer} clock={clock} />}
+      {!recorded && f.timer && <AnnClock timer={f.timer} clock={clock} />}
       {f.phase && <p className="an-phase">{f.phase}</p>}
       {extra > 0 && <p className="an-note">{extra === 1 ? 'Another fight is also marked as fighting on this Lyst.' : `${extra} other fights are also marked as fighting on this Lyst.`}</p>}
     </div>

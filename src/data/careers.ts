@@ -22,19 +22,22 @@ export async function fetchSeasons(): Promise<SeasonInfo[]> {
 }
 
 // ================================================================ fighter directory
-export interface DirectoryFilter { q: string; teamId: string; gender: string; discipline: string; region: string; page: number; /** Pack 09D: include fighters who are not competing now (off by default). */ inactive?: boolean }
+export interface DirectoryFilter { q: string; teamId: string; gender: string; discipline: string; region: string; page: number; includeTestData?: boolean; /** Pack 09D: include fighters who are not competing now (off by default). */ inactive?: boolean }
 export interface FighterCard {
   id: string; name: string; gender: string | null; city: string | null; region: string | null; disciplines: string[];
   team: { name: string; slug: string } | null;
+  synthetic?: boolean;
 }
-type CardDb = { id: string; display_name: string; gender: string | null; city: string | null; region: string | null; disciplines: string[] | null; team_id: string | null; teams: { name: string; slug: string } | { name: string; slug: string }[] | null };
+type CardDb = { id: string; display_name: string; gender: string | null; city: string | null; region: string | null; disciplines: string[] | null; team_id: string | null; team_name: string | null; team_slug: string | null; synthetic: boolean };
 
 /**
  * One page of fighters. Search and filters are applied by the database (ilike / eq / contains). The team shown is the fighter's home team
  * (fighters.team_id, else the newest current non-mercenary membership). The team FILTER matches fighters.team_id only.
  */
 export async function fetchFighterDirectory(f: DirectoryFilter): Promise<{ rows: FighterCard[]; total: number }> {
-  let q = supabase.from('fighters').select('id,display_name,gender,city,region,disciplines,team_id,teams(name,slug)', { count: 'exact' });
+  // Reuse the existing invoker-security directory; filter before counts/pages without a growing URL of IDs.
+  let q = supabase.from('fighter_directory').select('id,display_name,gender,city,region,disciplines,team_id,team_name,team_slug,synthetic', { count: 'exact' });
+  if (!f.includeTestData) q = q.eq('synthetic', false);
   if (f.q.trim()) q = q.ilike('display_name', `%${escapeLike(f.q)}%`);
   if (f.teamId) q = q.eq('team_id', f.teamId);
   if (f.gender) q = q.eq('gender', f.gender);
@@ -46,7 +49,7 @@ export async function fetchFighterDirectory(f: DirectoryFilter): Promise<{ rows:
   if (res.error && (res.error as { code?: string }).code === '42703') return fetchFighterDirectory({ ...f, inactive: true });
   const { data, error, count } = res;
   if (error) throw error;
-  const rows = (data as unknown as CardDb[]).map(r => ({ id: r.id, name: r.display_name, gender: r.gender, city: r.city, region: r.region, disciplines: r.disciplines ?? [], team: one(r.teams), teamId: r.team_id }));
+  const rows = (data as unknown as CardDb[]).map(r => ({ id: r.id, name: r.display_name, gender: r.gender, city: r.city, region: r.region, disciplines: r.disciplines ?? [], team: r.team_name && r.team_slug ? { name: r.team_name, slug: r.team_slug } : null, teamId: r.team_id, synthetic: r.synthetic }));
   // Fighters whose home team comes from a membership rather than fighters.team_id.
   const missing = rows.filter(r => !r.team).map(r => r.id);
   const byFighter = missing.length ? await currentMembershipTeams(missing) : new Map<string, { name: string; slug: string }>();

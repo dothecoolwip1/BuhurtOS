@@ -129,6 +129,7 @@ export function Layout() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6" /></svg>
               Organizations
             </NavLink>
+            <a href="https://buhurtos-card-studio.vercel.app/claude/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" /><circle cx="12" cy="9" r="2" /><path d="M8 17h8M8 14h8" /></svg><span>Card Studio <span className="src">Create fighter cards · opens a new tab</span></span></a>
             {isOwner && (
               <NavLink to="/platform">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"><path d="M12 3 3 8l9 5 9-5ZM3 13l9 5 9-5" /></svg>

@@ -1,10 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { controlPath, eventPath, defaultModeFor, defaultViewFor, eventPhaseOf, legacyManageTarget, todayIn, viewPath } from './eventPhaseView';
+import { controlPath, eventPath, defaultModeFor, defaultViewFor, eventPhaseOf, legacyManageTarget, publicEventPresentation, todayIn, viewPath } from './eventPhaseView';
 
 const at = (iso: string) => new Date(iso);
 const ev = (o: Partial<Parameters<typeof eventPhaseOf>[0]> = {}) => ({ status: 'published' as const, startsOn: '2026-10-10', endsOn: '2026-10-11', timezone: 'America/Edmonton', closedAt: null, archivedAt: null, ...o });
 
 describe('the event phase', () => {
+  it('distinguishes a schedule ending from explicit closure without changing operational controls', () => {
+    const past = at('2026-10-15T14:00:00Z');
+    const event = ev();
+    expect(publicEventPresentation(event, past)).toMatchObject({ label: 'Schedule ended', recorded: true });
+    expect(publicEventPresentation({ ...event, closedAt: '2026-10-11T23:00:00Z' }, past)).toMatchObject({ label: 'Complete', recorded: true });
+    expect(publicEventPresentation(event, at('2026-10-10T14:00:00Z'))).toMatchObject({ label: 'Live', recorded: false, notice: null });
+    expect(event.closedAt).toBeNull();
+    // Every operator tool remains addressable after the calendar date has passed.
+    expect(controlPath('rumble', 'live', 'run')).toBe('/events/rumble/control?mode=live&tool=run');
+  });
   it('is judged on the event\'s own calendar day, not the phone\'s', () => {
     // 05:30 UTC on Oct 10 is still Oct 9 in Edmonton: not live yet
     expect(todayIn('America/Edmonton', at('2026-10-10T05:30:00Z'))).toBe('2026-10-09');

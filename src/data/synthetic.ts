@@ -19,15 +19,20 @@ export function isSynthetic(set: SyntheticSet, type: 'event' | 'team' | 'fighter
   return Boolean(idOrSlug) && set.has(`${type}:${idOrSlug}`);
 }
 
-export function loadSynthetic(): Promise<SyntheticSet> {
+/** Discovery filters must distinguish an unavailable index from an empty one. */
+export function loadSyntheticStrict(): Promise<SyntheticSet> {
   if (!cached) {
     cached = (async () => {
       const { data, error } = await supabase.from('synthetic_records').select('entity_type,entity_id,slug');
       if (error) throw error;
       return syntheticKeys(data ?? []);
-    })().catch(() => { cached = null; return EMPTY; }); // labels are a courtesy: never block a page on them
+    })().catch(error => { cached = null; throw error; });
   }
   return cached;
+}
+
+export function loadSynthetic(): Promise<SyntheticSet> {
+  return loadSyntheticStrict().catch(() => EMPTY); // individual-page labels never block the record itself
 }
 
 export function useSynthetic(): SyntheticSet {

@@ -16,6 +16,9 @@ import { LeagueIcon } from '../components/LeagueIcon';
 import { useAuth } from '../auth/AuthContext';
 import { YourDay } from '../components/YourDay';
 import { InstallCard } from '../components/InstallCard';
+import { friendlyError } from '../lib/friendlyError';
+import { isSynthetic, loadSyntheticStrict } from '../data/synthetic';
+import { sortEvents } from '../lib/eventFilters';
 
 function LiveCard() {
   return (
@@ -40,11 +43,14 @@ export function HomePage() {
 
 /** The real home page: only what the database holds. */
 function LiveHome() {
-  const live = useAsync(fetchEvents, []);
+  const live = useAsync(async () => {
+    const [events, tags] = await Promise.all([fetchEvents(), loadSyntheticStrict()]);
+    return events.filter(e => !isSynthetic(tags, 'event', e.id) && !isSynthetic(tags, 'event', e.slug));
+  }, []);
   const { session } = useAuth();
   // Only what is still ahead (or on now), soonest first. Drafts and cancelled events are not featured here.
   const today = todayIso();
-  const upcoming = (live.data ?? []).filter(e => e.status === 'published' && e.endsOn >= today).map(e => toSummary(e));
+  const upcoming = sortEvents((live.data ?? []).filter(e => e.status === 'published' && e.endsOn >= today && !e.closedAt && !e.archivedAt), today).map(e => toSummary(e));
   const next = upcoming[0];
   return (
     <>
@@ -66,7 +72,9 @@ function LiveHome() {
         <div className="section-head"><h2>Coming up</h2><Link className="more" to="/events">All events →</Link></div>
         <div className="eventlist">
           {upcoming.slice(0, 4).map(e => <EventRow key={e.id} e={e} />)}
-          {!live.loading && upcoming.length === 0 && <div className="panel info"><h3>No upcoming events yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them. Past events and results are on the Events page.</p></div>}
+          {live.loading && <p role="status" className="muted">Finding upcoming events…</p>}
+          {(live.error != null || live.refreshError != null) && <div className="panel info" role="alert"><h3>Could not update events</h3><p>{friendlyError(live.error ?? live.refreshError, 'Check your connection and try again.')}</p><div className="formactions"><button type="button" className="btn btn-ink" onClick={live.reload}>Try again</button><Link className="btn btn-line" to="/events">Browse events</Link></div></div>}
+          {!live.loading && live.error == null && upcoming.length === 0 && <div className="panel info"><h3>No upcoming events yet</h3><p style={{ color: 'var(--muted)' }}>Events appear here once their organizers publish them. Past events and results are on the Events page.</p></div>}
         </div>
       </section>
       {!session && <section className="section">

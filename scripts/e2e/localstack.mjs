@@ -109,6 +109,24 @@ http.createServer(async (req, res) => {
     res.writeHead(200, { ...cors, 'content-type': 'application/json' });
     return res.end(JSON.stringify({ id: claims.sub, aud: 'authenticated', role: 'authenticated', email: claims.email, app_metadata: {}, user_metadata: {}, created_at: '2026-01-01T00:00:00Z' }));
   }
+  // Explicit, loopback-only fixture login for manual browser rehearsals. This is NOT Supabase Auth.
+  // Default off; only existing identities in the disposable SQL fixture can be selected.
+  if (process.env.LOCAL_FIXTURE_LOGIN === '1' && ['127.0.0.1', 'localhost'].includes(REST.hostname)
+      && url.pathname === '/auth/v1/token' && req.method === 'POST') {
+    let body;
+    try { body = JSON.parse((await readBody(req)).toString() || '{}'); }
+    catch { res.writeHead(400, { ...cors, 'content-type': 'application/json' }); return res.end('{"code":"bad_json"}'); }
+    if (!body || typeof body !== 'object' || url.searchParams.get('grant_type') !== 'password') {
+      res.writeHead(400, { ...cors, 'content-type': 'application/json' }); return res.end('{"code":"unsupported_grant_type"}');
+    }
+    const fixtureIds = { 'organizer@example.test': 'a2', 'secretary@example.test': 'a4', 'announcer@example.test': 'e1', 'novice@example.test': '99' };
+    const suffix = Object.hasOwn(fixtureIds, body.email) ? fixtureIds[body.email] : null;
+    if (!suffix || body.password !== 'LocalFixtureOnly2026!') { res.writeHead(400, { ...cors, 'content-type': 'application/json' }); return res.end(JSON.stringify({ code: 'invalid_credentials', msg: 'Use a local fixture account.' })); }
+    const id = `00000000-0000-0000-0000-0000000000${suffix}`;
+    const expires = Math.floor(Date.now() / 1000) + 3600;
+    res.writeHead(200, { ...cors, 'content-type': 'application/json' });
+    return res.end(JSON.stringify({ access_token: signJwt({ sub: id, email: body.email, role: 'authenticated', aud: 'authenticated', exp: expires }), refresh_token: 'local-fixture-only', token_type: 'bearer', expires_in: 3600, expires_at: expires, user: { id, email: body.email, aud: 'authenticated', role: 'authenticated', app_metadata: {}, user_metadata: {}, created_at: '2026-01-01T00:00:00Z' } }));
+  }
   if (url.pathname === '/auth/v1/logout') { res.writeHead(204, cors); return res.end(); }
   res.writeHead(404, { ...cors, 'content-type': 'application/json' });
   res.end('{"msg":"not offered by the local stack"}');
