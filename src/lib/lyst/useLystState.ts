@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchCounterState, fetchLystState, type CounterState, type LystState } from '../../data/lyst';
 import { supabase } from '../supabase';
 import { ServerClock, remainingMs, type LystTimer } from './timer';
 import { realtimeChannel } from '../realtimeChannel';
+import { readCounterCache, saveCounterCache } from './counterCache';
+import { classifyRpcError } from '../scoreSender';
 
 const POLL_MS = 2500;
 
@@ -35,7 +37,8 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
   const [sentAt, setSentAt] = useState(0);
   const clock = useRef(new ServerClock());
   const newest = useRef(0);
-  const inFlight = useRef(false);
+  const inFlight = useRef<number | null>(null);
+  const generation = useRef(0);
   const again = useRef(false);
   const live = useRef(true);
   const srcRef = useRef(src);
@@ -49,24 +52,26 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
   }, []);
 
   const refresh = useCallback(async () => {
-    if (inFlight.current) { again.current = true; return; }
-    inFlight.current = true;
+    const epoch = generation.current;
+    if (inFlight.current === epoch) { again.current = true; return; }
+    inFlight.current = epoch;
     try {
       do {
         again.current = false;
-        try { const r = await srcRef.current.fetch(); if (live.current) apply(r.state, r.sentAt, r.receivedAt); }
+        try { const r = await srcRef.current.fetch(); if (live.current && generation.current === epoch) apply(r.state, r.sentAt, r.receivedAt); }
         catch (e) {
-          if (!live.current) break;
-          const x = (e ?? {}) as { code?: string; message?: string };
+          if (!live.current || generation.current !== epoch) break;
           // no signal: keep showing the last true state (the server clock keeps running) and say so
-          if (!x.code || (typeof navigator !== 'undefined' && navigator.onLine === false)) setOffline(true); else setError(e);
+          if (classifyRpcError(e) !== 'reject' || (typeof navigator !== 'undefined' && navigator.onLine === false)) setOffline(true); else setError(e);
         }
-      } while (again.current && live.current);
-    } finally { inFlight.current = false; }
+      } while (again.current && live.current && generation.current === epoch);
+    } finally { if (inFlight.current === epoch) inFlight.current = null; }
   }, [apply]);
 
   useEffect(() => {
-    live.current = true; newest.current = 0; setState(null);
+    generation.current++; inFlight.current = null;
+    live.current = true; newest.current = 0; setState(null); setError(null); setOffline(false); setSentAt(0);
+    clock.current = new ServerClock();
     if (!enabled) return () => { live.current = false; };
     void refresh();
     const poll = window.setInterval(() => { if (!document.hidden) void refresh(); }, POLL_MS);
@@ -79,7 +84,7 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
           realtimeChannel(`lyst-${key}`)).subscribe()
       : null;
     return () => {
-      live.current = false; window.clearInterval(poll); window.clearTimeout(debounce);
+      live.current = false; generation.current++; window.clearInterval(poll); window.clearTimeout(debounce);
       window.removeEventListener('online', on); document.removeEventListener('visibilitychange', on);
       if (channel) void supabase.removeChannel(channel);
     };
@@ -111,7 +116,14 @@ export function useLystState(matchId: string, eventId: string, enabled = true) {
 /** The counter's phone state (their own seat only). */
 export function useCounterState(enabled = true, userKey = '') {
   const src = useRef<Source<CounterState>>({ fetch: fetchCounterState, serverNow: s => s.server_now });
-  return useServerState<CounterState>(src.current, enabled, null, `counter-${userKey}`);
+  const result = useServerState<CounterState>(src.current, enabled, null, `counter-${userKey}`);
+  const storage = useMemo(() => ({ getItem: (k: string) => localStorage.getItem(k), setItem: (k: string, v: string) => localStorage.setItem(k, v) }), []);
+  const cached = useMemo(() => readCounterCache(storage, userKey), [storage, userKey]);
+  const [savedState, setSavedState] = useState<CounterState | null>(null);
+  const [cacheFailed,setCacheFailed]=useState(false);
+  useEffect(() => { if (result.state) { const saved=saveCounterCache(storage,userKey,result.state);setSavedState(saved?result.state:null);setCacheFailed(!saved); } }, [result.state, storage, userKey]);
+  return { ...result, state: result.state ?? cached, cached: !result.state && !!cached,
+    cacheFailed,cacheDurable: result.state ? savedState === result.state : !!cached, offline: result.offline || (!result.state && !!cached) };
 }
 
 /** Milliseconds to show for a timer, from server state and the measured offset. */

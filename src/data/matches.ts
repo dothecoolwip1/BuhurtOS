@@ -143,6 +143,13 @@ export async function buildSchedule(competitionId: string, planned: readonly Pla
   return (await rpc('build_schedule', { p_competition: competitionId, p_matches: toPlan(planned), p_mode: mode, p_draw: draw, p_advance: opts.advance ?? null })) as number;
 }
 
+/** All draws and Lyst assignments succeed together, or nothing is built. */
+export async function buildTournamentPlan(eventId: string, fields: number, plans: readonly { id: string; matches: readonly PlannedMatch[]; field: string; draw: DrawRecord }[]): Promise<{ built: number; fights: number }> {
+  return await rpc('build_tournament_plan', { p_event: eventId, p_fields: fields, p_plans: plans.map(p => ({
+    competition: p.id, matches: toPlan(p.matches), field: p.field, draw: { ...p.draw, algorithm: DRAW_ALGORITHM }
+  })) }) as { built: number; fights: number };
+}
+
 export interface PoolStanding { part: string; entryId: string; wins: number; losses: number; scoreFor: number; scoreAgainst: number; diff: number; headToHead: number; rank: number; tied: boolean; decided: boolean }
 /** The one ranking of a round robin or of each pool. `part` is the pool name ('' for a round robin). */
 export async function fetchPoolStandings(competitionId: string): Promise<PoolStanding[]> {

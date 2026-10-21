@@ -50,6 +50,50 @@ export async function fetchActiveOrganizations(): Promise<ActiveOrganization[]> 
   return (data as ActiveDb[]).map(toActiveOrganization);
 }
 
+// ---------------------------------------------------------------- organizations the caller may link an event to
+/**
+ * Same rule as set_event_organization / set_event_season: the platform owner may link to any active organization, anyone else only to an active
+ * organization they are an admin of. This only decides what to OFFER; the database checks again on every link.
+ */
+export function linkableOrganizations<T extends { id: string }>(active: T[], adminOrgIds: string[], isOwner: boolean): T[] {
+  if (isOwner) return active;
+  const mine = new Set(adminOrgIds);
+  return active.filter(o => mine.has(o.id));
+}
+/** The caller's own platform_roles and organization_staff rows (row level security returns only their own), filtered against the active list. */
+export async function fetchLinkableOrganizations(userId: string): Promise<ActiveOrganization[]> {
+  const [roles, staff, active] = await Promise.all([
+    supabase.from('platform_roles').select('role').eq('user_id', userId),
+    supabase.from('organization_staff').select('organization_id').eq('user_id', userId).eq('role', 'admin'),
+    fetchActiveOrganizations()
+  ]);
+  if (roles.error) throw roles.error;
+  if (staff.error) throw staff.error;
+  const isOwner = ((roles.data ?? []) as { role: string }[]).some(r => r.role === 'owner');
+  return linkableOrganizations(active, ((staff.data ?? []) as { organization_id: string }[]).map(s => s.organization_id), isOwner);
+}
+/** The organization a season belongs to, read from the server. found=false when the season does not exist (or cannot be read). */
+export async function fetchSeasonOrganization(seasonId: string): Promise<{ found: boolean; organizationId: string | null }> {
+  const { data, error } = await supabase.from('seasons').select('organization_id').eq('id', seasonId).maybeSingle();
+  if (error) throw error;
+  return data ? { found: true, organizationId: (data as { organization_id: string | null }).organization_id } : { found: false, organizationId: null };
+}
+
+// ---------------------------------------------------------------- membership wording on registration
+/** The organization slug whose own membership and insurance wording a registration form may use. */
+export const HACSA_ORG_SLUG = 'hacsa';
+/**
+ * 'hacsa' when the event belongs to HACSA (its own organization, else its season's: the database rule), otherwise null.
+ * Category formats do not count: only an explicit organization link does. Callers treat a failed lookup as null (generic wording).
+ */
+export async function fetchEventMembershipContext(e: { organizationId: string | null; seasonId: string | null }): Promise<'hacsa' | null> {
+  const org = e.organizationId ?? (e.seasonId ? (await fetchSeasonOrganization(e.seasonId)).organizationId : null);
+  if (!org) return null;
+  const { data, error } = await supabase.from('organizations').select('slug').eq('id', org).maybeSingle();
+  if (error) throw error;
+  return (data as { slug: string } | null)?.slug === HACSA_ORG_SLUG ? 'hacsa' : null;
+}
+
 // ---------------------------------------------------------------- admin_list_organizations (owner only)
 export interface AdminOrganization {
   id: string; slug: string; name: string; shortName: string | null; kind: OrganizationKind; country: string | null; region: string | null;

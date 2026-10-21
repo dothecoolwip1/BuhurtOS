@@ -8,12 +8,13 @@ import { Chip, PageHead, Seg } from '../components/ui';
 import { eventDays } from '../lib/eventDays';
 import { registrationWindow } from '../lib/dates';
 import { fetchMyRegistration, type MyRegistration } from '../data/myEvents';
-import { INSURANCE_LABEL } from './review';
+import { insuranceLabel } from './review';
 import { trackEvent } from '../lib/analytics';
 import {
-  INSURANCE_OPTIONS, PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, categoriesFor, emptyForm, feeFor, formatMoney, genderAllows, genderRuleText, validate,
-  type CompetitionOption, type EventFee, type LeagueKey, type RegForm
+  PROVINCES, ALL_VOLUNTEER_ROLES, OTHER_ROLE, OTHER_ROLE_MAX, buildPayload, categoriesFor, emptyForm, feeFor, formatMoney, genderAllows, genderRuleText, insuranceOptions, validate,
+  type CompetitionOption, type EventFee, type LeagueKey, type MembershipContext, type RegForm
 } from './model';
+import { fetchEventMembershipContext } from '../data/organizations';
 import { WaiverDocumentLink } from '../pages/WaiverSection';
 import { fetchMyFighterId } from '../data/fighters';
 import { fetchRegistrationDefaults } from '../data/registrationDefaults';
@@ -26,6 +27,8 @@ interface Loaded {
   waiver: { id: string; version: number; title: string; body: string | null; kind: 'text' | 'pdf'; documentPath: string | null };
   /** The organizer added this person: the competitions are pre-ticked and the form says so. */
   invitation: MyInvitation | null;
+  /** 'hacsa' only for an event linked to HACSA: then the HACSA insurance wording is used. Anything else gets generic wording. */
+  membership: MembershipContext;
 }
 
 /** Shown only with ?preview=1, so the form can be reviewed before the event is published. Not real data. */
@@ -42,22 +45,23 @@ const PREVIEW: Loaded = {
   ].map(([name, category, league, gender], i) => ({ id: `p${i}`, name, category, league: league as LeagueKey, gender: gender as CompetitionOption['gender'] })),
   teams: [],
   waiver: { id: 'preview', version: 0, title: 'Waiver', body: '(The real waiver text is loaded from the database.)', kind: 'text', documentPath: null },
-  invitation: null
+  invitation: null, membership: null
 };
 
 async function load(slug: string): Promise<Loaded> {
-  const { data: ev, error } = await supabase.from('events').select('id,name,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,status,registration_mode,external_url,volunteer_info').eq('slug', slug).maybeSingle();
+  const { data: ev, error } = await supabase.from('events').select('id,name,starts_on,ends_on,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,status,registration_mode,external_url,volunteer_info,organization_id,season_id').eq('slug', slug).maybeSingle();
   if (error) throw error;
   if (!ev) throw new Error('This event is not open yet.');
   if (ev.registration_mode && ev.registration_mode !== 'buhuros') {
     // Sign-up happens elsewhere (or not at all): no form, so no competitions, teams or waiver are needed.
-    return { eventId: ev.id, name: ev.name, startsOn: ev.starts_on, endsOn: ev.ends_on, feeNote: null, fee: { feeCents: 0, feeProvince: null }, opensAt: null, closesAt: null, volunteerInfo: null, mode: ev.registration_mode, externalUrl: ev.external_url, comps: [], teams: [], waiver: { id: '', version: 0, title: '', body: '', kind: 'text', documentPath: null }, invitation: null };
+    return { eventId: ev.id, name: ev.name, startsOn: ev.starts_on, endsOn: ev.ends_on, feeNote: null, fee: { feeCents: 0, feeProvince: null }, opensAt: null, closesAt: null, volunteerInfo: null, mode: ev.registration_mode, externalUrl: ev.external_url, comps: [], teams: [], waiver: { id: '', version: 0, title: '', body: '', kind: 'text', documentPath: null }, invitation: null, membership: null };
   }
-  const [c, t, w, myFighter] = await Promise.all([
+  const [c, t, w, myFighter, membership] = await Promise.all([
     supabase.from('competitions').select('id,name,category,gender,sort,ref_categories(league)').eq('event_id', ev.id).order('sort'),
     supabase.from('teams').select('id,name').eq('status', 'approved').order('name'),
     supabase.from('waiver_versions').select('id,version,title,body,kind,document_path').eq('event_id', ev.id).order('version', { ascending: false }).limit(1),
-    fetchMyFighterId().catch(() => null)
+    fetchMyFighterId().catch(() => null),
+    fetchEventMembershipContext({ organizationId: ev.organization_id ?? null, seasonId: ev.season_id ?? null }).catch(() => null)
   ]);
   if (c.error) throw c.error; if (t.error) throw t.error; if (w.error) throw w.error;
   if (!w.data?.[0]) throw new Error('The waiver for this event is not loaded yet.');
@@ -68,7 +72,7 @@ async function load(slug: string): Promise<Loaded> {
     eventId: ev.id, name: ev.name, startsOn: ev.starts_on, endsOn: ev.ends_on, feeNote: ev.fee_note ?? null, fee: { feeCents: ev.fee_cents, feeProvince: ev.fee_province }, opensAt: ev.registration_opens_at ?? null, closesAt: ev.registration_closes_at, volunteerInfo: ev.volunteer_info ?? null, mode: ev.registration_mode ?? 'buhuros', externalUrl: ev.external_url,
     comps: (c.data as unknown as Row[]).map(r => ({ id: r.id, name: r.name, category: r.category, gender: r.gender, league: (Array.isArray(r.ref_categories) ? r.ref_categories[0] : r.ref_categories)?.league ?? 'duels' })),
     teams: t.data ?? [], waiver: { id: wv.id, version: wv.version, title: wv.title, body: wv.body, kind: wv.kind ?? 'text', documentPath: wv.document_path },
-    invitation: invitation && invitation.status === 'invited' ? invitation : null
+    invitation: invitation && invitation.status === 'invited' ? invitation : null, membership
   };
 }
 
@@ -225,7 +229,7 @@ export function RegisterPage() {
           {text('fullName', 'Full name', { autoComplete: 'name' })}
           {text('email', 'Email', { type: 'email', autoComplete: 'email' })}
           <div><p>Gender (decides which categories apply)</p><Seg label="Gender" value={f.gender} options={[['male', 'Male'], ['female', 'Female'], ['other', 'Other']] as const} onChange={v => setF(p => ({ ...p, gender: v, competitionIds: p.competitionIds.filter(id => { const c = data.comps.find(x => x.id === id); return c ? genderAllows(v, c) : false; }) }))} /><Err m={shown('gender')} /></div>
-          <div><p>Organization</p><Seg label="Organization" value={f.organization} options={[['HACSA', 'HACSA'], ['MCC', 'MCC'], ['other', 'Other']] as const} onChange={v => set('organization', v)} /><Err m={shown('organization')} /></div>
+          <div><p>Which organization are you a member of?</p><Seg label="Membership organization" value={f.organization} options={[['HACSA', 'HACSA'], ['MCC', 'MCC'], ['other', 'Other or none']] as const} onChange={v => set('organization', v)} /><Err m={shown('organization')} /></div>
           <label className="field-in">Where are you from?
             <select value={f.province} onChange={e => set('province', e.target.value)}><option value="">Choose…</option>{PROVINCES.map(([k, n]) => <option key={k} value={k}>{n}</option>)}</select>
             <Err m={shown('province')} />
@@ -268,7 +272,7 @@ export function RegisterPage() {
         </section>
 
         <section className="card field"><h3>Insurance</h3>
-          {INSURANCE_OPTIONS.map(([k, label]) => <label key={k} style={{ display: 'block' }}><input type="radio" name="ins" checked={f.insurance === k} onChange={() => set('insurance', k)} /> {label}</label>)}
+          {insuranceOptions(data.membership, f.insurance).map(([k, label]) => <label key={k} style={{ display: 'block' }}><input type="radio" name="ins" checked={f.insurance === k} onChange={() => set('insurance', k)} /> {label}</label>)}
           <Err m={shown('insurance')} />
         </section>
 
@@ -330,7 +334,7 @@ function ExistingRegistration({ r, data, slug, onChange }: { r: MyRegistration; 
           {r.categories.length > 0 && <div><dt>Categories</dt><dd>{r.categories.join(', ')}</dd></div>}
           {r.teamName && <div><dt>Team</dt><dd>{r.teamName}</dd></div>}
           {days && <div><dt>Days</dt><dd>{days}</dd></div>}
-          <div><dt>Insurance</dt><dd>{INSURANCE_LABEL[r.insurance as keyof typeof INSURANCE_LABEL] ?? r.insurance}</dd></div>
+          <div><dt>Insurance</dt><dd>{insuranceLabel(r.insurance, data.membership)}</dd></div>
           <div><dt>Fee</dt><dd>{r.feeDueCents > 0 ? `${formatMoney(r.feeDueCents)} · ${r.feePaid ? 'paid' : 'not marked paid yet'}` : 'none'}</dd></div>
           {r.waiverVersion !== null && <div><dt>Waiver</dt><dd>version {r.waiverVersion}, signed</dd></div>}
         </dl>

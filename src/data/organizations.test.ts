@@ -1,7 +1,21 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../lib/supabase', () => ({ supabase: {} }));
-import { cleanReason, enabledArgs, ORGANIZATION_COLUMNS, organizationLabel, organizationStatusLabel, REASON_MAX, toActiveOrganization, toAdminOrganization, toOrganization, toOrganizationStaff } from './organizations';
+import { cleanReason, enabledArgs, linkableOrganizations, ORGANIZATION_COLUMNS, organizationLabel, organizationStatusLabel, REASON_MAX, toActiveOrganization, toAdminOrganization, toOrganization, toOrganizationStaff } from './organizations';
+
+describe('linkableOrganizations (what New Event offers)', () => {
+  const active = [{ id: 'o-tide', name: 'Tidewater Steel League (test)' }, { id: 'o-ridge', name: 'Ridgeback Armoured Club (test)' }];
+  it('an organizer sees only the active organizations they are an admin of', () => {
+    expect(linkableOrganizations(active, ['o-ridge'], false).map(o => o.id)).toEqual(['o-ridge']);
+    expect(linkableOrganizations(active, [], false)).toEqual([]);
+  });
+  it('an admin row of a switched-off organization offers nothing (it is not in the active list)', () => {
+    expect(linkableOrganizations(active, ['o-off'], false)).toEqual([]);
+  });
+  it('the platform owner sees every active organization', () => {
+    expect(linkableOrganizations(active, [], true)).toEqual(active);
+  });
+});
 
 describe('organization mappers', () => {
   it('maps a public organization row and keeps the enabled flag', () => {

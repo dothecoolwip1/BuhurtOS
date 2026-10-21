@@ -20,7 +20,8 @@ export function trainingUrl(origin: string, base: string, code: string): string 
   return `${origin}${b}lyst/train/${code}`;
 }
 
-export type CountAction = { kind: 'tap'; id: string; weight: number; round: number } | { kind: 'undo'; id: string; round: number };
+export interface CountContext { runId?: string; matchId?: string; recovery?: boolean; recordedAt?: string; undoWeight?: number; operator?:string; side?:string; fighter?:string; opponent?:string }
+export type CountAction = ({ kind: 'tap'; id: string; weight: number; round: number } | { kind: 'undo'; id: string; round: number }) & CountContext;
 
 /** One pending item per tap: the id is created when the finger lands, so the same tap is never sent under two ids. */
 export class TapQueue {
@@ -44,7 +45,7 @@ export class TapQueue {
   load(items: readonly CountAction[]): void { this.items = [...items]; }
 }
 
-export type CounterSend = (a: CountAction) => Promise<{ status: 'ok' | 'duplicate' | 'nothing'; total: number } | { status: 'refused'; reason: 'ROUND_ENDED' | 'ROUND_CHANGED' | 'ROUND_NOT_STARTED' | 'OTHER'; message: string } | { status: 'offline' }>;
+export type CounterSend = (a: CountAction) => Promise<{ status: 'ok' | 'duplicate' | 'nothing'; total: number; weights?: number[] } | { status: 'review'; total: number; message: string; alreadyAccepted?:boolean } | { status: 'refused'; reason: 'ROUND_ENDED' | 'ROUND_CHANGED' | 'ROUND_NOT_STARTED' | 'OTHER'; message: string } | { status: 'offline' }>;
 
 /** Send the queue in order until it is empty, the signal is gone, or the server refuses (a round that has ended can never take a tap again). */
 export async function flushTaps(q: TapQueue, send: CounterSend): Promise<{ sent: number; total: number | null; stopped: 'empty' | 'offline' | 'refused'; refusal?: string }> {
@@ -54,6 +55,7 @@ export async function flushTaps(q: TapQueue, send: CounterSend): Promise<{ sent:
     let r: Awaited<ReturnType<CounterSend>>;
     try { r = await send(head); } catch { return { sent, total, stopped: 'offline' }; }
     if (r.status === 'offline') return { sent, total, stopped: 'offline' };
+    if (r.status === 'review') return { sent, total, stopped: 'refused', refusal: r.message };
     if (r.status === 'refused') {
       // the round moved on or ended: nothing waiting for that round can ever count
       q.dropRound(head.round);

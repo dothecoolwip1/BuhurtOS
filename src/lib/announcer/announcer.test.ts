@@ -130,6 +130,15 @@ describe('UP NEXT and COMING UP', () => {
     expect(c.coming[0].notReady).toBe(false);
     expect(c.now?.a.ready).toBeNull();
   });
+  it('preserves an explicit unknown registration readiness through the view model', () => {
+    const view = buildAnnouncerView(input([m(2, { queueState: 'on_deck' })], {
+      readiness: [{ match_id: 'm002', side: 'a', ready: null }, { match_id: 'm002', side: 'b', ready: true }]
+    }));
+    expect(view.lysts[0].next?.a.ready).toBeNull();
+    expect(view.lysts[0].next?.a.readinessAvailable).toBe(true);
+    expect(view.lysts[0].next?.b.ready).toBe(true);
+    expect(view.lysts[0].next?.notReady).toBe(false);
+  });
   it('without readiness rows (a viewer that cannot read them) nothing says ready or not', () => {
     const c = buildAnnouncerView(input([m(2, { queueState: 'on_deck' })])).lysts[0];
     expect(c.next?.a.ready).toBeNull();
@@ -285,7 +294,7 @@ describe('no private field can appear', () => {
   });
   it('only whitelisted keys exist on a fight side', () => {
     const f = view.lysts[0].now as AnnFight;
-    expect(Object.keys(f.a).sort()).toEqual(['corner', 'crest', 'entryId', 'joinedYear', 'kind', 'marks', 'name', 'photoUrl', 'ready', 'record', 'recordIsTest', 'score', 'side', 'teamName']);
+    expect(Object.keys(f.a).sort()).toEqual(['corner', 'crest', 'entryId', 'joinedYear', 'kind', 'marks', 'name', 'photoUrl', 'readinessAvailable', 'ready', 'record', 'recordIsTest', 'score', 'side', 'teamName']);
     expect(Object.keys(f).sort()).toEqual(['a', 'b', 'competition', 'field', 'id', 'notReady', 'phase', 'round', 'slot', 'stage', 'timer']);
     expect(Object.keys(view.recent[0]).sort()).toEqual(['a', 'b', 'basis', 'competition', 'drawn', 'field', 'fieldLabel', 'finalizedAt', 'id', 'scoreText', 'stage', 'winnerName']);
     expect(Object.keys(view.lysts[0].now!.a.marks[0]).sort()).toEqual(['kind', 'side', 'text']);

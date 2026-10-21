@@ -78,8 +78,8 @@ check "5b the same 10 tap ids sent twice at once count once each (1 + 10)" "$(q 
 # ---- 3 / 4. confirm round: two tablets with different scores; one command four times
 run $U1 "select public.lyst_timer_command('$E','Field 1','$M',(select rev from public.lyst_timer where event_id='$E' and field_key='field 1'),gen_random_uuid(),'start','break',30000,1)->>'status';" >/dev/null
 REV=$(q "select rev from public.lyst_rounds where match_id='$M' and round_no=1")
-run $U1 "select public.lyst_confirm_round(gen_random_uuid(),'$M',1,6,5,$REV)->>'status';" >/tmp/p13-c1 &
-run $U2 "select public.lyst_confirm_round(gen_random_uuid(),'$M',1,4,7,$REV)->>'status';" >/tmp/p13-c2 &
+run $U1 "select public.lyst_confirm_round(gen_random_uuid(),'$M',1,6,5,$REV,null,null,'Marshal verified paper counts')->>'status';" >/tmp/p13-c1 &
+run $U2 "select public.lyst_confirm_round(gen_random_uuid(),'$M',1,4,7,$REV,null,null,'Marshal verified paper counts')->>'status';" >/tmp/p13-c2 &
 wait
 check "3a two tablets confirm the same round at once: one official score, the other stale" "$(cat /tmp/p13-c1 /tmp/p13-c2 | sort | tr '\n' ',')" "ok,stale,"
 check "3b exactly one revision, and it is the official score" "$(q "select count(*) || ':' || (select awarded_a || '-' || awarded_b from public.lyst_rounds where match_id='$M' and round_no=1 and status='confirmed') from public.lyst_round_revisions where match_id='$M'")" "1:$(q "select awarded_a || '-' || awarded_b from public.lyst_rounds where match_id='$M' and round_no=1")"

@@ -1,15 +1,19 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { StatusBanner, type ScoringScreenProps } from '../scoring/ScoringScreen';
-import { TimerBar, type TimerSend } from './TimerBar';
+import { TimerBar } from './TimerBar';
 import { RoundEntry, type Hint } from './RoundEntry';
 import { DisciplineSheet, type DisciplineDraft } from './DisciplineSheet';
 import { CounterEvidence, CountersPanel } from './CountersPanel';
+import { CounterDeliveryPanel } from './CounterDeliveryPanel';
+import { counterReviewReason } from '../../lib/lyst/delivery';
+import { useReliableTimer } from '../../lib/lyst/useReliableTimer';
+import { ClockRecovery } from './ClockRecovery';
 import { LogPanel } from './LogPanel';
 import { LystSettingsDialog } from './LystSettingsDialog';
 import { RulesSheet } from '../rules/RulesSheet';
 import { fetchCitations } from '../../data/rules';
-import { createJoinCode, finalizeFromLyst, openLyst, returnRound, timerCommand } from '../../data/lyst';
+import { createJoinCode, finalizeFromLyst, openLyst, returnRound } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
 import { fieldLabel } from '../../lib/eventDay';
@@ -53,8 +57,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const [phase, setPhase] = useState<Phase>('scoring');
   const [sheet, setSheet] = useState<Sheet>(null);
   const [busy, setBusy] = useState(false);
-  const [timerBusy, setTimerBusy] = useState(false);
-  const [timerNote, setTimerNote] = useState<string | null>(null);
+  const clock=useReliableTimer({lyst,eventId,fieldName,matchId:match.id,userKey:userId});
+  const {timerBusy,timerNote,sendTimer}=clock;
   const [error, setError] = useState<string | null>(null);
   const [correcting, setCorrecting] = useState<number | null>(null);
   const [early, setEarly] = useState(false);   // enter the score without ending the round first
@@ -96,21 +100,6 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   useEffect(() => { if (pendingRound && rounds.some(r => r.round_no === pendingRound.round && r.status === 'confirmed' && r.awarded_a === pendingRound.a && r.awarded_b === pendingRound.b)) setPendingRound(null); }, [rounds, pendingRound]);
 
   /* ---------------- the clock: online only ---------------- */
-  const sendTimer: TimerSend = useCallback((action, o = {}) => {
-    if (!st) return;
-    setTimerBusy(true); setTimerNote(null);
-    void timerCommand({ eventId, field: fieldName, matchId: match.id, expectedRev: st.timer?.rev ?? 0, command: crypto.randomUUID(), action, mode: o.mode ?? null, durationMs: o.durationMs ?? null, round: o.round ?? null, deltaMs: o.deltaMs ?? 0 })
-      .then(({ answer, sentAt, receivedAt }) => {
-        if (answer.status === 'stale') setTimerNote('Another device changed the clock. Showing the latest. Press again if you still want to.');
-        lyst.applyTimer(answer.timer, answer.server_now, sentAt, receivedAt);
-      })
-      .catch(e => {
-        if (isNoSignalError(e)) setTimerNote('No signal. The clock was not changed.'); else setTimerNote(friendlyError(e, 'The clock was not changed.'));
-        void lyst.refresh();
-      })
-      .finally(() => setTimerBusy(false));
-  }, [st, eventId, fieldName, match.id, lyst]);
-
   const startRound = (n: number) => { setEarly(false); sendTimer('start', { mode: 'fight', round: n, durationMs: roundSeconds(n, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds) * 1000 }); };
   const endRound = (kind: 'break' | 'extended_break' = 'break') => sendTimer('start', { mode: kind, round: cur?.round_no ?? 1, durationMs: presetOf(presets, kind).seconds * 1000 });
 
@@ -373,6 +362,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         </section>
       )}
 
+      {st && <CounterDeliveryPanel state={st} sides={sides} onChanged={() => void lyst.refresh()} />}
+      <ClockRecovery clock={clock} />
       <TimerBar timer={timer} leftMs={leftMs} roundNo={cur?.round_no ?? 1} presets={presets} busy={timerBusy || !st} offline={lyst.offline} note={timerNote} onSend={sendTimer}
         startHere={Boolean(timer && (timer.mode === 'dq' || timer.mode === 'equipment' || timer.mode === 'custom' || zone === 'fighting'))} />
 
@@ -413,7 +404,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       )}
 
       {!correctingRound && showEntry && entryRound && !pendingRound && (
-        <RoundEntry secretary={secretary} round={entryRound.round_no} names={names} initial={null} correcting={false} hintsA={hintsFor('a', entryRound.round_no)} hintsB={hintsFor('b', entryRound.round_no)} busy={busy}
+        <RoundEntry secretary={secretary} round={entryRound.round_no} names={names} initial={null} correcting={false} hintsA={hintsFor('a', entryRound.round_no)} hintsB={hintsFor('b', entryRound.round_no)} busy={busy} requireReason={st ? counterReviewReason(st,entryRound.round_no) : null}
           onConfirm={(a, b, x) => void confirm(entryRound, a, b, x)} onReturn={!lyst.offline ? reason => void returnForRecount(entryRound, reason) : undefined} onCancel={early ? () => setEarly(false) : undefined} />
       )}
 

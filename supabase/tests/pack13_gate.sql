@@ -557,11 +557,11 @@ select t.expect_eq('a followed counter counts the new fight', (t.cr(21, 1) ->> '
 select t.expect_eq('... and the trainee followed too (still learning, never official)', (t.cr(25, 1) ->> 'total') || '|' || (select role from public.lyst_counter_seats where user_id = t.u(25) and match_id = t.m(4)), '1|learning');
 select t.expect_error('a simple-input fight refuses a weight of 2', $$select t.cr(21, 1, 2)$$, '22023');
 select t.as_user(t.u(88));
-select public.lyst_confirm_round(gen_random_uuid(), t.m(4), 1, 3, 3, t.round_rev(4, 1));
+select public.lyst_confirm_round(gen_random_uuid(), t.m(4), 1, 3, 3, t.round_rev(4, 1), p_reason => 'Marshal verified the paper sheet; phone delivery is unverified in this fixture');
 select t.as_admin();
 select t.tc(88, 'Field 1', 4, -1, 'start', 'fight', 60000, 2);
 select t.as_user(t.u(88));
-select public.lyst_confirm_round(gen_random_uuid(), t.m(4), 2, 2, 2, t.round_rev(4, 2));
+select public.lyst_confirm_round(gen_random_uuid(), t.m(4), 2, 2, 2, t.round_rev(4, 2), p_reason => 'Marshal verified the paper sheet; phone delivery is unverified in this fixture');
 select t.expect_error('level totals are not a win for either side', format('select public.lyst_finalize(gen_random_uuid(), %L, %s, %L)', t.m(4), t.mver(4), 'a'), 'P0001');
 select public.lyst_record_discipline(gen_random_uuid(), t.m(4), 2, 'b', 'dq', null, 0, 'Removed by the marshal', 'Marshal Lee');
 select t.expect_eq('a DQ against B lets A be awarded the fight on that basis', public.lyst_finalize(gen_random_uuid(), t.m(4), t.mver(4), 'a', 'dq') ->> 'status', 'accepted');
@@ -571,7 +571,7 @@ select t.expect_eq('the entry itself was NOT marked disqualified by this (an eve
 
 select t.tc(88, 'Field 1', 5, -1, 'start', 'fight', 60000, 1);
 select t.as_user(t.u(88));
-select public.lyst_confirm_round(gen_random_uuid(), t.m(5), 1, 2, 2, t.round_rev(5, 1));
+select public.lyst_confirm_round(gen_random_uuid(), t.m(5), 1, 2, 2, t.round_rev(5, 1), p_reason => 'Marshal verified the paper sheet; phone delivery is unverified in this fixture');
 select t.expect_eq('level official totals can be finished as a draw by a person', public.lyst_finalize(gen_random_uuid(), t.m(5), t.mver(5), 'draw') ->> 'status', 'accepted');
 select t.as_admin();
 select t.expect_eq('the draw is stored with the official totals', (select result || ' ' || score_a || '-' || score_b from public.matches where id = t.m(5)), 'draw 2-2');

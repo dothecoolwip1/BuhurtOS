@@ -1,5 +1,26 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_VOLUNTEER_ROLES, buildPayload, emptyForm, feeFor, formatMoney, validate, volunteerRolesFor, type CompetitionOption, type RegForm } from './model';
+import { ALL_VOLUNTEER_ROLES, HACSA_INSURANCE_OPTIONS, buildPayload, emptyForm, feeFor, formatMoney, insuranceOptions, validate, volunteerRolesFor, type CompetitionOption, type RegForm } from './model';
+
+describe('insurance choices on the form', () => {
+  const codes = (o: [string, string][]) => o.map(([k]) => k);
+  it('an unrelated event (e.g. the fictional Northshore Melee) offers proof or no cover, and names no organization', () => {
+    const o = insuranceOptions(null, '');
+    expect(codes(o)).toEqual(['proof_pending', 'needs_cover', 'declined']);
+    expect(o.map(([, l]) => l).join(' ')).not.toMatch(/HACSA|MCC/);
+  });
+  it('a HACSA event keeps the HACSA wording exactly', () => {
+    expect(insuranceOptions('hacsa', '')).toBe(HACSA_INSURANCE_OPTIONS);
+    expect(codes(HACSA_INSURANCE_OPTIONS)).toEqual(['hacsa_member', 'mcc_member', 'proof_pending', 'needs_cover', 'declined']);
+    expect(HACSA_INSURANCE_OPTIONS[0][1]).toBe('Yes, I am a HACSA member in good standing, my dues are paid and my membership forms are signed');
+  });
+  it('an already-selected HACSA or MCC answer stays visible with its original meaning, and only that one', () => {
+    const h = insuranceOptions(null, 'hacsa_member');
+    expect(codes(h)).toEqual(['hacsa_member', 'proof_pending', 'needs_cover', 'declined']);
+    expect(h[0][1]).toBe(HACSA_INSURANCE_OPTIONS[0][1]);
+    expect(codes(insuranceOptions(null, 'mcc_member'))[0]).toBe('mcc_member');
+    expect(codes(insuranceOptions(null, 'proof_pending'))).not.toContain('hacsa_member');
+  });
+});
 
 const fee = { feeCents: 4000, feeProvince: 'AB' };
 const comps: CompetitionOption[] = [

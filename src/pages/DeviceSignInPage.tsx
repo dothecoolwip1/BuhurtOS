@@ -4,6 +4,7 @@ import { formatTyping, normalizeDeviceCode } from '../lib/deviceCode';
 import { landingFor } from '../lib/deviceRoutes';
 import { captureFragment, deviceManager, ENDED_MESSAGE, isDeviceMode, setNoReferrer, takePendingCode } from '../lib/deviceSession';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { SavedCounterEvidence } from '../components/lyst/SavedCounterEvidence';
 import '../styles/device.css';
 
 /**
@@ -65,13 +66,15 @@ export function DeviceSignInPage() {
         <p>This device is signed in as <b>{w.label}</b> for <b>{w.event.name}</b>. Signing out ends that. Then scan the new code again.</p>
         <button type="button" className="btn btn-ink ds-go" disabled={busy} onClick={() => void mgr.signOut()}>Sign out and use the new code</button>
         <button type="button" className="btn btn-line" disabled={busy} onClick={() => setAsk(false)}>Stay signed in</button>
+        <SavedCounterEvidence />
       </main>
     );
   }
   return (
     <main className="device-signin" aria-labelledby="ds-h">
       <h1 id="ds-h">Sign in this device</h1>
-      {ended && <p className="panel info ds-ended" role="alert"><b>{ENDED_MESSAGE}</b> Ask the organizer for a new code.</p>}
+      {ended && <p className="panel info ds-ended" role="alert"><b>{ENDED_MESSAGE}</b> Ask the organizer for a new code. Any counts saved on this phone are listed below for the marshal.</p>}
+      {ended && <SavedCounterEvidence allowPendingArchive={!already} />}
       <p>Enter the 12-character code the organizer gave this phone or tablet, or scan its QR code. You only do this once; the device stays signed in until the event is over.</p>
       <form onSubmit={submit} style={{ display: 'grid', gap: 12 }}>
         <label htmlFor="ds-code" className="sr-only">Device code</label>
@@ -81,6 +84,7 @@ export function DeviceSignInPage() {
       </form>
       {error && <p id="ds-err" role="alert" className="ds-error">{error}</p>}
       <p className="src">This is not a personal account. A temporary device has no profile and cannot see anyone's private details.</p>
+      {!ended && <SavedCounterEvidence allowPendingArchive={!already} />}
     </main>
   );
 }

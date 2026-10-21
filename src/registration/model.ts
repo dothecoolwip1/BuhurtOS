@@ -43,13 +43,31 @@ export function volunteerRolesFor(f: Pick<RegForm, 'isVolunteer' | 'volunteerRol
   if (!f.isVolunteer) return [];
   return f.volunteerRoles.map(r => (r === OTHER_ROLE ? `${OTHER_ROLE}: ${f.volunteerOther.trim()}` : r));
 }
-export const INSURANCE_OPTIONS: [Insurance, string][] = [
+/**
+ * Whose membership wording the form may use: 'hacsa' only when the event is explicitly linked to HACSA (its organization or its season's);
+ * null for every other event. hacsa_member and mcc_member keep their exact meaning; they are never reworded as a generic membership.
+ */
+export type MembershipContext = 'hacsa' | null;
+/** The HACSA event wording, unchanged. */
+export const HACSA_INSURANCE_OPTIONS: [Insurance, string][] = [
   ['hacsa_member', 'Yes, I am a HACSA member in good standing, my dues are paid and my membership forms are signed'],
   ['mcc_member', 'Yes, I am an MCC member, covered under the partnership with HACSA'],
   ['proof_pending', 'Yes, I will send proof of insurance before check-in'],
   ['needs_cover', 'No, I would like to take part but do not have cover. I will ask about temporary HACSA membership'],
   ['declined', 'No, and I will not be taking part in this event']
 ];
+/** Any other event: proof of insurance, or no cover yet. Same stored codes, no organization named. */
+export const GENERIC_INSURANCE_OPTIONS: [Insurance, string][] = [
+  ['proof_pending', 'Yes, I will send proof of insurance before check-in'],
+  ['needs_cover', 'No, I would like to take part but do not have cover yet. I will ask the organizers how to get covered'],
+  ['declined', 'No, and I will not be taking part in this event']
+];
+/** The choices the form shows. Outside a HACSA event a HACSA or MCC answer only appears when it is already the selected value, worded as before. */
+export function insuranceOptions(ctx: MembershipContext, current: Insurance | ''): [Insurance, string][] {
+  if (ctx === 'hacsa') return HACSA_INSURANCE_OPTIONS;
+  const legacy = HACSA_INSURANCE_OPTIONS.filter(([k]) => (k === 'hacsa_member' || k === 'mcc_member') && k === current);
+  return [...legacy, ...GENERIC_INSURANCE_OPTIONS];
+}
 
 /** Same rule as the database: volunteers owe nothing; otherwise the fee applies to the fee province (or everyone if none is set). */
 export function feeFor(fee: EventFee, province: string, isVolunteer: boolean): number {

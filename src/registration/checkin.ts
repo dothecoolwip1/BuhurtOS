@@ -4,7 +4,10 @@ import { blockers } from './review';
 export type CheckinFilter = 'todo' | 'blocked' | 'ready' | 'all';
 export type CheckinOverride = { checkedIn?: boolean; kitPassed?: boolean };
 
-/** Why an accepted person cannot simply be waved through. Only insurance and fee are stored today; the waiver is not recorded in the registration data yet. */
+/**
+ * Why an accepted person cannot simply be waved through, on the quick list: insurance and fee only. The signed waiver is stored with a registration
+ * when one was supplied (older imported rows may lack it); inspection, weigh-in and the rest are the check-in desk's (event_readiness).
+ */
 export function blockReasons(r: ManagedRegistration): string[] {
   return blockers(r).filter(b => /insurance|fee/i.test(b));
 }

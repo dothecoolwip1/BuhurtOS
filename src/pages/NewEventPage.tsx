@@ -6,8 +6,8 @@ import { PageHead } from '../components/ui';
 import { VenuePicker, type VenueFields } from '../components/VenuePicker';
 import { fetchRefCategories, fetchSetupCompetitions, LEAGUE_LABEL, type Division, type SetupCompetition } from '../data/competitions';
 import { fetchSeasons } from '../data/careers';
-import { fetchActiveOrganizations } from '../data/organizations';
-import { createQuickEvent, fetchMyPastEvents } from '../data/quickSetup';
+import { fetchLinkableOrganizations } from '../data/organizations';
+import { createQuickEvent, fetchMyPastEvents, isOrgLinkNotAllowed } from '../data/quickSetup';
 import { fetchCanCreateEvents, isSlugTaken } from '../data/setup';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
@@ -52,7 +52,8 @@ function QuickSetup({ userId }: { userId: string }) {
   const nav = useNavigate();
   const cats = useAsync(() => fetchRefCategories(), []);
   const past = useAsync(() => fetchMyPastEvents(userId).catch(() => []), [userId]);
-  const orgs = useAsync(() => fetchActiveOrganizations().catch(() => []), []);
+  // Only organizations this person may link an event to (owner: all active ones; otherwise those they are an admin of). The database checks again.
+  const orgs = useAsync(() => fetchLinkableOrganizations(userId).catch(() => []), [userId]);
   const seasons = useAsync(() => fetchSeasons().catch(() => []), []);
 
   const [step, setStep] = useState<'event' | 'review'>('event');
@@ -101,7 +102,7 @@ function QuickSetup({ userId }: { userId: string }) {
     setBusy(true); setProblem(null);
     try {
       const r = await createQuickEvent({
-        slug: f.slug, name: f.name.trim(), startsOn: f.startsOn, endsOn: f.endsOn,
+        userId, slug: f.slug, name: f.name.trim(), startsOn: f.startsOn, endsOn: f.endsOn,
         venue: blankToNull(where.venue), address: blankToNull(where.address), city: blankToNull(where.city), region: blankToNull(where.region), country: blankToNull(where.country),
         latitude: where.latitude, longitude: where.longitude, fieldCount: fields, organizationId: orgId || null, seasonId: seasonId || null,
         competitions: competitionsToCreate(categories, selection, like ?? undefined)
@@ -110,6 +111,12 @@ function QuickSetup({ userId }: { userId: string }) {
       const notes = r.problems.length > 0 ? `&notes=${encodeURIComponent(r.problems.join('\n'))}` : '';
       nav(advanced ? `/events/${f.slug}/control?mode=setup&tool=competitions` : `/events/${f.slug}/control?mode=setup&created=1${notes}`);
     } catch (x) {
+      if (isOrgLinkNotAllowed(x)) {
+        // Nothing was created. Back to step 1 with the link cleared, so the next Create works.
+        setProblem(`${x.message} Choose another one or None.`);
+        setOrgId(''); setSeasonId(''); setStep('event'); setBusy(false); orgs.reload();
+        return;
+      }
       setProblem(isSlugTaken(x) ? 'That web address is already used by another event. Change it below.' : friendlyError(x));
       if (isSlugTaken(x)) { setStep('event'); setEditSlug(true); }
       setBusy(false);

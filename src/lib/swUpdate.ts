@@ -2,7 +2,7 @@
  * Safe service-worker updates. A new build downloads in the background and WAITS (public/sw.js no longer takes over by itself).
  * The page decides when it is safe to activate: never while a scoring screen is open or while this device holds scoring work that has not
  * been confirmed by the server. There is an explicit emergency path ("Update anyway") for a critical event-day fix; because scoring work is
- * stored in IndexedDB, even that path reloads the page without losing anything.
+ * saved durably, it survives an update; memory-only work requires a paper/copy fallback.
  */
 export interface UpdateSafetyInput {
   /** A scoring screen is open (a match is being scored). */
@@ -11,6 +11,7 @@ export interface UpdateSafetyInput {
   pendingActions: number;
   /** Matches with a half-scored board or an unconfirmed finalization stored on this device. */
   unfinishedBoards: number;
+  localScoringPending?:boolean;
 }
 export interface UpdateSafety { safe: boolean; reasons: string[] }
 
@@ -19,6 +20,7 @@ export function updateSafety(i: UpdateSafetyInput): UpdateSafety {
   if (i.scoringOpen) reasons.push('a scoring screen is open');
   if (i.pendingActions > 0) reasons.push(`${i.pendingActions} score ${i.pendingActions === 1 ? 'action is' : 'actions are'} still waiting to reach the server`);
   if (i.unfinishedBoards > 0) reasons.push(`${i.unfinishedBoards} ${i.unfinishedBoards === 1 ? 'match is' : 'matches are'} part-scored or waiting to be made official on this device`);
+  if(i.localScoringPending)reasons.push('saved counter or clock work still needs checking on this device');
   return { safe: reasons.length === 0, reasons };
 }
 
@@ -42,6 +44,9 @@ export const updateStore = {
 };
 
 let registration: ServiceWorkerRegistration | null = null;
+let shellReady=false;
+let shellFailed=false;
+export const offlineShellStore={subscribe:updateStore.subscribe,getSnapshot:()=>shellReady?'ready' as const:shellFailed?'unavailable' as const:'preparing' as const};
 
 function setWaiting(w: ServiceWorker | null) {
   waiting = w;
@@ -87,6 +92,7 @@ export function registerServiceWorker(scriptUrl: string): void {
   const sw = navigator.serviceWorker;
   let lastController = sw.controller;   // null on the very first visit: the first worker claiming the page is not an update
   sw.addEventListener('controllerchange', () => {
+    shellReady=sw.controller!==null;emit();
     const hadController = lastController !== null;
     lastController = sw.controller;
     if (!hadController) return;
@@ -97,6 +103,7 @@ export function registerServiceWorker(scriptUrl: string): void {
   });
   sw.register(scriptUrl).then(reg => {
     registration = reg;
+    shellReady=!!reg.active && !!sw.controller;shellFailed=false;emit();
     const watch = (w: ServiceWorker | null) => {
       if (!w) return;
       w.addEventListener('statechange', syncWaiting);
@@ -108,5 +115,5 @@ export function registerServiceWorker(scriptUrl: string): void {
     window.setInterval(check, CHECK_MS);
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
     (window as unknown as { __bosCheckUpdate?: () => void }).__bosCheckUpdate = check;
-  }).catch(() => { /* the app works without it */ });
+  }).catch(() => { shellFailed=true;emit(); });
 }

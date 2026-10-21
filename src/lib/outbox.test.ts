@@ -15,6 +15,15 @@ const idbStorage = (f: IDBFactory) => new IdbOutboxStorage(openScoringDb(f));
 const sendAll: Sender = async () => 'ok';
 
 describe('1. cross-user isolation', () => {
+  it('restores a pre-saved command ID across the enqueue/reload gap without duplicating the command',async()=>{
+    const f=freshIdb(),payload={round:1,a:1,b:0,expectedRev:2};
+    const first=make(idbStorage(f));await first.enqueue(A,'lyst.confirm_round','fictional-fight',payload,'saved-before-enqueue');
+    const reloaded=make(idbStorage(f));
+    await Promise.all([reloaded.enqueue(A,'lyst.confirm_round','fictional-fight',payload,'saved-before-enqueue'),reloaded.enqueue(A,'lyst.confirm_round','fictional-fight',payload,'saved-before-enqueue')]);
+    expect(await reloaded.all()).toHaveLength(1);
+    await expect(reloaded.enqueue(B,'lyst.confirm_round','fictional-fight',payload,'saved-before-enqueue')).rejects.toThrow(/different work/);
+    await expect(reloaded.enqueue(A,'lyst.confirm_round','fictional-fight',{...payload,a:0},'saved-before-enqueue')).rejects.toThrow(/different work/);
+  });
   it('user B signing in on the same device cannot flush user A\'s work', async () => {
     const f = freshIdb();
     await make(idbStorage(f)).enqueue(A, 'point', 'm1', { by: 'A' });

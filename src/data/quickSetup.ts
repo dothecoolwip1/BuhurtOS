@@ -1,11 +1,13 @@
 import { supabase } from '../lib/supabase';
 import { createCompetition, type CompetitionInput } from './competitions';
-import { setEventOrganization, setEventSeason } from './organizations';
+import { fetchLinkableOrganizations, fetchSeasonOrganization, setEventOrganization, setEventSeason } from './organizations';
 import { createEvent, updateEvent } from './setup';
 
 /** Quick Setup (Pack 09D): one event, its fields and the competitions it offers, through the same database functions as the step-by-step screens. */
 
 export interface QuickEventInput {
+  /** The signed-in person creating the event: whose organization admin rows the check before creating reads. */
+  userId: string;
   slug: string; name: string; startsOn: string; endsOn: string;
   venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null; latitude: number | null; longitude: number | null;
   fieldCount: number; organizationId: string | null; seasonId: string | null;
@@ -13,12 +15,37 @@ export interface QuickEventInput {
 }
 export interface QuickEventResult { id: string; created: number; problems: string[] }
 
+/** The chosen organization or season cannot be linked by this person. Thrown BEFORE the event is created, so nothing exists yet. */
+export class OrgLinkNotAllowed extends Error {
+  constructor(message = 'You cannot link events to that organization.') { super(message); this.name = 'OrgLinkNotAllowed'; }
+}
+export const isOrgLinkNotAllowed = (e: unknown): e is OrgLinkNotAllowed => e instanceof OrgLinkNotAllowed;
+
 /**
- * Creates the event (create_event: approved organizers only), then the details that have their own path, then each competition (create_competition).
- * The event exists as soon as the first call succeeds; anything after that which fails is reported (never silently dropped) and can be finished in
- * the event's own screens. Linking an organization or season needs its administrator: when the organizer is not one, the event is simply not linked.
+ * Checks, before anything is created, that the chosen link would be allowed (the same rule set_event_organization / set_event_season apply).
+ * A season's organization is read from the server, never taken from the input. The database still decides on the link itself.
+ */
+export async function checkOrganizationLink(userId: string, organizationId: string | null, seasonId: string | null): Promise<void> {
+  let org = organizationId;
+  if (seasonId) {
+    const s = await fetchSeasonOrganization(seasonId);
+    if (!s.found) throw new OrgLinkNotAllowed('That season was not found.');
+    if (s.organizationId === null) return;   // a season without an organization only needs the event's organizer
+    if (organizationId && organizationId !== s.organizationId) throw new OrgLinkNotAllowed('That season belongs to another organization.');
+    org = s.organizationId;
+  }
+  if (!org) return;
+  const mine = await fetchLinkableOrganizations(userId);
+  if (!mine.some(o => o.id === org)) throw new OrgLinkNotAllowed();
+}
+
+/**
+ * Checks the organization or season link first (refused: nothing is created). Then creates the event (create_event: approved organizers only),
+ * the details that have their own path, then each competition (create_competition). The event exists as soon as create_event succeeds; anything
+ * after that which fails is reported (never silently dropped) and can be finished in the event's own screens.
  */
 export async function createQuickEvent(i: QuickEventInput): Promise<QuickEventResult> {
+  await checkOrganizationLink(i.userId, i.organizationId, i.seasonId);
   const id = await createEvent({ slug: i.slug, name: i.name, startsOn: i.startsOn, endsOn: i.endsOn, venue: i.venue, address: i.address });
   const problems: string[] = [];
   try { await updateEvent(id, { city: i.city, region: i.region, country: i.country, latitude: i.latitude, longitude: i.longitude }); }
@@ -26,6 +53,7 @@ export async function createQuickEvent(i: QuickEventInput): Promise<QuickEventRe
   try { await updateEvent(id, { field_count: i.fieldCount }); }
   catch { problems.push('The number of fields was not saved (the database update for it may not be applied yet).'); }
   if (i.seasonId) {
+    // still possible if access changed between the check and here
     try { await setEventSeason(id, i.seasonId); } catch { problems.push('The season was not linked: only an administrator of its organization can link it.'); }
   } else if (i.organizationId) {
     try { await setEventOrganization(id, i.organizationId); } catch { problems.push('The organization was not linked: only one of its administrators can link an event to it.'); }

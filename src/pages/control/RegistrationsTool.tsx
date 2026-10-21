@@ -7,8 +7,9 @@ import { decideRegistration, setRegistrationInsurance, setRegistrationPaid, type
 import { friendlyError } from '../../lib/friendlyError';
 import { useAsync } from '../../lib/useAsync';
 import { attendanceText } from '../../lib/eventDays';
-import { formatMoney } from '../../registration/model';
-import { INSURANCE_LABEL, blockers, countByStatus, filterRegistrations, type ReviewFilter } from '../../registration/review';
+import { fetchEventMembershipContext } from '../../data/organizations';
+import { formatMoney, type MembershipContext } from '../../registration/model';
+import { blockers, countByStatus, filterRegistrations, insuranceLabel, organizerInsuranceChoices, type ReviewFilter } from '../../registration/review';
 import { AttentionStrip } from '../CheckinPanel';
 import { ExportRegistrations } from '../ExportRegistrations';
 
@@ -32,7 +33,7 @@ function Contact({ r }: { r: ManagedRegistration }) {
   );
 }
 
-function ReviewCard({ r, act, block }: { r: ManagedRegistration; act: ReturnType<typeof useAction>; block?: string | null }) {
+function ReviewCard({ r, act, block, ctx }: { r: ManagedRegistration; act: ReturnType<typeof useAction>; block?: string | null; ctx: MembershipContext }) {
   const [showHealth, setShowHealth] = useState(false);
   const disabled = act.busy === r.id;
   const todo = blockers(r);
@@ -45,7 +46,7 @@ function ReviewCard({ r, act, block }: { r: ManagedRegistration; act: ReturnType
         {r.mercenary && <Chip>Mercenary</Chip>}
       </div>
       <p style={{ color: 'var(--muted)' }}>
-        {[r.organization, r.province, r.teamName ?? 'No team'].filter(Boolean).join(' · ')}
+        {[r.organization && r.organization !== 'other' ? `Member of ${r.organization}` : null, r.province, r.teamName ?? 'No team'].filter(Boolean).join(' · ')}
         {r.biProfile ? ` · BI profile: ${r.biProfile}` : ' · no BI profile given'}
       </p>
       {r.categories.length > 0 && <p><b>{r.categories.map(c => c.name + (c.details.weight ? ` (${c.details.weight} kg)` : '') + (c.details.teammate ? ` with ${c.details.teammate}` : '')).join(', ')}</b></p>}
@@ -61,12 +62,12 @@ function ReviewCard({ r, act, block }: { r: ManagedRegistration; act: ReturnType
       </div>
 
       {/* fee and insurance: shown in full on an accepted registration (that is where they are settled); folded on a pending one, where the decision comes first */}
-      {r.status === 'accepted' && <FeeInsurance r={r} act={act} disabled={disabled} />}
+      {r.status === 'accepted' && <FeeInsurance r={r} act={act} disabled={disabled} ctx={ctx} />}
 
       <details>
         <summary>{r.status === 'accepted' ? 'Contact, availability and notes' : 'Fee, insurance, contact and notes'}</summary>
         <div style={{ display: 'grid', gap: 6, marginTop: 8 }}>
-          {r.status !== 'accepted' && <FeeInsurance r={r} act={act} disabled={disabled} />}
+          {r.status !== 'accepted' && <FeeInsurance r={r} act={act} disabled={disabled} ctx={ctx} />}
           <p style={{ overflowWrap: 'anywhere' }}>Email: {r.email}</p>
           <Contact r={r} />
           <p>Can attend: {attendanceText(r.attendDates, r.days)} · shares equipment: {r.sharesEquipment ? 'yes' : 'no'}</p>
@@ -81,7 +82,7 @@ function ReviewCard({ r, act, block }: { r: ManagedRegistration; act: ReturnType
   );
 }
 
-function FeeInsurance({ r, act, disabled }: { r: ManagedRegistration; act: ReturnType<typeof useAction>; disabled: boolean }) {
+function FeeInsurance({ r, act, disabled, ctx }: { r: ManagedRegistration; act: ReturnType<typeof useAction>; disabled: boolean; ctx: MembershipContext }) {
   return (
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
         {r.feeDueCents > 0 ? (
@@ -91,7 +92,7 @@ function FeeInsurance({ r, act, disabled }: { r: ManagedRegistration; act: Retur
         ) : <span className="src">No fee due</span>}
         <label className="field-in" style={{ display: 'inline-grid' }}>Insurance
           <select value={r.insurance} disabled={disabled} onChange={e => act.run(r.id, () => setRegistrationInsurance(r.id, e.target.value as Insurance))}>
-            {(Object.keys(INSURANCE_LABEL) as Insurance[]).map(k => <option key={k} value={k}>{INSURANCE_LABEL[k]}</option>)}
+            {organizerInsuranceChoices(ctx, r.insurance).map(k => <option key={k} value={k}>{insuranceLabel(k, ctx)}</option>)}
           </select>
         </label>
       </div>
@@ -108,6 +109,9 @@ export function RegistrationsTool({ event, regs, loading, error, onChanged }: { 
   const act = useAction(onChanged);
   // Pack 22: who is blocked by a suspension (the label only), so the organizer sees it before pressing Accept. The database refuses anyway.
   const blocks = useAsync(() => fetchDisciplineOverview(event.id).then(o => new Map(o.blocks.map(b => [b.registration_id, b.message]))).catch(() => new Map<string, string>()), [event.id], [regs]);
+  // HACSA insurance wording only for an event linked to HACSA; a failed lookup means generic wording (stored HACSA/MCC answers still show as they are).
+  const membership = useAsync(() => fetchEventMembershipContext(event).catch(() => null), [event.organizationId, event.seasonId]);
+  const ctx = membership.data ?? null;
   const counts = countByStatus(regs);
   const list = filterRegistrations(regs, filter, query);
   return (
@@ -123,7 +127,7 @@ export function RegistrationsTool({ event, regs, loading, error, onChanged }: { 
       {loading && <p className="muted">Loading registrations…</p>}
       {!loading && list.length === 0 && <div className="panel info"><h3>{regs.length === 0 ? 'No registrations yet' : 'Nothing here'}</h3></div>}
       <div style={{ display: 'grid', gap: 12 }}>
-        {list.map(r => <ReviewCard key={r.id} r={r} act={act} block={blocks.data?.get(r.id) ?? null} />)}
+        {list.map(r => <ReviewCard key={r.id} r={r} act={act} block={blocks.data?.get(r.id) ?? null} ctx={ctx} />)}
       </div>
       <ExportRegistrations slug={event.slug} registrations={regs} />
     </section>
