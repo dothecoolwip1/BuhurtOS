@@ -108,7 +108,11 @@ try {
   check('[emergency] an action queued by the old build is stored with schema version 1', queued.length === 1 && queued[0].schema === 1 && queued[0].userId === IDS.userA);
   await startUpdate(s);
   await s.page.getByRole('button', { name: 'Update anyway (emergency)' }).click();
-  check('[emergency] the emergency update asks for confirmation first', await s.has('only do this if an organizer told you to'));
+  check('[emergency] the emergency update explains backup and uncertain clock recovery before confirmation',
+    await s.has('copy or photograph pending counts first') && await s.has('counts held only in memory can be lost')
+    && await s.has('Unconfirmed clock actions still need a manual check')
+    && await s.page.getByRole('button', { name: 'Yes, update now', exact: true }).isVisible()
+    && await s.page.getByRole('button', { name: 'Not now', exact: true }).isVisible());
   check('[emergency] nothing changed yet', (await s.version()) === s.idA);
   await s.page.getByRole('button', { name: 'Yes, update now' }).click();
   await s.page.waitForFunction(() => document.querySelector('[data-testid=app-version]')?.textContent?.includes('second-build'), null, { timeout: 30000 });
