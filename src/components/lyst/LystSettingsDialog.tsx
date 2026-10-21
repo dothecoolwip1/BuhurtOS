@@ -66,7 +66,7 @@ export function LystSettingsDialog({ eventId, settings, onClose, onSaved }: { ev
           </div>
           <label className="ly-check"><input type="checkbox" checked={autoBreak} onChange={e => setAutoBreak(e.target.checked)} /> Start the break by itself when the round clock reaches zero (on the operating tablet)</label>
         </fieldset>
-        <fieldset><legend>Counters tap</legend>
+        <fieldset><legend>Counters tap</legend><p className="src">Used when a fight opens. Phones already counting keep their current buttons.</p>
           <div className="ly-chips" role="group" aria-label="Counter buttons">
             {(['auto', 'simple', 'weighted'] as const).map(v => <button key={v} type="button" className="ly-chip" aria-pressed={input === v} onClick={() => setInput(v)}>{v === 'auto' ? 'By category' : v === 'simple' ? 'One tap per strike' : '+2 and +1 buttons'}</button>)}
           </div>

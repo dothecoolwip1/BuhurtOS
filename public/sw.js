@@ -62,7 +62,11 @@ self.addEventListener('fetch', event => {
     return;
   }
   // Built files are fingerprinted: cache first.
-  event.respondWith(caches.match(req).then(hit => hit || fetch(req).then(res => {
+  // Static files from this origin are identical for every caller. A hosting
+  // server's Vary: Origin must not hide a precached module from its CORS-mode
+  // script request during an offline reload. API caching retains its stricter
+  // rules above; this applies only to the app's own static files.
+  event.respondWith(caches.match(req, { ignoreVary: true }).then(hit => hit || fetch(req).then(res => {
     if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
     return res;
   })));

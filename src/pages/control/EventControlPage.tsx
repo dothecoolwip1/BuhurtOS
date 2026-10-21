@@ -32,6 +32,7 @@ import { RegistrationsTool } from './RegistrationsTool';
 import { SecretaryDesk } from './SecretaryDesk';
 import { isSecretaryOnly } from '../../lib/eventStaff';
 import { storedWhoami } from '../../lib/deviceSession';
+import { EventCounterEvidence } from '../../components/lyst/EventCounterEvidence';
 
 /** Who may open Event Control at all (display only; the database decides every read and write): organizers and the people who run the day. */
 export const CONTROL_ROLES = ['organizer', 'head_marshal', 'scorekeeper', 'operator', 'owner'];
@@ -111,6 +112,7 @@ export function EventControlPage() {
 
       {!tool && mode === 'setup' && <SetupMode key={event.id} event={event} competitions={competitions} regs={all} running={phase === 'live'} onChanged={changed} />}
       {!tool && mode === 'live' && <LiveOps key={event.id} event={event} competitions={competitions} organizer={organizer} onEventChanged={changed} />}
+      {!tool && (mode==='live'||mode==='results') && <details className="panel info"><summary>Counter evidence · current and finished fights</summary><EventCounterEvidence key={event.id} eventId={event.id} refreshKey={eventKey} /></details>}
       {!tool && mode === 'results' && (
         <>
           <FinalizeTab key={event.id} event={event} competitions={competitions} onChanged={changed} />
@@ -130,7 +132,7 @@ export function EventControlPage() {
       {tool?.key === 'checkin' && (
         <>
           <p className="panel info" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}><Link className="btn btn-ink" to={`/events/${event.slug}/checkin?from=control`}>Open the check-in desk</Link><span className="src">Arrivals, armour inspection with what needs fixing, weigh-in and who is ready, for desk staff and inspectors too.</span></p>
-          <CheckinPanel regs={all} loading={regs.loading} onChanged={() => setRegsKey(k => k + 1)} />
+          <CheckinPanel regs={all} loading={regs.loading} onChanged={() => setRegsKey(k => k + 1)} deskTo={`/events/${event.slug}/checkin?from=control`} />
         </>
       )}
       {tool?.key === 'devices' && (

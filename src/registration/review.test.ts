@@ -1,6 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import type { ManagedRegistration } from '../data/manage';
-import { blockers, countByStatus, filterRegistrations } from './review';
+import { blockers, countByStatus, filterRegistrations, insuranceLabel, insuranceOk, organizerInsuranceChoices } from './review';
+
+describe('insurance wording for organizers', () => {
+  it('stored HACSA and MCC answers keep their labels in any event, and still count as covered', () => {
+    for (const ctx of ['hacsa', null] as const) {
+      expect(insuranceLabel('hacsa_member', ctx)).toBe('HACSA member');
+      expect(insuranceLabel('mcc_member', ctx)).toBe('MCC member');
+    }
+    expect(insuranceOk('hacsa_member') && insuranceOk('mcc_member')).toBe(true);
+  });
+  it('"needs cover" names temporary HACSA membership only at a HACSA event', () => {
+    expect(insuranceLabel('needs_cover', 'hacsa')).toBe('Needs cover (temporary HACSA)');
+    expect(insuranceLabel('needs_cover', null)).toBe('Needs cover');
+    expect(insuranceLabel('something_new', null)).toBe('something_new');
+  });
+  it('an unrelated event offers generic choices; a current HACSA/MCC answer stays selectable', () => {
+    expect(organizerInsuranceChoices(null, 'proof_pending')).toEqual(['proof_received', 'proof_pending', 'needs_cover']);
+    expect(organizerInsuranceChoices(null, 'hacsa_member')).toEqual(['hacsa_member', 'proof_received', 'proof_pending', 'needs_cover']);
+    expect(organizerInsuranceChoices(null, 'mcc_member')[0]).toBe('mcc_member');
+    expect(organizerInsuranceChoices('hacsa', 'proof_pending')).toEqual(['hacsa_member', 'mcc_member', 'proof_received', 'proof_pending', 'needs_cover']);
+  });
+});
 
 const reg = (over: Partial<ManagedRegistration> = {}): ManagedRegistration => ({
   id: 'r', status: 'pending', fullName: 'Ada Lovelace', gender: 'female', organization: 'HACSA', province: 'AB', teamName: 'Iron Wardens', sharesEquipment: false,

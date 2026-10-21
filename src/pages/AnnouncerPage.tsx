@@ -239,7 +239,8 @@ function Badge({ s, size }: { s: AnnSide; size: number }) {
 }
 
 function Readiness({ s }: { s: AnnSide }) {
-  if (s.ready === null) return null;
+  if (!s.readinessAvailable) return null;
+  if (s.ready === null) return <span className="an-ready">Readiness not recorded</span>;
   return s.ready
     ? <span className="an-ready ok"><span aria-hidden="true">✓ </span>Ready</span>
     : <span className="an-ready no"><span aria-hidden="true">! </span>Not yet ready</span>;

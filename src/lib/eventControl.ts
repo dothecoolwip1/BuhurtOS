@@ -19,7 +19,7 @@ export const TOOLS: readonly Tool[] = [
   { key: 'teams', label: 'Teams', help: 'Team requests and rosters', home: 'setup', organizer: true },
   { key: 'broadcast', label: 'Broadcast', help: 'Livestream, OBS overlay and sponsors', home: 'setup', organizer: true },
   { key: 'devices', label: 'Counters and devices', help: 'The Counter QR, event phones and tablets, the stream laptop', home: 'live', organizer: false },
-  { key: 'checkin', label: 'Check-in list', help: 'Who has arrived, kit and waivers, as a list', home: 'live', organizer: true }
+  { key: 'checkin', label: 'Check-in list', help: 'Insurance, fees, arrivals and kit, as a list', home: 'live', organizer: true }
 ];
 export const toolFor = (key: string | null | undefined): Tool | undefined => TOOLS.find(t => t.key === key);
 export const isToolKey = (v: unknown): v is ToolKey => TOOLS.some(t => t.key === v);

@@ -33,11 +33,12 @@ function Picker({ label, value, onChange, hints, onUseHint, name, side }: { labe
  * evidence the marshal may look at: they are never combined, averaged or pre-selected, and using one is an explicit tap (recorded only as a "recommended" note).
  * A correction to a confirmed round needs a reason, and the old numbers stay on the record.
  */
-export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, busy, disabledReason, onConfirm, onCancel, onReturn, secretary = false }: {
+export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, busy, disabledReason, requireReason, onConfirm, onCancel, onReturn, secretary = false }: {
   secretary?: boolean;
   round: number; names: { a: string; b: string }; initial: { a: number; b: number } | null; correcting: boolean; hintsA: Hint[]; hintsB: Hint[]; busy: boolean; disabledReason?: string | null;
   onConfirm: (a: number, b: number, extra: { reason: string | null; recommendedA: number | null; recommendedB: number | null }) => void; onCancel?: () => void;
   onReturn?: (reason: string) => void;
+  requireReason?: string | null;
 }) {
   const [a, setA] = useState<number | null>(initial ? initial.a : null);
   const [b, setB] = useState<number | null>(initial ? initial.b : null);
@@ -49,7 +50,7 @@ export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, 
   useEffect(() => { setA(initial ? initial.a : null); setB(initial ? initial.b : null); setRecA(null); setRecB(null); setReason(''); }, [round, initial?.a, initial?.b, correcting]);   // eslint-disable-line react-hooks/exhaustive-deps
   const changed = useMemo(() => !correcting || !initial || a !== initial.a || b !== initial.b, [correcting, initial, a, b]);
   const overriding = (a !== null && hintsA.length > 0 && !hintsA.some(h => h.total === a)) || (b !== null && hintsB.length > 0 && !hintsB.some(h => h.total === b));
-  const needsReason = correcting || overriding;
+  const needsReason = correcting || overriding || !!requireReason;
   const reasonOk = !needsReason || reason.trim().length >= 3;
   const ready = a !== null && b !== null && changed && reasonOk && !busy && !disabledReason;
   return (
@@ -61,10 +62,11 @@ export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, 
         <Picker label="Fighter B" side="b" name={names.b} value={b} onChange={v => { setB(clampScore(v)); setRecB(null); }} hints={hintsB} onUseHint={h => { setB(clampScore(h.total)); setRecB(h.total); }} />
       </div>
       {needsReason && (
-        <label className="ly-reason"><span>Reason for the score change</span>
+        <label className="ly-reason"><span>{requireReason ? 'Reason for the marshal’s score' : 'Reason for the score change'}</span>
           <input value={reason} maxLength={200} onChange={e => setReason(e.target.value)} placeholder="For example: marshal re-counted after the break" aria-required="true" />
         </label>
       )}
+      {requireReason && <p className="ly-note" role="status">{requireReason}</p>}
       {disabledReason && <p className="ly-note" role="status">{disabledReason}</p>}
       <div className="ly-confirm-row">
         {onCancel && <button type="button" className="btn btn-line fq-big" disabled={busy} onClick={onCancel}>Cancel</button>}

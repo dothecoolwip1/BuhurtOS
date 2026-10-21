@@ -109,6 +109,12 @@ select t.expect_eq('evidence: nor its seats', (select count(*)::int from public.
 select t.as_user(t.u(3));
 select t.expect_eq('evidence: the marshal sees a waiting fight''s tallies', (select count(*)::int from public.lyst_counts where match_id = t.m(5)), 1);
 
+select t.as_admin();
+-- A reasonless acceptance is safe only after actual preparation/start receipts and Done.
+insert into private.counter_receipts(run_id,seat_id,prepared_at,started_at,seen_at,pending)
+select r.id,s.id,clock_timestamp(),clock_timestamp(),clock_timestamp(),0
+from private.counter_runs r join public.lyst_counter_seats s on s.match_id=r.match_id
+where r.match_id=t.m(1) and r.round_no=1 and s.role='official' and s.status='active';
 select t.as_user(t.u(4));
 select t.expect_error('manual score over the counters needs a reason', $q$select public.lyst_confirm_round(gen_random_uuid(), t.m(1), 1, 1, 0, 1)$q$, '22023');
 select t.expect_eq('accept the counters'' total', public.lyst_confirm_round('00000000-0000-0000-0000-5ec0000000c1', t.m(1), 1, 2, 0, 1) ->> 'status', 'ok');

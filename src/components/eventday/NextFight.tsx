@@ -63,7 +63,7 @@ export function NextFight({ field, label, plan, matches, fighting, called, sides
   const why = (
     <ul className="ed-next-why">
       {lines.map(l => <li key={l}>{l}</li>)}
-      <li className={missing.length > 0 ? 'warn' : 'ok'}>{missing.length > 0 ? `Not checked in: ${missing.join(', ')}` : 'Ready to fight'}</li>
+      <li className={missing.length > 0 ? 'warn' : ''}>{missing.length > 0 ? `Not checked in: ${missing.join(', ')}` : 'Check-in: no recorded blocks. Verify full readiness at the desk.'}</li>
       <li className="src">{planHeadline(f, plan.target)}{f.reasons.some(r => r.code === 'equipment') ? ' · someone shares equipment: check the gear is free' : ''}</li>
     </ul>
   );

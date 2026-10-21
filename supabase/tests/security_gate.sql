@@ -1285,10 +1285,10 @@ select t.expect_eq('s4 = one quarterfinal win, nothing else', t.pts('00000000-00
 select t.expect_eq('s5 and s6 score nothing', t.pts('00000000-0000-0000-0000-00000000b801', 's5') + t.pts('00000000-0000-0000-0000-00000000b801', 's6'), 0::numeric);
 select t.expect_eq('the withdrawn entry has no result', (select count(*) from public.results where entry_id = t.gu('e:s7')), 0::bigint);
 select t.expect_eq('the competition is finished', (select status from public.competitions where id = '00000000-0000-0000-0000-00000000b801'), 'finished');
-select t.expect_eq('finishing again recomputes the same thing (idempotent)', public.finish_competition('00000000-0000-0000-0000-00000000b801'), 6);
+select t.expect_error('legacy finishing again requires an explicit reopen', $$select public.finish_competition('00000000-0000-0000-0000-00000000b801')$$, 'P0001');
 select t.expect_eq('... no duplicate rows', (select count(*) from public.results where competition_id = '00000000-0000-0000-0000-00000000b801'), 6::bigint);
 select t.expect_eq('... same points', (select sum(points) from public.results where competition_id = '00000000-0000-0000-0000-00000000b801'), 24::numeric);
-select t.expect_eq('finishing was audited', (select count(*) from public.audit_log where action = 'competition.finished' and subject = '00000000-0000-0000-0000-00000000b801'), 2::bigint);
+select t.expect_eq('finishing was audited', (select count(*) from public.audit_log where action = 'competition.finished' and subject = '00000000-0000-0000-0000-00000000b801'), 1::bigint);
 -- reopening a match un-finishes the competition
 select t.expect_ok('an organizer reopens the third-place match', format($q$select public.reopen_match(%L, 'wrong score')$q$, t.g('m:e3')));
 select t.expect_eq('the competition is running again', (select status from public.competitions where id = '00000000-0000-0000-0000-00000000b801'), 'running');
@@ -1334,8 +1334,10 @@ select t.expect_eq('pools + knockout places: final, semifinal losers share 3rd (
   (select string_agg(k || '=' || t.place('00000000-0000-0000-0000-00000000b812', k)::text, ',' order by k) from unnest(array['pA1','pA2','pA3','pB1','pB2','pB3']) k), 'pA1=1,pA2=3,pA3=6,pB1=2,pB2=3,pB3=5');
 select t.expect_eq('pools points x Regional 1.25 (tournament structure): A1 (4 wins + gold = 12) 15, B1 (3 wins + silver = 8) 10, A2 and B2 (1 pool win + bronze = 3) 3.75, pool-only entries 0',
   (select string_agg(t.pts('00000000-0000-0000-0000-00000000b812', k)::text, ',' order by k) from unnest(array['pA1','pA2','pA3','pB1','pB2','pB3']) k), '15.00,3.75,0.00,10.00,3.75,0.00');
+select public.reopen_competition('00000000-0000-0000-0000-00000000b812','Organizer changes the multiplier source after review');
 select t.expect_eq('the same competition with the league-structure multiplier (x1.5)', public.finish_competition('00000000-0000-0000-0000-00000000b812', 'league_structure'), 6);
 select t.expect_eq('... A1 is now 18', t.pts('00000000-0000-0000-0000-00000000b812', 'pA1'), 18::numeric);
+select public.reopen_competition('00000000-0000-0000-0000-00000000b812','Organizer restores the default multiplier source after review');
 select t.expect_eq('back to the default source', public.finish_competition('00000000-0000-0000-0000-00000000b812'), 6);
 select t.expect_eq('... A1 is 15 again', t.pts('00000000-0000-0000-0000-00000000b812', 'pA1'), 15::numeric);
 -- no tier: places, but no points

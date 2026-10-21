@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { LiveCompetition, LiveEvent } from '../data/api';
-import { fetchEventRoster, fetchRegistrationFlags, saveQueuePlan, setCompetitionField } from '../data/eventDay';
-import { buildSchedule, fetchCompetitionMatchesOrdered, fetchEntries, type CompetitionEntry } from '../data/matches';
-import { updateEvent } from '../data/setup';
+import { fetchEventRoster, fetchRegistrationFlags, saveQueuePlan } from '../data/eventDay';
+import { buildTournamentPlan, fetchCompetitionMatchesOrdered, fetchEntries, type CompetitionEntry } from '../data/matches';
 import { DEFAULT_TIME_ZONE, fetchEventTimeZone } from '../data/runSchedule';
 import { FORMAT_WORD, planTotals, previewPlan, propose, type BuildCompetition, type FormatChoice } from '../lib/buildPlan';
 import { competitionSorts, withdrawnEntryIds, fieldLabel } from '../lib/eventDay';
@@ -58,28 +57,30 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
   const setOverride = (id: string, patch: Partial<FormatChoice> & { field?: string }) => setOverrides(m => new Map(m).set(id, { ...(m.get(id) ?? {}), ...patch }));
   const fieldNames = Array.from({ length: fields }, (_, i) => `Field ${i + 1}`);
 
-  const use = async () => {
-    setBusy('Building…'); setProblems([]);
-    const errs: string[] = [];
-    let builtNow = 0, fights = 0;
-    if (fields !== (event.fieldCount ?? 1)) { try { await updateEvent(event.id, { field_count: fields }); } catch { /* the plan still works with the fields named on the matches */ } }
-    for (const p of toBuild) {
-      setBusy(`Building ${p.name}…`);
-      try {
-        const n = await buildSchedule(p.id, p.matches, 'new', { draw: { format: p.choice.format, mode: 'random', seed: p.seed } });
-        builtNow += 1; fights += n || p.matches.length;
-        if (p.field.toLowerCase() !== 'field 1') await setCompetitionField(p.id, p.field);
-      } catch (e) { errs.push(`${p.name}: ${friendlyError(e)}`); }
-    }
-    setBusy('Planning the fight order…');
-    try {
+  const saveOrder = async () => {
       const [per, roster, regs] = await Promise.all([Promise.all(competitions.map(async c => ({ entries: await fetchEntries(c.id), matches: await fetchCompetitionMatchesOrdered(c.id) }))), fetchEventRoster(ids), fetchRegistrationFlags(event.id).catch(() => [])]);
       const matches = per.flatMap(x => x.matches), entries = per.flatMap(x => x.entries);
       const live = planEvent({ matches, entries, roster, registrations: regs, sorts: competitionSorts(competitions), withdrawn: withdrawnEntryIds(entries), today: day, fieldCount: fields });
       await saveQueuePlan(event.id, live.upcoming, heldMatches(live));
-    } catch (e) { errs.push(`The fight order was not saved (${friendlyError(e)}). Live ops will plan it when it opens.`); }
-    setProblems(errs); setBusy(null); setDone({ built: builtNow, fights });
-    setReload(k => k + 1); onChanged();
+  };
+  const retryOrder = async () => {
+    setBusy('Planning the fight order…'); setProblems([]);
+    try { await saveOrder(); onChanged(); }
+    catch (e) { setProblems([`The fight order was not saved (${friendlyError(e)}). Retry planning, or open Live ops.`]); }
+    finally { setBusy(null); }
+  };
+  const use = async () => {
+    setBusy('Building…'); setProblems([]);
+    try {
+      const result = await buildTournamentPlan(event.id, fields, toBuild.map(p => ({ id: p.id, matches: p.matches, field: p.field, draw: { format: p.choice.format, mode: 'random', seed: p.seed } })));
+      setDone(result); setBusy('Planning the fight order…');
+      try { await saveOrder(); }
+      catch (e) { setProblems([`Draws and Lysts are saved. The fight order was not saved (${friendlyError(e)}). Retry planning, or open Live ops.`]); }
+    } catch (e) {
+      // A lost response can mean the transaction committed. Refresh before
+      // allowing another build; existing draws are never replaced by a retry.
+      setProblems([`Build not confirmed: ${friendlyError(e)}. Refreshing the draws. Check them before retrying.`]);
+    } finally { setBusy(null); setReload(k => k + 1); onChanged(); }
   };
 
   if (data.loading && !data.data) return <p className="muted">Reading the registrations…</p>;
@@ -89,9 +90,10 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
     return (
       <section className="panel info bt-done" role="status" style={{ display: 'grid', gap: 10 }}>
         <h2 style={{ margin: 0 }}>{done.built > 0 ? 'Tournament built' : 'Nothing was built'}</h2>
-        <p>{done.built > 0 ? `${done.built} competition${done.built === 1 ? '' : 's'}, ${done.fights} fights. The fight order is planned for rest; Live ops keeps it up to date as results come in.` : 'No competition could be built.'}</p>
+        <p>{done.built > 0 ? `${done.built} competition${done.built === 1 ? '' : 's'}, ${done.fights} fights. Draws and Lyst assignments are saved.${problems.length === 0 ? ' The fight order is planned for rest.' : ''}` : 'No competition could be built.'}</p>
         {problems.length > 0 && <ul role="alert" style={{ color: 'var(--live)', margin: 0, paddingLeft: 18 }}>{problems.map(p => <li key={p}>{p}</li>)}</ul>}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button type="button" className="btn btn-line" disabled={!!busy} onClick={() => void retryOrder()}>{busy ?? 'Replan fight order'}</button>
           <Link className="btn btn-ink eh-primary" to={`/events/${event.slug}/control?mode=live`}><span>Open Live ops</span><small>Who fights next, on every Lyst</small></Link>
           <Link className="btn btn-line" to={`/events/${event.slug}/control?mode=setup&tool=run`}>See the draws</Link>
         </div>
@@ -101,6 +103,8 @@ export function BuildTournamentTab({ event, competitions, onChanged }: { event: 
 
   return (
     <section className="bt" aria-label="Build tournament" style={{ display: 'grid', gap: 16 }}>
+      {problems.length > 0 && <ul role="alert">{problems.map(p => <li key={p}>{p}</li>)}</ul>}
+      {built.length > 0 && <div className="panel info"><p>Existing draws keep their saved Lysts. You can plan their fight order again after a connection failure.</p><button type="button" className="btn btn-line" disabled={!!busy} onClick={() => void retryOrder()}>{busy ?? 'Replan fight order'}</button><Link className="ly-link" to={`/events/${event.slug}/control?mode=setup&tool=run`}>Check draws and Lysts</Link></div>}
       <div className="panel info eh-next" aria-labelledby="bt-h">
         <p className="eyebrow">Build tournament</p>
         {toBuild.length === 0

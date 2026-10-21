@@ -1,8 +1,23 @@
 import type { Insurance, ManagedRegistration, RegStatus } from '../data/manage';
+import type { MembershipContext } from './model';
 
+/** HACSA event wording. hacsa_member and mcc_member always read as exactly that, in any event: they are real, historical answers. */
 export const INSURANCE_LABEL: Record<Insurance, string> = {
   hacsa_member: 'HACSA member', mcc_member: 'MCC member', proof_received: 'Proof received', proof_pending: 'Proof pending', needs_cover: 'Needs cover (temporary HACSA)'
 };
+/** Any other event: only "needs cover" changes, because it no longer names HACSA's temporary membership. */
+const GENERIC_LABEL: Record<Insurance, string> = { ...INSURANCE_LABEL, needs_cover: 'Needs cover' };
+
+/** The words for a stored insurance answer; an unknown code is shown as it is. */
+export const insuranceLabel = (code: string, ctx: MembershipContext): string =>
+  (ctx === 'hacsa' ? INSURANCE_LABEL : GENERIC_LABEL)[code as Insurance] ?? code;
+
+/** What the organizer may set. Outside a HACSA event, HACSA/MCC membership appears only when it is the registration's current answer. */
+export function organizerInsuranceChoices(ctx: MembershipContext, current: Insurance | string): Insurance[] {
+  if (ctx === 'hacsa') return Object.keys(INSURANCE_LABEL) as Insurance[];
+  const legacy = (['hacsa_member', 'mcc_member'] as Insurance[]).filter(k => k === current);
+  return [...legacy, 'proof_received', 'proof_pending', 'needs_cover'];
+}
 export const insuranceOk = (i: Insurance) => i === 'hacsa_member' || i === 'mcc_member' || i === 'proof_received';
 
 export type ReviewFilter = 'pending' | 'accepted' | 'declined' | 'withdrawn' | 'all';

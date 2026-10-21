@@ -8,15 +8,15 @@
 import { supabase } from '../lib/supabase';
 import { fetchFighterCareer, fetchTeamCareer, type CareerLine } from './careerProfile';
 
-export interface ReadinessRow { match_id: string; side: 'a' | 'b'; ready: boolean }
+export interface ReadinessRow { match_id: string; side: 'a' | 'b'; ready: boolean | null }
 
 /** Ready / not yet ready per side for the fights in play and coming up; null when this viewer may not read it (the screen shows none). */
 export async function fetchReadiness(eventId: string): Promise<ReadinessRow[] | null> {
   const { data, error } = await supabase.rpc('announcer_readiness', { p_event: eventId });
   if (error) return null;
-  return ((data ?? []) as Array<{ match_id: string; side: string; ready: boolean }>)
+  return ((data ?? []) as Array<{ match_id: string; side: string; ready: boolean | null }>)
     .filter(r => (r.side === 'a' || r.side === 'b') && typeof r.match_id === 'string')
-    .map(r => ({ match_id: r.match_id, side: r.side as 'a' | 'b', ready: r.ready === true }));
+    .map(r => ({ match_id: r.match_id, side: r.side as 'a' | 'b', ready: typeof r.ready === 'boolean' ? r.ready : null }));
 }
 
 export interface EntryProfile {

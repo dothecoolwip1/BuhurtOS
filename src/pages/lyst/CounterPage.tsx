@@ -1,14 +1,19 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { SignIn } from '../../auth/SignIn';
-import { counterBind, counterLeave, counterRecord, counterSetOperator, counterSubmit, counterUndo, joinTrainingCounter, leaveSeat, type CounterField, type CounterState } from '../../data/lyst';
+import { acknowledgeCounterRun, counterBind, counterLeave, counterSetOperator, counterSubmit, joinTrainingCounter, leaveSeat, type CounterField, type CounterState, type PreparedCounterRun } from '../../data/lyst';
 import { isDeviceMode, storedWhoami } from '../../lib/deviceSession';
-import { classifyRpcError } from '../../lib/scoreSender';
 import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
-import { DEFAULT_SIDES, TapQueue, counterBanner, fightLine, flushTaps, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, type CountAction, type CounterSend, type CounterStep } from '../../lib/lyst/counters';
+import { DEFAULT_SIDES, counterBanner, fightLine, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, type CounterStep } from '../../lib/lyst/counters';
+import { CounterJournal } from '../../lib/lyst/counterJournal';
+import { useCounterTab } from '../../lib/lyst/useCounterTab';
+import { offlineShellStore, scoringGuard } from '../../lib/swUpdate';
+import { SavedCounterEvidence } from '../../components/lyst/SavedCounterEvidence';
+import { counterEvidenceSender } from '../../lib/lyst/sendCounterEvidence';
+import { useCounterBacklog } from '../../lib/lyst/useCounterBacklog';
 import { formatClock, remainingMs } from '../../lib/lyst/timer';
 import { useCounterState, useNow } from '../../lib/lyst/useLystState';
 
@@ -16,7 +21,7 @@ const TRAIN_CODE_KEY = 'bos-lyst-train-code';
 const tapsKey = (seat: string) => `bos-lyst-taps:${seat}`;
 const store = {
   get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },
-  set: (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* the taps still work for this session */ } },
+  set: (k: string, v: string) => { try { localStorage.setItem(k, v);return localStorage.getItem(k)===v; } catch { return false; } },
   del: (k: string) => { try { localStorage.removeItem(k); } catch { /* ignore */ } }
 };
 
@@ -28,6 +33,13 @@ const store = {
  * kept apart and never reaches anything official. Every tap is saved on the phone first, carries its own id, and is sent in order.
  */
 export function CounterPage() {
+  const shell=useSyncExternalStore(offlineShellStore.subscribe,offlineShellStore.getSnapshot);
+  return <><CounterContent /><div className="cp-recovery">
+    {import.meta.env.PROD && <p className="src" role="status">{shell==='ready'?'App saved for offline reopening on this browser. Keep the correct fight and round saved too.':shell==='unavailable'?'This browser could not prepare the offline app. Keep this page open and use paper if it closes.':'Preparing the app for offline reopening. Keep this page open until it is ready; use paper backup.'}</p>}
+    <SavedCounterEvidence showEmpty /></div></>;
+}
+
+function CounterContent() {
   const { code: urlCode } = useParams();
   const device = isDeviceMode();
   const { session, loading } = useAuth();
@@ -138,7 +150,7 @@ function DeviceCounter() {
     );
   }
   return (
-    <CountScreen state={state!} cs={cs} training={false} busy={busy} problem={problem}
+    <CountScreen key={state?.seat?.id ?? 'waiting'} state={state!} cs={cs} training={state?.training===true||state?.seat?.role==='learning'} busy={busy} problem={problem}
       onChangeOperator={() => setEditing('operator')} onChangeSide={() => setEditing('side')} onChangeField={fields.length > 1 ? () => setEditing('field') : undefined}
       onLeave={() => run(() => counterLeave())} />
   );
@@ -235,7 +247,7 @@ function TrainingCounter({ userId, urlCode }: { userId: string; urlCode: string 
     );
   }
   return (
-    <CountScreen state={state} cs={cs} training busy={busy} problem={problem} onChangeOperator={() => setRenaming(true)}
+    <CountScreen key={state.seat?.id ?? 'waiting'} state={state} cs={cs} training busy={busy} problem={problem} onChangeOperator={() => setRenaming(true)}
       onLeave={async () => { if (!state.seat) return; setBusy(true); try { await leaveSeat(state.seat.id); store.del(tapsKey(state.seat.id)); await cs.refresh(); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); } }} />
   );
 }
@@ -248,85 +260,120 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   const sides = state.sides ? mergeSides(state.sides) : DEFAULT_SIDES;
   const vars = sideVars(sides) as React.CSSProperties;
   const seat = state.seat;
-  const round = state.round?.no ?? 0;
   const seatId = seat?.id ?? '';
+  const [manualRun, setManualRun] = useState<PreparedCounterRun | null>(() => {
+    try {
+      const cached = JSON.parse(store.get(`bos-counter-manual:${seatId}`) ?? 'null') as PreparedCounterRun | null;
+      return cached?.id === state.prepared_run?.id && cached?.match_id === state.match_id ? cached : null;
+    } catch { return null; }
+  });
+  const run = manualRun ?? state.prepared_run;
+  const round = manualRun?.no ?? state.prepared_run?.no ?? state.round?.no ?? 0;
   const [notice, setNotice] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
-  const [serverTotal, setServerTotal] = useState(0);
   const [offline, setOffline] = useState(false);
-  const queue = useRef(new TapQueue());
-  const pumping = useRef(false);
   const lastSendEnd = useRef(0);
+  const tab = useCounterTab(seatId);
+  const journal = useMemo(() => new CounterJournal(seatId, {
+    getItem: k => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v)
+  }, () => setTick(t => t + 1)), [seatId,tab.token]);
+  journal.setScope(state.match_id ?? seatId);
+  const [backup, setBackup] = useState(false);
+  const finishing = useRef(false);
+  const refreshCounter = cs.refresh;
+  useEffect(()=>{if(tab.owned)journal.activate();else journal.close();return()=>journal.close();},[journal,tab.owned]);
+  useEffect(()=>{scoringGuard.enter();return()=>scoringGuard.leave();},[]);
+  useEffect(()=>{
+    if(tab.owned && state.match_id)journal.rememberContext(state.match_id,{event:state.event?.name??'',fight:`${state.fights?.now?.a??state.fighter??''} vs ${state.fights?.now?.b??state.opponent??''}`,field:fieldLabel(state.field_label??seat?.field_key??'')});
+  },[journal,tab.owned,state.match_id,state.event?.name,state.fights?.now?.a,state.fights?.now?.b,state.fighter,state.opponent,state.field_label,seat?.field_key]);
 
-  // the phone's own queue survives a refresh (keyed by the seat: a new fight is a new seat and starts clean)
-  useEffect(() => {
-    if (!seatId) return;
-    const raw = store.get(tapsKey(seatId));
-    try { queue.current.load(raw ? (JSON.parse(raw) as CountAction[]) : []); } catch { queue.current.load([]); }
-    setServerTotal(0); setTick(t => t + 1);
-  }, [seatId]);
-  const persist = useCallback(() => { if (seatId) store.set(tapsKey(seatId), JSON.stringify(queue.current.pending)); }, [seatId]);
-
-  const send: CounterSend = useCallback(async a => {
-    try {
-      const r = a.kind === 'tap' ? await counterRecord(a.id, seatId, a.round, a.weight) : await counterUndo(a.id, seatId, a.round);
-      return { status: r.status, total: r.total };
-    } catch (e) {
-      const c = classifyRpcError(e);
-      if (c === 'offline' || c === 'retry') return { status: 'offline' as const };
-      const message = (e as { message?: string } | null)?.message ?? '';
-      const reason = /ROUND_ENDED/.test(message) ? 'ROUND_ENDED' : /ROUND_CHANGED/.test(message) ? 'ROUND_CHANGED' : /ROUND_NOT_STARTED|WAITING_FOR_FIGHT/.test(message) ? 'ROUND_NOT_STARTED' : 'OTHER';
-      return { status: 'refused' as const, reason, message };
-    }
-  }, [seatId]);
+  const send=useMemo(()=>counterEvidenceSender(seatId),[seatId]);
+  const backlog=useCounterBacklog(seatId,tab.owned);
 
   const pump = useCallback(async () => {
-    if (pumping.current || !seatId) return;
-    pumping.current = true;
-    try {
-      const r = await flushTaps(queue.current, send);
-      if (r.total !== null) setServerTotal(r.total);
-      setOffline(r.stopped === 'offline');
-      if (r.stopped === 'refused') setNotice(/already down/i.test(r.refusal ?? '') ? 'Everyone on that side is already down.' : 'The round had already ended, so your last taps were not counted. Tell the Lyst if that looks wrong.');
-      persist(); setTick(t => t + 1);
-      if (r.sent > 0 || r.stopped !== 'empty') lastSendEnd.current = Date.now();
-      if (r.stopped === 'empty') void cs.refresh();
-    } finally { pumping.current = false; }
-  }, [seatId, send, persist, cs]);
+    if (!seatId || !tab.owned || journal.pending.length === 0) return;
+    await journal.flush(send);
+    lastSendEnd.current = Date.now();
+    setOffline(journal.offline);
+    if (journal.held.length) setNotice('Some saved actions are kept as evidence. Open Saved counter evidence; the marshal can check their server review status.');
+    if (journal.pending.length === 0) void refreshCounter();
+  }, [seatId, tab.owned, journal, send, refreshCounter]);
 
   useEffect(() => {
-    const id = window.setInterval(() => { if (queue.current.size > 0) void pump(); }, 3000);
+    const id = window.setInterval(() => { if (journal.pending.length > 0) void pump(); }, 3000);
     const on = () => { void pump(); };
+    const wake = () => { if(!document.hidden)void pump(); };
     window.addEventListener('online', on);
-    return () => { window.clearInterval(id); window.removeEventListener('online', on); };
-  }, [pump]);
+    document.addEventListener('visibilitychange',wake);
+    return () => { window.clearInterval(id); window.removeEventListener('online', on); document.removeEventListener('visibilitychange',wake); };
+  }, [pump, journal]);
+  // A receipt means THIS run reached a phone and was saved, not merely that
+  // its browser had a heartbeat. Missing receipts stay visible to the scorer.
+  useEffect(() => {
+    if (!seatId || !tab.owned || !state.prepared_run || cs.cached || !cs.cacheDurable || !journal.durable) return;
+    const acknowledge = () => acknowledgeCounterRun(seatId, state.prepared_run!.id,
+      state.prepared_run!.status === 'running' && !!state.can_count, journal.pending.filter(a => a.runId === state.prepared_run!.id).length).catch(() => { /* retry on poll/reconnect; never claim receipt locally */ });
+    void acknowledge();
+  }, [seatId, tab.owned, state.prepared_run, state.can_count, cs.cached, cs.cacheDurable, journal]);
   // the server's total is the truth when nothing is waiting, but only from an answer requested after our last send
-  useEffect(() => { if (state.my_total !== undefined && queue.current.size === 0 && !pumping.current && cs.sentAt > lastSendEnd.current) setServerTotal(state.my_total); }, [state.my_total, tick, cs.sentAt]);   // eslint-disable-line react-hooks/exhaustive-deps
-  const lastRound = useRef(round);
-  useEffect(() => { if (lastRound.current !== round) { const gone = queue.current.dropRound(lastRound.current); lastRound.current = round; if (gone.length) { setNotice('The round changed, so taps that were still waiting were not counted.'); persist(); } setTick(t => t + 1); } }, [round, persist]);
+  useEffect(() => {
+    if (tab.owned && state.my_total !== undefined && state.round?.no === round && round && cs.sentAt > lastSendEnd.current && !journal.sending
+      && (journal.total(round) !== state.my_total || state.my_weights && journal.confirmedWeights(round).join(',') !== state.my_weights.join(','))) {
+      journal.acceptSnapshot(round, state.my_total, journal.revision, state.my_weights);
+    }
+  }, [tab.owned,state.my_total, state.my_weights, state.round?.no, round, tick, cs.sentAt, journal]);
+  useEffect(() => {
+    if(!manualRun && state.prepared_run && state.prepared_run.status!=='closed' &&
+      [...journal.pending,...journal.held.map(h=>h.action)].some(a=>a.recovery && a.runId===state.prepared_run!.id)){
+      setManualRun(state.prepared_run);
+      return;
+    }
+    // Keep a marshal-started round provisional through its end, including after
+    // reconnect. Mixing accepted taps with earlier review taps makes weighted
+    // Undo ambiguous. The next server-issued run returns to normal delivery.
+    if (manualRun && !cs.cached && (state.prepared_run?.id !== manualRun.id || state.prepared_run.status === 'closed')) {
+      setManualRun(null); store.del(`bos-counter-manual:${seatId}`);
+      setNotice('The server moved on. Your offline evidence is kept for marshal review.');
+    }
+  }, [manualRun, cs.cached, state.prepared_run, state.can_count, seatId,journal,tick]);
 
-  const canCount = Boolean(state.can_count) && seat?.status === 'active';
+  const manualAllowed = !!manualRun && state.prepared_run?.status !== 'closed' && (cs.cached || state.prepared_run?.id === manualRun.id);
+  const canCount = tab.owned && (Boolean(state.can_count) && !cs.cached || manualAllowed) && !!run?.id && run.status!=='closed' && seat?.status === 'active' && !finishing.current;
+  const canSubmit = !!manualRun || state.round?.no===round && state.round?.status!=='confirmed';
   const standing = state.counter_input === 'standing';
-  const shown = round ? queue.current.display(serverTotal, round) : 0;
+  const shown = round ? journal.display(round, run?.id) : 0;
   const left = standing ? standingLeft(state.per_side, shown) : null;
   const count = (weight: number) => {
     if (!canCount || !round) return;
     if (standing && left !== null && left <= 0) return;
-    queue.current.tap(round, weight); persist(); setTick(t => t + 1); setNotice(null);
+    if (finishing.current) return;
+    lastSendEnd.current = Date.now(); journal.add('tap', round, weight, { runId: run?.id, recovery: !!manualRun, recordedAt: new Date().toISOString(),operator:state.binding?.operator??seat?.operator,side:seat?.side??'',fighter:state.fighter??'',opponent:state.opponent??'' }); setNotice(null);
     try { navigator.vibrate?.(12); } catch { /* not supported */ }
     void pump();
   };
   const undo = () => {
     if (!canCount || !round || shown <= 0) return;
-    queue.current.undo(round); persist(); setTick(t => t + 1);
+    if (finishing.current) return;
+    lastSendEnd.current = Date.now(); journal.add('undo', round, 1, { runId: run?.id, recovery: !!manualRun, recordedAt: new Date().toISOString(),operator:state.binding?.operator??seat?.operator,side:seat?.side??'',fighter:state.fighter??'',opponent:state.opponent??'' });
     try { navigator.vibrate?.([8, 40, 8]); } catch { /* not supported */ }
     void pump();
   };
-  const done = async () => { if (!seatId || !round) return; try { await pump(); await counterSubmit(seatId, round); setNotice('Sent. Wait for the next round.'); void cs.refresh(); } catch (e) { setNotice(friendlyError(e, 'Could not send. Try again.')); } };
+  const done = async () => {
+    if (!seatId || !round || !tab.owned || finishing.current) return;
+    finishing.current = true; setTick(t => t + 1);
+    try {
+      await journal.flush(send);
+      lastSendEnd.current = Date.now(); setOffline(journal.offline);
+      if (journal.pending.length > 0) { setNotice('Not sent yet. Your counts are kept here. Retry when connected, or show the saved evidence to the marshal.'); return; }
+      if (journal.held.some(h => h.action.round === round && h.action.runId === run?.id)) { setNotice('This round has counts for marshal review. Show the saved evidence before submitting.'); return; }
+      await counterSubmit(seatId, round); setNotice('Sent. Wait for the next round.'); void cs.refresh();
+    } catch (e) { setNotice(friendlyError(e, 'Could not send. Your counts are kept here. Try again.')); }
+    finally { finishing.current = false; setTick(t => t + 1); }
+  };
 
   const now = useNow(state.timer?.status === 'running');
   const timeLeft = state.timer ? remainingMs(state.timer, cs.clock.now(now)) : 0;
-  const waiting = queue.current.size;
+  const waiting = journal.pending.length;
   const banner = useMemo(() => counterBanner({ seat: seat ? { status: seat.status, role: seat.role, side: seat.side } : null, can_count: state.can_count, final: state.final, waiting: state.waiting, round: state.round, counter_input: state.counter_input, binding: state.binding }, sides), [seat, state.can_count, state.final, state.waiting, state.round, state.counter_input, state.binding, sides]);
   const weighted = state.counter_input === 'weighted';
   const side = seat?.side ?? state.binding?.side ?? null;
@@ -354,10 +401,26 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         {state.timer && !state.waiting && <output className="cp-clock mono" aria-label={`Time left ${formatClock(timeLeft)}`}>{formatClock(timeLeft)}</output>}
         <p className={`cp-msg${offline || !canCount ? ' is-warn' : ''}`} role="status" aria-live="polite" data-testid="cp-banner">{banner}</p>
         {training && <p className="cp-msg" role="note">Practice: your count is kept for training and never changes any score.</p>}
-        {offline && <p className="cp-msg is-warn" role="alert">No signal. Keep tapping: your taps are saved on this phone and will be sent. They are not counted yet.</p>}
+        {training&&!!state.officials?.length&&<details className="panel info"><summary>Compare with official counters</summary><p className="src">Practice comparison for this side and round. Keep your own independent count.</p><ul>{state.officials.map((c,i)=><li key={`${c.name}:${i}`}>{c.name}: {c.total}</li>)}</ul></details>}
+        {tab.status==='blocked' && <div className="cp-msg is-warn" role="alert">This counter is open in another tab. Close the other counter tab before counting here.<button type="button" className="btn btn-line" onClick={tab.retry}>Use this tab</button></div>}
+        {tab.status==='unsupported' && !tab.owned && <div className="cp-msg is-warn" role="alert">This browser cannot check for another counter tab. Keep only one open and keep paper backup.<button type="button" className="btn btn-line" onClick={tab.acknowledgeSingleTab}>Only this counter tab is open · continue</button></div>}
+        {offline && <p className="cp-msg is-warn" role="alert">No signal. {journal.durable ? 'Your taps are saved on this phone and will be retried.' : 'Your taps are in memory only. Keep a paper backup.'} They are not confirmed by the server yet.</p>}
+        {!journal.durable && <p className="cp-msg is-warn" role="alert">This browser cannot safely save counts. Keep a paper count and show the saved evidence before leaving or reloading this screen.</p>}
+        {cs.cacheFailed && <p className="cp-msg is-warn" role="alert">This phone could not save the fight and round for offline reopening. Keep this page open and keep paper backup.</p>}
         {notice && <p className="cp-msg is-warn" role="alert">{notice}</p>}
+        {backlog && <p className="cp-msg is-warn" role="status">{backlog}</p>}
         {problem && <p className="cp-msg is-warn" role="alert">{problem}</p>}
         {cs.offline && !offline && <p className="cp-msg is-warn" role="status">Reconnecting…</p>}
+        {cs.cached && <p className="cp-msg is-warn" role="alert">Saved fight from {new Date(state.server_now).toLocaleTimeString()}. Check the names, side and round with the marshal before counting offline.</p>}
+        {manualRun && <p className="cp-msg is-warn" role="alert">Counting round {manualRun.no} from the marshal’s call. This is provisional evidence for review. It cannot change an official score.</p>}
+        {tab.owned && !manualRun && !finishing.current && !busy && (!state.can_count || cs.cached) && seat?.status==='active' && state.prepared_run && state.prepared_run.status !== 'closed' && !state.waiting && !state.final && <div className="panel info">
+          <p>Prepared round {state.prepared_run.no}: {state.fighter} vs {state.opponent}. If the marshal has called the start but this phone is still waiting, count here and show the evidence at the end.</p>
+          <button type="button" className="btn btn-ink fq-big" onClick={() => {
+            const prepared = state.prepared_run!;
+            const saved=store.set(`bos-counter-manual:${seatId}`, JSON.stringify(prepared));
+            setManualRun(prepared); setNotice(saved?'Listen to the marshal. This whole round stays marked for review.':'The offline-start choice could not be saved. Keep this page open and use paper backup. This round stays marked for review.');
+          }}>Marshal started round {state.prepared_run.no} · count offline</button>
+        </div>}
       </header>
 
       <section className="cp-main" aria-label="Count">
@@ -380,9 +443,15 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
       <footer>
         <div className="cp-foot">
           <button type="button" className="btn btn-line" disabled={!canCount || shown <= 0} onClick={undo}>{standing ? 'Undo (back up)' : 'Undo last'}</button>
-          <button type="button" className="btn btn-line" disabled={!seat || seat.status !== 'active' || !round || !!state.waiting} onClick={() => void done()}>Done with round</button>
+          <button type="button" className="btn btn-line" disabled={!tab.owned || !seat || seat.status !== 'active' || !round || !!state.waiting || finishing.current || !canSubmit} onClick={() => void done()}>{finishing.current?'Sending round…':'Done with round'}</button>
         </div>
-        <p className="cp-sync" role="status">{waiting > 0 ? `${waiting} tap${waiting === 1 ? '' : 's'} saved on this phone, sending…` : seat?.status === 'active' && !state.waiting ? 'All taps sent.' : ''}</p>
+        <p className="cp-sync" role="status">{waiting > 0 ? `${waiting} tap${waiting === 1 ? '' : 's'} ${journal.durable ? 'saved on this phone' : 'in memory only'}, waiting to send.` : journal.held.length ? `${journal.held.length} saved action${journal.held.length === 1 ? '' : 's'} kept as evidence.` : seat?.status === 'active' && !state.waiting ? 'All taps sent.' : ''}</p>
+        <button type="button" className="ly-link" aria-expanded={backup} onClick={() => setBackup(v => !v)}>Saved count evidence</button>
+        {backup && <label className="field-in">Copy or photograph this for the marshal. It includes pending and refused counts; it does not change the official result.<textarea readOnly value={journal.export()} rows={8} aria-label="Saved count evidence" /></label>}
+        {backup&&tab.owned&&journal.held.some(h=>!h.delivered&&!h.archivedAt)&&<button type="button" className="ly-link" onClick={()=>{
+          const saved=journal.archiveShownEvidence(new Set(journal.held.filter(h=>!h.delivered).map(h=>h.action.id)));
+          setNotice(saved?'Held counts archived locally after your marshal handoff. The actions are kept; pending taps and official scores have not changed.':'The archive could not be saved. Keep this page open and keep your copy.');
+        }}>I showed the held counts to the marshal · archive on this phone</button>}
         <nav className="cp-links" aria-label="Change">
           <button type="button" className="ly-link" disabled={busy} onClick={onChangeOperator}>{training ? 'Change name' : 'New counter'}</button>
           {onChangeSide && <button type="button" className="ly-link" disabled={busy} onClick={onChangeSide}>Change side</button>}

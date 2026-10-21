@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MODE_LABEL, formatClock, timerTone, timerWord, type LystTimer, type TimerMode, type TimerPreset } from '../../lib/lyst/timer';
 
-export interface TimerSend { (action: 'set' | 'start' | 'pause' | 'resume' | 'reset' | 'adjust' | 'restore', o?: { mode?: TimerMode; durationMs?: number; round?: number; deltaMs?: number }): void }
+export interface TimerSend { (action: 'set' | 'start' | 'pause' | 'resume' | 'reset' | 'adjust' | 'restore', o?: { mode?: TimerMode; durationMs?: number; round?: number; deltaMs?: number; overrideReason?: string }): void }
 
 const ARM_MODES: TimerMode[] = ['fight', 'break', 'extended_break', 'dq', 'equipment', 'custom'];
 

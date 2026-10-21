@@ -3,6 +3,9 @@ import { countUnfinishedBoards } from '../lib/boardStore';
 import { activateUpdate, scoringGuard, updateNote, updateSafety, updateStore } from '../lib/swUpdate';
 import { trackEvent } from '../lib/analytics';
 import { outbox } from '../lib/useOutbox';
+import { countPendingLocalScoring } from '../lib/lyst/localEvidence';
+
+const localWorkPending=()=>{try{return !countPendingLocalScoring(localStorage).safe;}catch{return true;}};
 
 /**
  * "A new version is ready". Shown only when a waiting build exists. It never reloads the page by itself: while scoring or while this device
@@ -27,8 +30,14 @@ export function UpdateBanner() {
 
   if (phase !== 'ready') return null;
   const pending = outbox.pendingTotal();
-  const safety = updateSafety({ scoringOpen: scoringGuard.open, pendingActions: pending, unfinishedBoards: boards });
-  const go = (emergency: boolean) => { trackEvent('app_update_applied', { emergency }); activateUpdate(); };
+  const safety = updateSafety({ scoringOpen: scoringGuard.open, pendingActions: pending, unfinishedBoards: boards,localScoringPending:localWorkPending() });
+  const go = async (emergency: boolean) => {
+    if(!emergency){
+      const latestBoards=await countUnfinishedBoards();setBoards(latestBoards);
+      if(!updateSafety({scoringOpen:scoringGuard.open,pendingActions:outbox.pendingTotal(),unfinishedBoards:latestBoards,localScoringPending:localWorkPending()}).safe){setTick(t=>t+1);return;}
+    }
+    trackEvent('app_update_applied', { emergency }); activateUpdate();
+  };
 
   return (
     <div className="panel info" role="status" aria-live="polite" style={{ display: 'grid', gap: 8, margin: '8px 16px' }}>
@@ -45,7 +54,7 @@ export function UpdateBanner() {
           {!confirming && <button type="button" className="btn btn-line" onClick={() => setConfirming(true)}>Update anyway (emergency)</button>}
           {confirming && (
             <span style={{ display: 'grid', gap: 8 }}>
-              <span className="src">Only do this if an organizer told you to. The page reloads. Scoring saved on this device is kept and is sent afterwards, but you will leave the match you are scoring.</span>
+              <span className="src">Check with the organizer and copy or photograph pending counts first. The page reloads. Saved evidence stays on this browser, but counts held only in memory can be lost. Unconfirmed clock actions still need a manual check after the update.</span>
               <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <button type="button" className="btn btn-ink" onClick={() => go(true)}>Yes, update now</button>
                 <button type="button" className="btn btn-line" onClick={() => setConfirming(false)}>Not now</button>

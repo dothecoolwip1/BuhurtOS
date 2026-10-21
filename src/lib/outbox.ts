@@ -94,11 +94,18 @@ export class Outbox {
   /** Entries on this device that belong to a different account: never sent while you are signed in as someone else. */
   heldForOthers(userId: string) { return this.entries.filter(e => e.userId !== userId && e.status === 'pending').length; }
 
-  async enqueue<P>(ctx: { userId: string; eventId: string }, kind: string, subject: string, payload: P): Promise<OutboxEntry<P>> {
+  async enqueue<P>(ctx: { userId: string; eventId: string }, kind: string, subject: string, payload: P,commandId?:string): Promise<OutboxEntry<P>> {
     await this.ready;
     if (!ctx.userId) throw new Error('sign in before scoring: work is saved against your account');
+    if(commandId){
+      const existing=this.entries.find(e=>e.id===commandId);
+      if(existing){
+        if(existing.userId!==ctx.userId||existing.eventId!==ctx.eventId||existing.kind!==kind||existing.subject!==subject||JSON.stringify(existing.payload)!==JSON.stringify(payload))throw Error('That saved action ID belongs to different work.');
+        return existing as OutboxEntry<P>;
+      }
+    }
     const entry: OutboxEntry<P> = {
-      id: this.newId(), kind, subject, eventId: ctx.eventId, userId: ctx.userId, seq: ++this.seq, schema: COMMAND_SCHEMA,
+      id: commandId??this.newId(), kind, subject, eventId: ctx.eventId, userId: ctx.userId, seq: ++this.seq, schema: COMMAND_SCHEMA,
       payload, createdAt: this.now(), attempts: 0, status: 'pending'
     };
     this.entries.push(entry as OutboxEntry);

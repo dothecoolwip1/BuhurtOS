@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Chip, Seg } from '../components/ui';
 import { setRegistrationCheck, type CheckName, type ManagedRegistration } from '../data/manage';
 import { friendlyError } from '../lib/friendlyError';
@@ -10,7 +11,7 @@ import {
 const BIG: React.CSSProperties = { minHeight: 56, flex: '1 1 140px', fontSize: 17 };
 
 /** Mobile-first check-in: search, filters, one-thumb buttons. Updates show at once and roll back with a plain error if saving fails. */
-export function CheckinPanel({ regs, loading, onChanged }: { regs: ManagedRegistration[]; loading: boolean; onChanged: () => void }) {
+export function CheckinPanel({ regs, loading, onChanged, deskTo }: { regs: ManagedRegistration[]; loading: boolean; onChanged: () => void; deskTo?: string }) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<CheckinFilter>('todo');
   const [overrides, setOverrides] = useState<Record<string, CheckinOverride>>({});
@@ -91,7 +92,10 @@ export function CheckinPanel({ regs, loading, onChanged }: { regs: ManagedRegist
           );
         })}
       </div>
-      <p className="src">The signed waiver is not recorded in registration data yet, so it is not part of the blocked reasons.</p>
+      <p className="src">
+        A registration stores the signed waiver when one was supplied. This quick list only checks insurance and fees.{' '}
+        {deskTo ? <>To verify full readiness (armour inspection, weigh-in, suspensions), <Link to={deskTo}>open the check-in desk</Link>.</> : 'Use the check-in desk to verify full readiness.'}
+      </p>
     </div>
   );
 }

@@ -2,6 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { scoringGuard, updateSafety } from './swUpdate';
 
 describe('updateSafety', () => {
+  it('waits for phone evidence or uncertain clock actions even outside a scoring screen',()=>{
+    expect(updateSafety({scoringOpen:false,pendingActions:0,unfinishedBoards:0,localScoringPending:true}).safe).toBe(false);
+  });
   it('is safe only when nothing is being scored and no work is waiting on this device', () => {
     expect(updateSafety({ scoringOpen: false, pendingActions: 0, unfinishedBoards: 0 })).toEqual({ safe: true, reasons: [] });
   });

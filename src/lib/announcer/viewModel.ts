@@ -40,6 +40,8 @@ export interface AnnSide {
   marks: AnnMark[];
   /** true: Ready, false: Not yet ready, null: not known / not shown. */
   ready: boolean | null;
+  /** Distinguish a readable unknown from an unavailable/private readiness read. */
+  readinessAvailable?: boolean;
 }
 export type FightSlot = 'fighting' | 'on_deck' | 'in_the_hole' | 'waiting';
 export interface AnnFight {
@@ -118,7 +120,7 @@ export interface AnnouncerInput {
   /** Public records by entry id (the Broadcast's side source). Missing entries just show a name. */
   sides: Readonly<Record<string, SideSource>>;
   /** announcer_readiness rows; null when the viewer cannot read them (the screen then shows no readiness at all). */
-  readiness: readonly { match_id: string; side: string; ready: boolean }[] | null;
+  readiness: readonly { match_id: string; side: string; ready: boolean | null }[] | null;
   /** The local focus choice (a Lyst key or field name), or null. */
   focus: string | null;
 }
@@ -128,7 +130,7 @@ const num = (v: unknown): number | null => (typeof v === 'number' && Number.isFi
 export function buildAnnouncerView(input: AnnouncerInput): AnnouncerView {
   const names = new Map(input.competitions.map(c => [c.id, c.name]));
   const lystByMatch = new Map(input.lyst.map(r => [r.match_id, r]));
-  const ready = input.readiness ? new Map(input.readiness.map(r => [`${r.match_id}:${r.side}`, r.ready === true])) : null;
+  const ready = input.readiness ? new Map(input.readiness.map(r => [`${r.match_id}:${r.side}`, r.ready])) : null;
   const boards = buildFieldBoards(input.matches, competitionSorts(input.competitions), new Set());
   const stageOf = (m: CompetitionMatch) => (m.pool ? `Pool ${m.pool} · ${m.roundLabel || m.stage}` : m.roundLabel || m.stage);
 
@@ -148,7 +150,8 @@ export function buildAnnouncerView(input: AnnouncerInput): AnnouncerView {
       photoUrl: p.avatarUrl, crest: p.crest, record: p.record, recordIsTest: p.recordNote === 'test record',
       score: slot === 'fighting' && row ? num(side === 'a' ? row.official_a : row.official_b) : null,
       marks,
-      ready: slot === 'fighting' || known === undefined ? null : known
+      ready: slot === 'fighting' || known === undefined ? null : known,
+      readinessAvailable: slot !== 'fighting' && known !== undefined
     };
   };
 

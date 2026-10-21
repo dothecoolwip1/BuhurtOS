@@ -2,15 +2,19 @@
  * Lyst Control, as the app calls it. Every write is a controlled database function (public.lyst_* / counter_*): nothing here writes a table.
  * The marshal's call is the only official score; counter functions only ever touch the counter's own provisional tally.
  */
-import type { EventSides, SideSpec } from '../lib/lyst/counters';
+import type { CountAction, EventSides, SideSpec } from '../lib/lyst/counters';
 import { supabase } from '../lib/supabase';
 import type { LystTimer, TimerAction, TimerMode } from '../lib/lyst/timer';
 import type { LystDiscipline, LystRound, LystSettings } from '../lib/lyst/rounds';
 
 async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
-  const { data, error } = await supabase.rpc(fn, args);
-  if (error) throw error;
-  return data as T;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const { data, error, status } = await supabase.rpc(fn, args).abortSignal(controller.signal);
+    if (error) throw { ...error, status };
+    return data as T;
+  } finally { clearTimeout(timeout); }
 }
 
 /** One counter on this fight, as evidence: who (the operator's name), which side, official or learning, on a phone (and whether it is online) or a trainee's own account. */
@@ -36,9 +40,23 @@ export interface LystState {
   discipline: LystDiscipline[];
   seats: LystSeat[];
   field_counters?: FieldCounter[];
+  counter_delivery?: CounterDelivery[];
+  counter_recovery?: CounterRecovery[];
   /** The TRAINING code of this field (Pack 25): a signed-in trainee scans it and counts as a learning counter at once. */
   join_code: { code: string; expires_at: string } | null;
 }
+export interface CounterDelivery {
+  seat_id: string; operator: string; side: 'a' | 'b' | null; role: 'official' | 'learning';
+  run_id: string | null; round: number | null; run_status: string | null;
+  closed_at?:string|null;
+  prepared_at: string | null; started_at: string | null; seen_at: string | null; pending: number | null; submitted: boolean;
+}
+export interface CounterRecovery {
+  id: string; seat_id: string; operator: string; side: 'a' | 'b' | null; role: 'official' | 'learning';
+  run_id: string; round: number; generation: number; action: CountAction; reason: string; received_at: string;
+  decision: 'noted' | 'dismissed' | null; review_reason: string | null;
+}
+export interface PreparedCounterRun { id: string; match_id: string; no: number; generation: number; status: 'prepared' | 'running' | 'closed'; started_at: string | null }
 export type CounterInput = 'simple' | 'weighted' | 'standing';
 
 /** One read of everything the tablet shows, with the device times around it (the clock offset is measured from them). */
@@ -53,13 +71,15 @@ export const openLyst = (matchId: string, counterInput: CounterInput = 'simple')
 export interface TimerCommand {
   eventId: string; field: string; matchId: string; expectedRev: number; command: string; action: TimerAction;
   mode?: TimerMode | null; durationMs?: number | null; round?: number | null; deltaMs?: number;
+  overrideReason?: string | null; requestedAt?: string;
 }
-export interface TimerAnswer { status: 'ok' | 'duplicate' | 'stale'; timer: (LystTimer & { now_remaining_ms: number }) | null; server_now: string }
+export interface TimerAnswer { status: 'ok' | 'duplicate' | 'stale' | 'expired'; timer: (LystTimer & { now_remaining_ms: number }) | null; server_now: string }
 export async function timerCommand(c: TimerCommand): Promise<{ answer: TimerAnswer; sentAt: number; receivedAt: number }> {
   const sentAt = Date.now();
-  const answer = await rpc<TimerAnswer>('lyst_timer_command', {
+  const answer = await rpc<TimerAnswer>('lyst_timer_command_reliable', {
     p_event: c.eventId, p_field: c.field, p_match: c.matchId, p_expected_rev: c.expectedRev, p_command: c.command, p_action: c.action,
-    p_mode: c.mode ?? null, p_duration_ms: c.durationMs ?? null, p_round: c.round ?? null, p_delta_ms: c.deltaMs ?? 0
+    p_mode: c.mode ?? null, p_duration_ms: c.durationMs ?? null, p_round: c.round ?? null, p_delta_ms: c.deltaMs ?? 0,
+    p_override_reason: c.overrideReason ?? null, p_requested_at: c.requestedAt ?? null
   });
   return { answer, sentAt, receivedAt: Date.now() };
 }
@@ -116,6 +136,8 @@ export interface CounterField { key: string; label: string; open: boolean; /** w
 export interface CounterFight { match_id: string; a: string | null; b: string | null; competition: string | null; round_label: string | null; result?: string | null; score_a?: number | null; score_b?: number | null; state?: string | null }
 export interface CounterState {
   kind: 'device' | 'training';
+  training?:boolean;
+  officials?:{name:string;total:number}[]|null;
   session_id?: string | null; device_label?: string | null;
   event?: { id: string; slug: string; name: string; closed: boolean };
   fields?: CounterField[];
@@ -133,7 +155,12 @@ export interface CounterState {
   /** Pack 25.2: the event's names and colours for the two sides. */
   sides?: EventSides | null;
   server_now: string;
+  prepared_run?: PreparedCounterRun | null;
+  my_weights?: number[];
 }
+export const acknowledgeCounterRun = (seat: string, run: string, started: boolean, pending: number) => rpc<void>('counter_acknowledge_run', { p_seat: seat, p_run: run, p_started: started, p_pending: pending });
+export const deliverCounterAction = (seat: string, action: CountAction) => rpc<{ status: 'ok' | 'duplicate' | 'nothing' | 'review'; total: number; weights?: number[]; reason?: string }>('counter_deliver_action', { p_seat: seat, p_run: action.runId, p_action: action });
+export const reviewCounterRecovery = (ids: string[], decision: 'noted' | 'dismissed', reason: string) => rpc<void>('review_counter_recovery_batch', { p_ids: ids, p_decision: decision, p_reason: reason });
 /** Pack 25.2: anyone who runs the Lyst (or the platform owner) sets the sides' names and colours for the event; either side may be sent alone. */
 export const setEventSides = (eventId: string, sides: { a?: SideSpec; b?: SideSpec }) => rpc<EventSides>('set_event_sides', { p_event: eventId, p_sides: sides });
 export async function fetchCounterState(): Promise<{ state: CounterState; sentAt: number; receivedAt: number }> {

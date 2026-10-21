@@ -61,9 +61,9 @@ export function useOutbox(opts: { preview?: boolean; eventId?: string } = {}) {
     return () => { window.clearInterval(t); window.removeEventListener('online', on); };
   }, [flush]);
   /** Save an action on the device and start sending it. Resolves with its id (the server's idempotency key), or null when nobody is signed in. */
-  const record = useCallback(async (kind: string, subject: string, payload: unknown): Promise<string | null> => {
+  const record = useCallback(async (kind: string, subject: string, payload: unknown,commandId?:string): Promise<string | null> => {
     if (!userId) return null;
-    const entry = await ch.box.enqueue({ userId, eventId }, kind, subject, payload);
+    const entry = await ch.box.enqueue({ userId, eventId }, kind, subject, payload,commandId);
     void flush();
     return entry.id;
   }, [ch, flush, userId, eventId]);
