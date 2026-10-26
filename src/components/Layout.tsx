@@ -72,8 +72,9 @@ export function Layout() {
       <header className={`top${session ? ' signed' : ''}`}>
         <div className="wrap">
           <NavLink className="brand" to="/" aria-label="BuhurtOS home">
-            <svg className="mark" viewBox="0 0 30 34" aria-hidden="true"><defs><linearGradient id="mk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#E3C77A" /><stop offset=".35" stopColor="#C9893A" /><stop offset=".65" stopColor="#8E4E6B" /><stop offset="1" stopColor="#2C6BB0" /></linearGradient></defs><path d="M2 2h26v14c0 8-6 13-13 16C8 29 2 24 2 16Z" fill="url(#mk)" /><path d="M9 9v15M21 9v15M6 14h18" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" opacity=".92" /></svg>
-            <span>Buhurt<span className="os">OS</span></span>
+            {/* The crest alone where the bar is tight (signed in on a narrow phone), the full lockup everywhere else. */}
+            <img className="mark mark-crest" src={`${import.meta.env.BASE_URL ?? '/'}brand/crest.webp`} alt="" width="40" height="40" decoding="async" />
+            <img className="mark mark-word" src={`${import.meta.env.BASE_URL ?? '/'}brand/wordmark.webp`} alt="BuhurtOS" width="120" height="40" decoding="async" />
           </NavLink>
           <nav className="nav" aria-label="Main">
             {NAV.map((n, i) => <NavLink key={n.to} to={n.to} end={n.end} className={i >= 5 ? 'nav-extra' : undefined}>{n.label}</NavLink>)}
