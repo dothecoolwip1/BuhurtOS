@@ -190,7 +190,7 @@ project. All database text is inserted with `textContent`.
 
 ### Production addresses (from the Supabase Auth logs)
 - BuhurtOS: `https://dothecoolwip1.github.io/BuhurtOS/`
-- Club website: `https://dothecoolwip1.github.io/Red-deer-reavers/` (members area: `members.html`)
+- Club website: `https://reddeerreavers.com/` (members area: `members.html`). The old GitHub Pages, `red-deer-reavers.vercel.app` and `www.` addresses forward to the same page there.
 
 Both sites have the **same browser origin**. supabase-js keeps the session under the same storage key on both, so the browser holds one
 sign-in for both sites. Signing in on one signs you in on the other, and signing out signs you out of both. No token is put in a URL or passed
@@ -243,8 +243,8 @@ Every table: RLS on, no grants, functions only.
   origin like production, at 390x844 and 1280x900.
 
 ### Manual step that only the owner can do (Supabase dashboard)
-**Authentication › URL Configuration › Redirect URLs** must include `https://dothecoolwip1.github.io/Red-deer-reavers/**`. If
-`https://dothecoolwip1.github.io/**` is already listed, nothing is needed. Without it, Supabase sends confirmation, reset and Google sign-in links
+**Authentication › URL Configuration › Redirect URLs** must include `https://reddeerreavers.com/**` (the club site's
+address since 2026-10-26; the old `https://dothecoolwip1.github.io/Red-deer-reavers/**` entry can stay). Without it, Supabase sends confirmation, reset and Google sign-in links
 to the Site URL (BuhurtOS) instead of back to the club website. Because the origin is shared, the person still ends up signed in, but on the
 BuhurtOS page.
 
