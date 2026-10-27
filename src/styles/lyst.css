@@ -28,7 +28,7 @@
 .ly-round .ly-link{padding:0 6px;min-height:44px;font-size:13px}
 
 /* the clock */
-.ly-timer{position:sticky;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:5;display:grid;gap:10px;padding:12px;border-radius:16px;background:var(--raised);border:2px solid var(--line);box-shadow:var(--shadow)}
+.ly-timer{display:grid;gap:10px;padding:12px;border-radius:16px;background:var(--raised);border:2px solid var(--line)}
 .ly-timer.is-running{border-color:var(--steel)}
 .ly-timer.is-paused{border-color:var(--brass);background:var(--brass-soft)}
 .ly-timer.is-low{border-color:var(--brass)}
@@ -41,6 +41,10 @@
 .ly-timer.is-low .ly-clock{color:var(--brass)}
 .ly-timer.is-zero .ly-clock{color:var(--live)}
 .ly-timer-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ly-timer-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ly-timer-controls>.ly-btn{flex:1 1 160px}
+.ly-clock-options{margin-left:auto;font-size:14px;text-decoration:none}
+.ly-clock-options:hover{text-decoration:underline}
 .ly-btn{min-height:56px;border-radius:12px}
 .ly-timer-more{display:grid;gap:10px;padding-top:6px;border-top:1px solid var(--line)}
 .ly-seg,.ly-chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -183,6 +187,12 @@
 .cp-count:disabled{background:var(--faint)!important;box-shadow:none!important}
 .cp-links{display:flex;gap:4px 14px;flex-wrap:wrap;justify-content:center}
 .cp-total output{display:block}
+.cp-msg.cp-instruction{padding:0;background:none;border:0;font-size:14px;color:var(--muted)}
+.cp-recovery-notice{border-block:1px solid var(--brass);color:var(--ink);font-size:14px}
+.cp-recovery-notice summary{min-height:44px;padding:10px 0;cursor:pointer;line-height:1.4}
+.cp-recovery-notice summary span{margin-left:8px;color:var(--muted);text-decoration:underline}
+.cp-recovery-notice>div{display:grid;gap:8px;padding:0 0 12px}
+.cp-recovery-notice p{margin:0}
 /* counters as evidence (Pack 25): operator, corner in words and colour, tally, online */
 .ly-seg-tabs{display:flex;gap:8px;flex-wrap:wrap}
 .ly-evidence{display:grid;gap:12px}

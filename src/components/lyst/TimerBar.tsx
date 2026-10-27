@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { MODE_LABEL, formatClock, timerTone, timerWord, type LystTimer, type TimerMode, type TimerPreset } from '../../lib/lyst/timer';
 
 export interface TimerSend { (action: 'set' | 'start' | 'pause' | 'resume' | 'reset' | 'adjust' | 'restore', o?: { mode?: TimerMode; durationMs?: number; round?: number; deltaMs?: number; overrideReason?: string }): void }
@@ -15,6 +15,7 @@ export function TimerBar({ timer, leftMs, roundNo, presets, busy, offline, note,
   startHere: boolean;
 }) {
   const [more, setMore] = useState(false);
+  const optionsId = useId();
   const [custom, setCustom] = useState('2:30');
   const mode: TimerMode = timer?.mode ?? 'fight';
   const status = timer?.status ?? 'idle';
@@ -33,20 +34,20 @@ export function TimerBar({ timer, leftMs, roundNo, presets, busy, offline, note,
         </div>
         <output className="ly-clock mono" aria-label={`Time left ${formatClock(leftMs)}`}>{formatClock(leftMs)}</output>
       </div>
-      <div className="ly-timer-actions">
+      <div className="ly-timer-controls">
         {status === 'running'
           ? <button type="button" className="btn btn-ink ly-btn" disabled={disabled} onClick={() => onSend('pause')}>Pause</button>
           : status === 'paused'
             ? <button type="button" className="btn btn-win ly-btn" disabled={disabled} onClick={() => onSend('resume')}>Resume</button>
             : startHere
               ? <button type="button" className="btn btn-win ly-btn" disabled={disabled} onClick={() => onSend('start', { mode, round: timer?.round_no ?? roundNo, durationMs: timer?.duration_ms })}>Start {MODE_LABEL[mode].toLowerCase()}</button>
-              : <span aria-hidden="true" />}
-        <button type="button" className="btn btn-line ly-btn" aria-expanded={more} onClick={() => setMore(v => !v)}>{more ? 'Less' : 'Clock options'}</button>
+              : null}
+        <button type="button" className="ly-link ly-clock-options" aria-expanded={more} aria-controls={optionsId} onClick={() => setMore(v => !v)}>{more ? 'Hide clock options' : 'Clock options'} <span aria-hidden="true">{more ? '▴' : '▾'}</span></button>
       </div>
       {offline && <p className="ly-note" role="alert">No signal: the clock keeps running on the server, but it cannot be changed from this device until you are back online.</p>}
       {note && !offline && <p className="ly-note" role="status">{note}</p>}
       {more && (
-        <div className="ly-timer-more">
+        <div className="ly-timer-more" id={optionsId}>
           <div className="ly-seg" role="group" aria-label="Which clock">
             {ARM_MODES.filter(m => m !== 'custom').map(m => (
               <button key={m} type="button" className="ly-chip" aria-pressed={mode === m && status === 'idle'} disabled={disabled || status === 'running'}

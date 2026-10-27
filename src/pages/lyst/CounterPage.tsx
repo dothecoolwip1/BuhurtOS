@@ -12,6 +12,7 @@ import { CounterJournal } from '../../lib/lyst/counterJournal';
 import { useCounterTab } from '../../lib/lyst/useCounterTab';
 import { offlineShellStore, scoringGuard } from '../../lib/swUpdate';
 import { SavedCounterEvidence } from '../../components/lyst/SavedCounterEvidence';
+import { CounterRecoveryNotice } from '../../components/lyst/CounterRecoveryNotice';
 import { counterEvidenceSender } from '../../lib/lyst/sendCounterEvidence';
 import { useCounterBacklog } from '../../lib/lyst/useCounterBacklog';
 import { formatClock, remainingMs } from '../../lib/lyst/timer';
@@ -399,7 +400,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
           </dl>
         )}
         {state.timer && !state.waiting && <output className="cp-clock mono" aria-label={`Time left ${formatClock(timeLeft)}`}>{formatClock(timeLeft)}</output>}
-        <p className={`cp-msg${offline || !canCount ? ' is-warn' : ''}`} role="status" aria-live="polite" data-testid="cp-banner">{banner}</p>
+        <p className={`cp-msg${offline || !canCount ? ' is-warn' : ' cp-instruction'}`} role="status" aria-live="polite" data-testid="cp-banner">{banner}</p>
         {training && <p className="cp-msg" role="note">Practice: your count is kept for training and never changes any score.</p>}
         {training&&!!state.officials?.length&&<details className="panel info"><summary>Compare with official counters</summary><p className="src">Practice comparison for this side and round. Keep your own independent count.</p><ul>{state.officials.map((c,i)=><li key={`${c.name}:${i}`}>{c.name}: {c.total}</li>)}</ul></details>}
         {tab.status==='blocked' && <div className="cp-msg is-warn" role="alert">This counter is open in another tab. Close the other counter tab before counting here.<button type="button" className="btn btn-line" onClick={tab.retry}>Use this tab</button></div>}
@@ -407,12 +408,10 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         {offline && <p className="cp-msg is-warn" role="alert">No signal. {journal.durable ? 'Your taps are saved on this phone and will be retried.' : 'Your taps are in memory only. Keep a paper backup.'} They are not confirmed by the server yet.</p>}
         {!journal.durable && <p className="cp-msg is-warn" role="alert">This browser cannot safely save counts. Keep a paper count and show the saved evidence before leaving or reloading this screen.</p>}
         {cs.cacheFailed && <p className="cp-msg is-warn" role="alert">This phone could not save the fight and round for offline reopening. Keep this page open and keep paper backup.</p>}
-        {notice && <p className="cp-msg is-warn" role="alert">{notice}</p>}
-        {backlog && <p className="cp-msg is-warn" role="status">{backlog}</p>}
+        {notice && !notice.startsWith('Some saved actions are kept as evidence.') && <p className="cp-msg is-warn" role="alert">{notice}</p>}
         {problem && <p className="cp-msg is-warn" role="alert">{problem}</p>}
         {cs.offline && !offline && <p className="cp-msg is-warn" role="status">Reconnecting…</p>}
-        {cs.cached && <p className="cp-msg is-warn" role="alert">Saved fight from {new Date(state.server_now).toLocaleTimeString()}. Check the names, side and round with the marshal before counting offline.</p>}
-        {manualRun && <p className="cp-msg is-warn" role="alert">Counting round {manualRun.no} from the marshal’s call. This is provisional evidence for review. It cannot change an official score.</p>}
+        <CounterRecoveryNotice savedNotice={notice?.startsWith('Some saved actions are kept as evidence.') ? notice : null} backlog={backlog} manualRound={manualRun?.no} cachedAt={cs.cached ? new Date(state.server_now).toLocaleTimeString() : undefined} />
         {tab.owned && !manualRun && !finishing.current && !busy && (!state.can_count || cs.cached) && seat?.status==='active' && state.prepared_run && state.prepared_run.status !== 'closed' && !state.waiting && !state.final && <div className="panel info">
           <p>Prepared round {state.prepared_run.no}: {state.fighter} vs {state.opponent}. If the marshal has called the start but this phone is still waiting, count here and show the evidence at the end.</p>
           <button type="button" className="btn btn-ink fq-big" onClick={() => {
