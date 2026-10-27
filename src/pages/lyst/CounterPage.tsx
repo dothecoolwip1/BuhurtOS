@@ -390,7 +390,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     try {
       journal.correctTotal(round,run.id,target,{recordedAt:new Date().toISOString(),operator:state.binding?.operator??seat?.operator,side:seat?.side??'',fighter:state.fighter??'',opponent:state.opponent??''});
       setReview({...review,shown:target,total});
-      await journal.flush(send);
+      await journal.flushForConfirmation(round,run.id,send);
       lastSendEnd.current = Date.now(); setOffline(journal.offline);
       if (!current()) { setReviewMessage('The fight or round changed. Your saved counts stay with the original round.'); return; }
       if (journal.pending.length > 0) { setReviewMessage(journal.durable ? 'Not sent yet. Your counts are saved here. Confirm again when connected.' : 'Not sent yet. Your counts are in memory only. Keep this page open and keep a paper copy.'); return; }
