@@ -91,6 +91,7 @@ try{
  await counter.context().setOffline(false);
  await counter.getByText('All taps sent.',{exact:true}).waitFor();
  await counter.getByRole('button',{name:'Done with round',exact:true}).click();
+ await counter.getByRole('button',{name:'Confirm score',exact:true}).click();
  await secretary.getByRole('button',{name:/End round.*start break/i}).click();
  const entry=secretary.locator('.ly-entry');await entry.waitFor();
  await entry.getByText('Return for recount',{exact:true}).click();
@@ -100,6 +101,7 @@ try{
  const returned=await rpc(4,'lyst_state',{p_match:mid(31)});
  check('Return preserves counter evidence and reopens the round',returned.rounds.find(r=>r.round_no===1)?.status==='running' && returned.seats.some(s=>s.tallies.some(t=>t.total===4&&!t.submitted)));
  await counter.getByRole('button',{name:'Done with round',exact:true}).click();
+ await counter.getByRole('button',{name:'Confirm score',exact:true}).click();
  await rpc(4,'lyst_end_round',{p_match:mid(31),p_round:1});
  await entry.waitFor();
  // Manual entry remains possible while counter phones are assigned.
@@ -159,6 +161,7 @@ try{
  await tc.getByTestId('cp-standing').filter({hasText:'4'}).waitFor();
  check('team counter records standing fighters',true);
  await tc.getByRole('button',{name:'Done with round',exact:true}).click();
+ await tc.getByRole('button',{name:'Confirm score',exact:true}).click();
  await group.getByRole('button',{name:'Use 4 standing for Ankle Biters',exact:true}).waitFor();
  const evidence=await rpc(4,'lyst_state',{p_match:mid(42)});
  check('team counter submission is recorded on the server',evidence.seats.some(s=>s.tallies.some(t=>t.total===1&&t.submitted)));
@@ -175,6 +178,7 @@ try{
  const rt=await rpc(4,'lyst_state',{p_match:mid(42)});
  check('team recount preserves standing evidence',rt.rounds.find(r=>r.round_no===1)?.status==='running'&&rt.seats.some(s=>s.tallies.some(t=>t.total===1&&!t.submitted)));
  await tc.getByRole('button',{name:'Done with round',exact:true}).click();
+ await tc.getByRole('button',{name:'Confirm score',exact:true}).click();
  await group.getByRole('button',{name:'End round 1',exact:true}).click();
  await group.getByRole('button',{name:'Use 4 standing for Ankle Biters',exact:true}).click();
  await team.getByRole('button',{name:'Ankle Biters fighter 5 out',exact:true}).waitFor();

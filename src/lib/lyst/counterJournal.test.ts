@@ -1,12 +1,55 @@
 import { describe, expect, it } from 'vitest';
 import { CounterJournal, type CounterStorage } from './counterJournal';
 import type { CounterSend } from './counters';
+import { readCounterCorrection } from './counters';
 
 const memory = () => {
   const values = new Map<string, string>();
   return { values, getItem: (k: string) => values.get(k) ?? null, setItem: (k: string, v: string) => { values.set(k, v); } };
 };
 describe('counter evidence through failures', () => {
+  it('does not render malformed counter-reported correction metadata',()=>{
+    expect(readCounterCorrection({id:'c',from:{unexpected:'object'},to:2})).toBeNull();
+    expect(readCounterCorrection({id:'c',from:35,to:-1})).toBeNull();
+    expect(readCounterCorrection({id:'c',from:35,to:37})).toEqual({id:'c',from:35,to:37});
+  });
+  it('edits a weighted total using explicit review actions without rewriting accepted taps', async()=>{
+    const disk=memory(),j=new CounterJournal('s',disk);
+    j.setScope('fight');
+    j.add('tap',1,1,{runId:'r'});j.add('tap',1,2,{runId:'r'});
+    let total=0;
+    await j.flush(async a=>({status:'ok',total:total+=a.kind==='tap'?a.weight:0}));
+    j.correctTotal(1,'r',2,{recordedAt:'2026-10-27T17:00:00Z'});
+    expect(j.total(1)).toBe(3);expect(j.display(1,'r')).toBe(2);
+    expect(j.pending.map(a=>a.kind)).toEqual(['undo','tap']);
+    expect(j.pending[0].undoWeight).toBe(2);
+    expect(j.pending.every(a=>a.recovery && a.matchId==='fight' && a.correction?.from===3 && a.correction.to===2)).toBe(true);
+    const ids=j.pending.map(a=>a.id);
+    await j.flush(async()=>({status:'offline'}));
+    const reloaded=new CounterJournal('s',disk);reloaded.setScope('fight');
+    expect(reloaded.display(1,'r')).toBe(2);expect(reloaded.pending.map(a=>a.id)).toEqual(ids);
+    await reloaded.flush(async()=>({status:'review',total:3,message:'Correction needs marshal review.'}));
+    reloaded.correctTotal(1,'r',2);
+    expect(reloaded.pending).toHaveLength(0);expect(reloaded.held.map(h=>h.action.id)).toEqual(ids);
+    expect(reloaded.total(1)).toBe(3);expect(reloaded.display(1,'r')).toBe(2);
+    reloaded.setScope('next-fight');expect(reloaded.display(1,'next-run')).toBe(0);
+  });
+  it('can edit an offline-start total up and down while preserving original evidence',async()=>{
+    const j=new CounterJournal('s',memory());
+    const first=j.add('tap',2,2,{runId:'r',recovery:true});
+    await j.flush(async()=>({status:'review',total:0,message:'Offline start.'}));
+    j.correctTotal(2,'r',5);expect(j.display(2,'r')).toBe(5);
+    j.correctTotal(2,'r',0);expect(j.display(2,'r')).toBe(0);
+    expect(j.held[0].action).toEqual(first);expect(j.total(2)).toBe(0);
+  });
+  it('refuses invalid totals, unknown accepted tap order and inactive tabs without changing the journal',()=>{
+    const j=new CounterJournal('s',memory());
+    for(const n of [-1,1.5,1001,NaN])expect(()=>j.correctTotal(1,'r',n)).toThrow();
+    expect(j.pending).toHaveLength(0);
+    j.acceptSnapshot(1,4,j.revision);
+    expect(()=>j.correctTotal(1,'r',3)).toThrow('tap order');expect(j.total(1)).toBe(4);expect(j.pending).toHaveLength(0);
+    j.close();expect(()=>j.correctTotal(1,'r',4)).toThrow('no longer owns');
+  });
   it('preserves selected undeliverable pending actions as a local marshal archive after ended access',()=>{
     const storage=memory(),j=new CounterJournal('ended-seat',storage),a=j.add('tap',1,2),b=j.add('tap',1);
     expect(j.archiveShownEvidence(new Set([a.id]),true)).toBe(true);

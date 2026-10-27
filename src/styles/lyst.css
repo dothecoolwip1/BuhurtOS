@@ -187,6 +187,7 @@
 .cp-count:disabled{background:var(--faint)!important;box-shadow:none!important}
 .cp-links{display:flex;gap:4px 14px;flex-wrap:wrap;justify-content:center}
 .cp-total output{display:block}
+.cp-confirm-total{display:block;text-align:center;font:900 clamp(64px,20vw,112px)/1 var(--f-display);font-variant-numeric:tabular-nums}
 .cp-msg.cp-instruction{padding:0;background:none;border:0;font-size:14px;color:var(--muted)}
 .cp-recovery-notice{border-block:1px solid var(--brass);color:var(--ink);font-size:14px}
 .cp-recovery-notice summary{min-height:44px;padding:10px 0;cursor:pointer;line-height:1.4}
