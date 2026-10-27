@@ -8,6 +8,57 @@ const memory = () => {
   return { values, getItem: (k: string) => values.get(k) ?? null, setItem: (k: string, v: string) => { values.set(k, v); } };
 };
 describe('counter evidence through failures', () => {
+  it('confirmation retries this seat’s unacknowledged evidence with the same IDs after reconnect',async()=>{
+    const disk=memory(),old=new CounterJournal('s',disk);
+    old.setScope('fight');const action=old.add('tap',2,2,{runId:'r',recovery:true});
+    await old.flush(async()=>({status:'refused',reason:'OTHER',message:'Receipt unavailable.'}));
+    const j=new CounterJournal('s',disk);j.setScope('fight');
+    const ids:string[]=[];
+    await j.flushForConfirmation(2,'r',async a=>{ids.push(a.id);return{status:'review',total:0,message:'Already retained by the server.'};});
+    expect(ids).toEqual([action.id]);expect(j.pending).toHaveLength(0);expect(j.held[0].delivered).toBe(true);expect(j.display(2,'r')).toBe(2);
+    await j.flushForConfirmation(2,'r',async()=>{throw Error('Acknowledged evidence must not be sent again');});
+    expect(j.held).toHaveLength(1);expect(j.display(2,'r')).toBe(2);
+  });
+  it('confirmation preserves the order of a held two-point tap followed by a delivered Undo',async()=>{
+    const j=new CounterJournal('s',memory());
+    j.add('tap',1,2,{runId:'r',recovery:true});
+    await j.flush(async()=>({status:'refused',reason:'OTHER',message:'Receipt lost.'}));
+    j.add('undo',1,1,{runId:'r',recovery:true});
+    await j.flush(async()=>({status:'review',total:0,message:'Retained undo.'}));
+    const order=j.held.map(h=>h.action.id);expect(j.display(1,'r')).toBe(0);
+    await j.flushForConfirmation(1,'r',async()=>({status:'review',total:0,message:'Already retained tap.'}));
+    expect(j.held.map(h=>h.action.id)).toEqual(order);expect(j.held.every(h=>h.delivered)).toBe(true);expect(j.display(1,'r')).toBe(0);
+  });
+  it('does not double count a held recovery action already accepted by the server',async()=>{
+    const j=new CounterJournal('s',memory());j.add('tap',1,2,{runId:'r',recovery:true});
+    await j.flush(async()=>({status:'refused',reason:'OTHER',message:'Receipt lost.'}));
+    await j.flushForConfirmation(1,'r',async()=>({status:'duplicate',total:2,weights:[2]}));
+    expect(j.held[0].alreadyAccepted).toBe(true);expect(j.total(1)).toBe(2);expect(j.display(1,'r')).toBe(2);
+  });
+  it('blocks stale snapshots and overlapping pumps while confirmation recovers a missing receipt',async()=>{
+    const j=new CounterJournal('s',memory());j.add('tap',1,2,{runId:'r',recovery:true});
+    await j.flush(async()=>({status:'refused',reason:'OTHER',message:'Receipt lost.'}));
+    let resolve!:(value:Awaited<ReturnType<CounterSend>>)=>void;
+    const confirming=j.flushForConfirmation(1,'r',()=>new Promise(r=>{resolve=r;}));
+    while(!resolve)await Promise.resolve();
+    expect(j.sending).toBe(true);expect(j.acceptSnapshot(1,0,j.revision,[])).toBe(false);
+    const overlapping=j.flush(async()=>{throw Error('Must share the current flight');});
+    resolve({status:'review',total:0,message:'Receipt recovered.'});await Promise.all([confirming,overlapping]);
+    expect(j.held[0].delivered).toBe(true);expect(j.display(1,'r')).toBe(2);
+  });
+  it('confirmation does not resend another run, another fight, archived evidence or data after tab ownership ends',async()=>{
+    const j=new CounterJournal('s',memory());j.setScope('old-fight');j.add('tap',2,1,{runId:'r',recovery:true});
+    await j.flush(async()=>({status:'refused',reason:'OTHER',message:'Keep it.'}));
+    j.setScope('current-fight');
+    await j.flushForConfirmation(2,'r',async()=>{throw Error('Wrong fight');});
+    expect(j.pending).toHaveLength(0);expect(j.held[0].delivered).not.toBe(true);
+    j.setScope('old-fight');
+    await j.flushForConfirmation(2,'another-run',async()=>{throw Error('Wrong run');});
+    j.archiveShownEvidence(new Set(j.held.map(h=>h.action.id)));
+    await j.flushForConfirmation(2,'r',async()=>{throw Error('Archived evidence');});
+    j.close();await j.flushForConfirmation(2,'r',async()=>{throw Error('Closed tab');});
+    expect(j.pending).toHaveLength(0);
+  });
   it('does not render malformed counter-reported correction metadata',()=>{
     expect(readCounterCorrection({id:'c',from:{unexpected:'object'},to:2})).toBeNull();
     expect(readCounterCorrection({id:'c',from:35,to:-1})).toBeNull();

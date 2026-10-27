@@ -105,13 +105,13 @@ export class CounterJournal {
   display(round: number, runId?: string) {
     // Provisional offline evidence remains visible as the counter's own number;
     // ordinary refused actions do NOT inflate the tally or stop standing taps.
-    const evidence = [...this.ledger.held.filter(h => h.action.recovery).map(h => h.action), ...this.ledger.pending];
+    const evidence = [...this.ledger.held.filter(h => h.action.recovery && !h.alreadyAccepted).map(h => h.action), ...this.ledger.pending];
     return evidence.filter(a => a.round === round && (a.matchId ?? this.seatId) === this.scope && (!runId || !a.runId || a.runId === runId))
       .reduce((n, a) => a.kind === 'tap' ? n + a.weight : Math.max(0, n - (a.undoWeight ?? 1)), this.total(round));
   }
   undoWeight(round: number, runId?: string) {
     const stack = [...(this.ledger.weights?.[this.totalKey(round)] ?? [])];
-    const local = [...this.ledger.held.filter(h => h.action.recovery).map(h => h.action), ...this.ledger.pending];
+    const local = [...this.ledger.held.filter(h => h.action.recovery && !h.alreadyAccepted).map(h => h.action), ...this.ledger.pending];
     for (const a of local.filter(a => a.round === round && (a.matchId ?? this.seatId) === this.scope && (!runId || !a.runId || a.runId === runId))) {
       if (a.kind === 'tap') stack.push(a.weight); else stack.pop();
     }
@@ -131,7 +131,7 @@ export class CounterJournal {
     if (target === from) return;
     const stack = [...this.confirmedWeights(round)];
     if (stack.reduce((n,w)=>n+w,0) !== this.total(round)) throw new Error('The saved tap order is unavailable. Show the count to the marshal before editing.');
-    const local = [...this.held.filter(h=>h.action.recovery).map(h=>h.action), ...this.pending];
+    const local = [...this.held.filter(h=>h.action.recovery && !h.alreadyAccepted).map(h=>h.action), ...this.pending];
     for (const a of local.filter(a=>a.round===round && (a.matchId??this.seatId)===this.scope && (!a.runId||a.runId===runId))) {
       if (a.kind==='tap') stack.push(a.weight); else stack.pop();
     }
@@ -196,6 +196,42 @@ export class CounterJournal {
     return this.durable;
   }
   /** All callers await the same pump; Done cannot overtake an active send. */
+  async flushForConfirmation(round: number, runId: string, send: CounterSend): Promise<void> {
+    const scope = this.scope, epoch = this.epoch;
+    await this.flush(send);
+    if (!this.active || this.epoch!==epoch || this.scope!==scope) return;
+    // A previous refusal or lost receipt may already be on the server. Replay
+    // the exact IDs to obtain its acknowledgment, including for this active seat.
+    // The background backlog deliberately handles other seats only.
+    if (this.pending.length) return;
+    while(this.flight)await this.flight;
+    if (!this.active || this.epoch!==epoch || this.scope!==scope) return;
+    this.flight=this.retryConfirmationHeld(round,runId,send,scope,epoch).finally(()=>{this.flight=null;if(this.active)this.notify();});
+    await this.flight;
+  }
+  private async retryConfirmationHeld(round:number,runId:string,send:CounterSend,scope:string,epoch:number){
+    const held = this.held.filter(h=>!h.delivered && !h.archivedAt && h.action.round===round && h.action.runId===runId && (h.action.matchId??this.seatId)===scope);
+    for (const h of held) {
+      if (!this.active || this.epoch!==epoch || this.scope!==scope) return;
+      let answer: Awaited<ReturnType<CounterSend>>;
+      try { answer = await send(h.action); } catch { if(this.active&&this.epoch===epoch){this.offline=true;this.notify();} return; }
+      if (!this.active || this.epoch!==epoch || this.scope!==scope) return;
+      if (answer.status==='offline') { this.offline=true; this.notify(); return; }
+      this.offline=false;
+      if (answer.status==='refused') { h.reason=answer.message; this.refusal=answer.message; this.changed(); return; }
+      h.delivered=true;
+      if (answer.status==='review') { h.reason=answer.message; if(answer.alreadyAccepted)h.alreadyAccepted=true; }
+      else {
+        const key=this.totalKey(round);
+        this.ledger.totals[key]=answer.total; h.alreadyAccepted=true;
+        if(answer.weights && answer.weights.every(w=>w===1||w===2) && answer.weights.reduce((n,w)=>n+w,0)===answer.total)(this.ledger.weights??={})[key]=[...answer.weights];
+        else if(this.ledger.weights)delete this.ledger.weights[key];
+      }
+      // Update in place so retrying an earlier weighted tap cannot move it
+      // after a later Undo and change the number being confirmed.
+      this.changed();
+    }
+  }
   flush(send: CounterSend): Promise<void> {
     if (this.flight) return this.flight;
     this.flight = this.drain(send).finally(() => { this.flight = null; if(this.active)this.notify(); });
