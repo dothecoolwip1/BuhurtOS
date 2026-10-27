@@ -20,8 +20,16 @@ export function trainingUrl(origin: string, base: string, code: string): string 
   return `${origin}${b}lyst/train/${code}`;
 }
 
-export interface CountContext { runId?: string; matchId?: string; recovery?: boolean; recordedAt?: string; undoWeight?: number; operator?:string; side?:string; fighter?:string; opponent?:string }
+export interface CountContext { runId?: string; matchId?: string; recovery?: boolean; recordedAt?: string; undoWeight?: number; operator?:string; side?:string; fighter?:string; opponent?:string; correction?: { id: string; from: number; to: number } }
 export type CountAction = ({ kind: 'tap'; id: string; weight: number; round: number } | { kind: 'undo'; id: string; round: number }) & CountContext;
+
+/** Reported action metadata is untrusted, including when read back from the server. */
+export function readCounterCorrection(value: unknown): NonNullable<CountContext['correction']> | null {
+  if (!value || typeof value !== 'object') return null;
+  const c = value as Record<string, unknown>;
+  return typeof c.id==='string' && c.id.length>0 && c.id.length<=100 && Number.isSafeInteger(c.from) && Number(c.from)>=0 && Number.isSafeInteger(c.to) && Number(c.to)>=0 && Number(c.to)<=1000
+    ? {id:c.id,from:Number(c.from),to:Number(c.to)} : null;
+}
 
 /** One pending item per tap: the id is created when the finger lands, so the same tap is never sent under two ids. */
 export class TapQueue {

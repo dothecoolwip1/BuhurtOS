@@ -123,6 +123,36 @@ export class CounterJournal {
     this.ledger.pending.push(action); this.refusal = null; this.changed();
     return action;
   }
+  /** Append an explicit correction for marshal review; never rewrite the original taps or an accepted total. */
+  correctTotal(round: number, runId: string, target: number, context: CountContext = {}) {
+    if (!this.active) throw new Error('This counter tab no longer owns the saved count.');
+    if (!Number.isInteger(target) || target < 0 || target > 1000) throw new Error('Enter a whole number from 0 to 1000.');
+    const from = this.display(round, runId);
+    if (target === from) return;
+    const stack = [...this.confirmedWeights(round)];
+    if (stack.reduce((n,w)=>n+w,0) !== this.total(round)) throw new Error('The saved tap order is unavailable. Show the count to the marshal before editing.');
+    const local = [...this.held.filter(h=>h.action.recovery).map(h=>h.action), ...this.pending];
+    for (const a of local.filter(a=>a.round===round && (a.matchId??this.seatId)===this.scope && (!a.runId||a.runId===runId))) {
+      if (a.kind==='tap') stack.push(a.weight); else stack.pop();
+    }
+    if (stack.reduce((n,w)=>n+w,0) !== from) throw new Error('The saved count changed. Check it with the marshal before editing.');
+    const correction = { id: this.newId(), from, to: target };
+    const base = {...context, runId, matchId:this.scope, recovery:true, correction};
+    const actions: CountAction[] = [];
+    let total = from;
+    while (total > target) {
+      const weight = stack.pop()!;
+      total -= weight;
+      actions.push({...base,id:this.newId(),kind:'undo',round,undoWeight:weight});
+    }
+    while (total < target) {
+      actions.push({...base,id:this.newId(),kind:'tap',round,weight:1});
+      total++;
+    }
+    this.ledger.pending.push(...actions);
+    this.refusal = null;
+    this.changed();
+  }
   /** Snapshot only applies if no send/tap happened since the request began.
    * With pending IDs a server total might already contain a lost-ack tap, so it
    * cannot safely be added to them. The retry response reconciles that ID.

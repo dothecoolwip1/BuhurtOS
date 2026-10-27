@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { reviewCounterRecovery, type LystState } from '../../data/lyst';
-import { sideLabel, type EventSides } from '../../lib/lyst/counters';
+import { readCounterCorrection, sideLabel, type EventSides } from '../../lib/lyst/counters';
 import { friendlyError } from '../../lib/friendlyError';
 
 /** Expected phones stay visible even when they go quiet. A heartbeat is not a
@@ -54,6 +54,7 @@ export function CounterDeliveryPanel({ state, sides, onChanged }: { state: LystS
         return <div key={key} style={{ display: 'grid', gap: 8 }}>
           <b>{first.operator} · {sideLabel(first.side, sides)} · round {first.round}, attempt {first.generation}{first.role === 'learning' ? ' · training only' : ''}</b>
           <span>{rows.length} actions: {taps} tapped points, {undos} undos. Check the action order before deciding.</span>
+          {[...new Map(rows.flatMap(e=>{const c=readCounterCorrection(e.action.correction);return c?[[c.id,c] as const]:[];})).values()].map(c=><p key={c.id}>Counter edited their total: {c.from} → {c.to}. Original taps are retained; confirm the correction with the counter.</p>)}
           <details><summary>View retained actions</summary><ol>{rows.map(e => <li key={e.id}>{e.action.kind === 'tap' ? `+${e.action.weight}` : 'Undo'} · {e.reason}{e.action.operator?` · phone reported ${e.action.operator} at ${e.action.recordedAt??'time not saved'} (unverified)`:''} · received {new Date(e.received_at).toLocaleTimeString()}</li>)}</ol></details>
           <label className="field-in">Marshal’s decision and reason<input value={reasons[key] ?? ''} maxLength={1000} onChange={e => setReasons(r => ({ ...r, [key]: e.target.value }))} /></label>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

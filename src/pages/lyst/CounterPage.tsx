@@ -13,6 +13,7 @@ import { useCounterTab } from '../../lib/lyst/useCounterTab';
 import { offlineShellStore, scoringGuard } from '../../lib/swUpdate';
 import { SavedCounterEvidence } from '../../components/lyst/SavedCounterEvidence';
 import { CounterRecoveryNotice } from '../../components/lyst/CounterRecoveryNotice';
+import { CounterRoundConfirmation } from '../../components/lyst/CounterRoundConfirmation';
 import { counterEvidenceSender } from '../../lib/lyst/sendCounterEvidence';
 import { useCounterBacklog } from '../../lib/lyst/useCounterBacklog';
 import { formatClock, remainingMs } from '../../lib/lyst/timer';
@@ -280,6 +281,10 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   }, () => setTick(t => t + 1)), [seatId,tab.token]);
   journal.setScope(state.match_id ?? seatId);
   const [backup, setBackup] = useState(false);
+  const [review, setReview] = useState<{ key: string; round: number; shown: number; total: number; standing: boolean; maximum: number; fighter: string } | null>(null);
+  const [reviewMessage, setReviewMessage] = useState<string | null>(null);
+  const prompted = useRef(new Set<string>());
+  const liveReview = useRef({ key: '', allowed: false });
   const finishing = useRef(false);
   const refreshCounter = cs.refresh;
   useEffect(()=>{if(tab.owned)journal.activate();else journal.close();return()=>journal.close();},[journal,tab.owned]);
@@ -339,11 +344,25 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   }, [manualRun, cs.cached, state.prepared_run, state.can_count, seatId,journal,tick]);
 
   const manualAllowed = !!manualRun && state.prepared_run?.status !== 'closed' && (cs.cached || state.prepared_run?.id === manualRun.id);
-  const canCount = tab.owned && (Boolean(state.can_count) && !cs.cached || manualAllowed) && !!run?.id && run.status!=='closed' && seat?.status === 'active' && !finishing.current;
+  const canCount = tab.owned && (Boolean(state.can_count) && !cs.cached || manualAllowed) && !!run?.id && run.status!=='closed' && seat?.status === 'active' && !finishing.current && !review;
   const canSubmit = !!manualRun || state.round?.no===round && state.round?.status!=='confirmed';
   const standing = state.counter_input === 'standing';
   const shown = round ? journal.display(round, run?.id) : 0;
   const left = standing ? standingLeft(state.per_side, shown) : null;
+  const reviewKey = `${seatId}:${state.match_id}:${run?.id}:${round}`;
+  const reviewAllowed = tab.owned && seat?.status === 'active' && !!run?.id && !!round && !state.waiting && !state.final && canSubmit;
+  liveReview.current = { key: reviewKey, allowed: reviewAllowed };
+  const openReview = () => {
+    if (!reviewAllowed || finishing.current) return;
+    prompted.current.add(reviewKey); setReviewMessage(null);
+    setReview({key:reviewKey,round,shown,total:standing ? left ?? 0 : shown,standing,maximum:standing ? state.per_side ?? 0 : 1000,fighter:state.fighter ?? 'Your count'});
+  };
+  useEffect(()=>{
+    if (reviewAllowed && state.round?.status==='confirming' && !state.submitted && !review && !prompted.current.has(reviewKey)) {
+      prompted.current.add(reviewKey); setReviewMessage(null);
+      setReview({key:reviewKey,round,shown,total:standing ? left ?? 0 : shown,standing,maximum:standing ? state.per_side ?? 0 : 1000,fighter:state.fighter ?? 'Your count'});
+    }
+  },[reviewAllowed,state.round?.status,state.submitted,review,reviewKey,round,shown,standing,left,state.per_side,state.fighter]);
   const count = (weight: number) => {
     if (!canCount || !round) return;
     if (standing && left !== null && left <= 0) return;
@@ -359,16 +378,30 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     try { navigator.vibrate?.([8, 40, 8]); } catch { /* not supported */ }
     void pump();
   };
-  const done = async () => {
-    if (!seatId || !round || !tab.owned || finishing.current) return;
+  const done = async (total: number) => {
+    if (!review || !run?.id || finishing.current) return;
+    const current = () => liveReview.current.key === review.key && liveReview.current.allowed;
+    if (!current()) { setReviewMessage('The fight or round changed. Close this pop-up and check the current fight.'); return; }
+    if (journal.display(round,run.id)!==review.shown) { setReviewMessage('Your count changed. Close this pop-up and check the total again.'); return; }
+    if (!Number.isInteger(total) || total < 0 || total > review.maximum) { setReviewMessage('Enter a valid whole-number score.'); return; }
+    const target = review.standing ? review.maximum - total : total;
     finishing.current = true; setTick(t => t + 1);
+    setReviewMessage(null);
     try {
+      journal.correctTotal(round,run.id,target,{recordedAt:new Date().toISOString(),operator:state.binding?.operator??seat?.operator,side:seat?.side??'',fighter:state.fighter??'',opponent:state.opponent??''});
+      setReview({...review,shown:target,total});
       await journal.flush(send);
       lastSendEnd.current = Date.now(); setOffline(journal.offline);
-      if (journal.pending.length > 0) { setNotice('Not sent yet. Your counts are kept here. Retry when connected, or show the saved evidence to the marshal.'); return; }
-      if (journal.held.some(h => h.action.round === round && h.action.runId === run?.id)) { setNotice('This round has counts for marshal review. Show the saved evidence before submitting.'); return; }
-      await counterSubmit(seatId, round); setNotice('Sent. Wait for the next round.'); void cs.refresh();
-    } catch (e) { setNotice(friendlyError(e, 'Could not send. Your counts are kept here. Try again.')); }
+      if (!current()) { setReviewMessage('The fight or round changed. Your saved counts stay with the original round.'); return; }
+      if (journal.pending.length > 0) { setReviewMessage(journal.durable ? 'Not sent yet. Your counts are saved here. Confirm again when connected.' : 'Not sent yet. Your counts are in memory only. Keep this page open and keep a paper copy.'); return; }
+      const held = journal.held.filter(h=>h.action.round===round && h.action.runId===run.id);
+      if (held.some(h=>!h.delivered)) { setReviewMessage('Some evidence is still only on this phone. Show Saved count evidence to the marshal.'); return; }
+      if (journal.display(round,run.id)!==target) { setReviewMessage('The delivered count changed. Close this pop-up and check the total again.'); return; }
+      await counterSubmit(seatId, round);
+      if (current()) {
+        setReview(null); setNotice(held.length ? 'Count confirmed for marshal review.' : 'Score confirmed. Wait for the next round.'); void cs.refresh();
+      }
+    } catch (e) { setReviewMessage(friendlyError(e, 'Could not confirm. Your counts are kept here. Try again.')); }
     finally { finishing.current = false; setTick(t => t + 1); }
   };
 
@@ -442,7 +475,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
       <footer>
         <div className="cp-foot">
           <button type="button" className="btn btn-line" disabled={!canCount || shown <= 0} onClick={undo}>{standing ? 'Undo (back up)' : 'Undo last'}</button>
-          <button type="button" className="btn btn-line" disabled={!tab.owned || !seat || seat.status !== 'active' || !round || !!state.waiting || finishing.current || !canSubmit} onClick={() => void done()}>{finishing.current?'Sending round…':'Done with round'}</button>
+          <button type="button" className="btn btn-line" disabled={!reviewAllowed || finishing.current} aria-haspopup="dialog" onClick={openReview}>Done with round</button>
         </div>
         <p className="cp-sync" role="status">{waiting > 0 ? `${waiting} tap${waiting === 1 ? '' : 's'} ${journal.durable ? 'saved on this phone' : 'in memory only'}, waiting to send.` : journal.held.length ? `${journal.held.length} saved action${journal.held.length === 1 ? '' : 's'} kept as evidence.` : seat?.status === 'active' && !state.waiting ? 'All taps sent.' : ''}</p>
         <button type="button" className="ly-link" aria-expanded={backup} onClick={() => setBackup(v => !v)}>Saved count evidence</button>
@@ -459,6 +492,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         </nav>
         {training && state.event && <Link className="ly-link" to={`/events/${state.event.slug}`}>Back to the event</Link>}
       </footer>
+      {review && <CounterRoundConfirmation round={review.round} total={review.total} standing={review.standing} maximum={review.maximum} fighter={review.fighter} busy={finishing.current} message={reviewMessage} onConfirm={total=>void done(total)} onClose={()=>{if(!finishing.current)setReview(null);}} />}
     </main>
   );
 }
