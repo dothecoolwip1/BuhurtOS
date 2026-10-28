@@ -11,6 +11,7 @@ export function CounterDeliveryPanel({ state, sides, onChanged, inline = false, 
   const shown=visible??open;
   const show=(v:boolean)=>onVisibleChange?onVisibleChange(v):setOpen(v);
   const delivery = (state.counter_delivery ?? []).filter(c => c.role === 'official');
+  const assigned = state.seats.filter(s=>s.status==='active'&&s.role==='official');
   const recovery = state.counter_recovery ?? [];
   const groups = useMemo(() => {
     const map = new Map<string, typeof recovery>();
@@ -43,7 +44,7 @@ export function CounterDeliveryPanel({ state, sides, onChanged, inline = false, 
       <details open={acknowledged < delivery.length}>
         <summary>Phone status and pending counts</summary>
         <ul className="ly-list">{delivery.map(c => <li key={c.seat_id} style={{ display: 'grid', gap: 2 }}>
-          <b>{c.operator} · {sideLabel(c.side, sides)} · counter {state.seats.find(s=>s.id===c.seat_id)?.slot ?? delivery.indexOf(c)+1} · round {c.round ?? 'not prepared'}</b>
+          <b>{c.operator} · {sideLabel(c.side, sides)} · counter {assigned.some(s=>s.id===c.seat_id)?assigned.findIndex(s=>s.id===c.seat_id)+1:delivery.indexOf(c)+1} · round {c.round ?? 'not prepared'}</b>
           <span>{!c.prepared_at ? 'Preparation not received' : c.run_status === 'prepared' ? 'Prepared on phone' : !c.started_at ? 'Start not received' : 'Start received'}{c.submitted ? ' · done' : ' · not submitted'}{c.pending ? ` · ${c.pending} pending at last report` : ''}</span>
           <small>{c.seen_at ? `Last report ${new Date(c.seen_at).toLocaleTimeString()}. A disconnected phone may have more unsent counts.` : 'No delivery receipt from this phone.'}</small>
         </li>)}</ul>

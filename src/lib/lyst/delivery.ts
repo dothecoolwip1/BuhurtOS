@@ -17,7 +17,7 @@ export function counterReviewReason(state: Pick<LystState,'server_now'|'seats'|'
   const missing = official.flatMap((s,index) => {
     const receipt = state.counter_delivery?.find(c => c.seat_id === s.id && c.round === round);
     const reference=receipt?.run_status==='closed'&&receipt.closed_at?Date.parse(receipt.closed_at):now;
-    const label=`${s.name} (counter ${s.slot??index+1})`;
+    const label=`${s.name} (counter ${index+1})`;
     if(!receipt?.prepared_at)return [`${label} has not saved this round.`];
     if(!receipt.started_at)return [`${label} has not confirmed receiving the start.`];
     if(!receipt.submitted)return [`${label} has not confirmed their count.`];
