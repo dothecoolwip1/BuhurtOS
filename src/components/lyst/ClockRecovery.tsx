@@ -2,13 +2,13 @@ import type { useReliableTimer } from '../../lib/lyst/useReliableTimer';
 import { useState } from 'react';
 import { Dialog } from '../Dialog';
 
-export function ClockRecovery({clock}:{clock:ReturnType<typeof useReliableTimer>}){
+export function ClockRecovery({clock,suspended=false}:{clock:ReturnType<typeof useReliableTimer>;suspended?:boolean}){
   const {pendingTimer,timerBusy,clockOverride,setClockOverride,clockReason,setClockReason,restoreRound,setRestoreRound,restoreSeconds,setRestoreSeconds,sendTimer,executeTimer}=clock;
   const [dismissed,setDismissed]=useState<string|null>(null);
   const kind=clock.requiresClockCheck?'check':clock.clockFailure?'failure':clockOverride?'override':restoreRound!==null?'restore':pendingTimer&&!timerBusy?'pending':clock.storageProblem&&!pendingTimer?'storage':null;
   const key=kind?`${clock.contextKey}:${kind}:${pendingTimer?.command.command??''}:${restoreRound??''}:${clock.attentionSerial}`:null;
   const close=()=>{setDismissed(key);clock.setClockFailure(null);if(clockOverride)setClockOverride(null);if(restoreRound!==null)setRestoreRound(null);};
-  if(!kind||timerBusy)return null;
+  if(!kind||timerBusy||suspended)return null;
   if(key===dismissed)return <button type="button" className="btn btn-line ly-clock-attention" onClick={()=>setDismissed(null)}>Clock needs attention · review</button>;
   const title=kind==='failure'?'Check the clock before continuing':kind==='override'?'Start paused: counter phones are not ready':kind==='restore'?`Restore round ${restoreRound}`:kind==='pending'?'Clock action needs confirmation':kind==='check'?'Check the saved clock action':'Clock backup needs attention';
   return <Dialog title={title} onClose={close} busy={timerBusy} dismissOnBackdrop={false}>

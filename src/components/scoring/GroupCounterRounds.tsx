@@ -161,7 +161,7 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
         <TimerBar timer={timer} leftMs={leftMs} roundNo={cur?.round_no ?? 1} presets={presets} busy={clockBusy} offline={lyst.offline} note={null} onSend={clock.sendTimer} startHere={false} />
         <button type="button" className="btn btn-line" disabled={busy || !cur} onClick={() => setCallOpen(true)}>Marshal's call</button>
       </>}
-      <ClockRecovery clock={clock} />
+      <ClockRecovery clock={clock} suspended={callOpen} />
       <div className="gc-clock-row">
         <span className="gc-round">{cur ? `Round ${cur.round_no}` : 'Round not started'}{cur ? ` · ${live ? 'live' : cur.status === 'confirming' ? 'ended' : 'confirmed'}` : ''}</span>
         {timer && !secretary && <output className="mono gc-clock" aria-label={`Clock ${formatClock(leftMs)}`}>{formatClock(leftMs)}</output>}

@@ -376,7 +376,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
       </div>
       <div className="ly-clock-panel">
-      <ClockRecovery clock={clock} />
+      <ClockRecovery clock={clock} suspended={!!sheet} />
       <TimerBar timer={timer} leftMs={leftMs} roundNo={cur?.round_no ?? 1} presets={presets} busy={timerBusy || !st} offline={lyst.offline} note={timerNote} onSend={sendTimer}
         startHere={Boolean(timer && (timer.mode === 'dq' || timer.mode === 'equipment' || timer.mode === 'custom' || zone === 'fighting'))} />
 
