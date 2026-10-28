@@ -57,6 +57,7 @@ export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, 
     <section className="ly-entry panel" aria-label={correcting ? `Correct round ${round}` : `Confirm round ${round}`}>
       <h2 className="ly-h">{correcting ? `Correct round ${round}` : `Round ${round}: the marshal's call`}</h2>
       <p className="src">{correcting ? 'The old score stays on the record. Say why it is being changed.' : 'Enter the score the marshal awards for this round.'}</p>
+      {requireReason && <p className="ly-note" role="status">{requireReason}</p>}
       <div className="ly-picks">
         <Picker label="Fighter A" side="a" name={names.a} value={a} onChange={v => { setA(clampScore(v)); setRecA(null); }} hints={hintsA} onUseHint={h => { setA(clampScore(h.total)); setRecA(h.total); }} />
         <Picker label="Fighter B" side="b" name={names.b} value={b} onChange={v => { setB(clampScore(v)); setRecB(null); }} hints={hintsB} onUseHint={h => { setB(clampScore(h.total)); setRecB(h.total); }} />
@@ -66,7 +67,6 @@ export function RoundEntry({ round, names, initial, correcting, hintsA, hintsB, 
           <input value={reason} maxLength={200} onChange={e => setReason(e.target.value)} placeholder="For example: marshal re-counted after the break" aria-required="true" />
         </label>
       )}
-      {requireReason && <p className="ly-note" role="status">{requireReason}</p>}
       {disabledReason && <p className="ly-note" role="status">{disabledReason}</p>}
       <div className="ly-confirm-row">
         {onCancel && <button type="button" className="btn btn-line fq-big" disabled={busy} onClick={onCancel}>Cancel</button>}

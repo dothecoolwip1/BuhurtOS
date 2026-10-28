@@ -10,6 +10,7 @@ export function useReliableTimer({lyst,eventId,fieldName,matchId,userKey}:{lyst:
   const st=lyst.state;
   const [timerBusy,setTimerBusy]=useState(false);
   const [timerNote,setTimerNote]=useState<string|null>(null);
+  const [attentionSerial,setAttentionSerial]=useState(0);
   const timerStore = useMemo(() => new TimerIntentStore({
     getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v),removeItem:k=>localStorage.removeItem(k)
   },userKey,matchId),[userKey,matchId]);
@@ -55,6 +56,7 @@ export function useReliableTimer({lyst,eventId,fieldName,matchId,userKey}:{lyst:
   },[timerStore,lyst,scope]);
   const sendTimer: TimerSend = useCallback((action,o={})=>{
     if(!st || timerSending.current)return;
+    setAttentionSerial(n=>n+1);
     if(timerStore.read()) {setPendingTimer(timerStore.read());setTimerNote('Resolve the unconfirmed clock action before sending another.');return;}
     const mode=o.mode??st.timer?.mode??'fight',n=o.round??st.timer?.round_no??1;
     const missing=st.seats.some(s=>s.status==='active' && s.role==='official'
@@ -74,5 +76,5 @@ export function useReliableTimer({lyst,eventId,fieldName,matchId,userKey}:{lyst:
 
   const clearPending=()=>{if(timerStore.clear()){setPendingTimer(null);setTimerNote('Saved action cleared after checking the clock.');}};
   const continueAfterClockCheck=()=>{timerStore.continueAfterClockCheck();setTimerNote(timerStore.problem);};
-  return {timerBusy,timerNote,pendingTimer,clockOverride,setClockOverride,clockReason,setClockReason,restoreRound,setRestoreRound,restoreSeconds,setRestoreSeconds,sendTimer,executeTimer,clearPending,storageProblem:timerStore.problem,offline:lyst.offline,requiresClockCheck:timerStore.requiresCheck,unreadableClockAction:timerStore.unreadableRaw,continueAfterClockCheck};
+  return {contextKey:scope,timerBusy,timerNote,attentionSerial,pendingTimer,clockOverride,setClockOverride,clockReason,setClockReason,restoreRound,setRestoreRound,restoreSeconds,setRestoreSeconds,sendTimer,executeTimer,clearPending,storageProblem:timerStore.problem,offline:lyst.offline,requiresClockCheck:timerStore.requiresCheck,unreadableClockAction:timerStore.unreadableRaw,continueAfterClockCheck};
 }

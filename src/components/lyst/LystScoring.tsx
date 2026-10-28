@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Dialog } from '../Dialog';
 import { StatusBanner, type ScoringScreenProps } from '../scoring/ScoringScreen';
 import { TimerBar } from './TimerBar';
 import { RoundEntry, type Hint } from './RoundEntry';
@@ -31,7 +32,7 @@ import { presetOf, remainingMs, timerFor } from '../../lib/lyst/timer';
 import { useLystState, useNow } from '../../lib/lyst/useLystState';
 
 type Phase = 'scoring' | 'confirming' | 'official' | 'pending' | 'review';
-type Sheet = null | 'discipline' | 'counters' | 'log' | 'settings' | 'rules';
+type Sheet = null | 'discipline' | 'counters' | 'log' | 'settings' | 'rules' | 'phones';
 const CALLED_BY_KEY = 'bos-lyst-called-by';
 const readCalledBy = () => { try { return localStorage.getItem(CALLED_BY_KEY) ?? ''; } catch { return ''; } };
 
@@ -62,6 +63,8 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const [error, setError] = useState<string | null>(null);
   const [correcting, setCorrecting] = useState<number | null>(null);
   const [early, setEarly] = useState(false);   // enter the score without ending the round first
+  const [dismissedEntry,setDismissedEntry]=useState<string|null>(null);
+  const [dismissedRejected,setDismissedRejected]=useState<string|null>(null);
   const [pendingRound, setPendingRound] = useState<{ round: number; a: number; b: number } | null>(null);
   const [saved, setSaved] = useState<{ summary: string; a: number; b: number; winner: 'a' | 'b' | 'draw' } | null>(null);
   const commandId = useRef<string | undefined>(undefined);
@@ -318,17 +321,26 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
     finally { returning.current = false; setBusy(false); }
   };
   const correctingRound = correcting !== null ? rounds.find(r => r.round_no === correcting) ?? null : null;
-  const showEntry = zone === 'confirm' || (zone === 'fighting' && early);
+  const roundClockEnded = !lyst.offline && timer?.mode==='fight' && timer.status==='running' && leftMs<=0;
+  const showEntry = zone === 'confirm' || (zone === 'fighting' && (early || roundClockEnded));
   const bannerStatus = pendingRound || waiting > 0 ? 'pending' : finishReady ? 'ready' : 'scoring';
   const counts = { a: disciplineCounts(discipline, 'a'), b: disciplineCounts(discipline, 'b') };
   const entryRound = showEntry && cur ? cur : null;
+  const dialogRound=correctingRound??entryRound;
+  const entryKey=dialogRound?`${match.id}:${dialogRound.round_no}:${dialogRound.rev}:${correctingRound?'correct':'confirm'}`:null;
+  const clockNeedsDecision=timerBusy||!!clock.clockOverride||clock.requiresClockCheck||clock.restoreRound!==null||!!clock.pendingTimer;
+  const entryOpen=!!dialogRound&&!pendingRound&&entryKey!==dismissedEntry&&!clockNeedsDecision&&!sheet;
+  const closeEntry=()=>{setDismissedEntry(entryKey);setCorrecting(null);setEarly(false);};
+  const rejectedKey=mine.map(m=>m.id).join(',');
 
   return (
-    <div className="sk field-run ly" style={sideVars(sides) as React.CSSProperties}>
+    <div className="sk field-run ly ly-control-room" style={sideVars(sides) as React.CSSProperties}>
       {context}
       <StatusBanner status={bannerStatus} line={bannerStatus === 'ready' ? 'Every round is confirmed. Finish the match when the marshal says so.' : bannerStatus === 'pending' ? 'Pending: NOT official until the server has it' : 'Pending: not official until you finish the match'} />
       {lyst.offline && <p className="ly-note" role="alert">No signal. What you see is the last thing the server told us; the clock keeps running on the server.</p>}
 
+      <div className="ly-workspace">
+      <div className="ly-score-panel">
       <section className="sk-score ly-score" aria-label="Official score">
         {(['a', 'mid', 'b'] as const).map(k => k === 'mid'
           ? <div key="mid" className="sk-mid"><span className="sk-vs">vs</span><span className="sk-phase">{totals.rounds === 0 ? 'No round confirmed' : `After ${totals.rounds} round${totals.rounds === 1 ? '' : 's'}`}</span><span className="sk-unit">official</span></div>
@@ -362,27 +374,13 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         </section>
       )}
 
-      {st && <CounterDeliveryPanel state={st} sides={sides} onChanged={() => void lyst.refresh()} />}
+      </div>
+      <div className="ly-clock-panel">
       <ClockRecovery clock={clock} />
       <TimerBar timer={timer} leftMs={leftMs} roundNo={cur?.round_no ?? 1} presets={presets} busy={timerBusy || !st} offline={lyst.offline} note={timerNote} onSend={sendTimer}
         startHere={Boolean(timer && (timer.mode === 'dq' || timer.mode === 'equipment' || timer.mode === 'custom' || zone === 'fighting'))} />
 
-      {error && <p role="alert" className="ly-error">{error}</p>}
-      {mine.length > 0 && (
-        <div className="panel info" role="alert" style={{ gap: 8 }}>
-          <b>{mine.length} action{mine.length === 1 ? ' was' : 's were'} refused by the server</b>
-          <span className="src">{mine[0].error ?? 'For example you may not have permission, or the round changed on another device.'} They are kept here until you decide. Check the round before you finish.</span>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-line" onClick={() => void retryRejected(match.id)}>Try sending them again</button>
-            <button type="button" className="btn btn-line" onClick={() => void discardRejected(match.id)}>Discard them</button>
-          </div>
-        </div>
-      )}
-
-      {correctingRound && (
-        <RoundEntry secretary={secretary} round={correctingRound.round_no} names={names} initial={entryStart(correctingRound)} correcting hintsA={hintsFor('a', correctingRound.round_no)} hintsB={hintsFor('b', correctingRound.round_no)} busy={busy}
-          onConfirm={(a, b, x) => void confirm(correctingRound, a, b, x)} onCancel={() => setCorrecting(null)} />
-      )}
+      {mine.length>0&&<button type="button" className="btn btn-line" onClick={()=>setDismissedRejected(null)}>Review {mine.length} refused scoring action{mine.length===1?'':'s'}</button>}
 
       {!correctingRound && zone === 'loading' && <p className="muted" role="status">Opening the lyst…</p>}
 
@@ -403,10 +401,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         </>
       )}
 
-      {!correctingRound && showEntry && entryRound && !pendingRound && (
-        <RoundEntry secretary={secretary} round={entryRound.round_no} names={names} initial={null} correcting={false} hintsA={hintsFor('a', entryRound.round_no)} hintsB={hintsFor('b', entryRound.round_no)} busy={busy} requireReason={st ? counterReviewReason(st,entryRound.round_no) : null}
-          onConfirm={(a, b, x) => void confirm(entryRound, a, b, x)} onReturn={!lyst.offline ? reason => void returnForRecount(entryRound, reason) : undefined} onCancel={early ? () => setEarly(false) : undefined} />
-      )}
+      {!correctingRound && showEntry && entryRound && !pendingRound && <button type="button" className="btn btn-win fq-big ly-go" onClick={()=>{setDismissedEntry(null);setSheet(null);}}>Enter round {entryRound.round_no} scores</button>}
 
       {!correctingRound && pendingRound && (
         <section className="panel info ly-pending" role="status">
@@ -428,6 +423,10 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         </>
       )}
 
+      </div>
+      </div>
+      <div className="ly-support">
+      {st&&!entryOpen&&<CounterDeliveryPanel state={st} sides={sides} onChanged={()=>void lyst.refresh()} visible={sheet==='phones'} onVisibleChange={v=>setSheet(v?'phones':null)} />}
       <nav className="ly-tools" aria-label="Lyst tools">
         <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('discipline')} disabled={!st || !cur}>Marshal's call{discipline.length ? ` · ${activeDiscipline(discipline).length}` : ''}</button>
         {!secretary && <button type="button" className="btn btn-line ly-tool" onClick={() => setSheet('counters')} disabled={!st}>Counters{st && st.seats.length ? ` · ${st.seats.filter(s => s.status === 'active').length}` : ''}</button>}
@@ -445,6 +444,23 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
         {!secretary && <button type="button" className="btn btn-line fq-big" onClick={onClassic}>Use the classic scoreboard</button>}
       </div>
+      </div>
+
+      {entryOpen&&dialogRound&&<Dialog key={`${match.id}:${dialogRound.round_no}:${!!correctingRound}`} title={correctingRound?`Correct round ${dialogRound.round_no}`:`Round ${dialogRound.round_no}${dialogRound.status==='running'&&!roundClockEnded?'':' ended'} · enter marshal’s scores`} wide busy={busy} dismissOnBackdrop={false} onClose={closeEntry}>
+        <div className="ly-score-entry">
+          {error&&<p role="alert" className="ly-error">{error}</p>}
+          <RoundEntry secretary={secretary} round={dialogRound.round_no} names={names} initial={correctingRound?entryStart(dialogRound):null} correcting={!!correctingRound} hintsA={hintsFor('a',dialogRound.round_no)} hintsB={hintsFor('b',dialogRound.round_no)} busy={busy} requireReason={!correctingRound&&st?counterReviewReason(st,dialogRound.round_no):null}
+            onConfirm={(a,b,x)=>void confirm(dialogRound,a,b,x)} onReturn={!correctingRound&&!lyst.offline?reason=>void returnForRecount(dialogRound,reason):undefined} onCancel={closeEntry}/>
+          {!correctingRound&&st&&counterReviewReason(st,dialogRound.round_no)&&<details className="ly-entry-phones"><summary>Which counter phone needs attention?</summary><CounterDeliveryPanel state={st} sides={sides} onChanged={()=>void lyst.refresh()} inline /></details>}
+        </div>
+      </Dialog>}
+      {!entryOpen&&!clockNeedsDecision&&!sheet&&error&&<Dialog title="Scoring action needs attention" onClose={()=>setError(null)}><p className="ly-error" role="alert">{error}</p><button type="button" className="btn btn-line" onClick={()=>setError(null)}>Back to scoring</button></Dialog>}
+      {!entryOpen&&!clockNeedsDecision&&!sheet&&!error&&mine.length>0&&rejectedKey!==dismissedRejected&&<Dialog title="Scoring actions were not accepted" onClose={()=>setDismissedRejected(rejectedKey)}>
+        <p>{mine[0].error??'The round changed or this device cannot make that change.'} Your actions are kept on this device.</p>
+        <button type="button" className="btn btn-ink" onClick={()=>void retryRejected(match.id)}>Try sending them again</button>
+        <button type="button" className="btn btn-line" onClick={()=>setDismissedRejected(rejectedKey)}>Keep them saved · back to scoring</button>
+        <button type="button" className="ly-link" onClick={()=>void discardRejected(match.id)}>Discard refused actions</button>
+      </Dialog>}
 
       {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}
       {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventId={eventId} fieldName={fieldName} busy={busy} sides={sides} onSidesSaved={() => lyst.refresh()} onClose={() => setSheet(null)}

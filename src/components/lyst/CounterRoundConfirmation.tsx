@@ -10,7 +10,7 @@ export function CounterRoundConfirmation({ round, total, standing, maximum = 100
   const value = /^\d+$/.test(draft) ? Number(draft) : NaN;
   const valid = Number.isInteger(value) && value >= 0 && value <= maximum;
   return (
-    <Dialog title={`Round ${round} · confirm score`} onClose={onClose} busy={busy}>
+    <Dialog title={`Round ${round} · confirm score`} onClose={onClose} busy={busy} dismissOnBackdrop={false}>
       <p className="src">{fighter}{standing ? ' · fighters standing' : ' · your count'}</p>
       {editing ? <label className="field-in">{standing ? 'Fighters standing' : 'Your score'}<input autoFocus type="text" inputMode="numeric" pattern="[0-9]*" value={draft} disabled={busy} aria-invalid={!valid} onChange={e=>setDraft(e.target.value)} /></label>
         : <output className="cp-confirm-total" aria-label={`${standing ? 'Standing' : 'Your count'} ${total}`}>{total}</output>}
