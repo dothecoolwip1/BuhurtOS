@@ -10,6 +10,7 @@ import type { LystRound } from '../../lib/lyst/rounds';
 import type { GroupState } from '../../lib/scoring';
 import { friendlyError } from '../../lib/friendlyError';
 import { CounterEvidence } from '../lyst/CountersPanel';
+import { Dialog } from '../Dialog';
 import { currentRound } from '../../lib/lyst/rounds';
 import { presetOf, remainingMs, timerFor } from '../../lib/lyst/timer';
 import { formatClock } from '../../lib/lyst/timer';
@@ -40,6 +41,7 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
   const lyst = useLystState(matchId, eventId);
   const st = lyst.state;
   const clock = useReliableTimer({ lyst, eventId, fieldName, matchId, userKey });
+  const [dismissedReason,setDismissedReason]=useState<string|null>(null);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [callOpen, setCallOpen] = useState(false);
@@ -159,7 +161,7 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
         <TimerBar timer={timer} leftMs={leftMs} roundNo={cur?.round_no ?? 1} presets={presets} busy={clockBusy} offline={lyst.offline} note={null} onSend={clock.sendTimer} startHere={false} />
         <button type="button" className="btn btn-line" disabled={busy || !cur} onClick={() => setCallOpen(true)}>Marshal's call</button>
       </>}
-      <ClockRecovery clock={clock} />
+      <ClockRecovery clock={clock} suspended={callOpen} />
       <div className="gc-clock-row">
         <span className="gc-round">{cur ? `Round ${cur.round_no}` : 'Round not started'}{cur ? ` · ${live ? 'live' : cur.status === 'confirming' ? 'ended' : 'confirmed'}` : ''}</span>
         {timer && !secretary && <output className="mono gc-clock" aria-label={`Clock ${formatClock(leftMs)}`}>{formatClock(leftMs)}</output>}
@@ -170,7 +172,7 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
             </button>}
       </div>
       {target && needReason && (
-        <section className="panel info" role="alert" style={{ display: 'grid', gap: 8 }} aria-label={`Reason for round ${target.round}`}>
+        dismissedReason!==targetKey&&!clock.clockFailure&&!clock.clockOverride&&!clock.pendingTimer&&!clock.requiresClockCheck&&clock.restoreRound===null?<Dialog title={`Round ${target.round} · confirm the marshal’s reason`} onClose={()=>setDismissedReason(targetKey)}>
           <b>Round {target.round}: the marshal’s reason is needed</b>
           <p>{reviewMessage ?? queuedRefused?.error ?? 'The round was not confirmed for the counter phones.'} The board call ({names[target.winner]} wins round {target.round}) is sent only after you confirm the reason.</p>
           <label className="field-in">Marshal’s reason
@@ -179,7 +181,8 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
           <button type="button" className="btn btn-ink" disabled={reasonDraft.trim().length < 3 || lyst.offline} onClick={() => { if (targetKey) setReasonOk({ key: targetKey, text: reasonDraft.trim() }); }}>
             Confirm reason and send round {target.round}
           </button>
-        </section>
+          <button type="button" className="btn btn-line" onClick={()=>setDismissedReason(targetKey)}>Back to the board</button>
+        </Dialog>:<button type="button" className="btn btn-win" onClick={()=>setDismissedReason(null)}>Round {target.round} · enter marshal’s reason</button>
       )}
       {target && alreadyQueued && <p className="src" role="status">Round {target.round} is saved on this device for the counter phones and is being sent.</p>}
       {shownNote && <p className="src" role="status">{shownNote}</p>}

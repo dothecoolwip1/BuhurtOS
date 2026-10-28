@@ -1,5 +1,40 @@
 /* Pack 13: Lyst Control. Mobile-first: one hand, thumb zone at the bottom, big targets (44 px minimum, 64 px for the actions used mid-fight). */
 .ly{display:grid;gap:12px}
+/* The operating desk: scores and clock together on a PC, stacked on a phone. */
+.ly-workspace,.ly-score-panel,.ly-clock-panel,.ly-support{display:grid;gap:14px;min-width:0;align-content:start}
+.ly-control-room .ly-score-panel,.ly-control-room .ly-clock-panel{padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--raised)}
+.ly-control-room .ly-timer{background:var(--ground);border-width:1px}
+.ly-control-room .ly-score{gap:12px}
+.ly-control-room .sk-side{padding:20px 12px;border-radius:16px}
+.ly-control-room .sk-num{font-size:clamp(64px,10vw,112px)}
+.ly-control-room .sk-actions{display:flex;gap:10px;flex-wrap:wrap;margin:0;padding-top:14px;border-top:1px solid var(--line)}
+.ly-control-room .sk-actions>.btn{flex:1 1 180px}
+.ly-control-room .ly-clock-panel>.ly-act{position:static;margin:0;padding:0;background:none}
+.dlg.dlg-wide{width:min(100%,860px)}
+.dlg .ly-note{margin:0;padding:10px 12px;border-radius:10px;background:var(--brass-soft);color:var(--ink);font-size:14px}
+.ly-score-entry .ly-entry{padding:0;border:0;box-shadow:none;background:transparent}
+.ly-score-entry .ly-entry>.ly-h{display:none}
+.ly-score-entry input{min-height:48px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--ink);font:inherit}
+.ly-score-entry .ly-pick{grid-template-rows:auto auto auto auto 1fr}
+.ly-score-entry .ly-confirm-row{position:sticky;bottom:-20px;padding:12px 0;background:var(--surface,var(--raised));z-index:1}
+.ly-entry-phones{margin-top:14px;font-size:14px}
+.ly-entry-phones summary{cursor:pointer;min-height:44px;padding:10px 0;font-weight:600}
+.ly-phone-details{border:0;padding:0;background:transparent}
+.ly-phone-float{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:40;min-height:44px;max-width:calc(100vw - 32px);padding:10px 16px;border:1px solid var(--line);border-radius:999px;background:var(--raised);color:var(--ink);box-shadow:var(--shadow);font-size:14px;font-weight:700;cursor:pointer}
+.ly-phone-float.is-warning{border-color:var(--brass);background:var(--brass-soft)}
+@media(min-width:1000px){
+ .ly.ly-control-room{max-width:1180px;width:100%;gap:18px}
+ .ly-workspace{grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr);gap:20px;align-items:start}
+ .ly-control-room .ly-score-panel,.ly-control-room .ly-clock-panel{padding:24px}
+ .ly-control-room .sk-side{min-height:220px}
+ .ly-control-room .ly-clock{font-size:88px}
+ .ly-control-room .ly-timer{padding:16px}
+ .ly-control-room .ly-tools{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .ly-phone-float{bottom:24px;right:24px}
+}
+@media(max-width:420px){.ly-control-room .ly-score-panel,.ly-control-room .ly-clock-panel{padding:12px}.ly-control-room .sk-side{padding:14px 6px}.ly-control-room .sk-num{font-size:64px}.ly-control-room .sk-name{font-size:20px}}
+@media(max-width:600px){.dlg-wide .dlg-head,.dlg-wide .dlg-body{padding-inline:16px}.ly-score-entry .ly-quick{grid-template-columns:repeat(3,minmax(0,1fr))}.ly-score-entry .ly-pick{padding:10px 6px}.ly-score-entry .ly-pick-name{min-height:2.2em}.ly-phone-float{top:calc(var(--device-bar-h,0px) + 8px + env(safe-area-inset-top,0px));bottom:auto;right:12px;width:112px;padding:6px 8px;min-height:48px;display:grid;border-radius:14px;line-height:1.2;font-size:12px}.focus:has(.ly-control-room,.gc-rounds)>.focus-top{padding-right:136px;min-height:68px}}
+@media(max-width:360px){.ly-score-entry .ly-quick{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ly .ly-note{margin:0;padding:10px 12px;border-radius:10px;background:var(--brass-soft);color:var(--ink);font-size:14px}
 .ly-error{margin:0;padding:10px 12px;border-radius:10px;background:var(--live-soft);color:var(--live);font-size:14px}
 .ly-link{background:none;border:0;padding:8px 4px;min-height:44px;color:var(--steel);font-weight:600;text-decoration:underline;text-underline-offset:3px}

@@ -14,6 +14,7 @@ import { offlineShellStore, scoringGuard } from '../../lib/swUpdate';
 import { SavedCounterEvidence } from '../../components/lyst/SavedCounterEvidence';
 import { CounterRecoveryNotice } from '../../components/lyst/CounterRecoveryNotice';
 import { CounterRoundConfirmation } from '../../components/lyst/CounterRoundConfirmation';
+import { counterRoundEndedOnServer } from '../../lib/lyst/delivery';
 import { counterEvidenceSender } from '../../lib/lyst/sendCounterEvidence';
 import { useCounterBacklog } from '../../lib/lyst/useCounterBacklog';
 import { formatClock, remainingMs } from '../../lib/lyst/timer';
@@ -351,6 +352,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   const left = standing ? standingLeft(state.per_side, shown) : null;
   const reviewKey = `${seatId}:${state.match_id}:${run?.id}:${round}`;
   const reviewAllowed = tab.owned && seat?.status === 'active' && !!run?.id && !!round && !state.waiting && !state.final && canSubmit;
+  const automaticReviewReady = !cs.offline && !cs.cached && !offline && navigator.onLine!==false && counterRoundEndedOnServer(state,round);
   liveReview.current = { key: reviewKey, allowed: reviewAllowed };
   const openReview = () => {
     if (!reviewAllowed || finishing.current) return;
@@ -358,11 +360,11 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     setReview({key:reviewKey,round,shown,total:standing ? left ?? 0 : shown,standing,maximum:standing ? state.per_side ?? 0 : 1000,fighter:state.fighter ?? 'Your count'});
   };
   useEffect(()=>{
-    if (reviewAllowed && state.round?.status==='confirming' && !state.submitted && !review && !prompted.current.has(reviewKey)) {
+    if (reviewAllowed && automaticReviewReady && !state.submitted && !review && !prompted.current.has(reviewKey)) {
       prompted.current.add(reviewKey); setReviewMessage(null);
       setReview({key:reviewKey,round,shown,total:standing ? left ?? 0 : shown,standing,maximum:standing ? state.per_side ?? 0 : 1000,fighter:state.fighter ?? 'Your count'});
     }
-  },[reviewAllowed,state.round?.status,state.submitted,review,reviewKey,round,shown,standing,left,state.per_side,state.fighter]);
+  },[reviewAllowed,automaticReviewReady,state.submitted,review,reviewKey,round,shown,standing,left,state.per_side,state.fighter]);
   const count = (weight: number) => {
     if (!canCount || !round) return;
     if (standing && left !== null && left <= 0) return;

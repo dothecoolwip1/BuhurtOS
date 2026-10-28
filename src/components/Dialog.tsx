@@ -7,8 +7,8 @@ const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:n
  * A modal dialog (or a side drawer / bottom sheet with variant="drawer"). Focus moves in, Tab stays inside, Escape closes, focus returns
  * to what opened it, and the page behind does not scroll. Rendered only while open, so callers write `{open && <Dialog ...>}`.
  */
-export function Dialog({ title, onClose, children, variant = 'dialog', busy = false }: {
-  title: string; onClose: () => void; children: ReactNode; variant?: 'dialog' | 'drawer'; busy?: boolean;
+export function Dialog({ title, onClose, children, variant = 'dialog', busy = false, wide = false, dismissOnBackdrop = true }: {
+  title: string; onClose: () => void; children: ReactNode; variant?: 'dialog' | 'drawer'; busy?: boolean; wide?: boolean; dismissOnBackdrop?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -45,8 +45,8 @@ export function Dialog({ title, onClose, children, variant = 'dialog', busy = fa
   // Rendered at the end of <body>: inside a parent with a filter or transform (like the blurred header) a fixed overlay would be
   // trapped in that parent's box instead of covering the screen.
   return createPortal(
-    <div className={`dlg-bg ${variant}`} onMouseDown={e => { if (e.target === e.currentTarget && !busy) onClose(); }}>
-      <div ref={ref} className="dlg panel" role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+    <div className={`dlg-bg ${variant}`} onMouseDown={e => { if (e.target === e.currentTarget && !busy && dismissOnBackdrop) onClose(); }}>
+      <div ref={ref} className={`dlg panel${wide ? ' dlg-wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
         <div className="dlg-head">
           <h2 id={titleId}>{title}</h2>
           {variant === 'drawer' && <button type="button" className="icon-btn" aria-label="Close" onClick={onClose}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg></button>}
