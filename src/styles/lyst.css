@@ -33,7 +33,7 @@
  .ly-phone-float{bottom:24px;right:24px}
 }
 @media(max-width:420px){.ly-control-room .ly-score-panel,.ly-control-room .ly-clock-panel{padding:12px}.ly-control-room .sk-side{padding:14px 6px}.ly-control-room .sk-num{font-size:64px}.ly-control-room .sk-name{font-size:20px}}
-@media(max-width:600px){.dlg-wide .dlg-head,.dlg-wide .dlg-body{padding-inline:16px}.ly-score-entry .ly-quick{grid-template-columns:repeat(3,minmax(0,1fr))}.ly-score-entry .ly-pick{padding:10px 6px}.ly-score-entry .ly-pick-name{min-height:2.2em}.ly-phone-float{top:calc(8px + env(safe-area-inset-top,0px));bottom:auto;right:12px;width:112px;padding:6px 8px;min-height:48px;display:grid;border-radius:14px;line-height:1.2;font-size:12px}.focus:has(.ly-control-room,.gc-rounds)>.focus-top{padding-right:136px;min-height:68px}}
+@media(max-width:600px){.dlg-wide .dlg-head,.dlg-wide .dlg-body{padding-inline:16px}.ly-score-entry .ly-quick{grid-template-columns:repeat(3,minmax(0,1fr))}.ly-score-entry .ly-pick{padding:10px 6px}.ly-score-entry .ly-pick-name{min-height:2.2em}.ly-phone-float{top:calc(var(--device-bar-h,0px) + 8px + env(safe-area-inset-top,0px));bottom:auto;right:12px;width:112px;padding:6px 8px;min-height:48px;display:grid;border-radius:14px;line-height:1.2;font-size:12px}.focus:has(.ly-control-room,.gc-rounds)>.focus-top{padding-right:136px;min-height:68px}}
 @media(max-width:360px){.ly-score-entry .ly-quick{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ly .ly-note{margin:0;padding:10px 12px;border-radius:10px;background:var(--brass-soft);color:var(--ink);font-size:14px}
 .ly-error{margin:0;padding:10px 12px;border-radius:10px;background:var(--live-soft);color:var(--live);font-size:14px}
