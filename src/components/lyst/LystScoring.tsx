@@ -328,7 +328,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const entryRound = showEntry && cur ? cur : null;
   const dialogRound=correctingRound??entryRound;
   const entryKey=dialogRound?`${match.id}:${dialogRound.round_no}:${dialogRound.rev}:${correctingRound?'correct':'confirm'}`:null;
-  const clockNeedsDecision=timerBusy||!!clock.clockOverride||clock.requiresClockCheck||clock.restoreRound!==null||!!clock.pendingTimer;
+  const clockNeedsDecision=!!clock.clockFailure||timerBusy||!!clock.clockOverride||clock.requiresClockCheck||clock.restoreRound!==null||!!clock.pendingTimer;
   const entryOpen=!!dialogRound&&!pendingRound&&entryKey!==dismissedEntry&&!clockNeedsDecision&&!sheet;
   const closeEntry=()=>{setDismissedEntry(entryKey);setCorrecting(null);setEarly(false);};
   const rejectedKey=mine.map(m=>m.id).join(',');

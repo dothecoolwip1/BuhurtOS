@@ -172,7 +172,7 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
             </button>}
       </div>
       {target && needReason && (
-        dismissedReason!==targetKey&&!clock.clockOverride&&!clock.pendingTimer&&!clock.requiresClockCheck&&clock.restoreRound===null?<Dialog title={`Round ${target.round} · confirm the marshal’s reason`} onClose={()=>setDismissedReason(targetKey)}>
+        dismissedReason!==targetKey&&!clock.clockFailure&&!clock.clockOverride&&!clock.pendingTimer&&!clock.requiresClockCheck&&clock.restoreRound===null?<Dialog title={`Round ${target.round} · confirm the marshal’s reason`} onClose={()=>setDismissedReason(targetKey)}>
           <b>Round {target.round}: the marshal’s reason is needed</b>
           <p>{reviewMessage ?? queuedRefused?.error ?? 'The round was not confirmed for the counter phones.'} The board call ({names[target.winner]} wins round {target.round}) is sent only after you confirm the reason.</p>
           <label className="field-in">Marshal’s reason

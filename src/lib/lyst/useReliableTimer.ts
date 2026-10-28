@@ -10,6 +10,7 @@ export function useReliableTimer({lyst,eventId,fieldName,matchId,userKey}:{lyst:
   const st=lyst.state;
   const [timerBusy,setTimerBusy]=useState(false);
   const [timerNote,setTimerNote]=useState<string|null>(null);
+  const [clockFailure,setClockFailure]=useState<string|null>(null);
   const [attentionSerial,setAttentionSerial]=useState(0);
   const timerStore = useMemo(() => new TimerIntentStore({
     getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v),removeItem:k=>localStorage.removeItem(k)
@@ -23,15 +24,15 @@ export function useReliableTimer({lyst,eventId,fieldName,matchId,userKey}:{lyst:
   const timerSending = useRef<string|null>(null);
   const scope=`${userKey}:${matchId}`;
   const activeContext = useRef(scope); activeContext.current=scope;
-  useEffect(()=>{timerSending.current=null;setTimerBusy(false);setPendingTimer(timerStore.read());setClockOverride(null);setRestoreRound(null);if(timerStore.problem)setTimerNote(timerStore.problem);},[timerStore]);
+  useEffect(()=>{timerSending.current=null;setTimerBusy(false);setPendingTimer(timerStore.read());setClockOverride(null);setRestoreRound(null);setClockFailure(null);if(timerStore.problem)setTimerNote(timerStore.problem);},[timerStore]);
   const executeTimer = useCallback(async (intent:TimerIntent) => {
     if(timerSending.current)return;
     timerSending.current=intent.command.command;
-    setTimerBusy(true); setTimerNote(null);
+    setTimerBusy(true); setTimerNote(null);setClockFailure(null);
     try {
         const {answer,sentAt,receivedAt}=await timerCommand(intent.command);
         if(activeContext.current!==scope)return;
-        if (answer.status === 'stale') setTimerNote('Another device changed the clock. Showing the latest. Press again if you still want to.');
+        if (answer.status === 'stale') {setTimerNote('Another device changed the clock. Showing the latest. Press again if you still want to.');setClockFailure('Another device changed the clock. Check the latest time before pressing the action again.');}
         if(answer.status==='expired'){
           setTimerNote('That clock action was too old to start safely. It did not change the clock. Check with the marshal and enter the time remaining if the round is already underway.');
           if(intent.command.action==='start' && intent.command.mode==='fight')setRestoreRound(intent.command.round??1);
@@ -47,7 +48,7 @@ export function useReliableTimer({lyst,eventId,fieldName,matchId,userKey}:{lyst:
             const c=intent.command;
             setClockOverride({action:c.action,options:{mode:c.mode??undefined,durationMs:c.durationMs??undefined,round:c.round??undefined,deltaMs:c.deltaMs??0}});
             setClockReason('');setTimerNote('The start was refused because some phones were not prepared. Check them or record the marshal’s paper/offline reason.');
-          }else setTimerNote(`${friendlyError(e,'The server refused this request.')} An earlier attempt may already have applied. Check the displayed clock with the marshal before sending another action.`);
+          }else {const message=`${friendlyError(e,'The server refused this request.')} An earlier attempt may already have applied. Check the displayed clock with the marshal before sending another action.`;setTimerNote(message);setClockFailure(message);}
           void lyst.refresh();return;
         }
         setTimerNote(isNoSignalError(e) ? 'Clock action not confirmed. It may have reached the server. Check the clock, then retry this same action.' : friendlyError(e,'Clock action not confirmed. Check the clock before retrying.'));
@@ -76,5 +77,5 @@ export function useReliableTimer({lyst,eventId,fieldName,matchId,userKey}:{lyst:
 
   const clearPending=()=>{if(timerStore.clear()){setPendingTimer(null);setTimerNote('Saved action cleared after checking the clock.');}};
   const continueAfterClockCheck=()=>{timerStore.continueAfterClockCheck();setTimerNote(timerStore.problem);};
-  return {contextKey:scope,timerBusy,timerNote,attentionSerial,pendingTimer,clockOverride,setClockOverride,clockReason,setClockReason,restoreRound,setRestoreRound,restoreSeconds,setRestoreSeconds,sendTimer,executeTimer,clearPending,storageProblem:timerStore.problem,offline:lyst.offline,requiresClockCheck:timerStore.requiresCheck,unreadableClockAction:timerStore.unreadableRaw,continueAfterClockCheck};
+  return {contextKey:scope,clockFailure,setClockFailure,timerBusy,timerNote,attentionSerial,pendingTimer,clockOverride,setClockOverride,clockReason,setClockReason,restoreRound,setRestoreRound,restoreSeconds,setRestoreSeconds,sendTimer,executeTimer,clearPending,storageProblem:timerStore.problem,offline:lyst.offline,requiresClockCheck:timerStore.requiresCheck,unreadableClockAction:timerStore.unreadableRaw,continueAfterClockCheck};
 }
