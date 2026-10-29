@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Chip, TestBadge } from '../../components/ui';
 import type { LiveEvent } from '../../data/api';
 import { dateRange } from '../../lib/dates';
+import { testCleanupAt } from '../../lib/testEvents';
 import { PHASE_TONE, VIEW_WORD, controlPath, publicEventPresentation, viewPath, type EventPhase, type PublicView } from '../../lib/eventPhaseView';
 
 export interface HeaderCta { to: string; label: string; tone?: 'ink' | 'line' | 'win' }
@@ -31,7 +32,7 @@ export function EventHeader({ event, phase, view, cta, control, synthetic, conne
         {control && <Link className="btn btn-line ev-control" to={controlPath(event.slug)} data-testid="open-control">Event Control</Link>}
       </div>
       <h1 className="ev-title">{event.name}</h1>
-      {event.testDeleteAfter && <p className="ev-test-note" role="note" data-testid="test-event-note"><b>Test event.</b> Only you and this event's staff can see it. It and everything in it are deleted on {new Date(event.testDeleteAfter).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}; fighter profiles stay.</p>}
+      {event.testDeleteAfter && <p className="ev-test-note" role="note" data-testid="test-event-note"><b>Test event.</b> Only you and this event's staff can see it. It and everything in it are deleted on {testCleanupAt(event.testDeleteAfter).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}, at the first daily clean-up after its 10 days are up; fighter profiles stay.</p>}
       <p className="ev-facts">
         <span className="ev-when">{dateRange(event.startsOn, event.endsOn)}</span>
         {where && <span className="ev-where">{where}</span>}

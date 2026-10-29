@@ -67,6 +67,7 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
   const checks = publishChecklist({ eventType: event.eventType as EventType, registrationMode: event.registrationMode, competitions: facts.data?.competitions ?? 0, waivers: facts.data?.waivers ?? 0, hasClose: Boolean(event.registrationClosesAt), hasVenue: Boolean(event.venue || event.address), hasLink: Boolean(event.externalUrl) });
   const blocked = checks.some(c => c.blocking && !c.ok) || !facts.data;
   const published = event.status === 'published';
+  const isTest = Boolean(event.testDeleteAfter);
   const jump = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const text = (k: keyof SetupForm, label: string, extra: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
@@ -77,8 +78,9 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
   return (
     <div style={{ display: 'grid', gap: 18 }}>
       <section className="panel info" aria-labelledby="pub-h" style={{ display: 'grid', gap: 10 }}>
-        <h3 id="pub-h">{published ? 'This event is public' : 'This event is a draft'}</h3>
-        <p><Chip tone={published ? 'win' : 'brass'}>{published ? 'Published' : 'Draft: only organizers can see it'}</Chip></p>
+        <h3 id="pub-h">{published ? (isTest ? 'Published for its staff only (test event)' : 'This event is public') : 'This event is a draft'}</h3>
+        <p><Chip tone={published ? 'win' : 'brass'}>{published ? (isTest ? 'Published: staff only' : 'Published') : 'Draft: only organizers can see it'}</Chip></p>
+        {isTest && <p className="src">A test event is never public and never counts in rankings or statistics, published or not. Only this event's staff can see it.</p>}
         <ul className="plain checklist" aria-label="Publish checklist">
           {checks.map(c => {
             const fix = !c.ok ? FIX_TARGET[c.key] : undefined;
@@ -100,7 +102,9 @@ export function SetupTab({ event, onChanged }: { event: LiveEvent; onChanged: ()
         )}
         {!published && confirm && (
           <div className="panel info" role="alertdialog" aria-label="Confirm publish" style={{ display: 'grid', gap: 8 }}>
-            <p><b>Publishing makes the event, its competitions and registration public.</b> Anyone can then register. You can take it back to draft, but people who registered keep their registration.</p>
+            {isTest
+              ? <p><b>This is a test event: publishing does not make it public.</b> It lets this event's staff rehearse registration, check-in and scoring. It stays visible only to them, never counts, and is still deleted when its 10 days are up.</p>
+              : <p><b>Publishing makes the event, its competitions and registration public.</b> Anyone can then register. You can take it back to draft, but people who registered keep their registration.</p>}
             <div style={{ display: 'flex', gap: 8 }}>
               <button type="button" className="btn btn-ink" disabled={busy} onClick={() => run(() => setEventStatus(event.id, 'published'), 'Published.')}>Yes, publish</button>
               <button type="button" className="btn btn-line" onClick={() => setConfirm(false)}>Not yet</button>

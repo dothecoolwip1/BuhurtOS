@@ -38,8 +38,13 @@ export function EventLifecycle({ event, onChanged }: { event: LiveEvent; onChang
       <h3 id="lc-h">Archive and statistics</h3>
       <ul className="lc-state" aria-label="Event status">
         <li>{event.closedAt ? <><Chip tone="win">Closed</Chip> Finished: the results are official history.</> : <><Chip>Open</Chip> Not closed yet.</>}</li>
+        {event.testDeleteAfter ? <>
+          <li><Chip tone="brass">Test event</Chip> Only this event's staff can see it; it is never shown with current or upcoming events.</li>
+          <li><Chip tone="live">Never counts</Chip> Its results are test data: kept out of rankings, records and statistics.</li>
+        </> : <>
         <li>{event.archivedAt ? <><Chip tone="brass">Archived</Chip> Hidden from current events. Results still count.</> : <><Chip>Current</Chip> Shown with current and upcoming events.</>}</li>
         <li>{event.statsExcludedAt ? <><Chip tone="live">Not counted</Chip> Left out of official statistics: {event.statsExcludedReason}</> : <><Chip tone="steel">Counts</Chip> Its official results count in rankings and statistics.</>}</li>
+        </>}
       </ul>
 
       <div className="lc-actions">
