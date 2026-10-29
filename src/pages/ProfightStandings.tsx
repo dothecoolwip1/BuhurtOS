@@ -17,7 +17,7 @@ export function ProfightStandings() {
   return (
     <section style={{ display: 'grid', gap: 14 }} aria-label="Profight records">
       <p className="muted" style={{ fontSize: 14, margin: 0 }}>Win/loss records within each weight class (Outrance §17). No fight for a year: retired. Two years: out of the standings.</p>
-      <Seg label="Division" value={gender} options={[['men', 'Men'], ['women', 'Women']] as const} onChange={setGender} />
+      <div className="evfilter"><Seg label="Division" value={gender} options={[['men', 'Men'], ['women', 'Women']] as const} onChange={setGender} /></div>
       {st.loading && <p className="muted">Loading Profight records…</p>}
       {st.error != null && <div role="alert"><p>{friendlyError(st.error, 'Could not load the Profight records.')}</p><button type="button" className="btn btn-line" onClick={st.reload}>Retry</button></div>}
       {st.data && groups.length === 0 && <div className="panel info"><h3>No Profight records yet</h3><p className="muted">Records appear as soon as a Profight is official.</p></div>}

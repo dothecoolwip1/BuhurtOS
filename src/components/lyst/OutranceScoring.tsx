@@ -88,7 +88,9 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   // a fighter's hold (medic check, assessment, equipment, KO) stops the fight opening: show it here so it can be cleared (§14.8, §14.10, §14.11)
   const [blocked, setBlocked] = useState<{ message: string; holds: Awaited<ReturnType<typeof outranceMatchHolds>> } | null>(null);
   const [openTick, setOpenTick] = useState(0);
-  // another device (the organizer's phone) may set the division and format: look again while this screen asks for them
+  // another device (the organizer's phone) may set the division and format: look again while this screen asks for them, and leave
+  // the form as soon as the timing arrives (that device may already have opened the Lyst, so this one's open call is not repeated)
+  useEffect(() => { if (needsSetup && om?.timing) setNeedsSetup(false); }, [needsSetup, om?.timing]);
   useEffect(() => {
     if (!needsSetup) return;
     const t = window.setInterval(() => { if (!document.hidden) { openedOnce.current = false; setOpenTick(n => n + 1); } }, 5000);

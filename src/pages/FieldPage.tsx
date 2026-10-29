@@ -66,7 +66,7 @@ function FinalElsewhere({ m, fieldName, nextFight, onOpenNext, onBack }: { m: Co
     <section className="panel info" aria-label="This fight is final" style={{ display: 'grid', gap: 12 }} data-testid="final-elsewhere">
       <h2 style={{ margin: 0 }}>This fight is final</h2>
       <p style={{ margin: 0 }}><b>{n.a} vs {n.b}</b>: {summary}. It was finished on another device. The result stands; nothing on this screen can change it. If it is wrong, an organizer corrects it from Live ops.</p>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="sk-after">
         {nextFight && next && <button type="button" className="btn btn-ink fq-big" onClick={() => onOpenNext(nextFight)}><span className="sk-after-k">Next fight on {fieldLabel(fieldName)}</span><span>{next.a} vs {next.b}</span></button>}
         <button type="button" className="btn btn-line fq-big" onClick={onBack}>Back to the queue</button>
       </div>
