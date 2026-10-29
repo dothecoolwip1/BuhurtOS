@@ -70,8 +70,14 @@ export function resultFromBoard(board: BoardState, stage: CompetitionMatch['stag
 
   if (board.mode === 'group') {
     const s = board.s;
+    const detail = { kind: 'group', roundsToWin: s.roundsToWin, roundsWon: { a: s.rounds.a, b: s.rounds.b }, roundsPlayed: s.rounds.a + s.rounds.b, rounds: s.history ?? [] };
+    // Buhurt Regulations §4.2: only in the group stage can a fight end level, when its match time runs out
+    if (s.drawn) {
+      if (stage !== 'pool') return { ok: false, reason: 'Outside the group stage a team fight cannot end level (Buhurt Regulations 4.3): fight another round.' };
+      return { ok: true, value: { result: 'draw', scoreA: s.rounds.a, scoreB: s.rounds.b, detail: { ...detail, matchTimeUp: true } } };
+    }
     if (!s.winner) return { ok: false, reason: 'No team has won the fight yet. Confirm the final round first.' };
-    return { ok: true, value: { result: winnerResult(s.winner), scoreA: s.rounds.a, scoreB: s.rounds.b, detail: { kind: 'group', roundsToWin: s.roundsToWin, roundsWon: { a: s.rounds.a, b: s.rounds.b }, roundsPlayed: s.rounds.a + s.rounds.b } } };
+    return { ok: true, value: { result: winnerResult(s.winner), scoreA: s.rounds.a, scoreB: s.rounds.b, detail } };
   }
   if (board.mode === 'duel') {
     const s = board.s;

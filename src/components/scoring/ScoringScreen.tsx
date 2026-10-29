@@ -325,7 +325,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
           </div>
         </div>
       )}
-      {board.mode === 'group' && <GroupBoard state={board.s} onChange={s => change({ mode: 'group', s })} record={rec} names={names} />}
+      {board.mode === 'group' && <GroupBoard groupStage={match.stage === 'pool'} state={board.s} onChange={s => change({ mode: 'group', s })} record={rec} names={names} />}
       {board.mode === 'group' && <GroupCounterRounds key={`${userId}:${match.id}`} matchId={match.id} eventId={eventId} fieldName={fieldName} userKey={userId} board={board.s} secretary={secretary} names={names} onRounds={applyGroupRounds} onStanding={applyStanding} />}
       {board.mode === 'duel' && <DuelBoard headless state={board.s} onChange={s => change({ mode: 'duel', s })} record={rec} names={names} />}
       {board.mode === 'pro' && <ProBoard headless state={board.s} onChange={s => change({ mode: 'pro', s })} record={rec} names={names} />}

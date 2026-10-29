@@ -24,7 +24,7 @@ export function suggestFormat(n: number): FormatAdvice {
   if (n <= 6) return { format: 'round_robin', poolCount: 0, thirdPlace: false, why: `${n} entrants: everyone fights everyone` };
   const advisedPools = structureAdvice(n).options.map(o => o.pools.length).find(p => p >= 2) ?? 2;
   const poolCount = Math.max(2, Math.min(advisedPools, Math.floor(n / 2)));
-  return { format: 'pools', poolCount, thirdPlace: false, why: `${n} entrants: ${poolCount} pools, then a bracket for the top of each pool` };
+  return { format: 'pools', poolCount, thirdPlace: true, why: `${n} entrants: ${poolCount} pools, then a bracket for the top of each pool` };
 }
 
 export const FORMAT_WORD: Record<DrawFormat, string> = { round_robin: 'Round robin', pools: 'Pools, then a bracket', single_elimination: 'Single elimination' };

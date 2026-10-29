@@ -68,5 +68,37 @@ select t.as_admin();
 select t.expect_eq('... scored 0-20 (10-0 for each of the 2 regular rounds)', (select score_a || '-' || score_b from public.matches where id = t.m(34)), '0-20');
 select t.expect_eq('a sword and buckler technical win is 2 rounds to 0 (5-0 for 2 rounds)', private.technical_win_points(t.m(32)), 2);
 
+-- ================================================================ team fights (Buhurt Regulations 26.4 §4.2, §4.3)
+select t.as_admin();
+insert into public.competitions (id, event_id, name, category, gender, tier, structure, sort) values
+  (t.comp(41), t.ev(1), '5v5 pools', '5v5', 'men', 'Classic', 'pools_elimination', 4),
+  (t.comp(42), t.ev(1), '5v5 round robin', '5v5', 'men', 'Classic', 'round_robin', 5);
+insert into public.teams (id, slug, name, status) values ('00000000-0000-0000-0000-0000000d7e01', 'rules-gate-anvil', 'Team Anvil', 'approved'), ('00000000-0000-0000-0000-0000000d7e02', 'rules-gate-bastion', 'Team Bastion', 'approved');
+insert into public.entries (id, competition_id, team_id) select t.en(410 + n), t.comp(41), ('00000000-0000-0000-0000-0000000d7e0' || n)::uuid from generate_series(1, 2) n;
+insert into public.entries (id, competition_id, team_id) select t.en(420 + n), t.comp(42), ('00000000-0000-0000-0000-0000000d7e0' || n)::uuid from generate_series(1, 2) n;
+insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, queue_state, field) values
+  (t.m(41), t.comp(41), 'pool', 'Pool A', 41, t.en(411), t.en(412), 'active', 'Field 9'),
+  (t.m(42), t.comp(42), 'round_robin', 'R1', 42, t.en(421), t.en(422), 'active', 'Field 10');
+insert into public.lyst_matches (match_id, event_id, field_key, counter_input) values (t.m(41), t.ev(1), 'field 9', 'standing');
+insert into public.lyst_rounds (match_id, round_no, event_id, status, awarded_a, awarded_b) values (t.m(41), 1, t.ev(1), 'confirmed', 1, 0), (t.m(41), 2, t.ev(1), 'confirmed', 0, 1);
+select t.as_user(t.u(4));
+select t.expect_eq('§4.2 group stage: rounds 1-1 when the match time runs out is a draw', public.submit_match_result(gen_random_uuid(), t.m(41), 'draw', 1, 1, '{"kind":"group","matchTimeUp":true}', t.ver(41)) ->> 'status', 'accepted');
+select t.expect_error('§4.3 round robin: a team fight cannot end in a draw', $q$select public.submit_match_result(gen_random_uuid(), t.m(42), 'draw', 0, 0, '{}', t.ver(42))$q$, 'P0001');
+
+-- ================================================================ pool order (Tournament Structure 26.1 §3)
+select t.as_admin();
+insert into public.competitions (id, event_id, name, category, gender, tier, structure, sort) values (t.comp(51), t.ev(1), 'Longsword RR', 'longsword', 'men', 'Classic', 'round_robin', 6);
+insert into public.entries (id, competition_id, fighter_id) select t.en(510 + n), t.comp(51), ('00000000-0000-0000-0000-' || lpad('f181' || n, 12, '0'))::uuid from generate_series(1, 4) n;
+-- W = 511, X = 512, Y = 513, Z = 514. W and Z win 2; X and Y win 1 each, X beat Y 5-4, but Y has the better hit ratio (24:10 v 5:14)
+insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, queue_state, field, result, winner_entry_id, score_a, score_b) values
+  (t.m(51), t.comp(51), 'round_robin', 'R', 1, t.en(511), t.en(512), 'final', 'Field 1', 'a', t.en(511), 5, 0),
+  (t.m(52), t.comp(51), 'round_robin', 'R', 2, t.en(511), t.en(513), 'final', 'Field 1', 'a', t.en(511), 5, 0),
+  (t.m(53), t.comp(51), 'round_robin', 'R', 3, t.en(514), t.en(511), 'final', 'Field 1', 'a', t.en(514), 5, 0),
+  (t.m(54), t.comp(51), 'round_robin', 'R', 4, t.en(514), t.en(512), 'final', 'Field 1', 'a', t.en(514), 5, 0),
+  (t.m(55), t.comp(51), 'round_robin', 'R', 5, t.en(513), t.en(514), 'final', 'Field 1', 'a', t.en(513), 20, 0),
+  (t.m(56), t.comp(51), 'round_robin', 'R', 6, t.en(512), t.en(513), 'final', 'Field 1', 'a', t.en(512), 5, 4);
+select t.expect_eq('§3.1 two level on wins: their own fight decides (X beat Y), before the hit ratio', (select string_agg(right(ent::text, 3) || '=' || wrank, ',' order by right(ent::text, 3)) from private.group_ranks(t.comp(51)) where ent in (t.en(512), t.en(513))), '512=3,513=4');
+select t.expect_eq('... and W and Z, level on 2 wins: Z beat W, so Z is first', (select string_agg(right(ent::text, 3) || '=' || wrank, ',' order by wrank) from private.group_ranks(t.comp(51)) where ent in (t.en(511), t.en(514))), '514=1,511=2');
+
 do $$ begin raise notice 'DUEL RULES GATE PASSED % checks', (select count(*) from t.log); end $$;
 rollback;

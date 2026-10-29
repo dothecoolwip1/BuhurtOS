@@ -48,3 +48,31 @@ describe('BI duels (Duels Rules 26.4)', () => {
     expect(disciplineCounts([d('reprimand'), d('card', 'Reprimand'), d('card', 'Yellow')], 'a')).toMatchObject({ reprimands: 2, cards: 1 });
   });
 });
+
+import { confirmRound, matchTimeUp, newGroupFight, roundEnd, toggleFighter, type GroupState } from './scoring';
+const down = (s: GroupState, side: 'a' | 'b', n: number): GroupState => { let x = s; for (let i = 0; i < n; i++) x = toggleFighter(x, side, i); return x; };
+describe('BI team fights (Buhurt Regulations 26.4 §4)', () => {
+  it('§4.1 a round also ends when a team is outnumbered 3 to 1, and is recorded as such', () => {
+    const s = down(down(newGroupFight(5, 2), 'b', 4), 'a', 2);   // 3 standing v 1
+    expect(roundEnd(s)).toEqual({ winner: 'a', by: 'ratio' });
+    const next = confirmRound(s);
+    expect(next.rounds).toEqual({ a: 1, b: 0 });
+    expect(next.history?.[0]).toEqual({ round: 1, standing: { a: 3, b: 1 }, endedBy: 'ratio', winner: 'a' });
+  });
+  it('2 v 1 is not over yet', () => {
+    expect(roundEnd(down(down(newGroupFight(5, 2), 'b', 4), 'a', 3))).toBeUndefined();
+  });
+  it('§4.2 time up: more standing wins the round; level, the round is fought again', () => {
+    const won = confirmRound(down(newGroupFight(5, 2), 'b', 2), true);
+    expect(won.rounds).toEqual({ a: 1, b: 0 });
+    const level = confirmRound(down(down(newGroupFight(5, 2), 'b', 2), 'a', 2), true);
+    expect(level.rounds).toEqual({ a: 0, b: 0 });
+    expect(level.round).toBe(1);
+    expect(level.history?.[0]).toMatchObject({ endedBy: 'time', winner: null, standing: { a: 3, b: 3 } });
+  });
+  it('§4.2/§4.3 a level fight at match time is a draw only in the group stage', () => {
+    const s = matchTimeUp(newGroupFight(5, 2));
+    expect(resultFromBoard({ mode: 'group', s }, 'pool')).toMatchObject({ ok: true, value: { result: 'draw' } });
+    expect(resultFromBoard({ mode: 'group', s }, 'round_robin').ok).toBe(false);
+  });
+});

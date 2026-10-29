@@ -2,15 +2,23 @@ import { BUCKLER_ROUND_POINTS, bucklerMatchFinished, leadMatchFinished, type Due
 
 /* ---------------- group fight ---------------- */
 /**
- * Group fights are won by grounding every opposing fighter (Buhurt Rules V.26.4.1 §1.2). How many rounds make a fight
- * is set by the tournament regulations (Buhurt Regulations §4, not available to read yet), so it is a setting here.
+ * Group fights (Buhurt Rules 26.4.1 §1.2, Buhurt Regulations 26.4 §4). A round ends when one team is fully grounded, or outnumbered 3 to 1
+ * (recorded as e.g. "3-1", §4.1), or when its time runs out: the team with more fighters standing wins it; level, the round is fought again
+ * (§4.2/§4.3.1). The fight is won on rounds (rounds to win is a competition setting; BI: 2). In the group stage a fight still level when its
+ * match time runs out is a draw (§4.2); never in round robin or elimination (§4.3).
  */
+export type GroupRoundEnd = 'wipe' | 'ratio' | 'time';
+export interface GroupRoundRecord { round: number; standing: Record<Side, number>; endedBy: GroupRoundEnd; winner: Side | null }
 export interface GroupState {
   down: Record<Side, boolean[]>;
   rounds: Record<Side, number>;
   round: number;
   roundsToWin: number;
   winner?: Side;
+  /** The score sheet: each round's standing count and how it ended (Regulations §4.1, §5.7). */
+  history?: GroupRoundRecord[];
+  /** Group stage only: the match time ran out with the rounds level, so the fight is a draw (Regulations §4.2). */
+  drawn?: boolean;
 }
 
 export const newGroupFight = (perSide = 5, roundsToWin = 2): GroupState => ({
@@ -20,11 +28,23 @@ export const newGroupFight = (perSide = 5, roundsToWin = 2): GroupState => ({
 
 export const standing = (s: GroupState, side: Side) => s.down[side].filter(d => !d).length;
 
-/** The side that has every fighter grounded loses the round, so the other side owns it. */
-export function roundWinner(s: GroupState): Side | undefined {
-  if (standing(s, 'a') === 0 && standing(s, 'b') > 0) return 'b';
-  if (standing(s, 'b') === 0 && standing(s, 'a') > 0) return 'a';
+/** How a round has ended on the field: a team fully grounded, or outnumbered 3 to 1 (Regulations §4.1). */
+export function roundEnd(s: GroupState): { winner: Side; by: 'wipe' | 'ratio' } | undefined {
+  const a = standing(s, 'a'), b = standing(s, 'b');
+  if (a === 0 && b > 0) return { winner: 'b', by: 'wipe' };
+  if (b === 0 && a > 0) return { winner: 'a', by: 'wipe' };
+  if (b >= 1 && a >= 3 * b) return { winner: 'a', by: 'ratio' };
+  if (a >= 1 && b >= 3 * a) return { winner: 'b', by: 'ratio' };
   return undefined;
+}
+/** The side that owns the round on the field (fully grounded or outnumbered 3 to 1 opponents). */
+export function roundWinner(s: GroupState): Side | undefined {
+  return roundEnd(s)?.winner;
+}
+/** Time is up (Regulations §4.2): more fighters standing wins the round; level, nobody (the round is fought again). */
+export function timeWinner(s: GroupState): Side | null {
+  const a = standing(s, 'a'), b = standing(s, 'b');
+  return a > b ? 'a' : b > a ? 'b' : null;
 }
 
 export function toggleFighter(s: GroupState, side: Side, index: number): GroupState {
@@ -34,15 +54,23 @@ export function toggleFighter(s: GroupState, side: Side, index: number): GroupSt
   return { ...s, down };
 }
 
-export function confirmRound(s: GroupState): GroupState {
-  const w = roundWinner(s);
-  if (!w || s.winner) return s;
+export function confirmRound(s: GroupState, byTime = false): GroupState {
+  if (s.winner || s.drawn) return s;
+  const end = roundEnd(s);
+  const w = byTime ? timeWinner(s) : end?.winner ?? null;
+  const record: GroupRoundRecord = { round: s.round, standing: { a: standing(s, 'a'), b: standing(s, 'b') }, endedBy: byTime ? 'time' : end?.by ?? 'wipe', winner: w };
+  const history = [...(s.history ?? []), record];
+  const fresh = { a: s.down.a.map(() => false), b: s.down.b.map(() => false) };
+  // level at time: nobody wins the round, it is fought again (the same round on the Lyst)
+  if (!w) return byTime ? { ...s, history, down: fresh } : s;
   const rounds = { ...s.rounds, [w]: s.rounds[w] + 1 };
   const fightWinner = rounds[w] >= s.roundsToWin ? w : undefined;
-  return {
-    ...s, rounds, winner: fightWinner, round: fightWinner ? s.round : s.round + 1,
-    down: fightWinner ? s.down : { a: s.down.a.map(() => false), b: s.down.b.map(() => false) }
-  };
+  return { ...s, rounds, history, winner: fightWinner, round: fightWinner ? s.round : s.round + 1, down: fightWinner ? s.down : fresh };
+}
+/** Group stage only (Regulations §4.2): the match time ran out with the rounds level: the fight is a draw. */
+export function matchTimeUp(s: GroupState): GroupState {
+  if (s.winner || s.drawn || s.rounds.a !== s.rounds.b) return s;
+  return { ...s, drawn: true };
 }
 
 /* ---------------- duel ---------------- */

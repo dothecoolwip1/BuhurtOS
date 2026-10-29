@@ -236,7 +236,8 @@ begin
 
   h := sim.hash(c.name || '|' || m.stage || '|' || coalesce(m.pool, '') || '|' || m.round_label || '|' || m.position);
   rtw := coalesce(c.rounds_to_win, 2);
-  if m.stage in ('pool', 'round_robin') and h % 9 = 0 then
+  -- Buhurt Regulations 4.2/4.3: a team fight can be level only in the group stage (pool)
+  if (m.stage = 'pool' or (m.stage = 'round_robin' and c.category not in ('3v3', '5v5'))) and h % 9 = 0 then
     res := 'draw'; sa := case when c.category in ('3v3', '5v5') then rtw - 1 else (h / 29) % 10 end; sb := sa;
   else
     res := case when (h / 7) % 2 = 0 then 'a' else 'b' end;

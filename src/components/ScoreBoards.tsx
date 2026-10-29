@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Seg } from './ui';
-import { confirmRound, duelEndRound, duelScore, duelTotal, duelUndo, proAddRound, proPatch, standing, toggleFighter, type DuelState, type GroupState, type ProState } from '../lib/scoring';
+import { confirmRound, duelEndRound, duelScore, duelTotal, duelUndo, matchTimeUp, proAddRound, proPatch, roundEnd, standing, timeWinner, toggleFighter, type DuelState, type GroupState, type ProState } from '../lib/scoring';
 import { BREAK_SECONDS, SERIES_TITLE, breakRemaining, configureSeries, currentRound, roundPoints, seriesOutcome, seriesSolo, seriesTotals, seriesUndo, setSeriesRound, type SeriesResult, type SeriesState } from '../lib/marathon';
 import { bucklerMatchFinished, proRoundScore, zoneValues, type Side } from '../lib/tournament';
 import { CRITERIA, CRITERION_LABEL, criteriaWinner, type Call, type CriteriaCalls, type Criterion } from '../lib/outrance';
@@ -23,14 +23,18 @@ export interface BoardProps<S> {
   headless?: boolean;
 }
 
-export function GroupBoard({ state: s, onChange, record, names, crest }: BoardProps<GroupState>) {
-  const winner = (['a', 'b'] as const).find(x => standing(s, x === 'a' ? 'b' : 'a') === 0 && standing(s, x) > 0);
+export function GroupBoard({ state: s, onChange, record, names, crest, groupStage = false }: BoardProps<GroupState> & { /** the group stage: a level fight at match time is a draw (Regulations §4.2) */ groupStage?: boolean }) {
+  const end = roundEnd(s);
+  const winner = end?.winner;
   const tap = (side: Side, i: number) => { const next = toggleFighter(s, side, i); onChange(next); record('group.fighter', { side, index: i, down: next.down[side][i] }); };
-  const confirm = () => { const next = confirmRound(s); onChange(next); record('group.round_confirmed', { round: s.round, winner, rounds: next.rounds }); };
+  const confirm = () => { const next = confirmRound(s); onChange(next); record('group.round_confirmed', { round: s.round, winner, by: end?.by, standing: { a: standing(s, 'a'), b: standing(s, 'b') }, rounds: next.rounds }); };
+  const tw = timeWinner(s);
+  const confirmTime = () => { const next = confirmRound(s, true); onChange(next); record('group.round_confirmed', { round: s.round, winner: tw, by: 'time', standing: { a: standing(s, 'a'), b: standing(s, 'b') }, rounds: next.rounds }); };
+  const done = !!s.winner || !!s.drawn;
   const sides: Side[] = ['a', 'b'];
   return (
     <div className="panel mboard">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span className="eyebrow">{s.winner ? 'Fight decided' : `Round ${s.round} · first to ${s.roundsToWin} rounds`}</span><span className="eyebrow">Rounds {s.rounds.a} – {s.rounds.b}</span></div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><span className="eyebrow">{s.drawn ? 'Draw: match time up' : s.winner ? 'Fight decided' : `Round ${s.round} · first to ${s.roundsToWin} rounds · 5:00`}</span><span className="eyebrow">Rounds {s.rounds.a} – {s.rounds.b}</span></div>
       <div className="mteams">
         {sides.map(side => (
           <div className="mteam" key={side}>
@@ -38,15 +42,23 @@ export function GroupBoard({ state: s, onChange, record, names, crest }: BoardPr
             <div className="rounds">{Array.from({ length: s.roundsToWin }, (_, i) => <i key={i} className={i < s.rounds[side] ? 'on' : ''} />)}</div>
             <div className="mcount mono">{standing(s, side)}<small>standing</small></div>
             <div className="fighters">{s.down[side].map((d, i) => (
-              <button key={i} type="button" className={`ft ${d ? 'down' : ''}`} aria-pressed={d} disabled={!!s.winner} aria-label={`${names[side]} fighter ${i + 1} ${d ? 'out' : 'standing'}`} onClick={() => tap(side, i)}>{i + 1}</button>
+              <button key={i} type="button" className={`ft ${d ? 'down' : ''}`} aria-pressed={d} disabled={done} aria-label={`${names[side]} fighter ${i + 1} ${d ? 'out' : 'standing'}`} onClick={() => tap(side, i)}>{i + 1}</button>
             ))}</div>
           </div>
         ))}
       </div>
-      {winner && !s.winner && (
-        <div className="prompt"><span><b>{names[winner]} have every opponent grounded.</b> Give round {s.round} to them?</span><button type="button" className="btn btn-win" onClick={confirm}>Confirm round</button></div>
+      {winner && !done && (
+        <div className="prompt"><span><b>{end?.by === 'ratio' ? `${names[winner]} outnumber them ${standing(s, winner)} to ${standing(s, winner === 'a' ? 'b' : 'a')}.` : `${names[winner]} have every opponent grounded.`}</b> Give round {s.round} to them?</span><button type="button" className="btn btn-win" onClick={confirm}>Confirm round</button></div>
       )}
-      <p className="src">Rounds to win is a setting on the competition: the round structure comes from the tournament regulations.</p>
+      {!done && (
+        <div className="mactions">
+          <button type="button" className="btn btn-line" onClick={confirmTime} data-testid="group-time-up">
+            {tw ? `Time is up: round ${s.round} to ${names[tw]} (${standing(s, tw)}–${standing(s, tw === 'a' ? 'b' : 'a')} standing)` : `Time is up, level ${standing(s, 'a')}–${standing(s, 'b')}: fight round ${s.round} again`}
+          </button>
+          {groupStage && s.rounds.a === s.rounds.b && <button type="button" className="btn btn-line" onClick={() => { const next = matchTimeUp(s); onChange(next); record('group.match_time_up', { rounds: s.rounds }); }} data-testid="group-match-draw">Match time is up, rounds level: draw</button>}
+        </div>
+      )}
+      <p className="src">A round ends when a team is grounded or outnumbered 3 to 1, or at 5:00 by who has more standing (Buhurt Regulations 4). Rounds to win is the competition's setting.</p>
     </div>
   );
 }

@@ -37,6 +37,8 @@ function writeQueued(user: string, match: string, v: QueuedConfirm) {
  * won it) through the scoring outbox so the next round can open; if the counter evidence is not confirmed the marshal records a reason first.
  * The phones' numbers are evidence beside the board: nothing here reads them into the result.
  */
+const GROUP_ROUND_SECONDS = 300;
+
 export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board, secretary = false, names = { a: 'Red', b: 'Blue' }, onRounds, onStanding }: { matchId: string; eventId: string; fieldName: string; userKey: string; board: GroupState; secretary?: boolean; names?: { a: string; b: string }; onRounds: (rounds: readonly LystRound[]) => void; onStanding: (side: 'a' | 'b', count: number) => void }) {
   const lyst = useLystState(matchId, eventId);
   const st = lyst.state;
@@ -123,7 +125,8 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
     setNote(null);
     const roundNo = action === 'start' ? (cur && cur.status !== 'confirmed' ? cur.round_no : (cur?.round_no ?? 0) + 1) : (cur?.round_no ?? 1);
     const mode = action === 'start' ? 'fight' : 'break';
-    clock.sendTimer('start', { mode, durationMs: presetOf(presets, mode).seconds * 1000, round: roundNo });
+    // a team-fight round is 5 minutes (Buhurt Regulations 4.2/4.3), whatever the event's duel round length
+    clock.sendTimer('start', { mode, durationMs: (mode === 'fight' ? GROUP_ROUND_SECONDS : presetOf(presets, mode).seconds) * 1000, round: roundNo });
   };
 
   if (!st) return null;

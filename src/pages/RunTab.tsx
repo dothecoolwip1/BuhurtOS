@@ -59,7 +59,8 @@ function DrawBuilder({ comp, entries, existing, onDone, onClose }: {
   const [format, setFormat] = useState<DrawFormat>(active.length >= 7 ? 'pools' : 'round_robin');
   const [mode, setMode] = useState<'random' | 'manual'>('random');
   const [seed, setSeed] = useState(() => randomSeed());
-  const [thirdPlace, setThirdPlace] = useState(false);
+  // Tournament Structure §1.4-§1.6: every bracket option fights a match for 3rd and 4th place
+  const [thirdPlace, setThirdPlace] = useState(active.length >= 4);
   const [poolCount, setPoolCount] = useState(Math.min(advisedPools, maxPoolCount(active.length)));
   const [order, setOrder] = useState<string[]>(() => active.map(e => e.id));
   const [confirming, setConfirming] = useState(false);
@@ -272,7 +273,7 @@ function PoolBracket({ comp, matches, entries, onDone }: { comp: LiveCompetition
           <label style={{ display: 'flex', gap: 10, alignItems: 'center', minHeight: 44 }}>
             <input type="checkbox" checked={thirdPlace} onChange={e => setThirdPlace(e.target.checked)} /> Add a third-place match
           </label>
-          <p className="src">Pool order is by wins, then score difference, then wins against the entries it is level with, then points scored. Entries still level after that must be put in order by an organizer.</p>
+          <p className="src">Pool order is by wins; two entries level on wins go by their own fight; then round difference (team fights, sword and buckler) or the ratio of hits earned to hits received (other duels). Entries still level after that must be put in order by an organizer (Tournament Structure §3).</p>
           {ties.map(g => <TieDecision key={`${g.part}-${g.rank}`} comp={comp} group={g} nameOf={nameOf} onDecided={() => setVersion(v => v + 1)} />)}
           {ties.length === 0 && <ol style={{ margin: 0, paddingLeft: 20 }}>{(built?.qualifiers ?? []).map(id => <li key={id}>{nameOf(id)}</li>)}</ol>}
           {built && <PlanView groups={describePlan(planned, nameOf)} />}
