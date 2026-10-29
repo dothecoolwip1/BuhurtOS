@@ -1,0 +1,47 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 5
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: Nothing is being scored on this device, so it is safe to update. The page will reload.
+    - button "Update now"
+  - status:
+    - generic: All score actions confirmed by the server
+  - paragraph: TEST Outrance V26.4 Rehearsal 2026-10-28
+  - heading "Lyst 5" [level=1]
+  - paragraph: Fights on this Lyst, in running order. Pick one to start scoring.
+  - button "Score TEST Outrance Man C against TEST Outrance Man A" [disabled] [active]:
+    - generic: Active
+    - generic: TEST Pack29e setup sync · TEST c2b1624 setup and final regression
+    - generic: TEST Outrance Man C vs TEST Outrance Man A
+    - generic: Tap to continue scoring
+  - button "Score TEST Outrance Man A against TEST Outrance Man C" [disabled]:
+    - generic: On deck
+    - generic: TEST Pack29e setup sync · TEST c2b1624 next-fight layout fixture
+    - generic: TEST Outrance Man A vs TEST Outrance Man C
+    - generic: Tap to start scoring
+  - 'group "Running order: TEST Outrance Man A against TEST Outrance Man C"':
+    - button "Move TEST Outrance Man A against TEST Outrance Man C earlier" [disabled]: Move earlier
+    - button "Move TEST Outrance Man A against TEST Outrance Man C later" [disabled]: Move later
+    - button "Make TEST Outrance Man A against TEST Outrance Man C next" [disabled]: Make next
+  - region "Enter official result from paper":
+    - heading "Enter official result from paper" [level=3]
+    - button "Enter a result from the score sheet"
+  - navigation "Other Lysts":
+    - generic: Other Lysts
+    - link "Lyst 1 (1)":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/field/Field%201
+    - link "Lyst 2":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/field/Field%202
+    - link "Lyst 3 (1)":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/field/Field%203
+    - link "Lyst 4 (1)":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/field/Field%204
+  - link "← Back to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+  - paragraph: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC

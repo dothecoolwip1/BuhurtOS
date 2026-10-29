@@ -1,0 +1,162 @@
+[
+  {
+    "name": "01-setup-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "02-setup-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "02-setup-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "03-synced-running-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "04-round-popup-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "05-round-popup-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "06-paper-returned-popup",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "07-round-confirmed",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "08-official-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "09-observer-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "10-observer-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "08-official-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "11-official-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "12-profight-filters-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "13-test-badge-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "14-test-badge-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    "logs": []
+  }
+]

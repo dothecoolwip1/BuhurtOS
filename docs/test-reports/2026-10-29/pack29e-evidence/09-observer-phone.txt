@@ -1,0 +1,24 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 5
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: Nothing is being scored on this device, so it is safe to update. The page will reload.
+    - button "Update now"
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "This fight is final":
+    - heading "This fight is final" [level=2]
+    - paragraph:
+      - generic: TEST Outrance Man C vs TEST Outrance Man A
+      - text: ": TEST Outrance Man C win, 20–18. It was finished on another device. The result stands; nothing on this screen can change it. If it is wrong, an organizer corrects it from Live ops."
+    - button "Next fight on Lyst 5 TEST Outrance Man A vs TEST Outrance Man C":
+      - generic: Next fight on Lyst 5
+      - generic: TEST Outrance Man A vs TEST Outrance Man C
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC

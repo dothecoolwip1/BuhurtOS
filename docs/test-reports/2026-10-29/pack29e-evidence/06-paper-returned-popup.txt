@@ -1,0 +1,50 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 5
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man C vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 5 · TEST Pack29e setup sync · TEST c2b1624 setup and final regression · Division 2 · tournament
+  - status:
+    - generic: Scoring
+    - generic: Profight · Outrance Rules V.26.4 · not official until you finish the fight
+  - region "Total Fight Score":
+    - generic: Red
+    - generic: TEST Outrance Man C
+    - generic: "0"
+    - generic: No round confirmed
+    - generic: Total Fight Score
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - generic: "0"
+  - region "Lyst clock":
+    - generic: Break after round 1
+    - status: Break running
+    - status "Time left 0:26": 0:26
+    - button "Pause"
+    - button "Clock options": Clock options ▾
+  - navigation "Lyst tools":
+    - button "Knight marshal's call"
+    - button "Appeals"
+    - button "Record"
+    - button "Rules"
+  - button "Back to the queue"
+  - button "Use the classic scoreboard (one sheet, paper backup)"
+  - paragraph: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC
+- dialog "Round 1 ended · confirm the score" [active]:
+  - heading "Round 1 ended · confirm the score" [level=2]
+  - region "Round 1 sheets":
+    - 'heading "Round 1: line marshals'' sheets · 0" [level=2]'
+    - status: No line-marshal phones on this fight. Type in each marshal's paper sheet, or add phones with the Counter QR. Any 1 to 5 marshals.
+    - list
+    - button "Saving…" [disabled]
+    - button "Type in a paper sheet" [disabled]

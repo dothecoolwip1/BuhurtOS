@@ -1,0 +1,89 @@
+- banner:
+  - link "BuhurtOS home":
+    - /url: /
+    - img "BuhurtOS"
+  - navigation "Main":
+    - link "Home":
+      - /url: /
+    - link "Events":
+      - /url: /events
+    - link "Calendar":
+      - /url: /calendar
+    - link "Teams":
+      - /url: /teams
+    - link "Fighters":
+      - /url: /fighters
+    - link "Rankings":
+      - /url: /rankings
+    - link "Formats":
+      - /url: /formats
+    - link "Rules":
+      - /url: /rules
+    - link "My events":
+      - /url: /my-events
+    - link "Platform":
+      - /url: /platform
+  - button "Report a bug":
+  - button "Notifications":
+  - link "Account":
+    - /url: /account
+  - button "Switch light or dark":
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: Nothing is being scored on this device, so it is safe to update. The page will reload.
+    - button "Update now"
+  - generic: Draft
+  - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+  - link "Event Control" [active]:
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control
+  - heading "TEST Outrance V26.4 Rehearsal 2026-10-28" [level=1]
+  - paragraph:
+    - generic: Oct 28 - Nov 1, 2026
+    - generic: Fictional rehearsal hall
+  - navigation "Event":
+    - link "Overview":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/overview
+    - link "Live":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/live
+    - link "Results":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/results
+  - status "Draft event":
+    - paragraph:
+      - generic: Draft
+      - generic: "Draft: only you and your event staff can see this."
+    - link "Finish setting up and publish":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=setup
+  - note:
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: A fictional test event. Its teams, fighters and results are made up and count nowhere.
+  - region "Competitions":
+    - heading "Competitions" [level=2]
+    - heading "Duels" [level=3]
+    - list:
+      - text: Men Longsword
+      - generic: Men
+      - text: "Buhurt International: Duels rules V.26.4"
+    - heading "Profights" [level=3]
+    - list:
+      - text: TEST Pack29e setup sync
+      - generic: Men
+      - text: Ruleset not set yet
+      - text: TEST Pack29d setup sync
+      - generic: Men
+      - text: Ruleset not set yet
+      - text: Men Profight
+      - generic: Men
+      - text: "Buhurt International: Outrance Rules V.26.4"
+      - text: Women Profight
+      - generic: Women
+      - text: "Buhurt International: Outrance Rules V.26.4"
+  - button "Share this event"
+  - status
+  - button "Add to calendar"
+  - paragraph: Tournament. Rulesets are named as the organizer announced them.
+- contentinfo:
+  - generic: BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.
+  - link "Privacy":
+    - /url: /privacy
+  - generic: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC

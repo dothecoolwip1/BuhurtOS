@@ -1,0 +1,37 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 5
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "Set up the Profight":
+    - heading "TEST Outrance Man C vs TEST Outrance Man A" [level=1]
+    - paragraph: Lyst 5 · TEST Pack29e setup sync · TEST c2b1624 setup and final regression
+    - heading "Set this Profight's division and format" [level=2]
+    - paragraph: "The rounds, their length and the break come from the Outrance rules (§4): Division 1 rounds are 2:00, Division 2 rounds 1:30. Tournament fights are 2 rounds (a 3rd if level) with a 45 s break; matched fights are 3 rounds with 60 s breaks."
+    - group "Division":
+      - button "Division 1 · 2:00 rounds"
+      - button "Division 2 · 1:30 rounds"
+    - group "Format":
+      - button "Tournament · 2 rounds (+3rd if level)"
+      - button "Matched fight · 3 rounds"
+    - text: Weight class (§1.2)
+    - combobox "Weight class (§1.2)":
+      - option "Open weight (by agreement, §1.2.3)" [selected]
+      - option "Men · Lightweight · up to 75 kg"
+      - option "Men · Middleweight · up to 85 kg"
+      - option "Men · Light heavyweight · up to 95 kg"
+      - option "Men · Heavyweight · up to 105 kg"
+      - option "Men · Super heavyweight · up to 115 kg"
+      - option "Men · Ultra heavyweight · open top"
+    - button "Save" [disabled]
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC
