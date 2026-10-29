@@ -1,0 +1,152 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test events production 77d93a0</title><style>body{font:16px/1.55 system-ui;max-width:1100px;margin:32px auto;padding:0 20px;color:#172130;background:#f3f5f8}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:24px;border-radius:12px}figure{margin:28px 0;padding:16px;background:white;border-radius:12px}img{max-width:100%;height:auto;border:1px solid #ccd3db}h1{font-size:30px}a{color:#164c91}</style><h1>Test events · production 77d93a0</h1><p>Functional checks passed. Two wording findings; suggested code and reasoning below. Synthetic event and normal-path comparison draft preserved.</p><pre># Test events production rehearsal — 77d93a0
+
+Status: Functional checks PASS. Two confirmed UX wording findings (P2 and P3); no access leak reproduced.
+
+Production: https://buhurt-os.vercel.app. Edge. 2026-10-29.
+
+## Requested checks
+
+| Check | Result | Evidence |
+|---|---|---|
+| 1. Test choice, review, creator notice | PASS behavior; deletion-date wording finding F2 | 25, 35–37 |
+| 2. Publish, signed-out/non-staff privacy, scorekeeper fight | PASS access/scoring; publication/statistics wording finding F1 | 05, 09–22, 26–34, 38–43 |
+| 3. Unticked normal event | PASS; empty draft, no test note or expiry | 07–08 |
+| 4. 390x844 checkbox target and overflow | PASS; label142.625px high, tapping text toggles input | 35 |
+
+## Fixtures preserved
+- Test event `51d46079-dd59-4ded-9339-8bebaf04aca4`, slug `test-event-privacy-rehearsal-2026-10-29`, published. Created 2026-10-29 20:16:34.065033 UTC. test_event=true; test_delete_after=2026-11-08 20:16:34.065033 UTC (exactly 10 days).
+- Normal-path comparison `6e962871-2f37-49ca-8885-f8c84d41f5d1`, slug `qa-normal-creation-control-2026-10-29-no-real-event`, draft. test_event=false; test_delete_after=null. No fighters or results added to this normal-path control. It will NOT be automatically removed; preserved as requested.
+- Test event has men's/women's Sword &amp; Shield competitions; existing synthetic fighters TEST Outrance Man A and B entered in men's competition and one match drawn. No real sporting records changed.
+- Creator account is organizer and platform super admin; creator pass alone does not establish ordinary staff access.
+
+## Pass/fail results
+- PASS: production footer identifies 77d93a0.
+- PASS: test checkbox starts unticked at top; clicking label text checks it. DOM at 390x844: label 342.67x142.625 px; x16; document scrollWidth375, viewport390; no horizontal overflow. Label wraps input and text.
+- PASS: test review explicitly describes test privacy, deletion after 10 days and fighter-profile preservation.
+- PASS: created/published event opens for creator and shows requested note, date November 8, 2026.
+- PASS: normal comparison review and event page have no test note; remains private draft.
+- PASS: published test direct URL gives generic 404 signed out (desktop and phone).
+- PASS: signed-out event list and All-events name search omit fixture; search says No events match.
+- PASS: after finalizing the duel, signed-out and authenticated non-staff all-time rankings and fighter A history omit the new test event/result. The non-staff account can see an older rehearsal where it already has a role; it cannot see this new event.
+- PASS: second account without event role gets Event not available, no event name/content. Events list and All-events name search omit it. Tested before role grant, and direct URL/history/rankings repeated after completed fight with the new role temporarily removed.
+- PASS: granting Secretary / Scorekeeper lets the account open the test event and secretary desk, start/end two rounds, confirm 3–1 and 2–1, and Save result. Official server-confirmed result is 5–2 to TEST Outrance Man A; screenshots at 390x844 and 1440x900. Match afcbdc44-75ed-4bfc-b3b1-e502bec306e5.
+- PASS: Google sign-in returned to buhurt-os.vercel.app each time.
+- PASS: phone result screen scrollWidth390 at viewport390x844.
+
+## F1 — Misleading publication and statistics copy (P2)
+Observed on actual test event: publish confirmation says Publishing makes the event, its competitions and registration public. Anyone can then register. Lifecycle says Current / Shown with current and upcoming events and Counts / Its official results count in rankings and statistics.
+Signed-out URL and search correctly deny access. This is verified contradictory UI copy, not demonstrated public disclosure.
+Source at 77d93a0: src/pages/SetupTab.tsx lines78–104; src/components/Lifecycle.tsx lines40–55. LiveEvent already exposes testDeleteAfter (src/data/api.ts line24).
+Suggested implementation (not applied):
+```tsx
+const isTest = Boolean(event.testDeleteAfter);
+// SetupTab publication heading and confirmation:
+&lt;h3&gt;{published
+  ? isTest ? 'Test event is published for its staff' : 'This event is public'
+  : 'This event is a draft'}&lt;/h3&gt;
+&lt;p&gt;{isTest
+  ? 'Publishing lets this event’s staff rehearse registration and scoring. It stays private, never counts in official records, and keeps its deletion deadline.'
+  : 'Publishing makes the event, its competitions and registration public. Anyone can then register. You can take it back to draft, but people who registered keep their registration.'}&lt;/p&gt;
+// EventLifecycle: put this before normal archived/statistics branches.
+{isTest ? &lt;&gt;
+  &lt;li&gt;&lt;Chip&gt;Staff only&lt;/Chip&gt; Hidden from public event listings.&lt;/li&gt;
+  &lt;li&gt;&lt;Chip tone="live"&gt;Not counted&lt;/Chip&gt; Test results never count in official statistics.&lt;/li&gt;
+&lt;/&gt; : &lt;&gt;{/* existing normal-event visibility/statistics rows */}&lt;/&gt;}
+// Do not show restore/count-again controls on an immutable test event.
+```
+Reason: rendering must reflect test-event semantics rather than inferring visibility from published status or eligibility from statsExcludedAt alone. Keep backend guards; a wording fix must not relax permissions.
+Regression: test and normal event fixtures, before/after publish and archive; test text never promises public access or rankings eligibility; normal text/actions unchanged.
+
+## F2 — Deletion date overpromises exact calendar day (P3)
+EventHeader.tsx line34 renders deleted on from testDeleteAfter. Here that is November8 20:16 UTC, after the daily10:23 UTC job. First normal eligible cleanup is November9 10:23 UTC, assuming successful execution.
+Suggested code (not applied):
+```tsx
+&lt;p role="note" data-testid="test-event-note"&gt;
+  &lt;b&gt;Test event.&lt;/b&gt; Only you and this event’s staff can see it.
+  It and everything in it become eligible for deletion after{' '}
+  {new Date(event.testDeleteAfter!).toLocaleString()}.
+  Daily cleanup runs at 10:23 UTC; fighter profiles stay.
+&lt;/p&gt;
+```
+Reason: distinguish retention threshold from scheduled execution; no need to change database policy.
+Regression: expiry before/after10:23 UTC, local date boundaries and DST; no claim of guaranteed deletion on expiry date.
+
+## Evidence caveats
+Initial default phone captures01–03 and23–24 were scaled/cropped by browser capture. They are excluded from the published evidence selection. Explicit390x844 capture rectangles resolved this;35 and36 show the checkbox/review at full size,25 shows the event notice,26–27 and30 show scoring. Review35–37 is a fresh unsaved replay marked Not Submitted; it did not create a third event. Browser CDP intermittently timed out; accessibility fallback confirmed action state before retries. No automatic deletion was invoked and no application source/settings were changed beyond requested fixture setup.
+
+
+## Limits and supplementary observations
+- No ten-day wait or deletion job was executed. Retention is verified from stored timestamps and the previously verified active10:23 UTC schedule. Both fixtures and all scoring records remain.
+- The normal comparison is deliberately an empty unpublished draft; it has no automatic deletion date. No real record was changed.
+- A temporary pending/no-signal banner appeared during round confirmation and recovered automatically before the attempted Send now click; no reload or duplicate submission was needed. Browser CDP also had intermittent timeouts. This run does not establish the cause of those transient delays.
+- The desk subtitle says Round1 while clock/score popup say Round2. Source LystScoring.tsx line40 uses the tournament draw roundLabel, so these are different concepts, not proof of incorrect round storage. Suggested clarity improvement: label that subtitle Draw round1.
+- Older Profight history visible to the account on its older rehearsal still includes Won19to19 / Lost19to19. That is outside this new test-event fixture; do not treat it as a new privacy leak or as validated fixed by this run.
+
+## Related generic access copy improvement
+For non-staff viewers src/lib/draftView.ts:15 says not public yet even for permanently private test events. Avoid revealing that the event exists or claiming future publication:
+```ts
+return `This event is unavailable or your account does not have access. If you are event staff, check that you are using the account the organizer added${masked ? ` (signed in as ${masked})` : ""}.`;
+```
+Test missing event, private draft, private test event and wrong account; keep denial behavior unchanged.
+
+
+## End state
+- Creator session restored in Edge; temporary viewport override reset.
+- Second account’s Secretary / Scorekeeper role restored on this test event and visibly verified (43). No role on another event was changed.
+- Browser console query at end returned no captured warning/error entries; intermittent browser-control timeouts are tooling observations, not an assertion that no server/network errors occurred.
+- All changes were through the app UI to these two QA fixtures, their synthetic entrants/match, prerequisite synthetic waiver text and the requested test-event staff role. SQL was read-only. No code, auth settings, real sporting records or deletion jobs changed.
+
+## Optional follow-up suggestions (not implemented)
+For the draw-round/fight-round ambiguity, retain the bracket information but label it explicitly rather than treating it as a fight round:
+```tsx
+const roundText = (m: ScoringScreenProps["opened"]["match"]) =&gt;
+  `Draw: ${m.roundLabel || m.stage}${m.pool ? ` · Pool ${m.pool}` : ""}`;
+```
+Verify a draw Round1 fight during bout rounds1,2,3, and elimination stage labels.
+
+For the older Profight history rounding observation, investigate the career-history read model and use the exact confirmed total already used by Draws and the field queue; do not infer a draw from rounded display numbers. Illustrative rendering contract (not a verified drop-in patch):
+```ts
+function formatFightScore(exactTotal: number | null, legacyTotal: number) {
+  return exactTotal == null ? String(legacyTotal) : exactTotal.toFixed(2);
+}
+// Pass the confirmed exact Profight total from the authorized history query.
+// Winner/outcome must remain the stored official result, not a comparison
+// of these formatted strings.
+```
+Regression fixture: original C–A18.667–19.333 history should say18.67–19.33 and retain its official winner. Duel scores remain integer. This observation does not change the pass on this run’s new test-event privacy.
+
+
+## Screenshots
+- [05-publish-warning-desktop.png](test-events-77d93a0-evidence/05-publish-warning-desktop.png)
+- [06-published-creator-desktop.png](test-events-77d93a0-evidence/06-published-creator-desktop.png)
+- [07-normal-review-desktop.png](test-events-77d93a0-evidence/07-normal-review-desktop.png)
+- [08-normal-created-desktop.png](test-events-77d93a0-evidence/08-normal-created-desktop.png)
+- [09-signedout-url-desktop.png](test-events-77d93a0-evidence/09-signedout-url-desktop.png)
+- [12-signedout-search-phone.png](test-events-77d93a0-evidence/12-signedout-search-phone.png)
+- [13-signedout-search-desktop.png](test-events-77d93a0-evidence/13-signedout-search-desktop.png)
+- [16-nonstaff-url-desktop.png](test-events-77d93a0-evidence/16-nonstaff-url-desktop.png)
+- [19-nonstaff-search-phone.png](test-events-77d93a0-evidence/19-nonstaff-search-phone.png)
+- [20-nonstaff-search-desktop.png](test-events-77d93a0-evidence/20-nonstaff-search-desktop.png)
+- [22-scorekeeper-granted-desktop.png](test-events-77d93a0-evidence/22-scorekeeper-granted-desktop.png)
+- [25-scorekeeper-event-phone.png](test-events-77d93a0-evidence/25-scorekeeper-event-phone.png)
+- [26-scorekeeper-round-phone.png](test-events-77d93a0-evidence/26-scorekeeper-round-phone.png)
+- [27-scorekeeper-confirm-phone.png](test-events-77d93a0-evidence/27-scorekeeper-confirm-phone.png)
+- [28-scorekeeper-round-desktop.png](test-events-77d93a0-evidence/28-scorekeeper-round-desktop.png)
+- [29-scorekeeper-result-desktop.png](test-events-77d93a0-evidence/29-scorekeeper-result-desktop.png)
+- [30-scorekeeper-result-phone.png](test-events-77d93a0-evidence/30-scorekeeper-result-phone.png)
+- [31-final-public-history-phone.png](test-events-77d93a0-evidence/31-final-public-history-phone.png)
+- [32-final-public-history-desktop.png](test-events-77d93a0-evidence/32-final-public-history-desktop.png)
+- [33-final-public-rankings-desktop.png](test-events-77d93a0-evidence/33-final-public-rankings-desktop.png)
+- [34-final-public-rankings-phone.png](test-events-77d93a0-evidence/34-final-public-rankings-phone.png)
+- [35-checkbox-phone-full.png](test-events-77d93a0-evidence/35-checkbox-phone-full.png)
+- [36-review-phone-full.png](test-events-77d93a0-evidence/36-review-phone-full.png)
+- [37-review-desktop-full.png](test-events-77d93a0-evidence/37-review-desktop-full.png)
+- [38-final-nonstaff-history-desktop.png](test-events-77d93a0-evidence/38-final-nonstaff-history-desktop.png)
+- [39-final-nonstaff-history-phone.png](test-events-77d93a0-evidence/39-final-nonstaff-history-phone.png)
+- [40-final-nonstaff-rankings-phone.png](test-events-77d93a0-evidence/40-final-nonstaff-rankings-phone.png)
+- [41-final-nonstaff-rankings-desktop.png](test-events-77d93a0-evidence/41-final-nonstaff-rankings-desktop.png)
+- [42-final-nonstaff-denied-desktop.png](test-events-77d93a0-evidence/42-final-nonstaff-denied-desktop.png)
+- [43-scorekeeper-restored-desktop.png](test-events-77d93a0-evidence/43-scorekeeper-restored-desktop.png)
+
+[Non-staff full history DOM snapshot](test-events-77d93a0-evidence/nonstaff-history.txt)
+</pre><h2>Screenshot evidence</h2><figure><figcaption>05-publish-warning-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/05-publish-warning-desktop.png" alt="05-publish-warning-desktop.png"></figure><figure><figcaption>06-published-creator-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/06-published-creator-desktop.png" alt="06-published-creator-desktop.png"></figure><figure><figcaption>07-normal-review-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/07-normal-review-desktop.png" alt="07-normal-review-desktop.png"></figure><figure><figcaption>08-normal-created-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/08-normal-created-desktop.png" alt="08-normal-created-desktop.png"></figure><figure><figcaption>09-signedout-url-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/09-signedout-url-desktop.png" alt="09-signedout-url-desktop.png"></figure><figure><figcaption>12-signedout-search-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/12-signedout-search-phone.png" alt="12-signedout-search-phone.png"></figure><figure><figcaption>13-signedout-search-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/13-signedout-search-desktop.png" alt="13-signedout-search-desktop.png"></figure><figure><figcaption>16-nonstaff-url-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/16-nonstaff-url-desktop.png" alt="16-nonstaff-url-desktop.png"></figure><figure><figcaption>19-nonstaff-search-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/19-nonstaff-search-phone.png" alt="19-nonstaff-search-phone.png"></figure><figure><figcaption>20-nonstaff-search-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/20-nonstaff-search-desktop.png" alt="20-nonstaff-search-desktop.png"></figure><figure><figcaption>22-scorekeeper-granted-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/22-scorekeeper-granted-desktop.png" alt="22-scorekeeper-granted-desktop.png"></figure><figure><figcaption>25-scorekeeper-event-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/25-scorekeeper-event-phone.png" alt="25-scorekeeper-event-phone.png"></figure><figure><figcaption>26-scorekeeper-round-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/26-scorekeeper-round-phone.png" alt="26-scorekeeper-round-phone.png"></figure><figure><figcaption>27-scorekeeper-confirm-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/27-scorekeeper-confirm-phone.png" alt="27-scorekeeper-confirm-phone.png"></figure><figure><figcaption>28-scorekeeper-round-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/28-scorekeeper-round-desktop.png" alt="28-scorekeeper-round-desktop.png"></figure><figure><figcaption>29-scorekeeper-result-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/29-scorekeeper-result-desktop.png" alt="29-scorekeeper-result-desktop.png"></figure><figure><figcaption>30-scorekeeper-result-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/30-scorekeeper-result-phone.png" alt="30-scorekeeper-result-phone.png"></figure><figure><figcaption>31-final-public-history-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/31-final-public-history-phone.png" alt="31-final-public-history-phone.png"></figure><figure><figcaption>32-final-public-history-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/32-final-public-history-desktop.png" alt="32-final-public-history-desktop.png"></figure><figure><figcaption>33-final-public-rankings-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/33-final-public-rankings-desktop.png" alt="33-final-public-rankings-desktop.png"></figure><figure><figcaption>34-final-public-rankings-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/34-final-public-rankings-phone.png" alt="34-final-public-rankings-phone.png"></figure><figure><figcaption>35-checkbox-phone-full.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/35-checkbox-phone-full.png" alt="35-checkbox-phone-full.png"></figure><figure><figcaption>36-review-phone-full.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/36-review-phone-full.png" alt="36-review-phone-full.png"></figure><figure><figcaption>37-review-desktop-full.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/37-review-desktop-full.png" alt="37-review-desktop-full.png"></figure><figure><figcaption>38-final-nonstaff-history-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/38-final-nonstaff-history-desktop.png" alt="38-final-nonstaff-history-desktop.png"></figure><figure><figcaption>39-final-nonstaff-history-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/39-final-nonstaff-history-phone.png" alt="39-final-nonstaff-history-phone.png"></figure><figure><figcaption>40-final-nonstaff-rankings-phone.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/40-final-nonstaff-rankings-phone.png" alt="40-final-nonstaff-rankings-phone.png"></figure><figure><figcaption>41-final-nonstaff-rankings-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/41-final-nonstaff-rankings-desktop.png" alt="41-final-nonstaff-rankings-desktop.png"></figure><figure><figcaption>42-final-nonstaff-denied-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/42-final-nonstaff-denied-desktop.png" alt="42-final-nonstaff-denied-desktop.png"></figure><figure><figcaption>43-scorekeeper-restored-desktop.png</figcaption><img loading="lazy" src="test-events-77d93a0-evidence/43-scorekeeper-restored-desktop.png" alt="43-scorekeeper-restored-desktop.png"></figure></html>

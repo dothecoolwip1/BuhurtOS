@@ -1,0 +1,199 @@
+- banner:
+  - link "BuhurtOS home":
+    - /url: /
+  - button "Report a bug":
+  - button "Notifications, 2 unread":
+    - generic: "2"
+  - link "Account":
+    - /url: /account
+- main:
+  - link "← All fighters":
+    - /url: /fighters
+  - generic: T
+  - paragraph: Fighter
+  - heading "TEST Outrance Man A" [level=1]
+  - paragraph:
+    - generic: Active
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+  - generic: No team
+  - generic: Profight · Longsword
+  - generic: Male
+  - paragraph:
+    - text: 11 fights · 3 W · 7 L · 1 D · 0 points
+    - generic: Test data
+  - heading "Career summary" [level=2]
+  - generic: "1"
+  - generic: Events competed
+  - generic: "0"
+  - generic: Competitions
+  - generic: "11"
+  - generic: Fights
+  - text: 3–7–1
+  - generic: (3 W · 7 L · 1 D)
+  - generic: Record
+  - generic: 27.3%
+  - generic: Win rate
+  - generic: "0"
+  - generic: Gold
+  - generic: "0"
+  - generic: Silver
+  - generic: "0"
+  - generic: Bronze
+  - generic: "0"
+  - generic: Podiums
+  - generic: "0"
+  - generic: Ranking points
+  - paragraph: "Fights and the record are from official fight results only; a team fight counts for every fighter on its roster. Medals and ranking points are the official placings. This is a fictional fighter: everything here is test data and counts nowhere official."
+  - heading "Highlights" [level=2]
+  - list:
+    - generic: Most fought discipline
+    - generic: Profight · 7 fights
+    - generic: Most recent event
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+  - heading "Disciplines" [level=2]
+  - list "Record by discipline":
+    - text: Profight
+    - generic: Men
+    - generic: 7 fights · 3 W · 3 L · 1 D
+    - generic: "0"
+    - generic: points
+    - text: Longsword
+    - generic: Men
+    - generic: 4 fights · 0 W · 4 L
+    - generic: "0"
+    - generic: points
+  - paragraph: Individual competitions. Points are the ranking points earned in that discipline.
+  - heading "Recent fights" [level=2]
+  - list "Form, newest first":
+    - text: L
+    - generic: Loss
+    - text: L
+    - generic: Loss
+    - text: L
+    - generic: Loss
+    - text: L
+    - generic: Loss
+    - generic: W
+    - generic: Win
+    - generic: W
+    - generic: Win
+    - text: L
+    - generic: Loss
+    - generic: W
+    - generic: Win
+    - generic: D
+    - generic: Draw
+    - text: L
+    - generic: Loss
+  - list "Recent fights":
+    - generic: L
+    - generic: Loss
+    - text: vs
+    - button "Head to head with TEST Outrance Man B": TEST Outrance Man B
+    - text: Lost 2 to 4
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - text: · Longsword · Oct 28 - Nov 1, 2026
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: L
+    - generic: Loss
+    - text: vs
+    - button "Head to head with TEST Outrance Man C": TEST Outrance Man C
+    - text: Lost 19 to 19
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - text: · Profight · Oct 28 - Nov 1, 2026
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: L
+    - generic: Loss
+    - text: vs
+    - button "Head to head with TEST Outrance Man C": TEST Outrance Man C
+    - text: Lost 18 to 20
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - text: · Profight · Oct 28 - Nov 1, 2026
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: L
+    - generic: Loss
+    - text: vs
+    - button "Head to head with TEST Outrance Man B": TEST Outrance Man B
+    - text: Lost 2 to 3
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - text: · Longsword · Oct 28 - Nov 1, 2026
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: W
+    - generic: Win
+    - text: vs
+    - button "Head to head with TEST Outrance Man C": TEST Outrance Man C
+    - text: Won 19 to 19
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - text: · Profight · Oct 28 - Nov 1, 2026
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+  - button "Show last 11"
+  - paragraph: Newest first. Tap an opponent for the head to head.
+  - heading "Head to head" [level=2]
+  - list "Opponents":
+    - 'button "Head to head with TEST Outrance Man B: 5 meetings, TEST Outrance Man A 0 · TEST Outrance Man B 4 · Draws 1"':
+      - generic: TEST Outrance Man B
+      - generic: 5 meetings · 0 W · 4 L · 1 D
+    - 'button "Head to head with TEST Outrance Man C: 5 meetings, TEST Outrance Man A 3 · TEST Outrance Man C 2"':
+      - generic: TEST Outrance Man C
+      - generic: 5 meetings · 3 W · 2 L
+    - 'button "Head to head with TEST Outrance Man D: 1 meeting, TEST Outrance Man A 0 · TEST Outrance Man D 1"':
+      - generic: TEST Outrance Man D
+      - generic: 1 meeting · 0 W · 1 L
+  - paragraph: "Direct meetings only: the two fought each other in an individual competition. Team fights and placings are never counted as meetings."
+  - heading "Event history" [level=2]
+  - list:
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: Oct 28 - Nov 1, 2026
+    - generic: "No team recorded · 11 fights: 3 W · 7 L · 1 D"
+    - paragraph: No official placing recorded yet.
+  - paragraph: The team shown is the one represented at that event, from the record of the day; it never changes when a fighter changes team.
+  - heading "Upcoming" [level=2]
+  - list:
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: "Draft: only visible to organizers"
+    - generic: Oct 28 - Nov 1, 2026 · Men Longsword
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: "Draft: only visible to organizers"
+    - generic: Oct 28 - Nov 1, 2026 · Men Profight
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: "Draft: only visible to organizers"
+    - generic: Oct 28 - Nov 1, 2026 · TEST Pack29d setup sync
+    - link "TEST Outrance V26.4 Rehearsal 2026-10-28":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+    - generic "Fictional test data. Not an official record; excluded from rankings and statistics.": Test data
+    - generic: "Draft: only visible to organizers"
+    - generic: Oct 28 - Nov 1, 2026 · TEST Pack29e setup sync
+- contentinfo:
+  - generic: BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.
+  - link "Privacy":
+    - /url: /privacy
+  - generic: v0.1.0 · local · 77d93a0 · 2026-10-29 20:03 UTC
+- navigation "Main":
+  - link "Home":
+    - /url: /
+    - text: Home
+  - link "Events":
+    - /url: /events
+    - text: Events
+  - link "My events":
+    - /url: /my-events
+    - text: My events
+  - link "Teams":
+    - /url: /teams
+    - text: Teams
+  - button "More":
+    - text: More
