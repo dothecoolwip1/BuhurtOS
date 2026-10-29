@@ -154,6 +154,8 @@
 .ly-seat-main b{overflow-wrap:anywhere}
 .ly-seat-n{font:800 22px var(--f-display)}
 .btn-sm{min-height:40px;padding:0 12px;font-size:13px}
+/* the call log's void / cite buttons are used mid-fight on a phone: the 44 px target */
+.ly-log .btn-sm{min-height:44px}
 .ly-log-row{display:grid;gap:4px;padding:8px 10px;border-radius:10px;background:var(--raised);border:1px solid var(--line)}
 .ly-log-row.is-void{opacity:.65;text-decoration:line-through}
 .ly-log-row.is-void .src{text-decoration:none}
@@ -339,7 +341,8 @@
 .om-finish{display:grid;gap:10px}
 .om-hold{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
 .om-hold-clear{display:inline-flex;gap:6px;flex-wrap:wrap}
-.om-hold-clear input{min-height:40px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink)}
+.om-hold-clear .btn{min-height:44px}
+.om-hold-clear input{min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink)}
 .om-appeals{display:grid;gap:10px}
 .om-appeals .mactions,.om-format .mactions{grid-template-columns:repeat(2,minmax(0,1fr))}
 .om-appeals .btn,.om-format .btn{min-width:0;white-space:normal;overflow-wrap:anywhere}

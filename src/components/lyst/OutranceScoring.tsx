@@ -32,7 +32,7 @@ import type { Tally } from '../../lib/lyst/lineMarshal';
 import type { CriteriaCalls } from '../../lib/outrance';
 
 type Phase = 'scoring' | 'finishing' | 'official' | 'pending' | 'review';
-type Sheet = null | 'calls' | 'log' | 'rules' | 'phones' | 'appeals' | 'paper';
+type Sheet = null | 'calls' | 'log' | 'rules' | 'phones' | 'appeals' | 'paper' | 'confirm';
 const CALLED_BY_KEY = 'bos-lyst-called-by';
 const readCalledBy = () => { try { return localStorage.getItem(CALLED_BY_KEY) ?? ''; } catch { return ''; } };
 const clockText = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -108,6 +108,14 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
 
   const rounds = useMemo<LystRound[]>(() => st?.rounds ?? [], [st?.rounds]);
   const cur = currentRound(rounds);
+  // when a round ends, its sheets open in a pop-up (as the duel desk does), once per round revision; it closes when the round is confirmed
+  const confirmKey = cur && cur.status === 'confirming' ? `${match.id}:${cur.round_no}:${cur.rev}` : null;
+  const promptedRound = useRef(new Set<string>());
+  const afterPaper = (): Sheet => (confirmKey ? 'confirm' : null);
+  useEffect(() => {
+    if (!confirmKey && sheet === 'confirm') { setSheet(null); return; }
+    if (confirmKey && !sheet && phase === 'scoring' && !promptedRound.current.has(confirmKey)) { promptedRound.current.add(confirmKey); setSheet('confirm'); }
+  }, [confirmKey, sheet, phase]);
   const discipline = st?.discipline ?? [];
   const timer = timerFor(st?.timer, match.id);
   const running = timer?.status === 'running';
@@ -155,13 +163,13 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
     try {
       await outranceEnterSheet({ id: paperId.current, matchId: match.id, round: round.round_no, marshal: v.marshal, tally: v.tally, calls: v.calls, replaces: fixing?.sheet_id ?? null, reason: v.reason });
       trackEvent('outrance_paper_sheet', { round: round.round_no, fix: !!fixing });
-      setSheet(null); setFixing(null); await lyst.refresh(true);
+      setSheet(afterPaper()); setFixing(null); await lyst.refresh(true);
     } catch (e) { setPaperMsg(friendlyError(e, 'Could not save the paper sheet. Check your connection and try again.')); } finally { setBusy(false); }
   };
   const removePaper = async (why: string) => {
     if (!fixing) return;
     setBusy(true); setPaperMsg(null);
-    try { await outranceRemoveSheet(fixing.sheet_id, why); setSheet(null); setFixing(null); await lyst.refresh(true); }
+    try { await outranceRemoveSheet(fixing.sheet_id, why); setSheet(afterPaper()); setFixing(null); await lyst.refresh(true); }
     catch (e) { setPaperMsg(friendlyError(e, 'Could not remove the sheet. Check your connection and try again.')); } finally { setBusy(false); }
   };
   const recount = async (round: LystRound) => {
@@ -272,6 +280,12 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
     const a = activeDiscipline(discipline).filter(d => d.side === s);
     return { w: a.filter(d => d.kind === 'warning').length, y: a.filter(d => d.kind === 'card' && d.key === 'yellow').length, ar: a.filter(d => d.kind === 'armour').length, dq: a.some(d => d.kind === 'dq') };
   };
+  const sheetsBlock = (round: LystRound) => (
+    <SheetsBlock round={round} marshals={marshalSeats} sheets={roundSheets} missing={missing.map(m => m.name)} preview={preview} sides={sides} names={names}
+      rulesCount={rulesCount} deliveryReason={deliveryReason} reason={reason} onReason={setReason} busy={busy} canConfirm={canConfirm && zone === 'confirm'} canResolve={canResolve}
+      onConfirm={short => void confirm(round, short)} onRecount={() => void recount(round)} protocol={om?.protocol.find(p => p.round_no === round.round_no) ?? null}
+      onPaper={openPaper} />
+  );
   const clockNeedsDecision = !!clock.clockFailure || !!clock.clockOverride || clock.requiresClockCheck || clock.restoreRound !== null || !!clock.pendingTimer;
 
   return (
@@ -311,12 +325,7 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
           {zone === 'loading' && <p className="muted" role="status">Opening the Lyst…</p>}
           {zone === 'start' && timing && <div className="ly-zone ly-act"><button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline || clockNeedsDecision} onClick={() => startRound(1)}>Start round 1 · {clockText(timing.round_seconds)}</button></div>}
           {zone === 'fighting' && timing && <div className="ly-zone ly-act"><button type="button" className={`btn fq-big ly-go ${leftMs <= 0 ? 'btn-win is-urgent' : 'btn-ink'}`} disabled={timerBusy || lyst.offline} onClick={endRound}>{leftMs <= 0 ? 'Time.' : 'End round'} · start the {clockText(timing.break_seconds)} break</button></div>}
-          {(zone === 'confirm' || zone === 'fighting') && cur && (
-            <SheetsBlock round={cur} marshals={marshalSeats} sheets={roundSheets} missing={missing.map(m => m.name)} preview={preview} sides={sides} names={names}
-              rulesCount={rulesCount} deliveryReason={deliveryReason} reason={reason} onReason={setReason} busy={busy} canConfirm={canConfirm && zone === 'confirm'} canResolve={canResolve}
-              onConfirm={short => void confirm(cur, short)} onRecount={() => void recount(cur)} protocol={om?.protocol.find(p => p.round_no === cur.round_no) ?? null}
-              onPaper={openPaper} />
-          )}
+          {(zone === 'confirm' || zone === 'fighting') && cur && sheet !== 'confirm' && sheetsBlock(cur)}
           {zone === 'between' && totals && timing && (
             <div className="ly-zone ly-act ly-act-two">
               {totals.next === 'round' && <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline} onClick={() => startRound(nextNo)}>Start round {nextNo} of {timing.rounds} · {clockText(timing.round_seconds)}</button>}
@@ -354,8 +363,14 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
       {sheet === 'appeals' && <Dialog title="Appeals (Outrance §16)" onClose={() => setSheet(null)}><AppealsBlock om={om} names={names} matchId={match.id} canResolve={canResolve} onChanged={() => void lyst.refresh()} final={false} /></Dialog>}
       {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, why) => void voidIt(id, why)} onClose={() => setSheet(null)} citations={new Map()} onCite={() => undefined} />}
       {sheet === 'rules' && <RulesSheet onClose={() => setSheet(null)} />}
+      {sheet === 'confirm' && cur && zone === 'confirm' && (
+        <Dialog title={`Round ${cur.round_no} ended · confirm the score`} wide busy={busy} dismissOnBackdrop={false} onClose={() => setSheet(null)}>
+          {error && <p role="alert" className="ly-error">{error}</p>}
+          {sheetsBlock(cur)}
+        </Dialog>
+      )}
       {sheet === 'paper' && cur && <PaperSheetDialog round={cur.round_no} names={names} sides={sides} fixing={fixing} knownNames={paperNames.filter(n => !roundSheets.some(s => s.source === 'paper' && s.operator === n))}
-        busy={busy} message={paperMsg} onSave={v => void savePaper(cur, v)} onRemove={why => void removePaper(why)} onClose={() => { setSheet(null); setFixing(null); }} />}
+        busy={busy} message={paperMsg} onSave={v => void savePaper(cur, v)} onRemove={why => void removePaper(why)} onClose={() => { setSheet(afterPaper()); setFixing(null); }} />}
       {phase === 'scoring' && !sheet && error && <Dialog title="Scoring action needs attention" onClose={() => setError(null)}><p className="ly-error" role="alert">{error}</p><button type="button" className="btn btn-line" onClick={() => setError(null)}>Back to scoring</button></Dialog>}
     </div>
   );

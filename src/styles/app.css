@@ -1148,6 +1148,8 @@ button.acct-row{width:100%;background:none;border-width:0;font:inherit;text-alig
 /* ---- Pack 10: career profiles */
 .h3{font-size:24px}
 .careerfilter .seg button{min-height:40px}
+/* filters are tapped on a phone: the 44 px target (Rankings, events) */
+.evfilter .seg button{min-height:44px}
 .badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .careerline{margin-top:10px;font-size:16px;overflow-wrap:anywhere}
 .careerline b{font:900 20px/1 var(--f-display)}
