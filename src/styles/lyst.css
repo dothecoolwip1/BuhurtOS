@@ -341,9 +341,12 @@
 .om-hold-clear{display:inline-flex;gap:6px;flex-wrap:wrap}
 .om-hold-clear input{min-height:40px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink)}
 .om-appeals{display:grid;gap:10px}
+.om-appeals .mactions,.om-format .mactions{grid-template-columns:repeat(2,minmax(0,1fr))}
+.om-appeals .btn,.om-format .btn{min-width:0;white-space:normal;overflow-wrap:anywhere}
 .om-appeal{display:grid;gap:6px}
 .om-appeal select,.om-appeal input{min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink)}
 .om-format{display:grid;gap:10px}
+.om-format select{width:100%;min-width:0;max-width:100%}
 /* a line marshal's paper sheet, typed in by the secretary */
 .om-paper td{padding:4px}
 .om-paper-n{width:100%;min-width:56px;min-height:44px;font-size:20px;text-align:center}
