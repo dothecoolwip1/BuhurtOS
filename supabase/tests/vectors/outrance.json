@@ -44,6 +44,10 @@
     { "results": ["draw", "draw", "a"], "winner": "a", "type": "majority_decision" },
     { "results": ["draw", "draw", "draw"], "winner": "b", "type": "majority_decision" },
     { "results": ["b", "b", "b"], "winner": "b", "type": "unanimous_decision" },
-    { "results": ["a", "a", "b"], "winner": "b", "type": "split_decision" }
+    { "results": ["a", "a", "b"], "winner": "b", "type": "split_decision" },
+    { "note": "a level Total Fight Score is a draw, even when the sheets lean one way", "results": ["a", "a", "b"], "winner": "draw", "type": "split_draw" },
+    { "results": ["draw", "draw", "a"], "winner": "draw", "type": "majority_draw" },
+    { "results": ["draw", "draw", "draw"], "winner": "draw", "type": "unanimous_draw" },
+    { "results": ["a", "a", "a"], "winner": "draw", "type": "split_draw" }
   ]
 }

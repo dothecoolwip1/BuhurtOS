@@ -17,7 +17,7 @@ describe('Outrance V.26.4: the shared vectors (the database checks the same file
     expect(roundScoreUnits(v.sheets.map(([a, b]) => ({ a, b })))).toEqual({ a: v.units[0], b: v.units[1] });
   });
   it.each(vectors.winTypes)('win type of $results', v => {
-    expect(winType(v.results as (Side | 'draw')[], ((v as { winner?: Side }).winner) ?? null).type).toBe(v.type);
+    expect(winType(v.results as (Side | 'draw')[], ((v as { winner?: Side | 'draw' }).winner) ?? null).type).toBe(v.type);
   });
 });
 

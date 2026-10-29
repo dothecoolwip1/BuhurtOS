@@ -1202,6 +1202,7 @@ column public.outrance_holds.cleared_by uuid
 column public.outrance_holds.cleared_reason text
 column public.outrance_holds.competition_id uuid not null
 column public.outrance_holds.created_at timestamp with time zone not null
+column public.outrance_holds.discipline_id uuid
 column public.outrance_holds.entry_id uuid not null
 column public.outrance_holds.event_id uuid not null
 column public.outrance_holds.id uuid not null
@@ -3069,17 +3070,17 @@ function private.outrance_phone(p_seat uuid, p_match uuid) secdef=true 03562b00d
 function private.outrance_protocol(p_match uuid, p_round integer) secdef=true fb97a0f6ef09a25dc3d7fa602602e4b0
 function private.outrance_record(p_id uuid, p_seat uuid, p_round integer, p_mark text, p_side text) secdef=true b3bae79d468a9cb108bc44b3bcf53d3f
 function private.outrance_recount() secdef=true b77777450acbfb44a135d344bd366d95
-function private.outrance_sheet_json(s outrance_sheets, p_protocol jsonb) secdef=false 0f451b2805b381c6acf181fcb21f569e
+function private.outrance_sheet_json(s outrance_sheets, p_protocol jsonb) secdef=false ce985659f4470c7ce4af1111f11b61d2
 function private.outrance_sheet_open(p_seat uuid, p_match uuid, p_round integer) secdef=true 6621026237038bcc018d8807e0ab7fa4
 function private.outrance_sheet_result(p_sa integer, p_sb integer, p_calls jsonb, p_stop_loser text) secdef=false 334993fd9dd02e379b4bdfa174b19330
-function private.outrance_state(p_match uuid) secdef=true 584205d15fd2f27016c72173c6b2ecfa
+function private.outrance_state(p_match uuid) secdef=true 5fc51e7f4dd350d6d36044e68461e54e
 function private.outrance_tally(p_seat uuid, p_match uuid, p_round integer) secdef=true 5d69862df7170dcf34bc62e5bc790a81
 function private.outrance_timing(p_match uuid) secdef=true fdf7f907e9e6fcd7f8f8252d17b17e3d
-function private.outrance_totals(p_match uuid) secdef=true 9d5984cadfb31c15b1b16b3f3e69c894
+function private.outrance_totals(p_match uuid) secdef=true 0f572c5d6cf2e3c2d56465ac895370ea
 function private.outrance_undo(p_id uuid, p_seat uuid, p_round integer, p_mark text, p_side text) secdef=true 014a741fc944727382fa4ed593d8fa83
-function private.outrance_void_cascade() secdef=true ad450326010737503c845a67d12c0744
+function private.outrance_void_cascade() secdef=true eba96ee7c75887df67aa45f7b5209c8a
 function private.outrance_win_type(p_results text[]) secdef=false cee0b1bf988d4f0b0c5f3da4c63fba56
-function private.outrance_win_type(p_results text[], p_winner text) secdef=false b8ef19cbea6fe0a1f1afbf72cf53c03d
+function private.outrance_win_type(p_results text[], p_winner text) secdef=false 5eecaa606cb89af8d2340e0e31fc5ca8
 function private.override_discipline_check() secdef=true 9541a970595f61c0a6e7aff1857b86ce
 function private.owner_mfa_ok(p_user uuid) secdef=true 1533f11096254a7e657e2157ab0884b1
 function private.p9d_probe_a(p_event uuid) secdef=true 7a7ba11d5149576694d47ebc54cd6cd7
@@ -3470,13 +3471,13 @@ function public.open_fighter(p_fighter uuid) secdef=true a5a1a9983737b67ee0dcd8f
 function public.open_results_event(p_slug text) secdef=true 7b2ca877734407b1e7de97c97ac19b88
 function public.open_results_index() secdef=true 873004410cfaf4506aa715d6f5c012f9
 function public.open_sitemap() secdef=true b02fb795d7e15f2c89c933ffe23c11fa
-function public.outrance_appeal(p_command uuid, p_match uuid, p_side text, p_lodged_by text, p_grounds text) secdef=true 3fd949a1c933c3bff4283fcba3bd7f1c
+function public.outrance_appeal(p_command uuid, p_match uuid, p_side text, p_lodged_by text, p_grounds text) secdef=true be96774b363295ee6788288cee5ea7a8
 function public.outrance_appeal_decide(p_appeal uuid, p_decision text, p_outcome text, p_note text) secdef=true 2b27021cbc7d570e4e24bf10dd28608d
-function public.outrance_call(p_command uuid, p_match uuid, p_round integer, p_side text, p_call text, p_reason text, p_called_by text) secdef=true d23b00cc286887299e2432bce8d3d642
+function public.outrance_call(p_command uuid, p_match uuid, p_round integer, p_side text, p_call text, p_reason text, p_called_by text) secdef=true f049c036edbe269a761948f8a1544133
 function public.outrance_clear_hold(p_hold uuid, p_reason text) secdef=true 4f2b62c7451e8fa04691783b9b43f8a5
 function public.outrance_confirm_round(p_command uuid, p_match uuid, p_round integer, p_expected_rev integer, p_reason text, p_short boolean) secdef=true fc16d46990c6a82d242636396e17f346
-function public.outrance_enter_sheet(p_id uuid, p_match uuid, p_round integer, p_marshal text, p_tally jsonb, p_calls jsonb, p_replaces uuid, p_reason text) secdef=true 136bf365eb403fff596f80dcd5296e42
-function public.outrance_finish(p_command uuid, p_match uuid, p_expected_version integer, p_basis text, p_result text, p_reason text) secdef=true 8c49c16138d56aed1a7f71380042195a
+function public.outrance_enter_sheet(p_id uuid, p_match uuid, p_round integer, p_marshal text, p_tally jsonb, p_calls jsonb, p_replaces uuid, p_reason text) secdef=true b72f38682eda61c82ccd8e3043f196ac
+function public.outrance_finish(p_command uuid, p_match uuid, p_expected_version integer, p_basis text, p_result text, p_reason text) secdef=true 79704bdbdc39e0294d53c9cd87155b1c
 function public.outrance_match_holds(p_match uuid) secdef=true 61ca6ca927178f5b92182db3d83ef698
 function public.outrance_remove_sheet(p_sheet uuid, p_reason text) secdef=true 037f5fcc96e9a93c01f7d8769cf9605a
 function public.outrance_submit_sheet(p_id uuid, p_seat uuid, p_round integer, p_calls jsonb) secdef=true a789f26771ff6a1ed7431c993017a532

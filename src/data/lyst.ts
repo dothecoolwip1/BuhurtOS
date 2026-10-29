@@ -226,7 +226,7 @@ export interface OutranceState {
   protocol: { round_no: number; yellows: Pair; armour: Pair; stoppage: 'a' | 'b' | null }[];
   totals: { unit: number; a: number; b: number; rounds: number; open: number; leader: 'a' | 'b' | null; win_type: string | null; next: OutranceNext | null;
     marshals: { seat_id: string; operator: string | null; source?: 'phone' | 'paper'; a: number; b: number; rounds: number; result: 'a' | 'b' | 'draw' }[] };
-  holds: { id: string; side: 'a' | 'b'; kind: OutranceHoldKind; created_at: string; from_match: string }[];
+  holds: { id: string; side: 'a' | 'b'; kind: OutranceHoldKind; created_at: string; from_match: string; during_fight?: boolean }[];
   appeals: { id: string; side: 'a' | 'b'; lodged_by: 'competitor' | 'corner'; grounds: string; lodged_at: string; decision: 'upheld' | 'rejected' | null; outcome: string | null; decision_note: string | null }[];
 }
 /** The knight marshal's calls (§13, §14). A TKO for lack of defence is the match in Division 1 and the round in Division 2: the server decides from the division. */

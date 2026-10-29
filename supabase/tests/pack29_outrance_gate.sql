@@ -228,7 +228,11 @@ select t.expect_eq('... with every round''s sheets and each marshal''s own fight
 
 -- ================================================================ 6. appeals (§16)
 select t.as_user(t.u(4));
-select t.expect_error('after the fight a competitor''s appeal is too late (they appeal before leaving the list)', $q$select public.outrance_appeal(gen_random_uuid(), t.m(11), 'b', 'competitor', 'unregistered clean blows')$q$, 'P0001');
+select t.expect_eq('§16.3: the competitor appeals at the end of the fight, when objections are asked for (just after the result)', public.outrance_appeal(t.g(31), t.m(11), 'b', 'competitor', 'unregistered clean blows') ->> 'status', 'ok');
+select t.as_admin();
+update public.matches set finalized_at = clock_timestamp() - interval '6 minutes' where id = t.m(11);
+select t.as_user(t.u(4));
+select t.expect_error('... but not once they have left the list (5 minutes on)', $q$select public.outrance_appeal(gen_random_uuid(), t.m(11), 'b', 'competitor', 'unregistered clean blows')$q$, 'P0001');
 select t.expect_eq('the corner men appeal within 15 minutes', public.outrance_appeal(t.g(30), t.m(11), 'b', 'corner', 'Unregistered clean blows in round 3') ->> 'status', 'ok');
 select t.expect_error('the secretary cannot decide an appeal', $q$select public.outrance_appeal_decide(t.g(30), 'rejected', 'none', 'no grounds')$q$, '42501');
 select t.as_user(t.u(2));
@@ -259,10 +263,17 @@ select t.expect_eq('... the yellow from the warnings stays', (select count(*) fr
 select t.as_user(t.u(3));
 select public.outrance_call(t.g(50), t.m(12), 1, 'b', 'tko');
 select t.expect_eq('Division 2: a TKO for lack of defence is recorded as the round lost', (select label || ' ' || card_key from public.match_discipline where id = t.g(50)), 'TKO: round lost (Div 2) tko_round');
+select t.as_admin();
+select t.expect_eq('§14.8: the medic checks the fighter before the next round (the hold is made at the call)', (select kind || ' ' || (cleared_at is null)::text from public.outrance_holds where discipline_id = t.g(50)), 'medic_check true');
 select t.as_user(t.u(4));
 select t.expect_error('in Division 2 that TKO does not end the fight', $q$select public.outrance_finish(gen_random_uuid(), t.m(12), t.ver(12), 'tko', 'a')$q$, 'P0001');
 select t.as_admin();
 select t.expect_eq('... the round''s sheets score it 10-7 (§15.3.1)', private.outrance_sheet_result(5, 5, '{}'::jsonb, private.outrance_protocol(t.m(12), 1) ->> 'stoppage'), '{"a":10,"b":7,"band":"stoppage","winner":"a","decided_by":null}'::jsonb);
+select t.as_user(t.u(3));
+select public.outrance_call(t.g(52), t.m(12), 1, 'a', 'tko');
+select public.lyst_void_discipline(gen_random_uuid(), t.g(52), 'wrong fighter');
+select t.as_admin();
+select t.expect_eq('voiding a TKO clears the medic check it made (kept, with the reason)', (select cleared_reason from public.outrance_holds where discipline_id = t.g(52)), 'the call it came from was voided');
 select t.as_user(t.u(3));
 select public.outrance_call(gen_random_uuid(), t.m(12), 1, 'b', 'ko');
 select t.as_user(t.u(4));

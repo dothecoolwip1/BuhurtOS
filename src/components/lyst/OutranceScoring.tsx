@@ -288,6 +288,8 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
       onConfirm={short => void confirm(round, short)} onRecount={() => void recount(round)} protocol={om?.protocol.find(p => p.round_no === round.round_no) ?? null}
       onPaper={openPaper} />
   );
+  // §14.8 (Division 2): a fighter who lost a round by TKO is checked by the medic before the next round starts
+  const medicFirst = (om?.holds ?? []).filter(h => h.from_match === match.id && h.during_fight && h.kind === 'medic_check');
   const clockNeedsDecision = !!clock.clockFailure || !!clock.clockOverride || clock.requiresClockCheck || clock.restoreRound !== null || !!clock.pendingTimer;
 
   return (
@@ -330,8 +332,9 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
           {(zone === 'confirm' || zone === 'fighting') && cur && sheet !== 'confirm' && sheetsBlock(cur)}
           {zone === 'between' && totals && timing && (
             <div className="ly-zone ly-act ly-act-two">
-              {totals.next === 'round' && <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline} onClick={() => startRound(nextNo)}>Start round {nextNo} of {timing.rounds} · {clockText(timing.round_seconds)}</button>}
-              {totals.next === 'tiebreak' && <><p className="ly-hint-line" role="status">Level after {timing.rounds} rounds: a 3rd round is fought (Outrance §4.2).</p><button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline} onClick={() => startRound(nextNo)}>Start round {nextNo} · {clockText(timing.round_seconds)}</button></>}
+              {(totals.next === 'round' || totals.next === 'tiebreak') && medicFirst.length > 0 && <p className="ly-note" role="status" data-testid="om-medic-first">{medicFirst.map(h => names[h.side]).join(' and ')} lost the round by TKO: the medic checks them before the next round (Outrance §14.8). Clear the check above when done.</p>}
+              {totals.next === 'round' && <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline || medicFirst.length > 0} onClick={() => startRound(nextNo)}>Start round {nextNo} of {timing.rounds} · {clockText(timing.round_seconds)}</button>}
+              {totals.next === 'tiebreak' && <><p className="ly-hint-line" role="status">Level after {timing.rounds} rounds: a 3rd round is fought (Outrance §4.2).</p><button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline || medicFirst.length > 0} onClick={() => startRound(nextNo)}>Start round {nextNo} · {clockText(timing.round_seconds)}</button></>}
               {(totals.next === 'finish' || totals.next === 'head_marshal') && <button type="button" className="btn btn-win fq-big ly-go" disabled={busy} onClick={() => { setPhase('finishing'); setError(null); }}>Finish the fight</button>}
             </div>
           )}
