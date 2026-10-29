@@ -1,148 +1,214 @@
-# Pack 29: Outrance (Profight) on the Lyst, to Outrance Rules and Regulations V.26.4
+# Pack 29: Outrance (Profight) exactly to Outrance Rules and Regulations V.26.4
 
-Status: PLAN (2026-10-29). Nothing in this pack is built yet. Step 0 (bringing the repository level with hosted) is done in the same change
-as this plan: `supabase/migrations/20261108000100_hosted_reconcile_2026_10_29.sql`.
+Status: PLAN (rewritten 2026-10-29 to follow the rules exactly). Nothing in this pack is built yet. Step 0, bringing the repository level
+with hosted, is done: `supabase/migrations/20261108000100_hosted_reconcile_2026_10_29.sql`.
 
-Source: *Outrance Rules and Regulations V.26.4* (April 2026), owner's copy in Drive. Section numbers below (§) are that document's.
+Source: *Outrance Rules and Regulations V.26.4* (April 2026), the owner's PDF (28 pages), including the example scoresheet on page 25.
+Every behaviour below cites its section (§). Where the rules are silent, this plan does not invent a rule: section 7 lists those gaps for
+the owner or the head marshal (§2.1: the head marshal has the final say on interpreting the rules).
 
-## 1. Where things stand (main `36850b2` = Vercel production = hosted database after Step 0)
+## 1. Where things stand (main = Vercel production; hosted database = repository after Step 0)
 
 - Profight fights never open on the Lyst. `FieldPage.tsx` sends only duels to `LystScoring`; Profight gets the classic `ProBoard`, which never
-  calls `lyst_open` and never starts the Lyst clock. So a field's current fight is never set for a Profight fight, and a counter phone on that
-  Lyst waits ("Waiting for the next fight on this Lyst") for the whole fight.
-- `ProBoard` is one person's sheet: strike points and deductions for both sides, `proRoundScore` gives 10-10 / 10-9 / 10-8 / 10-7 for that one
-  sheet ("Fight total, this marshal"), and the saved result is that one sheet. Nothing averages line marshals, nothing records the decision type.
-- Weapon losses, the armour-failure clock, cards in Profight, KO/TKO, Division 1/2 timings and the tournament third round are not modelled.
-- Hosted has no Profight fights in progress (three Profight competitions, no fights drawn), so the in-flight backfill is small, but it is still
-  written (CLAUDE.md: every change carries in-flight state).
+  calls `lyst_open` or starts the Lyst clock. Counter phones on that Lyst wait for the whole fight.
+- `ProBoard` is one person's sheet. It has no second or third line marshal, no averaging, no criteria in priority order (one combined
+  "other criteria" choice), and no takedowns, weapon losses, armour-failure grants, KO/TKO, divisions, matched fights or win types.
+- Hosted has no Profight fights in progress (three Profight competitions, none drawn). The in-flight backfill is still written and tested
+  (CLAUDE.md).
 
 ## 2. Owner decisions (2026-10-29)
 
-1. **Hosted wins** for the repository/hosted drift (Step 0).
-2. **The official round score is the average of the 10-point cards** (§15.3.1). This is a deliberate, Outrance-only exception to the Pack 13 rule
-   "nothing averages counters": raw strike taps are still never averaged or summed into a score; what is averaged is each card's 10-point
-   result, as the rules require.
-3. **One counter per side stays.** The server pairs a red phone with a blue phone into one card (red counter n with blue counter n). In most
-   fights there is one pair, and **the secretary tablet acts as the marshal** (it makes the calls the counters cannot: other criteria,
-   deductions, KO/TKO, confirm).
-4. **Score columns stay whole numbers.** `matches.score_a/score_b` hold the rounded totals for display and sorting; the exact averages, every
-   card and the decision type go in the result detail.
+1. Hosted wins for the repository drift (Step 0, done).
+2. Follow the Outrance rules exactly.
+3. **3 or 5 line-marshal phones.** Each phone is one line marshal's scoresheet for both fighters (§2.3, §15.1.1, the p.25 sheet). This
+   replaces the earlier "one counter per side" idea for Profight. Other disciplines keep their counters unchanged.
+4. The Round Score is the secretary's average of the marshals' scores (§15.3.1). This is the Outrance-only exception to Pack 13's "nothing
+   averages": raw taps are still never summed or averaged; what is averaged is each marshal's 10-point round score, as §15.3.1 says.
+5. `matches.score_a/score_b` stay whole numbers (rounded totals, for display and sorting). The exact Round Scores, every marshal's sheet
+   and the win type are stored in the result detail.
 
-## 3. The rules this pack must implement
+## 3. The rules, and where each one lands
 
-| § | Rule | Where it lands |
+### 3.1 Officials (§2)
+
+| § | Rule | In BuhurtOS |
 |---|---|---|
-| 4.1, 4.2 | Tournament: 2 rounds, 1 break of 45 s, a 3rd round if level. Matched fight: 3 rounds, 2 breaks of 60 s. Division 1 rounds 120 s, Division 2 rounds 90 s. Tiebreaker round same length. | Competition settings, then Lyst timer presets and round count |
-| 1.3 | Division 1 / Division 2 | `competitions.division` already allows `'1'`, `'2'`, `'open'` on hosted |
-| 15.2.1 | One strike point per clean legal strike with weapon, leg, arm or shield. Head strikes score nothing. | Counter phone wording (one COUNT button per side) |
-| 15.3.1 | Each card scores the round; strike gap 0-5 → 10-10, or 10-9 if other criteria decide; 6-10 → 10-9; 11-15 → 10-8; 16+ → 10-7. KO and TKO → 10-7. Round score = average of the cards. | Server: per-card band, then average |
-| 15.2.2-15.2.5 | Other criteria in order: grappling, list control, aggression, defence | One call per round on the tablet, used only for cards with a gap of 5 or less |
-| 15.3.2, 13.2 | Yellow card −1, armour failure −1 each instance, weapon-loss penalty −1. Deducted from the round score. | Applied once to the averaged round score |
-| 14.1 | Losing the weapon 3 or more times in one round: −1 | Weapon-loss taps on the tablet; the 3rd loss in a round makes the deduction |
-| 14.4 | Armour failure: −1 if fixed in 90 s; a further 90 s may be granted for another −1; not fixed → TKO armour/weapon failure | Armour-failure button: 90 s equipment clock, "+90 s" (second −1), expiry offers TKO |
-| 14.2, 14.3 | Weapon or shield breakage replaced: no penalty; weapon not replaceable → TKO armour/weapon failure | Finish reason |
-| 13.1, 13.4 | 3 verbal warnings → yellow card; 2nd yellow → red = disqualification | Existing discipline sheet with Outrance rules |
-| 14.8 | TKO for lack of defence: Division 1 loses the fight; Division 2 loses the round (10-7) | Tablet: "TKO" asks round or fight by division |
-| 14.11 | KO ends the fight; the fighter cannot continue in the tournament | Finish reason; withdrawal from later fights |
-| 15.4.1 | Total fight score = sum of the round scores; tournaments total between 14 and 20, matched fights between 21 and 30 | Server totals; sanity check |
-| 15.4.2 | Unanimous / majority / split decision; unanimous / majority / split draw; TKO; KO | Computed from the per-card fight totals, stored in the detail |
-| 17 | League ranking: win/loss record by weight class | Uses `competitions.weight_class` / `ref_weight_classes` (already on hosted) |
+| 2.3, 15.1.1 | 3 or 5 line marshals, each scoring independently, on different sides of the list, with no contact during the round | 3 or 5 **line-marshal phones** per Profight fight. A phone never shows another marshal's numbers. The round cannot be confirmed with any other number of submitted sheets (see §7 gap 5). |
+| 2.2 | Knight marshal: start/stop, clinch time, breakages, losses of weapon, KO/TKO, warnings and cards, announces the winner from the line marshals' points | The **Lyst tablet** records the knight marshal's calls (cards, KO/TKO, stoppages). |
+| 2.4 | Timekeeper: rounds, breaks, repair time; "Time" | The Lyst clock: round, break and the 90 s repair clock. |
+| 2.5 | Secretary: records each round's result from the line marshals' points; marks every yellow and red card in the protocol; notes medical conditions | The **secretary tablet** shows the submitted sheets, the computed Round Score, the cards; confirms the round. It cannot edit a marshal's sheet (only return it for recount, as now). |
+| 2 (intro) | Duties may be combined (timekeeper with secretary, etc.) | One tablet may run the clock and the secretary's screen. |
+
+### 3.2 The line marshal's sheet (§15, scoresheet p.25)
+
+Per round, per side, each marshal records:
+
+- **Effective strikes** (§15.2.1): one strike point per clean legal landed blow with weapon, leg, arm or shield. **Head strikes score nothing.**
+- **Effective takedowns** (§15.2.2; "recorded for posterity").
+- **Loss of weapon** (§2.3 "take note of loss of weapons", §14.1).
+- **Armour failures** (§2.3, §14.4).
+- **Point deductions** (total).
+
+The round result on that sheet (§15.3.1 and the sheet's "Win Criteria"):
+
+| Strike point difference | Result on the sheet |
+|---|---|
+| 16 or more | 10-7, "Dominant" |
+| 11 to 15 | 10-8, "Moderate" |
+| 6 to 10 | 10-9, "Slight" |
+| 5 or less | "Even": go through the criteria **in priority order**, each Red / Even / Blue: (2) effective grappling, (3) effective list control, (4) effective aggression, (5) effective defence. The **first** criterion that is not Even gives that side 10-9. All Even → **10-10** ("a drawn round is scored 10 for both fighters"). |
+| KO or TKO | 10-7 (§15.3.1) |
+
+Then the sheet's deductions for that round (§15.3.2, p.25 "Point Deductions"):
+
+- **Yellow card**: −1 for each card (§13.2).
+- **Loss of weapon**: losing the weapon 3 or more times in one round is **one** −1 for that round (§14.1, p.25).
+- **Armour failure**: −1 for each 90 seconds granted for the repair (§14.4, p.25): fixed within 90 s → −1; a further 90 s granted → −1 more;
+  not fixed after that → the opponent wins by TKO armour/weapon failure.
+- Weapon breakage replaced: no penalty (§14.2). Shield breakage removed or replaced: no penalty (§14.3).
+- Example (§15.3.3): an even round, B has one armour failure fixed in time → A 10, B 9.
+
+The sheet's fight result is the sum of its rounds (the p.25 "Fight Result").
+
+### 3.3 Round Score, Total Fight Score, win types (§15.3.1, §15.4)
+
+- **Round Score** = (sum of the marshals' round scores) ÷ (number of marshals) (§15.3.1). Kept exactly (e.g. 9.667), never rounded for
+  the decision.
+- **Total Fight Score** = sum of the Round Scores; it declares the winner of the match (§15.4.1). Expected ranges: tournaments 14-20,
+  matched fights 21-30 (shown as a check, never enforced, because deductions can go below).
+- **Win types** (§15.4.2), from each marshal's own fight result: unanimous decision; unanimous draw; majority decision (the majority for
+  one side, the others a draw); majority draw (the majority a draw); split decision (the majority for one side, the others for the other
+  side); split draw (all different, the totals a draw); TKO; KO.
+
+### 3.4 The fight (§4, §5, §6, §11, §13, §14)
+
+| § | Rule | In BuhurtOS |
+|---|---|---|
+| 4.1 | Matched fight: Division 1 = 3 rounds of 120 s, 2 breaks of 60 s; Division 2 = 3 rounds of 90 s, 2 breaks of 60 s | Competition **format = Matched fight** and **Division 1/2** set the clock and the round count. |
+| 4.2 | Tournament fight: Division 1 = 2 rounds of 120 s, 1 break of 45 s; Division 2 = 2 rounds of 90 s, 1 break of 45 s; a draw after 2 rounds → a 3rd round, same length | **Format = Tournament.** Level Total Fight Score after round 2 → the tablet offers ROUND 3 only (no finish). |
+| 1.3 | Division 1 (over 2 years' experience or international experience); Division 2 (under 2 years); Division 2 fighters may choose Division 1 | `competitions.division` (`'1'`/`'2'`, already on hosted). A Profight fight cannot open while its competition has no division set. |
+| 13.1 | 3 verbal warnings → yellow card. Verbal warnings need not be recorded. | Warnings are tallied on the tablet; the 3rd for the same competitor or corner man prompts the yellow card. |
+| 13.2 | Yellow card to a competitor or corner man; recorded in the protocol; counts in the score | Card on the tablet → −1 on every marshal's sheet for that round. |
+| 13.3 | Corner man expelled: noted, no effect on the score | A protocol note. |
+| 13.4 | Red card = disqualification; automatic on a second yellow; or for disruption | The second yellow records the red card and ends the fight by DQ. |
+| 14.8 | TKO for lack of defence: warning, 5-second count, stop. Division 1: loses the **match**. Division 2: loses the **round**. Every TKO is checked by the medic. | TKO on the tablet: Division 1 ends the fight; Division 2 scores the round 10-7 and the fight goes on. Either way the fighter is marked "medic check needed" before their next fight. |
+| 11.4 | Stalling after Break/Hold: warning, 5-second count, then TKO win to the opponent | Finish reason "TKO (stalling)". |
+| 14.4, 14.2 | Armour not fixed after 90 + 90 s, or a weapon that cannot be replaced → TKO armour/weapon failure | The 90 s repair clock; at expiry the tablet offers "+90 s (−1)" or "TKO armour/weapon failure". |
+| 14.10 | DQ for no weapon / unrepairable armour: until their next match to fix it, or out of the tournament. DQ also = red card. | Finish reason, and a hold on the fighter's next match until marked fixed. |
+| 14.11 | KO: the fighter takes no further part in the tournament | Finish reason; the fighter's later matches in that competition are withdrawn (through the existing withdrawal path). |
+| 5.2, 6.2 | Competitor yields or forfeits; corner man throws the towel (TKO, TKO armour/weapon failure, medical retirement); each needs an assessment before continuing | Finish reasons, each marking "assessment needed" (medic and head marshal) before the next fight. |
+| 14.5, 14.7 | Clinch: Break after 10 s inactive. Grounded: up to 30 s of consistent action, Break after 10 s inactivity | Optional knight-marshal stopwatches on the tablet. They never score. |
+
+### 3.5 After the fight (§16, §17, §1.2)
+
+| § | Rule | In BuhurtOS |
+|---|---|---|
+| 16.1-16.3 | Written appeal by the competitor at the end of the fight (before leaving the list), or by the corner men in person within 15 minutes | "Appeal" on the result, timestamped, with the 15-minute window shown. |
+| 16.4 | Outcomes: a rematch of the round; imposing or withdrawing cards; imposing or withdrawing a point deduction | The decided appeal applies its outcome through the existing correction path. A round rematch supersedes that round's sheets (kept, never deleted) and re-opens the round. |
+| 16.5 | Further appeal to the BI Control and Disciplinary Committee or the head of the BI Marshals' Committee | Recorded as a note. |
+| 17 | League ranking: win/loss record, compared within the active weight category; no fight for 1 year → "retired"; 2 years → removed from the standings | A Profight ranking by weight class with W/L (synthetic records excluded). Retired after 1 year, hidden after 2. This is a ranking view only: no fight is deleted. |
+| 1.2 | Weight classes (men 6, women 5); open weight by agreement with no weight modifier; weigh-in up to 24 h before, one more attempt allowed | `ref_weight_classes` and `competitions.weight_class` (on hosted); weigh-ins already exist (Pack 16). |
 
 ## 4. Design
 
-### 4.1 Database (one additive migration, `2026110900xx_pack29_outrance.sql`, written against the reconciled hosted definitions)
+### 4.1 Database (one additive migration, written against the reconciled hosted definitions)
 
-- `competitions.fight_format text not null default 'tournament' check (fight_format in ('tournament','matched'))`. Division stays
-  `competitions.division` (`'1'`, `'2'`, `'open'`; for Profight `'open'` is treated as Division 1 until set).
-- `private.outrance_timing(competition)` returns round seconds, break seconds, regular rounds (2 or 3), tiebreak allowed.
-- `lyst_matches.counter_input` stays `simple` for Profight (one COUNT per side). A new `lyst_matches.scoring text default 'marshal'`, with
-  `'outrance'` for Profight, so every Lyst function can branch without guessing from the category.
-- **Cards.** `public.lyst_outrance_cards (match_id, round_no, rev, card_no, seat_a, seat_b, strikes_a, strikes_b, gap_band, criteria,
-  card_a numeric, card_b numeric)`, written only by the confirm function, frozen with the round revision. Pairing: the official seats on each
-  side in seat order; red n with blue n; an unpaired phone stays evidence only. The tablet may re-pair before confirming (recorded).
-- **Round result.** `public.lyst_outrance_rounds (match_id, round_no, rev, criteria, cards int, exact_a numeric(6,3), exact_b numeric(6,3),
-  deduct_a, deduct_b, weapon_losses_a, weapon_losses_b, method)`, append-only by revision like `lyst_round_revisions`.
-  `lyst_rounds.awarded_a/b` keep the rounded value so every existing reader (Live, broadcast, announcer, Discord) still shows a number.
-- **Weapon losses.** A new discipline kind `weapon_loss` (amount 0) in `match_discipline`; the 3rd active one in a round on a side inserts
-  the −1 deduction automatically, voiding one undoes it.
-- **Armour failure.** Discipline kind `armour_failure` (−1), plus `armour_failure_extended` (−1); both start the existing `equipment` timer
-  mode with 90 s.
-- **Functions.**
-  - `lyst_open`: Profight sets `scoring = 'outrance'` and uses the Outrance timing.
-  - `lyst_confirm_outrance_round(p_command, p_match, p_round, p_expected_rev, p_pairs jsonb, p_criteria text, p_method text, p_reason text)`:
-    reads the frozen counter totals itself (never trusts numbers from the client), builds the cards, averages them, applies the round's
-    deductions once, writes the round revision; the same command id, stale revision, secretary-boundary and delivery-review rules as
-    `lyst_confirm_round`. No pair at all → the tablet enters the strike points itself (the marshal's own card).
-  - `lyst_finalize` for Outrance: the winner comes from the exact totals; level in an elimination fight → another round (no draw);
-    KO / TKO / DQ / armour-failure TKO as finish bases; the detail stores rounds, cards, exact totals and the decision type;
-    `score_a/score_b` = rounded exact totals.
-  - `private.outrance_decision(cards)` → `unanimous` | `majority` | `split` decision or draw.
-- **Permissions.** Every new function: `security definer`, empty `search_path`, revoked from `public`/`anon`, granted to `authenticated`
-  only (the counter phones keep using `counter_record`; nothing new for `bos_event_device`). Regenerate `supabase/tests/device_allowlist.txt`.
-- **In flight.** The migration opens Lyst state for any Profight fight that is active/on deck with a field (`lyst_matches` row with
-  `scoring = 'outrance'`, field current fight if the field has none), and rebinds the field's counter phones on it. A fight already scored
-  on the classic board keeps its saved board; its rounds are carried in as confirmed Outrance rounds with the reason "carried from the
-  classic board" (none exist on hosted today; the code path is still written and tested).
+- `competitions.fight_format text check (fight_format in ('tournament','matched'))`, required for Profight before a fight opens.
+- `private.outrance_timing(competition)` returns round seconds, break seconds, the round count (§4).
+- `lyst_matches.scoring text default 'marshal'`; `'outrance'` for Profight, so every Lyst function branches on it, never on the category.
+- **Line-marshal seats.** Counter seats get `role = 'line_marshal'` for Outrance fights. A line marshal joins with the Counter QR and picks
+  "Line marshal" (no side). 3 or 5 per fight.
+- **Sheet entries.** Taps go through the existing tap journal (`counter_record` with idempotent ids), with an action kind:
+  `strike`, `takedown`, `weapon_loss`, `armour_failure` and a side. Undo stays per tap.
+- **The sheet.** `public.outrance_sheets (match_id, round_no, seat_id, rev, strikes_a, strikes_b, takedowns_a, takedowns_b, weapon_losses_a,
+  weapon_losses_b, armour_a, armour_b, grappling, list_control, aggression, defence, result_a, result_b, deduct_a, deduct_b, score_a,
+  score_b, submitted_at)`. The totals are computed **by the server** from the journal (a phone cannot post numbers). The criteria are the
+  marshal's own choices, asked only when the strike difference is 5 or less. Submitted sheets are append-only by revision.
+- **The round.** `public.outrance_rounds (match_id, round_no, rev, marshals, score_a numeric(6,3), score_b numeric(6,3), method)`, written
+  by the confirm function. `lyst_rounds.awarded_a/b` keep the rounded value so existing screens still show a number.
+- **Protocol.** `match_discipline` gains Outrance kinds: `verbal_warning`, `yellow`, `red`, `armour_grant` (each 90 s granted), and
+  `corner_expelled` (note). A yellow or armour grant applies −1 on every sheet of that round. The second active yellow records the red card.
+- **Functions** (all `security definer`, empty `search_path`; revoked from `public` and `anon`):
+  - `lyst_open`: Profight → `scoring = 'outrance'`, Outrance timing; refuses while division or format is missing.
+  - `outrance_submit_sheet(p_command, p_seat, p_round, p_criteria jsonb)` for the phone (`bos_event_device`): reads its own journal,
+    computes the sheet, refuses criteria when the difference is over 5 and requires them when it is 5 or less.
+  - `outrance_confirm_round(p_command, p_match, p_round, p_expected_rev, p_reason)` for the secretary or marshal: needs exactly 3 or 5
+    submitted sheets; computes the Round Score (§15.3.1); same command-id, stale-revision, secretary-boundary and delivery-review rules as
+    `lyst_confirm_round`.
+  - `outrance_finish(...)`: decision (winner from the Total Fight Score, §15.4.1; win type, §15.4.2), KO, TKO (with its kind), DQ, yield,
+    medical retirement. A tournament fight level after 2 rounds is refused until round 3 is fought (§4.2).
+  - `private.outrance_win_type(sheet totals)`.
+- **Permissions.** Phones: only the sheet functions they need, added to `supabase/tests/device_allowlist.txt` in the same change.
+- **In flight.** The migration opens Lyst state for any Profight fight that is active or on deck with a field, and re-seats the bound
+  phones (none on hosted today).
 
-### 4.2 Counter phone
+### 4.2 Line-marshal phone (one-handed)
 
-- Profight: one big COUNT button for the side's fighter, UNDO, round confirm as today. Banner: "Tap COUNT for every clean strike by
-  <fighter>. Head strikes don't count."
-- A phone never shows another phone's number (line-marshal independence, §2.3). Check `counter_state` for this and pin it with a test.
+- Two big buttons: **RED STRIKE** and **BLUE STRIKE** (in the day's side colours). A smaller row: Red takedown, Blue takedown, Red weapon
+  lost, Blue weapon lost, Armour failure (Red/Blue). UNDO undoes the last tap.
+- Reminder line: "Clean legal strikes only. Head strikes don't count."
+- At the end of the round: the phone shows the marshal's own totals. If the difference is 5 or less, it asks the four criteria in order,
+  one screen each (Red / Even / Blue), stopping at the first that is not Even. Then SUBMIT SHEET.
+- It never shows another marshal's sheet, the Round Score or the running Total Fight Score (§2.3).
 
-### 4.3 Lyst tablet (secretary acting as marshal)
+### 4.3 Secretary / Lyst tablet
 
-- `FieldPage` sends Profight to `LystScoring` like duels (classic board stays one tap away, as for duels).
-- The round zone for Outrance replaces the 0-9 picker:
-  - each card: "Card 1 · Red Anna 23 · Blue Ben 14 · gap 9 → 10-9 Red";
-  - if any card's gap is 5 or less: one choice "Other criteria: Red / Even / Blue" (grappling, list control, aggression, defence);
-  - this round's deductions per side (cards, armour failure, weapon losses: tap WEAPON LOST, the counter shows 1, 2, 3 → −1);
-  - the round score: the average, e.g. "Round 1: 9.67 – 10" (two decimals only when cards disagree);
-  - CONFIRM ROUND. A correction later needs a reason (as now).
-- Buttons on the clock bar: ARMOUR FAILURE (starts 90 s, −1), +90 s (another −1), and at expiry "TKO, armour failure?"
-- Finish: by decision (with the decision type shown), KO, TKO (Division 1: the fight; Division 2: asks "this round only?"), DQ, armour or
-  weapon failure TKO. Elimination + level after the regular rounds → START ROUND 3 (tiebreak), never a draw.
-- Mobile-first, one-handed: every action is one tap from the round zone; nothing needs drag and drop.
+- `FieldPage` sends Profight to `LystScoring` (the classic board stays one tap away, as for duels).
+- Round zone: "3 of 3 sheets in" (or 5), each sheet's result (e.g. "M1 10-9 Slight Red · M2 10-9 Even/grappling Red · M3 10-10"), the
+  cards and deductions for the round, the Round Score ("Red 10 · Blue 9.333"), CONFIRM ROUND, RETURN FOR RECOUNT.
+- Knight marshal bar: Verbal warning, Yellow, Armour failure (starts 90 s), +90 s, Weapon broken (replace / TKO), KO, TKO, Stop.
+- Finish shows the Total Fight Score, the win type, and each marshal's total.
 
-### 4.4 Front end (TypeScript)
+### 4.4 TypeScript
 
-- `src/lib/outrance.ts` (pure, unit-tested): `cardBand(strikesA, strikesB, criteria)`, `averageCards(cards)`, `roundScore(cards, deductions)`,
-  `fightTotals(rounds)`, `decisionType(cardTotals)`, `outranceTiming(division, format)`. The same table of vectors is run in SQL
-  (`supabase/tests/vectors_gate.sql` pattern) so TypeScript and the database can never disagree.
-- `proRoundScore` (classic board) reuses `cardBand`, so the classic board and the Lyst give the same number.
-- Competition setup: Division 1 / 2 and Tournament / Matched fight for Profight competitions.
+- `src/lib/outrance.ts` (pure): `sheetRound(strikes, criteria, deductions)`, `roundScore(sheets)`, `totalFightScore(rounds)`, `winType(sheets)`,
+  `timing(division, format)`, `weaponLossDeduction(losses)`, `armourDeduction(grants)`. The same vectors are checked in SQL
+  (`vectors_gate.sql` pattern), so the phone, the tablet and the database cannot disagree.
+- The classic `ProBoard` is changed to the same per-sheet rules (criteria in priority order) so it never gives a different number.
 
-## 5. Verification (what "done" means)
+## 5. Verification
 
-- Unit: band edges (5/6, 10/11, 15/16), other criteria only at gap 5 or less, averaging of 1, 2, 3 and 5 cards, deductions after averaging,
-  3rd weapon loss, decision types (all six), totals 14-20 and 21-30.
-- Database gate `pack29_outrance_gate.sql`: allowed and denied cases for every new function (fighter, other-event organizer, anon, device,
-  secretary off the board refused; marshal and secretary on the board allowed); a client cannot pass its own strike numbers; a card is
-  frozen with the round; one counter on one side only → evidence only; corrections keep the old revision; synthetic events stay out of
-  rankings; the in-flight backfill opens an active Profight fight and seats its phones.
-- Fingerprint and allow-list regenerated in the same change.
-- Browser (real local stack, phone 390 px and desktop): a full Division 2 tournament fight with one red and one blue phone and the
-  secretary tablet: two rounds, one level → round 3, a weapon loss ×3, an armour failure with +90 s, finish by decision; then a TKO in
-  Division 1 and Division 2; screenshots in `docs/reviews/assets/`.
-- Hosted: applied only when the owner asks; then the read-only checks (fingerprint against hosted, the new functions' grants) and a
-  signed-in walk on a synthetic event.
+- Unit: every band edge (5/6, 10/11, 15/16), criteria stopping at the first non-Even, all-Even 10-10, the §15.3.3 example, 3 weapon losses
+  = −1 (and 4 still −1), each 90 s grant −1, averages over 3 and 5 sheets, all six decision/draw win types, Division 1 and 2 TKO.
+- Database gate `pack29_outrance_gate.sql`: allowed and denied cases for every function (phone, secretary on and off the board, marshal,
+  fighter, other-event organizer, anon); a phone cannot post totals or see another sheet; 2 or 4 sheets cannot confirm a round; a
+  tournament draw after 2 rounds cannot finish; a round rematch keeps the old sheets; synthetic events stay out of the ranking; the
+  in-flight backfill.
+- Fingerprint and device allow-list regenerated in the same change.
+- Browser, real local stack, phone 390 px and desktop: a Division 2 tournament fight with 3 phones, level after 2 rounds → round 3; a
+  weapon lost 3 times; an armour failure with +90 s; finish by split decision. A Division 1 TKO and a Division 2 TKO. Screenshots in
+  `docs/reviews/assets/`.
+- Hosted: applied only when the owner asks; then the read-only checks and a signed-in walk on a synthetic event.
 
-## 6. Open questions for the owner
+## 6. What the rules decide that the earlier plan got wrong
 
-1. **Average vs majority.** §15.4.1 declares the winner by the total of the averaged round scores, while §15.4.2 names the decision type
-   from the cards. With several cards these can point to different winners (two cards narrowly Red, one card heavily Blue). Plan: the
-   averaged total decides the winner (§15.4.1) and the decision type is reported from the cards; if they disagree it is labelled a split
-   decision. Confirm.
-2. **Level after round 3 in elimination.** The rules allow "a tiebreaker round" but say nothing about a second one. Plan: keep adding
-   tiebreak rounds of the same length until the fight is not level; the head marshal can also decide with a reason.
-3. **Matched fights** (§4.1): are they run as a competition of their own (one fight each), or as single fights inside an event? Plan: a
-   Profight competition with Format = Matched fight.
+- One counter per side and the secretary acting as marshal: replaced by 3 or 5 line marshals (§2.3, §15.1.1).
+- One "other criteria" call per round: replaced by each marshal's own criteria in priority order (§15.2, p.25).
+- Weapon losses and armour failures on the tablet only: each marshal notes them on their sheet (§2.3, p.25).
+- "Keep adding tiebreak rounds": the rules give one 3rd round for a tournament draw (§4.2); what happens after that is not written (§7).
 
-## 7. Order of work
+## 7. Gaps in the rules (for the owner or the head marshal; nothing here is invented by the app)
 
-0. Repository level with hosted (done in this change; see the migration header).
-1. `src/lib/outrance.ts` + vectors (TS and SQL).
-2. Migration: settings, tables, functions, permissions, backfill; gate.
-3. Lyst tablet Outrance round zone, clock-bar buttons, finish; FieldPage routing.
-4. Counter phone wording; competition setup fields.
-5. Browser verification on the local stack; docs and status; PR.
+1. **A tournament fight still level after round 3.** §4.2 gives a 3rd round only. The app records the draw and asks the head marshal
+   (§2.1) to record a decision with a reason, which is kept with the result. Is there a rule to apply instead?
+2. **Total Fight Score vs the marshals' majority.** With averaging, the side with the higher Total Fight Score (which "declares the winner",
+   §15.4.1) can differ from the side most marshals scored (§15.4.2). The app follows §15.4.1 for the winner and reports the win type from
+   the sheets. Confirm.
+3. **Whose count of weapon losses and armour failures applies.** The sheet (p.25) has them per marshal, so marshals could disagree. Plan:
+   each sheet uses its own weapon-loss count (§2.3 "take note"); armour grants and yellow cards come from the protocol (the timekeeper
+   counts repair time, §2.4; the secretary records cards, §2.5) and apply to every sheet. Confirm.
+4. **A Division 2 TKO in the last round.** The round is lost (10-7) and, the rounds being over, the fight ends on the Total Fight Score.
+   Confirm.
+5. **A line-marshal phone fails mid-fight.** The rules need 3 or 5 marshals. Plan: the round waits until the marshal is back (another
+   phone can take over their seat with the existing handoff); the head marshal may confirm with fewer, with a reason, and the result is
+   marked "not 3 or 5 line marshals". Confirm.
+
+## 8. Order of work
+
+0. Repository level with hosted (done).
+1. `src/lib/outrance.ts` + SQL vectors.
+2. Migration: settings, seats, sheets, protocol kinds, functions, permissions, backfill; gate.
+3. Line-marshal phone.
+4. Secretary/Lyst tablet: round zone, knight-marshal bar, finish, appeals; FieldPage routing.
+5. Competition setup (division, format, weight class); Profight ranking by weight class (§17).
+6. Browser verification on the local stack; docs and status; PR.
