@@ -364,7 +364,7 @@ select t.as_device(t.u(21));
 select t.expect_error('a counter cannot add after the round is confirmed (stale round input cannot leak)', format('select public.counter_record(gen_random_uuid(), %L, 1, 1)', t.seatof(21)), 'P0001');
 select t.as_admin();
 select t.expect_eq('learning counts have zero official effect: the official round did not change when they counted', t.official(1, 1), '6-5');
-select t.expect_eq('the public round view carries only official numbers', (select string_agg(a.attname, ',' order by a.attnum) from pg_attribute a where a.attrelid = 'public.lyst_round_scores'::regclass and a.attnum > 0 and not a.attisdropped), 'match_id,event_id,round_no,status,rev,awarded_a,awarded_b,deduct_a,deduct_b,official_a,official_b');
+select t.expect_eq('the public round view carries only official numbers', (select string_agg(a.attname, ',' order by a.attnum) from pg_attribute a where a.attrelid = 'public.lyst_round_scores'::regclass and a.attnum > 0 and not a.attisdropped), 'match_id,event_id,round_no,status,rev,awarded_a,awarded_b,deduct_a,deduct_b,official_a,official_b,award_a,award_b');
 
 -- ---------------------------------------------------------------- the break flow: next round
 select t.expect_eq('NEXT ROUND: the fight timer starts round 2', (t.tc(88, 'Field 1', 1, -1, 'start', 'fight', 60000, 2) ->> 'status'), 'ok');
@@ -566,15 +566,16 @@ select t.expect_error('level totals are not a win for either side', format('sele
 select public.lyst_record_discipline(gen_random_uuid(), t.m(4), 2, 'b', 'dq', null, 0, 'Removed by the marshal', 'Marshal Lee');
 select t.expect_eq('a DQ against B lets A be awarded the fight on that basis', public.lyst_finalize(gen_random_uuid(), t.m(4), t.mver(4), 'a', 'dq') ->> 'status', 'accepted');
 select t.as_admin();
-select t.expect_eq('the result is A with the official 5-5 totals (the DQ is in the detail, not in the score)', (select result || ' ' || score_a || '-' || score_b from public.matches where id = t.m(4)), 'a 5-5');
+select t.expect_eq('the result is A; sword and buckler records the rounds won (0-0) and keeps the 5-5 points in the detail (the DQ is in the detail, not in the score)', (select result || ' ' || score_a || '-' || score_b || ' ' || (detail -> 'totals' ->> 'a') || '-' || (detail -> 'totals' ->> 'b') from public.matches where id = t.m(4)), 'a 0-0 5-5');
 select t.expect_eq('the entry itself was NOT marked disqualified by this (an event-level decision stays with the organizers)', (select status from public.entries where id = '00000000-0000-0000-0000-00000000ee06'), 'registered');
 
 select t.tc(88, 'Field 1', 5, -1, 'start', 'fight', 60000, 1);
 select t.as_user(t.u(88));
 select public.lyst_confirm_round(gen_random_uuid(), t.m(5), 1, 2, 2, t.round_rev(5, 1), p_reason => 'Marshal verified the paper sheet; phone delivery is unverified in this fixture');
-select t.expect_eq('level official totals can be finished as a draw by a person', public.lyst_finalize(gen_random_uuid(), t.m(5), t.mver(5), 'draw') ->> 'status', 'accepted');
+-- BI Duels Rules 2.2: a duel never ends level; extra rounds are fought until it is decided (rules audit 2026-10-29)
+select t.expect_error('level official totals are not a draw in a BI duel', format('select public.lyst_finalize(gen_random_uuid(), %L, %s, %L)', t.m(5), t.mver(5), 'draw'), 'P0001');
 select t.as_admin();
-select t.expect_eq('the draw is stored with the official totals', (select result || ' ' || score_a || '-' || score_b from public.matches where id = t.m(5)), 'draw 2-2');
+select t.expect_eq('... and nothing was saved', (select queue_state from public.matches where id = t.m(5)) <> 'final', true);
 
 -- ================================================================ 12. synthetic data stays labelled; the lyst adds no aggregate
 select t.expect_eq('lyst tables feed no ranking, statistic or career view (they are not referenced by any aggregate view)',

@@ -17,8 +17,12 @@ const KINDS: { kind: DisciplineKind; word: string; hint: string }[] = [
  * Cards come from the event's own list (nothing is invented). A deduction is an OFFICIAL act that stays on the record; fixing a scoring mistake is a different thing
  * (correct the round, or void a record with a reason in the Log).
  */
-export function DisciplineSheet({ names, round, settings, calledByDefault, busy, onClose, onRecord }: {
+export function DisciplineSheet({ names, round, settings, calledByDefault, busy, onClose, onRecord, reprimandPoints, group = false }: {
   names: { a: string; b: string }; round: number; settings: LystSettings; calledByDefault: string; busy: boolean; onClose: () => void; onRecord: (d: DisciplineDraft) => void;
+  /** A BI duel: the reprimand adds this many points to the opponent (Duels Regulations 4.2: 3, or 1 in sword and buckler). */
+  reprimandPoints?: number | null;
+  /** A team fight: buhurt has no point deductions (Buhurt Regulations 6). */
+  group?: boolean;
 }) {
   const [kind, setKind] = useState<DisciplineKind | null>(null);
   const [side, setSide] = useState<'a' | 'b' | null>(null);
@@ -28,7 +32,13 @@ export function DisciplineSheet({ names, round, settings, calledByDefault, busy,
   const [reason, setReason] = useState<string | null>(null);
   const [calledBy, setCalledBy] = useState(calledByDefault);
   const [ruleId, setRuleId] = useState<string | null>(null);
-  const cards = settings.cards ?? [];
+  // a reprimand is its own call in a BI duel, not a card
+  const cards = (settings.cards ?? []).filter(c => !(reprimandPoints && /^reprimand$/i.test(c.label)));
+  const kinds = [
+    ...KINDS.filter(k => !(group && k.kind === 'deduction')).slice(0, 2),
+    ...(reprimandPoints ? [{ kind: 'reprimand' as DisciplineKind, word: 'Reprimand', hint: `+${reprimandPoints} to the opponent` }] : []),
+    ...KINDS.filter(k => !(group && k.kind === 'deduction')).slice(2)
+  ];
   const needsLabel = kind === 'card';
   const needsAmount = kind === 'deduction';
   const ready = kind !== null && side !== null && (!needsLabel || label !== null) && (!needsAmount || amount !== null) && !busy;
@@ -38,7 +48,7 @@ export function DisciplineSheet({ names, round, settings, calledByDefault, busy,
       <div className="ly-sheet">
         <div className="ly-sheet-step"><b>1. What did the marshal call?</b>
           <div className="ly-grid2" role="group" aria-label="What was called">
-            {KINDS.map(k => <button key={k.kind} type="button" className="ly-big" aria-pressed={kind === k.kind} onClick={() => { setKind(k.kind); setLabel(null); setAmount(null); setAlso(0); }}><b>{k.word}</b><span>{k.hint}</span></button>)}
+            {kinds.map(k => <button key={k.kind} type="button" className="ly-big" aria-pressed={kind === k.kind} onClick={() => { setKind(k.kind); setLabel(null); setAmount(null); setAlso(0); }}><b>{k.word}</b><span>{k.hint}</span></button>)}
           </div>
         </div>
         <div className="ly-sheet-step"><b>2. Against whom?</b>
@@ -51,7 +61,7 @@ export function DisciplineSheet({ names, round, settings, calledByDefault, busy,
             {cards.length === 0
               ? <p className="ly-note" role="status">No cards are set up for this event. The head marshal or an organizer adds them in Lyst settings.</p>
               : <div className="ly-chips" role="group" aria-label="Card type">{cards.map(c => <button key={c.key} type="button" className="ly-chip" aria-pressed={label === c.label} onClick={() => setLabel(c.label)}>{c.label}</button>)}</div>}
-            {cards.length > 0 && settings.deduction_amounts.length > 0 && (
+            {!group && cards.length > 0 && settings.deduction_amounts.length > 0 && (
               <div className="ly-chips" role="group" aria-label="Also take off points"><span className="src">Also take off:</span>
                 <button type="button" className="ly-chip" aria-pressed={also === 0} onClick={() => setAlso(0)}>No points</button>
                 {settings.deduction_amounts.map(n => <button key={n} type="button" className="ly-chip" aria-pressed={also === n} onClick={() => setAlso(n)}>−{n}</button>)}
@@ -73,7 +83,7 @@ export function DisciplineSheet({ names, round, settings, calledByDefault, busy,
         )}
         <button type="button" className="btn btn-win fq-big" disabled={!ready}
           onClick={() => kind && side && onRecord({ kind, side, label: needsLabel ? label : null, amount: needsAmount ? amount ?? 0 : 0, reason, calledBy: calledBy.trim() || null, alsoDeduct: kind === 'card' ? also : 0, ruleId })}>
-          {busy ? 'Recording…' : kind && side ? `Record ${kind === 'card' ? (label ?? 'card') : kind === 'deduction' ? `−${amount ?? '?'} points` : kind === 'dq' ? 'disqualification' : 'warning'} · ${who}` : 'Choose what and who'}
+          {busy ? 'Recording…' : kind && side ? `Record ${kind === 'card' ? (label ?? 'card') : kind === 'deduction' ? `−${amount ?? '?'} points` : kind === 'dq' ? 'disqualification' : kind === 'reprimand' ? `reprimand (+${reprimandPoints} to the opponent)` : 'warning'} · ${who}` : 'Choose what and who'}
         </button>
       </div>
     </Dialog>

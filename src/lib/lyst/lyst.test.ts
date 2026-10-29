@@ -149,8 +149,8 @@ describe('discipline', () => {
   it('voided records do not count, and the tallies are per side', () => {
     const list = [d({ id: '1', kind: 'warning' }), d({ id: '2', kind: 'deduction', amount: 2 }), d({ id: '3', kind: 'deduction', amount: 1, voided_at: 'x' }), d({ id: '4', kind: 'card', label: 'Red', side: 'b' }), d({ id: '5', kind: 'dq', side: 'b' })];
     expect(activeDiscipline(list)).toHaveLength(4);
-    expect(disciplineCounts(list, 'a')).toEqual({ warnings: 1, cards: 0, deducted: 2, dq: false });
-    expect(disciplineCounts(list, 'b')).toEqual({ warnings: 0, cards: 1, deducted: 0, dq: true });
+    expect(disciplineCounts(list, 'a')).toEqual({ warnings: 1, cards: 0, deducted: 2, dq: false, reprimands: 0 });
+    expect(disciplineCounts(list, 'b')).toEqual({ warnings: 0, cards: 1, deducted: 0, dq: true, reprimands: 0 });
     expect(hasDq(list, 'b')).toBe(true);
     expect(hasDq(list, 'a')).toBe(false);
   });

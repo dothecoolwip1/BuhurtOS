@@ -2282,9 +2282,9 @@ constraint lyst_timer lyst_timer_round_no_check CHECK (((round_no >= 1) AND (rou
 constraint lyst_timer lyst_timer_status_check CHECK ((status = ANY (ARRAY['idle'::text, 'running'::text, 'paused'::text])))
 constraint match_discipline match_discipline_amount_check CHECK (((amount >= 0) AND (amount <= 10)))
 constraint match_discipline match_discipline_card_key_check CHECK (((card_key IS NULL) OR (card_key ~ '^[a-z0-9_]{1,24}$'::text)))
-constraint match_discipline match_discipline_check CHECK (((kind = 'deduction'::text) = (amount > 0)))
+constraint match_discipline match_discipline_check CHECK (((kind = ANY (ARRAY['deduction'::text, 'reprimand'::text])) = (amount > 0)))
 constraint match_discipline match_discipline_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
-constraint match_discipline match_discipline_kind_check CHECK ((kind = ANY (ARRAY['warning'::text, 'card'::text, 'deduction'::text, 'dq'::text, 'armour'::text, 'stoppage'::text, 'note'::text])))
+constraint match_discipline match_discipline_kind_check CHECK ((kind = ANY (ARRAY['warning'::text, 'card'::text, 'deduction'::text, 'dq'::text, 'armour'::text, 'stoppage'::text, 'note'::text, 'reprimand'::text])))
 constraint match_discipline match_discipline_label_check CHECK (((label IS NULL) OR (char_length(label) <= 30)))
 constraint match_discipline match_discipline_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
 constraint match_discipline match_discipline_pkey PRIMARY KEY (id)
@@ -2757,6 +2757,7 @@ function private.audit_schedule_changes() secdef=true d6fe7d1c47bc664b7840fc59c4
 function private.authenticity_finding_guard() secdef=false 9f6d5db31f47c6b7173335f6f71e08b3
 function private.backfill_official_metadata() secdef=true b584fd712e3a4990022a6b404854471d
 function private.base_points(p_pool_wins integer, p_elim_wins integer, p_place integer) secdef=false 5be728d1b01fe159d9999434a8e6a825
+function private.bi_duel_category(p_match uuid) secdef=true d206f906ded30b2e2a6b004384626523
 function private.board_fight(p_match uuid) secdef=true 3ca897920b930eaf7e13bf1309c317b8
 function private.breach_fields(p jsonb) secdef=false 32cce1c70500e42aa824948d53d79639
 function private.broadcast_control_json(p_event uuid) secdef=true d901a5fee0e0d0e3a7d73d68295e2eec
@@ -3141,7 +3142,7 @@ function private.registration_org_guard() secdef=true 210b63f3e585beabff74e68da1
 function private.registration_payment_ref() secdef=true e8231ab135d5b84142d85831413a4147
 function private.reopen_match_core(p_match uuid, p_reason text) secdef=true f7da4fd41a83fa2a238107de7e78a9ec
 function private.represented_team_evidence(p_event uuid, p_fighter uuid, OUT team_id uuid, OUT basis text) secdef=true 34d51ad5425a7a8c226c795938929869
-function private.resolve_withdrawn_walkovers(p_competition uuid) secdef=true 9f56211af5507debff6083af5950104f
+function private.resolve_withdrawn_walkovers(p_competition uuid) secdef=true cbed62d95b6303e4af52cfeeea286ed1
 function private.result_revisions_append_only() secdef=false 00c8835ca3c98320cb5ac209509c9850
 function private.retention_note(p_trigger text, p_rule text, p_subjects text[], p_detail jsonb) secdef=true d2e8eb8c68bc5b8b5e615201bd0c86e7
 function private.review_decided_notify(p_id uuid) secdef=true 5ec6ffecbdb54d2acb84af4ee2383bf6
@@ -3182,6 +3183,7 @@ function private.team_managers(p_team uuid) secdef=true ef4a48139ba18c9eb793c798
 function private.team_org_enabled(p_team uuid) secdef=true eef613018d1e0ae401917705613886e5
 function private.team_result_rows(p_team uuid) secdef=true 268c8351c32b8a1b765b153ee61600d5
 function private.teams_keep_represented() secdef=true 355b046e6c83b278ee5c7e46f98c35b1
+function private.technical_win_points(p_match uuid) secdef=true 89920f6e69896aebb48985491a4dac78
 function private.tier_points(p_base numeric, p_tier text, p_source text) secdef=false 88596a713d97771b9446ed02c6654bb8
 function private.touch_updated_at() secdef=false 587cccdfb0cc0805991745244d57ff0a
 function private.unfinish_competition() secdef=true 157cff9e48c462a330d2cafeb8282291
@@ -3422,11 +3424,11 @@ function public.list_team_captains(p_team uuid) secdef=true 29f36411f6e5b56c893f
 function public.list_team_officers(p_team uuid) secdef=true f96cb33ccdc15e13e061b16491dcdff2
 function public.lodge_review(p_command uuid, p_kind text, p_lodged_by text, p_grounds text, p_match_discipline uuid, p_event_sanction uuid, p_suspension uuid, p_match uuid, p_governing_body text, p_from timestamp with time zone) secdef=true ab42aafef99bff5a6e8fb69d8fb732c0
 function public.lyst_cite_rule(p_command uuid, p_discipline uuid, p_provision uuid) secdef=true 3206c050f30da8b3171d14f1026346fb
-function public.lyst_confirm_round(p_command uuid, p_match uuid, p_round integer, p_awarded_a integer, p_awarded_b integer, p_expected_rev integer, p_recommended_a integer, p_recommended_b integer, p_reason text) secdef=true 59c51764beb3e232cf0f39c4f9d35831
+function public.lyst_confirm_round(p_command uuid, p_match uuid, p_round integer, p_awarded_a integer, p_awarded_b integer, p_expected_rev integer, p_recommended_a integer, p_recommended_b integer, p_reason text) secdef=true af585e0c42f0969fdd0aa2154c1906bb
 function public.lyst_end_round(p_match uuid, p_round integer) secdef=true 8cce6b78355824314285f19a35290a6f
-function public.lyst_finalize(p_command uuid, p_match uuid, p_expected_version integer, p_result text, p_basis text, p_reason text) secdef=true 62056c3227c1b10db2d732be33d5ec40
+function public.lyst_finalize(p_command uuid, p_match uuid, p_expected_version integer, p_result text, p_basis text, p_reason text) secdef=true 1ce1b80afb889a635160a934a77dac5c
 function public.lyst_open(p_match uuid, p_counter_input text) secdef=true dd00c22e0e25919863ad15f8e35fcc46
-function public.lyst_record_discipline(p_command uuid, p_match uuid, p_round integer, p_side text, p_kind text, p_label text, p_amount integer, p_reason text, p_called_by text, p_related uuid) secdef=true 1cce9618b9935ffbc668a81be15d371b
+function public.lyst_record_discipline(p_command uuid, p_match uuid, p_round integer, p_side text, p_kind text, p_label text, p_amount integer, p_reason text, p_called_by text, p_related uuid) secdef=true 8a55802754943864286e8047e5c47720
 function public.lyst_return_round(p_command uuid, p_match uuid, p_round integer, p_expected_rev integer, p_reason text) secdef=true 38e31e7e9618d17b620b14577f3da2f5
 function public.lyst_state(p_match uuid) secdef=true ce5b28699a144cc14010a0b998db6add
 function public.lyst_timer_command(p_event uuid, p_field text, p_match uuid, p_expected_rev integer, p_command uuid, p_action text, p_mode text, p_duration_ms integer, p_round integer, p_delta_ms integer, p_pressed_at timestamp with time zone) secdef=true 33f573dedccd18d33729f9a24443e50b
@@ -4593,7 +4595,7 @@ view public.fighter_results opts=security_invoker=true aa25fd7f60924b9c53cd96bbf
 view public.fighter_results_all opts=security_invoker=true 11bea24b47147496ff325c393727e653
 view public.fighter_season_stats opts=security_invoker=true 7f3778d2140e93cbb508cc8476fcc5b2
 view public.lyst_public_state opts=security_invoker=true 49a5921196bcfd075b5b0d855cb1e2de
-view public.lyst_round_scores opts=security_invoker=true b155f2e49a0bfe8212b06ff7bc9f00fd
+view public.lyst_round_scores opts=security_invoker=true c36e28380d5d75bbdbcab2c9b1b25a22
 view public.match_sides opts=security_invoker=true 39d0277c19521cc5d5d8432f8c6e59f3
 view public.past_medal_records opts=security_invoker=true a2c3040cfc02708a63b89e610a339fc3
 view public.played_events opts=security_invoker=true 649799420f0e96adb6306543db843bea

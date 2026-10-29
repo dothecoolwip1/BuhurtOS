@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Seg } from './ui';
 import { confirmRound, duelEndRound, duelScore, duelTotal, duelUndo, proAddRound, proPatch, standing, toggleFighter, type DuelState, type GroupState, type ProState } from '../lib/scoring';
 import { BREAK_SECONDS, SERIES_TITLE, breakRemaining, configureSeries, currentRound, roundPoints, seriesOutcome, seriesSolo, seriesTotals, seriesUndo, setSeriesRound, type SeriesResult, type SeriesState } from '../lib/marathon';
-import { proRoundScore, type Side } from '../lib/tournament';
+import { bucklerMatchFinished, proRoundScore, zoneValues, type Side } from '../lib/tournament';
 import { CRITERIA, CRITERION_LABEL, criteriaWinner, type Call, type CriteriaCalls, type Criterion } from '../lib/outrance';
 
 /**
@@ -55,13 +55,20 @@ export function DuelBoard({ state: s, onChange, record, names, subs, headless = 
   const r = s.a.length - 1;
   const ta = duelTotal(s, 'a'), tb = duelTotal(s, 'b');
   const apply = (next: DuelState, kind: string, payload: unknown) => { onChange(next); record(kind, payload); };
-  const msg = s.winner ? `${names[s.winner]} wins the match` : r < 2 ? `Round ${r + 1} of 2 · 1:00` : 'Extra round · 30 s · lead of 2 needed';
+  const buckler = s.cat === 'buckler';
+  const won = buckler ? bucklerMatchFinished(s.a.slice(0, r), s.b.slice(0, r)).rounds : null;
+  // the strike buttons follow the category's hit values (Duels Rules 2.1): sword and buckler and polearm score 1 per strike
+  const z = zoneValues(s.cat ?? 'swordShield');
+  const twoValues = z.head === 2;
+  const msg = s.winner ? `${names[s.winner]} wins the match`
+    : buckler ? `Round ${r + 1} · 1:00 · 5 points win the round · rounds ${won!.a}–${won!.b}`
+    : r < 2 ? `Round ${r + 1} of 2 · 1:00` : 'Extra round · 30 s · lead of 2 needed';
   const side = (k: Side) => (
     <div className={`dside${headless ? ' headless' : ''}`}>{!headless && <><div className="n">{names[k]}</div>{subs?.[k] && <span className="src">{subs[k]}</span>}<div className="dscore mono">{duelTotal(s, k)}</div></>}
       {headless && <div className="side-tag" aria-hidden="true">{names[k]}</div>}
       <div className="rchips">{s[k].map((x, i) => <span key={i} className={`rchip ${i === r && !s.winner ? 'cur' : ''}`}>R{i + 1} · {x}</span>)}</div>
-      <button type="button" className="pbtn s2" disabled={!!s.winner} onClick={() => apply(duelScore(s, k, 2), 'duel.strike', { side: k, points: 2 })}>Head or torso +2</button>
-      <button type="button" className="pbtn s1" disabled={!!s.winner} onClick={() => apply(duelScore(s, k, 1), 'duel.strike', { side: k, points: 1 })}>Arm, leg or hand +1</button>
+      {twoValues && <button type="button" className="pbtn s2" disabled={!!s.winner} onClick={() => apply(duelScore(s, k, 2), 'duel.strike', { side: k, points: 2 })}>{s.cat === 'longsword' ? 'Head or torso, two hands +2' : 'Head or torso +2'}</button>}
+      <button type="button" className="pbtn s1" disabled={!!s.winner || (buckler && s[k][r] >= 5)} onClick={() => apply(duelScore(s, k, 1), 'duel.strike', { side: k, points: 1 })}>{twoValues ? (s.cat === 'longsword' ? 'Arm, leg, hand, or one hand +1' : 'Arm, leg or hand +1') : s.cat === 'polearm' ? 'Strike +1 (hands score 0)' : 'Strike +1'}</button>
     </div>
   );
   return (
@@ -70,7 +77,9 @@ export function DuelBoard({ state: s, onChange, record, names, subs, headless = 
       <div className="mteams">{side('a')}{side('b')}</div>
       <div className="panel info" style={{ gap: 8 }}>
         {!headless && <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Match total</span><b className="mono">{ta} – {tb}</b></div>}
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Lead needed to win</span><b className="mono">2 points {r >= 1 && Math.abs(ta - tb) >= 2 ? '✓' : `(now ${Math.abs(ta - tb)})`}</b></div>
+        {buckler
+          ? <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Rounds won (2 to win)</span><b className="mono">{won!.a} – {won!.b}</b></div>
+          : <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--muted)' }}>Lead needed to win</span><b className="mono">2 points {r >= 1 && Math.abs(ta - tb) >= 2 ? '✓' : `(now ${Math.abs(ta - tb)})`}</b></div>}
       </div>
       <div className="mactions">
         <button type="button" className="btn btn-line" disabled={!s.log.length || !!s.winner} onClick={() => apply(duelUndo(s), 'duel.undo', {})}>Undo last strike</button>

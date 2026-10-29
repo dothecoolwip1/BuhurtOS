@@ -111,7 +111,7 @@ export interface SecretaryBoard {
 }
 export const fetchSecretaryBoard = (eventId: string, field: string | null = null) => rpc<SecretaryBoard>('secretary_board', { p_event: eventId, p_field: field });
 
-export interface DisciplineArgs { command: string; matchId: string; round: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq'; label?: string | null; amount?: number; reason?: string | null; calledBy?: string | null; related?: string | null }
+export interface DisciplineArgs { command: string; matchId: string; round: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq' | 'reprimand'; label?: string | null; amount?: number; reason?: string | null; calledBy?: string | null; related?: string | null }
 export const disciplineArgs = (d: DisciplineArgs) => ({
   p_command: d.command, p_match: d.matchId, p_round: d.round, p_side: d.side, p_kind: d.kind, p_label: d.label ?? null, p_amount: d.amount ?? 0, p_reason: d.reason ?? null, p_called_by: d.calledBy ?? null, p_related: d.related ?? null
 });
@@ -192,7 +192,7 @@ export interface LystPublic {
   match_id: string; event_id: string; field_key: string; queue_state: string;
   timer_mode: TimerMode | null; timer_status: 'idle' | 'running' | 'paused' | null; timer_duration_ms: number | null; timer_remaining_ms: number | null; timer_started_at: string | null; timer_rev: number | null; timer_round: number | null;
   round_no: number | null; round_status: 'running' | 'confirming' | 'confirmed' | null; official_a: number; official_b: number; rounds_confirmed: number;
-  discipline: { round: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq' | 'armour' | 'stoppage' | 'note'; label: string | null; amount: number }[]; server_now: string;
+  discipline: { round: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq' | 'armour' | 'stoppage' | 'note' | 'reprimand'; label: string | null; amount: number }[]; server_now: string;
 }
 export async function fetchLystPublic(eventId: string): Promise<{ rows: LystPublic[]; sentAt: number; receivedAt: number }> {
   const sentAt = Date.now();

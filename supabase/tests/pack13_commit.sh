@@ -99,7 +99,10 @@ wait
 check "4 one confirm command sent four times at once: exactly one ok, never a second revision" "$(cat /tmp/p13-d1 /tmp/p13-d2 /tmp/p13-d3 /tmp/p13-d4 | grep -c "^ok$")" "1"
 check "4b ... and never more than one revision from that command" "$(q "select (count(*) <= 1)::text from public.lyst_round_revisions where id='$CC'")" "true"
 
-# ---- 6. FINISH MATCH from two tablets at once
+# ---- 6. FINISH MATCH from two tablets at once (after the 2 regular rounds, Duels Rules 2.2.2)
+q "insert into public.lyst_rounds (match_id, round_no, event_id, status) values ('$M', 2, '$E', 'confirming')" >/dev/null
+REV3=$(q "select rev from public.lyst_rounds where match_id='$M' and round_no=2")
+run $U1 "select public.lyst_confirm_round(gen_random_uuid(),'$M',2,5,1,$REV3,null,null,'Marshal verified paper counts')->>'status';" >/dev/null
 V=$(q "select version from public.matches where id='$M'")
 FC=$(uuid)
 run $U1 "select public.lyst_finalize('$FC','$M',$V,'a')->>'status';" >/tmp/p13-f1 &

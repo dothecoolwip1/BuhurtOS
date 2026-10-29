@@ -201,7 +201,7 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
         setBusy(true); void returnRound({ command: returnCommand.current.id, matchId, round: cur.round_no, expectedRev: cur.rev, reason: returnReason })
           .then(r => { if (r.status === 'stale') setNote('The round changed on another device. Check its latest state.'); return lyst.refresh(); }).catch(e => setNote(friendlyError(e))).finally(() => setBusy(false));
       }}>Return scores to counters</button></details>}
-      {callOpen && cur && <DisciplineSheet names={names} round={cur.round_no} settings={st.settings} calledByDefault="" busy={busy} onClose={() => setCallOpen(false)} onRecord={d => void recordCall(d)} />}
+      {callOpen && cur && <DisciplineSheet group names={names} round={cur.round_no} settings={st.settings} calledByDefault="" busy={busy} onClose={() => setCallOpen(false)} onRecord={d => void recordCall(d)} />}
     </section>
   );
 }

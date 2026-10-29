@@ -10,6 +10,7 @@ import { submitMatchResult, type CompetitionMatch } from '../../data/matches';
 import { clearBoard, loadBoard, saveBoard } from '../../lib/boardStore';
 import { sideLabel } from '../../lib/entryLabel';
 import { boardModeFor, canOfferFinish, isNoSignalError, newBoard, perSideFor, resultFromBoard, resultSummary, type BoardState } from '../../lib/fieldScoring';
+import { duelCategoryOf } from '../../lib/tournament';
 import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { snapshotOf } from '../../lib/liveScoreSnapshot';
@@ -88,7 +89,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
   const mode = boardModeFor(comp.league, comp.category);
   const { waiting, record, drain, rejected, discardRejected, retryRejected } = useOutbox({ eventId });
   const names = sideName(match);
-  const fresh = useCallback((): BoardState | null => (mode ? newBoard(mode, { perSide: perSideFor(comp.category), roundsToWin: comp.roundsToWin, seriesKind: comp.category === 'sabre' || comp.category === 'greatsword' ? comp.category : 'triathlon' }) : null), [mode, comp]);
+  const fresh = useCallback((): BoardState | null => (mode ? newBoard(mode, { perSide: perSideFor(comp.category), roundsToWin: comp.roundsToWin, seriesKind: comp.category === 'sabre' || comp.category === 'greatsword' ? comp.category : 'triathlon', duel: duelCategoryOf(comp.category) }) : null), [mode, comp]);
   const [board, setBoard] = useState<BoardState | null | undefined>(undefined);   // undefined: still reading what was saved on this device
   const [groupRounds, setGroupRounds] = useState<readonly LystRound[] | null>(null);
   const [restoreError, setRestoreError] = useState<string | null>(null);
@@ -112,6 +113,8 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
     void (async () => {
       const stored = await loadBoard(userId, eventId, match.id, mode);
       let restored = stored?.board ?? fresh();
+      // a duel saved on this device before boards knew their category: give it the competition's (sword and buckler is won on rounds)
+      if (restored?.mode === 'duel' && !restored.s.cat && duelCategoryOf(comp.category)) restored = { mode: 'duel', s: { ...restored.s, cat: duelCategoryOf(comp.category)! } };
       let recorded: readonly LystRound[] | null = null;
       let repaired = false;
       if (restored?.mode === 'group' && !stored?.review) {

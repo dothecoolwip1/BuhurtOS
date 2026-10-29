@@ -141,6 +141,22 @@ export function zoneValues(cat: DuelCategory, grip: Grip = 'two'): ZoneValues {
   }
 }
 
+/** The BI duel category of a competition's category code (null for anything that is not a BI duel). */
+export function duelCategoryOf(code: string | null | undefined): DuelCategory | null {
+  return code === 'sword_shield' ? 'swordShield' : code === 'buckler' ? 'buckler' : code === 'longsword' ? 'longsword' : code === 'polearm' ? 'polearm' : null;
+}
+/** A round's winner: more points (level: nobody). */
+const roundWinner = (a: number, b: number): Side | null => (a > b ? 'a' : b > a ? 'b' : null);
+/** Sword & Buckler (Duels Rules 2.2.1): 5 points win a round; the first to 2 round victories wins the match. */
+export const BUCKLER_ROUND_POINTS = 5;
+export function bucklerMatchFinished(a: number[], b: number[]): { done: boolean; winner?: Side; rounds: { a: number; b: number } } {
+  const won = { a: 0, b: 0 };
+  a.forEach((x, i) => { const w = roundWinner(x, b[i] ?? 0); if (w) won[w]++; });
+  if (won.a >= 2 && won.a > won.b) return { done: true, winner: 'a', rounds: won };
+  if (won.b >= 2 && won.b > won.a) return { done: true, winner: 'b', rounds: won };
+  return { done: false, rounds: won };
+}
+
 /** Sword & Shield, Longsword and Polearm: two 1-minute rounds, then 30 s rounds until one leads by 2 or more. */
 export function leadMatchFinished(a: number[], b: number[]): { done: boolean; winner?: Side } {
   if (a.length < 2) return { done: false };

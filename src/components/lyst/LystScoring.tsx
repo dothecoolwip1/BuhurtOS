@@ -5,6 +5,7 @@ import { StatusBanner, type ScoringScreenProps } from '../scoring/ScoringScreen'
 import { TimerBar } from './TimerBar';
 import { RoundEntry, type Hint } from './RoundEntry';
 import { DisciplineSheet, type DisciplineDraft } from './DisciplineSheet';
+import { duelCategoryOf } from '../../lib/tournament';
 import { CounterEvidence, CountersPanel } from './CountersPanel';
 import { CounterDeliveryPanel } from './CounterDeliveryPanel';
 import { counterReviewReason } from '../../lib/lyst/delivery';
@@ -25,7 +26,7 @@ import { trackEvent } from '../../lib/analytics';
 import { counterInputFor, mergeSides, sideVars } from '../../lib/lyst/counters';
 import { clearFinalCommand, loadFinalCommand, saveFinalCommand } from '../../lib/lyst/finalizeStore';
 import {
-  activeDiscipline, allRoundsConfirmed, currentRound, describeDiscipline, disciplineCounts, entryStart, hasDq, leadRule, officialTotals, resultSupportedByTotals, roundSeconds,
+  activeDiscipline, allRoundsConfirmed, bucklerRule, currentRound, describeDiscipline, disciplineCounts, entryStart, hasDq, leadRule, officialTotals, resultSupportedByTotals, roundSeconds,
   ROUND_STATUS_WORD, type FinishBasis, type LystRound
 } from '../../lib/lyst/rounds';
 import { presetOf, remainingMs, timerFor } from '../../lib/lyst/timer';
@@ -98,12 +99,16 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const leftMs = timer ? remainingMs(timer, lyst.clock.now(now)) : presetOf(presets, 'fight').seconds * 1000;
   const nextRoundNo = (cur?.round_no ?? 0) + 1;
   const fightSeconds = presetOf(presets, 'fight').seconds;
+  // the BI duel category: sword and buckler is won on round victories, every round a full minute (Duels Rules 2.2.1)
+  const duelCat = duelCategoryOf(comp.category);
+  const buckler = duelCat === 'buckler';
+  const secsFor = (n: number) => (buckler ? fightSeconds : roundSeconds(n, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds));
 
   // the saved confirmation is on the server now: stop showing it as pending
   useEffect(() => { if (pendingRound && rounds.some(r => r.round_no === pendingRound.round && r.status === 'confirmed' && r.awarded_a === pendingRound.a && r.awarded_b === pendingRound.b)) setPendingRound(null); }, [rounds, pendingRound]);
 
   /* ---------------- the clock: online only ---------------- */
-  const startRound = (n: number) => { setEarly(false); sendTimer('start', { mode: 'fight', round: n, durationMs: roundSeconds(n, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds) * 1000 }); };
+  const startRound = (n: number) => { setEarly(false); sendTimer('start', { mode: 'fight', round: n, durationMs: secsFor(n) * 1000 }); };
   const endRound = (kind: 'break' | 'extended_break' = 'break') => sendTimer('start', { mode: kind, round: cur?.round_no ?? 1, durationMs: presetOf(presets, kind).seconds * 1000 });
 
   // optional: the operating tablet starts the break by itself when the round clock reaches zero (the first tablet to do it wins; another is told "stale")
@@ -180,9 +185,13 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
   const seatAction = async (fn: () => Promise<unknown>) => { setBusy(true); setError(null); try { await fn(); await lyst.refresh(); } catch (e) { setError(friendlyError(e)); } finally { setBusy(false); } };
 
   /* ---------------- finishing: the existing human-confirmed path ---------------- */
-  const supported = resultSupportedByTotals(rounds);
+  const bRule = buckler ? bucklerRule(rounds) : null;
+  const rule = bRule ?? leadRule(rounds, settings ?? { regular_rounds: 2 });
+  // a BI duel is decided by its rule and never ends level (Duels Rules 2.2): the server refuses anything else
+  const supported = duelCat ? (rule.decided ? rule.winner : null) : resultSupportedByTotals(rounds);
   const finishReady = allRoundsConfirmed(rounds) && !pendingRound && waiting === 0;
-  const rule = leadRule(rounds, settings ?? { regular_rounds: 2 });
+  // a technical win can be recorded before any round (a no-show, Duels Rules 2.3)
+  const technicalReady = finishReady || (rounds.length === 0 && !pendingRound && waiting === 0);
   const summaryFor = (result: 'a' | 'b' | 'draw') => (result === 'draw' ? `Draw, ${totals.a}–${totals.b}` : `${result === 'a' ? names.a : names.b} win, ${Math.max(totals.a, totals.b)}–${Math.min(totals.a, totals.b)}`);
 
   const saveFinal = async (result: 'a' | 'b' | 'draw', basis: FinishBasis, reason: string | null) => {
@@ -274,7 +283,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       <section className="panel sk-done ly-finish" aria-label="Finish the match">
         {context}
         <StatusBanner status={busy ? 'saving' : 'confirming'} />
-        <h2 className="sk-h">{supported ? summaryFor(supported) : 'Confirm every round first'}</h2>
+        <h2 className="sk-h">{supported ? summaryFor(supported) : duelCat && finishReady ? (buckler ? 'Not decided: 2 round victories win (fight another round)' : 'Not decided: a 2-point lead wins (fight an extra round)') : rounds.length === 0 ? 'No round fought yet' : 'Confirm every round first'}</h2>
         <div className="sk-final">
           {(['a', 'b'] as const).map(k => <div key={k} className={`sk-fside${supported === k ? ' won' : ''}`}><span className="sk-name">{names[k]}</span><span className="sk-num">{k === 'a' ? totals.a : totals.b}</span></div>)}
         </div>
@@ -297,7 +306,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
             <div className="ly-other-block"><b>Technical result</b>
               <label className="ly-reason"><span>The marshal's reason</span><input value={technicalReason} maxLength={200} onChange={e => setTechnicalReason(e.target.value)} placeholder="For example: opponent could not continue" /></label>
               <div className="mactions">
-                {(['a', 'b'] as const).map(k => <button key={k} type="button" className="btn btn-line fq-big" disabled={busy || technicalReason.trim().length < 3 || !finishReady} onClick={() => { setChoice({ result: k, basis: 'technical' }); void saveFinal(k, 'technical', technicalReason.trim()); }}>{names[k]} win</button>)}
+                {(['a', 'b'] as const).map(k => <button key={k} type="button" className="btn btn-line fq-big" disabled={busy || technicalReason.trim().length < 3 || !technicalReady} onClick={() => { setChoice({ result: k, basis: 'technical' }); void saveFinal(k, 'technical', technicalReason.trim()); }}>{names[k]} win</button>)}
               </div>
             </div>
           </details>
@@ -351,7 +360,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
               <span className="sk-name">{names[k]}</span>
               <span className="sk-num" aria-label={`${names[k]}: ${totals[k]} official points`}>{totals[k]}</span>
               {(counts[k].warnings > 0 || counts[k].cards > 0 || counts[k].deducted > 0 || counts[k].dq) && (
-                <span className="ly-marks">{counts[k].warnings > 0 && <b className="ly-mark">W{counts[k].warnings}</b>}{counts[k].cards > 0 && <b className="ly-mark is-card">C{counts[k].cards}</b>}{counts[k].deducted > 0 && <b className="ly-mark is-ded">−{counts[k].deducted}</b>}{counts[k].dq && <b className="ly-mark is-dq">DQ</b>}</span>
+                <span className="ly-marks">{counts[k].warnings > 0 && <b className="ly-mark">W{counts[k].warnings}</b>}{counts[k].reprimands > 0 && <b className="ly-mark">R{counts[k].reprimands}</b>}{counts[k].cards > 0 && <b className="ly-mark is-card">C{counts[k].cards}</b>}{counts[k].deducted > 0 && <b className="ly-mark is-ded">−{counts[k].deducted}</b>}{counts[k].dq && <b className="ly-mark is-dq">DQ</b>}</span>
               )}
             </div>
           ))}
@@ -392,6 +401,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
           <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline} onClick={() => startRound(1)}>Start round 1 · {presetOf(presets, 'fight').seconds >= 60 ? `${Math.floor(roundSeconds(1, settings!, fightSeconds) / 60)}:${String(roundSeconds(1, settings!, fightSeconds) % 60).padStart(2, '0')}` : `${fightSeconds}s`}</button>
         </div>
       )}
+      {!correctingRound && zone === 'start' && <button type="button" className="ly-link" disabled={busy} onClick={() => { setPhase('confirming'); setError(null); }}>A fighter did not come to the list: technical win…</button>}
 
       {!correctingRound && zone === 'fighting' && !early && (
         <>
@@ -414,10 +424,14 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
 
       {!correctingRound && zone === 'between' && !pendingRound && (
         <>
-          {rule.decided && <p className="ly-hint-line" role="status">{names[rule.winner!]} lead by {Math.abs(totals.a - totals.b)} after {totals.rounds} rounds: the lead rule says the match can finish.</p>}
-          {rule.extraRound && <p className="ly-hint-line" role="status">Level or close after {totals.rounds} rounds: an extra round of {roundSeconds(nextRoundNo, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds)} s decides it under the lead rule.</p>}
+          {rule.decided && (bRule
+            ? <p className="ly-hint-line" role="status">{names[rule.winner!]} have 2 round victories ({bRule.won.a}–{bRule.won.b}): the match can finish.</p>
+            : <p className="ly-hint-line" role="status">{names[rule.winner!]} lead by {Math.abs(totals.a - totals.b)} after {totals.rounds} rounds: the lead rule says the match can finish.</p>)}
+          {rule.extraRound && (bRule
+            ? <p className="ly-hint-line" role="status">Rounds {bRule.won.a}–{bRule.won.b}: another round decides it (5 points win a round).</p>
+            : <p className="ly-hint-line" role="status">Level or close after {totals.rounds} rounds: an extra round of {secsFor(nextRoundNo)} s decides it under the lead rule.</p>)}
           <div className="ly-zone ly-act ly-act-two">
-            <button type="button" className={`btn fq-big ly-go ${rule.decided ? 'btn-line' : 'btn-win'}`} disabled={timerBusy || lyst.offline} onClick={() => startRound(nextRoundNo)}>Start round {nextRoundNo} · {(() => { const s = roundSeconds(nextRoundNo, settings ?? { regular_rounds: 2, extra_round_seconds: 30 }, fightSeconds); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; })()}</button>
+            <button type="button" className={`btn fq-big ly-go ${rule.decided ? 'btn-line' : 'btn-win'}`} disabled={timerBusy || lyst.offline} onClick={() => startRound(nextRoundNo)}>Start round {nextRoundNo} · {(() => { const s = secsFor(nextRoundNo); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; })()}</button>
             <button type="button" className={`btn fq-big ly-go ${rule.decided ? 'btn-win' : 'btn-line'}`} disabled={!finishReady || busy} onClick={() => { setPhase('confirming'); setError(null); }}>Finish match</button>
           </div>
           {timer?.mode === 'break' || timer?.mode === 'extended_break' ? null : <button type="button" className="ly-link" disabled={timerBusy || lyst.offline} onClick={() => endRound('extended_break')}>Start a long break</button>}
@@ -463,7 +477,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
         <button type="button" className="ly-link" onClick={()=>void discardRejected(match.id)}>Discard refused actions</button>
       </Dialog>}
 
-      {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}
+      {sheet === 'discipline' && st && settings && <DisciplineSheet names={names} round={cur?.round_no ?? 1} settings={settings} calledByDefault={calledBy} busy={busy} reprimandPoints={duelCat ? (buckler ? 1 : 3) : null} onClose={() => setSheet(null)} onRecord={d => void recordDiscipline(d)} />}
       {sheet === 'counters' && st && <CountersPanel state={st} names={names} round={cur?.round_no ?? 1} eventId={eventId} fieldName={fieldName} busy={busy} sides={sides} onSidesSaved={() => lyst.refresh()} onClose={() => setSheet(null)}
         onNewTrainingCode={() => void seatAction(() => createJoinCode(eventId, fieldName))} />}
       {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, reason) => void voidIt(id, reason)} onClose={() => setSheet(null)} citations={citations} onCite={(id, p) => void cite(id, p)} />}

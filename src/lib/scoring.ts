@@ -1,4 +1,4 @@
-import { leadMatchFinished, type ProRound, type Side } from './tournament';
+import { BUCKLER_ROUND_POINTS, bucklerMatchFinished, leadMatchFinished, type DuelCategory, type ProRound, type Side } from './tournament';
 
 /* ---------------- group fight ---------------- */
 /**
@@ -46,13 +46,15 @@ export function confirmRound(s: GroupState): GroupState {
 }
 
 /* ---------------- duel ---------------- */
-export interface DuelState { a: number[]; b: number[]; log: [Side, number][]; winner?: Side }
-export const newDuel = (): DuelState => ({ a: [0], b: [0], log: [] });
+export interface DuelState { a: number[]; b: number[]; log: [Side, number][]; winner?: Side; /** the BI duel category: sword and buckler is won on rounds */ cat?: DuelCategory }
+export const newDuel = (cat?: DuelCategory | null): DuelState => ({ a: [0], b: [0], log: [], ...(cat ? { cat } : {}) });
 export const duelTotal = (s: DuelState, side: Side) => s[side].reduce((x, y) => x + y, 0);
 
 export function duelScore(s: DuelState, side: Side, points: number): DuelState {
   if (s.winner) return s;
   const arr = [...s[side]];
+  // sword and buckler: 5 points win the round (Duels Rules 2.2.1)
+  if (s.cat === 'buckler' && arr[arr.length - 1] + points > BUCKLER_ROUND_POINTS) return s;
   arr[arr.length - 1] += points;
   return { ...s, [side]: arr, log: [...s.log, [side, points]] };
 }
@@ -67,7 +69,7 @@ export function duelUndo(s: DuelState): DuelState {
 /** Two main rounds, then extra rounds until one fighter leads by 2 (Duels rules V.26.4 §2.2.2). */
 export function duelEndRound(s: DuelState): DuelState {
   if (s.winner) return s;
-  const r = leadMatchFinished(s.a, s.b);
+  const r = s.cat === 'buckler' ? bucklerMatchFinished(s.a, s.b) : leadMatchFinished(s.a, s.b);
   if (r.done) return { ...s, winner: r.winner, log: [] };
   return { ...s, a: [...s.a, 0], b: [...s.b, 0], log: [] };
 }

@@ -2,7 +2,7 @@ import { fieldKey } from './eventDay';
 import type { CompetitionMatch, MatchResult, QueueState } from '../data/matches';
 import { duelTotal, newDuel, newGroupFight, newPro, type DuelState, type GroupState, type ProState } from './scoring';
 import { newMarathon, newSeries, seriesDetail, seriesOutcome, type SeriesKind, type SeriesState } from './marathon';
-import { proRoundScore } from './tournament';
+import { bucklerMatchFinished, proRoundScore, type DuelCategory } from './tournament';
 
 export type LeagueKey = 'buhurt' | 'duels' | 'outrance' | 'hacsa';
 export type BoardMode = 'group' | 'duel' | 'pro' | 'marathon' | 'series';
@@ -30,11 +30,11 @@ export function perSideFor(category: string): number {
   return Number.isInteger(n) && n >= 1 && n <= 60 ? n : 5;
 }
 
-export function newBoard(mode: BoardMode, opts: { perSide?: number; roundsToWin?: number | null; seriesKind?: Exclude<SeriesKind, 'marathon'> } = {}): BoardState {
+export function newBoard(mode: BoardMode, opts: { perSide?: number; roundsToWin?: number | null; seriesKind?: Exclude<SeriesKind, 'marathon'>; duel?: DuelCategory | null } = {}): BoardState {
   if (mode === 'marathon') return { mode, s: newMarathon() };
   if (mode === 'series') return { mode, s: newSeries(opts.seriesKind ?? 'triathlon') };
   if (mode === 'group') return { mode, s: newGroupFight(opts.perSide ?? 5, opts.roundsToWin ?? 2) };
-  if (mode === 'duel') return { mode, s: newDuel() };
+  if (mode === 'duel') return { mode, s: newDuel(opts.duel) };
   return { mode, s: newPro() };
 }
 
@@ -77,6 +77,11 @@ export function resultFromBoard(board: BoardState, stage: CompetitionMatch['stag
     const s = board.s;
     if (!s.winner) return { ok: false, reason: 'The match is not decided yet. End the round to check the lead.' };
     const scoreA = duelTotal(s, 'a'), scoreB = duelTotal(s, 'b');
+    if (s.cat === 'buckler') {
+      // decided on round victories: the score recorded is the rounds won, the points stay in the detail
+      const won = bucklerMatchFinished(s.a, s.b).rounds;
+      return { ok: true, value: { result: winnerResult(s.winner), scoreA: won.a, scoreB: won.b, detail: { kind: 'duel', category: 'buckler', score_is: 'round_wins', rounds: { a: [...s.a], b: [...s.b] }, totals: { a: scoreA, b: scoreB }, round_wins: won } } };
+    }
     if ((s.winner === 'a' && scoreA < scoreB) || (s.winner === 'b' && scoreB < scoreA)) return { ok: false, reason: 'The totals do not match the winner. Check the round points.' };
     return { ok: true, value: { result: winnerResult(s.winner), scoreA, scoreB, detail: { kind: 'duel', rounds: { a: [...s.a], b: [...s.b] }, totals: { a: scoreA, b: scoreB } } } };
   }

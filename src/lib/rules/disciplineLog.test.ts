@@ -18,7 +18,7 @@ describe('discipline log grouping', () => {
   it('groups by person, newest activity first, and counts only records in force', () => {
     const g = groupDiscipline(rows, 'all', true, '');
     expect(g.map(p => p.name)).toEqual(['Bo', 'Ada']);
-    expect(g[1].tally).toEqual({ warning: 1, card: 1, deduction: 0, dq: 0, armour: 0, stoppage: 0, note: 0 });
+    expect(g[1].tally).toEqual({ warning: 1, card: 1, deduction: 0, dq: 0, armour: 0, stoppage: 0, note: 0, reprimand: 0 });
     expect(g[1].cards).toEqual({ Yellow: 1 });
     expect(g[1].rows).toHaveLength(3);
   });

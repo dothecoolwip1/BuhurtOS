@@ -49,27 +49,40 @@ export const isChange = (r: LystRound | null, a: number, b: number): boolean => 
 
 /* ---------------- discipline ---------------- */
 /** Pack 29 adds the Outrance protocol kinds: an armour repair granted (90 s), a stoppage (KO, TKO, ...) and a note (a corner man expelled). */
-export type DisciplineKind = 'warning' | 'card' | 'deduction' | 'dq' | 'armour' | 'stoppage' | 'note';
+/** 'reprimand' (Duels Regulations 4.2): its amount is points added to the OPPONENT (3, or 1 in sword and buckler), set by the server. */
+export type DisciplineKind = 'warning' | 'card' | 'deduction' | 'dq' | 'armour' | 'stoppage' | 'note' | 'reprimand';
 export interface LystDiscipline {
   id: string; round_no: number; side: 'a' | 'b'; kind: DisciplineKind; label: string | null; amount: number; voided_at: string | null;
   /** Pack 29: an Outrance call's key (yellow, red, ko, tko, tko_round, tko_equipment, ...). */
   key?: string | null;
   reason?: string | null; called_by?: string | null; void_reason?: string | null; created_at?: string;
 }
-export const KIND_WORD: Record<DisciplineKind, string> = { warning: 'Warning', card: 'Card', deduction: 'Point deduction', dq: 'Disqualification', armour: 'Armour repair', stoppage: 'Stoppage', note: 'Note' };
+export const KIND_WORD: Record<DisciplineKind, string> = { warning: 'Warning', card: 'Card', deduction: 'Point deduction', dq: 'Disqualification', armour: 'Armour repair', stoppage: 'Stoppage', note: 'Note', reprimand: 'Reprimand' };
 
 /** One line for a record, e.g. "Yellow card · Round 2 · Alex". */
 export function describeDiscipline(d: Pick<LystDiscipline, 'kind' | 'label' | 'amount' | 'round_no' | 'side'>, names: { a: string; b: string }): string {
-  const what = d.kind === 'deduction' ? `−${d.amount} point${d.amount === 1 ? '' : 's'}` : d.kind === 'card' ? (d.label ?? 'Card') : (d.kind === 'armour' || d.kind === 'stoppage' || d.kind === 'note' || d.kind === 'dq') && d.label ? d.label : KIND_WORD[d.kind];
+  const what = d.kind === 'reprimand' ? `Reprimand (+${d.amount} to the opponent)` : d.kind === 'deduction' ? `−${d.amount} point${d.amount === 1 ? '' : 's'}` : d.kind === 'card' ? (d.label ?? 'Card') : (d.kind === 'armour' || d.kind === 'stoppage' || d.kind === 'note' || d.kind === 'dq') && d.label ? d.label : KIND_WORD[d.kind];
   return `${what} · Round ${d.round_no} · ${d.side === 'a' ? names.a : names.b}`;
 }
 export const activeDiscipline = (list: readonly LystDiscipline[]): LystDiscipline[] => list.filter(d => !d.voided_at);
 export const hasDq = (list: readonly LystDiscipline[], side: 'a' | 'b'): boolean => activeDiscipline(list).some(d => d.kind === 'dq' && d.side === side);
 
 /** Compact per-side tallies for the scoreboard strip. */
-export function disciplineCounts(list: readonly LystDiscipline[], side: 'a' | 'b'): { warnings: number; cards: number; deducted: number; dq: boolean } {
+export function disciplineCounts(list: readonly LystDiscipline[], side: 'a' | 'b'): { warnings: number; cards: number; deducted: number; dq: boolean; reprimands: number } {
   const mine = activeDiscipline(list).filter(d => d.side === side);
-  return { warnings: mine.filter(d => d.kind === 'warning').length, cards: mine.filter(d => d.kind === 'card').length, deducted: mine.filter(d => d.kind === 'deduction').reduce((s, d) => s + d.amount, 0), dq: mine.some(d => d.kind === 'dq') };
+  // a reprimand is not a card (Duels Regulations 4.2-4.5): counted apart, and a card labelled "Reprimand" from an older preset counts as one
+  const isReprimand = (d: LystDiscipline) => d.kind === 'reprimand' || (d.kind === 'card' && /^reprimand$/i.test(d.label ?? ''));
+  return { warnings: mine.filter(d => d.kind === 'warning').length, cards: mine.filter(d => d.kind === 'card' && !isReprimand(d)).length, deducted: mine.filter(d => d.kind === 'deduction').reduce((s, d) => s + d.amount, 0), dq: mine.some(d => d.kind === 'dq'), reprimands: mine.filter(isReprimand).length };
+}
+
+/** Sword and buckler (Duels Rules 2.2.1): the first to 2 round victories (a SUGGESTION: the person finishing decides; the server re-checks). */
+export function bucklerRule(rounds: readonly LystRound[]): { decided: boolean; winner: 'a' | 'b' | null; extraRound: boolean; won: { a: number; b: number } } {
+  const done = confirmedRounds(rounds);
+  const won = { a: done.filter(r => (r.official_a ?? 0) > (r.official_b ?? 0)).length, b: done.filter(r => (r.official_b ?? 0) > (r.official_a ?? 0)).length };
+  if (!allRoundsConfirmed(rounds)) return { decided: false, winner: null, extraRound: false, won };
+  if (won.a >= 2 && won.a > won.b) return { decided: true, winner: 'a', extraRound: false, won };
+  if (won.b >= 2 && won.b > won.a) return { decided: true, winner: 'b', extraRound: false, won };
+  return { decided: false, winner: null, extraRound: done.length >= 2, won };
 }
 
 /* ---------------- settings ---------------- */
