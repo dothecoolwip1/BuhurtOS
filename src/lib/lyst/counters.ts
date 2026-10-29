@@ -122,7 +122,7 @@ export function counterBanner(state: {
   if (state.seat.status === 'ended' || state.seat.status === 'declined') return 'You are not counting right now. Choose your Lyst and side.';
   if (state.waiting) return 'Waiting for the next fight on this Lyst. It opens here by itself.';
   if (state.outrance?.position === 'wrong') return state.outrance.need === 'line_marshal'
-    ? 'This fight is a Profight: it is scored by 3 or 5 line marshals. Switch this phone to Line marshal.'
+    ? 'This fight is a Profight: it is scored by line marshals. Switch this phone to Line marshal.'
     : `This fight is not a Profight: choose ${sideLabel('a', sides)} or ${sideLabel('b', sides)} to count it.`;
   if (state.final) return 'This fight is finished. The next one opens here by itself.';
   if (!state.round) return 'Waiting for the round to start.';

@@ -50,7 +50,7 @@ create table if not exists public.outrance_sheets (
   match_id uuid not null references public.matches (id) on delete cascade,
   event_id uuid not null references public.events (id) on delete cascade,
   round_no integer not null check (round_no between 1 and 20),
-  seat_id uuid not null references public.lyst_counter_seats (id) on delete cascade,
+  seat_id uuid references public.lyst_counter_seats (id) on delete cascade,
   role text not null check (role in ('official', 'learning')),
   operator_name text,
   strikes_a integer not null, strikes_b integer not null,
@@ -59,10 +59,25 @@ create table if not exists public.outrance_sheets (
   armour_a integer not null, armour_b integer not null,
   calls jsonb not null default '{}'::jsonb,
   submitted_at timestamptz not null default clock_timestamp(),
-  superseded_at timestamptz
+  superseded_at timestamptz,
+  -- 'phone': counted on a line-marshal phone. 'paper': the marshal kept the p.25 paper sheet and the secretary typed it in (entered_by).
+  source text not null default 'phone',
+  entered_by uuid,
+  void_reason text
 );
+-- written so it also brings a database that had an earlier draft of this table to the same shape
+alter table public.outrance_sheets alter column seat_id drop not null;
+alter table public.outrance_sheets add column if not exists source text not null default 'phone';
+alter table public.outrance_sheets add column if not exists entered_by uuid;
+alter table public.outrance_sheets add column if not exists void_reason text;
+alter table public.outrance_sheets drop constraint if exists outrance_sheets_source_check;
+alter table public.outrance_sheets add constraint outrance_sheets_source_check check (source in ('phone', 'paper'));
+alter table public.outrance_sheets drop constraint if exists outrance_sheets_paper_check;
+alter table public.outrance_sheets add constraint outrance_sheets_paper_check check ((source = 'phone') = (seat_id is not null)
+  and (source = 'phone' or (char_length(btrim(coalesce(operator_name, ''))) between 2 and 60 and entered_by is not null)));
 create index if not exists outrance_sheets_round_idx on public.outrance_sheets (match_id, round_no) where superseded_at is null;
 create unique index if not exists outrance_sheets_one_current on public.outrance_sheets (seat_id, match_id, round_no) where superseded_at is null;
+create unique index if not exists outrance_sheets_one_paper on public.outrance_sheets (match_id, round_no, lower(btrim(operator_name))) where source = 'paper' and superseded_at is null;
 alter table public.outrance_sheets enable row level security;
 revoke all on public.outrance_sheets from public, anon, authenticated;
 
@@ -227,7 +242,8 @@ begin
   v_res := private.outrance_sheet_result(s.strikes_a, s.strikes_b, s.calls, p_protocol ->> 'stoppage');
   v_da := coalesce((p_protocol -> 'yellows' ->> 'a')::int, 0) + coalesce((p_protocol -> 'armour' ->> 'a')::int, 0) + case when s.weapon_losses_a >= 3 then 1 else 0 end;
   v_db := coalesce((p_protocol -> 'yellows' ->> 'b')::int, 0) + coalesce((p_protocol -> 'armour' ->> 'b')::int, 0) + case when s.weapon_losses_b >= 3 then 1 else 0 end;
-  return jsonb_build_object('sheet_id', s.id, 'seat_id', s.seat_id, 'operator', s.operator_name, 'role', s.role, 'round_no', s.round_no, 'submitted_at', s.submitted_at,
+  return jsonb_build_object('sheet_id', s.id, 'seat_id', s.seat_id, 'operator', s.operator_name, 'role', s.role, 'source', s.source,
+    'marshal', coalesce(s.seat_id::text, 'paper:' || lower(btrim(s.operator_name))), 'round_no', s.round_no, 'submitted_at', s.submitted_at,
     'strikes', jsonb_build_object('a', s.strikes_a, 'b', s.strikes_b), 'takedowns', jsonb_build_object('a', s.takedowns_a, 'b', s.takedowns_b),
     'weapon_losses', jsonb_build_object('a', s.weapon_losses_a, 'b', s.weapon_losses_b), 'armour_failures', jsonb_build_object('a', s.armour_a, 'b', s.armour_b),
     'calls', s.calls, 'result', v_res, 'deduct', jsonb_build_object('a', v_da, 'b', v_db),
@@ -443,7 +459,7 @@ begin
   if p_id is null then raise exception 'a sheet id is required' using errcode = '22023'; end if;
   select * into v_old from public.outrance_sheets where id = p_id;
   if found then
-    if v_old.seat_id <> p_seat or (select user_id from public.lyst_counter_seats where id = p_seat) is distinct from auth.uid() then raise exception 'that sheet id belongs to someone else' using errcode = '42501'; end if;
+    if v_old.seat_id is distinct from p_seat or (select user_id from public.lyst_counter_seats where id = p_seat) is distinct from auth.uid() then raise exception 'that sheet id belongs to someone else' using errcode = '42501'; end if;
     return jsonb_build_object('status', 'duplicate', 'sheet', private.outrance_sheet_json(v_old, '{}'::jsonb));
   end if;
   v_s := private.lyst_seat_for_counting(p_seat, p_round, false);
@@ -498,6 +514,86 @@ end $$;
 revoke execute on function private.outrance_recount() from public, anon, authenticated;
 drop trigger if exists lyst_counter_rounds_outrance_recount on public.lyst_counter_rounds;
 create trigger lyst_counter_rounds_outrance_recount after delete on public.lyst_counter_rounds for each row execute function private.outrance_recount();
+
+-- ================================================================ 6b. paper sheets (owner decision 2026-10-29: phones are not mandatory)
+-- A line marshal without a phone keeps the p.25 paper sheet; the secretary types its totals and criteria in. It counts exactly like a phone's
+-- sheet. A mistyped paper sheet is replaced or removed with a reason (kept, never deleted). A recount of the phones does not touch paper sheets.
+create or replace function private.outrance_paper_count(p_tally jsonb, p_mark text, p_side text) returns integer
+language plpgsql immutable set search_path = '' as $$
+declare v text := p_tally -> p_mark ->> p_side;
+begin
+  if v is null or v = '' then return 0; end if;
+  if v !~ '^\d{1,3}$' then raise exception 'type whole numbers from 0 to 999 on the sheet' using errcode = '22023'; end if;
+  return v::int;
+end $$;
+
+create or replace function public.outrance_enter_sheet(p_id uuid, p_match uuid, p_round integer, p_marshal text, p_tally jsonb, p_calls jsonb default '{}'::jsonb,
+  p_replaces uuid default null, p_reason text default null) returns jsonb
+language plpgsql security definer set search_path = '' as $$
+declare v_event uuid; v_old public.outrance_sheets; v_name text := nullif(btrim(coalesce(p_marshal, '')), ''); v_reason text := nullif(btrim(coalesce(p_reason, '')), '');
+  v_sa integer; v_sb integer; v_needed boolean; v_n integer; v_sheet public.outrance_sheets;
+begin
+  if auth.uid() is null then raise exception 'sign in required' using errcode = '28000'; end if;
+  if p_id is null then raise exception 'a sheet id is required' using errcode = '22023'; end if;
+  v_event := private.event_of_match(p_match);
+  if v_event is null then raise exception 'match not found' using errcode = 'P0002'; end if;
+  if not private.can_score(v_event) or not private.can_score_match(p_match) then raise exception 'you cannot run this lyst' using errcode = '42501'; end if;
+  select * into v_old from public.outrance_sheets where id = p_id;
+  if found then
+    if v_old.match_id <> p_match or v_old.entered_by is distinct from auth.uid() then raise exception 'that sheet id belongs to something else' using errcode = '42501'; end if;
+    return jsonb_build_object('status', 'duplicate', 'sheet', private.outrance_sheet_json(v_old, '{}'::jsonb));
+  end if;
+  perform private.lyst_match_check(v_event, p_match, null);
+  perform private.lyst_lock_live_match(p_match);
+  if not private.outrance_is(p_match) then raise exception 'this fight is not scored to the Outrance rules' using errcode = 'P0001'; end if;
+  if p_round is null or not exists (select 1 from public.lyst_rounds where match_id = p_match and round_no = p_round) then
+    raise exception 'round % has not been fought yet', p_round using errcode = 'P0001'; end if;
+  if v_name is null or char_length(v_name) not between 2 and 60 then raise exception 'write the line marshal''s name (2 to 60 characters)' using errcode = '22023'; end if;
+  if jsonb_typeof(coalesce(p_tally, 'null'::jsonb)) <> 'object' then raise exception 'the sheet totals are missing' using errcode = '22023'; end if;
+  perform pg_advisory_xact_lock(hashtextextended('bos:lyst-round:' || p_match::text, 0));
+  if p_replaces is not null then
+    select * into v_old from public.outrance_sheets where id = p_replaces and match_id = p_match and round_no = p_round and source = 'paper' and superseded_at is null for update;
+    if not found then raise exception 'that paper sheet is not current for this round' using errcode = 'P0001'; end if;
+    if coalesce(char_length(v_reason), 0) < 3 then raise exception 'say why the paper sheet is being replaced' using errcode = '22023'; end if;
+    update public.outrance_sheets set superseded_at = clock_timestamp(), void_reason = v_reason where id = p_replaces;
+  end if;
+  if exists (select 1 from public.outrance_sheets where match_id = p_match and round_no = p_round and source = 'paper' and superseded_at is null and lower(btrim(operator_name)) = lower(v_name)) then
+    raise exception '% already has a paper sheet for round %: replace it instead', v_name, p_round using errcode = 'P0001'; end if;
+  select count(*) into v_n from public.outrance_sheets where match_id = p_match and round_no = p_round and superseded_at is null and role = 'official';
+  if v_n >= 5 then raise exception 'round % already has 5 sheets: Outrance has at most 5 line marshals (§15.1.1)', p_round using errcode = 'P0001'; end if;
+  v_sa := private.outrance_paper_count(p_tally, 'strike', 'a'); v_sb := private.outrance_paper_count(p_tally, 'strike', 'b');
+  v_needed := abs(v_sa - v_sb) <= 5;
+  if not private.outrance_calls_ok(coalesce(p_calls, '{}'::jsonb), v_needed) then
+    raise exception '%', case when v_needed then 'the strike point difference is 5 or less: answer grappling, list control, aggression and defence in order, until one is not Even (Outrance §15.2)'
+      else 'the strike point difference is more than 5: the round is decided on strikes, no criteria (Outrance §15.3.1)' end using errcode = '22023'; end if;
+  insert into public.outrance_sheets (id, match_id, event_id, round_no, seat_id, role, operator_name, source, entered_by, strikes_a, strikes_b, takedowns_a, takedowns_b,
+                                      weapon_losses_a, weapon_losses_b, armour_a, armour_b, calls)
+  values (p_id, p_match, v_event, p_round, null, 'official', v_name, 'paper', auth.uid(), v_sa, v_sb,
+          private.outrance_paper_count(p_tally, 'takedown', 'a'), private.outrance_paper_count(p_tally, 'takedown', 'b'),
+          private.outrance_paper_count(p_tally, 'weapon_loss', 'a'), private.outrance_paper_count(p_tally, 'weapon_loss', 'b'),
+          private.outrance_paper_count(p_tally, 'armour_failure', 'a'), private.outrance_paper_count(p_tally, 'armour_failure', 'b'),
+          case when v_needed then p_calls else '{}'::jsonb end)
+  returning * into v_sheet;
+  perform private.audit(v_event, 'outrance.paper_sheet', p_match::text, jsonb_build_object('sheet', p_id, 'round', p_round, 'marshal', v_name, 'replaces', p_replaces, 'reason', v_reason));
+  return jsonb_build_object('status', 'ok', 'sheet', private.outrance_sheet_json(v_sheet, '{}'::jsonb));
+end $$;
+
+create or replace function public.outrance_remove_sheet(p_sheet uuid, p_reason text) returns jsonb
+language plpgsql security definer set search_path = '' as $$
+declare v_old public.outrance_sheets; v_reason text := nullif(btrim(coalesce(p_reason, '')), '');
+begin
+  if auth.uid() is null then raise exception 'sign in required' using errcode = '28000'; end if;
+  select * into v_old from public.outrance_sheets where id = p_sheet;
+  if not found then raise exception 'sheet not found' using errcode = 'P0002'; end if;
+  if not private.can_score(v_old.event_id) or not private.can_score_match(v_old.match_id) then raise exception 'you cannot run this lyst' using errcode = '42501'; end if;
+  if v_old.source <> 'paper' then raise exception 'a phone''s sheet is returned for recount, not removed' using errcode = 'P0001'; end if;
+  if v_old.superseded_at is not null then return jsonb_build_object('status', 'duplicate'); end if;
+  if coalesce(char_length(v_reason), 0) < 3 then raise exception 'say why the paper sheet is being removed' using errcode = '22023'; end if;
+  perform private.lyst_lock_live_match(v_old.match_id);
+  update public.outrance_sheets set superseded_at = clock_timestamp(), void_reason = v_reason where id = p_sheet;
+  perform private.audit(v_old.event_id, 'outrance.paper_sheet_removed', v_old.match_id::text, jsonb_build_object('sheet', p_sheet, 'round', v_old.round_no, 'marshal', v_old.operator_name, 'reason', v_reason));
+  return jsonb_build_object('status', 'ok');
+end $$;
 
 -- ================================================================ 7. the knight marshal's calls (§13, §14), with the rules' escalations
 create or replace function public.outrance_call(p_command uuid, p_match uuid, p_round integer, p_side text, p_call text, p_reason text default null, p_called_by text default null) returns jsonb
@@ -620,26 +716,27 @@ begin
   if v_kind = 'correct' and coalesce(char_length(v_reason), 0) < 3 then raise exception 'say why the confirmed round is being corrected' using errcode = '22023'; end if;
 
   -- the official sheets: one per line marshal, handed in and not superseded
-  select count(*) into v_n from public.outrance_sheets s join public.lyst_counter_seats x on x.id = s.seat_id
+  select count(*) into v_n from public.outrance_sheets s
    where s.match_id = p_match and s.round_no = p_round and s.superseded_at is null and s.role = 'official';
   select string_agg(x.display_name, ', ' order by x.requested_at) into v_missing from public.lyst_counter_seats x
    where x.match_id = p_match and x.status = 'active' and x.side = 'm' and x.role = 'official'
      and not exists (select 1 from public.outrance_sheets s where s.seat_id = x.id and s.match_id = p_match and s.round_no = p_round and s.superseded_at is null);
-  if v_n = 0 then raise exception 'no line marshal has handed in a sheet for round %', p_round using errcode = 'P0001'; end if;
-  if v_n > 6 then raise exception 'more than 6 sheets: end the extra line-marshal phones first' using errcode = 'P0001'; end if;
-  if (v_n not in (3, 5) or v_missing is not null) then
-    if not coalesce(p_short, false) then
-      raise exception '%', case when v_missing is not null then format('waiting for the sheet of %s', v_missing)
-        else format('Outrance needs 3 or 5 line marshals (§15.1.1): %s sheet%s handed in', v_n, case when v_n = 1 then '' else 's' end) end using errcode = 'P0001'; end if;
-    if not private.can_resolve_results(v_event) then raise exception 'only the head marshal or an organizer can confirm a round without 3 or 5 line marshals' using errcode = '42501'; end if;
-    if coalesce(char_length(v_reason), 0) < 3 then raise exception 'say why the round is confirmed without 3 or 5 line marshals' using errcode = '22023'; end if;
+  -- Owner decision 2026-10-29: 3 phones are not mandatory. Any 1 to 5 sheets (phones, paper sheets typed in, or a mix) confirm the round
+  -- without a reason; the number of marshals is recorded on the round. A phone that is still connected but has not handed in its sheet
+  -- holds the round (gap 5): only the head marshal can confirm without it, with a reason, and the round is flagged short.
+  if v_n = 0 then raise exception 'no sheet for round % yet: a line marshal hands one in, or type in a paper sheet', p_round using errcode = 'P0001'; end if;
+  if v_n > 5 then raise exception 'more than 5 sheets: Outrance has at most 5 line marshals (§15.1.1); remove the extra sheet' using errcode = 'P0001'; end if;
+  if v_missing is not null then
+    if not coalesce(p_short, false) then raise exception 'waiting for the sheet of %', v_missing using errcode = 'P0001'; end if;
+    if not private.can_resolve_results(v_event) then raise exception 'only the head marshal or an organizer can confirm a round without a connected line marshal''s sheet' using errcode = '42501'; end if;
+    if coalesce(char_length(v_reason), 0) < 3 then raise exception 'say why the round is confirmed without that line marshal''s sheet' using errcode = '22023'; end if;
   end if;
   if private.counter_confirmation_risks(p_match, p_round) and coalesce(char_length(v_reason), 0) < 3 then
     raise exception 'Some line-marshal phones have not confirmed delivery, have pending taps, or have evidence to review. Check the phones and record the reason.' using errcode = '22023'; end if;
 
   v_protocol := private.outrance_protocol(p_match, p_round);
-  select coalesce(jsonb_agg(private.outrance_sheet_json(s, v_protocol) order by x.requested_at, s.id), '[]'::jsonb) into v_sheets
-    from public.outrance_sheets s join public.lyst_counter_seats x on x.id = s.seat_id
+  select coalesce(jsonb_agg(private.outrance_sheet_json(s, v_protocol) order by s.submitted_at, s.id), '[]'::jsonb) into v_sheets
+    from public.outrance_sheets s
    where s.match_id = p_match and s.round_no = p_round and s.superseded_at is null and s.role = 'official';
   select sum((e -> 'score' ->> 'a')::int) * (60 / v_n), sum((e -> 'score' ->> 'b')::int) * (60 / v_n) into v_ua, v_ub from jsonb_array_elements(v_sheets) e;
   v_wa := least(99, greatest(0, round(v_ua / 60.0)::int)); v_wb := least(99, greatest(0, round(v_ub / 60.0)::int));
@@ -650,9 +747,9 @@ begin
   values (p_command, p_match, p_round, v_kind, case when v_kind = 'correct' then v_prev.awarded_a end, case when v_kind = 'correct' then v_prev.awarded_b end,
           v_wa, v_wb, null, null, v_sheets, v_reason, auth.uid());
   insert into public.outrance_rounds (id, match_id, event_id, round_no, lyst_rev, kind, marshals, units_a, units_b, sheets, short, reason, confirmed_by)
-  values (p_command, p_match, v_event, p_round, v_r.rev, v_kind, v_n, v_ua, v_ub, v_sheets, v_n not in (3, 5) or v_missing is not null, v_reason, auth.uid());
+  values (p_command, p_match, v_event, p_round, v_r.rev, v_kind, v_n, v_ua, v_ub, v_sheets, v_missing is not null, v_reason, auth.uid());
   perform private.audit(v_event, case when v_kind = 'correct' then 'outrance.round_corrected' else 'outrance.round_confirmed' end, p_match::text,
-    jsonb_build_object('round', p_round, 'marshals', v_n, 'units', jsonb_build_object('a', v_ua, 'b', v_ub), 'short', v_n not in (3, 5) or v_missing is not null, 'reason', v_reason));
+    jsonb_build_object('round', p_round, 'marshals', v_n, 'units', jsonb_build_object('a', v_ua, 'b', v_ub), 'short', v_missing is not null, 'reason', v_reason));
   return jsonb_build_object('status', 'ok', 'kind', v_kind, 'round', to_jsonb(v_r) - 'event_id', 'units', jsonb_build_object('a', v_ua, 'b', v_ub), 'marshals', v_n);
 end $$;
 
@@ -670,9 +767,9 @@ declare v_t jsonb := private.outrance_timing(p_match); v_ua integer; v_ub intege
 begin
   select coalesce(sum(units_a), 0), coalesce(sum(units_b), 0), count(*) into v_ua, v_ub, v_n from private.outrance_current_rounds(p_match);
   select count(*) into v_open from public.lyst_rounds where match_id = p_match and status <> 'confirmed';
-  with s as (select e ->> 'seat_id' as seat_id, max(e ->> 'operator') as operator, sum((e -> 'score' ->> 'a')::int) as a, sum((e -> 'score' ->> 'b')::int) as b, count(*) as rounds
+  with s as (select coalesce(e ->> 'marshal', e ->> 'seat_id') as seat_id, max(e ->> 'operator') as operator, max(e ->> 'source') as source, sum((e -> 'score' ->> 'a')::int) as a, sum((e -> 'score' ->> 'b')::int) as b, count(*) as rounds
              from private.outrance_current_rounds(p_match) o, jsonb_array_elements(o.sheets) e group by 1)
-  select coalesce(jsonb_agg(jsonb_build_object('seat_id', seat_id, 'operator', operator, 'a', a, 'b', b, 'rounds', rounds, 'result', case when a > b then 'a' when b > a then 'b' else 'draw' end) order by operator), '[]'::jsonb),
+  select coalesce(jsonb_agg(jsonb_build_object('seat_id', seat_id, 'operator', operator, 'source', source, 'a', a, 'b', b, 'rounds', rounds, 'result', case when a > b then 'a' when b > a then 'b' else 'draw' end) order by operator), '[]'::jsonb),
          array_agg(case when a > b then 'a' when b > a then 'b' else 'draw' end)
     into v_marshals, v_results from s;
   v_rounds := coalesce((v_t ->> 'rounds')::int, 0);
@@ -853,8 +950,8 @@ language sql stable security definer set search_path = '' as $$
   select case when not private.outrance_is(p_match) then null else jsonb_build_object(
     'rules', 'Outrance Rules and Regulations V.26.4',
     'timing', private.outrance_timing(p_match),
-    'sheets', coalesce((select jsonb_agg(private.outrance_sheet_json(s, private.outrance_protocol(p_match, s.round_no)) order by s.round_no, x.requested_at, s.id)
-                        from public.outrance_sheets s join public.lyst_counter_seats x on x.id = s.seat_id where s.match_id = p_match and s.superseded_at is null), '[]'::jsonb),
+    'sheets', coalesce((select jsonb_agg(private.outrance_sheet_json(s, private.outrance_protocol(p_match, s.round_no)) order by s.round_no, s.submitted_at, s.id)
+                        from public.outrance_sheets s where s.match_id = p_match and s.superseded_at is null), '[]'::jsonb),
     'rounds', coalesce((select jsonb_agg(jsonb_build_object('round_no', o.round_no, 'marshals', o.marshals, 'a', o.units_a, 'b', o.units_b, 'short', o.short, 'reason', o.reason, 'confirmed_at', o.confirmed_at) order by o.round_no)
                         from private.outrance_current_rounds(p_match) o), '[]'::jsonb),
     'protocol', coalesce((select jsonb_agg(private.outrance_protocol(p_match, r.round_no) || jsonb_build_object('round_no', r.round_no) order by r.round_no) from public.lyst_rounds r where r.match_id = p_match), '[]'::jsonb),
@@ -931,6 +1028,9 @@ revoke execute on function private.outrance_is(uuid), private.outrance_league(uu
   private.outrance_calls_ok(jsonb, boolean), private.outrance_win_type(text[]), private.outrance_tally(uuid, uuid, integer), private.outrance_protocol(uuid, integer),
   private.outrance_sheet_json(public.outrance_sheets, jsonb), private.outrance_sheet_open(uuid, uuid, integer), private.outrance_current_rounds(uuid), private.outrance_totals(uuid),
   private.outrance_state(uuid), private.outrance_phone(uuid, uuid) from public, anon, authenticated;
+revoke execute on function private.outrance_paper_count(jsonb, text, text) from public, anon, authenticated;
+revoke execute on function public.outrance_enter_sheet(uuid, uuid, integer, text, jsonb, jsonb, uuid, text), public.outrance_remove_sheet(uuid, text) from public, anon;
+grant execute on function public.outrance_enter_sheet(uuid, uuid, integer, text, jsonb, jsonb, uuid, text), public.outrance_remove_sheet(uuid, text) to authenticated;
 revoke execute on function public.outrance_submit_sheet(uuid, uuid, integer, jsonb), public.outrance_call(uuid, uuid, integer, text, text, text, text),
   public.outrance_confirm_round(uuid, uuid, integer, integer, text, boolean), public.outrance_finish(uuid, uuid, integer, text, text, text),
   public.outrance_clear_hold(uuid, text), public.outrance_appeal(uuid, uuid, text, text, text), public.outrance_appeal_decide(uuid, text, text, text),

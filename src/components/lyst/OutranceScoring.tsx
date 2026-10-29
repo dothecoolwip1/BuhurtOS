@@ -10,7 +10,7 @@ import { RulesSheet } from '../rules/RulesSheet';
 import { counterReviewReason } from '../../lib/lyst/delivery';
 import { useReliableTimer } from '../../lib/lyst/useReliableTimer';
 import { useLystState, useNow } from '../../lib/lyst/useLystState';
-import { openLyst, outranceAppeal, outranceAppealDecide, outranceClearHold, outranceFinish, returnRound, setProfightFormat,
+import { openLyst, outranceAppeal, outranceAppealDecide, outranceClearHold, outranceEnterSheet, outranceFinish, outranceRemoveSheet, returnRound, setProfightFormat,
   type LystState, type OutranceCall, type OutranceFinishBasis, type OutranceSheet, type OutranceState } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
@@ -27,9 +27,12 @@ import { BAND_LABEL, CRITERION_LABEL, WIN_TYPE_LABEL, roundScoreUnits, showScore
 import type { LystScoringProps } from './LystScoring';
 import { fetchWeightClasses } from '../../data/profight';
 import { useAsync } from '../../lib/useAsync';
+import { PaperSheetDialog } from './PaperSheetDialog';
+import type { Tally } from '../../lib/lyst/lineMarshal';
+import type { CriteriaCalls } from '../../lib/outrance';
 
 type Phase = 'scoring' | 'finishing' | 'official' | 'pending' | 'review';
-type Sheet = null | 'calls' | 'log' | 'rules' | 'phones' | 'appeals';
+type Sheet = null | 'calls' | 'log' | 'rules' | 'phones' | 'appeals' | 'paper';
 const CALLED_BY_KEY = 'bos-lyst-called-by';
 const readCalledBy = () => { try { return localStorage.getItem(CALLED_BY_KEY) ?? ''; } catch { return ''; } };
 const clockText = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -48,7 +51,7 @@ const HOLD_WORD: Record<string, string> = {
 
 /**
  * The Lyst tablet for a Profight, exactly to Outrance Rules and Regulations V.26.4. The SECRETARY (§2.5) sees the line marshals' sheets come in
- * (3 or 5, §15.1.1), confirms the round: the Round Score is the average of the sheets (§15.3.1). The KNIGHT MARSHAL's calls (§13, §14) are one tap
+ * (3 or 5 in the rules, §15.1.1; owner decision 2026-10-29: any 1 to 5, from phones or paper sheets typed in here), confirms the round: the Round Score is the average of the sheets (§15.3.1). The KNIGHT MARSHAL's calls (§13, §14) are one tap
  * each. The Total Fight Score declares the winner (§15.4.1); the win type comes from the marshals' own results (§15.4.2). Nothing here computes a
  * score the server does not: it shows the server's sheets and totals; the only arithmetic is the preview of a round being confirmed.
  */
@@ -70,6 +73,9 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   const [saved, setSaved] = useState<{ result: 'a' | 'b' | 'draw'; how: string } | null>(null);
   const [calledBy, setCalledBy] = useState(readCalledBy);
   const commandId = useRef<string | undefined>(undefined);
+  const [fixing, setFixing] = useState<OutranceSheet | null>(null);
+  const [paperMsg, setPaperMsg] = useState<string | null>(null);
+  const paperId = useRef<string>(crypto.randomUUID());
   const clock = useReliableTimer({ lyst, eventId, fieldName, matchId: match.id, userKey: userId });
   const { timerBusy, timerNote, sendTimer } = clock;
 
@@ -126,6 +132,22 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
       setReason('');
       await send();
     } catch (e) { setError(friendlyError(e, 'Could not confirm the round. It is kept on this device.')); } finally { setBusy(false); }
+  };
+  /* ---------------- a line marshal's paper sheet, typed in (phones are not mandatory) ---------------- */
+  const openPaper = (s: OutranceSheet | null) => { paperId.current = crypto.randomUUID(); setFixing(s); setPaperMsg(null); setSheet('paper'); };
+  const savePaper = async (round: LystRound, v: { marshal: string; tally: Tally; calls: CriteriaCalls; reason: string | null }) => {
+    setBusy(true); setPaperMsg(null);
+    try {
+      await outranceEnterSheet({ id: paperId.current, matchId: match.id, round: round.round_no, marshal: v.marshal, tally: v.tally, calls: v.calls, replaces: fixing?.sheet_id ?? null, reason: v.reason });
+      trackEvent('outrance_paper_sheet', { round: round.round_no, fix: !!fixing });
+      setSheet(null); setFixing(null); await lyst.refresh();
+    } catch (e) { setPaperMsg(friendlyError(e, 'Could not save the paper sheet. Check your connection and try again.')); } finally { setBusy(false); }
+  };
+  const removePaper = async (why: string) => {
+    if (!fixing) return;
+    setBusy(true); setPaperMsg(null);
+    try { await outranceRemoveSheet(fixing.sheet_id, why); setSheet(null); setFixing(null); await lyst.refresh(); }
+    catch (e) { setPaperMsg(friendlyError(e, 'Could not remove the sheet. Check your connection and try again.')); } finally { setBusy(false); }
   };
   const recount = async (round: LystRound) => {
     if (reason.trim().length < 3) { setError('Say why the round goes back to the line marshals.'); return; }
@@ -206,8 +228,10 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   const marshalSeats = (st?.seats ?? []).filter(s => s.side === 'm' && s.role === 'official' && s.status === 'active');
   const roundSheets = (om?.sheets ?? []).filter(s => cur && s.round_no === cur.round_no && s.role === 'official');
   const missing = marshalSeats.filter(s => !roundSheets.some(x => x.seat_id === s.id));
-  const preview = roundSheets.length >= 1 && roundSheets.length <= 6 ? roundScoreUnits(roundSheets.map(s => s.score)) : null;
-  const rulesCount = roundSheets.length === 3 || roundSheets.length === 5;
+  const preview = roundSheets.length >= 1 && roundSheets.length <= 5 ? roundScoreUnits(roundSheets.map(s => s.score)) : null;
+  // owner decision 2026-10-29: 3 phones are not mandatory; any 1 to 5 sheets (phones and paper) confirm the round
+  const rulesCount = roundSheets.length >= 1 && roundSheets.length <= 5;
+  const paperNames = [...new Set((om?.sheets ?? []).filter(s => s.source === 'paper' && s.operator).map(s => s.operator as string))];
   const mOnly: LystState | null = st ? { ...st, seats: st.seats.filter(s => s.side === 'm') } : null;
   const deliveryReason = mOnly && cur ? counterReviewReason(mOnly, cur.round_no) : null;
   const canConfirm = !!cur && rulesCount && missing.length === 0 && (!deliveryReason || reason.trim().length >= 3) && !busy && waiting === 0;
@@ -242,7 +266,7 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
           </section>
           {(om?.rounds.length ?? 0) > 0 && (
             <ul className="ly-rounds" aria-label="Round Scores">
-              {om!.rounds.map(r => <li key={r.round_no} className="ly-round is-confirmed"><span className="ly-round-n">R{r.round_no}</span><span className="ly-round-s mono">{showScore(r.a)}–{showScore(r.b)}</span><span className="ly-round-w">{r.marshals} marshals{r.short ? ' · not 3 or 5' : ''}</span></li>)}
+              {om!.rounds.map(r => <li key={r.round_no} className="ly-round is-confirmed"><span className="ly-round-n">R{r.round_no}</span><span className="ly-round-s mono">{showScore(r.a)}–{showScore(r.b)}</span><span className="ly-round-w">{r.marshals} marshal{r.marshals === 1 ? '' : 's'}{r.short ? ' · a phone missing' : ''}</span></li>)}
             </ul>
           )}
           {totals && totals.rounds > 0 && totals.win_type && <p className="src" data-testid="om-wintype">Marshals so far: {totals.marshals.map(m => `${m.operator ?? 'Marshal'} ${m.result === 'draw' ? 'draw' : sides[m.result].name}`).join(' · ')} → {WIN_TYPE_LABEL[totals.win_type as keyof typeof WIN_TYPE_LABEL] ?? totals.win_type}</p>}
@@ -259,7 +283,8 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
           {(zone === 'confirm' || zone === 'fighting') && cur && (
             <SheetsBlock round={cur} marshals={marshalSeats} sheets={roundSheets} missing={missing.map(m => m.name)} preview={preview} sides={sides} names={names}
               rulesCount={rulesCount} deliveryReason={deliveryReason} reason={reason} onReason={setReason} busy={busy} canConfirm={canConfirm && zone === 'confirm'} canResolve={canResolve}
-              onConfirm={short => void confirm(cur, short)} onRecount={() => void recount(cur)} protocol={om?.protocol.find(p => p.round_no === cur.round_no) ?? null} />
+              onConfirm={short => void confirm(cur, short)} onRecount={() => void recount(cur)} protocol={om?.protocol.find(p => p.round_no === cur.round_no) ?? null}
+              onPaper={openPaper} />
           )}
           {zone === 'between' && totals && timing && (
             <div className="ly-zone ly-act ly-act-two">
@@ -298,30 +323,33 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
       {sheet === 'appeals' && <Dialog title="Appeals (Outrance §16)" onClose={() => setSheet(null)}><AppealsBlock om={om} names={names} matchId={match.id} canResolve={canResolve} onChanged={() => void lyst.refresh()} final={false} /></Dialog>}
       {sheet === 'log' && st && <LogPanel state={st} names={names} busy={busy} onVoid={(id, why) => void voidIt(id, why)} onClose={() => setSheet(null)} citations={new Map()} onCite={() => undefined} />}
       {sheet === 'rules' && <RulesSheet onClose={() => setSheet(null)} />}
+      {sheet === 'paper' && cur && <PaperSheetDialog round={cur.round_no} names={names} sides={sides} fixing={fixing} knownNames={paperNames.filter(n => !roundSheets.some(s => s.source === 'paper' && s.operator === n))}
+        busy={busy} message={paperMsg} onSave={v => void savePaper(cur, v)} onRemove={why => void removePaper(why)} onClose={() => { setSheet(null); setFixing(null); }} />}
       {phase === 'scoring' && !sheet && error && <Dialog title="Scoring action needs attention" onClose={() => setError(null)}><p className="ly-error" role="alert">{error}</p><button type="button" className="btn btn-line" onClick={() => setError(null)}>Back to scoring</button></Dialog>}
     </div>
   );
 }
 
 /* ---------------- the round's sheets (§15.1.1, §15.3.1) ---------------- */
-function SheetsBlock({ round, marshals, sheets, missing, preview, sides, names, rulesCount, deliveryReason, reason, onReason, busy, canConfirm, canResolve, onConfirm, onRecount, protocol }: {
+function SheetsBlock({ round, marshals, sheets, missing, preview, sides, names, rulesCount, deliveryReason, reason, onReason, busy, canConfirm, canResolve, onConfirm, onRecount, protocol, onPaper }: {
   round: LystRound; marshals: LystState['seats']; sheets: OutranceSheet[]; missing: string[]; preview: { a: number; b: number } | null; sides: ReturnType<typeof mergeSides>; names: { a: string; b: string };
   rulesCount: boolean; deliveryReason: string | null; reason: string; onReason: (v: string) => void; busy: boolean; canConfirm: boolean; canResolve: boolean;
-  onConfirm: (short: boolean) => void; onRecount: () => void; protocol: OutranceState['protocol'][number] | null;
+  onConfirm: (short: boolean) => void; onRecount: () => void; protocol: OutranceState['protocol'][number] | null; onPaper: (fix: OutranceSheet | null) => void;
 }) {
   const confirmed = round.status === 'confirmed';
   return (
     <section className="panel om-sheets" aria-label={`Round ${round.round_no} sheets`} data-testid="om-sheets">
-      <h2 className="ly-h">Round {round.round_no}: line marshals' sheets · {sheets.length} of {marshals.length || '3 or 5'}</h2>
-      {marshals.length !== 3 && marshals.length !== 5 && <p className="ly-note" role="status">{marshals.length} line-marshal phone{marshals.length === 1 ? '' : 's'} on this fight. Outrance needs 3 or 5 (§15.1.1): add or end phones with the Counter QR.</p>}
+      <h2 className="ly-h">Round {round.round_no}: line marshals' sheets · {sheets.length}{missing.length > 0 ? ` · ${missing.length} phone${missing.length === 1 ? '' : 's'} to come` : ''}</h2>
+      {marshals.length === 0 && sheets.length === 0 && <p className="src" role="status">No line-marshal phones on this fight. Type in each marshal's paper sheet, or add phones with the Counter QR. Any 1 to 5 marshals.</p>}
       <ul className="om-sheet-list">
         {sheets.map(s => (
           <li key={s.sheet_id} data-testid="om-sheet-row">
-            <b>{s.operator ?? 'Marshal'}</b>
+            <b>{s.operator ?? 'Marshal'}{s.source === 'paper' && <span className="src"> · paper</span>}</b>
             <span className="mono">{s.strikes.a}–{s.strikes.b}</span>
             <span>{BAND_LABEL[s.result.band]}{s.result.decided_by ? ` (${CRITERION_LABEL[s.result.decided_by].replace('Effective ', '')})` : ''}: {s.result.a}–{s.result.b}</span>
             {(s.deduct.a || s.deduct.b) ? <span className="src">−{s.deduct.a} / −{s.deduct.b}</span> : <span />}
             <b className="mono">{s.score.a}–{s.score.b}</b>
+            {s.source === 'paper' && !confirmed && <button type="button" className="ly-link" disabled={busy} onClick={() => onPaper(s)} data-testid="om-paper-fix">Fix</button>}
           </li>
         ))}
         {missing.map(n => <li key={n} className="is-waiting"><b>{n}</b><span className="src">not handed in yet</span></li>)}
@@ -332,11 +360,12 @@ function SheetsBlock({ round, marshals, sheets, missing, preview, sides, names, 
       {!confirmed && (
         <>
           {deliveryReason && <p className="ly-note" role="status">{deliveryReason}</p>}
-          {(deliveryReason || !rulesCount || missing.length > 0) && <label className="ly-reason"><span>Reason</span><input value={reason} maxLength={200} onChange={e => onReason(e.target.value)} placeholder="For example: checked the phones with the line marshals" /></label>}
+          {(deliveryReason || missing.length > 0) && <label className="ly-reason"><span>Reason</span><input value={reason} maxLength={200} onChange={e => onReason(e.target.value)} placeholder="For example: checked the phones with the line marshals" /></label>}
           <div className="ly-confirm-row">
-            <button type="button" className="btn btn-win fq-big ly-confirm" disabled={!canConfirm} onClick={() => onConfirm(false)} data-testid="om-confirm">{busy ? 'Saving…' : !rulesCount ? 'Waiting for 3 or 5 sheets' : missing.length ? `Waiting for ${missing.length} sheet${missing.length === 1 ? '' : 's'}` : `Confirm round ${round.round_no}`}</button>
+            <button type="button" className="btn btn-win fq-big ly-confirm" disabled={!canConfirm} onClick={() => onConfirm(false)} data-testid="om-confirm">{busy ? 'Saving…' : !rulesCount ? (sheets.length > 5 ? 'More than 5 sheets: remove one' : 'Waiting for a sheet') : missing.length ? `Waiting for ${missing.length} sheet${missing.length === 1 ? '' : 's'}` : `Confirm round ${round.round_no}`}</button>
           </div>
-          {canResolve && (!rulesCount || missing.length > 0) && sheets.length > 0 && <button type="button" className="ly-link" disabled={busy || reason.trim().length < 3} onClick={() => onConfirm(true)}>Head marshal: confirm with {sheets.length} sheet{sheets.length === 1 ? '' : 's'} (marked "not 3 or 5 line marshals")</button>}
+          {sheets.length < 5 && <button type="button" className="btn btn-line" disabled={busy} onClick={() => onPaper(null)} data-testid="om-paper-add">Type in a paper sheet</button>}
+          {canResolve && missing.length > 0 && sheets.length > 0 && sheets.length <= 5 && <button type="button" className="ly-link" disabled={busy || reason.trim().length < 3} onClick={() => onConfirm(true)}>Head marshal: confirm without {missing.join(', ')} (marked "a phone missing")</button>}
           {sheets.length > 0 && <button type="button" className="ly-link" disabled={busy} onClick={onRecount}>Return the round to the line marshals for recount{reason.trim().length < 3 ? ' (write the reason first)' : ''}</button>}
         </>
       )}
@@ -403,7 +432,7 @@ function FinishBlock({ om, names, sides, stoppages, dq, canResolve, busy, onFini
   return (
     <div className="om-finish" data-testid="om-finish">
       <p className="mono om-total-line">{names.a} {showScore(t.a)} – {showScore(t.b)} {names.b}</p>
-      <ul className="ly-rounds-list">{om.rounds.map(r => <li key={r.round_no}>Round {r.round_no}: <b className="mono">{showScore(r.a)}–{showScore(r.b)}</b> <span className="src">({r.marshals} marshals{r.short ? ', not 3 or 5' : ''})</span></li>)}</ul>
+      <ul className="ly-rounds-list">{om.rounds.map(r => <li key={r.round_no}>Round {r.round_no}: <b className="mono">{showScore(r.a)}–{showScore(r.b)}</b> <span className="src">({r.marshals} marshal{r.marshals === 1 ? '' : 's'}{r.short ? ', a phone missing' : ''})</span></li>)}</ul>
       {t.marshals.length > 0 && <p className="src">Each marshal's fight: {t.marshals.map(m => `${m.operator ?? 'Marshal'} ${m.a}–${m.b}`).join(' · ')}{type ? ` → ${type}` : ''}</p>}
       {t.next === 'finish' && <button type="button" className="btn btn-win fq-big" disabled={busy} onClick={() => onFinish('decision', leader, type ? `by ${type.toLowerCase()}` : 'on points', null)} data-testid="om-finish-decision">
         {leader === 'draw' ? `Save the draw${type ? ` (${type.toLowerCase()})` : ''}` : `${names[leader]} wins on the Total Fight Score${type ? ` · ${type}` : ''}`}</button>}

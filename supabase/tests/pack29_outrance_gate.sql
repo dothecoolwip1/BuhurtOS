@@ -293,6 +293,59 @@ select t.expect_eq('Blue wins by TKO', (select public.outrance_finish(gen_random
 select t.as_admin();
 select t.expect_eq('... and Red needs the medic''s check', t.holds(t.en(295)), 'medic_check');
 
+-- ================================================================ 8b. phones are not mandatory (owner decision 2026-10-29): paper sheets, any 1 to 5 sheets
+select t.as_admin();
+insert into public.fighters (id, display_name, gender, disciplines) values (t.g(71), 'Paper Red', 'female', '{}'), (t.g(72), 'Paper Blue', 'female', '{}');
+insert into public.entries (id, competition_id, fighter_id) values (t.en(297), t.comp(30), t.g(71)), (t.en(298), t.comp(30), t.g(72));
+insert into public.matches (id, competition_id, stage, round_label, position, entry_a, entry_b, queue_state, field) values
+  (t.m(16), t.comp(30), 'round_robin', 'Round 2', 0, t.en(297), t.en(298), 'active', 'Field 2');
+select t.as_user(t.u(4));
+select t.expect_eq('a Profight opens with no phones at all', public.lyst_open(t.m(16), 'simple') ->> 'scoring', 'outrance');
+select t.start(16, 1); select t.stop(16, 1);
+select t.expect_error('no sheet yet: the round cannot be confirmed', $q$select public.outrance_confirm_round(gen_random_uuid(), t.m(16), 1, t.rev(16, 1))$q$, 'P0001');
+select t.as_user(t.u(10));
+select t.expect_error('a stranger cannot type in a paper sheet', $q$select public.outrance_enter_sheet(gen_random_uuid(), t.m(16), 1, 'Anna', '{"strike":{"a":10,"b":3}}')$q$, '42501');
+select t.as_user(t.u(4));
+select t.expect_error('a paper sheet needs the marshal''s name', $q$select public.outrance_enter_sheet(gen_random_uuid(), t.m(16), 1, ' ', '{"strike":{"a":10,"b":3}}')$q$, '22023');
+select t.expect_error('... and whole numbers', $q$select public.outrance_enter_sheet(gen_random_uuid(), t.m(16), 1, 'Anna', '{"strike":{"a":"ten","b":3}}')$q$, '22023');
+select t.expect_error('... and the criteria when the strike difference is 5 or less (§15.2)', $q$select public.outrance_enter_sheet(gen_random_uuid(), t.m(16), 1, 'Anna', '{"strike":{"a":8,"b":3}}')$q$, '22023');
+select t.expect_error('... and only for a round that was fought', $q$select public.outrance_enter_sheet(gen_random_uuid(), t.m(16), 4, 'Anna', '{"strike":{"a":10,"b":3}}')$q$, 'P0001');
+select t.expect_eq('the secretary types in Anna''s paper sheet: 10-3 strikes, one Blue weapon loss',
+  (select (j -> 'sheet' ->> 'source') || ' ' || (j -> 'sheet' -> 'strikes' ->> 'a') || '-' || (j -> 'sheet' -> 'strikes' ->> 'b') || ' ' || (j -> 'sheet' -> 'weapon_losses' ->> 'b')
+     from (select public.outrance_enter_sheet(t.g(73), t.m(16), 1, 'Anna', '{"strike":{"a":10,"b":3},"weapon_loss":{"b":1}}') j) x), 'paper 10-3 1');
+select t.expect_eq('... typing it again (same id) changes nothing', public.outrance_enter_sheet(t.g(73), t.m(16), 1, 'Anna', '{"strike":{"a":1,"b":1}}') ->> 'status', 'duplicate');
+select t.expect_error('... a second sheet for Anna in the same round is refused (replace it instead)', $q$select public.outrance_enter_sheet(gen_random_uuid(), t.m(16), 1, ' anna ', '{"strike":{"a":10,"b":3}}')$q$, 'P0001');
+select t.expect_eq('one sheet confirms the round, no reason needed',
+  (select (j ->> 'status') || ' ' || (j ->> 'marshals') from (select public.outrance_confirm_round(gen_random_uuid(), t.m(16), 1, t.rev(16, 1)) j) x), 'ok 1');
+select t.expect_eq('... and the round is not flagged short', (select (r ->> 'short') || ' ' || (r ->> 'marshals') from jsonb_array_elements(t.ostate(16) -> 'rounds') r where (r ->> 'round_no')::int = 1), 'false 1');
+
+-- round 2: two paper sheets and a line-marshal phone
+select t.as_device(t.sid('counter5')); select public.counter_bind('Field 2', 'm', 'Marshal Five');
+select t.start(16, 2);
+select t.as_device(t.sid('counter5')); select t.ack('counter5', 16, 2); select t.lm('counter5', 16, 2, 'strike', 'a', 9);
+select t.stop(16, 2);
+select t.as_user(t.u(4));
+select public.outrance_enter_sheet(t.g(74), t.m(16), 2, 'Anna', '{"strike":{"a":9,"b":1}}');
+select public.outrance_enter_sheet(t.g(75), t.m(16), 2, 'Bea', '{"strike":{"a":2,"b":9}}');
+select t.expect_error('a mistyped paper sheet is replaced only with a reason', $q$select public.outrance_enter_sheet(gen_random_uuid(), t.m(16), 2, 'Bea', '{"strike":{"a":9,"b":2}}', '{}', t.g(75))$q$, '22023');
+select t.expect_eq('... with a reason, Bea''s sheet is replaced', public.outrance_enter_sheet(t.g(76), t.m(16), 2, 'Bea', '{"strike":{"a":9,"b":2}}', '{}', t.g(75), 'Red and Blue swapped') ->> 'status', 'ok');
+select t.as_admin();
+select t.expect_eq('... the mistyped sheet is kept, superseded, with the reason', (select void_reason from public.outrance_sheets where id = t.g(75) and superseded_at is not null), 'Red and Blue swapped');
+select t.as_user(t.u(4));
+select t.expect_error('a connected phone that has not handed in its sheet still holds the round', $q$select public.outrance_confirm_round(gen_random_uuid(), t.m(16), 2, t.rev(16, 2))$q$, 'P0001');
+select t.expect_error('removing a paper sheet needs a reason', $q$select public.outrance_remove_sheet(t.g(74), '')$q$, '22023');
+select t.as_device(t.sid('counter5')); select t.sheet('counter5', 2);
+select t.as_user(t.u(4));
+select t.expect_error('a phone''s sheet cannot be removed (it is returned for recount)', $q$select public.outrance_remove_sheet((select (e ->> 'sheet_id')::uuid from jsonb_array_elements(t.ostate(16) -> 'sheets') e where e ->> 'source' = 'phone' limit 1), 'wrong')$q$, 'P0001');
+select t.expect_eq('two paper sheets and the phone''s sheet: 3 marshals', public.outrance_confirm_round(gen_random_uuid(), t.m(16), 2, t.rev(16, 2)) ->> 'marshals', '3');
+select t.expect_eq('the tablet shows each marshal''s fight result; Anna''s paper sheets are one marshal across both rounds',
+  (select string_agg((e ->> 'operator') || ':' || (e ->> 'source') || ':' || (e ->> 'rounds'), ',' order by e ->> 'operator') from jsonb_array_elements(t.ostate(16) -> 'totals' -> 'marshals') e),
+  'Anna:paper:2,Bea:paper:1,Marshal Five:phone:1');
+select t.expect_eq('the secretary removes a paper sheet, with a reason (kept, superseded)', public.outrance_remove_sheet(t.g(74), 'entered on the wrong fight') ->> 'status', 'ok');
+select t.as_admin();
+select t.expect_eq('... and it is kept', (select count(*) from public.outrance_sheets where id = t.g(74) and superseded_at is not null)::int, 1);
+select t.expect_eq('the audit records every paper sheet', (select count(*) from public.audit_log where action in ('outrance.paper_sheet', 'outrance.paper_sheet_removed') and subject = t.m(16)::text)::int, 5);
+
 -- ================================================================ 9. recount, settings frozen once fights started, in-flight fights
 select t.as_user(t.u(1));
 select t.expect_error('the division and format can no longer change once fights started', $q$select public.set_profight_format(t.comp(29), '1', 'tournament')$q$, 'P0001');

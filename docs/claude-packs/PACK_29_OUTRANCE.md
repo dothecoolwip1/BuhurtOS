@@ -6,7 +6,7 @@ plus the line-marshal phone (`CounterPage.tsx`, `OutranceSheetDialog.tsx`), the 
 standings (`ProfightStandings.tsx`).
 
 Evidence so far (local only):
-- `supabase/tests/pack29_outrance_gate.sql`: 126 checks pass (phones, sheets, 3- and 5-marshal rounds, split decision, criteria, weapon
+- `supabase/tests/pack29_outrance_gate.sql`: 149 checks pass (including paper sheets, a 1-sheet round and a phone-plus-paper round) (phones, sheets, 3- and 5-marshal rounds, split decision, criteria, weapon
   losses, cards and escalation, Division 1/2 TKO, KO holds, appeals, recount, in-flight backfill, standings, synthetic exclusion, permissions).
 - `supabase/tests/vectors_gate.sql`: 32 Outrance vectors agree between SQL and `src/lib/outrance.ts`.
 - `supabase/tests/run_all.sh`: DATABASE GATE PASSED (61 gates). `npm test`: 1565 passed. Typecheck and build clean.
@@ -36,6 +36,11 @@ the owner or the head marshal (§2.1: the head marshal has the final say on inte
    averages": raw taps are still never summed or averaged; what is averaged is each marshal's 10-point round score, as §15.3.1 says.
 5. `matches.score_a/score_b` stay whole numbers (rounded totals, for display and sorting). The exact Round Scores, every marshal's sheet
    and the win type are stored in the result detail.
+6. **Phones are not mandatory (later the same day; this overrides 3 above as a requirement).** A round is confirmed from any 1 to 5
+   sheets, with no reason needed and no flag: the number of marshals is recorded on the round. A sheet can come from a line-marshal phone
+   or from a marshal's paper sheet that the secretary types in on the tablet (`outrance_enter_sheet`); phones and paper can be mixed. A
+   mistyped paper sheet is replaced or removed with a reason, and the old one is kept (`outrance_remove_sheet`). A recount of the phones
+   does not touch paper sheets. This is a deliberate departure from §15.1.1 (3 or 5 line marshals).
 
 ## 3. The rules, and where each one lands
 
@@ -127,7 +132,7 @@ The sheet's fight result is the sum of its rounds (the p.25 "Fight Result").
 - `private.outrance_timing(competition)` returns round seconds, break seconds, the round count (§4).
 - `lyst_matches.scoring text default 'marshal'`; `'outrance'` for Profight, so every Lyst function branches on it, never on the category.
 - **Line-marshal seats.** Counter seats get `role = 'line_marshal'` for Outrance fights. A line marshal joins with the Counter QR and picks
-  "Line marshal" (no side). 3 or 5 per fight.
+  "Line marshal" (no side). Up to 5 per fight (the rules say 3 or 5; decision 6: phones are optional, paper sheets can be typed in).
 - **Sheet entries.** Taps go through the existing tap journal (`counter_record` with idempotent ids), with an action kind:
   `strike`, `takedown`, `weapon_loss`, `armour_failure` and a side. Undo stays per tap.
 - **The sheet.** `public.outrance_sheets (match_id, round_no, seat_id, rev, strikes_a, strikes_b, takedowns_a, takedowns_b, weapon_losses_a,
@@ -142,7 +147,7 @@ The sheet's fight result is the sum of its rounds (the p.25 "Fight Result").
   - `lyst_open`: Profight → `scoring = 'outrance'`, Outrance timing; refuses while division or format is missing.
   - `outrance_submit_sheet(p_command, p_seat, p_round, p_criteria jsonb)` for the phone (`bos_event_device`): reads its own journal,
     computes the sheet, refuses criteria when the difference is over 5 and requires them when it is 5 or less.
-  - `outrance_confirm_round(p_command, p_match, p_round, p_expected_rev, p_reason)` for the secretary or marshal: needs exactly 3 or 5
+  - `outrance_confirm_round(p_command, p_match, p_round, p_expected_rev, p_reason)` for the secretary or marshal: needs 1 to 5 (decision 6: phones and/or paper)
     submitted sheets; computes the Round Score (§15.3.1); same command-id, stale-revision, secretary-boundary and delivery-review rules as
     `lyst_confirm_round`.
   - `outrance_finish(...)`: decision (winner from the Total Fight Score, §15.4.1; win type, §15.4.2), KO, TKO (with its kind), DQ, yield,
@@ -209,9 +214,10 @@ The sheet's fight result is the sum of its rounds (the p.25 "Fight Result").
    counts repair time, §2.4; the secretary records cards, §2.5) and apply to every sheet. Confirm.
 4. **A Division 2 TKO in the last round.** The round is lost (10-7) and, the rounds being over, the fight ends on the Total Fight Score.
    Confirm.
-5. **A line-marshal phone fails mid-fight.** The rules need 3 or 5 marshals. Plan: the round waits until the marshal is back (another
-   phone can take over their seat with the existing handoff); the head marshal may confirm with fewer, with a reason, and the result is
-   marked "not 3 or 5 line marshals". Confirm.
+5. **A line-marshal phone fails mid-fight.** A phone that is still connected to the fight and has not handed in its sheet holds the
+   round (another phone can take over its seat with the existing handoff, or the marshal's paper sheet can be typed in). The head marshal
+   may confirm without it, with a reason, and the round is marked "a phone missing". (Since decision 6, the number of sheets alone
+   never holds a round.)
 
 ## 8. Order of work
 

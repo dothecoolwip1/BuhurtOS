@@ -204,7 +204,9 @@ export async function fetchLystPublic(eventId: string): Promise<{ rows: LystPubl
 /* ---------------- Outrance (Pack 29): Outrance Rules and Regulations V.26.4 ---------------- */
 export type OutranceTally = Record<Mark, Pair>;
 export interface OutranceSheet {
-  sheet_id: string; seat_id: string; operator: string | null; role: 'official' | 'learning'; round_no: number; submitted_at: string;
+  sheet_id: string; seat_id: string | null; operator: string | null; role: 'official' | 'learning'; round_no: number; submitted_at: string;
+  /** 'phone': counted on a line-marshal phone; 'paper': the marshal's paper sheet, typed in by the secretary. */
+  source?: 'phone' | 'paper';
   strikes: Pair; takedowns: Pair; weapon_losses: Pair; armour_failures: Pair; calls: Partial<Record<Criterion, Call>>;
   result: { a: number; b: number; band: Band; winner: 'a' | 'b' | null; decided_by: Criterion | null };
   deduct: Pair; score: Pair;
@@ -223,7 +225,7 @@ export interface OutranceState {
   rounds: { round_no: number; marshals: number; a: number; b: number; short: boolean; reason: string | null; confirmed_at: string }[];
   protocol: { round_no: number; yellows: Pair; armour: Pair; stoppage: 'a' | 'b' | null }[];
   totals: { unit: number; a: number; b: number; rounds: number; open: number; leader: 'a' | 'b' | null; win_type: string | null; next: OutranceNext | null;
-    marshals: { seat_id: string; operator: string | null; a: number; b: number; rounds: number; result: 'a' | 'b' | 'draw' }[] };
+    marshals: { seat_id: string; operator: string | null; source?: 'phone' | 'paper'; a: number; b: number; rounds: number; result: 'a' | 'b' | 'draw' }[] };
   holds: { id: string; side: 'a' | 'b'; kind: OutranceHoldKind; created_at: string; from_match: string }[];
   appeals: { id: string; side: 'a' | 'b'; lodged_by: 'competitor' | 'corner'; grounds: string; lodged_at: string; decision: 'upheld' | 'rejected' | null; outcome: string | null; decision_note: string | null }[];
 }
@@ -234,6 +236,10 @@ export type OutranceFinishBasis = 'decision' | 'head_marshal' | 'ko' | 'tko' | '
 /** The line marshal hands in the round's sheet: the server takes the totals from the phone's own taps; only the criteria come from here. */
 export const outranceSubmitSheet = (id: string, seat: string, round: number, calls: Partial<Record<Criterion, Call>>) =>
   rpc<{ status: 'ok' | 'duplicate'; sheet: OutranceSheet }>('outrance_submit_sheet', { p_id: id, p_seat: seat, p_round: round, p_calls: calls });
+/** A line marshal without a phone: the secretary types in the paper sheet (totals and, when needed, the criteria). Replacing one needs a reason. */
+export const outranceEnterSheet = (a: { id: string; matchId: string; round: number; marshal: string; tally: OutranceTally; calls: Partial<Record<Criterion, Call>>; replaces?: string | null; reason?: string | null }) =>
+  rpc<{ status: 'ok' | 'duplicate'; sheet: OutranceSheet }>('outrance_enter_sheet', { p_id: a.id, p_match: a.matchId, p_round: a.round, p_marshal: a.marshal, p_tally: a.tally, p_calls: a.calls, p_replaces: a.replaces ?? null, p_reason: a.reason ?? null });
+export const outranceRemoveSheet = (sheet: string, reason: string) => rpc<{ status: 'ok' | 'duplicate' }>('outrance_remove_sheet', { p_sheet: sheet, p_reason: reason });
 export interface OutranceCallArgs { command: string; matchId: string; round: number; side: 'a' | 'b'; call: OutranceCall; reason?: string | null; calledBy?: string | null }
 export const outranceCallArgs = (c: OutranceCallArgs) => ({ p_command: c.command, p_match: c.matchId, p_round: c.round, p_side: c.side, p_call: c.call, p_reason: c.reason ?? null, p_called_by: c.calledBy ?? null });
 export const outranceCall = (c: OutranceCallArgs) => rpc<{ status: 'ok' | 'duplicate'; id: string; escalated?: { id: string; kind: string; label: string }[] }>('outrance_call', outranceCallArgs(c));

@@ -325,3 +325,6 @@
 .om-appeal{display:grid;gap:6px}
 .om-appeal select,.om-appeal input{min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--raised);color:var(--ink)}
 .om-format{display:grid;gap:10px}
+/* a line marshal's paper sheet, typed in by the secretary */
+.om-paper td{padding:4px}
+.om-paper-n{width:100%;min-width:56px;min-height:44px;font-size:20px;text-align:center}

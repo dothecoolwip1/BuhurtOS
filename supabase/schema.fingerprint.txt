@@ -1222,19 +1222,22 @@ column public.outrance_rounds.units_b integer not null
 column public.outrance_sheets.armour_a integer not null
 column public.outrance_sheets.armour_b integer not null
 column public.outrance_sheets.calls jsonb not null
+column public.outrance_sheets.entered_by uuid
 column public.outrance_sheets.event_id uuid not null
 column public.outrance_sheets.id uuid not null
 column public.outrance_sheets.match_id uuid not null
 column public.outrance_sheets.operator_name text
 column public.outrance_sheets.role text not null
 column public.outrance_sheets.round_no integer not null
-column public.outrance_sheets.seat_id uuid not null
+column public.outrance_sheets.seat_id uuid
+column public.outrance_sheets.source text not null
 column public.outrance_sheets.strikes_a integer not null
 column public.outrance_sheets.strikes_b integer not null
 column public.outrance_sheets.submitted_at timestamp with time zone not null
 column public.outrance_sheets.superseded_at timestamp with time zone
 column public.outrance_sheets.takedowns_a integer not null
 column public.outrance_sheets.takedowns_b integer not null
+column public.outrance_sheets.void_reason text
 column public.outrance_sheets.weapon_losses_a integer not null
 column public.outrance_sheets.weapon_losses_b integer not null
 column public.platform_roles.granted_at timestamp with time zone not null
@@ -2391,10 +2394,12 @@ constraint outrance_rounds outrance_rounds_reason_check CHECK (((reason IS NULL)
 constraint outrance_rounds outrance_rounds_round_no_check CHECK (((round_no >= 1) AND (round_no <= 20)))
 constraint outrance_sheets outrance_sheets_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 constraint outrance_sheets outrance_sheets_match_id_fkey FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
+constraint outrance_sheets outrance_sheets_paper_check CHECK ((((source = 'phone'::text) = (seat_id IS NOT NULL)) AND ((source = 'phone'::text) OR (((char_length(btrim(COALESCE(operator_name, ''::text))) >= 2) AND (char_length(btrim(COALESCE(operator_name, ''::text))) <= 60)) AND (entered_by IS NOT NULL)))))
 constraint outrance_sheets outrance_sheets_pkey PRIMARY KEY (id)
 constraint outrance_sheets outrance_sheets_role_check CHECK ((role = ANY (ARRAY['official'::text, 'learning'::text])))
 constraint outrance_sheets outrance_sheets_round_no_check CHECK (((round_no >= 1) AND (round_no <= 20)))
 constraint outrance_sheets outrance_sheets_seat_id_fkey FOREIGN KEY (seat_id) REFERENCES lyst_counter_seats(id) ON DELETE CASCADE
+constraint outrance_sheets outrance_sheets_source_check CHECK ((source = ANY (ARRAY['phone'::text, 'paper'::text])))
 constraint platform_roles platform_roles_pkey PRIMARY KEY (user_id)
 constraint platform_roles platform_roles_role_check CHECK ((role = ANY (ARRAY['owner'::text, 'organizer'::text])))
 constraint platform_roles platform_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -3055,17 +3060,18 @@ function private.outrance_current_rounds(p_match uuid) secdef=true a652e3709c89d
 function private.outrance_escalate() secdef=true eb552dce949ca5c6b6d3ef4c2cf742ec
 function private.outrance_is(p_match uuid) secdef=true f4c4fea9a175f0c040469db65494ca7b
 function private.outrance_league(p_match uuid) secdef=true 3d2a0dc0e208d265e2d8de6d1cadf15b
+function private.outrance_paper_count(p_tally jsonb, p_mark text, p_side text) secdef=false 3412478514352e6ea767c0243201c2ff
 function private.outrance_phone(p_seat uuid, p_match uuid) secdef=true 03562b00d06cfafaf660fbc2420a4f82
 function private.outrance_protocol(p_match uuid, p_round integer) secdef=true fb97a0f6ef09a25dc3d7fa602602e4b0
 function private.outrance_record(p_id uuid, p_seat uuid, p_round integer, p_mark text, p_side text) secdef=true b3bae79d468a9cb108bc44b3bcf53d3f
 function private.outrance_recount() secdef=true b77777450acbfb44a135d344bd366d95
-function private.outrance_sheet_json(s outrance_sheets, p_protocol jsonb) secdef=false 26d50d339b66a1b6434a15cbfde85ff8
+function private.outrance_sheet_json(s outrance_sheets, p_protocol jsonb) secdef=false 0f451b2805b381c6acf181fcb21f569e
 function private.outrance_sheet_open(p_seat uuid, p_match uuid, p_round integer) secdef=true 6621026237038bcc018d8807e0ab7fa4
 function private.outrance_sheet_result(p_sa integer, p_sb integer, p_calls jsonb, p_stop_loser text) secdef=false 334993fd9dd02e379b4bdfa174b19330
-function private.outrance_state(p_match uuid) secdef=true 744d64de53835a0858a745832113ee30
+function private.outrance_state(p_match uuid) secdef=true 584205d15fd2f27016c72173c6b2ecfa
 function private.outrance_tally(p_seat uuid, p_match uuid, p_round integer) secdef=true 5d69862df7170dcf34bc62e5bc790a81
 function private.outrance_timing(p_match uuid) secdef=true fdf7f907e9e6fcd7f8f8252d17b17e3d
-function private.outrance_totals(p_match uuid) secdef=true 8b4712e85d9f0460e10a35b7a5676cb8
+function private.outrance_totals(p_match uuid) secdef=true bec35a1fca1464968b9e3ed2e03bb086
 function private.outrance_undo(p_id uuid, p_seat uuid, p_round integer, p_mark text, p_side text) secdef=true 014a741fc944727382fa4ed593d8fa83
 function private.outrance_void_cascade() secdef=true ad450326010737503c845a67d12c0744
 function private.outrance_win_type(p_results text[]) secdef=false cee0b1bf988d4f0b0c5f3da4c63fba56
@@ -3462,9 +3468,11 @@ function public.outrance_appeal(p_command uuid, p_match uuid, p_side text, p_lod
 function public.outrance_appeal_decide(p_appeal uuid, p_decision text, p_outcome text, p_note text) secdef=true 2b27021cbc7d570e4e24bf10dd28608d
 function public.outrance_call(p_command uuid, p_match uuid, p_round integer, p_side text, p_call text, p_reason text, p_called_by text) secdef=true d23b00cc286887299e2432bce8d3d642
 function public.outrance_clear_hold(p_hold uuid, p_reason text) secdef=true 4f2b62c7451e8fa04691783b9b43f8a5
-function public.outrance_confirm_round(p_command uuid, p_match uuid, p_round integer, p_expected_rev integer, p_reason text, p_short boolean) secdef=true 1b597ca3bb466d9a7b25a05733d94289
+function public.outrance_confirm_round(p_command uuid, p_match uuid, p_round integer, p_expected_rev integer, p_reason text, p_short boolean) secdef=true fc16d46990c6a82d242636396e17f346
+function public.outrance_enter_sheet(p_id uuid, p_match uuid, p_round integer, p_marshal text, p_tally jsonb, p_calls jsonb, p_replaces uuid, p_reason text) secdef=true 136bf365eb403fff596f80dcd5296e42
 function public.outrance_finish(p_command uuid, p_match uuid, p_expected_version integer, p_basis text, p_result text, p_reason text) secdef=true 3bd7b2f17d045546780ce8efc51e22ce
-function public.outrance_submit_sheet(p_id uuid, p_seat uuid, p_round integer, p_calls jsonb) secdef=true 494840956bc8b83a455daf3cf91037ad
+function public.outrance_remove_sheet(p_sheet uuid, p_reason text) secdef=true 037f5fcc96e9a93c01f7d8769cf9605a
+function public.outrance_submit_sheet(p_id uuid, p_seat uuid, p_round integer, p_calls jsonb) secdef=true a789f26771ff6a1ed7431c993017a532
 function public.platform_attention() secdef=true 39910cf3bc6155cbefde529b672040cb
 function public.platform_device_sessions(p_include_ended boolean) secdef=true b0de25cd3786369e438ca3cd6e1f0a65
 function public.pool_standings(p_competition uuid) secdef=true b1f41fde5830d12578118986ca51733d
@@ -3983,6 +3991,7 @@ index public.outrance_rounds CREATE INDEX ON public.outrance_rounds USING btree 
 index public.outrance_rounds CREATE UNIQUE INDEX ON public.outrance_rounds USING btree (id)
 index public.outrance_sheets CREATE INDEX ON public.outrance_sheets USING btree (match_id, round_no) WHERE (superseded_at IS NULL)
 index public.outrance_sheets CREATE UNIQUE INDEX ON public.outrance_sheets USING btree (id)
+index public.outrance_sheets CREATE UNIQUE INDEX ON public.outrance_sheets USING btree (match_id, round_no, lower(btrim(operator_name))) WHERE ((source = 'paper'::text) AND (superseded_at IS NULL))
 index public.outrance_sheets CREATE UNIQUE INDEX ON public.outrance_sheets USING btree (seat_id, match_id, round_no) WHERE (superseded_at IS NULL)
 index public.platform_roles CREATE UNIQUE INDEX ON public.platform_roles USING btree (user_id)
 index public.pool_tie_decisions CREATE INDEX ON public.pool_tie_decisions USING btree (entry_id)

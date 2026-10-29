@@ -32,7 +32,7 @@ begin
     n := n + 1;
   end loop;
   for v in select jsonb_array_elements(j -> 'deductions') from ovec loop
-    s := row(gen_random_uuid(), null, null, 1, null, 'official', null, 0, 0, 0, 0, (v ->> 'weaponLosses')::int, 0, 0, 0, '{}'::jsonb, now(), null)::public.outrance_sheets;
+    s := row(gen_random_uuid(), null, null, 1, null, 'official', null, 0, 0, 0, 0, (v ->> 'weaponLosses')::int, 0, 0, 0, '{}'::jsonb, now(), null, 'phone', null, null)::public.outrance_sheets;
     got := private.outrance_sheet_json(s, jsonb_build_object('yellows', jsonb_build_object('a', (v ->> 'yellows')::int, 'b', 0), 'armour', jsonb_build_object('a', (v ->> 'armourGrants')::int, 'b', 0), 'stoppage', null));
     if (got -> 'deduct' ->> 'a')::int <> (v ->> 'points')::int then bad := bad || format('deduction "%s" got %s; ', v ->> 'note', got -> 'deduct'); end if;
     n := n + 1;

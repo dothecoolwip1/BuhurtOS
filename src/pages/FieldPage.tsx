@@ -225,7 +225,7 @@ export function FieldPage() {
             onStale: (message: string) => { closeOpened(); setNotice(message); reload(); }
           };
           const isDuel = boardModeFor(opened.comp.league, opened.comp.category) === 'duel';
-          // Pack 29: a Profight is scored on the Lyst to the Outrance rules (3 or 5 line marshals, the secretary's average)
+          // Pack 29: a Profight is scored on the Lyst to the Outrance rules (line marshals on phones or paper, the secretary's average)
           const isPro = boardModeFor(opened.comp.league, opened.comp.category) === 'pro';
           // Another device finished this fight while it was open here: the result stands; this board must not offer another round or a second result.
           const fresh = matches.data?.find(m => m.id === opened.match.id);

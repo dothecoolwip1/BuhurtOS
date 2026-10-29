@@ -12,9 +12,11 @@ import type { EventSides } from '../../lib/lyst/counters';
  * server takes every total from the phone's taps; only the criteria are sent from here. Deductions (cards, armour grants, 3+ weapon losses) are
  * applied by the secretary from the protocol and this sheet.
  */
-export function OutranceSheetDialog({ round, tally, names, sides, busy, message, onSubmit, onClose }: {
+export function OutranceSheetDialog({ round, tally, names, sides, busy, message, onSubmit, onClose, title, aria, backLabel = 'Back to counting', submitLabel = 'Hand in sheet' }: {
   round: number; tally: Tally; names: { a: string; b: string }; sides: EventSides; busy: boolean; message: string | null;
   onSubmit: (calls: CriteriaCalls) => void; onClose: () => void;
+  /** Used again by the secretary for a paper sheet (PaperSheetDialog). */
+  title?: string; aria?: string; backLabel?: string; submitLabel?: string;
 }) {
   const [calls, setCalls] = useState<CriteriaCalls>({});
   const even = needsCriteria(tally.strike);
@@ -24,8 +26,8 @@ export function OutranceSheetDialog({ round, tally, names, sides, busy, message,
   const who = (s: 'a' | 'b') => `${sides[s].name} · ${names[s]}`;
   const answer = (c: Call) => { const k = ask[0]; if (k) setCalls(v => ({ ...v, [k]: c })); };
   return (
-    <Dialog title={`Round ${round} · your sheet`} onClose={onClose} busy={busy} dismissOnBackdrop={false}>
-      <table className="om-sheet" aria-label={`Your round ${round} sheet`}>
+    <Dialog title={title ?? `Round ${round} · your sheet`} onClose={onClose} busy={busy} dismissOnBackdrop={false}>
+      <table className="om-sheet" aria-label={aria ?? `Your round ${round} sheet`}>
         <thead><tr><th scope="col"></th><th scope="col" className="om-a">{sides.a.name}</th><th scope="col" className="om-b">{sides.b.name}</th></tr></thead>
         <tbody>
           {MARKS.map(m => <tr key={m}><th scope="row">{ROW[m]}</th><td className="mono">{tally[m].a}</td><td className="mono">{tally[m].b}</td></tr>)}
@@ -55,8 +57,8 @@ export function OutranceSheetDialog({ round, tally, names, sides, busy, message,
       {ready && <p className="src">Cards, armour repairs and 3 or more weapon losses come off when the secretary confirms the round.</p>}
       {message && <p className="ly-note" role="alert">{message}</p>}
       <div className="dlg-actions">
-        <button type="button" className="btn btn-line" disabled={busy} onClick={() => (Object.keys(calls).length ? setCalls({}) : onClose())}>{Object.keys(calls).length ? 'Start the criteria again' : 'Back to counting'}</button>
-        <button type="button" className="btn btn-win" disabled={busy || !ready} onClick={() => onSubmit(even ? calls : {})} data-testid="om-submit">{busy ? 'Handing in…' : 'Hand in sheet'}</button>
+        <button type="button" className="btn btn-line" disabled={busy} onClick={() => (Object.keys(calls).length ? setCalls({}) : onClose())}>{Object.keys(calls).length ? 'Start the criteria again' : backLabel}</button>
+        <button type="button" className="btn btn-win" disabled={busy || !ready} onClick={() => onSubmit(even ? calls : {})} data-testid="om-submit">{busy ? 'Saving…' : submitLabel}</button>
       </div>
     </Dialog>
   );
