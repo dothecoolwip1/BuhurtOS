@@ -1,3 +1,4 @@
+import { sheetResult, type CriteriaCalls } from './outrance';
 /**
  * Tournament maths taken from Buhurt International documents (League Structure V2026.1,
  * Tournament Structure and Formats Jan 2026, Outrance Rules V26.4, Duels rules V26.4).
@@ -111,25 +112,19 @@ export interface ProRound {
   strikesB: number;
   deductionsA: number;
   deductionsB: number;
-  /** Who the other criteria favour when the strike gap is 5 or less. */
+  /** Who the other criteria favour when the strike gap is 5 or less (older boards; kept so saved boards still read). */
   otherCriteria: Side | 'none';
+  /** Pack 29: the criteria in priority order, as the rules ask them (§15.2): the first that is not Even decides. */
+  criteria?: CriteriaCalls;
 }
 export interface ProScore { a: number; b: number; label: 'Even' | 'Won on other criteria' | 'Slight' | 'Moderate' | 'Dominant' }
 
 export function proRoundScore(r: ProRound): ProScore {
-  const gap = Math.abs(r.strikesA - r.strikesB);
-  const lead: Side | 'none' = r.strikesA > r.strikesB ? 'a' : r.strikesA < r.strikesB ? 'b' : 'none';
-  let winner: Side | 'none' = 'none';
-  let loserScore = 10;
-  let label: ProScore['label'] = 'Even';
-  if (gap <= 5) {
-    if (r.otherCriteria !== 'none') { winner = r.otherCriteria; loserScore = 9; label = 'Won on other criteria'; }
-  } else if (gap <= 10) { winner = lead; loserScore = 9; label = 'Slight'; }
-  else if (gap <= 15) { winner = lead; loserScore = 8; label = 'Moderate'; }
-  else { winner = lead; loserScore = 7; label = 'Dominant'; }
-  const a = (winner === 'b' ? loserScore : 10) - r.deductionsA;
-  const b = (winner === 'a' ? loserScore : 10) - r.deductionsB;
-  return { a, b, label };
+  // One line marshal's sheet, exactly as src/lib/outrance.ts scores it (Outrance §15.3.1); an older board's single choice counts as the first criterion.
+  const calls: CriteriaCalls = r.criteria ?? (r.otherCriteria === 'none' ? {} : { grappling: r.otherCriteria });
+  const s = sheetResult({ a: r.strikesA, b: r.strikesB }, calls);
+  const label: ProScore['label'] = s.band === 'dominant' ? 'Dominant' : s.band === 'moderate' ? 'Moderate' : s.band === 'slight' ? 'Slight' : s.winner ? 'Won on other criteria' : 'Even';
+  return { a: s.a - r.deductionsA, b: s.b - r.deductionsB, label };
 }
 
 /* ---------- Duels: points per strike, match won by a lead of 2 (Duels rules V26.4 §2) ---------- */

@@ -99,7 +99,7 @@ export function resultFromBoard(board: BoardState, stage: CompetitionMatch['stag
     ok: true,
     value: {
       result, scoreA, scoreB,
-      detail: { kind: 'pro', method: 'decision', rounds: scored.map((r, i) => ({ round: i + 1, strikesA: r.strikesA, strikesB: r.strikesB, deductionsA: r.deductionsA, deductionsB: r.deductionsB, otherCriteria: r.otherCriteria, a: r.score.a, b: r.score.b, label: r.score.label })), totals: { a: scoreA, b: scoreB } }
+      detail: { kind: 'pro', method: 'decision', rounds: scored.map((r, i) => ({ round: i + 1, strikesA: r.strikesA, strikesB: r.strikesB, deductionsA: r.deductionsA, deductionsB: r.deductionsB, otherCriteria: r.otherCriteria, ...(r.criteria ? { criteria: r.criteria } : {}), a: r.score.a, b: r.score.b, label: r.score.label })), totals: { a: scoreA, b: scoreB } }
     }
   };
 }

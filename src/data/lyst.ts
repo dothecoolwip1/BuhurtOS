@@ -180,7 +180,7 @@ export const counterSetOperator = (name: string) => rpc<CounterState>('counter_s
 /** The phone stops counting here (its binding and seat end; the evidence stays). */
 export const counterLeave = () => rpc<CounterState>('counter_leave', {});
 /** A trainee joins with the field's training code, their name and a side: seated at once as a LEARNING counter. */
-export const joinTrainingCounter = (code: string, name: string, side: 'a' | 'b') =>
+export const joinTrainingCounter = (code: string, name: string, side: Position) =>
   rpc<{ status: string; message?: string; event_slug?: string; field_key?: string; state?: CounterState }>('join_training_counter', { p_code: code, p_name: name, p_side: side });
 export const counterRecord = (id: string, seat: string, round: number, weight: number) => rpc<{ status: 'ok' | 'duplicate'; total: number }>('counter_record', { p_id: id, p_seat: seat, p_round: round, p_weight: weight });
 export const counterUndo = (id: string, seat: string, round: number) => rpc<{ status: 'ok' | 'duplicate' | 'nothing'; total: number }>('counter_undo', { p_id: id, p_seat: seat, p_round: round });
@@ -192,7 +192,7 @@ export interface LystPublic {
   match_id: string; event_id: string; field_key: string; queue_state: string;
   timer_mode: TimerMode | null; timer_status: 'idle' | 'running' | 'paused' | null; timer_duration_ms: number | null; timer_remaining_ms: number | null; timer_started_at: string | null; timer_rev: number | null; timer_round: number | null;
   round_no: number | null; round_status: 'running' | 'confirming' | 'confirmed' | null; official_a: number; official_b: number; rounds_confirmed: number;
-  discipline: { round: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq'; label: string | null; amount: number }[]; server_now: string;
+  discipline: { round: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq' | 'armour' | 'stoppage' | 'note'; label: string | null; amount: number }[]; server_now: string;
 }
 export async function fetchLystPublic(eventId: string): Promise<{ rows: LystPublic[]; sentAt: number; receivedAt: number }> {
   const sentAt = Date.now();

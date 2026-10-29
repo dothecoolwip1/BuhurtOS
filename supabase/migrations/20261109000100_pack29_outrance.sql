@@ -895,6 +895,9 @@ end $$;
 select pg_temp.bos_patch('public.lyst_state(uuid)'::regprocedure,
   $a$order by c.created_at desc limit 1));$a$,
   $a$order by c.created_at desc limit 1)) || jsonb_build_object('outrance', private.outrance_state(p_match));$a$);
+select pg_temp.bos_patch('public.lyst_state(uuid)'::regprocedure,
+  $a$jsonb_build_object('id', d.id, 'round_no', d.round_no, 'side', d.side, 'kind', d.kind, 'label', d.label,$a$,
+  $a$jsonb_build_object('id', d.id, 'round_no', d.round_no, 'side', d.side, 'kind', d.kind, 'label', d.label, 'key', d.card_key,$a$);
 select pg_temp.bos_patch('private.counter_state_for(uuid,boolean)'::regprocedure,
   $a$'server_now', clock_timestamp()));$a$,
   $a$'server_now', clock_timestamp(), 'outrance', case when v_s.id is not null and v_s.match_id = v_match then private.outrance_phone(v_s.id, v_match) end));$a$);

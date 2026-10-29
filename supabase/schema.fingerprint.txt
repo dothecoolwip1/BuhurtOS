@@ -3415,7 +3415,7 @@ function public.lyst_finalize(p_command uuid, p_match uuid, p_expected_version i
 function public.lyst_open(p_match uuid, p_counter_input text) secdef=true dd00c22e0e25919863ad15f8e35fcc46
 function public.lyst_record_discipline(p_command uuid, p_match uuid, p_round integer, p_side text, p_kind text, p_label text, p_amount integer, p_reason text, p_called_by text, p_related uuid) secdef=true 1cce9618b9935ffbc668a81be15d371b
 function public.lyst_return_round(p_command uuid, p_match uuid, p_round integer, p_expected_rev integer, p_reason text) secdef=true 38e31e7e9618d17b620b14577f3da2f5
-function public.lyst_state(p_match uuid) secdef=true 1ea45e6873aac08ef7e52d2754ab3d0a
+function public.lyst_state(p_match uuid) secdef=true ce5b28699a144cc14010a0b998db6add
 function public.lyst_timer_command(p_event uuid, p_field text, p_match uuid, p_expected_rev integer, p_command uuid, p_action text, p_mode text, p_duration_ms integer, p_round integer, p_delta_ms integer, p_pressed_at timestamp with time zone) secdef=true 33f573dedccd18d33729f9a24443e50b
 function public.lyst_timer_command_reliable(p_event uuid, p_field text, p_match uuid, p_expected_rev integer, p_command uuid, p_action text, p_mode text, p_duration_ms integer, p_round integer, p_delta_ms integer, p_override_reason text, p_requested_at timestamp with time zone) secdef=true 7ab9ab36b657ec69a0b90ed05097ef03
 function public.lyst_void_discipline(p_command uuid, p_id uuid, p_reason text) secdef=true 6c3c55d450e2f73539c086341e968604

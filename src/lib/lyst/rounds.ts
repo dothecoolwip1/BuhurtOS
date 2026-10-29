@@ -48,16 +48,19 @@ export const entryStart = (r: LystRound | null): { a: number; b: number } => (r 
 export const isChange = (r: LystRound | null, a: number, b: number): boolean => Boolean(r && r.status === 'confirmed' && (r.awarded_a !== a || r.awarded_b !== b));
 
 /* ---------------- discipline ---------------- */
-export type DisciplineKind = 'warning' | 'card' | 'deduction' | 'dq';
+/** Pack 29 adds the Outrance protocol kinds: an armour repair granted (90 s), a stoppage (KO, TKO, ...) and a note (a corner man expelled). */
+export type DisciplineKind = 'warning' | 'card' | 'deduction' | 'dq' | 'armour' | 'stoppage' | 'note';
 export interface LystDiscipline {
   id: string; round_no: number; side: 'a' | 'b'; kind: DisciplineKind; label: string | null; amount: number; voided_at: string | null;
+  /** Pack 29: an Outrance call's key (yellow, red, ko, tko, tko_round, tko_equipment, ...). */
+  key?: string | null;
   reason?: string | null; called_by?: string | null; void_reason?: string | null; created_at?: string;
 }
-export const KIND_WORD: Record<DisciplineKind, string> = { warning: 'Warning', card: 'Card', deduction: 'Point deduction', dq: 'Disqualification' };
+export const KIND_WORD: Record<DisciplineKind, string> = { warning: 'Warning', card: 'Card', deduction: 'Point deduction', dq: 'Disqualification', armour: 'Armour repair', stoppage: 'Stoppage', note: 'Note' };
 
 /** One line for a record, e.g. "Yellow card · Round 2 · Alex". */
 export function describeDiscipline(d: Pick<LystDiscipline, 'kind' | 'label' | 'amount' | 'round_no' | 'side'>, names: { a: string; b: string }): string {
-  const what = d.kind === 'deduction' ? `−${d.amount} point${d.amount === 1 ? '' : 's'}` : d.kind === 'card' ? (d.label ?? 'Card') : KIND_WORD[d.kind];
+  const what = d.kind === 'deduction' ? `−${d.amount} point${d.amount === 1 ? '' : 's'}` : d.kind === 'card' ? (d.label ?? 'Card') : (d.kind === 'armour' || d.kind === 'stoppage' || d.kind === 'note' || d.kind === 'dq') && d.label ? d.label : KIND_WORD[d.kind];
   return `${what} · Round ${d.round_no} · ${d.side === 'a' ? names.a : names.b}`;
 }
 export const activeDiscipline = (list: readonly LystDiscipline[]): LystDiscipline[] => list.filter(d => !d.voided_at);

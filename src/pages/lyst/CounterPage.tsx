@@ -2,12 +2,15 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { SignIn } from '../../auth/SignIn';
-import { acknowledgeCounterRun, counterBind, counterLeave, counterSetOperator, counterSubmit, joinTrainingCounter, leaveSeat, type CounterField, type CounterState, type PreparedCounterRun } from '../../data/lyst';
+import { acknowledgeCounterRun, counterBind, counterLeave, counterSetOperator, counterSubmit, joinTrainingCounter, leaveSeat, outranceSubmitSheet, type CounterField, type CounterState, type PreparedCounterRun } from '../../data/lyst';
 import { isDeviceMode, storedWhoami } from '../../lib/deviceSession';
 import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
-import { DEFAULT_SIDES, counterBanner, fightLine, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, type CounterStep } from '../../lib/lyst/counters';
+import { DEFAULT_SIDES, counterBanner, fightLine, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, type CounterStep, type Mark, type Position } from '../../lib/lyst/counters';
+import { readTally, shownTally, strikeGap, undoTarget, MARK_LABEL } from '../../lib/lyst/lineMarshal';
+import { OutranceSheetDialog } from '../../components/lyst/OutranceSheetDialog';
+import type { CriteriaCalls } from '../../lib/outrance';
 import { CounterJournal } from '../../lib/lyst/counterJournal';
 import { useCounterTab } from '../../lib/lyst/useCounterTab';
 import { offlineShellStore, scoringGuard } from '../../lib/swUpdate';
@@ -66,7 +69,7 @@ function DeviceCounter() {
   const w = storedWhoami();
   const cs = useCounterState(true, w?.session_id ?? 'device');
   const state = cs.state;
-  const [draft, setDraft] = useState<{ operator: string; field: string | null; side: 'a' | 'b' | null }>({ operator: '', field: null, side: null });
+  const [draft, setDraft] = useState<{ operator: string; field: string | null; side: Position | null }>({ operator: '', field: null, side: null });
   const [editing, setEditing] = useState<CounterStep | null>(null);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -96,7 +99,7 @@ function DeviceCounter() {
     setDraft(d => ({ ...d, field: key }));
     setEditing('side');
   };
-  const chooseSide = (side: 'a' | 'b') => {
+  const chooseSide = (side: Position) => {
     const field = draft.field ?? binding?.field_key ?? onlyField(fields);
     const operator = draft.operator || binding?.operator || '';
     if (!field || !operator) { setEditing(!operator ? 'operator' : 'field'); return; }
@@ -146,6 +149,7 @@ function DeviceCounter() {
           <button type="button" className="cp-side cp-side-a" disabled={busy} onClick={() => chooseSide('a')} aria-pressed={binding?.side === 'a'} data-testid="cp-pick-a"><span>{sides.a.name.toUpperCase()}</span><small>{chosen?.now?.a ?? 'Side A'}</small></button>
           <button type="button" className="cp-side cp-side-b" disabled={busy} onClick={() => chooseSide('b')} aria-pressed={binding?.side === 'b'} data-testid="cp-pick-b"><span>{sides.b.name.toUpperCase()}</span><small>{chosen?.now?.b ?? 'Side B'}</small></button>
         </div>
+        <button type="button" className="cp-side cp-side-m" disabled={busy} onClick={() => chooseSide('m')} aria-pressed={binding?.side === 'm'} data-testid="cp-pick-m"><span>LINE MARSHAL</span><small>Profight: one marshal's sheet for both fighters</small></button>
         {problem && <p role="alert" className="ly-error">{problem}</p>}
         {fields.length > 1 && <button type="button" className="ly-link" onClick={() => setEditing('field')}>Change Lyst</button>}
         {editing && binding?.side && <button type="button" className="ly-link" onClick={() => setEditing(null)}>Keep {sideLabel(binding.side, sides)}</button>}
@@ -155,6 +159,7 @@ function DeviceCounter() {
   return (
     <CountScreen key={state?.seat?.id ?? 'waiting'} state={state!} cs={cs} training={state?.training===true||state?.seat?.role==='learning'} busy={busy} problem={problem}
       onChangeOperator={() => setEditing('operator')} onChangeSide={() => setEditing('side')} onChangeField={fields.length > 1 ? () => setEditing('field') : undefined}
+      onPosition={side => { const f = binding?.field_key ?? onlyField(fields); if (f) void run(() => counterBind(f, side, binding?.operator ?? null)); else setEditing('side'); }}
       onLeave={() => run(() => counterLeave())} />
   );
 }
@@ -189,7 +194,7 @@ function TrainingCounter({ userId, urlCode }: { userId: string; urlCode: string 
   const state = cs.state;
   const code = urlCode ?? parseJoinCode(store.get(TRAIN_CODE_KEY));
   const [name, setName] = useState('');
-  const [side, setSide] = useState<'a' | 'b' | null>(null);
+  const [side, setSide] = useState<Position | null>(null);
   const [typed, setTyped] = useState('');
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -234,6 +239,7 @@ function TrainingCounter({ userId, urlCode }: { userId: string; urlCode: string 
             <button type="button" className="cp-side cp-side-a" aria-pressed={side === 'a'} onClick={() => setSide('a')}><span>{sides.a.name.toUpperCase()}</span><small>Side A</small></button>
             <button type="button" className="cp-side cp-side-b" aria-pressed={side === 'b'} onClick={() => setSide('b')}><span>{sides.b.name.toUpperCase()}</span><small>Side B</small></button>
           </div>
+          <button type="button" className="cp-side cp-side-m" aria-pressed={side === 'm'} onClick={() => setSide('m')}><span>LINE MARSHAL</span><small>Profight practice: both fighters</small></button>
           <button type="submit" className="btn btn-ink fq-big" disabled={busy || !side || name.trim().length < 1}>{busy ? 'Joining…' : 'Start counting'}</button>
           {problem && <p role="alert" className="ly-error">{problem}</p>}
           {problem && <button type="button" className="ly-link" onClick={() => { setProblem(null); store.del(TRAIN_CODE_KEY); nav('/lyst/train', { replace: true }); }}>Type a new code</button>}
@@ -256,9 +262,9 @@ function TrainingCounter({ userId, urlCode }: { userId: string; urlCode: string 
 }
 
 /* ================================================================ the counting screen (both) */
-function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onChangeSide, onChangeField, onLeave }: {
+function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onChangeSide, onChangeField, onPosition, onLeave }: {
   state: CounterState; cs: ReturnType<typeof useCounterState>; training: boolean; busy: boolean; problem: string | null;
-  onChangeOperator: () => void; onChangeSide?: () => void; onChangeField?: () => void; onLeave: () => unknown;
+  onChangeOperator: () => void; onChangeSide?: () => void; onChangeField?: () => void; onPosition?: (side: Position) => void; onLeave: () => unknown;
 }) {
   const sides = state.sides ? mergeSides(state.sides) : DEFAULT_SIDES;
   const vars = sideVars(sides) as React.CSSProperties;
@@ -294,7 +300,19 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     if(tab.owned && state.match_id)journal.rememberContext(state.match_id,{event:state.event?.name??'',fight:`${state.fights?.now?.a??state.fighter??''} vs ${state.fights?.now?.b??state.opponent??''}`,field:fieldLabel(state.field_label??seat?.field_key??'')});
   },[journal,tab.owned,state.match_id,state.event?.name,state.fights?.now?.a,state.fights?.now?.b,state.fighter,state.opponent,state.field_label,seat?.field_key]);
 
-  const send=useMemo(()=>counterEvidenceSender(seatId),[seatId]);
+  // Pack 29: a line marshal's sheet (Outrance §2.3). The tally shown is the server's plus this phone's waiting taps; every answer carries the server's tally.
+  const om = state.outrance ?? null;
+  const lineMarshal = seat?.side === 'm' && om?.position === 'ok';
+  const [omCaptured, setOmCaptured] = useState<{ round: number; at: number; tally: ReturnType<typeof readTally> } | null>(null);
+  const omHistory = useRef<{ round: number; items: { mark: Mark; side: 'a' | 'b' }[] }>({ round: 0, items: [] });
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetMessage, setSheetMessage] = useState<string | null>(null);
+  const baseSend=useMemo(()=>counterEvidenceSender(seatId),[seatId]);
+  const send=useMemo<typeof baseSend>(()=>async action=>{
+    const answer=await baseSend(action);
+    if((answer.status==='ok'||answer.status==='duplicate'||answer.status==='nothing')&&answer.outrance)setOmCaptured({round:action.round,at:Date.now(),tally:readTally(answer.outrance)});
+    return answer;
+  },[baseSend]);
   const backlog=useCounterBacklog(seatId,tab.owned);
 
   const pump = useCallback(async () => {
@@ -345,7 +363,9 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   }, [manualRun, cs.cached, state.prepared_run, state.can_count, seatId,journal,tick]);
 
   const manualAllowed = !!manualRun && state.prepared_run?.status !== 'closed' && (cs.cached || state.prepared_run?.id === manualRun.id);
-  const canCount = tab.owned && (Boolean(state.can_count) && !cs.cached || manualAllowed) && !!run?.id && run.status!=='closed' && seat?.status === 'active' && !finishing.current && !review;
+  const omSheet = lineMarshal && om?.position === 'ok' && om.round_no === (state.round?.no ?? 0) ? om.sheet : null;
+  const canCount = tab.owned && (Boolean(state.can_count) && !cs.cached || manualAllowed) && !!run?.id && run.status!=='closed' && seat?.status === 'active' && !finishing.current && !review && !sheetOpen
+    && om?.position !== 'wrong' && !omSheet;
   const canSubmit = !!manualRun || state.round?.no===round && state.round?.status!=='confirmed';
   const standing = state.counter_input === 'standing';
   const shown = round ? journal.display(round, run?.id) : 0;
@@ -360,11 +380,14 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     setReview({key:reviewKey,round,shown,total:standing ? left ?? 0 : shown,standing,maximum:standing ? state.per_side ?? 0 : 1000,fighter:state.fighter ?? 'Your count'});
   };
   useEffect(()=>{
-    if (reviewAllowed && automaticReviewReady && !state.submitted && !review && !prompted.current.has(reviewKey)) {
+    if (reviewAllowed && automaticReviewReady && !state.submitted && !review && !prompted.current.has(reviewKey) && lineMarshal) {
+      prompted.current.add(reviewKey); setSheetMessage(null); setSheetOpen(true); return;
+    }
+    if (reviewAllowed && automaticReviewReady && !state.submitted && !review && !prompted.current.has(reviewKey) && !lineMarshal && om?.position !== 'wrong') {
       prompted.current.add(reviewKey); setReviewMessage(null);
       setReview({key:reviewKey,round,shown,total:standing ? left ?? 0 : shown,standing,maximum:standing ? state.per_side ?? 0 : 1000,fighter:state.fighter ?? 'Your count'});
     }
-  },[reviewAllowed,automaticReviewReady,state.submitted,review,reviewKey,round,shown,standing,left,state.per_side,state.fighter]);
+  },[reviewAllowed,automaticReviewReady,state.submitted,review,reviewKey,round,shown,standing,left,state.per_side,state.fighter,lineMarshal,om?.position]);
   const count = (weight: number) => {
     if (!canCount || !round) return;
     if (standing && left !== null && left <= 0) return;
@@ -407,10 +430,49 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     finally { finishing.current = false; setTick(t => t + 1); }
   };
 
+  /* ---------------- the line marshal (Pack 29) ---------------- */
+  if (omHistory.current.round !== round) omHistory.current = { round, items: [] };
+  const omServer = om?.position === 'ok' && om.round_no === round ? readTally(om.tally) : readTally(null);
+  const omBase = omCaptured && omCaptured.round === round && omCaptured.at > cs.sentAt ? omCaptured.tally : omServer;
+  const omLocal = [...journal.held.filter(h => h.action.recovery && !h.alreadyAccepted).map(h => h.action), ...journal.pending].filter(a => (a.matchId ?? seatId) === (state.match_id ?? seatId));
+  const omShown = shownTally(omBase, omLocal, round, run?.id);
+  const omUndo = undoTarget(omHistory.current.items, om?.position === 'ok' ? om.last : null, omShown);
+  const omContext = () => ({ runId: run?.id, recovery: !!manualRun, recordedAt: new Date().toISOString(), operator: state.binding?.operator ?? seat?.operator, side: 'm' });
+  const mark = (m: Mark, s: 'a' | 'b') => {
+    if (!canCount || !round || finishing.current) return;
+    lastSendEnd.current = Date.now(); journal.add('tap', round, 1, { ...omContext(), mark: m, markSide: s }); omHistory.current.items.push({ mark: m, side: s }); setNotice(null);
+    try { navigator.vibrate?.(12); } catch { /* not supported */ }
+    void pump();
+  };
+  const unmark = () => {
+    if (!canCount || !round || !omUndo || finishing.current) return;
+    lastSendEnd.current = Date.now(); journal.add('undo', round, 1, { ...omContext(), mark: omUndo.mark, markSide: omUndo.side });
+    const items = omHistory.current.items; if (items.length && items[items.length - 1].mark === omUndo.mark && items[items.length - 1].side === omUndo.side) items.pop();
+    try { navigator.vibrate?.([8, 40, 8]); } catch { /* not supported */ }
+    void pump();
+  };
+  const sheetKey = `bos-om-sheet:${seatId}:${state.match_id}:${round}`;
+  const handIn = async (calls: CriteriaCalls) => {
+    if (!run?.id || finishing.current) return;
+    finishing.current = true; setTick(x => x + 1); setSheetMessage(null);
+    try {
+      await journal.flushForConfirmation(round, run.id, send);
+      lastSendEnd.current = Date.now(); setOffline(journal.offline);
+      if (journal.pending.length > 0) { setSheetMessage(journal.durable ? 'Not sent yet. Your taps are saved here. Hand in the sheet again when connected.' : 'Not sent yet. Your taps are in memory only. Keep this page open and keep a paper sheet.'); return; }
+      if (journal.held.some(h => h.action.round === round && h.action.runId === run.id && !h.delivered)) { setSheetMessage('Some taps are still only on this phone. Show Saved count evidence to the secretary.'); return; }
+      let id = store.get(sheetKey);
+      if (!id) { id = crypto.randomUUID(); store.set(sheetKey, id); }
+      await outranceSubmitSheet(id, seatId, round, calls);
+      store.del(sheetKey);
+      setSheetOpen(false); setNotice('Sheet handed in. Wait for the next round.'); void cs.refresh();
+    } catch (e) { setSheetMessage(friendlyError(e, 'Could not hand in the sheet. Your taps are kept here. Try again.')); }
+    finally { finishing.current = false; setTick(x => x + 1); }
+  };
+
   const now = useNow(state.timer?.status === 'running');
   const timeLeft = state.timer ? remainingMs(state.timer, cs.clock.now(now)) : 0;
   const waiting = journal.pending.length;
-  const banner = useMemo(() => counterBanner({ seat: seat ? { status: seat.status, role: seat.role, side: seat.side } : null, can_count: state.can_count, final: state.final, waiting: state.waiting, round: state.round, counter_input: state.counter_input, binding: state.binding }, sides), [seat, state.can_count, state.final, state.waiting, state.round, state.counter_input, state.binding, sides]);
+  const banner = useMemo(() => counterBanner({ seat: seat ? { status: seat.status, role: seat.role, side: seat.side } : null, can_count: state.can_count, final: state.final, waiting: state.waiting, round: state.round, counter_input: state.counter_input, binding: state.binding, outrance: om && om.position === 'ok' ? { position: 'ok', sheet: om.round_no === state.round?.no ? om.sheet : null } : om }, sides), [seat, state.can_count, state.final, state.waiting, state.round, state.counter_input, state.binding, sides, om]);
   const weighted = state.counter_input === 'weighted';
   const side = seat?.side ?? state.binding?.side ?? null;
   const operator = state.binding?.operator ?? seat?.operator ?? '';
@@ -425,8 +487,17 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
           <span className="cp-op" data-testid="cp-operator">{operator}</span>
         </div>
         {state.competition && <p className="src cp-ctx">{state.competition}{state.round_label ? ` · ${state.round_label}` : ''}</p>}
-        {state.fighter ? <h1 className="cp-fighter" data-testid="cp-fighter">{state.fighter}</h1> : <h1 className="cp-fighter cp-fighter-wait">{state.field_label ? fieldLabel(state.field_label) : 'Your Lyst'}</h1>}
-        {state.opponent && <p className="src cp-vs">vs {state.opponent}</p>}
+        {lineMarshal && om?.position === 'ok'
+          ? <h1 className="cp-fighter om-vs" data-testid="cp-fighter"><span className="om-a">{om.fighters.a ?? sides.a.name}</span> <small>vs</small> <span className="om-b">{om.fighters.b ?? sides.b.name}</span></h1>
+          : <>{state.fighter && side !== 'm' ? <h1 className="cp-fighter" data-testid="cp-fighter">{state.fighter}</h1> : <h1 className="cp-fighter cp-fighter-wait">{state.field_label ? fieldLabel(state.field_label) : 'Your Lyst'}</h1>}
+            {state.opponent && side !== 'm' && <p className="src cp-vs">vs {state.opponent}</p>}</>}
+        {om?.position === 'wrong' && onPosition && seat?.status === 'active' && !state.waiting && (
+          <div className="panel info om-switch" data-testid="om-switch">
+            {om.need === 'line_marshal'
+              ? <button type="button" className="btn btn-ink fq-big" disabled={busy} onClick={() => onPosition('m')}>Switch to Line marshal</button>
+              : <div className="om-switch-sides"><button type="button" className="btn btn-ink cp-side-a" disabled={busy} onClick={() => onPosition('a')}>Count {sides.a.name}</button><button type="button" className="btn btn-ink cp-side-b" disabled={busy} onClick={() => onPosition('b')}>Count {sides.b.name}</button></div>}
+          </div>
+        )}
         {state.fights && (state.fights.last || state.fights.now || state.fights.next) && (
           <dl className="cp-fights" data-testid="cp-fights" aria-label="This Lyst: last, now, next">
             <div><dt>Last fight</dt><dd data-testid="cp-fight-last">{fightLine(state.fights.last) ?? '—'}</dd></div>
@@ -457,6 +528,34 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         </div>}
       </header>
 
+      {lineMarshal && om?.position === 'ok' ? (
+      <section className="cp-main om-main" aria-label="Line marshal sheet">
+        {omSheet ? (
+          <div className="om-handed panel info" data-testid="om-handed">
+            <b>Round {round}: sheet handed in</b>
+            <span className="mono">{sides.a.name} {omSheet.result.a} – {omSheet.result.b} {sides.b.name}</span>
+            <span className="src">Strikes {omSheet.strikes.a}–{omSheet.strikes.b}. The secretary confirms the round.</span>
+          </div>
+        ) : (<>
+          <div className="om-strikes">
+            {(['a', 'b'] as const).map(s => (
+              <button key={s} type="button" className={`cp-count om-strike om-strike-${s}`} disabled={!canCount} onClick={() => mark('strike', s)} data-testid={`om-strike-${s}`}
+                aria-label={`Strike for ${om.fighters[s] ?? sides[s].name}, now ${omShown.strike[s]}`}>
+                <small>{sides[s].name}</small><output className="mono">{omShown.strike[s]}</output><small>Strike</small>
+              </button>
+            ))}
+          </div>
+          <div className="om-marks" role="group" aria-label="Takedowns, weapon losses, armour failures">
+            {(['takedown', 'weapon_loss', 'armour_failure'] as const).map(m => (['a', 'b'] as const).map(s => (
+              <button key={`${m}-${s}`} type="button" className={`om-mark om-mark-${s}`} disabled={!canCount} onClick={() => mark(m, s)} data-testid={`om-${m}-${s}`}>
+                <span>{MARK_LABEL[m]}</span><b className="mono">{omShown[m][s]}</b><small>{sides[s].name}</small>
+              </button>
+            )))}
+          </div>
+          <p className="src om-gap" aria-live="off">Strike point difference {strikeGap(omShown)}{strikeGap(omShown) <= 5 ? ': 5 or less, you will be asked the other criteria' : ''}.</p>
+        </>)}
+      </section>
+      ) : (
       <section className="cp-main" aria-label="Count">
         {seat?.status === 'active' && round > 0 && !state.waiting && (
           standing
@@ -473,11 +572,19 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
               </div>)
             : <button type="button" className="cp-count" disabled={!canCount} onClick={() => count(1)} aria-label="Count">Count</button>}
       </section>
+      )}
 
       <footer>
         <div className="cp-foot">
-          <button type="button" className="btn btn-line" disabled={!canCount || shown <= 0} onClick={undo}>{standing ? 'Undo (back up)' : 'Undo last'}</button>
-          <button type="button" className="btn btn-line" disabled={!reviewAllowed || finishing.current} aria-haspopup="dialog" onClick={openReview}>Done with round</button>
+          {lineMarshal
+            ? <>
+              <button type="button" className="btn btn-line" disabled={!canCount || !omUndo} onClick={unmark} data-testid="om-undo">{omUndo ? `Undo ${sides[omUndo.side].name} ${MARK_LABEL[omUndo.mark].toLowerCase()}` : 'Undo last'}</button>
+              <button type="button" className="btn btn-line" disabled={!reviewAllowed || finishing.current || !!omSheet} aria-haspopup="dialog" onClick={() => { setSheetMessage(null); setSheetOpen(true); }} data-testid="om-done">Hand in sheet</button>
+            </>
+            : <>
+              <button type="button" className="btn btn-line" disabled={!canCount || shown <= 0} onClick={undo}>{standing ? 'Undo (back up)' : 'Undo last'}</button>
+              <button type="button" className="btn btn-line" disabled={!reviewAllowed || finishing.current || om?.position === 'wrong'} aria-haspopup="dialog" onClick={openReview}>Done with round</button>
+            </>}
         </div>
         <p className="cp-sync" role="status">{waiting > 0 ? `${waiting} tap${waiting === 1 ? '' : 's'} ${journal.durable ? 'saved on this phone' : 'in memory only'}, waiting to send.` : journal.held.length ? `${journal.held.length} saved action${journal.held.length === 1 ? '' : 's'} kept as evidence.` : seat?.status === 'active' && !state.waiting ? 'All taps sent.' : ''}</p>
         <button type="button" className="ly-link" aria-expanded={backup} onClick={() => setBackup(v => !v)}>Saved count evidence</button>
@@ -494,6 +601,8 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
         </nav>
         {training && state.event && <Link className="ly-link" to={`/events/${state.event.slug}`}>Back to the event</Link>}
       </footer>
+      {sheetOpen && lineMarshal && om?.position === 'ok' && <OutranceSheetDialog round={round} tally={omShown} names={{ a: om.fighters.a ?? sides.a.name, b: om.fighters.b ?? sides.b.name }} sides={sides}
+        busy={finishing.current} message={sheetMessage} onSubmit={calls => void handIn(calls)} onClose={() => { if (!finishing.current) setSheetOpen(false); }} />}
       {review && <CounterRoundConfirmation round={review.round} total={review.total} standing={review.standing} maximum={review.maximum} fighter={review.fighter} busy={finishing.current} message={reviewMessage} onConfirm={total=>void done(total)} onClose={()=>{if(!finishing.current)setReview(null);}} />}
     </main>
   );

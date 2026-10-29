@@ -68,6 +68,12 @@ describe('lyst actions ride the same outbox', () => {
     // Pack 22: citing the rule a call was for rides the same outbox, with the entry id as the command id; null removes the citation
     expect(lystCall({ id: 'c1', kind: 'lyst.cite_rule', payload: { disciplineId: 'd1', provisionId: 'p9' } })).toEqual({ fn: 'lyst_cite_rule', args: { p_command: 'c1', p_discipline: 'd1', p_provision: 'p9' } });
     expect(lystCall({ id: 'c2', kind: 'lyst.cite_rule', payload: { disciplineId: 'd1', provisionId: null } })?.args).toEqual({ p_command: 'c2', p_discipline: 'd1', p_provision: null });
+    // Pack 29: a Profight call and the secretary's round confirmation, with the entry id as the command id
+    expect(lystCall({ id: 'o1', kind: 'lyst.outrance_call', payload: { matchId: 'm1', round: 2, side: 'b', call: 'yellow', calledBy: 'Lee' } }))
+      .toEqual({ fn: 'outrance_call', args: { p_command: 'o1', p_match: 'm1', p_round: 2, p_side: 'b', p_call: 'yellow', p_reason: null, p_called_by: 'Lee' } });
+    expect(lystCall({ id: 'o2', kind: 'lyst.outrance_confirm', payload: { matchId: 'm1', round: 1, expectedRev: 3 } }))
+      .toEqual({ fn: 'outrance_confirm_round', args: { p_command: 'o2', p_match: 'm1', p_round: 1, p_expected_rev: 3, p_reason: null, p_short: false } });
+    expect(isLystKind('lyst.outrance_call') && isLystKind('lyst.outrance_confirm')).toBe(true);
   });
   it('the timer is not an outbox kind: it cannot be changed offline', () => {
     expect(isLystKind('lyst.timer')).toBe(false);

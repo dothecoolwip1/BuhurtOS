@@ -244,7 +244,7 @@ export async function fetchCitations(disciplineIds: string[]): Promise<Map<strin
 }
 
 export interface DisciplineLogRow {
-  id: string; match_id: string; round_no: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq'; label: string | null; amount: number; related_id: string | null;
+  id: string; match_id: string; round_no: number; side: 'a' | 'b'; kind: 'warning' | 'card' | 'deduction' | 'dq' | 'armour' | 'stoppage' | 'note'; label: string | null; amount: number; related_id: string | null;
   created_at: string; voided_at: string | null; reason: string | null; called_by: string | null; void_reason: string | null; recorded_by_name: string | null; recorded_by_me: boolean;
   field: string | null; round_label: string | null; queue_state: string | null; competition_id: string; competition_name: string;
   entry_id: string | null; fighter_id: string | null; team_id: string | null; against: string | null;

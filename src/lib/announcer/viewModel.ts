@@ -140,7 +140,7 @@ export function buildAnnouncerView(input: AnnouncerInput): AnnouncerView {
     const name = sideLabel(entryId, side === 'a' ? m.nameA : m.nameB, TBD);
     const p = presentSide(src, side, name, { scheme: 'red_blue', records: true, photos: true });
     const marks: AnnMark[] = slot === 'fighting' && row
-      ? (row.discipline ?? []).filter(d => d && d.side === side && MARK_KINDS.has(d.kind)).map(d => ({ side, text: markText(d), kind: d.kind }))
+      ? (row.discipline ?? []).filter((d): d is typeof d & { kind: AnnMark['kind'] } => !!d && d.side === side && MARK_KINDS.has(d.kind)).map(d => ({ side, text: markText(d), kind: d.kind }))
       : [];
     const known = ready?.get(`${m.id}:${side}`);
     return {

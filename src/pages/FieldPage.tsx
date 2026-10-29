@@ -12,6 +12,7 @@ import { EnterOfficialResult, ResultConflicts } from '../components/ResultReview
 import { QUEUE_LABEL, fieldQueue } from '../lib/fieldScoring';
 import { ScoringScreen, type Opened } from '../components/scoring/ScoringScreen';
 import { LystScoring } from '../components/lyst/LystScoring';
+import { OutranceScoring } from '../components/lyst/OutranceScoring';
 import { ReadinessStrip } from '../components/ReadinessStrip';
 import { boardModeFor } from '../lib/fieldScoring';
 import { friendlyError } from '../lib/friendlyError';
@@ -224,6 +225,8 @@ export function FieldPage() {
             onStale: (message: string) => { closeOpened(); setNotice(message); reload(); }
           };
           const isDuel = boardModeFor(opened.comp.league, opened.comp.category) === 'duel';
+          // Pack 29: a Profight is scored on the Lyst to the Outrance rules (3 or 5 line marshals, the secretary's average)
+          const isPro = boardModeFor(opened.comp.league, opened.comp.category) === 'pro';
           // Another device finished this fight while it was open here: the result stands; this board must not offer another round or a second result.
           const fresh = matches.data?.find(m => m.id === opened.match.id);
           if (fresh && fresh.queueState === 'final' && officialHere !== opened.match.id) {
@@ -231,9 +234,11 @@ export function FieldPage() {
           }
           return <>
             {!secretary && <ReadinessStrip key={`ready-${opened.match.id}`} matchId={opened.match.id} />}
-            {isDuel && (secretary || !classic)
+            {isPro && (secretary || !classic)
+              ? <OutranceScoring key={opened.match.id} {...common} secretary={secretary} canResolve={canResolve} onClassic={() => { writeClassic(true); setClassic(true); }} />
+              : isDuel && (secretary || !classic)
               ? <LystScoring key={opened.match.id} {...common} secretary={secretary} canResolve={canResolve} onClassic={() => { writeClassic(true); setClassic(true); }} />
-              : <ScoringScreen key={opened.match.id} {...common} secretary={secretary} onLyst={isDuel ? () => { writeClassic(false); setClassic(false); } : undefined} />}
+              : <ScoringScreen key={opened.match.id} {...common} secretary={secretary} onLyst={isDuel || isPro ? () => { writeClassic(false); setClassic(false); } : undefined} />}
           </>;
         })()
       ) : (

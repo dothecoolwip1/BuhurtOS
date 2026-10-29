@@ -14,7 +14,7 @@ export const TBD = 'To be decided';
 
 export interface ArenaSide { name: string; score: number | null; winner: boolean }
 /** Official lyst state for the display: the confirmed rounds, the clock, the marshal's penalties. Never a counter's tally, never an unconfirmed score. */
-export interface ArenaMark { side: 'a' | 'b'; text: string; kind: 'warning' | 'card' | 'deduction' | 'dq' }
+export interface ArenaMark { side: 'a' | 'b'; text: string; kind: LystPublic['discipline'][number]['kind'] }
 export interface ArenaLyst {
   round: number | null; roundStatus: 'running' | 'confirming' | 'confirmed' | null; roundsConfirmed: number;
   timer: { mode: string; status: 'idle' | 'running' | 'paused'; remainingMs: number; startedAt: string | null; round: number | null } | null;
@@ -36,7 +36,8 @@ export interface ArenaView { field: string; /** The word on screen for the field
 
 const roundText = (m: CompetitionMatch) => (m.pool ? `Pool ${m.pool} · ${m.roundLabel || m.stage}` : m.roundLabel || m.stage);
 
-const CARD_TEXT = (d: LystPublic['discipline'][number]) => (d.kind === 'card' ? d.label ?? 'Card' : d.kind === 'deduction' ? `−${d.amount} point${d.amount === 1 ? '' : 's'}` : d.kind === 'dq' ? 'Disqualified' : 'Warning');
+const CARD_TEXT = (d: LystPublic['discipline'][number]) => (d.kind === 'card' ? d.label ?? 'Card' : d.kind === 'deduction' ? `−${d.amount} point${d.amount === 1 ? '' : 's'}`
+  : (d.kind === 'armour' || d.kind === 'stoppage' || d.kind === 'note') ? d.label ?? 'Marshal\'s call' : d.kind === 'dq' ? (d.label ?? 'Disqualified') : 'Warning');
 
 /** Words for the round state. "Scores being confirmed…" is shown until the marshal's call is recorded: the display never shows a score nobody has confirmed. */
 export const lystPhase = (l: ArenaLyst): string | null =>

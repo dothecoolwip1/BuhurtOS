@@ -3,6 +3,7 @@ import { Seg } from './ui';
 import { confirmRound, duelEndRound, duelScore, duelTotal, duelUndo, proAddRound, proPatch, standing, toggleFighter, type DuelState, type GroupState, type ProState } from '../lib/scoring';
 import { BREAK_SECONDS, SERIES_TITLE, breakRemaining, configureSeries, currentRound, roundPoints, seriesOutcome, seriesSolo, seriesTotals, seriesUndo, setSeriesRound, type SeriesResult, type SeriesState } from '../lib/marathon';
 import { proRoundScore, type Side } from '../lib/tournament';
+import { CRITERIA, CRITERION_LABEL, criteriaWinner, type Call, type CriteriaCalls, type Criterion } from '../lib/outrance';
 
 /**
  * The three scoring boards, controlled: the page owns the state and says who is fighting. Each tap calls `onChange`
@@ -103,12 +104,24 @@ export function ProBoard({ state: s, onChange, record, names, subs, headless = f
         {s.rounds.length < 3 && <button type="button" onClick={() => onChange(proAddRound(s))}>+ Round</button>}
       </div>
       <div className="mteams">{col('A')}{col('B')}</div>
-      {Math.abs(cur.strikesA - cur.strikesB) <= 5 && (
-        <div className="panel info" style={{ gap: 8 }}><span style={{ fontSize: 14, color: 'var(--muted)' }}>Strike gap is 5 or less. Do grappling, list control, aggression and defence favour one fighter?</span>
-          <Seg label="Other criteria" value={cur.otherCriteria} options={[['a', names.a], ['none', 'Neither'], ['b', names.b]] as const} onChange={v => change({ otherCriteria: v })} /></div>
-      )}
+      {Math.abs(cur.strikesA - cur.strikesB) <= 5 && (() => {
+        // Outrance §15.2 and the p.25 sheet: the criteria in priority order, each Red / Even / Blue, until one is not Even
+        const calls = cur.criteria ?? (cur.otherCriteria === 'none' ? {} : { grappling: cur.otherCriteria });
+        const shown = CRITERIA.filter((_, i) => CRITERIA.slice(0, i).every(p => calls[p] === 'even'));
+        const set = (c: Criterion, v: Call) => {
+          const next: CriteriaCalls = {};
+          for (const k of CRITERIA) { if (k === c) { next[k] = v; break; } if (calls[k] === undefined) break; next[k] = calls[k]; }
+          const w = criteriaWinner(next).winner;
+          change({ criteria: next, otherCriteria: w ?? 'none' });
+        };
+        return (
+          <div className="panel info" style={{ gap: 8 }}><span style={{ fontSize: 14, color: 'var(--muted)' }}>Strike gap is 5 or less. Go through the criteria in order until one fighter is better (Outrance §15.2).</span>
+            {shown.map(c => <Seg key={c} label={CRITERION_LABEL[c]} value={calls[c] ?? ('' as Call)} options={[['a', names.a], ['even', 'Even'], ['b', names.b]] as const} onChange={v => set(c, v)} />)}
+          </div>
+        );
+      })()}
       <div className="panel info" style={{ gap: 6, textAlign: 'center' }}><span className="eyebrow">Round {s.current + 1} score · {sc.label}</span><div className="sc10 mono"><span>{sc.a}</span><span style={{ color: 'var(--faint)' }}>–</span><span>{sc.b}</span></div></div>
-      <div className="panel info" style={{ gap: 6, textAlign: 'center' }}><span className="eyebrow">Fight total, this marshal</span><div className="sc10 mono" style={{ fontSize: 36 }}><span>{total[0]}</span><span style={{ color: 'var(--faint)' }}>–</span><span>{total[1]}</span></div><span className="src">A tournament fight totals between 14 and 20. The secretary averages all marshals.</span></div>
+      <div className="panel info" style={{ gap: 6, textAlign: 'center' }}><span className="eyebrow">Fight total, this marshal</span><div className="sc10 mono" style={{ fontSize: 36 }}><span>{total[0]}</span><span style={{ color: 'var(--faint)' }}>–</span><span>{total[1]}</span></div><span className="src">One line marshal's sheet. Outrance needs 3 or 5 line marshals and the secretary averages them (§15.3.1): use the Lyst, or this board as the paper backup.</span></div>
     </>
   );
 }
