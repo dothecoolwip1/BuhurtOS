@@ -1512,3 +1512,9 @@ main.focus-main{flex:1 0 auto;width:100%;max-width:1180px;margin:0 auto;padding:
 .directory-filters>summary.btn{padding:10px 18px;display:list-item;list-style-position:inside;width:max-content;max-width:100%}
 .directory-filters:not([open]){padding:8px 16px}
 @media(min-width:700px){.ev-practical{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* the "This is a test event" choice on Create an event, and the note on a test event's page */
+.qs-test{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;cursor:pointer;min-height:44px}
+.qs-test input{width:24px;height:24px;margin:2px 0 0}
+.qs-test>span{display:grid;gap:4px}
+.qs-test.is-on{border-color:var(--brass,#b08d3c)}
+.ev-test-note{margin:0;padding:8px 12px;border-radius:10px;border:1px dashed var(--line);font-size:14px}

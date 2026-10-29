@@ -31,6 +31,7 @@ export function EventHeader({ event, phase, view, cta, control, synthetic, conne
         {control && <Link className="btn btn-line ev-control" to={controlPath(event.slug)} data-testid="open-control">Event Control</Link>}
       </div>
       <h1 className="ev-title">{event.name}</h1>
+      {event.testDeleteAfter && <p className="ev-test-note" role="note" data-testid="test-event-note"><b>Test event.</b> Only you and this event's staff can see it. It and everything in it are deleted on {new Date(event.testDeleteAfter).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}; fighter profiles stay.</p>}
       <p className="ev-facts">
         <span className="ev-when">{dateRange(event.startsOn, event.endsOn)}</span>
         {where && <span className="ev-where">{where}</span>}

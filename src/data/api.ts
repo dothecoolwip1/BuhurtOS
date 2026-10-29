@@ -20,6 +20,8 @@ export interface LiveEvent {
   registrationMode: 'buhuros' | 'external' | 'none'; externalUrl: string | null; timeNote: string | null; volunteerInfo: string | null;
   /** Pack 26: the tournament's page on buhurtinternational.com, when the organizer set one. Absent in older fixtures. */
   biTournamentUrl?: string | null;
+  /** A test event: only its staff see it, and it is deleted (not its fighters) at this time. Null for a normal event. */
+  testDeleteAfter?: string | null;
   /** The event's own time zone (IANA): the venue's clock decides which day it is (Pack 25). Absent in older fixtures: Mountain time is assumed. */
   timezone?: string;
   /** How many competitions the event has (0 for a tournament draft means "needs competition setup"). */
@@ -39,7 +41,7 @@ export interface MyEventContext {
 
 const EVENT_COLUMNS_09C = 'id,slug,name,description,event_type,status,venue,address,city,region,country,latitude,longitude,starts_on,ends_on,timezone,fee_cents,fee_province,fee_note,registration_opens_at,registration_closes_at,registration_mode,external_url,time_note,volunteer_info,organization_id,season_id,closed_at,reopened_at';
 /** Pack 09D adds the lifecycle and the number of fields. A database without them (42703) is asked again with the older list. */
-const EVENT_COLUMNS = `${EVENT_COLUMNS_09C},archived_at,stats_excluded_at,stats_excluded_reason,field_count,bi_tournament_url`;
+const EVENT_COLUMNS = `${EVENT_COLUMNS_09C},archived_at,stats_excluded_at,stats_excluded_reason,field_count,bi_tournament_url,test_event,test_delete_after`;
 const missingColumn = (e: unknown) => (e as { code?: string } | null)?.code === '42703';
 type EventRow = {
   id: string; slug: string; name: string; description: string; event_type: string; status: LiveEvent['status'];
@@ -50,6 +52,7 @@ type EventRow = {
   closed_at?: string | null; reopened_at?: string | null;
   archived_at?: string | null; stats_excluded_at?: string | null; stats_excluded_reason?: string | null; field_count?: number | null;
   bi_tournament_url?: string | null;
+  test_event?: boolean; test_delete_after?: string | null;
 };
 type Ref = { league: LeagueKey } | { league: LeagueKey }[] | null;
 const leagueOf = (r: Ref): LeagueKey => (Array.isArray(r) ? r[0]?.league : r?.league) ?? 'duels';
@@ -63,7 +66,8 @@ const toEvent = (r: EventRow, leagues: LeagueKey[] = [], competitionCount = 0): 
   feeCents: r.fee_cents, feeProvince: r.fee_province, feeNote: r.fee_note,
   registrationOpensAt: r.registration_opens_at, registrationClosesAt: r.registration_closes_at, leagues,
   registrationMode: r.registration_mode ?? 'buhuros', externalUrl: r.external_url, timeNote: r.time_note, volunteerInfo: r.volunteer_info ?? null,
-  biTournamentUrl: r.bi_tournament_url ?? null
+  biTournamentUrl: r.bi_tournament_url ?? null,
+  testDeleteAfter: r.test_event ? r.test_delete_after ?? null : null
 });
 
 /** Events the caller may see. The database decides: published events for everyone, drafts only for their organizers. */

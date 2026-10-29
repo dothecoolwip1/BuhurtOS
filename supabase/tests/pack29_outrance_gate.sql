@@ -411,5 +411,37 @@ select t.expect_error('a phone cannot confirm a round', $q$select public.outranc
 select t.expect_error('a phone cannot hand in another phone''s sheet', $q$select public.outrance_submit_sheet(gen_random_uuid(), t.seat('counter2'), 1, '{}')$q$, '42501');
 select t.expect_error('a phone cannot read the sheets directly', $q$select count(*) from public.outrance_sheets$q$, '42501');
 
+-- ================================================================ 11. test events (owner decision 2026-10-29)
+select t.as_user(t.u(12));
+insert into t.k values ('tev', public.create_event('test-ev-gate', 'Gate test event', current_date, current_date, null, null, true));
+insert into t.k values ('rev', public.create_event('real-ev-gate', 'Gate real event', current_date, current_date));
+select t.as_admin();
+select t.expect_eq('the owner creates a test event; a normal event by default', (select string_agg(slug || ':' || test_event, ',' order by slug) from public.events where id in (t.kid('tev'), t.kid('rev'))), 'real-ev-gate:false,test-ev-gate:true');
+update public.events set status = 'published' where slug in ('test-ev-gate', 'real-ev-gate');
+select t.expect_eq('the test event is test data (kept out of rankings and records) and is deleted after 10 days',
+  (select private.is_synthetic('event', id)::text || ' ' || (test_delete_after between now() + interval '9 days 23 hours' and now() + interval '10 days 1 hour')::text from public.events where slug = 'test-ev-gate'), 'true true');
+select t.as_anon();
+select t.expect_eq('the public never sees a test event, even published; it sees a published real one',
+  (select string_agg(slug, ',' order by slug) from public.events where slug in ('test-ev-gate', 'real-ev-gate')), 'real-ev-gate');
+select t.as_user(t.u(10));
+select t.expect_eq('nor does another signed-in person', (select count(*) from public.events where slug = 'test-ev-gate')::int, 0);
+select t.as_user(t.u(12));
+select t.expect_eq('its creator does', (select count(*) from public.events where slug = 'test-ev-gate')::int, 1);
+select t.as_admin();
+select t.expect_error('a test event cannot be turned into a real one', $q$update public.events set test_event = false, test_delete_after = null where slug = 'test-ev-gate'$q$, 'P0001');
+select t.expect_error('nor a real event into a test one', $q$update public.events set test_event = true, test_delete_after = now() where slug = 'real-ev-gate'$q$, 'P0001');
+select t.expect_eq('nothing is deleted before its date', private.purge_test_events(), 0);
+-- the purge on the fullest event there is: everything this gate scored (Lyst, phones, sheets, calls, results, holds, appeals) becomes a test event past its date
+alter table public.events disable trigger events_test_fixed;
+update public.events set test_event = true, test_delete_after = now() - interval '1 minute' where id = t.ev(1);
+alter table public.events enable trigger events_test_fixed;
+create temp table gate_fighters as select distinct en.fighter_id from public.entries en join public.competitions c on c.id = en.competition_id where c.event_id = t.ev(1);
+select t.expect_eq('the daily clean-up deletes the test event past its date', private.purge_test_events(), 1);
+select t.expect_eq('... with every competition, fight, entry and result in it',
+  (select count(*) from public.events where id = t.ev(1))::int + (select count(*) from public.competitions where event_id = t.ev(1))::int
+  + (select count(*) from public.matches where id in (t.m(11), t.m(12), t.m(13), t.m(14), t.m(16)))::int + (select count(*) from public.outrance_sheets where event_id = t.ev(1))::int, 0);
+select t.expect_eq('... but never a fighter profile', (select count(*) from public.fighters where id in (select fighter_id from gate_fighters)) = (select count(*) from gate_fighters) and (select count(*) from gate_fighters) > 0, true);
+select t.expect_eq('... and the clean-up is logged', (select count(*) from public.retention_log where rule = 'test_events')::int >= 1, true);
+
 do $$ begin raise notice 'PACK29 OUTRANCE GATE PASSED % checks', (select count(*) from t.log); end $$;
 rollback;

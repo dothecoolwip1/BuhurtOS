@@ -62,6 +62,7 @@ function QuickSetup({ userId }: { userId: string }) {
   const [slugTouched, setSlugTouched] = useState(false);
   const [editSlug, setEditSlug] = useState(false);
   const [fields, setFields] = useState(1);
+  const [isTest, setIsTest] = useState(false);
   const [orgId, setOrgId] = useState('');
   const [seasonId, setSeasonId] = useState('');
   const [likeId, setLikeId] = useState('');
@@ -105,9 +106,9 @@ function QuickSetup({ userId }: { userId: string }) {
         userId, slug: f.slug, name: f.name.trim(), startsOn: f.startsOn, endsOn: f.endsOn,
         venue: blankToNull(where.venue), address: blankToNull(where.address), city: blankToNull(where.city), region: blankToNull(where.region), country: blankToNull(where.country),
         latitude: where.latitude, longitude: where.longitude, fieldCount: fields, organizationId: orgId || null, seasonId: seasonId || null,
-        competitions: competitionsToCreate(categories, selection, like ?? undefined)
+        competitions: competitionsToCreate(categories, selection, like ?? undefined), test: isTest
       });
-      trackEvent('event_created');
+      trackEvent('event_created', { test: isTest });
       const notes = r.problems.length > 0 ? `&notes=${encodeURIComponent(r.problems.join('\n'))}` : '';
       nav(advanced ? `/events/${f.slug}/control?mode=setup&tool=competitions` : `/events/${f.slug}/control?mode=setup&created=1${notes}`);
     } catch (x) {
@@ -134,6 +135,7 @@ function QuickSetup({ userId }: { userId: string }) {
           <h2 id="qs-review-h" className="qs-h">{f.name.trim()}</h2>
           <p>{f.startsOn === f.endsOn ? f.startsOn : `${f.startsOn} to ${f.endsOn}`}{where.venue || where.city ? ` · ${[where.venue, where.city].filter(Boolean).join(', ')}` : ''}</p>
           <p>{fields} field{fields === 1 ? '' : 's'}{org ? ` · ${org.name}` : ''}{season ? ` · ${season.name}` : ''}</p>
+          {isTest && <p data-testid="qs-test-review"><b>Test event:</b> only you and the staff you add can see it. It is deleted, with everything in it, 10 days after you create it. Fighter profiles stay.</p>}
         </div>
         {lines.length === 0
           ? <div className="panel info"><b>No competitions yet.</b> <span className="src">That is fine for a practice or a gathering. You can add competitions later.</span></div>
@@ -163,6 +165,10 @@ function QuickSetup({ userId }: { userId: string }) {
     <section className="fade-in qs" style={{ display: 'grid', gap: 16 }}>
       <PageHead eyebrow="Create an event · step 1 of 2" title="Create an event" lede="Fill in the basics and untick anything you are not running. Everything else is set up for you." />
       <form onSubmit={toReview} noValidate style={{ display: 'grid', gap: 16 }}>
+        <label className={`panel info qs-test${isTest ? ' is-on' : ''}`} data-testid="qs-test">
+          <input type="checkbox" checked={isTest} onChange={e => setIsTest(e.target.checked)} />
+          <span><b>This is a test event</b><span className="src">For practice and trying things out. Only you and the staff you add can see it, nothing from it counts or is kept, and it is deleted 10 days after you create it. Fighter profiles stay.</span></span>
+        </label>
         <div className="panel info" style={{ display: 'grid', gap: 14 }}>
           <label className="field-in">Event name
             <input value={f.name} onChange={e => { set('name', e.target.value); if (!slugTouched) set('slug', slugify(e.target.value)); }} aria-invalid={Boolean(show && errors.name)} placeholder="Red Deer Rumble 2027" />{err('name')}

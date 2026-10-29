@@ -47,9 +47,9 @@ export async function fetchCanCreateEvents(userId: string): Promise<boolean> {
   return (data ?? []).some(r => r.role === 'owner' || r.role === 'organizer');
 }
 
-export interface NewEventInput { slug: string; name: string; startsOn: string; endsOn: string; venue: string | null; address: string | null }
+export interface NewEventInput { slug: string; name: string; startsOn: string; endsOn: string; venue: string | null; address: string | null; test?: boolean }
 export async function createEvent(i: NewEventInput): Promise<string> {
-  const { data, error } = await supabase.rpc('create_event', { p_slug: i.slug, p_name: i.name.trim(), p_starts_on: i.startsOn, p_ends_on: i.endsOn, p_venue: i.venue, p_address: i.address });
+  const { data, error } = await supabase.rpc('create_event', { p_slug: i.slug, p_name: i.name.trim(), p_starts_on: i.startsOn, p_ends_on: i.endsOn, p_venue: i.venue, p_address: i.address, p_test: i.test ?? false });
   if (error) throw error;
   return data as string;
 }

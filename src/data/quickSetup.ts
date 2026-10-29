@@ -12,6 +12,8 @@ export interface QuickEventInput {
   venue: string | null; address: string | null; city: string | null; region: string | null; country: string | null; latitude: number | null; longitude: number | null;
   fieldCount: number; organizationId: string | null; seasonId: string | null;
   competitions: CompetitionInput[];
+  /** A test event: only its staff see it; it is deleted 10 days after creation (fighter profiles stay). */
+  test?: boolean;
 }
 export interface QuickEventResult { id: string; created: number; problems: string[] }
 
@@ -46,7 +48,7 @@ export async function checkOrganizationLink(userId: string, organizationId: stri
  */
 export async function createQuickEvent(i: QuickEventInput): Promise<QuickEventResult> {
   await checkOrganizationLink(i.userId, i.organizationId, i.seasonId);
-  const id = await createEvent({ slug: i.slug, name: i.name, startsOn: i.startsOn, endsOn: i.endsOn, venue: i.venue, address: i.address });
+  const id = await createEvent({ slug: i.slug, name: i.name, startsOn: i.startsOn, endsOn: i.endsOn, venue: i.venue, address: i.address, test: i.test ?? false });
   const problems: string[] = [];
   try { await updateEvent(id, { city: i.city, region: i.region, country: i.country, latitude: i.latitude, longitude: i.longitude }); }
   catch { problems.push('The town, province and map position were not saved. Add them in Event settings.'); }
