@@ -56,7 +56,7 @@ const HOLD_WORD: Record<string, string> = {
  * each. The Total Fight Score declares the winner (§15.4.1); the win type comes from the marshals' own results (§15.4.2). Nothing here computes a
  * score the server does not: it shows the server's sheets and totals; the only arithmetic is the preview of a round being confirmed.
  */
-export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, canResolve, onClassic, secretary = false }: LystScoringProps) {
+export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onFinalizing, onOpenNext, onStale, canResolve, onClassic, secretary = false }: LystScoringProps) {
   const { match, comp } = opened;
   const names = sideName(match);
   const lyst = useLystState(match.id, eventId);
@@ -88,6 +88,12 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   // a fighter's hold (medic check, assessment, equipment, KO) stops the fight opening: show it here so it can be cleared (§14.8, §14.10, §14.11)
   const [blocked, setBlocked] = useState<{ message: string; holds: Awaited<ReturnType<typeof outranceMatchHolds>> } | null>(null);
   const [openTick, setOpenTick] = useState(0);
+  // another device (the organizer's phone) may set the division and format: look again while this screen asks for them
+  useEffect(() => {
+    if (!needsSetup) return;
+    const t = window.setInterval(() => { if (!document.hidden) { openedOnce.current = false; setOpenTick(n => n + 1); } }, 5000);
+    return () => window.clearInterval(t);
+  }, [needsSetup]);
   useEffect(() => {
     if (!st || (st.lyst && om) || openedOnce.current) return;
     openedOnce.current = true;
@@ -177,6 +183,7 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
       if (!sent.clear) { setError(`${sent.remaining} action${sent.remaining === 1 ? ' is' : 's are'} still waiting to send, so the result cannot be made official yet. Nothing is lost.`); return; }
       if (!commandId.current) { commandId.current = crypto.randomUUID(); await saveFinalCommand(userId, match.id, commandId.current); }
       let r;
+      onFinalizing?.();
       try { r = await outranceFinish({ command: commandId.current, matchId: match.id, expectedVersion: st.match.version, basis, result, reason: why }); }
       catch (e) { if (isNoSignalError(e)) { setPhase('pending'); return; } throw e; }
       if (r.status === 'accepted' || r.status === 'duplicate') {

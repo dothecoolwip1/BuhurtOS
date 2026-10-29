@@ -72,6 +72,8 @@ export interface ScoringScreenProps {
   nextFight: CompetitionMatch | null;
   backHref: { to: string; label: string } | null;
   onExit: () => void; onFinished: () => void; onOfficial: () => void; onOpenNext: (m: CompetitionMatch) => void; onStale: (message: string) => void;
+  /** Called just before this board sends the final result: the field screen keeps this board (not "final elsewhere") when the queue sees the result first. */
+  onFinalizing?: () => void;
   /** Duels only: switch back to the lyst screen (clock, rounds, marshal's call). */
   onLyst?: () => void;
 }
@@ -81,7 +83,7 @@ export interface ScoringScreenProps {
  * this screen only changes what they see: the sides and the score dominate, one status banner says exactly where the result stands, and when the
  * server confirms it the next fight is one tap away.
  */
-export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, onLyst, secretary = false }: ScoringScreenProps) {
+export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onFinalizing, onOpenNext, onStale, onLyst, secretary = false }: ScoringScreenProps) {
   const { match, comp, version } = opened;
   const mode = boardModeFor(comp.league, comp.category);
   const { waiting, record, drain, rejected, discardRejected, retryRejected } = useOutbox({ eventId });
@@ -188,6 +190,7 @@ export function ScoringScreen({ opened, eventId, userId, fieldName, nextFight, b
       if (!commandId.current) { commandId.current = crypto.randomUUID(); await saveBoard(userId, eventId, match.id, board, { finalizeCommandId: commandId.current }); }
       const v = outcome.value;
       let r;
+      onFinalizing?.();
       try { r = await submitMatchResult({ commandId: commandId.current, matchId: match.id, result: v.result, scoreA: v.scoreA, scoreB: v.scoreB, detail: v.detail, expectedVersion: version }); }
       catch (e) {
         if (isNoSignalError(e)) { trackEvent('result_pending_no_signal'); setPhase('pending'); return; }   // not official: nothing reached the server

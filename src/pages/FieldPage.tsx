@@ -221,6 +221,8 @@ export function FieldPage() {
             onExit: () => { closeOpened(); reload(); },
             onFinished: () => { closeOpened(); reload(); },
             onOfficial: () => { setOfficialHere(opened.match.id); reload(); },
+            // set BEFORE the result is sent: if the queue reloads and sees it final first, this board stays (its official screen), not "final elsewhere"
+            onFinalizing: () => setOfficialHere(opened.match.id),
             onOpenNext: (m: CompetitionMatch) => { closeOpened(); void open(m); },
             onStale: (message: string) => { closeOpened(); setNotice(message); reload(); }
           };

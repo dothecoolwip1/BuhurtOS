@@ -46,7 +46,7 @@ export interface LystScoringProps extends ScoringScreenProps { secretary?: boole
  * finishing through the existing human-confirmed result path. THE MARSHAL'S CALL IS THE ONLY OFFICIAL SCORE: this screen never derives a score from counters or from the clock.
  * Confirmed rounds, penalties and voids go through the existing scoring outbox (saved on the device first, sent in order, kept if refused); the clock is online-only on purpose.
  */
-export function LystScoring({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onOpenNext, onStale, canResolve, onClassic, secretary = false }: LystScoringProps) {
+export function LystScoring({ opened, eventId, userId, fieldName, nextFight, backHref, onExit, onFinished, onOfficial, onFinalizing, onOpenNext, onStale, canResolve, onClassic, secretary = false }: LystScoringProps) {
   const { match, comp } = opened;
   const names = sideName(match);
   const lyst = useLystState(match.id, eventId);
@@ -193,6 +193,7 @@ export function LystScoring({ opened, eventId, userId, fieldName, nextFight, bac
       if (!sent.clear) { setError(`${sent.remaining} action${sent.remaining === 1 ? ' is' : 's are'} still waiting to send, so the result cannot be made official yet. Nothing is lost.`); setPhase('pending'); return; }
       if (!commandId.current) { commandId.current = crypto.randomUUID(); await saveFinalCommand(userId, match.id, commandId.current); }
       let r;
+      onFinalizing?.();
       try { r = await finalizeFromLyst({ command: commandId.current, matchId: match.id, expectedVersion: st.match.version, result, basis, reason }); }
       catch (e) { if (isNoSignalError(e)) { trackEvent('result_pending_no_signal'); setPhase('pending'); return; } throw e; }
       if (r.status === 'accepted' || r.status === 'duplicate') {
