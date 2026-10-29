@@ -1,7 +1,17 @@
 # Pack 29: Outrance (Profight) exactly to Outrance Rules and Regulations V.26.4
 
-Status: BUILDING (plan rewritten 2026-10-29 to follow the rules exactly; owner approved the plan and the five gap answers the same day). Step 0, bringing the repository level
-with hosted, is done: `supabase/migrations/20261108000100_hosted_reconcile_2026_10_29.sql`.
+Status: BUILT, NOT YET BROWSER-VERIFIED, NOT APPLIED TO HOSTED (2026-10-29). Step 0, bringing the repository level with hosted, is done:
+`supabase/migrations/20261108000100_hosted_reconcile_2026_10_29.sql`. The build is `supabase/migrations/20261109000100_pack29_outrance.sql`
+plus the line-marshal phone (`CounterPage.tsx`, `OutranceSheetDialog.tsx`), the tablet (`OutranceScoring.tsx`), Profight setup and the §17
+standings (`ProfightStandings.tsx`).
+
+Evidence so far (local only):
+- `supabase/tests/pack29_outrance_gate.sql`: 126 checks pass (phones, sheets, 3- and 5-marshal rounds, split decision, criteria, weapon
+  losses, cards and escalation, Division 1/2 TKO, KO holds, appeals, recount, in-flight backfill, standings, synthetic exclusion, permissions).
+- `supabase/tests/vectors_gate.sql`: 32 Outrance vectors agree between SQL and `src/lib/outrance.ts`.
+- `supabase/tests/run_all.sh`: DATABASE GATE PASSED (61 gates). `npm test`: 1565 passed. Typecheck and build clean.
+- Not done: the live browser walk (section 5). The local live stack needs a PostgREST binary, which this session could not download.
+  Run it before applying to hosted.
 
 Source: *Outrance Rules and Regulations V.26.4* (April 2026), the owner's PDF (28 pages), including the example scoresheet on page 25.
 Every behaviour below cites its section (§). Where the rules are silent, this plan does not invent a rule: section 7 lists those gaps for
