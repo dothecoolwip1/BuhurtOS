@@ -18,3 +18,19 @@ describe('synthetic labels', () => {
     expect(isSynthetic(set, 'event', null)).toBe(false);
   });
 });
+
+import { vi } from 'vitest';
+describe('loading the synthetic index', () => {
+  it('reads past the API\'s 1000-row page, so a new test event still gets its Test badge', async () => {
+    vi.resetModules();
+    const all = Array.from({ length: 1098 }, (_, i) => ({ entity_type: 'event', entity_id: `e-${i}`, slug: null }));
+    const ranges: [number, number][] = [];
+    const q = { select: () => q, order: () => q, range: async (from: number, to: number) => { ranges.push([from, to]); return { data: all.slice(from, Math.min(to + 1, from + 1000)), error: null }; } };
+    vi.doMock('../lib/supabase', () => ({ supabase: { from: () => q } }));
+    const { loadSyntheticStrict, isSynthetic: is } = await import('./synthetic');
+    const set = await loadSyntheticStrict();
+    expect(ranges).toEqual([[0, 999], [1000, 1999]]);
+    expect(is(set, 'event', 'e-1097')).toBe(true);
+    vi.doUnmock('../lib/supabase');
+  });
+});

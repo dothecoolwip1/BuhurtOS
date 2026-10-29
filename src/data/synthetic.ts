@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 export type SyntheticSet = ReadonlySet<string>;
 const EMPTY: SyntheticSet = new Set();
 let cached: Promise<SyntheticSet> | null = null;
+const PAGE = 1000;
 
 export function syntheticKeys(rows: { entity_type: string; entity_id: string; slug: string | null }[]): SyntheticSet {
   const keys = new Set<string>();
@@ -23,9 +24,16 @@ export function isSynthetic(set: SyntheticSet, type: 'event' | 'team' | 'fighter
 export function loadSyntheticStrict(): Promise<SyntheticSet> {
   if (!cached) {
     cached = (async () => {
-      const { data, error } = await supabase.from('synthetic_records').select('entity_type,entity_id,slug');
-      if (error) throw error;
-      return syntheticKeys(data ?? []);
+      // The API returns at most 1000 rows per request: read the whole index in pages, or newer test records go unlabelled.
+      const rows: { entity_type: string; entity_id: string; slug: string | null }[] = [];
+      for (let from = 0; ; from += PAGE) {
+        const { data, error } = await supabase.from('synthetic_records').select('entity_type,entity_id,slug')
+          .order('entity_type').order('entity_id').range(from, from + PAGE - 1);
+        if (error) throw error;
+        rows.push(...(data ?? []));
+        if (!data || data.length < PAGE) break;
+      }
+      return syntheticKeys(rows);
     })().catch(error => { cached = null; throw error; });
   }
   return cached;
