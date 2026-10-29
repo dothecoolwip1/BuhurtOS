@@ -1,3 +1,4 @@
+import { exactMatchScore } from '../lib/outrance';
 import { supabase } from '../lib/supabase';
 import { UNNAMED_ENTRY } from '../lib/entryLabel';
 import type { PlannedMatch, PlannedStage } from '../lib/bracket';
@@ -37,13 +38,14 @@ const nameOf = (n: Named | null): string | null => (n ? one(n.teams)?.name ?? on
 const MATCH_SELECT = 'id,competition_id,stage,round_label,position,pool,field,scheduled_at,queue_state,entry_a,entry_b,next_match_id,next_slot,result,winner_entry_id,score_a,score_b,detail,version,finalized_at,'
   + `a:entries!entry_a(${NAMED}),b:entries!entry_b(${NAMED})`;
 
-export const toMatch = (r: MatchRow): CompetitionMatch => ({
+// a Profight shows its exact Total Fight Score (the score columns are whole numbers): see exactMatchScore
+export const toMatch = (r: MatchRow): CompetitionMatch => { const exact = r.queue_state === 'final' ? exactMatchScore(r.detail) : null; return {
   id: r.id, competitionId: r.competition_id, stage: r.stage, roundLabel: r.round_label, position: r.position, pool: r.pool, field: r.field?.trim() || 'Field 1',
   scheduledAt: r.scheduled_at, queueState: r.queue_state, entryA: r.entry_a, entryB: r.entry_b, nameA: nameOf(one(r.a)), nameB: nameOf(one(r.b)),
-  nextMatchId: r.next_match_id, nextSlot: r.next_slot, result: r.result, winnerEntryId: r.winner_entry_id, scoreA: r.score_a, scoreB: r.score_b,
+  nextMatchId: r.next_match_id, nextSlot: r.next_slot, result: r.result, winnerEntryId: r.winner_entry_id, scoreA: exact ? exact.a : r.score_a, scoreB: exact ? exact.b : r.score_b,
   detail: r.detail ?? {}, version: r.version, finalizedAt: r.finalized_at, queueOrder: r.queue_order ?? null,
   planOrder: r.plan_order ?? null, planHold: r.plan_hold === true
-});
+}; };
 
 /**
  * Like fetchCompetitionMatches, plus the organizer's manual running order (matches.queue_order, added in Pack 09A). Only the Event day screen asks for it,

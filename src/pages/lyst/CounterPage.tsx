@@ -306,6 +306,8 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   const [omCaptured, setOmCaptured] = useState<{ round: number; at: number; tally: ReturnType<typeof readTally> } | null>(null);
   const omHistory = useRef<{ round: number; items: { mark: Mark; side: 'a' | 'b' }[] }>({ round: 0, items: [] });
   const [sheetOpen, setSheetOpen] = useState(false);
+  /** The round the open sheet is for: it closes when that round is no longer the one being handed in (confirmed without it, or the fight moved on). */
+  const [sheetRound, setSheetRound] = useState(0);
   const [sheetMessage, setSheetMessage] = useState<string | null>(null);
   const baseSend=useMemo(()=>counterEvidenceSender(seatId),[seatId]);
   const send=useMemo<typeof baseSend>(()=>async action=>{
@@ -372,6 +374,14 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   const left = standing ? standingLeft(state.per_side, shown) : null;
   const reviewKey = `${seatId}:${state.match_id}:${run?.id}:${round}`;
   const reviewAllowed = tab.owned && seat?.status === 'active' && !!run?.id && !!round && !state.waiting && !state.final && canSubmit;
+  const omRoundOpen = !lineMarshal || (state.round?.no === round && state.round.status !== 'confirmed');
+  useEffect(() => {
+    if (!sheetOpen || !lineMarshal || finishing.current) return;
+    if (round !== sheetRound || !omRoundOpen || state.final) {
+      setSheetOpen(false);
+      setNotice(state.round?.no === sheetRound && state.round.status === 'confirmed' ? `Round ${sheetRound} was confirmed without your sheet. Wait for the next round.` : 'The fight moved on. Wait for the next round.');
+    }
+  }, [sheetOpen, lineMarshal, round, sheetRound, omRoundOpen, state.final, state.round]);
   const automaticReviewReady = !cs.offline && !cs.cached && !offline && navigator.onLine!==false && counterRoundEndedOnServer(state,round);
   liveReview.current = { key: reviewKey, allowed: reviewAllowed };
   const openReview = () => {
@@ -381,7 +391,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   };
   useEffect(()=>{
     if (reviewAllowed && automaticReviewReady && !state.submitted && !review && !prompted.current.has(reviewKey) && lineMarshal) {
-      prompted.current.add(reviewKey); setSheetMessage(null); setSheetOpen(true); return;
+      prompted.current.add(reviewKey); setSheetMessage(null); setSheetRound(round); setSheetOpen(true); return;
     }
     if (reviewAllowed && automaticReviewReady && !state.submitted && !review && !prompted.current.has(reviewKey) && !lineMarshal && om?.position !== 'wrong') {
       prompted.current.add(reviewKey); setReviewMessage(null);
@@ -579,7 +589,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
           {lineMarshal
             ? <>
               <button type="button" className="btn btn-line" disabled={!canCount || !omUndo} onClick={unmark} data-testid="om-undo">{omUndo ? `Undo ${sides[omUndo.side].name} ${MARK_LABEL[omUndo.mark].toLowerCase()}` : 'Undo last'}</button>
-              <button type="button" className="btn btn-line" disabled={!reviewAllowed || finishing.current || !!omSheet} aria-haspopup="dialog" onClick={() => { setSheetMessage(null); setSheetOpen(true); }} data-testid="om-done">Hand in sheet</button>
+              <button type="button" className="btn btn-line" disabled={!reviewAllowed || !omRoundOpen || finishing.current || !!omSheet} aria-haspopup="dialog" onClick={() => { setSheetMessage(null); setSheetRound(round); setSheetOpen(true); }} data-testid="om-done">Hand in sheet</button>
             </>
             : <>
               <button type="button" className="btn btn-line" disabled={!canCount || shown <= 0} onClick={undo}>{standing ? 'Undo (back up)' : 'Undo last'}</button>

@@ -111,7 +111,7 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   const totals = om?.totals ?? null;
   const nextNo = (cur?.round_no ?? 0) + 1;
 
-  const send = async () => { const r = await drain(match.id); await lyst.refresh(); return r; };
+  const send = async () => { const r = await drain(match.id); await lyst.refresh(true); return r; };
   const startRound = (n: number) => timing && sendTimer('start', { mode: 'fight', round: n, durationMs: timing.round_seconds * 1000 });
   const endRound = () => timing && sendTimer('start', { mode: 'break', round: cur?.round_no ?? 1, durationMs: timing.break_seconds * 1000 });
 
@@ -149,13 +149,13 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
     try {
       await outranceEnterSheet({ id: paperId.current, matchId: match.id, round: round.round_no, marshal: v.marshal, tally: v.tally, calls: v.calls, replaces: fixing?.sheet_id ?? null, reason: v.reason });
       trackEvent('outrance_paper_sheet', { round: round.round_no, fix: !!fixing });
-      setSheet(null); setFixing(null); await lyst.refresh();
+      setSheet(null); setFixing(null); await lyst.refresh(true);
     } catch (e) { setPaperMsg(friendlyError(e, 'Could not save the paper sheet. Check your connection and try again.')); } finally { setBusy(false); }
   };
   const removePaper = async (why: string) => {
     if (!fixing) return;
     setBusy(true); setPaperMsg(null);
-    try { await outranceRemoveSheet(fixing.sheet_id, why); setSheet(null); setFixing(null); await lyst.refresh(); }
+    try { await outranceRemoveSheet(fixing.sheet_id, why); setSheet(null); setFixing(null); await lyst.refresh(true); }
     catch (e) { setPaperMsg(friendlyError(e, 'Could not remove the sheet. Check your connection and try again.')); } finally { setBusy(false); }
   };
   const recount = async (round: LystRound) => {

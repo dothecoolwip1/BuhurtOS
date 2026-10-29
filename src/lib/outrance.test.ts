@@ -81,3 +81,16 @@ describe('the fight', () => {
     expect(() => roundScoreUnits(Array(7).fill({ a: 10, b: 10 }))).toThrow();
   });
 });
+
+import { exactMatchScore } from './outrance';
+describe('a finished Profight shows its exact Total Fight Score', () => {
+  it('reads the sixtieths from the result detail, to two decimals', () => {
+    expect(exactMatchScore({ kind: 'outrance', totals: { a: 1120, b: 1160, score_a: 18.667, score_b: 19.333 } })).toEqual({ a: 18.67, b: 19.33 });
+    expect(exactMatchScore({ kind: 'outrance', totals: { a: 1200, b: 1080 } })).toEqual({ a: 20, b: 18 });
+  });
+  it('leaves every other result to its score columns', () => {
+    expect(exactMatchScore({ kind: 'duel' })).toBeNull();
+    expect(exactMatchScore({ kind: 'outrance' })).toBeNull();
+    expect(exactMatchScore(null)).toBeNull();
+  });
+});

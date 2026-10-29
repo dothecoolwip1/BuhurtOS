@@ -107,6 +107,18 @@ export const totalUnits = (rounds: readonly Pair[]): Pair => ({ a: rounds.reduce
 export const leader = (t: Pair): Side | null => (t.a > t.b ? 'a' : t.b > t.a ? 'b' : null);
 
 /** A score for people: whole numbers as they are, otherwise up to two decimals (29.67). */
+/**
+ * A finished Profight's exact Total Fight Score (§15.4.1), from its result detail (kept in sixtieths): the score columns hold whole numbers,
+ * which can read as a level 19–19 for an 18.67–19.33 fight. Two decimals, as the Lyst shows them. Null for anything else.
+ */
+export function exactMatchScore(detail: Record<string, unknown> | null | undefined): { a: number; b: number } | null {
+  if (!detail || detail.kind !== 'outrance') return null;
+  const t = detail.totals as { a?: unknown; b?: unknown } | undefined;
+  if (!t || typeof t.a !== 'number' || typeof t.b !== 'number') return null;
+  const two = (u: number) => Math.round(fromUnits(u) * 100) / 100;
+  return { a: two(t.a), b: two(t.b) };
+}
+
 export function showScore(units: number): string {
   const v = fromUnits(units);
   return Number.isInteger(v) ? String(v) : (Math.round(v * 100) / 100).toFixed(2).replace(/0$/, '');

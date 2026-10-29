@@ -43,16 +43,20 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
   const live = useRef(true);
   const srcRef = useRef(src);
   srcRef.current = src;
+  /** The state on screen right now (a command's answer merges into this, never into an older copy captured before it was sent). */
+  const shown = useRef<S | null>(null);
 
   const apply = useCallback((s: S, sentAt?: number, receivedAt?: number) => {
     const at = Date.parse(srcRef.current.serverNow(s));
     if (Number.isFinite(at) && sentAt !== undefined && receivedAt !== undefined) clock.current.sample(at, sentAt, receivedAt);
     if (Number.isFinite(at)) { if (at < newest.current) return; newest.current = at; }
-    setState(s); setError(null); setOffline(false); if (sentAt !== undefined) setSentAt(sentAt);
+    shown.current = s; setState(s); setError(null); setOffline(false); if (sentAt !== undefined) setSentAt(sentAt);
   }, []);
 
-  const refresh = useCallback(async () => {
+  /** `force` after this device's own write: the next answer is read after the write, so it is shown even if a clock answer stamped a later time. */
+  const refresh = useCallback(async (force?: boolean) => {
     const epoch = generation.current;
+    if (force === true) newest.current = 0;
     if (inFlight.current === epoch) { again.current = true; return; }
     inFlight.current = epoch;
     try {
@@ -70,7 +74,7 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
 
   useEffect(() => {
     generation.current++; inFlight.current = null;
-    live.current = true; newest.current = 0; setState(null); setError(null); setOffline(false); setSentAt(0);
+    live.current = true; newest.current = 0; shown.current = null; setState(null); setError(null); setOffline(false); setSentAt(0);
     clock.current = new ServerClock();
     if (!enabled) return () => { live.current = false; };
     void refresh();
@@ -91,7 +95,7 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, key, refresh]);
 
-  return { state, error, offline, refresh, apply, sentAt, clock: clock.current };
+  return { state, error, offline, refresh, apply, sentAt, clock: clock.current, shown };
 }
 
 /** The lyst tablet's state for one match. */
@@ -106,8 +110,9 @@ export function useLystState(matchId: string, eventId: string, enabled = true) {
     const at = Date.parse(serverNow);
     if (Number.isFinite(at)) r.clock.sample(at, sentAt, receivedAt);
     // the full state is read again straight away; this puts the new clock on screen without waiting for that
-    if (!r.state) { void r.refresh(); return; }
-    r.apply({ ...(r.state as LystState), timer, server_now: serverNow } as LystState);
+    const latest = r.shown.current;
+    if (!latest) { void r.refresh(); return; }
+    r.apply({ ...latest, timer, server_now: serverNow } as LystState);
     void r.refresh();
   }, [r]);
   return { ...r, applyTimer };

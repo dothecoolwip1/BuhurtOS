@@ -391,6 +391,12 @@ insert into public.record_sources (source_id, entity_type, entity_id, status) va
 select t.expect_eq('a synthetic (test) event is never in the standings', (select count(*) from public.profight_standings where display_name like 'Pro %')::int, 0);
 delete from public.record_sources where source_id = t.g(90);
 
+-- Pack 29c: the counter phone's "Last fight" shows the exact Total Fight Score, not the whole-number columns
+select t.as_admin();
+select t.expect_eq('the phone''s last fight on Field 1 is a Profight with its exact score',
+  (select (j -> 'last' ->> 'score_a') || '/' || (select round((detail -> 'totals' ->> 'a')::numeric / 60, 2)::text || ' ' || (detail ->> 'kind') from public.matches where id = (j -> 'last' ->> 'match_id')::uuid)
+     from (select private.field_fights(t.ev(1), 'field 1') j) x) ~ '^([0-9.]+)/\1 outrance$', true);
+
 -- ================================================================ 10. permissions
 select t.as_anon();
 select t.expect_error('anon cannot read the sheets', $q$select count(*) from public.outrance_sheets$q$, '42501');
