@@ -903,9 +903,10 @@ select pg_temp.bos_patch('private.counter_state_for(uuid,boolean)'::regprocedure
   $a$'server_now', clock_timestamp(), 'outrance', case when v_s.id is not null and v_s.match_id = v_match then private.outrance_phone(v_s.id, v_match) end));$a$);
 
 -- ================================================================ 13. setting a Profight competition up (§1.3, §4)
-create or replace function public.set_profight_format(p_competition uuid, p_division text, p_format text) returns jsonb
+drop function if exists public.set_profight_format(uuid, text, text);   -- an earlier draft of this pack (never on hosted)
+create or replace function public.set_profight_format(p_competition uuid, p_division text, p_format text, p_weight_class text default null) returns jsonb
 language plpgsql security definer set search_path = '' as $$
-declare v_k public.competitions;
+declare v_k public.competitions; v_wc text := nullif(btrim(coalesce(p_weight_class, '')), '');
 begin
   if auth.uid() is null then raise exception 'sign in required' using errcode = '28000'; end if;
   select * into v_k from public.competitions where id = p_competition for update;
@@ -914,12 +915,15 @@ begin
   if not exists (select 1 from public.ref_categories c where c.code = v_k.category and c.league = 'outrance') then raise exception 'only a Profight competition has an Outrance division and format' using errcode = '22023'; end if;
   if p_division is null or p_division not in ('1', '2') then raise exception 'division is 1 or 2 (Outrance §1.3)' using errcode = '22023'; end if;
   if p_format is null or p_format not in ('tournament', 'matched') then raise exception 'format is tournament or matched fight (Outrance §4)' using errcode = '22023'; end if;
-  if (v_k.division is distinct from p_division or v_k.fight_format is distinct from p_format)
+  -- §1.2: the weight class (men 6, women 5) or none for an open-weight competition (§1.2.3); the class must fit the competition's division (checked by its trigger)
+  if v_wc is not null and not exists (select 1 from public.ref_weight_classes w where w.code = v_wc) then raise exception 'unknown weight class' using errcode = '22023'; end if;
+  if (v_k.division is distinct from p_division or v_k.fight_format is distinct from p_format or v_k.weight_class is distinct from v_wc)
      and exists (select 1 from public.lyst_rounds r join public.matches m on m.id = r.match_id where m.competition_id = p_competition) then
-    raise exception 'fights in this competition have started: the division and format can no longer change' using errcode = 'P0001'; end if;
-  update public.competitions set division = p_division, fight_format = p_format where id = p_competition;
-  perform private.audit(v_k.event_id, 'outrance.format', p_competition::text, jsonb_build_object('division', p_division, 'format', p_format, 'previous', jsonb_build_object('division', v_k.division, 'format', v_k.fight_format)));
-  return jsonb_build_object('status', 'ok', 'division', p_division, 'format', p_format);
+    raise exception 'fights in this competition have started: the division, format and weight class can no longer change' using errcode = 'P0001'; end if;
+  update public.competitions set division = p_division, fight_format = p_format, weight_class = v_wc where id = p_competition;
+  perform private.audit(v_k.event_id, 'outrance.format', p_competition::text, jsonb_build_object('division', p_division, 'format', p_format, 'weight_class', v_wc,
+    'previous', jsonb_build_object('division', v_k.division, 'format', v_k.fight_format, 'weight_class', v_k.weight_class)));
+  return jsonb_build_object('status', 'ok', 'division', p_division, 'format', p_format, 'weight_class', v_wc);
 end $$;
 
 -- ================================================================ 14. permissions
@@ -930,12 +934,39 @@ revoke execute on function private.outrance_is(uuid), private.outrance_league(uu
 revoke execute on function public.outrance_submit_sheet(uuid, uuid, integer, jsonb), public.outrance_call(uuid, uuid, integer, text, text, text, text),
   public.outrance_confirm_round(uuid, uuid, integer, integer, text, boolean), public.outrance_finish(uuid, uuid, integer, text, text, text),
   public.outrance_clear_hold(uuid, text), public.outrance_appeal(uuid, uuid, text, text, text), public.outrance_appeal_decide(uuid, text, text, text),
-  public.set_profight_format(uuid, text, text) from public, anon;
+  public.set_profight_format(uuid, text, text, text) from public, anon;
 grant execute on function public.outrance_submit_sheet(uuid, uuid, integer, jsonb) to authenticated, bos_event_device;
 grant execute on function public.outrance_call(uuid, uuid, integer, text, text, text, text), public.outrance_confirm_round(uuid, uuid, integer, integer, text, boolean),
   public.outrance_finish(uuid, uuid, integer, text, text, text), public.outrance_clear_hold(uuid, text), public.outrance_appeal(uuid, uuid, text, text, text),
-  public.outrance_appeal_decide(uuid, text, text, text), public.set_profight_format(uuid, text, text) to authenticated;
+  public.outrance_appeal_decide(uuid, text, text, text), public.set_profight_format(uuid, text, text, text) to authenticated;
 -- lyst_open and counter_deliver_action are replaced in place: CREATE OR REPLACE keeps their grants as they were.
+
+-- ================================================================ 14b. the Profight standings (§17): win/loss record within the weight class
+-- Official fights only (match_sides: final, both sides, no synthetic or stats-excluded event). No fight for 1 year: "retired"; for 2 years: not in
+-- the standings (the record itself is never deleted). One row per fighter per weight class; `current` marks the class of their latest Profight.
+create or replace view public.profight_standings with (security_invoker = true) as
+  with r as (
+    select fr.fighter_id, fr.gender, k.weight_class, fr.outcome, coalesce(fr.finalized_at, fr.event_ends_on::timestamptz) as at
+      from public.fighter_match_rows fr join public.competitions k on k.id = fr.competition_id
+     where fr.category = 'profight'),
+  latest as (select distinct on (fighter_id) fighter_id, weight_class from r order by fighter_id, at desc nulls last),
+  g as (
+    select r.fighter_id, r.gender, r.weight_class, count(*) as fights, count(*) filter (where r.outcome = 'win') as wins,
+           count(*) filter (where r.outcome = 'loss') as losses, count(*) filter (where r.outcome = 'draw') as draws, max(r.at) as last_fight_at
+      from r group by r.fighter_id, r.gender, r.weight_class)
+  select g.fighter_id, f.display_name, g.gender, g.weight_class, coalesce(w.name, 'Open weight') as weight_class_name, w.sort as weight_class_sort,
+         g.fights, g.wins, g.losses, g.draws, g.last_fight_at,
+         case when g.last_fight_at < now() - interval '1 year' then 'retired' else 'active' end as status,
+         (l.weight_class is not distinct from g.weight_class) as current,
+         case when g.last_fight_at >= now() - interval '1 year' then
+           rank() over (partition by g.gender, g.weight_class, (g.last_fight_at >= now() - interval '1 year') order by g.wins desc, g.losses asc, g.fights desc) end as rank
+    from g join public.fighters f on f.id = g.fighter_id
+    left join public.ref_weight_classes w on w.code = g.weight_class
+    left join latest l on l.fighter_id = g.fighter_id
+   where g.last_fight_at >= now() - interval '2 years';
+comment on view public.profight_standings is 'Pack 29, Outrance §17: Profight win/loss records by weight class (official, non-synthetic fights). Retired after 1 year without a fight; out of the standings after 2.';
+revoke all on public.profight_standings from public, anon, authenticated;
+grant select on public.profight_standings to anon, authenticated;
 
 -- ================================================================ 15. in flight: a Profight already open on a Lyst is scored to the Outrance rules from now on
 update public.lyst_matches lm set scoring = 'outrance'

@@ -3568,7 +3568,7 @@ function public.set_my_club_directory(p_team uuid, p_listed boolean) secdef=true
 function public.set_my_fighter_avatar(p_path text) secdef=true eeed532419ebff7e93a0899d34d6407a
 function public.set_notification_settings(p_fights boolean, p_team boolean, p_events boolean, p_system boolean) secdef=true 5bb934647d8d9410ae602be684dd26c4
 function public.set_organization_enabled(p_org uuid, p_enabled boolean, p_reason text) secdef=true cc86f24d78e6f8ab5d7d8e2b4124c0b6
-function public.set_profight_format(p_competition uuid, p_division text, p_format text) secdef=true 17df5cd82ef2c41110354cc278cb2f18
+function public.set_profight_format(p_competition uuid, p_division text, p_format text, p_weight_class text) secdef=true a13343558d67e2763efb9c3a651ca54a
 function public.set_readiness_override(p_reg uuid, p_reason text) secdef=true 7c3f743b8f1458844f74f51501fcc1f3
 function public.set_registration_check(p_reg uuid, p_check text, p_value boolean) secdef=true 077a1d38cb5bb94b3ff570bc58c2f331
 function public.set_registration_insurance(p_reg uuid, p_insurance text) secdef=true ecd26cf859c13ad7a0bd693f07f14196
@@ -4579,6 +4579,7 @@ view public.lyst_round_scores opts=security_invoker=true b155f2e49a0bfe8212b06ff
 view public.match_sides opts=security_invoker=true 39d0277c19521cc5d5d8432f8c6e59f3
 view public.past_medal_records opts=security_invoker=true a2c3040cfc02708a63b89e610a339fc3
 view public.played_events opts=security_invoker=true 649799420f0e96adb6306543db843bea
+view public.profight_standings opts=security_invoker=true 428046296e5dac260aaa769bde70d289
 view public.ranking_fighters opts=security_invoker=true cdd61bbb5a63425f73cbdb53df82b119
 view public.ranking_team_disciplines opts=security_invoker=true 2ccbe7979d257ab0355d5f79ee3a5dfe
 view public.ranking_teams opts=security_invoker=true eeffe81262521e235a4578060f8fdaed

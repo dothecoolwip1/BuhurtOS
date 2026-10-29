@@ -25,6 +25,8 @@ import { activeDiscipline, currentRound, describeDiscipline, type LystDiscipline
 import { presetOf, remainingMs, timerFor } from '../../lib/lyst/timer';
 import { BAND_LABEL, CRITERION_LABEL, WIN_TYPE_LABEL, roundScoreUnits, showScore, wholeScore, type Division, type FightFormat } from '../../lib/outrance';
 import type { LystScoringProps } from './LystScoring';
+import { fetchWeightClasses } from '../../data/profight';
+import { useAsync } from '../../lib/useAsync';
 
 type Phase = 'scoring' | 'finishing' | 'official' | 'pending' | 'review';
 type Sheet = null | 'calls' | 'log' | 'rules' | 'phones' | 'appeals';
@@ -193,7 +195,7 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
         {context}
         <h2 className="sk-h">Set this Profight's division and format</h2>
         <p>The rounds, their length and the break come from the Outrance rules (§4): Division 1 rounds are 2:00, Division 2 rounds 1:30. Tournament fights are 2 rounds (a 3rd if level) with a 45 s break; matched fights are 3 rounds with 60 s breaks.</p>
-        {canResolve ? <FormatForm competitionId={comp.id} onSaved={() => { openedOnce.current = false; setNeedsSetup(false); setOpenTick(n => n + 1); }} /> : <p className="ly-note">Ask the head marshal or an organizer to set it.</p>}
+        {canResolve ? <FormatForm competitionId={comp.id} gender={comp.gender} onSaved={() => { openedOnce.current = false; setNeedsSetup(false); setOpenTick(n => n + 1); }} /> : <p className="ly-note">Ask the head marshal or an organizer to set it.</p>}
         {error && <p role="alert" className="ly-error">{error}</p>}
         <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
       </section>
@@ -479,17 +481,26 @@ function AppealRow({ a, name, canResolve, onChanged }: { a: OutranceState['appea
   );
 }
 
-/* ---------------- set up a Profight competition ---------------- */
-export function FormatForm({ competitionId, onSaved, initial }: { competitionId: string; onSaved: () => void; initial?: { division?: string | null; format?: string | null } }) {
+/* ---------------- set up a Profight competition (§1.2, §1.3, §4) ---------------- */
+export function FormatForm({ competitionId, onSaved, initial, gender }: { competitionId: string; onSaved: () => void; gender?: string; initial?: { division?: string | null; format?: string | null; weightClass?: string | null } }) {
   const [division, setDivision] = useState<Division | null>(initial?.division === '1' || initial?.division === '2' ? initial.division : null);
   const [format, setFormat] = useState<FightFormat | null>(initial?.format === 'tournament' || initial?.format === 'matched' ? initial.format : null);
+  const [weightClass, setWeightClass] = useState<string>(initial?.weightClass ?? '');
+  const classes = useAsync(fetchWeightClasses, []);
+  const mine = (classes.data ?? []).filter(w => !gender || gender === 'open' || w.gender === gender);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
-  const save = async () => { if (!division || !format) return; setBusy(true); setProblem(null); try { await setProfightFormat(competitionId, division, format); onSaved(); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); } };
+  const save = async () => { if (!division || !format) return; setBusy(true); setProblem(null); try { await setProfightFormat(competitionId, division, format, weightClass || null); onSaved(); } catch (e) { setProblem(friendlyError(e)); } finally { setBusy(false); } };
   return (
     <div className="om-format" data-testid="om-format">
       <div className="mactions" role="group" aria-label="Division">{(['1', '2'] as const).map(d => <button key={d} type="button" className={`btn ${division === d ? 'btn-ink' : 'btn-line'}`} aria-pressed={division === d} onClick={() => setDivision(d)}>Division {d}{d === '1' ? ' · 2:00 rounds' : ' · 1:30 rounds'}</button>)}</div>
       <div className="mactions" role="group" aria-label="Format">{(['tournament', 'matched'] as const).map(f => <button key={f} type="button" className={`btn ${format === f ? 'btn-ink' : 'btn-line'}`} aria-pressed={format === f} onClick={() => setFormat(f)}>{f === 'tournament' ? 'Tournament · 2 rounds (+3rd if level)' : 'Matched fight · 3 rounds'}</button>)}</div>
+      <label className="field-in">Weight class (§1.2)
+        <select value={weightClass} onChange={e => setWeightClass(e.target.value)} data-testid="om-weight-class">
+          <option value="">Open weight (by agreement, §1.2.3)</option>
+          {mine.map(w => <option key={w.code} value={w.code}>{w.gender === 'men' ? 'Men' : 'Women'} · {w.name}{w.maxKg ? ` · up to ${w.maxKg} kg` : ' · open top'}</option>)}
+        </select>
+      </label>
       <button type="button" className="btn btn-win fq-big" disabled={busy || !division || !format} onClick={() => void save()}>Save</button>
       {problem && <p className="ly-error" role="alert">{problem}</p>}
     </div>

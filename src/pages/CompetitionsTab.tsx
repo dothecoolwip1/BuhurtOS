@@ -7,6 +7,7 @@ import {
 } from '../data/competitions';
 import { friendlyError } from '../lib/friendlyError';
 import { OfficialRulesetPicker } from '../components/rules/OfficialRulesetPicker';
+import { FormatForm } from '../components/lyst/OutranceScoring';
 import { useAsync } from '../lib/useAsync';
 
 const bad: React.CSSProperties = { color: 'var(--live)' };
@@ -66,7 +67,7 @@ export function CompetitionsTab({ event, onChanged }: { event: LiveEvent; onChan
                     onCancel={() => setEditing(null)}
                     onSave={async i => { await updateCompetition(k.id, i, k.tier); setEditing(null); refresh(`Saved ${i.name.trim()}.`); }} />
                 ) : (
-                  <CompetitionRow k={k} onEdit={() => { setEditing(k.id); setAdding(false); setMsg(null); }} onRemoved={() => refresh(`Removed ${k.name}.`)} onError={text => setMsg({ ok: false, text })} />
+                  <CompetitionRow k={k} onEdit={() => { setEditing(k.id); setAdding(false); setMsg(null); }} onRemoved={() => refresh(`Removed ${k.name}.`)} onSaved={() => refresh(`Saved the Outrance setup of ${k.name}.`)} onError={text => setMsg({ ok: false, text })} />
                 )}
               </li>
             ))}
@@ -77,7 +78,7 @@ export function CompetitionsTab({ event, onChanged }: { event: LiveEvent; onChan
   );
 }
 
-function CompetitionRow({ k, onEdit, onRemoved, onError }: { k: SetupCompetition; onEdit: () => void; onRemoved: () => void; onError: (text: string) => void }) {
+function CompetitionRow({ k, onEdit, onRemoved, onSaved, onError }: { k: SetupCompetition; onEdit: () => void; onRemoved: () => void; onSaved: () => void; onError: (text: string) => void }) {
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const dependents = k.registrations + k.entries + k.matches;
@@ -101,6 +102,7 @@ function CompetitionRow({ k, onEdit, onRemoved, onError }: { k: SetupCompetition
         {dependents > 0 && <> · {[k.registrations ? `${k.registrations} registered` : '', k.entries ? `${k.entries} ${k.entries === 1 ? 'entry' : 'entries'}` : '', k.matches ? `${k.matches} ${k.matches === 1 ? 'match' : 'matches'}` : ''].filter(Boolean).join(', ')}</>}
       </p>
       <OfficialRulesetPicker competitionId={k.id} league={k.league} value={k.rulesetVersionId ?? null} finished={k.status === 'finished'} />
+      {k.league === 'outrance' && <OutranceSetup k={k} onSaved={onSaved} />}
       {!confirming && (
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {k.status !== 'finished' && <button type="button" className="btn btn-line btn-sm" onClick={onEdit}>Change</button>}
@@ -190,5 +192,20 @@ function CompetitionForm({ title, categories, tiers, initial, locked, finished =
         <button type="button" className="btn btn-line" disabled={busy} onClick={onCancel}>Cancel</button>
       </div>
     </form>
+  );
+}
+
+/** Pack 29: a Profight competition's Outrance setup (Division §1.3, format §4, weight class §1.2). Fights cannot open on the Lyst without it. */
+function OutranceSetup({ k, onSaved }: { k: SetupCompetition; onSaved: () => void }) {
+  const [open, setOpen] = useState(false);
+  const o = k.outrance;
+  const set = o && o.division && o.format;
+  return (
+    <div className="panel info" style={{ display: 'grid', gap: 8 }} data-testid="outrance-setup">
+      <p style={{ margin: 0 }}><b>Outrance rules:</b> {set ? `Division ${o!.division} · ${o!.format === 'matched' ? 'matched fights (3 rounds)' : 'tournament fights (2 rounds, a 3rd if level)'} · ${o!.weightClass ? o!.weightClass.replace(/^(men|women)_/, '').replace(/_/g, ' ') : 'open weight'}` : 'not set yet. Fights cannot start on the Lyst until the division and format are set.'}</p>
+      {k.status !== 'finished' && (open
+        ? <FormatForm competitionId={k.id} gender={k.gender} initial={o ?? undefined} onSaved={() => { setOpen(false); onSaved(); }} />
+        : <button type="button" className="btn btn-line btn-sm" onClick={() => setOpen(true)}>{set ? 'Change Outrance setup' : 'Set Outrance rules'}</button>)}
+    </div>
   );
 }

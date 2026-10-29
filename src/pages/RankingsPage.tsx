@@ -12,6 +12,7 @@ import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { TeamDisciplineTotals } from './TeamDisciplineTotals';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
+import { ProfightStandings } from './ProfightStandings';
 
 const SUBJECTS: ReadonlyArray<readonly [RankingSubject, string]> = [['fighters', 'Fighters'], ['teams', 'Teams']];
 /** Two different team statistics: fighters' individual points added up per discipline, and the team's own group fight results. */
@@ -70,11 +71,23 @@ export function RankingsPage() {
   const showOverview = teamsView && ovScope !== null && cards.length > 0;
   const listTitle = teamsByCategory && picked ? `${categoryLabel(picked.category)}${teamOptions.find(o => o.code === picked.category)!.divisions.length > 1 ? ` · ${divisionLabel(picked.gender)}` : ''}` : null;
 
+  // Pack 29: Profight records are win/loss by weight class (Outrance §17), not points: their own view
+  const who = params.get('who') === 'profight' ? 'profight' : subject;
+  const whoOptions = [...SUBJECTS, ['profight', 'Profight records'] as const];
+  if (who === 'profight') {
+    return (
+      <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
+        <PageHead eyebrow="League table" title="Rankings" lede="Profight: every competitor's win/loss record within their weight class. Fictional test events are never counted." />
+        <div className="evfilter"><Seg label="Who" value={who} options={whoOptions} onChange={v => set('who', v)} /></div>
+        <ProfightStandings />
+      </section>
+    );
+  }
   return (
     <section className="fade-in" style={{ display: 'grid', gap: 22 }}>
       <PageHead eyebrow="League table" title="Rankings" lede="Who is ahead, by organization, season, category and division. Each organization's ranking is that organization's own official ranking. Fictional test events are never counted." />
       <div className="evfilter">
-        <Seg label="Who" value={subject} options={SUBJECTS} onChange={v => set('who', v)} />
+        <Seg label="Who" value={who} options={whoOptions} onChange={v => set('who', v)} />
         <Seg label="Scope" value={scope} options={RANKING_SCOPES} onChange={v => set('scope', v)} />
         {subject === 'teams' && <Seg label="Team table" value={teamTable} options={TEAM_TABLES} onChange={v => set('table', v)} />}
       </div>

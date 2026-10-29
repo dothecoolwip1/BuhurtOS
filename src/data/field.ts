@@ -2,15 +2,15 @@ import { supabase } from '../lib/supabase';
 import type { LeagueKey } from '../lib/fieldScoring';
 import { fetchMatchesForCompetitions, type CompetitionMatch } from './matches';
 
-export interface FieldCompetition { id: string; name: string; category: string; league: LeagueKey; roundsToWin: number | null }
+export interface FieldCompetition { id: string; name: string; category: string; league: LeagueKey; roundsToWin: number | null; /** men, women or open (the weight classes offered for a Profight follow it) */ gender?: string }
 
 /** The event's competitions with what the scoring boards need: league (which board), category (fighters per side), rounds to win. */
 export async function fetchFieldCompetitions(eventId: string): Promise<FieldCompetition[]> {
-  const { data, error } = await supabase.from('competitions').select('id,name,category,rounds_to_win,sort,ref_categories(league)').eq('event_id', eventId).order('sort');
+  const { data, error } = await supabase.from('competitions').select('id,name,category,gender,rounds_to_win,sort,ref_categories(league)').eq('event_id', eventId).order('sort');
   if (error) throw error;
-  type Row = { id: string; name: string; category: string; rounds_to_win: number | null; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
+  type Row = { id: string; name: string; category: string; gender: string | null; rounds_to_win: number | null; ref_categories: { league: LeagueKey } | { league: LeagueKey }[] | null };
   return (data as unknown as Row[]).map(r => ({
-    id: r.id, name: r.name, category: r.category, roundsToWin: r.rounds_to_win,
+    id: r.id, name: r.name, category: r.category, roundsToWin: r.rounds_to_win, gender: r.gender ?? undefined,
     league: (Array.isArray(r.ref_categories) ? r.ref_categories[0]?.league : r.ref_categories?.league) ?? 'duels'
   }));
 }

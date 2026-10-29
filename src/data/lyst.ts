@@ -247,5 +247,5 @@ export const outranceAppeal = (command: string, matchId: string, side: 'a' | 'b'
   rpc<{ status: string; id: string }>('outrance_appeal', { p_command: command, p_match: matchId, p_side: side, p_lodged_by: lodgedBy, p_grounds: grounds });
 export const outranceAppealDecide = (appeal: string, decision: 'upheld' | 'rejected', outcome: string, note: string) =>
   rpc<{ status: string }>('outrance_appeal_decide', { p_appeal: appeal, p_decision: decision, p_outcome: outcome, p_note: note });
-export const setProfightFormat = (competition: string, division: Division, format: FightFormat) =>
-  rpc<{ status: string; division: Division; format: FightFormat }>('set_profight_format', { p_competition: competition, p_division: division, p_format: format });
+export const setProfightFormat = (competition: string, division: Division, format: FightFormat, weightClass: string | null = null) =>
+  rpc<{ status: string; division: Division; format: FightFormat; weight_class: string | null }>('set_profight_format', { p_competition: competition, p_division: division, p_format: format, p_weight_class: weightClass });

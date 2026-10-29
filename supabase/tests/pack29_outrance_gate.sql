@@ -72,8 +72,11 @@ select t.expect_error('the division is 1 or 2', $q$select public.set_profight_fo
 select t.expect_error('the format is tournament or matched', $q$select public.set_profight_format(t.comp(29), '2', 'league')$q$, '22023');
 select t.expect_error('a duel competition has no Outrance format', $q$select public.set_profight_format(t.comp(1), '2', 'tournament')$q$, '22023');
 select t.expect_eq('the organizer sets Division 2, tournament', public.set_profight_format(t.comp(29), '2', 'tournament') ->> 'status', 'ok');
+select t.expect_error('a women''s weight class cannot be set on the men''s competition (§1.2)', $q$select public.set_profight_format(t.comp(29), '2', 'tournament', 'women_lightweight')$q$, '22023');
+select t.expect_error('an unknown weight class is refused', $q$select public.set_profight_format(t.comp(29), '2', 'tournament', 'feather')$q$, '22023');
+select t.expect_eq('the men''s competition is heavyweight (95 to 105 kg)', public.set_profight_format(t.comp(29), '2', 'tournament', 'men_heavyweight') ->> 'weight_class', 'men_heavyweight');
 select t.as_user(t.u(2));
-select t.expect_eq('the head marshal sets the women''s: Division 1, tournament', public.set_profight_format(t.comp(30), '1', 'tournament') ->> 'status', 'ok');
+select t.expect_eq('the head marshal sets the women''s: Division 1, tournament, open weight (§1.2.3)', public.set_profight_format(t.comp(30), '1', 'tournament') ->> 'status', 'ok');
 select t.as_admin();
 select t.expect_eq('§4.2 Division 2 tournament: 2 rounds of 90 s, a 45 s break, a 3rd round if level', private.outrance_timing(t.m(11)),
   '{"division":"2","format":"tournament","rounds":2,"round_seconds":90,"break_seconds":45,"tiebreak":true}'::jsonb);
@@ -293,7 +296,7 @@ select t.expect_eq('... and Red needs the medic''s check', t.holds(t.en(295)), '
 -- ================================================================ 9. recount, settings frozen once fights started, in-flight fights
 select t.as_user(t.u(1));
 select t.expect_error('the division and format can no longer change once fights started', $q$select public.set_profight_format(t.comp(29), '1', 'tournament')$q$, 'P0001');
-select t.expect_eq('... setting the same again is fine', public.set_profight_format(t.comp(29), '2', 'tournament') ->> 'status', 'ok');
+select t.expect_eq('... setting the same again is fine', public.set_profight_format(t.comp(29), '2', 'tournament', 'men_heavyweight') ->> 'status', 'ok');
 -- a Profight opened on the Lyst before Pack 29 (scored as a duel) is scored to the Outrance rules the next time it opens
 select t.as_admin();
 insert into public.lyst_matches (match_id, event_id, field_key, counter_input, scoring) values (t.m(13), t.ev(1), 'field 1', 'simple', 'marshal');
@@ -311,6 +314,21 @@ select t.as_admin();
 select t.expect_eq('RETURN FOR RECOUNT supersedes the sheet (kept, never deleted)', (select count(*) filter (where superseded_at is not null) || '/' || count(*) from public.outrance_sheets where match_id = t.m(13)), '1/1');
 select t.as_device(t.sid('counter1'));
 select t.expect_eq('... and the phone can tap again', t.lm('counter1', 13, 1, 'strike', 'a'), 'ok');
+
+-- ================================================================ 9b. the standings (§17): win/loss within the weight class
+select t.as_anon();
+select t.expect_eq('anyone sees the Profight records by weight class: heavyweight 1-0 and 0-1, open weight 1-0 and 0-1',
+  (select string_agg(display_name || ' ' || weight_class_name || ' ' || wins || '-' || losses || ' #' || coalesce(rank::text, '-'), ', ' order by weight_class_name, rank, display_name) from public.profight_standings where display_name like 'Pro %'),
+  'Pro 1 Heavyweight 1-0 #1, Pro 3 Heavyweight 1-0 #1, Pro 2 Heavyweight 0-1 #3, Pro 4 Heavyweight 0-1 #3, Pro 6 Open weight 1-0 #1, Pro 5 Open weight 0-1 #2');
+select t.as_admin();
+update public.matches set finalized_at = now() - interval '13 months' where id = t.m(14);
+select t.expect_eq('no Profight for a year: retired and not ranked', (select status || ' ' || coalesce(rank::text, 'unranked') from public.profight_standings where display_name = 'Pro 6'), 'retired unranked');
+update public.matches set finalized_at = now() - interval '25 months' where id = t.m(14);
+select t.expect_eq('two years: out of the standings (the fight itself is kept)', (select count(*) from public.profight_standings where display_name in ('Pro 5', 'Pro 6'))::int || '/' || (select count(*) from public.matches where id = t.m(14) and queue_state = 'final')::int, '0/1');
+insert into public.sources (id, kind, title, citation, synthetic) values (t.g(90), 'submitted', 'Test data', 'fixture', true);
+insert into public.record_sources (source_id, entity_type, entity_id, status) values (t.g(90), 'event', t.ev(1), 'unverified');
+select t.expect_eq('a synthetic (test) event is never in the standings', (select count(*) from public.profight_standings where display_name like 'Pro %')::int, 0);
+delete from public.record_sources where source_id = t.g(90);
 
 -- ================================================================ 10. permissions
 select t.as_anon();
