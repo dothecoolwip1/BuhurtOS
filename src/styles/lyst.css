@@ -1,5 +1,7 @@
 /* Pack 13: Lyst Control. Mobile-first: one hand, thumb zone at the bottom, big targets (44 px minimum, 64 px for the actions used mid-fight). */
 .ly{display:grid;gap:12px}
+/* Let the operating desk use the available page width, not the legacy phone board. */
+.marshal:has(.ly-control-room){width:100%;max-width:1180px}
 /* The operating desk: scores and clock together on a PC, stacked on a phone. */
 .ly-workspace,.ly-score-panel,.ly-clock-panel,.ly-support{display:grid;gap:14px;min-width:0;align-content:start}
 .ly-control-room .ly-score-panel,.ly-control-room .ly-clock-panel{padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--raised)}
@@ -31,6 +33,7 @@
  .ly-control-room .ly-timer{padding:16px}
  .ly-control-room .ly-tools{grid-template-columns:repeat(5,minmax(0,1fr))}
  .ly-phone-float{bottom:24px;right:24px}
+ .ly-control-room .ly-support{grid-column:1/-1}
 }
 @media(max-width:420px){.ly-control-room .ly-score-panel,.ly-control-room .ly-clock-panel{padding:12px}.ly-control-room .sk-side{padding:14px 6px}.ly-control-room .sk-num{font-size:64px}.ly-control-room .sk-name{font-size:20px}}
 @media(max-width:600px){.dlg-wide .dlg-head,.dlg-wide .dlg-body{padding-inline:16px}.ly-score-entry .ly-quick{grid-template-columns:repeat(3,minmax(0,1fr))}.ly-score-entry .ly-pick{padding:10px 6px}.ly-score-entry .ly-pick-name{min-height:2.2em}.ly-phone-float{top:calc(var(--device-bar-h,0px) + 8px + env(safe-area-inset-top,0px));bottom:auto;right:12px;width:112px;padding:6px 8px;min-height:48px;display:grid;border-radius:14px;line-height:1.2;font-size:12px}.focus:has(.ly-control-room,.gc-rounds)>.focus-top{padding-right:136px;min-height:68px}}
@@ -304,11 +307,27 @@
 .om-result{font-size:18px;margin:4px 0}
 
 /* ---------------- Pack 29: the Outrance tablet ---------------- */
+.om-tablet .ly-workspace{grid-template-columns:minmax(0,1fr)}
+.om-tablet .ly-score{grid-template-columns:repeat(2,minmax(0,1fr))}
+.om-tablet .sk-mid{grid-column:1/-1;grid-row:1;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.om-tablet .sk-vs{display:none}
+.om-tablet .sk-phase{max-width:none}
+.om-tablet .sk-name{display:block;overflow:visible;font-family:var(--f-body, sans-serif);font-size:clamp(18px,2vw,24px);line-height:1.25;text-transform:none}
+.om-tablet .sk-num{font-size:clamp(48px,6vw,80px)}
+.om-tablet .ly-round-s{white-space:nowrap}
+@media(min-width:1100px){.om-tablet .ly-workspace{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}}
 .om-sheets{display:grid;gap:10px}
+.om-sheets h2{font-family:var(--f-body,sans-serif);font-size:20px;line-height:1.3;text-transform:none}
 .om-sheet-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.om-sheet-list li{display:grid;grid-template-columns:minmax(6rem,1.2fr) auto 1.6fr auto auto;gap:8px;align-items:baseline;padding:8px 10px;border-radius:10px;background:var(--raised);border:1px solid var(--line)}
+.om-sheet-list li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px 12px;align-items:baseline;padding:12px;border-radius:10px;background:var(--raised);border:1px solid var(--line)}
+.om-sheet-list li>:nth-child(2){grid-area:1/2;white-space:nowrap;color:var(--muted)}
+.om-sheet-list li>:nth-child(3){grid-area:2/1/3/3;color:var(--muted)}
+.om-sheet-list li>:nth-child(4){grid-column:1/-1;font-size:14px}
+.om-sheet-list li>:nth-child(4):empty{display:none}
+.om-sheet-list li>:nth-child(5){grid-area:1/3;white-space:nowrap;font-size:20px}
+.om-sheet-list li>.ly-link{grid-area:2/3;min-width:44px;justify-self:end}
+.om-sheet-list li>:first-child{overflow-wrap:anywhere}
 .om-sheet-list li.is-waiting{grid-template-columns:1fr auto;border-style:dashed}
-@media (max-width:560px){.om-sheet-list li{grid-template-columns:1fr auto;}.om-sheet-list li>:nth-child(3){grid-column:1/-1}}
 .om-preview{margin:0;font-size:17px}
 .om-total-line{font-size:clamp(22px,6vw,34px);font-weight:800;margin:6px 0}
 .om-call-sides{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -328,3 +347,4 @@
 /* a line marshal's paper sheet, typed in by the secretary */
 .om-paper td{padding:4px}
 .om-paper-n{width:100%;min-width:56px;min-height:44px;font-size:20px;text-align:center}
+
