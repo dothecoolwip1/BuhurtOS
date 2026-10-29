@@ -293,13 +293,16 @@ select t.expect_error('a member cannot write a candidate in directly', format($q
 select t.expect_error('a member cannot accept a nomination by editing the table', $q$update public.club_meeting_nominations set status = 'accepted'$q$, '42501');
 
 -- ================================================================ 9. the executive nomination dashboard
+-- Before the meeting only the club's Secretary sees the candidacies (hosted hide_agm_candidates_until_meeting_day, reconciled 2026-10-29).
 select t.as_user(t.u(3));
-select t.expect_eq('the Treasurer''s dashboard shows each office, its current officer and every candidacy with who nominated them',
+select t.expect_error('before the meeting the Treasurer cannot open the nomination dashboard', format($q$select public.club_agm_nominations_admin(%L)$q$, t.mt()));
+select t.as_user(t.u(4));
+select t.expect_error('... nor can the Vice President', format($q$select public.club_agm_nominations_admin(%L)$q$, t.mt()));
+select t.as_user(t.u(2));
+select t.expect_eq('the Secretary''s dashboard shows each office, its current officer and every candidacy with who nominated them',
   (select string_agg(o ->> 'label' || '=' || coalesce(o ->> 'current_officer', '-') || '[' || (select coalesce(string_agg((n ->> 'nominee') || '/' || (n ->> 'status') || '/' || case when (n ->> 'self_nominated')::boolean then 'self' else 'member' end || '/' || (n -> 'nominated_by')::text, '; ' order by n ->> 'nominee', n ->> 'status'), '') from jsonb_array_elements(o -> 'nominations') n) || ']', ' | ' order by o ->> 'label')
    from jsonb_array_elements(public.club_agm_nominations_admin(t.mt()) -> 'offices') o),
   'President=Pres Ident[Ann/accepted/self/["Bo"]; Trea Surer/accepted/member/["Bo"]] | Secretary=Person 62[Ann/accepted/self/[]; Fay/declined/member/["Bo"]; Fay/withdrawn/self/["Bo"]] | Treasurer=Trea Surer[Ann/accepted/self/[]; Fay/accepted/member/["Bo", "Pres Ident"]]');
-select t.as_user(t.u(4));
-select t.expect_eq('the Vice President can look at the nominations', jsonb_array_length(public.club_agm_nominations_admin(t.mt()) -> 'offices'), 3);
 select t.as_user(t.u(6));
 select t.expect_error('a regular member cannot open the executive nomination dashboard', format($q$select public.club_agm_nominations_admin(%L)$q$, t.mt()), '42501');
 select t.as_user(t.u(12));

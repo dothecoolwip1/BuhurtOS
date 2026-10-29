@@ -159,9 +159,9 @@ select t.expect_eq('fighter and team rankings have the same (scope, org, season,
   0::bigint);
 
 -- ================================================================ 6. the public contract is unchanged
-select t.expect_eq('ranking_fighters columns and types are unchanged',
+select t.expect_eq('ranking_fighters columns and types are unchanged (weight_class appended by Pack 28 for Profight, reconciled from hosted 2026-10-29)',
   (select string_agg(column_name || ' ' || data_type, ', ' order by ordinal_position) from information_schema.columns where table_schema = 'public' and table_name = 'ranking_fighters'),
-  'scope text, organization_id uuid, season_id uuid, category text, gender text, fighter_id uuid, display_name text, competitions bigint, golds bigint, silvers bigint, bronzes bigint, points numeric, rank bigint');
+  'scope text, organization_id uuid, season_id uuid, category text, gender text, fighter_id uuid, display_name text, competitions bigint, golds bigint, silvers bigint, bronzes bigint, points numeric, rank bigint, weight_class text');
 select t.expect_eq('ranking_teams columns and types are unchanged',
   (select string_agg(column_name || ' ' || data_type, ', ' order by ordinal_position) from information_schema.columns where table_schema = 'public' and table_name = 'ranking_teams'),
   'scope text, organization_id uuid, season_id uuid, category text, gender text, team_id uuid, team_name text, team_slug text, competitions bigint, golds bigint, silvers bigint, bronzes bigint, points numeric, rank bigint');

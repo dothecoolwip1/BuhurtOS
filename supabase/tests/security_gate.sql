@@ -389,11 +389,14 @@ select t.expect_error('anon cannot add a source', $q$insert into public.sources 
 select t.expect_error('anon cannot add an organization', $q$insert into public.organizations (slug, name, kind) values ('x1', 'X', 'club')$q$, '42501');
 select t.expect_error('anon cannot add a membership', format($q$insert into public.team_memberships (fighter_id, team_id) values ('00000000-0000-0000-0000-00000000f001', %L)$q$, (select v from reg where k = 'team')), '42501');
 
--- careers: only the team's captain (or the owner) writes a roster
+-- careers: a roster is written only by the platform owner directly; captains and team admins go through the team functions (hosted, reconciled 2026-10-29:
+-- team_memberships_captain_write is gone, team_memberships_owner_write remains)
 select t.as_user('00000000-0000-0000-0000-0000000000a4');
 select t.expect_error('a stranger cannot add a fighter to a team roster', format($q$insert into public.team_memberships (fighter_id, team_id) values ('00000000-0000-0000-0000-00000000f001', %L)$q$, (select v from reg where k = 'team')));
 select t.as_user('00000000-0000-0000-0000-0000000000a8');
-select t.expect_ok('the captain adds a fighter to their roster', format($q$insert into public.team_memberships (fighter_id, team_id, role, from_date) values ('00000000-0000-0000-0000-00000000f001', %L, 'fighter', '2026-01-01')$q$, (select v from reg where k = 'team')));
+select t.expect_error('the captain cannot write the roster table directly either', format($q$insert into public.team_memberships (fighter_id, team_id, role, from_date) values ('00000000-0000-0000-0000-00000000f001', %L, 'fighter', '2026-01-01')$q$, (select v from reg where k = 'team')), '42501');
+select t.as_admin();
+insert into public.team_memberships (fighter_id, team_id, role, from_date) values ('00000000-0000-0000-0000-00000000f001', (select v from reg where k = 'team')::uuid, 'fighter', '2026-01-01');
 select t.as_anon();
 select t.expect_eq('anon sees the roster of an approved team', (select count(*) from public.team_memberships), 1::bigint);
 select t.expect_eq('anon sees no account ids: memberships carry none', (select count(*) from information_schema.columns where table_schema = 'public' and table_name in ('team_memberships', 'team_affiliations', 'organizations', 'rulesets', 'ruleset_versions', 'seasons', 'sources', 'record_sources', 'results') and column_name in ('user_id', 'created_by', 'owner_id')), 0::bigint);
@@ -1463,9 +1466,10 @@ select t.expect_error('a user with no fighter record cannot update a profile', $
 select t.as_user('00000000-0000-0000-0000-00000000e003');
 select t.expect_ok('a fighter fills in their own profile', $q$select public.update_my_fighter_profile(jsonb_build_object('gender', 'male', 'birth_year', 1990, 'city', 'Edmonton', 'region', 'AB', 'country', 'CA',
   'joined_year', 2019, 'disciplines', jsonb_build_array('longsword', '5v5'), 'fighting_style', 'Aggressive pressure', 'bio', 'Fights for the fun of it.', 'highlights', jsonb_build_array('NACL champion 2025')))$q$);
+select t.expect_eq('the fighter sees their own age, computed from the private birth year', (select (age = extract(year from current_date)::int - 1990)::text from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'true');
 select t.as_anon();
-select t.expect_eq('the public sees it, and the age is computed', (select gender || '/' || (age = extract(year from current_date)::int - 1990)::text || '/' || city || '/' || region || '/' || country || '/' || joined_year || '/' || array_to_string(disciplines, '+') || '/' || fighting_style || '/' || bio || '/' || highlights[1]
-  from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'male/true/Edmonton/AB/CA/2019/longsword+5v5/Aggressive pressure/Fights for the fun of it./NACL champion 2025');
+select t.expect_eq('the public sees it, but never the age (birth year is private on hosted since Pack 28: private.fighter_private)', (select gender || '/' || coalesce(age::text, 'private') || '/' || city || '/' || region || '/' || country || '/' || joined_year || '/' || array_to_string(disciplines, '+') || '/' || fighting_style || '/' || bio || '/' || highlights[1]
+  from public.fighter_profile('00000000-0000-0000-0000-00000000b301')), 'male/private/Edmonton/AB/CA/2019/longsword+5v5/Aggressive pressure/Fights for the fun of it./NACL champion 2025');
 select t.expect_eq('the profile can be read straight from fighters too', (select count(*) from public.fighters where id = '00000000-0000-0000-0000-00000000b301' and bio is not null), 1::bigint);
 select t.expect_eq('fighter_profile exposes no account id', (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'fighter_profile'
   and exists (select 1 from unnest(p.proargnames) a where a ~ '(user|account|actor)')), 0::bigint);

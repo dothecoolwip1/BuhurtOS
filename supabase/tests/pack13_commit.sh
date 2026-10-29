@@ -9,6 +9,7 @@
 #   5  30 counters' taps (distinct ids) at once land exactly 30 times; the same 10 tap ids sent twice count once each
 #   6  FINISH MATCH sent by two tablets at once saves one result; the queue and the bracket move once
 #   7  a real commit of the finish leaves the timer idle and creates no lyst notification
+#   8  (Pack 27A) two undos from one phone at once for a single tap: one 'ok', one 'nothing', the tap undone once
 set -uo pipefail
 case "${PGHOST:-}" in /*|localhost|127.0.0.1) ;; *) echo "refusing: PGHOST must be local" >&2; exit 2;; esac
 if [ -n "${DATABASE_URL:-}" ] || [ -n "${SUPABASE_DB_URL:-}" ]; then echo "refusing: a database URL is set" >&2; exit 2; fi
@@ -74,6 +75,14 @@ for i in 1 2 3 4 5 6 7 8 9 10; do ID[$i]=$(uuid); done
 for round in 1 2; do for i in 1 2 3 4 5 6 7 8 9 10; do run 00000000-0000-0000-0000-000000000021 "select public.counter_record('${ID[$i]}', '$S21', 1, 1)->>'status';" >/dev/null & done; done
 wait
 check "5b the same 10 tap ids sent twice at once count once each (1 + 10)" "$(q "select coalesce(sum(weight),0) from public.lyst_counts where seat_id='$S21' and undo_of is null")" "11"
+
+# ---- 8 (Pack 27A). two UNDOs from one phone at once, with one tap to undo: one takes it, the other is told "nothing"; the tap is undone once
+S22=$(echo "$SEATS" | tr ' ' '\n' | grep '^22:' | cut -d: -f2)
+run 00000000-0000-0000-0000-000000000022 "select public.counter_undo(gen_random_uuid(), '$S22', 1)->>'status';" >/tmp/p13-u1 &
+run 00000000-0000-0000-0000-000000000022 "select public.counter_undo(gen_random_uuid(), '$S22', 1)->>'status';" >/tmp/p13-u2 &
+wait
+check "8a two undos at once for one tap: one ok, one nothing (never two ok)" "$(cat /tmp/p13-u1 /tmp/p13-u2 | sort | tr '\n' ',')" "nothing,ok,"
+check "8b the tap is undone exactly once and the tally is 0" "$(q "select (select count(*) from public.lyst_counts where seat_id='$S22' and undo_of is not null) || ':' || private.lyst_seat_total('$S22', 1)")" "1:0"
 
 # ---- 3 / 4. confirm round: two tablets with different scores; one command four times
 run $U1 "select public.lyst_timer_command('$E','Field 1','$M',(select rev from public.lyst_timer where event_id='$E' and field_key='field 1'),gen_random_uuid(),'start','break',30000,1)->>'status';" >/dev/null

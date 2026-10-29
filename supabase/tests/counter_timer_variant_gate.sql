@@ -1,19 +1,16 @@
--- A hosted clock variant accepts p_pressed_at as an eleventh argument. Keep
--- that signature and its implementation; pass the press through on every call.
+-- The hosted clock accepts p_pressed_at as an eleventh argument (reconciled into the repository 2026-10-29). Instrument that real
+-- function so the gate can see the press time; check that lyst_timer_command_reliable passes the press through on every call.
 \set ON_ERROR_STOP on
 begin;
 \ir fixtures/independent_rehearsal.sql
 do $variant$
 declare body text;
 begin
-  body:=pg_get_functiondef('public.lyst_timer_command(uuid,text,uuid,integer,uuid,text,text,integer,integer,integer)'::regprocedure);
-  if strpos(body,'p_delta_ms integer DEFAULT 0)')=0 then raise exception 'clock variant fixture anchor missing'; end if;
-  alter function public.lyst_timer_command(uuid,text,uuid,integer,uuid,text,text,integer,integer,integer) rename to lyst_timer_variant_baseline;
-  body:=replace(body,'p_delta_ms integer DEFAULT 0)','p_delta_ms integer DEFAULT 0, p_pressed_at timestamptz DEFAULT NULL)');
+  body:=pg_get_functiondef('public.lyst_timer_command(uuid,text,uuid,integer,uuid,text,text,integer,integer,integer,timestamptz)'::regprocedure);
+  if strpos(body,'p_pressed_at timestamp with time zone DEFAULT NULL')=0 then raise exception 'clock variant fixture anchor missing'; end if;
+  if strpos(body,E'\nbegin\n')=0 then raise exception 'clock body anchor missing'; end if;
   body:=replace(body,E'\nbegin\n',E'\nbegin\n  perform set_config(''counter_variant.press'',coalesce(p_pressed_at::text,''missing''),true);\n');
   execute body;
-  revoke all on function public.lyst_timer_command(uuid,text,uuid,integer,uuid,text,text,integer,integer,integer,timestamptz) from public,anon;
-  grant execute on function public.lyst_timer_command(uuid,text,uuid,integer,uuid,text,text,integer,integer,integer,timestamptz) to authenticated,bos_event_device;
 end $variant$;
 set local role authenticated;
 set local request.jwt.claim.sub='00000000-0000-0000-0000-0000000000a2';

@@ -351,9 +351,9 @@ select t.expect_eq('CONFIRM ROUND records the marshal''s 6-5 (counters recommend
 select t.as_admin();
 select t.expect_eq('the official round score is exactly what the marshal awarded', t.official(1, 1), '6-5');
 select t.expect_eq('... even though the counters tallied 33/3 and 4/3 and recommended 7-5', (select recommended_a || '-' || recommended_b from public.lyst_round_revisions where id = :'conf'::uuid), '7-5');
-select t.expect_eq('the evidence keeps every counter''s number by operator and side, learning ones marked as learning',
+select t.expect_eq('the evidence keeps every OFFICIAL counter''s number by operator and side; learning counters are practice and never part of the official evidence (Pack 27B)',
   (select string_agg((c ->> 'operator') || ':' || (c ->> 'side') || ':' || (c ->> 'role') || ':' || (c ->> 'total'), ',' order by c ->> 'role', c ->> 'side', c ->> 'operator') from public.lyst_round_revisions r, jsonb_array_elements(r.counters) c where r.id = :'conf'::uuid),
-  'Elm:a:learning:9,Fir:b:learning:2,Birch:a:official:3,Oak:a:official:33,Cedar:b:official:4,Dune:b:official:3');
+  'Birch:a:official:3,Oak:a:official:33,Cedar:b:official:4,Dune:b:official:3');
 select t.as_user(t.u(88));
 select t.expect_eq('a double tap on CONFIRM ROUND (same command) does not confirm twice', public.lyst_confirm_round(:'conf'::uuid, t.m(1), 1, 6, 5, t.round_rev(1, 1) - 1, 7, 5) ->> 'status', 'duplicate');
 select t.expect_eq('a second confirm from another device with the old revision is stale', public.lyst_confirm_round(gen_random_uuid(), t.m(1), 1, 9, 9, t.round_rev(1, 1) - 1) ->> 'status', 'stale');
@@ -485,7 +485,7 @@ select t.expect_eq('... and it comes back to Field 1 red, a fresh seat on m1, ro
 -- an expired seat cannot count
 select t.as_admin();
 update public.lyst_counter_seats set expires_at = now() - interval '1 minute' where user_id = t.u(24) and status = 'active';
-select t.expect_msg('an expired counter seat cannot count', $$select t.cr(24, 2)$$, 'not active');
+select t.expect_msg('an expired counter cannot count', $$select t.cr(24, 2)$$, 'not counting now');
 update public.lyst_counter_seats set expires_at = now() + interval '1 hour' where user_id = t.u(24) and status = 'active';
 -- a lost phone: the organizer signs that one phone out; the other phones and the QR keep working; a replacement phone just scans the QR
 select t.as_user(t.u(90));

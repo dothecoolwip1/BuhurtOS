@@ -15,7 +15,8 @@ create function pg_temp.c(p_name text, p_ok boolean, p_detail text default '') r
 create temp view v_org as select id from public.organizations where slug = 'nacl-test';
 create temp view v_ev as select e.* from public.events e where e.organization_id = (select id from v_org);
 create temp view v_hist as select * from v_ev where slug <> 'red-deer-rumble-test';
-create temp view v_f as select f.* from public.fighters f join public.team_affiliations a on a.team_id = f.team_id and a.organization_id = (select id from v_org) and a.relation = 'member';
+-- birth_year lives in private.fighter_private since Pack 28 (hosted, reconciled 2026-10-29); fighters.birth_year stays empty
+create temp view v_f as select f.*, coalesce(pv.birth_year, f.birth_year) as known_birth_year from public.fighters f left join private.fighter_private pv on pv.fighter_id = f.id join public.team_affiliations a on a.team_id = f.team_id and a.organization_id = (select id from v_org) and a.relation = 'member';
 -- Participation limited to completed (finalized) events, used for bio checks and attendance.
 create temp view v_part as select distinct fp.fighter_id, fp.event_id from public.fighter_participation fp where fp.event_id in (select id from v_hist);
 
@@ -31,9 +32,9 @@ select pg_temp.c('120 distinct fighters, 12 on every team',
 select pg_temp.c('no duplicate fighter names; every name ends with -test', (select count(distinct display_name) from v_f) = 120 and (select count(*) from v_f where display_name not like '%-test') = 0);
 select pg_temp.c('genders: 70 male, 50 female', (select count(*) filter (where gender = 'male') from v_f) = 70 and (select count(*) filter (where gender = 'female') from v_f) = 50);
 select pg_temp.c('profiles complete (gender, birth_year, city, region, country, joined_year, disciplines, style, bio, highlights)',
-  (select count(*) from v_f where gender is null or birth_year is null or city is null or region is null or country is null or joined_year is null or cardinality(disciplines) = 0
+  (select count(*) from v_f where gender is null or known_birth_year is null or city is null or region is null or country is null or joined_year is null or cardinality(disciplines) = 0
      or fighting_style is null or bio is null or char_length(bio) < 60 or cardinality(highlights) = 0) = 0);
-select pg_temp.c('birth_year = 2026 - age (ages 23 to 39)', (select count(*) from v_f where birth_year not between 1987 and 2003) = 0);
+select pg_temp.c('birth_year = 2026 - age (ages 23 to 39)', (select count(*) from v_f where known_birth_year not between 1987 and 2003) = 0);
 select pg_temp.c('every fighter has a current non-mercenary membership equal to fighters.team_id (no fighter on two permanent teams)',
   (select count(*) from v_f f where (select count(*) from public.team_memberships m where m.fighter_id = f.id and not m.mercenary and m.to_date is null) <> 1
      or not exists (select 1 from public.team_memberships m where m.fighter_id = f.id and not m.mercenary and m.to_date is null and m.team_id = f.team_id)) = 0);
@@ -55,9 +56,9 @@ select pg_temp.c('15 completed historical events: every competition finished, da
 select pg_temp.c('provinces 9 AB / 2 BC / 2 SK / 2 MB', (select string_agg(region || ':' || n, ' ' order by region) from (select region, count(*) n from v_hist group by 1) x) = 'AB:9 BC:2 MB:2 SK:2',
   (select string_agg(region || ':' || n, ' ' order by region) from (select region, count(*) n from v_hist group by 1) x));
 select pg_temp.c('events per year 3 / 4 / 5 / 3', (select string_agg(y || ':' || n, ' ' order by y) from (select extract(year from starts_on)::int y, count(*) n from v_hist group by 1) x) = '2023:3 2024:4 2025:5 2026:3');
-select pg_temp.c('competition categories are existing ref_categories keys (no duplicates created), genders men/women, every competition has a tier from ref_tiers',
+select pg_temp.c('competition categories are existing ref_categories keys (no duplicates created; 14 with Axe, added on hosted for past medals), genders men/women, every competition has a tier from ref_tiers',
   (select count(*) from public.competitions k where k.event_id in (select id from v_ev) and (k.gender not in ('men', 'women') or k.category not in ('5v5', '3v3', 'longsword', 'sword_shield', 'polearm') or k.tier is null)) = 0
-  and (select count(*) from public.ref_categories) = 13 and (select count(*) from public.ref_tiers) = 5);
+  and (select count(*) from public.ref_categories) = 14 and (select count(*) from public.ref_tiers) = 5);
 select pg_temp.c('championships are Regional; small events Source or Classic',
   (select count(distinct k.tier) from public.competitions k join v_ev e on e.id = k.event_id where e.slug like '%championship-test' and k.tier = 'Regional') = 1
   and (select count(*) from public.competitions k join v_ev e on e.id = k.event_id where e.slug like '%championship-test' and k.tier <> 'Regional') = 0
