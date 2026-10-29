@@ -1,0 +1,63 @@
+- banner:
+  - link "Exit to Event":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man C vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 1 · Men Profight · TEST Pack29c refresh rehearsal · Division 2 · tournament
+  - status:
+    - generic: Scoring
+    - generic: Profight · Outrance Rules V.26.4 · not official until you finish the fight
+  - region "Total Fight Score":
+    - generic: Red
+    - generic: TEST Outrance Man C
+    - generic: "0"
+    - generic: No round confirmed
+    - generic: Total Fight Score
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - generic: "0"
+  - region "Lyst clock":
+    - generic: Break after round 1
+    - status: Break running
+    - status "Time left 0:27": 0:27
+    - button "Pause"
+    - button "Clock options": Clock options ▾
+  - region "Round 1 sheets":
+    - 'heading "Round 1: line marshals'' sheets · 1 · 1 phone to come" [level=2]'
+    - list:
+      - generic: Anna · paper
+      - generic: 10–3
+      - generic: "Slight: 10–9"
+      - generic: 10–9
+      - button "Fix"
+      - generic: TEST Pack29c Missing Marshal
+      - generic: not handed in yet
+    - paragraph:
+      - text: "Round Score:"
+      - generic: Red 10 – 9 Blue
+      - generic: (average of 1 sheets; shown as 10–9 where a whole number is needed)
+    - status: TEST Pack29c Missing Marshal (counter 1) has not confirmed their count. Check with the marshal and enter why these awarded scores are correct.
+    - generic: Reason
+    - textbox "Reason":
+      - /placeholder: "For example: checked the phones with the line marshals"
+    - button "Waiting for 1 sheet" [disabled]
+    - button "Type in a paper sheet" [active]
+    - 'button "Head marshal: confirm without TEST Pack29c Missing Marshal (marked \"a phone missing\")" [disabled]'
+    - button "Return the round to the line marshals for recount (write the reason first)"
+  - button "Counter phones 1/2 · check":
+    - text: Counter phones
+    - generic: 1/2 · check
+  - navigation "Lyst tools":
+    - button "Knight marshal's call"
+    - button "Appeals"
+    - button "Record"
+    - button "Rules"
+  - button "Back to the queue"
+  - button "Use the classic scoreboard (one sheet, paper backup)"
+  - paragraph: v0.1.0 · local · 0303b51 · 2026-10-29 15:46 UTC

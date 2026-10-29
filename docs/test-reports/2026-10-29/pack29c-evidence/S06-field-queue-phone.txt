@@ -1,0 +1,28 @@
+- banner:
+  - link "Exit to Event":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - paragraph: TEST Outrance V26.4 Rehearsal 2026-10-28
+  - heading "Lyst 1" [level=1]
+  - paragraph: Fights on this Lyst, in running order. Pick one to start scoring.
+  - button "Score TEST Outrance Man C against TEST Outrance Man D":
+    - generic: Active
+    - generic: Men Profight · Round 2
+    - generic: TEST Outrance Man C vs TEST Outrance Man D
+    - generic: Tap to continue scoring
+  - region "Enter official result from paper":
+    - heading "Enter official result from paper" [level=3]
+    - button "Enter a result from the score sheet"
+  - navigation "Other Lysts":
+    - generic: Other Lysts
+    - link "Lyst 2 (1)":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/field/Field%202
+  - link "← Back to the event":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/live
+  - paragraph: v0.1.0 · local · 0303b51 · 2026-10-29 15:46 UTC

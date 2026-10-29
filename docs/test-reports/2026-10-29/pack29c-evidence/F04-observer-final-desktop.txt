@@ -1,0 +1,20 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "This fight is final":
+    - heading "This fight is final" [level=2]
+    - paragraph:
+      - generic: TEST Outrance Man C vs TEST Outrance Man A
+      - text: ": TEST Outrance Man A win, 18.67–19.33. It was finished on another device. The result stands; nothing on this screen can change it. If it is wrong, an organizer corrects it from Live ops."
+    - button "Next fight on Lyst 1 TEST Outrance Man C vs TEST Outrance Man D":
+      - generic: Next fight on Lyst 1
+      - generic: TEST Outrance Man C vs TEST Outrance Man D
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · 0303b51 · 2026-10-29 15:46 UTC

@@ -1,0 +1,150 @@
+- banner:
+  - link "BuhurtOS home":
+    - /url: /
+  - button "Report a bug":
+  - button "Notifications":
+  - link "Account":
+    - /url: /account
+- main:
+  - paragraph: Event Control
+  - link "Event page →":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28
+  - heading "TEST Outrance V26.4 Rehearsal 2026-10-28" [level=1]
+  - paragraph:
+    - generic: Draft
+  - navigation "Tool":
+    - link "← Set up":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=setup
+    - heading "Draws and schedule" [level=2]
+  - generic "Schedule conflicts":
+    - paragraph: No double-booked fighters
+  - region "Men Longsword":
+    - heading "Men Longsword" [level=3]
+    - generic: 2 entrants
+    - generic: 2 of 2 matches final
+    - generic "Suggested format for 2 entrants"
+    - button "+ Add entrant"
+    - button "Build a new draw"
+    - generic "Entrants (2) · injured or pulling out":
+      - generic: Entrants
+      - text: (2) · injured or pulling out
+    - generic "Teams represented · for team discipline totals":
+      - generic: Teams represented
+      - text: · for team discipline totals
+    - heading "Round 1" [level=4]
+    - article "TEST Outrance Man B vs TEST Outrance Man A":
+      - generic: TEST Outrance Man B vs TEST Outrance Man A
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: TEST Outrance Man B won (5 to 3)
+      - button "Reopen result"
+    - heading "TEST Pack29b counter rehearsal" [level=4]
+    - article "TEST Outrance Man B vs TEST Outrance Man A":
+      - generic: TEST Outrance Man B vs TEST Outrance Man A
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: TEST Outrance Man B won (3 to 2)
+      - button "Reopen result"
+  - region "Men Profight":
+    - heading "Men Profight" [level=3]
+    - generic: 4 entrants
+    - generic: 5 of 6 matches final
+    - generic "Suggested format for 4 entrants"
+    - button "+ Add entrant"
+    - button "Build a new draw"
+    - generic "Entrants (4) · injured or pulling out":
+      - generic: Entrants
+      - text: (4) · injured or pulling out
+    - generic "Teams represented · for team discipline totals":
+      - generic: Teams represented
+      - text: · for team discipline totals
+    - button "Schedule all matches at once"
+    - heading "Round 1" [level=4]
+    - article "TEST Outrance Man D vs TEST Outrance Man A":
+      - generic: TEST Outrance Man D vs TEST Outrance Man A
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: TEST Outrance Man D won (20 to 18)
+      - button "Reopen result"
+    - article "TEST Outrance Man B vs TEST Outrance Man C":
+      - generic: TEST Outrance Man B vs TEST Outrance Man C
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: TEST Outrance Man B won (17.5 to 16)
+      - button "Reopen result"
+    - heading "Round 2" [level=4]
+    - article "TEST Outrance Man C vs TEST Outrance Man D":
+      - generic: TEST Outrance Man C vs TEST Outrance Man D
+      - generic: Active
+      - generic: Lyst 1
+      - group "Queue state":
+        - button "Scheduled"
+        - button "On deck"
+        - button "In the hole"
+        - button "Active" [pressed]
+      - generic: No time yet, on Lyst 1
+      - button "Set time"
+    - article "TEST Outrance Man A vs TEST Outrance Man B":
+      - generic: TEST Outrance Man A vs TEST Outrance Man B
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: Draw (30 to 30)
+      - button "Reopen result"
+    - heading "Round 3" [level=4]
+    - article "TEST Outrance Man D vs TEST Outrance Man B":
+      - generic: TEST Outrance Man D vs TEST Outrance Man B
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: TEST Outrance Man B won (0 to 0)
+      - button "Reopen result"
+    - article "TEST Outrance Man C vs TEST Outrance Man A":
+      - generic: TEST Outrance Man C vs TEST Outrance Man A
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: TEST Outrance Man A won (18.67 to 19.33)
+      - button "Reopen result"
+  - region "Women Profight":
+    - heading "Women Profight" [level=3]
+    - generic: 2 entrants
+    - generic: 1 of 1 matches final
+    - generic "Suggested format for 2 entrants"
+    - button "+ Add entrant"
+    - button "Build a new draw"
+    - generic "Entrants (2) · injured or pulling out":
+      - generic: Entrants
+      - text: (2) · injured or pulling out
+    - generic "Teams represented · for team discipline totals":
+      - generic: Teams represented
+      - text: · for team discipline totals
+    - heading "Round 1" [level=4]
+    - article "TEST Outrance Woman B vs TEST Outrance Woman A":
+      - generic: TEST Outrance Woman B vs TEST Outrance Woman A
+      - generic: Final
+      - generic: Lyst 1
+      - paragraph: TEST Outrance Woman B won (0 to 0)
+      - button "Reopen result"
+  - paragraph:
+    - text: "Each draw by hand: times, fields, withdrawals, teams represented."
+    - link "Back to Set up":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=setup
+    - text: .
+- contentinfo:
+  - generic: BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.
+  - link "Privacy":
+    - /url: /privacy
+  - generic: v0.1.0 · local · 0303b51 · 2026-10-29 15:46 UTC
+- navigation "Main":
+  - link "Home":
+    - /url: /
+    - text: Home
+  - link "Events":
+    - /url: /events
+    - text: Events
+  - link "My events":
+    - /url: /my-events
+    - text: My events
+  - link "Teams":
+    - /url: /teams
+    - text: Teams
+  - button "More":
+    - text: More

@@ -1,0 +1,35 @@
+- banner "Temporary device":
+  - generic: TEST Outrance V26.4 Rehearsal 2026-10-28
+  - paragraph:
+    - text: Counter QR ·
+    - generic: "Role: Counter"
+    - text: · Access ends Tue 01:00 MDT
+  - button "Sign out"
+- main "Counter":
+  - generic: Counting
+  - generic: LINE MARSHAL
+  - generic: Lyst 1
+  - generic: TEST Pack29c Exact Display
+  - heading "Lyst 1" [level=1]
+  - 'generic "This Lyst: last, now, next"':
+    - term: Last fight
+    - definition: TEST Outrance Man C vs TEST Outrance Man A · 18.67-19.33 to TEST Outrance Man A
+    - term: Now fighting
+    - definition: Nothing on yet
+    - term: Next fight
+    - definition: TEST Outrance Man B vs TEST Outrance Man A
+  - status: Waiting for the next fight on this Lyst. It opens here by itself.
+  - region "Count":
+    - button "Count" [disabled]
+  - button "Undo last" [disabled]
+  - button "Done with round" [disabled]
+  - status
+  - button "Saved count evidence"
+  - navigation "Change":
+    - button "New counter"
+    - button "Change side"
+    - button "Stop counting"
+- status: App saved for offline reopening on this browser. Keep the correct fight and round saved too.
+- generic "Saved counter evidence · 0 records":
+  - generic: Saved counter evidence
+  - text: · 0 records

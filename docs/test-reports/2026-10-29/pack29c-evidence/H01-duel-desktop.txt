@@ -1,0 +1,40 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 2
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man B vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 2 · Men Longsword · TEST Pack29c desktop layout
+  - status:
+    - generic: Scoring
+    - generic: "Pending: not official until you finish the match"
+  - region "Official score":
+    - generic: Red
+    - generic: TEST Outrance Man B
+    - 'generic "TEST Outrance Man B: 0 official points"': "0"
+    - generic: vs
+    - generic: No round confirmed
+    - generic: official
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - 'generic "TEST Outrance Man A: 0 official points"': "0"
+  - region "Lyst clock":
+    - generic: Round 1
+    - status: Clock ready
+    - status "Time left 1:00": 1:00
+    - button "Clock options": Clock options ▾
+  - button "Start round 1 · 1:00"
+  - navigation "Lyst tools":
+    - button "Marshal's call" [disabled]
+    - button "Counters"
+    - button "Record"
+    - button "Rules"
+    - button "Lyst settings"
+  - button "Back to the queue"
+  - button "Use the classic scoreboard"
+  - paragraph: v0.1.0 · local · 0303b51 · 2026-10-29 15:46 UTC

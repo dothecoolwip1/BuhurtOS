@@ -1,0 +1,76 @@
+- banner "Temporary device":
+  - generic: TEST Outrance V26.4 Rehearsal 2026-10-28
+  - paragraph:
+    - text: Counter QR ·
+    - generic: "Role: Counter"
+    - text: · Access ends Tue 01:00 MDT
+  - button "Sign out"
+- main "Counter":
+  - generic: Counting
+  - generic: LINE MARSHAL
+  - generic: Lyst 1
+  - generic: TEST Pack29c Missing Marshal
+  - paragraph: Men Profight · TEST Pack29c refresh rehearsal
+  - heading "TEST Outrance Man C vs TEST Outrance Man A" [level=1]:
+    - generic: TEST Outrance Man C
+    - generic: vs
+    - generic: TEST Outrance Man A
+  - 'generic "This Lyst: last, now, next"':
+    - term: Last fight
+    - definition: TEST Outrance Man B vs TEST Outrance Man A · 3-2 to TEST Outrance Man B
+    - term: Now fighting
+    - definition: TEST Outrance Man C vs TEST Outrance Man A
+    - term: Next fight
+    - definition: —
+  - status "Time left 0:00": 0:00
+  - status: Round confirmed. Wait for the next round.
+  - alert: Round 1 was confirmed without your sheet. Wait for the next round.
+  - paragraph: "Prepared round 2: TEST Outrance Man A vs TEST Outrance Man C. If the marshal has called the start but this phone is still waiting, count here and show the evidence at the end."
+  - button "Marshal started round 2 · count offline"
+  - region "Line marshal sheet":
+    - button "Strike for TEST Outrance Man C, now 0" [disabled]:
+      - generic: Red
+      - status: "0"
+      - generic: Strike
+    - button "Strike for TEST Outrance Man A, now 0" [disabled]:
+      - generic: Blue
+      - status: "0"
+      - generic: Strike
+    - group "Takedowns, weapon losses, armour failures":
+      - button "Takedown 0 Red" [disabled]:
+        - generic: Takedown
+        - generic: "0"
+        - generic: Red
+      - button "Takedown 0 Blue" [disabled]:
+        - generic: Takedown
+        - generic: "0"
+        - generic: Blue
+      - button "Weapon lost 0 Red" [disabled]:
+        - generic: Weapon lost
+        - generic: "0"
+        - generic: Red
+      - button "Weapon lost 0 Blue" [disabled]:
+        - generic: Weapon lost
+        - generic: "0"
+        - generic: Blue
+      - button "Armour failure 0 Red" [disabled]:
+        - generic: Armour failure
+        - generic: "0"
+        - generic: Red
+      - button "Armour failure 0 Blue" [disabled]:
+        - generic: Armour failure
+        - generic: "0"
+        - generic: Blue
+    - paragraph: "Strike point difference 0: 5 or less, you will be asked the other criteria."
+  - button "Undo last" [disabled]
+  - button "Hand in sheet" [disabled]
+  - status: All taps sent.
+  - button "Saved count evidence"
+  - navigation "Change":
+    - button "New counter"
+    - button "Change side"
+    - button "Stop counting"
+- status: App saved for offline reopening on this browser. Keep the correct fight and round saved too.
+- generic "Saved counter evidence · 3 records":
+  - generic: Saved counter evidence
+  - text: · 3 records
