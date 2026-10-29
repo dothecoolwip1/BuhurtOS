@@ -1,0 +1,107 @@
+- banner "Temporary device":
+  - generic: TEST Outrance V26.4 Rehearsal 2026-10-28
+  - paragraph:
+    - text: Counter QR ·
+    - generic: "Role: Counter"
+    - text: · Access ends Tue 01:00 MDT
+  - button "Sign out"
+- main "Counter":
+  - generic: Counting
+  - generic: LINE MARSHAL
+  - generic: Lyst 5
+  - generic: TEST Pack29f Line Marshal
+  - paragraph: TEST Pack29e setup sync · TEST c2b1624 next-fight layout fixture
+  - heading "TEST Outrance Man A vs TEST Outrance Man C" [level=1]:
+    - generic: TEST Outrance Man A
+    - generic: vs
+    - generic: TEST Outrance Man C
+  - 'generic "This Lyst: last, now, next"':
+    - term: Last fight
+    - definition: TEST Outrance Man C vs TEST Outrance Man A · 20-18 to TEST Outrance Man C
+    - term: Now fighting
+    - definition: TEST Outrance Man A vs TEST Outrance Man C
+    - term: Next fight
+    - definition: —
+  - status "Time left 0:41": 0:41
+  - status: Round over. The marshal is confirming the score.
+  - region "Line marshal sheet":
+    - button "Strike for TEST Outrance Man A, now 9" [disabled]:
+      - generic: Red
+      - status: "9"
+      - generic: Strike
+    - button "Strike for TEST Outrance Man C, now 0" [disabled]:
+      - generic: Blue
+      - status: "0"
+      - generic: Strike
+    - group "Takedowns, weapon losses, armour failures":
+      - button "Takedown 0 Red" [disabled]:
+        - generic: Takedown
+        - generic: "0"
+        - generic: Red
+      - button "Takedown 0 Blue" [disabled]:
+        - generic: Takedown
+        - generic: "0"
+        - generic: Blue
+      - button "Weapon lost 0 Red" [disabled]:
+        - generic: Weapon lost
+        - generic: "0"
+        - generic: Red
+      - button "Weapon lost 0 Blue" [disabled]:
+        - generic: Weapon lost
+        - generic: "0"
+        - generic: Blue
+      - button "Armour failure 0 Red" [disabled]:
+        - generic: Armour failure
+        - generic: "0"
+        - generic: Red
+      - button "Armour failure 0 Blue" [disabled]:
+        - generic: Armour failure
+        - generic: "0"
+        - generic: Blue
+    - paragraph: Strike point difference 9.
+  - button "Undo Red strike" [disabled]
+  - button "Hand in sheet"
+  - status: All taps sent.
+  - button "Saved count evidence"
+  - navigation "Change":
+    - button "New counter"
+    - button "Change side"
+    - button "Change Lyst"
+    - button "Stop counting"
+- status: App saved for offline reopening on this browser. Keep the correct fight and round saved too.
+- generic "Saved counter evidence · 0 records":
+  - generic: Saved counter evidence
+  - text: · 0 records
+- dialog "Round 1 · your sheet":
+  - heading "Round 1 · your sheet" [level=2]
+  - table "Your round 1 sheet":
+    - rowgroup:
+      - row "Red Blue":
+        - columnheader
+        - columnheader "Red"
+        - columnheader "Blue"
+    - rowgroup:
+      - row "Effective strikes 9 0":
+        - rowheader "Effective strikes"
+        - cell "9"
+        - cell "0"
+      - row "Effective takedowns 0 0":
+        - rowheader "Effective takedowns"
+        - cell "0"
+        - cell "0"
+      - row "Loss of weapon 0 0":
+        - rowheader "Loss of weapon"
+        - cell "0"
+        - cell "0"
+      - row "Armour failures 0 0":
+        - rowheader "Armour failures"
+        - cell "0"
+        - cell "0"
+  - paragraph: "Strike point difference 9: the round is decided on strikes (Outrance §15.3.1)."
+  - paragraph:
+    - text: "Your round:"
+    - generic: Red 10 – 9 Blue
+    - text: · Slight
+  - paragraph: Cards, armour repairs and 3 or more weapon losses come off when the secretary confirms the round.
+  - button "Back to counting" [active]
+  - button "Hand in sheet"

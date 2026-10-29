@@ -1,0 +1,74 @@
+- banner "Temporary device":
+  - generic: TEST Outrance V26.4 Rehearsal 2026-10-28
+  - paragraph:
+    - text: Counter QR ·
+    - generic: "Role: Counter"
+    - text: · Access ends Tue 01:00 MDT
+  - button "Sign out"
+- main "Counter":
+  - generic: Counting
+  - generic: LINE MARSHAL
+  - generic: Lyst 5
+  - generic: TEST Pack29f Line Marshal
+  - paragraph: TEST Pack29e setup sync · TEST c2b1624 next-fight layout fixture
+  - heading "TEST Outrance Man A vs TEST Outrance Man C" [level=1]:
+    - generic: TEST Outrance Man A
+    - generic: vs
+    - generic: TEST Outrance Man C
+  - 'generic "This Lyst: last, now, next"':
+    - term: Last fight
+    - definition: TEST Outrance Man C vs TEST Outrance Man A · 20-18 to TEST Outrance Man C
+    - term: Now fighting
+    - definition: TEST Outrance Man A vs TEST Outrance Man C
+    - term: Next fight
+    - definition: —
+  - status "Time left 1:00": 1:00
+  - status: Tap for every clean legal strike by each fighter. Head strikes do not count.
+  - region "Line marshal sheet":
+    - button "Strike for TEST Outrance Man A, now 9":
+      - generic: Red
+      - status: "9"
+      - generic: Strike
+    - button "Strike for TEST Outrance Man C, now 0":
+      - generic: Blue
+      - status: "0"
+      - generic: Strike
+    - group "Takedowns, weapon losses, armour failures":
+      - button "Takedown 0 Red":
+        - generic: Takedown
+        - generic: "0"
+        - generic: Red
+      - button "Takedown 0 Blue":
+        - generic: Takedown
+        - generic: "0"
+        - generic: Blue
+      - button "Weapon lost 0 Red":
+        - generic: Weapon lost
+        - generic: "0"
+        - generic: Red
+      - button "Weapon lost 0 Blue":
+        - generic: Weapon lost
+        - generic: "0"
+        - generic: Blue
+      - button "Armour failure 0 Red":
+        - generic: Armour failure
+        - generic: "0"
+        - generic: Red
+      - button "Armour failure 0 Blue":
+        - generic: Armour failure
+        - generic: "0"
+        - generic: Blue
+    - paragraph: Strike point difference 9.
+  - button "Undo Red strike" [active]
+  - button "Hand in sheet"
+  - status: 1 tap saved on this phone, waiting to send.
+  - button "Saved count evidence"
+  - navigation "Change":
+    - button "New counter"
+    - button "Change side"
+    - button "Change Lyst"
+    - button "Stop counting"
+- status: App saved for offline reopening on this browser. Keep the correct fight and round saved too.
+- generic "Saved counter evidence · 0 records":
+  - generic: Saved counter evidence
+  - text: · 0 records

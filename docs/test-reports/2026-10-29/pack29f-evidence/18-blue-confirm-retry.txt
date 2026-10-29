@@ -1,0 +1,50 @@
+- banner "Temporary device":
+  - generic: TEST Outrance V26.4 Rehearsal 2026-10-28
+  - paragraph:
+    - text: Counter QR ·
+    - generic: "Role: Counter"
+    - text: · Access ends Tue 01:00 MDT
+  - button "Sign out"
+- main "Counter":
+  - generic: Counting
+  - generic: BLUE
+  - generic: Lyst 6
+  - generic: TEST Pack29f Line Marshal
+  - paragraph: Men Longsword · TEST Pack29f Red Blue phone regression
+  - heading "TEST Outrance Man A" [level=1]
+  - paragraph: vs TEST Outrance Man B
+  - 'generic "This Lyst: last, now, next"':
+    - term: Last fight
+    - definition: —
+    - term: Now fighting
+    - definition: TEST Outrance Man B vs TEST Outrance Man A
+    - term: Next fight
+    - definition: —
+  - status "Time left 0:00": 0:00
+  - status: Tap COUNT for every valid strike.
+  - region "Count":
+    - generic: Round 2 · your count
+    - status "Your count 2": "2"
+    - button "Count two points, head or torso" [disabled]: "+2"
+    - button "Count one point, arm leg or hand" [disabled]: "+1"
+  - button "Undo last" [disabled]
+  - button "Done with round"
+  - status: All taps sent.
+  - button "Saved count evidence"
+  - navigation "Change":
+    - button "New counter"
+    - button "Change side"
+    - button "Change Lyst"
+    - button "Stop counting"
+- status: App saved for offline reopening on this browser. Keep the correct fight and round saved too.
+- generic "Saved counter evidence · 0 records":
+  - generic: Saved counter evidence
+  - text: · 0 records
+- dialog "Round 2 · confirm score":
+  - heading "Round 2 · confirm score" [level=2]
+  - paragraph: TEST Outrance Man A · your count
+  - status "Your count 2": "2"
+  - paragraph: Confirm your count. The marshal confirms the official score.
+  - alert: Could not confirm. Your counts are kept here. Try again.
+  - button "Edit score"
+  - button "Confirm score"

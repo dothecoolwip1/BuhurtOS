@@ -1,0 +1,323 @@
+[
+  {
+    "name": "01-phone-prepared-round",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "02-phone-live-taps",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "03-phone-auto-sheet",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "04-desk-awaiting-phone",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "05-phone-submitted",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "06-three-sheets",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "07-recount-missing-reason-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "08-phone-round-confirmed",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "09-phone-criteria-stops",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "10-desk-final",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "11-phone-final-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "12-phone-final-desktop",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "12-phone-final-desktop",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "13-appeal-outcome-required",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "14-duel-start-gate",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "15-duel-auto-confirm",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "16-duel-submitted-four",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "17-blue-offline-retained",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "18-blue-confirm-retry",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": [
+      {
+        "level": "error",
+        "message": "[BuhurtOS] Object",
+        "timestamp": "2026-10-29T18:18:57.477Z",
+        "url": "https://buhurt-os.vercel.app/assets/index-BUoJ3J1b.js"
+      }
+    ]
+  },
+  {
+    "name": "19-blue-submitted",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": [
+      {
+        "level": "error",
+        "message": "[BuhurtOS] Object",
+        "timestamp": "2026-10-29T18:18:57.477Z",
+        "url": "https://buhurt-os.vercel.app/assets/index-BUoJ3J1b.js"
+      }
+    ]
+  },
+  {
+    "name": "20-duel-official-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "21-duel-final-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": [
+      {
+        "level": "error",
+        "message": "[BuhurtOS] Object",
+        "timestamp": "2026-10-29T18:18:57.477Z",
+        "url": "https://buhurt-os.vercel.app/assets/index-BUoJ3J1b.js"
+      }
+    ]
+  },
+  {
+    "name": "22-counter-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "21-duel-final-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": [
+      {
+        "level": "error",
+        "message": "[BuhurtOS] Object",
+        "timestamp": "2026-10-29T18:18:57.477Z",
+        "url": "https://buhurt-os.vercel.app/assets/index-BUoJ3J1b.js"
+      }
+    ]
+  },
+  {
+    "name": "22-counter-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "23-profight-exact-last-fight",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": [
+      {
+        "level": "error",
+        "message": "[BuhurtOS] Object",
+        "timestamp": "2026-10-29T18:18:57.477Z",
+        "url": "https://buhurt-os.vercel.app/assets/index-BUoJ3J1b.js"
+      }
+    ]
+  }
+]

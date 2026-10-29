@@ -1,0 +1,45 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 5
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "Result official":
+    - heading "TEST Outrance Man A vs TEST Outrance Man C" [level=1]
+    - paragraph: Lyst 5 · TEST Pack29e setup sync · TEST c2b1624 next-fight layout fixture · Division 2 · tournament
+    - status:
+      - generic: Official
+      - generic: "Official: saved on the server"
+    - paragraph: "Winner: TEST Outrance Man C by split decision"
+    - paragraph: TEST Outrance Man A 18.67 – 19.33 TEST Outrance Man C
+    - link "Back to Event Control":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - button "Back to the queue"
+    - region "Appeals":
+      - paragraph: "A competitor appeals at the end of the fight, before leaving the list; the corner men within 15 minutes after the fight (§16.3). Outcomes: a rematch of the round, a card or a point deduction imposed or withdrawn (§16.4)."
+      - generic: TEST Outrance Man A · corner men
+      - generic: "Synthetic rehearsal: verify appeal outcome validation only."
+      - combobox "Outcome if upheld":
+        - option "Outcome if upheld…" [selected]
+        - option "Rematch of the round"
+        - option "Card imposed"
+        - option "Card withdrawn"
+        - option "Point deduction imposed"
+        - option "Point deduction withdrawn"
+      - textbox "The decision" [active]: Synthetic validation complete; no correction warranted.
+      - button "Uphold" [disabled]
+      - button "Reject"
+      - paragraph: "Apply an upheld outcome with the tools here: void or add the call, or return the round for recount."
+      - button "TEST Outrance Man A"
+      - button "TEST Outrance Man C"
+      - button "The competitor"
+      - button "Their corner men"
+      - generic: Grounds (written, §16.1)
+      - textbox "Grounds (written, §16.1)":
+        - /placeholder: "For example: unregistered clean blows in round 2"
+      - button "Record the appeal" [disabled]
+  - paragraph: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC

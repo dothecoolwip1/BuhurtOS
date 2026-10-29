@@ -1,0 +1,24 @@
+- banner:
+  - link "Exit to Event":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/live
+    - generic: Exit
+  - generic: Lyst 6
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "Result official":
+    - heading "TEST Outrance Man B vs TEST Outrance Man A" [level=1]
+    - paragraph: Lyst 6 · Men Longsword · TEST Pack29f Red Blue phone regression
+    - status:
+      - generic: Official
+      - generic: "Official: saved on the server"
+    - generic: TEST Outrance Man B
+    - generic: "4"
+    - generic: TEST Outrance Man A
+    - generic: "2"
+    - paragraph: "Winner: TEST Outrance Man B"
+    - paragraph: Nothing is waiting on Lyst 6 right now.
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC

@@ -1,0 +1,61 @@
+- banner:
+  - link "Exit to Event":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/live
+    - generic: Exit
+  - generic: Lyst 6
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man B vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 6 · Men Longsword · TEST Pack29f Red Blue phone regression
+  - status:
+    - generic: Scoring
+    - generic: "Pending: not official until you finish the match"
+  - region "Official score":
+    - generic: Red
+    - generic: TEST Outrance Man B
+    - 'generic "TEST Outrance Man B: 0 official points"': "0"
+    - generic: vs
+    - generic: No round confirmed
+    - generic: official
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - 'generic "TEST Outrance Man A: 0 official points"': "0"
+  - region "Counters on this fight":
+    - generic: Red · TEST Outrance Man B
+    - list:
+      - generic: Red
+      - generic: TEST Pack29f Line Marshal
+      - generic "Round 1 count 0": "0"
+      - generic: online
+    - generic: Blue · TEST Outrance Man A
+    - paragraph: No counter on blue.
+  - region "Lyst clock":
+    - generic: Round 1
+    - status: Clock ready
+    - status "Time left 1:00": 1:00
+    - button "Clock options": Clock options ▾
+  - button "Start round 1 · 1:00"
+  - button "Counter phones 1/1":
+    - text: Counter phones
+    - generic: 1/1
+  - navigation "Lyst tools":
+    - button "Marshal's call" [disabled]
+    - button "Counters · 1"
+    - button "Record"
+    - button "Rules"
+    - button "Lyst settings"
+  - button "Back to the queue"
+  - button "Use the classic scoreboard"
+  - paragraph: v0.1.0 · local · c2b1624 · 2026-10-29 17:39 UTC
+- 'dialog "Start paused: counter phones are not ready"':
+  - 'heading "Start paused: counter phones are not ready" [level=2]'
+  - generic: Some phones have not saved this round
+  - paragraph: The round has not started. Check the phones with the marshal. To start using paper or prepared offline counters, enter the marshal’s reason below.
+  - text: Reason for starting
+  - textbox "Reason for starting" [active]:
+    - /placeholder: "For example: marshal approved paper counting"
+  - button "Start with paper or offline counting" [disabled]
+  - button "Keep waiting for the phones"
