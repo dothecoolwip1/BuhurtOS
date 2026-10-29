@@ -1,0 +1,65 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 3
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man C vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 3 · TEST Pack29d setup sync · TEST Pack29d setup synchronization · Division 2 · tournament
+  - status:
+    - generic: Scoring
+    - generic: Profight · Outrance Rules V.26.4 · not official until you finish the fight
+  - region "Total Fight Score":
+    - generic: Red
+    - generic: TEST Outrance Man C
+    - generic: "0"
+    - generic: W1
+    - generic: No round confirmed
+    - generic: Total Fight Score
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - generic: "0"
+  - region "Lyst clock":
+    - generic: Round 1
+    - status: Round paused
+    - status "Time left 1:04": 1:04
+    - button "Resume"
+    - button "Clock options": Clock options ▾
+  - button "End round · start the 0:45 break"
+  - region "Round 1 sheets":
+    - 'heading "Round 1: line marshals'' sheets · 0" [level=2]'
+    - status: No line-marshal phones on this fight. Type in each marshal's paper sheet, or add phones with the Counter QR. Any 1 to 5 marshals.
+    - list
+    - button "Waiting for a sheet" [disabled]
+    - button "Type in a paper sheet"
+  - navigation "Lyst tools":
+    - button "Knight marshal's call · 1"
+    - button "Appeals"
+    - button "Record"
+    - button "Rules"
+  - list "Recent calls":
+    - listitem: Warning · Round 1 · TEST Outrance Man C
+  - button "Back to the queue"
+  - button "Use the classic scoreboard (one sheet, paper backup)"
+  - paragraph: v0.1.0 · local · 8ff52cd · 2026-10-29 17:18 UTC
+- dialog "Record of this match":
+  - heading "Record of this match" [level=2]
+  - button "Close":
+  - generic: Rounds
+  - paragraph: Nothing confirmed yet.
+  - generic: Cards, warnings and points taken off
+  - list:
+    - generic: Warning · Round 1 · TEST Outrance Man C
+    - button "Add the rule"
+    - textbox "Why is this being voided?"
+    - button "Void it" [disabled]
+    - button "Keep it"
+  - paragraph: Nothing here is deleted. A voided record stays visible with its reason.

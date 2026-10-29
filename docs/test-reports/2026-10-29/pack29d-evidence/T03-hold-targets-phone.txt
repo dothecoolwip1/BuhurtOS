@@ -1,0 +1,27 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 4
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "This fight cannot start yet":
+    - heading "TEST Outrance Woman B vs TEST Outrance Woman A" [level=1]
+    - paragraph: Lyst 4 · Women Profight · TEST Pack29d hold target measurement
+    - heading "This fight cannot start yet" [level=2]
+    - paragraph: TEST Outrance Woman A needs the medic's check after a TKO before fighting again (Outrance §14.8)
+    - alert:
+      - generic: TEST Outrance Woman A
+      - text: needs the medic's check before fighting again (Outrance §14.8)
+      - textbox "What was checked"
+      - button "Cleared" [disabled]
+    - button "Check again"
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · 8ff52cd · 2026-10-29 17:18 UTC

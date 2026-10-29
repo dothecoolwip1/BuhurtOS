@@ -1,0 +1,106 @@
+{
+  "voidMetric": {
+    "height": 44,
+    "text": "Void with a reason",
+    "width": 327.3333435058594
+  },
+  "citeMetric": {
+    "height": 44,
+    "text": "Add the rule",
+    "width": 327.3333435058594
+  },
+  "holdMetrics": [
+    {
+      "height": 44,
+      "label": "What was checked",
+      "width": 183.33334350585935
+    },
+    {
+      "height": 44,
+      "label": "Cleared",
+      "width": 92.89583587646484
+    }
+  ],
+  "rankingMetrics": [
+    {
+      "height": 44,
+      "text": "Update now",
+      "width": 269.3333435058594
+    },
+    {
+      "height": 44,
+      "text": "Fighters",
+      "width": 82.45833587646484
+    },
+    {
+      "height": 44,
+      "text": "Teams",
+      "width": 71.46875
+    },
+    {
+      "height": 44,
+      "text": "Profight records",
+      "width": 135.1875
+    },
+    {
+      "height": 44,
+      "text": "Season",
+      "width": 76.53125
+    },
+    {
+      "height": 44,
+      "text": "Organization career",
+      "width": 158.40625
+    },
+    {
+      "height": 44,
+      "text": "Whole organization",
+      "width": 157.14584350585938
+    },
+    {
+      "height": 44,
+      "text": "All time",
+      "width": 78.69792175292969
+    },
+    {
+      "height": 44,
+      "text": "HACSANACL-test",
+      "width": 342.66668701171875
+    },
+    {
+      "height": 44,
+      "text": "NACL-test 2026 SeasonNACL-test 2025 SeasonNACL-test 2024 SeasonNACL-test 2023 Season",
+      "width": 342.66668701171875
+    },
+    {
+      "height": 44,
+      "text": "5v53v3LongswordSword and shieldPolearm",
+      "width": 342.66668701171875
+    },
+    {
+      "height": 44,
+      "text": "Men",
+      "width": 57.13541793823242
+    },
+    {
+      "height": 44,
+      "text": "Women",
+      "width": 80.45833587646484
+    },
+    {
+      "height": 44,
+      "text": "Open",
+      "width": 64.46875
+    }
+  ],
+  "proRankingMetrics": [
+    {
+      "height": 40,
+      "text": "Men"
+    },
+    {
+      "height": 40,
+      "text": "Women"
+    }
+  ]
+}

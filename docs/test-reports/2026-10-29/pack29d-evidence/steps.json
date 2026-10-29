@@ -1,0 +1,354 @@
+[
+  {
+    "name": "P01-auto-round-one-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P02-paper-returns-popup-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P03-dismissed-sheets-on-desk-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P04-round-one-confirmed-no-popup",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P05-round-two-auto-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P06-round-two-auto-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "P07-paper-returns-popup-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "P08-dismissed-sheets-on-desk-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "P09-confirmed-no-popup-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "F04-official-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "F05-second-desk-final-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "F06-official-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "F06-official-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "F04-official-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "F07-official-appeals-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "H01-duel-result-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "H02-duel-result-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "S01-setup-before-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "S02-setup-stuck-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "S03-setup-saved-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "T01-call-log-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "T02-call-cite-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "T03-hold-targets-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "T04-rankings-filters-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "T05-profight-filters-phone",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P10-auto-popup-desktop-active",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "P11-normal-confirm-popup-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1440,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "P12-confirmed-popup-stays-closed-desktop",
+    "metrics": {
+      "height": 900,
+      "overflow": false,
+      "scrollWidth": 1425,
+      "visibility": "visible",
+      "width": 1440
+    },
+    "logs": []
+  },
+  {
+    "name": "P13-auto-popup-phone-active",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P14-paper-returns-popup-phone-active",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 390,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P15-dismissed-sheets-phone-active",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "name": "P16-confirmed-no-popup-phone-active",
+    "metrics": {
+      "height": 844,
+      "overflow": false,
+      "scrollWidth": 375,
+      "visibility": "visible",
+      "width": 390
+    },
+    "logs": []
+  }
+]

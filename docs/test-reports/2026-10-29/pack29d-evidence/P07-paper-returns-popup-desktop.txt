@@ -1,0 +1,76 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man C vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 1 · Men Profight · TEST Pack29c background recovery · Division 2 · tournament
+  - status:
+    - generic: Scoring
+    - generic: Profight · Outrance Rules V.26.4 · not official until you finish the fight
+  - region "Total Fight Score":
+    - generic: Red
+    - generic: TEST Outrance Man C
+    - generic: "9.67"
+    - generic: After 1 round
+    - generic: Total Fight Score
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - generic: "9.33"
+  - list "Round Scores":
+    - generic: R1
+    - generic: 9.67–9.33
+    - generic: 3 marshals · a phone missing
+  - paragraph: "Marshals so far: Anna Red · Bea Blue · Cara Red → Split decision"
+  - region "Lyst clock":
+    - generic: Break after round 2
+    - status: Break running
+    - status "Time left 0:03": 0:03
+    - button "Pause"
+    - button "Clock options": Clock options ▾
+  - button "Counter phones 0/3 · check":
+    - text: Counter phones
+    - generic: 0/3 · check
+  - navigation "Lyst tools":
+    - button "Knight marshal's call"
+    - button "Appeals"
+    - button "Record"
+    - button "Rules"
+  - button "Back to the queue"
+  - button "Use the classic scoreboard (one sheet, paper backup)"
+  - paragraph: v0.1.0 · local · 8ff52cd · 2026-10-29 17:18 UTC
+- dialog "Round 2 ended · confirm the score":
+  - heading "Round 2 ended · confirm the score" [level=2]
+  - region "Round 2 sheets":
+    - 'heading "Round 2: line marshals'' sheets · 1 · 2 phones to come" [level=2]'
+    - list:
+      - generic: Anna · paper
+      - generic: 3–10
+      - generic: "Slight: 9–10"
+      - generic: 9–10
+      - button "Fix"
+      - generic: TEST Pack29c Exact Display
+      - generic: not handed in yet
+      - generic: TEST Pack29c Missing Marshal
+      - generic: not handed in yet
+    - paragraph:
+      - text: "Round Score:"
+      - generic: Red 9 – 10 Blue
+      - generic: (average of 1 sheets; shown as 9–10 where a whole number is needed)
+    - status: TEST Pack29c Exact Display (counter 1) has not saved this round. TEST Pack29c Missing Marshal (counter 2) has not saved this round. Check with the marshal and enter why these awarded scores are correct.
+    - generic: Reason
+    - textbox "Reason" [active]:
+      - /placeholder: "For example: checked the phones with the line marshals"
+    - button "Waiting for 2 sheets" [disabled]
+    - button "Type in a paper sheet"
+    - 'button "Head marshal: confirm without TEST Pack29c Exact Display, TEST Pack29c Missing Marshal (marked \"a phone missing\")" [disabled]'
+    - button "Return the round to the line marshals for recount (write the reason first)"

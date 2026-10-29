@@ -1,0 +1,71 @@
+- banner:
+  - link "BuhurtOS home":
+    - /url: /
+  - button "Report a bug":
+  - button "Notifications":
+  - link "Account":
+    - /url: /account
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: Nothing is being scored on this device, so it is safe to update. The page will reload.
+    - button "Update now"
+  - paragraph: League table
+  - heading "Rankings" [level=1]
+  - paragraph: Who is ahead, by organization, season, category and division. Each organization's ranking is that organization's own official ranking. Fictional test events are never counted.
+  - group "Who":
+    - button "Fighters" [pressed]
+    - button "Teams"
+    - button "Profight records"
+  - group "Scope":
+    - button "Season" [pressed]
+    - button "Organization career"
+    - button "Whole organization"
+    - button "All time"
+  - text: Organization
+  - combobox "Organization":
+    - option "HACSA"
+    - option "NACL-test" [selected]
+  - text: Season
+  - combobox "Season":
+    - option "NACL-test 2026 Season" [selected]
+    - option "NACL-test 2025 Season"
+    - option "NACL-test 2024 Season"
+    - option "NACL-test 2023 Season"
+  - text: Category
+  - combobox "Category":
+    - option "5v5" [selected]
+    - option "3v3"
+    - option "Longsword"
+    - option "Sword and shield"
+    - option "Polearm"
+  - group "Division":
+    - button "Men" [pressed]
+    - button "Women"
+    - button "Open"
+  - paragraph:
+    - text: Points are the league points each finished competition awards for a placing, added up; bigger tournaments award more, and fighters or teams with equal points share a rank.
+    - link "How tournaments are tiered":
+      - /url: /formats?tab=tournaments
+  - paragraph: Loading rankings…
+  - list
+- contentinfo:
+  - generic: BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.
+  - link "Privacy":
+    - /url: /privacy
+  - generic: v0.1.0 · local · 8ff52cd · 2026-10-29 17:18 UTC
+- navigation "Main":
+  - link "Home":
+    - /url: /
+    - text: Home
+  - link "Events":
+    - /url: /events
+    - text: Events
+  - link "My events":
+    - /url: /my-events
+    - text: My events
+  - link "Teams":
+    - /url: /teams
+    - text: Teams
+  - button "More":
+    - text: More

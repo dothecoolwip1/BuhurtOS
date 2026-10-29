@@ -1,0 +1,30 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - generic: Exit
+  - generic: Lyst 2
+  - generic "TEST Outrance V26.4 Rehearsal 2026-10-28"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "Result official":
+    - heading "TEST Outrance Man B vs TEST Outrance Man A" [level=1]
+    - paragraph: Lyst 2 · Men Longsword · TEST Pack29c desktop layout
+    - status:
+      - generic: Official
+      - generic: "Official: saved on the server"
+    - generic: TEST Outrance Man B
+    - generic: "3"
+    - generic: TEST Outrance Man A
+    - generic: "2"
+    - paragraph: "Winner: TEST Outrance Man B"
+    - paragraph: Nothing is waiting on Lyst 2 right now.
+    - link "Back to Event Control":
+      - /url: /events/test-outrance-v26-4-rehearsal-2026-10-28/control?mode=live
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · 8ff52cd · 2026-10-29 17:18 UTC

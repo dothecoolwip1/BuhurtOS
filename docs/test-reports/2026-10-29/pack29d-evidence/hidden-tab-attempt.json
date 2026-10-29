@@ -1,0 +1,24 @@
+{
+  "method": "Playwright keyboard Control+PageDown on desk-one Back to the queue button",
+  "before": [
+    {
+      "id": 2146905989,
+      "active": true
+    },
+    {
+      "id": 2146905999,
+      "active": false
+    }
+  ],
+  "after": [
+    {
+      "id": 2146905989,
+      "active": true
+    },
+    {
+      "id": 2146905999,
+      "active": false
+    }
+  ],
+  "result": "Tab did not switch; genuine hidden-tab recovery not verified. Native Windows browser controls not retried because they stopped previous runs."
+}

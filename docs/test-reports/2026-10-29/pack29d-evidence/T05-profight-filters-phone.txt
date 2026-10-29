@@ -1,0 +1,46 @@
+- banner:
+  - link "BuhurtOS home":
+    - /url: /
+  - button "Report a bug":
+  - button "Notifications":
+  - link "Account":
+    - /url: /account
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: Nothing is being scored on this device, so it is safe to update. The page will reload.
+    - button "Update now"
+  - paragraph: League table
+  - heading "Rankings" [level=1]
+  - paragraph: "Profight: every competitor's win/loss record within their weight class. Fictional test events are never counted."
+  - group "Who":
+    - button "Fighters"
+    - button "Teams"
+    - button "Profight records" [active] [pressed]
+  - region "Profight records":
+    - paragraph: "Win/loss records within each weight class (Outrance §17). No fight for a year: retired. Two years: out of the standings."
+    - group "Division":
+      - button "Men" [pressed]
+      - button "Women"
+    - heading "No Profight records yet" [level=3]
+    - paragraph: Records appear as soon as a Profight is official.
+- contentinfo:
+  - generic: BuhurtOS · built for the people who fight, run and follow armored combat. It uses limited analytics to understand how the site is used and improve the platform. We do not use GPS or collect what you type into forms.
+  - link "Privacy":
+    - /url: /privacy
+  - generic: v0.1.0 · local · 8ff52cd · 2026-10-29 17:18 UTC
+- navigation "Main":
+  - link "Home":
+    - /url: /
+    - text: Home
+  - link "Events":
+    - /url: /events
+    - text: Events
+  - link "My events":
+    - /url: /my-events
+    - text: My events
+  - link "Teams":
+    - /url: /teams
+    - text: Teams
+  - button "More":
+    - text: More
