@@ -1,6 +1,6 @@
 # Pack 29: Outrance (Profight) exactly to Outrance Rules and Regulations V.26.4
 
-Status: PLAN (rewritten 2026-10-29 to follow the rules exactly). Nothing in this pack is built yet. Step 0, bringing the repository level
+Status: BUILDING (plan rewritten 2026-10-29 to follow the rules exactly; owner approved the plan and the five gap answers the same day). Step 0, bringing the repository level
 with hosted, is done: `supabase/migrations/20261108000100_hosted_reconcile_2026_10_29.sql`.
 
 Source: *Outrance Rules and Regulations V.26.4* (April 2026), the owner's PDF (28 pages), including the example scoresheet on page 25.
@@ -187,7 +187,7 @@ The sheet's fight result is the sum of its rounds (the p.25 "Fight Result").
 - Weapon losses and armour failures on the tablet only: each marshal notes them on their sheet (§2.3, p.25).
 - "Keep adding tiebreak rounds": the rules give one 3rd round for a tournament draw (§4.2); what happens after that is not written (§7).
 
-## 7. Gaps in the rules (for the owner or the head marshal; nothing here is invented by the app)
+## 7. Gaps in the rules (owner answered 2026-10-29: YES to all five plans below)
 
 1. **A tournament fight still level after round 3.** §4.2 gives a 3rd round only. The app records the draw and asks the head marshal
    (§2.1) to record a decision with a reason, which is kept with the result. Is there a rule to apply instead?

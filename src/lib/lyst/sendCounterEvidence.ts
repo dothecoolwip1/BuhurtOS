@@ -10,7 +10,7 @@ export function counterEvidenceSender(seatId:string):CounterSend{
     try{
       if(action.runId){
         const answer=await deliverCounterAction(seatId,action);
-        return answer.status==='review'?{status:'review',total:answer.total,message:answer.reason??'Marshal review needed.'}:{status:answer.status,total:answer.total,weights:answer.weights};
+        return answer.status==='review'?{status:'review',total:answer.total,message:answer.reason??'Marshal review needed.'}:{status:answer.status,total:answer.total,weights:answer.weights,...(answer.outrance?{outrance:answer.outrance}:{})};
       }
       const answer=await uploadLegacyCounterAction(seatId,action);
       return {status:'review',total:0,alreadyAccepted:answer.status==='already_accepted',message:answer.status==='already_accepted'

@@ -146,9 +146,9 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
   const activeSeats = st.seats.filter(s => s.status === 'active');
   const submitted = st.seats.flatMap(seat => {
     const tally = seat.tallies.find(t => t.round_no === cur?.round_no && t.submitted);
-    if (seat.role !== 'official' || !seat.side || !tally) return [];
+    if (seat.role !== 'official' || (seat.side !== 'a' && seat.side !== 'b') || !tally) return [];
     const size = st.per_side ?? board.down[seat.side].length;
-    return [{ seat, standing: Math.max(0, Math.min(size, size - tally.total)) }];
+    return [{ seat, side: seat.side, standing: Math.max(0, Math.min(size, size - tally.total)) }];
   });
   const shownNote = note ?? clock.timerNote;
   return (
@@ -189,9 +189,9 @@ export function GroupCounterRounds({ matchId, eventId, fieldName, userKey, board
       <CounterDeliveryPanel state={st} sides={sides} onChanged={() => void lyst.refresh()} />
       {secretary && <section className="gc-submitted" aria-label="Submitted standing counts">
         <b>Submitted standing counts</b>
-        {submitted.length === 0 ? <p className="src">None submitted yet. You can enter the marshal's count.</p> : <ul className="ly-list">{submitted.map(({ seat, standing }) => <li key={seat.id}>
-          <span>{names[seat.side!]} · {seat.name}: <b>{standing} standing</b> · submitted</span>
-          <button type="button" className="btn btn-line" disabled={busy || !!board.winner || cur?.status !== 'confirming' || board.round !== cur.round_no} onClick={() => onStanding(seat.side!, standing)}>Use {standing} standing for {names[seat.side!]}</button>
+        {submitted.length === 0 ? <p className="src">None submitted yet. You can enter the marshal's count.</p> : <ul className="ly-list">{submitted.map(({ seat, side, standing }) => <li key={seat.id}>
+          <span>{names[side]} · {seat.name}: <b>{standing} standing</b> · submitted</span>
+          <button type="button" className="btn btn-line" disabled={busy || !!board.winner || cur?.status !== 'confirming' || board.round !== cur.round_no} onClick={() => onStanding(side, standing)}>Use {standing} standing for {names[side]}</button>
         </li>)}</ul>}
       </section>}
       {!secretary && activeSeats.length > 0 && <CounterEvidence seats={st.seats} names={names} round={cur?.round_no ?? 1} compact />}

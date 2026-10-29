@@ -103,10 +103,10 @@ function Row({ s, now, busy, onSheet }: { s: DeviceSession; now: number; busy: b
   );
 }
 
-function MoveSheet({ s, fieldCount, known, busy, onClose, onMove }: { s: DeviceSession; fieldCount: number; known: readonly DeviceSession[]; busy: boolean; onClose: () => void; onMove: (field: string | null, side: 'a' | 'b' | null) => void }) {
+function MoveSheet({ s, fieldCount, known, busy, onClose, onMove }: { s: DeviceSession; fieldCount: number; known: readonly DeviceSession[]; busy: boolean; onClose: () => void; onMove: (field: string | null, side: 'a' | 'b' | 'm' | null) => void }) {
   const labels = [...new Set([...Array.from({ length: Math.max(1, fieldCount) }, (_, i) => `Field ${i + 1}`), ...known.map(k => k.binding?.fieldLabel).filter((x): x is string => !!x)])];
   const [field, setField] = useState<string>(s.binding?.fieldLabel ?? labels[0] ?? 'Field 1');
-  const [side, setSide] = useState<'a' | 'b' | null>(s.binding?.side ?? null);
+  const [side, setSide] = useState<'a' | 'b' | 'm' | null>(s.binding?.side ?? null);
   const [other, setOther] = useState('');
   return (
     <Dialog title={`Move ${s.label}`} variant="drawer" busy={busy} onClose={onClose}>
@@ -120,7 +120,7 @@ function MoveSheet({ s, fieldCount, known, busy, onClose, onMove }: { s: DeviceS
       {field === '__other' && <label className="field-in">Lyst name<input value={other} onChange={e => setOther(e.target.value)} placeholder="Lyst 3" /></label>}
       <fieldset className="cp-sides" style={{ border: 0, padding: 0, margin: '8px 0' }}>
         <legend className="src">Side</legend>
-        {(['a', 'b'] as const).map(x => <button key={x} type="button" className={`btn ${side === x ? 'btn-ink' : 'btn-line'} cp-side-${x}`} aria-pressed={side === x} onClick={() => setSide(x)}>{sideWord(x).toUpperCase()}</button>)}
+        {(['a', 'b', 'm'] as const).map(x => <button key={x} type="button" className={`btn ${side === x ? 'btn-ink' : 'btn-line'} cp-side-${x}`} aria-pressed={side === x} onClick={() => setSide(x)}>{sideWord(x).toUpperCase()}</button>)}
         <button type="button" className={`btn ${side === null ? 'btn-ink' : 'btn-line'}`} aria-pressed={side === null} onClick={() => setSide(null)}>No side yet</button>
       </fieldset>
       <div className="dlg-actions">

@@ -2,7 +2,8 @@
  * Lyst Control, as the app calls it. Every write is a controlled database function (public.lyst_* / counter_*): nothing here writes a table.
  * The marshal's call is the only official score; counter functions only ever touch the counter's own provisional tally.
  */
-import type { CountAction, EventSides, SideSpec } from '../lib/lyst/counters';
+import type { CountAction, EventSides, Mark, Position, SideSpec } from '../lib/lyst/counters';
+import type { Band, Call, Criterion, Division, FightFormat, Pair } from '../lib/outrance';
 import { supabase } from '../lib/supabase';
 import type { LystTimer, TimerAction, TimerMode } from '../lib/lyst/timer';
 import type { LystDiscipline, LystRound, LystSettings } from '../lib/lyst/rounds';
@@ -19,13 +20,13 @@ async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T> {
 
 /** One counter on this fight, as evidence: who (the operator's name), which side, official or learning, on a phone (and whether it is online) or a trainee's own account. */
 export interface LystSeat {
-  id: string; name: string; slot: string | null; side: 'a' | 'b' | null; role: 'official' | 'learning'; status: string;
+  id: string; name: string; slot: string | null; side: Position | null; role: 'official' | 'learning'; status: string;
   /** Pack 25: a counter phone (an event session) rather than a person's account; `online` is null for an account. */
   device?: boolean; online?: boolean | null;
   tallies: { round_no: number; total: number; submitted: boolean }[];
 }
 /** Pack 25: a phone bound to this field (whether or not it has a seat on the fight yet). */
-export interface FieldCounter { session_id: string; operator: string | null; side: 'a' | 'b' | null; online: boolean }
+export interface FieldCounter { session_id: string; operator: string | null; side: Position | null; online: boolean }
 export interface LystRevision { round_no: number; kind: 'confirm' | 'correct'; previous_a: number | null; previous_b: number | null; awarded_a: number; awarded_b: number; recommended_a: number | null; recommended_b: number | null; reason: string | null; changed_at: string }
 export interface LystState {
   server_now: string;
@@ -44,9 +45,11 @@ export interface LystState {
   counter_recovery?: CounterRecovery[];
   /** The TRAINING code of this field (Pack 25): a signed-in trainee scans it and counts as a learning counter at once. */
   join_code: { code: string; expires_at: string } | null;
+  /** Pack 29: present when the fight is scored to the Outrance rules. */
+  outrance?: OutranceState | null;
 }
 export interface CounterDelivery {
-  seat_id: string; operator: string; side: 'a' | 'b' | null; role: 'official' | 'learning';
+  seat_id: string; operator: string; side: Position | null; role: 'official' | 'learning';
   run_id: string | null; round: number | null; run_status: string | null;
   closed_at?:string|null;
   prepared_at: string | null; started_at: string | null; seen_at: string | null; pending: number | null; submitted: boolean;
@@ -141,9 +144,9 @@ export interface CounterState {
   session_id?: string | null; device_label?: string | null;
   event?: { id: string; slug: string; name: string; closed: boolean };
   fields?: CounterField[];
-  binding?: { field_key: string | null; side: 'a' | 'b' | null; operator: string | null };
+  binding?: { field_key: string | null; side: Position | null; operator: string | null };
   field_label?: string | null;
-  seat: { id: string; status: 'pending' | 'active' | 'expired' | 'ended' | 'declined'; side: 'a' | 'b' | null; role: 'official' | 'learning'; field_key: string; operator: string; match_id: string | null } | null;
+  seat: { id: string; status: 'pending' | 'active' | 'expired' | 'ended' | 'declined'; side: Position | null; role: 'official' | 'learning'; field_key: string; operator: string; match_id: string | null } | null;
   /** The seat is not on the field's current fight (or no fight is open): the phone follows by itself when the Lyst opens the next one. */
   waiting?: boolean;
   match_id?: string | null; competition?: string | null; round_label?: string | null; final?: boolean; fighter?: string | null; opponent?: string | null;
@@ -157,9 +160,11 @@ export interface CounterState {
   server_now: string;
   prepared_run?: PreparedCounterRun | null;
   my_weights?: number[];
+  /** Pack 29: a line marshal's own sheet (never anyone else's), or the position this fight needs. */
+  outrance?: OutrancePhone | null;
 }
 export const acknowledgeCounterRun = (seat: string, run: string, started: boolean, pending: number) => rpc<void>('counter_acknowledge_run', { p_seat: seat, p_run: run, p_started: started, p_pending: pending });
-export const deliverCounterAction = (seat: string, action: CountAction) => rpc<{ status: 'ok' | 'duplicate' | 'nothing' | 'review'; total: number; weights?: number[]; reason?: string }>('counter_deliver_action', { p_seat: seat, p_run: action.runId, p_action: action });
+export const deliverCounterAction = (seat: string, action: CountAction) => rpc<{ status: 'ok' | 'duplicate' | 'nothing' | 'review'; total: number; weights?: number[]; reason?: string; outrance?: OutranceTally }>('counter_deliver_action', { p_seat: seat, p_run: action.runId, p_action: action });
 export const reviewCounterRecovery = (ids: string[], decision: 'noted' | 'dismissed', reason: string) => rpc<void>('review_counter_recovery_batch', { p_ids: ids, p_decision: decision, p_reason: reason });
 /** Pack 25.2: anyone who runs the Lyst (or the platform owner) sets the sides' names and colours for the event; either side may be sent alone. */
 export const setEventSides = (eventId: string, sides: { a?: SideSpec; b?: SideSpec }) => rpc<EventSides>('set_event_sides', { p_event: eventId, p_sides: sides });
@@ -169,7 +174,7 @@ export async function fetchCounterState(): Promise<{ state: CounterState; sentAt
   return { state, sentAt, receivedAt: Date.now() };
 }
 /** Which Lyst, which side, who is counting. Any time, no approval; the tally of the fight carries on through an operator change on the same field and side. */
-export const counterBind = (field: string, side: 'a' | 'b' | null, operator: string | null) => rpc<CounterState>('counter_bind', { p_field: field, p_side: side, p_operator: operator });
+export const counterBind = (field: string, side: Position | null, operator: string | null) => rpc<CounterState>('counter_bind', { p_field: field, p_side: side, p_operator: operator });
 /** A new person takes the phone (or a trainee renames their seat). Logged; never a permission. */
 export const counterSetOperator = (name: string) => rpc<CounterState>('counter_set_operator', { p_name: name });
 /** The phone stops counting here (its binding and seat end; the evidence stays). */
@@ -195,3 +200,52 @@ export async function fetchLystPublic(eventId: string): Promise<{ rows: LystPubl
   if (error) throw error;
   return { rows: (data ?? []) as LystPublic[], sentAt, receivedAt: Date.now() };
 }
+
+/* ---------------- Outrance (Pack 29): Outrance Rules and Regulations V.26.4 ---------------- */
+export type OutranceTally = Record<Mark, Pair>;
+export interface OutranceSheet {
+  sheet_id: string; seat_id: string; operator: string | null; role: 'official' | 'learning'; round_no: number; submitted_at: string;
+  strikes: Pair; takedowns: Pair; weapon_losses: Pair; armour_failures: Pair; calls: Partial<Record<Criterion, Call>>;
+  result: { a: number; b: number; band: Band; winner: 'a' | 'b' | null; decided_by: Criterion | null };
+  deduct: Pair; score: Pair;
+}
+export interface OutranceTiming { division: Division; format: FightFormat; rounds: number; round_seconds: number; break_seconds: number; tiebreak: boolean }
+/** What a line marshal's phone gets: their own tally and sheet only (§2.3), or the position this fight needs. */
+export type OutrancePhone =
+  | { position: 'wrong'; need: 'side' | 'line_marshal' }
+  | { position: 'ok'; round_no: number | null; fighters: { a: string | null; b: string | null }; tally: OutranceTally | null; last: { mark: Mark; side: 'a' | 'b' } | null;
+      needs_criteria: boolean | null; sheet: OutranceSheet | null; timing: OutranceTiming | null };
+export type OutranceNext = 'confirm' | 'round' | 'tiebreak' | 'head_marshal' | 'finish';
+export type OutranceHoldKind = 'medic_check' | 'assessment' | 'equipment' | 'knocked_out';
+export interface OutranceState {
+  rules: string; timing: OutranceTiming | null;
+  sheets: OutranceSheet[];
+  rounds: { round_no: number; marshals: number; a: number; b: number; short: boolean; reason: string | null; confirmed_at: string }[];
+  protocol: { round_no: number; yellows: Pair; armour: Pair; stoppage: 'a' | 'b' | null }[];
+  totals: { unit: number; a: number; b: number; rounds: number; open: number; leader: 'a' | 'b' | null; win_type: string | null; next: OutranceNext | null;
+    marshals: { seat_id: string; operator: string | null; a: number; b: number; rounds: number; result: 'a' | 'b' | 'draw' }[] };
+  holds: { id: string; side: 'a' | 'b'; kind: OutranceHoldKind; created_at: string; from_match: string }[];
+  appeals: { id: string; side: 'a' | 'b'; lodged_by: 'competitor' | 'corner'; grounds: string; lodged_at: string; decision: 'upheld' | 'rejected' | null; outcome: string | null; decision_note: string | null }[];
+}
+/** The knight marshal's calls (§13, §14). A TKO for lack of defence is the match in Division 1 and the round in Division 2: the server decides from the division. */
+export type OutranceCall = 'warning' | 'yellow' | 'red' | 'armour' | 'ko' | 'tko' | 'tko_equipment' | 'tko_stalling' | 'tko_corner' | 'yield' | 'medical' | 'dq_equipment' | 'corner_expelled';
+export type OutranceFinishBasis = 'decision' | 'head_marshal' | 'ko' | 'tko' | 'tko_equipment' | 'tko_stalling' | 'tko_corner' | 'yield' | 'medical' | 'dq';
+
+/** The line marshal hands in the round's sheet: the server takes the totals from the phone's own taps; only the criteria come from here. */
+export const outranceSubmitSheet = (id: string, seat: string, round: number, calls: Partial<Record<Criterion, Call>>) =>
+  rpc<{ status: 'ok' | 'duplicate'; sheet: OutranceSheet }>('outrance_submit_sheet', { p_id: id, p_seat: seat, p_round: round, p_calls: calls });
+export interface OutranceCallArgs { command: string; matchId: string; round: number; side: 'a' | 'b'; call: OutranceCall; reason?: string | null; calledBy?: string | null }
+export const outranceCallArgs = (c: OutranceCallArgs) => ({ p_command: c.command, p_match: c.matchId, p_round: c.round, p_side: c.side, p_call: c.call, p_reason: c.reason ?? null, p_called_by: c.calledBy ?? null });
+export const outranceCall = (c: OutranceCallArgs) => rpc<{ status: 'ok' | 'duplicate'; id: string; escalated?: { id: string; kind: string; label: string }[] }>('outrance_call', outranceCallArgs(c));
+export interface OutranceConfirmArgs { command: string; matchId: string; round: number; expectedRev: number; reason?: string | null; short?: boolean }
+export const outranceConfirmArgs = (c: OutranceConfirmArgs) => ({ p_command: c.command, p_match: c.matchId, p_round: c.round, p_expected_rev: c.expectedRev, p_reason: c.reason ?? null, p_short: c.short ?? false });
+export const outranceConfirmRound = (c: OutranceConfirmArgs) => rpc<{ status: 'ok' | 'duplicate' | 'stale'; kind?: string; units?: Pair; marshals?: number }>('outrance_confirm_round', outranceConfirmArgs(c));
+export const outranceFinish = (a: { command: string; matchId: string; expectedVersion: number; basis: OutranceFinishBasis; result: 'a' | 'b' | 'draw'; reason?: string | null }) =>
+  rpc<{ status: 'accepted' | 'duplicate' | 'conflict' | 'stale'; version: number; repeat?: boolean }>('outrance_finish', { p_command: a.command, p_match: a.matchId, p_expected_version: a.expectedVersion, p_basis: a.basis, p_result: a.result, p_reason: a.reason ?? null });
+export const outranceClearHold = (hold: string, reason: string) => rpc<{ status: string }>('outrance_clear_hold', { p_hold: hold, p_reason: reason });
+export const outranceAppeal = (command: string, matchId: string, side: 'a' | 'b', lodgedBy: 'competitor' | 'corner', grounds: string) =>
+  rpc<{ status: string; id: string }>('outrance_appeal', { p_command: command, p_match: matchId, p_side: side, p_lodged_by: lodgedBy, p_grounds: grounds });
+export const outranceAppealDecide = (appeal: string, decision: 'upheld' | 'rejected', outcome: string, note: string) =>
+  rpc<{ status: string }>('outrance_appeal_decide', { p_appeal: appeal, p_decision: decision, p_outcome: outcome, p_note: note });
+export const setProfightFormat = (competition: string, division: Division, format: FightFormat) =>
+  rpc<{ status: string; division: Division; format: FightFormat }>('set_profight_format', { p_competition: competition, p_division: division, p_format: format });

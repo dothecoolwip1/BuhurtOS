@@ -1,0 +1,43 @@
+{
+  "source": "Outrance Rules and Regulations V.26.4 §14.1, §14.4, §15.3, §15.4 and the example scoresheet p.25. Checked by src/lib/outrance.test.ts and supabase/tests/vectors_gate.sql.",
+  "sheets": [
+    { "note": "level strikes, no criteria: 10-10", "strikes": [12, 12], "calls": {}, "stoppage": null, "a": 10, "b": 10, "band": "even", "decidedBy": null },
+    { "note": "gap 5 is still Even: all four Even -> 10-10", "strikes": [20, 15], "calls": { "grappling": "even", "list_control": "even", "aggression": "even", "defence": "even" }, "stoppage": null, "a": 10, "b": 10, "band": "even", "decidedBy": null },
+    { "note": "gap 5, grappling to Blue decides 10-9 even though Red out-struck", "strikes": [20, 15], "calls": { "grappling": "b" }, "stoppage": null, "a": 9, "b": 10, "band": "even", "decidedBy": "grappling" },
+    { "note": "criteria in priority order: list control to Red beats a later aggression call", "strikes": [3, 3], "calls": { "grappling": "even", "list_control": "a", "aggression": "b" }, "stoppage": null, "a": 10, "b": 9, "band": "even", "decidedBy": "list_control" },
+    { "note": "only defence decides", "strikes": [0, 2], "calls": { "grappling": "even", "list_control": "even", "aggression": "even", "defence": "a" }, "stoppage": null, "a": 10, "b": 9, "band": "even", "decidedBy": "defence" },
+    { "note": "gap 6 is Slight 10-9; criteria are ignored", "strikes": [16, 10], "calls": { "grappling": "b" }, "stoppage": null, "a": 10, "b": 9, "band": "slight", "decidedBy": null },
+    { "note": "gap 10 is still Slight", "strikes": [4, 14], "calls": {}, "stoppage": null, "a": 9, "b": 10, "band": "slight", "decidedBy": null },
+    { "note": "gap 11 is Moderate 10-8", "strikes": [21, 10], "calls": {}, "stoppage": null, "a": 10, "b": 8, "band": "moderate", "decidedBy": null },
+    { "note": "gap 15 is still Moderate", "strikes": [0, 15], "calls": {}, "stoppage": null, "a": 8, "b": 10, "band": "moderate", "decidedBy": null },
+    { "note": "gap 16 is Dominant 10-7", "strikes": [26, 10], "calls": {}, "stoppage": null, "a": 10, "b": 7, "band": "dominant", "decidedBy": null },
+    { "note": "KO / TKO: 10-7 whatever the strikes", "strikes": [30, 2], "calls": {}, "stoppage": "a", "a": 7, "b": 10, "band": "stoppage", "decidedBy": null }
+  ],
+  "deductions": [
+    { "note": "nothing", "yellows": 0, "armourGrants": 0, "weaponLosses": 0, "points": 0 },
+    { "note": "two weapon losses: no penalty", "yellows": 0, "armourGrants": 0, "weaponLosses": 2, "points": 0 },
+    { "note": "three weapon losses: one point", "yellows": 0, "armourGrants": 0, "weaponLosses": 3, "points": 1 },
+    { "note": "five weapon losses: still one point", "yellows": 0, "armourGrants": 0, "weaponLosses": 5, "points": 1 },
+    { "note": "§15.3.3: an armour failure fixed within 90 s", "yellows": 0, "armourGrants": 1, "weaponLosses": 0, "points": 1 },
+    { "note": "armour: 90 s and another 90 s granted", "yellows": 0, "armourGrants": 2, "weaponLosses": 0, "points": 2 },
+    { "note": "a yellow, an armour grant and three weapon losses", "yellows": 1, "armourGrants": 1, "weaponLosses": 3, "points": 3 }
+  ],
+  "rounds": [
+    { "note": "three marshals agree", "sheets": [[10, 9], [10, 9], [10, 9]], "units": [600, 540] },
+    { "note": "three marshals disagree: 29/3 = 9.67", "sheets": [[10, 9], [9, 10], [10, 10]], "units": [580, 580] },
+    { "note": "thirds", "sheets": [[10, 9], [10, 10], [10, 10]], "units": [600, 580] },
+    { "note": "five marshals", "sheets": [[10, 9], [10, 9], [10, 8], [9, 10], [10, 10]], "units": [588, 552] }
+  ],
+  "winTypes": [
+    { "results": ["a", "a", "a"], "type": "unanimous_decision" },
+    { "results": ["draw", "draw", "draw"], "type": "unanimous_draw" },
+    { "results": ["b", "b", "draw"], "type": "majority_decision" },
+    { "results": ["draw", "draw", "a"], "type": "majority_draw" },
+    { "results": ["a", "a", "b"], "type": "split_decision" },
+    { "results": ["a", "b", "draw"], "type": "split_draw" },
+    { "results": ["a", "a", "a", "draw", "b"], "type": "split_decision" },
+    { "results": ["a", "a", "a", "draw", "draw"], "type": "majority_decision" },
+    { "results": ["a", "a", "b", "b", "draw"], "type": "split_draw" },
+    { "results": ["draw", "draw", "draw", "a", "b"], "type": "majority_draw" }
+  ]
+}

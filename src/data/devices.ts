@@ -90,7 +90,7 @@ export async function fetchPlatformDeviceSessions(includeEnded = false): Promise
   if (error) throw error;
   return ((data ?? []) as SessionDb[]).map(toSession);
 }
-export async function moveCounterSession(sessionId: string, field: string | null, side: 'a' | 'b' | null): Promise<DeviceSession> {
+export async function moveCounterSession(sessionId: string, field: string | null, side: 'a' | 'b' | 'm' | null): Promise<DeviceSession> {
   const { data, error } = await supabase.rpc('move_counter_session', { p_session: sessionId, p_field: field, p_side: side });
   if (error) throw error;
   return toSession(data as SessionDb);

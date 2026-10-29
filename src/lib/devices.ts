@@ -146,11 +146,12 @@ export interface DeviceSession {
   sessionId: string; credentialId: string; eventId: string; event: { slug: string; name: string; timezone: string } | null;
   kind: CredentialKind; label: string; role: string; createdAt: string; lastSeenAt: string | null; online: boolean; endedAt: string | null; endedReason: string | null;
   expiresAt: string | null; status: SessionStatus;
-  binding: { fieldKey: string | null; fieldLabel: string | null; side: 'a' | 'b' | null; operator: string | null; updatedAt: string | null } | null;
-  seat: { matchId: string | null; side: 'a' | 'b' | null; role: 'official' | 'learning' } | null;
+  binding: { fieldKey: string | null; fieldLabel: string | null; side: 'a' | 'b' | 'm' | null; operator: string | null; updatedAt: string | null } | null;
+  seat: { matchId: string | null; side: 'a' | 'b' | 'm' | null; role: 'official' | 'learning' } | null;
 }
-export const SIDE_WORD: Record<'a' | 'b', string> = { a: 'Red', b: 'Blue' };
-export const sideWord = (side: 'a' | 'b' | null | undefined): string => (side ? SIDE_WORD[side] : 'No side');
+/** Pack 29: 'm' is the line-marshal position (Profight: one marshal's sheet for both fighters). */
+export const SIDE_WORD: Record<'a' | 'b' | 'm', string> = { a: 'Red', b: 'Blue', m: 'Line marshal' };
+export const sideWord = (side: 'a' | 'b' | 'm' | null | undefined): string => (side ? SIDE_WORD[side] : 'No side');
 /** One line that says what a phone is doing: "Field 1 · Red · Garrett", "Not set up yet", "Secretary / Scorekeeper". */
 export function sessionLine(s: Pick<DeviceSession, 'role' | 'binding'>): string {
   if (s.role !== 'counter') return roleWord(s.role);

@@ -20,7 +20,9 @@ export function trainingUrl(origin: string, base: string, code: string): string 
   return `${origin}${b}lyst/train/${code}`;
 }
 
-export interface CountContext { runId?: string; matchId?: string; recovery?: boolean; recordedAt?: string; undoWeight?: number; operator?:string; side?:string; fighter?:string; opponent?:string; correction?: { id: string; from: number; to: number } }
+/** Pack 29: what a line marshal tapped on their Outrance sheet (p.25), and for which fighter. A side counter's actions never carry a mark. */
+export type Mark = 'strike' | 'takedown' | 'weapon_loss' | 'armour_failure';
+export interface CountContext { runId?: string; matchId?: string; recovery?: boolean; recordedAt?: string; undoWeight?: number; operator?:string; side?:string; fighter?:string; opponent?:string; correction?: { id: string; from: number; to: number }; mark?: Mark; markSide?: 'a' | 'b' }
 export type CountAction = ({ kind: 'tap'; id: string; weight: number; round: number } | { kind: 'undo'; id: string; round: number }) & CountContext;
 
 /** Reported action metadata is untrusted, including when read back from the server. */
@@ -53,7 +55,7 @@ export class TapQueue {
   load(items: readonly CountAction[]): void { this.items = [...items]; }
 }
 
-export type CounterSend = (a: CountAction) => Promise<{ status: 'ok' | 'duplicate' | 'nothing'; total: number; weights?: number[] } | { status: 'review'; total: number; message: string; alreadyAccepted?:boolean } | { status: 'refused'; reason: 'ROUND_ENDED' | 'ROUND_CHANGED' | 'ROUND_NOT_STARTED' | 'OTHER'; message: string } | { status: 'offline' }>;
+export type CounterSend = (a: CountAction) => Promise<{ status: 'ok' | 'duplicate' | 'nothing'; total: number; weights?: number[]; outrance?: unknown } | { status: 'review'; total: number; message: string; alreadyAccepted?:boolean } | { status: 'refused'; reason: 'ROUND_ENDED' | 'ROUND_CHANGED' | 'ROUND_NOT_STARTED' | 'OTHER'; message: string } | { status: 'offline' }>;
 
 /** Send the queue in order until it is empty, the signal is gone, or the server refuses (a round that has ended can never take a tap again). */
 export async function flushTaps(q: TapQueue, send: CounterSend): Promise<{ sent: number; total: number | null; stopped: 'empty' | 'offline' | 'refused'; refusal?: string }> {
@@ -88,7 +90,10 @@ export const SIDE_PRESETS: readonly SideSpec[] = [
 export function mergeSides(partial: { a?: Partial<SideSpec> | null; b?: Partial<SideSpec> | null } | null | undefined): EventSides {
   return { a: { ...DEFAULT_SIDES.a, ...(partial?.a ?? {}) }, b: { ...DEFAULT_SIDES.b, ...(partial?.b ?? {}) } };
 }
-export const sideLabel = (side: 'a' | 'b' | null | undefined, sides?: EventSides | null): string => (side ? (sides ?? DEFAULT_SIDES)[side].name : 'Side');
+/** A phone's position on the Lyst: a side (Red / Blue counter) or, for a Profight, a line marshal who scores both fighters (Outrance §2.3). */
+export type Position = 'a' | 'b' | 'm';
+export const LINE_MARSHAL = 'Line marshal';
+export const sideLabel = (side: Position | null | undefined, sides?: EventSides | null): string => (side === 'm' ? LINE_MARSHAL : side ? (sides ?? DEFAULT_SIDES)[side].name : 'Side');
 /** Black or white text, whichever reads on the colour (yellow and white flags need dark ink). */
 export function inkFor(hex: string): string {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
@@ -105,8 +110,9 @@ export function sideVars(sides: EventSides | null | undefined): Record<string, s
 }
 /** The words a counter needs: what to do next, in every situation the phone can be in. */
 export function counterBanner(state: {
-  seat: { status: string; role?: string; side?: 'a' | 'b' | null } | null; can_count?: boolean; final?: boolean; waiting?: boolean;
-  round?: { status: string } | null; counter_input?: string; binding?: { field_key?: string | null; side?: 'a' | 'b' | null } | null;
+  seat: { status: string; role?: string; side?: Position | null } | null; can_count?: boolean; final?: boolean; waiting?: boolean;
+  round?: { status: string } | null; counter_input?: string; binding?: { field_key?: string | null; side?: Position | null } | null;
+  outrance?: { position: 'ok' | 'wrong'; need?: 'side' | 'line_marshal'; sheet?: unknown } | null;
 }, sides?: EventSides | null): string {
   if (!state.seat) {
     if (state.binding?.field_key && !state.binding.side) return `Choose ${sideLabel('a', sides)} or ${sideLabel('b', sides)}.`;
@@ -115,11 +121,16 @@ export function counterBanner(state: {
   if (state.seat.status === 'expired') return 'This phone\'s place on the Lyst has run out. Choose your Lyst and side again.';
   if (state.seat.status === 'ended' || state.seat.status === 'declined') return 'You are not counting right now. Choose your Lyst and side.';
   if (state.waiting) return 'Waiting for the next fight on this Lyst. It opens here by itself.';
+  if (state.outrance?.position === 'wrong') return state.outrance.need === 'line_marshal'
+    ? 'This fight is a Profight: it is scored by 3 or 5 line marshals. Switch this phone to Line marshal.'
+    : `This fight is not a Profight: choose ${sideLabel('a', sides)} or ${sideLabel('b', sides)} to count it.`;
   if (state.final) return 'This fight is finished. The next one opens here by itself.';
   if (!state.round) return 'Waiting for the round to start.';
   if (state.round.status === 'confirming') return 'Round over. The marshal is confirming the score.';
   if (state.round.status === 'confirmed') return 'Round confirmed. Wait for the next round.';
+  if (state.outrance?.position === 'ok' && state.outrance.sheet) return 'Your sheet for this round is handed in. Wait for the next round.';
   if (!state.can_count) return 'Waiting for the round to start.';
+  if (state.outrance?.position === 'ok') return 'Tap for every clean legal strike by each fighter. Head strikes do not count.';
   return state.counter_input === 'standing' ? 'Tap FIGHTER DOWN each time one of your side goes down.' : 'Tap COUNT for every valid strike.';
 }
 
@@ -141,7 +152,7 @@ export function counterInputFor(category: string, setting: 'auto' | 'simple' | '
 
 /** The phone's first-run steps: who, which Lyst (only when there is more than one), which side. Returns the step that still needs an answer. */
 export type CounterStep = 'operator' | 'field' | 'side' | 'count';
-export function nextStep(b: { operator?: string | null; field_key?: string | null; side?: 'a' | 'b' | null } | null | undefined, fields: readonly { key: string }[]): CounterStep {
+export function nextStep(b: { operator?: string | null; field_key?: string | null; side?: Position | null } | null | undefined, fields: readonly { key: string }[]): CounterStep {
   if (!b?.operator) return 'operator';
   if (!b.field_key) return fields.length === 1 ? 'side' : 'field';
   if (!b.side) return 'side';
