@@ -277,6 +277,14 @@ select t.expect_error('the medic cannot clear a KO: the entry must be withdrawn'
 select t.expect_eq('the medic clears the TKO check', public.outrance_clear_hold(t.hold(t.en(294), 'medic_check'), 'Checked after the TKO: fit') ->> 'status', 'ok');
 select t.as_user(t.u(3));
 select t.expect_error('... the KO still keeps Pro 4 out', $q$select public.lyst_open(t.m(15), 'simple')$q$, 'P0001');
+-- Pack 29b: the tablet sees the holds before the fight can open, so the medic or head marshal can clear them from there
+select t.as_user(t.u(4));
+select t.expect_eq('the secretary sees why the next fight cannot open', (select string_agg((h ->> 'kind') || ':' || (h ->> 'name'), ',' order by h ->> 'kind') from jsonb_array_elements(public.outrance_match_holds(t.m(15))) h), 'knocked_out:Pro 4');
+select t.as_user(t.u(10));
+select t.expect_error('a stranger cannot read the holds', $q$select public.outrance_match_holds(t.m(15))$q$, '42501');
+select t.as_anon();
+select t.expect_error('nor anon', $q$select public.outrance_match_holds(t.m(15))$q$, '42501');
+select t.as_user(t.u(4));
 select t.expect_error('the secretary cannot clear a hold', $q$select public.outrance_clear_hold(t.hold(t.en(294), 'knocked_out'), 'ok')$q$, '42501');
 
 -- Division 1: a TKO for lack of defence ends the fight

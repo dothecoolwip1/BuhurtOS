@@ -44,8 +44,8 @@ begin
     n := n + 1;
   end loop;
   for v in select jsonb_array_elements(j -> 'winTypes') from ovec loop
-    if private.outrance_win_type(array(select jsonb_array_elements_text(v -> 'results'))) is distinct from v ->> 'type' then
-      bad := bad || format('win type %s got %s; ', v -> 'results', private.outrance_win_type(array(select jsonb_array_elements_text(v -> 'results')))); end if;
+    if private.outrance_win_type(array(select jsonb_array_elements_text(v -> 'results')), v ->> 'winner') is distinct from v ->> 'type' then
+      bad := bad || format('win type %s (winner %s) got %s; ', v -> 'results', v ->> 'winner', private.outrance_win_type(array(select jsonb_array_elements_text(v -> 'results')), v ->> 'winner')); end if;
     n := n + 1;
   end loop;
   if n = 0 then raise exception 'VECTORS FAILED: no Outrance vectors loaded'; end if;

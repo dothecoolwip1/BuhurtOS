@@ -127,12 +127,20 @@ export const WIN_TYPE_LABEL: Record<WinType | 'tko' | 'ko', string> = {
  *  - a majority draw: majority draw;
  *  - a majority for one competitor and at least one for the other: split decision;
  *  - no majority at all (all different): split draw.
+ * With a winner (the Total Fight Score, or the head marshal's decision) the type is always a decision, never a draw.
  */
-export function winType(results: readonly (Side | 'draw')[]): { type: WinType; majority: Side | 'draw' | null } {
+export function winType(results: readonly (Side | 'draw')[], winner: Side | null = null): { type: WinType; majority: Side | 'draw' | null } {
   const n = results.length;
   if (n === 0) throw new Error('no sheets');
   const count = (v: Side | 'draw') => results.filter(r => r === v).length;
   const a = count('a'), b = count('b'), d = count('draw');
+  // The Total Fight Score decides the winner (§15.4.1), so a fight with a winner is always a decision: unanimous when every marshal had the
+  // winner ahead, majority when nobody had the loser ahead, otherwise split. (With uneven sheets, e.g. 1 for each side, the marshals alone
+  // would read as a draw.)
+  if (winner) {
+    const mine = winner === 'a' ? a : b, theirs = winner === 'a' ? b : a;
+    return { type: mine === n ? 'unanimous_decision' : theirs === 0 ? 'majority_decision' : 'split_decision', majority: winner };
+  }
   if (a === n) return { type: 'unanimous_decision', majority: 'a' };
   if (b === n) return { type: 'unanimous_decision', majority: 'b' };
   if (d === n) return { type: 'unanimous_draw', majority: 'draw' };

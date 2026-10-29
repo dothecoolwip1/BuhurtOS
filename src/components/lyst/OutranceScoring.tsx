@@ -10,7 +10,7 @@ import { RulesSheet } from '../rules/RulesSheet';
 import { counterReviewReason } from '../../lib/lyst/delivery';
 import { useReliableTimer } from '../../lib/lyst/useReliableTimer';
 import { useLystState, useNow } from '../../lib/lyst/useLystState';
-import { openLyst, outranceAppeal, outranceAppealDecide, outranceClearHold, outranceEnterSheet, outranceFinish, outranceRemoveSheet, returnRound, setProfightFormat,
+import { openLyst, outranceAppeal, outranceAppealDecide, outranceClearHold, outranceEnterSheet, outranceFinish, outranceMatchHolds, outranceRemoveSheet, returnRound, setProfightFormat,
   type LystState, type OutranceCall, type OutranceFinishBasis, type OutranceSheet, type OutranceState } from '../../data/lyst';
 import { sideLabel } from '../../lib/entryLabel';
 import { isNoSignalError } from '../../lib/fieldScoring';
@@ -44,6 +44,7 @@ const STOPPAGE: Record<string, { basis: OutranceFinishBasis; word: string }> = {
   tko_stalling: { basis: 'tko_stalling', word: 'by TKO (stalling)' }, tko_corner: { basis: 'tko_corner', word: 'by TKO (corner stoppage)' },
   yield: { basis: 'yield', word: 'by the opponent yielding' }, medical: { basis: 'medical', word: 'by medical retirement' }
 };
+const STOPS_CLOCK = new Set<OutranceCall>(['ko', 'tko', 'tko_equipment', 'tko_stalling', 'tko_corner', 'yield', 'medical', 'red', 'dq_equipment']);
 const HOLD_WORD: Record<string, string> = {
   medic_check: 'needs the medic\'s check before fighting again (Outrance §14.8)', assessment: 'needs the medic\'s and head marshal\'s assessment (§5.2, §6.2)',
   equipment: 'must show fixed equipment before the next fight (§14.10)', knocked_out: 'lost by KO: no further part in the tournament (§14.11). Withdraw the entry.'
@@ -84,12 +85,19 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   // Open this fight on the Lyst (idempotent on the server); a Profight without its division and format asks for them first (§1.3, §4)
   const openedOnce = useRef(false);
   const [needsSetup, setNeedsSetup] = useState(false);
+  // a fighter's hold (medic check, assessment, equipment, KO) stops the fight opening: show it here so it can be cleared (§14.8, §14.10, §14.11)
+  const [blocked, setBlocked] = useState<{ message: string; holds: Awaited<ReturnType<typeof outranceMatchHolds>> } | null>(null);
   const [openTick, setOpenTick] = useState(0);
   useEffect(() => {
     if (!st || (st.lyst && om) || openedOnce.current) return;
     openedOnce.current = true;
     void openLyst(match.id, 'simple').then(() => { setNeedsSetup(false); return lyst.refresh(); })
-      .catch(e => { if (/division .*format/i.test((e as { message?: string } | null)?.message ?? '')) setNeedsSetup(true); else setError(friendlyError(e)); });
+      .catch(async e => {
+        const message = (e as { message?: string } | null)?.message ?? '';
+        if (/division .*format/i.test(message)) { setNeedsSetup(true); return; }
+        const holds = await outranceMatchHolds(match.id).catch(() => []);
+        if (holds.length) setBlocked({ message, holds }); else setError(friendlyError(e));
+      });
   }, [st, om, match.id, lyst, openTick]);
 
   const rounds = useMemo<LystRound[]>(() => st?.rounds ?? [], [st?.rounds]);
@@ -116,6 +124,7 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
       if (!id) { setError('Sign in again to score.'); return; }
       trackEvent('outrance_call', { call: c });
       if (c === 'armour') sendTimer('start', { mode: 'equipment', round: cur?.round_no ?? 1, durationMs: 90_000 });   // §14.4: 90 s for the repair
+      else if (STOPS_CLOCK.has(c) && running) sendTimer('pause');   // a stoppage or a disqualification stops the fight: the clock stops with it
       setSheet(null);
       await send();
     } catch (e) { setError(friendlyError(e, 'Could not record that call. It is kept on this device; try again.')); } finally { setBusy(false); }
@@ -205,6 +214,21 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
         {phase === 'pending'
           ? <><p>The result has not reached the server. Everything is saved on this device. Write it on the paper sheet too.</p><button type="button" className="btn btn-ink fq-big" onClick={() => setPhase('finishing')}>Try again</button></>
           : <><p>Another device saved a different result first. Yours was kept, not discarded. Tell the head marshal.</p><button type="button" className="btn btn-ink fq-big" onClick={async () => { await clearFinalCommand(userId, match.id); onFinished(); }}>I have told the head marshal</button></>}
+        <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
+      </section>
+    );
+  }
+
+  const reopen = () => { openedOnce.current = false; setBlocked(null); setOpenTick(n => n + 1); };
+  if (blocked) {
+    return (
+      <section className="panel sk-done" aria-label="This fight cannot start yet" data-testid="om-blocked">
+        {context}
+        <h2 className="sk-h">This fight cannot start yet</h2>
+        <p>{blocked.message}</p>
+        {blocked.holds.map(h => <HoldLine key={h.id} hold={h} name={h.name ?? names[h.side]} canClear={canResolve && h.kind !== 'knocked_out'} onCleared={reopen} />)}
+        {!canResolve && <p className="ly-note">The medic, the head marshal or an organizer clears this.</p>}
+        <button type="button" className="btn btn-ink fq-big" onClick={reopen}>Check again</button>
         <button type="button" className="btn btn-line fq-big" onClick={onExit}>Back to the queue</button>
       </section>
     );

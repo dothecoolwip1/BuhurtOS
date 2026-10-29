@@ -248,6 +248,8 @@ export const outranceConfirmArgs = (c: OutranceConfirmArgs) => ({ p_command: c.c
 export const outranceConfirmRound = (c: OutranceConfirmArgs) => rpc<{ status: 'ok' | 'duplicate' | 'stale'; kind?: string; units?: Pair; marshals?: number }>('outrance_confirm_round', outranceConfirmArgs(c));
 export const outranceFinish = (a: { command: string; matchId: string; expectedVersion: number; basis: OutranceFinishBasis; result: 'a' | 'b' | 'draw'; reason?: string | null }) =>
   rpc<{ status: 'accepted' | 'duplicate' | 'conflict' | 'stale'; version: number; repeat?: boolean }>('outrance_finish', { p_command: a.command, p_match: a.matchId, p_expected_version: a.expectedVersion, p_basis: a.basis, p_result: a.result, p_reason: a.reason ?? null });
+/** The holds on this fight's fighters, before it can open (a hold stops the Lyst opening, so they are not in the Lyst state yet). */
+export const outranceMatchHolds = (matchId: string) => rpc<(OutranceState['holds'][number] & { name: string | null })[]>('outrance_match_holds', { p_match: matchId });
 export const outranceClearHold = (hold: string, reason: string) => rpc<{ status: string }>('outrance_clear_hold', { p_hold: hold, p_reason: reason });
 export const outranceAppeal = (command: string, matchId: string, side: 'a' | 'b', lodgedBy: 'competitor' | 'corner', grounds: string) =>
   rpc<{ status: string; id: string }>('outrance_appeal', { p_command: command, p_match: matchId, p_side: side, p_lodged_by: lodgedBy, p_grounds: grounds });

@@ -38,6 +38,12 @@
     { "results": ["a", "a", "a", "draw", "b"], "type": "split_decision" },
     { "results": ["a", "a", "a", "draw", "draw"], "type": "majority_decision" },
     { "results": ["a", "a", "b", "b", "draw"], "type": "split_draw" },
-    { "results": ["draw", "draw", "draw", "a", "b"], "type": "majority_draw" }
+    { "results": ["draw", "draw", "draw", "a", "b"], "type": "majority_draw" },
+    { "note": "Total Fight Score winner with one sheet each way", "results": ["a", "b"], "winner": "b", "type": "split_decision" },
+    { "results": ["a", "b", "draw"], "winner": "a", "type": "split_decision" },
+    { "results": ["draw", "draw", "a"], "winner": "a", "type": "majority_decision" },
+    { "results": ["draw", "draw", "draw"], "winner": "b", "type": "majority_decision" },
+    { "results": ["b", "b", "b"], "winner": "b", "type": "unanimous_decision" },
+    { "results": ["a", "a", "b"], "winner": "b", "type": "split_decision" }
   ]
 }
