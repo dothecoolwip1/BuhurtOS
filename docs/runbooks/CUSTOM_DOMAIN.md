@@ -47,3 +47,11 @@ Browsers keep these per address, so a phone that moves from vercel.app to buhurt
 sign-in session, installed PWA, push subscription, and the IndexedDB scoring outbox.
 Never move a scoring tablet or counter phone to the new address while it has unsynced work; let it sync first.
 Fighters who installed the app or turned on notifications need to do it again on the new address.
+
+## Other addresses (2026-10-30)
+
+- `dothecoolwip1.github.io/BuhurtOS` (the GitHub Pages copy) forwards to the same page on buhurt-os.app (`scripts/pagesRedirect.mjs`, run by `pages.yml`).
+  A device that still has score actions waiting in its outbox is not forwarded, so the old copy sends them first.
+- The Edge Functions `discord-interactions`, `discord-post` and `open-data` build their links from the `APP_BASE_URL` secret (default `https://buhurt-os.vercel.app`).
+  Set it to `https://buhurt-os.app`.
+- The Reavers site (`dothecoolwip1/red-deer-reavers`) links to buhurt-os.app.
