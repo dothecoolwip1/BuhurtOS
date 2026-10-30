@@ -1,0 +1,39 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "Result official":
+    - heading "TEST Outrance Man A vs TEST Outrance Man C" [level=1]
+    - paragraph: Lyst 1 · TEST Seven Profile Profight · Round 1 · Division 2 · tournament
+    - status:
+      - generic: Official
+      - generic: "Official: saved on the server"
+    - paragraph: "Winner: TEST Outrance Man C by KO"
+    - paragraph: TEST Outrance Man A 17 – 17 TEST Outrance Man C
+    - button "Next fight on Lyst 1 TEST Outrance Man C vs TEST Outrance Man B":
+      - generic: Next fight on Lyst 1
+      - generic: TEST Outrance Man C vs TEST Outrance Man B
+    - link "Back to Event Control":
+      - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - button "Back to the queue"
+    - region "Appeals":
+      - paragraph: "A competitor appeals at the end of the fight, before leaving the list; the corner men within 15 minutes after the fight (§16.3). Outcomes: a rematch of the round, a card or a point deduction imposed or withdrawn (§16.4)."
+      - button "TEST Outrance Man A"
+      - button "TEST Outrance Man C"
+      - button "The competitor"
+      - button "Their corner men"
+      - generic: Grounds (written, §16.1)
+      - textbox "Grounds (written, §16.1)":
+        - /placeholder: "For example: unregistered clean blows in round 2"
+      - button "Record the appeal" [disabled]
+  - paragraph: v0.1.0 · local · 52e63b4 · 2026-10-30 19:26 UTC

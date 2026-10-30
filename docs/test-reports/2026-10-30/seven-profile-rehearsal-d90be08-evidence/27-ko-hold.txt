@@ -1,0 +1,25 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "This fight cannot start yet":
+    - heading "TEST Outrance Man D vs TEST Outrance Man A" [level=1]
+    - paragraph: Lyst 1 · TEST Seven Profile Profight · Round 2
+    - heading "This fight cannot start yet" [level=2]
+    - paragraph: "TEST Outrance Man A lost by KO and takes no further part in the tournament (Outrance §14.11): withdraw the entry"
+    - alert:
+      - generic: TEST Outrance Man A
+      - text: "lost by KO: no further part in the tournament (§14.11). Withdraw the entry."
+    - button "Check again"
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · 52e63b4 · 2026-10-30 19:26 UTC

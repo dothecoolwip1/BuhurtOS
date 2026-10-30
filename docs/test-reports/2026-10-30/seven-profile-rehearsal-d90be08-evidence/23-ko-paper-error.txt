@@ -1,0 +1,110 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man A vs TEST Outrance Man C" [level=1]
+  - paragraph: Lyst 1 · TEST Seven Profile Profight · Round 1 · Division 2 · tournament
+  - status:
+    - generic: Scoring
+    - generic: Profight · Outrance Rules V.26.4 · not official until you finish the fight
+  - alert: No signal. What you see is the last thing the server told us; the clock keeps running on the server.
+  - region "Total Fight Score":
+    - generic: Red
+    - generic: TEST Outrance Man A
+    - generic: "10"
+    - generic: After 1 round
+    - generic: Total Fight Score
+    - generic: Blue
+    - generic: TEST Outrance Man C
+    - generic: "7"
+  - list "Round Scores":
+    - generic: R1
+    - generic: 10–7
+    - generic: 1 marshal · a phone missing
+  - paragraph: "Marshals so far: TEST Anna Red → Unanimous decision"
+  - region "Lyst clock":
+    - generic: Break after round 2
+    - status: Break time
+    - status "Time left 0:00": 0:00
+    - button "Pause" [disabled]
+    - button "Clock options": Clock options ▾
+    - alert: "No signal: the clock keeps running on the server, but it cannot be changed from this device until you are back online."
+  - region "Round 2 sheets":
+    - 'heading "Round 2: line marshals'' sheets · 0 · 4 phones to come" [level=2]'
+    - list:
+      - generic: TEST Counter 2
+      - generic: not handed in yet
+      - generic: TEST Counter 3
+      - generic: not handed in yet
+      - generic: TEST Counter 4
+      - generic: not handed in yet
+      - generic: TEST Edge Profile 2 Counter
+      - generic: not handed in yet
+    - paragraph: "This round's protocol: Red 0 yellow, 0 armour · Blue 0 yellow, 0 armour · TEST Outrance Man A stopped (10–7). Each comes off every sheet."
+    - status: TEST Counter 2 (counter 1) has not confirmed their count. TEST Counter 3 (counter 2) has not confirmed their count. TEST Counter 4 (counter 3) has not confirmed their count. TEST Edge Profile 2 Counter (counter 4) has not confirmed their count. Check with the marshal and enter why these awarded scores are correct.
+    - generic: Reason
+    - textbox "Reason":
+      - /placeholder: "For example: checked the phones with the line marshals"
+    - button "Waiting for a sheet" [disabled]
+    - button "Type in a paper sheet"
+  - 'button "Finish: Knockout"'
+  - button "Counter phones 4/4":
+    - text: Counter phones
+    - generic: 4/4
+  - navigation "Lyst tools":
+    - button "Knight marshal's call · 2"
+    - button "Appeals"
+    - button "Rules"
+  - list "Recent calls":
+    - listitem: "TKO: round lost (Div 2) · Round 1 · TEST Outrance Man C"
+    - listitem: Knockout · Round 2 · TEST Outrance Man A
+  - button "Back to the queue"
+  - paragraph: v0.1.0 · local · 52e63b4 · 2026-10-30 19:26 UTC
+- dialog "Round 2 · TEST Anna's paper sheet":
+  - heading "Round 2 · TEST Anna's paper sheet" [level=2]
+  - table "TEST Anna's round 2 paper sheet":
+    - rowgroup:
+      - row "Red Blue":
+        - columnheader
+        - columnheader "Red"
+        - columnheader "Blue"
+    - rowgroup:
+      - row "Effective strikes 0 0":
+        - rowheader "Effective strikes"
+        - cell "0"
+        - cell "0"
+      - row "Effective takedowns 0 0":
+        - rowheader "Effective takedowns"
+        - cell "0"
+        - cell "0"
+      - row "Loss of weapon 0 0":
+        - rowheader "Loss of weapon"
+        - cell "0"
+        - cell "0"
+      - row "Armour failures 0 0":
+        - rowheader "Armour failures"
+        - cell "0"
+        - cell "0"
+  - list "Your criteria":
+    - listitem: "Effective grappling: Even"
+    - listitem: "Effective list control: Even"
+    - listitem: "Effective aggression: Even"
+    - listitem: "Effective defence: Even"
+  - paragraph:
+    - text: "Your round:"
+    - generic: Red 10 – 10 Blue
+    - text: · Even · drawn round
+  - paragraph: Cards, armour repairs and 3 or more weapon losses come off when the secretary confirms the round.
+  - alert: Could not save the paper sheet. Check your connection and try again.
+  - button "Start the criteria again"
+  - button "Add the sheet"

@@ -1,0 +1,85 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open and 1 match is part-scored or waiting to be made official on this device. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man A vs TEST Outrance Man C" [level=1]
+  - paragraph: Lyst 1 · TEST Seven Profile Profight · Round 1 · Division 2 · tournament
+  - status:
+    - generic: Scoring
+    - generic: Profight · Outrance Rules V.26.4 · not official until you finish the fight
+  - region "Total Fight Score":
+    - generic: Red
+    - generic: TEST Outrance Man A
+    - generic: "10"
+    - generic: After 1 round
+    - generic: Total Fight Score
+    - generic: Blue
+    - generic: TEST Outrance Man C
+    - generic: "7"
+  - list "Round Scores":
+    - generic: R1
+    - generic: 10–7
+    - generic: 1 marshal · a phone missing
+  - paragraph: "Marshals so far: TEST Anna Red → Unanimous decision"
+  - region "Lyst clock":
+    - generic: Break after round 2
+    - status: Break time
+    - status "Time left 0:00": 0:00
+    - button "Pause"
+    - button "Clock options": Clock options ▾
+  - 'button "Finish: Knockout"'
+  - button "Counter phones 4/4":
+    - generic: Counter phones
+    - generic: 4/4
+  - navigation "Lyst tools":
+    - button "Knight marshal's call · 2"
+    - button "Appeals"
+    - button "Record"
+    - button "Rules"
+  - list "Recent calls":
+    - listitem: "TKO: round lost (Div 2) · Round 1 · TEST Outrance Man C"
+    - listitem: Knockout · Round 2 · TEST Outrance Man A
+  - button "Back to the queue"
+  - button "Use the classic scoreboard (one sheet, paper backup)"
+  - paragraph: v0.1.0 · local · 52e63b4 · 2026-10-30 19:26 UTC
+- dialog "Round 2 ended · confirm the score":
+  - heading "Round 2 ended · confirm the score" [level=2]
+  - region "Round 2 sheets":
+    - 'heading "Round 2: line marshals'' sheets · 1 · 4 phones to come" [level=2]'
+    - list:
+      - generic: TEST Anna · paper
+      - generic: 0–0
+      - generic: "KO / TKO: 7–10"
+      - generic: 7–10
+      - button "Fix"
+      - generic: TEST Counter 2
+      - generic: not handed in yet
+      - generic: TEST Counter 3
+      - generic: not handed in yet
+      - generic: TEST Counter 4
+      - generic: not handed in yet
+      - generic: TEST Edge Profile 2 Counter
+      - generic: not handed in yet
+    - paragraph: "This round's protocol: Red 0 yellow, 0 armour · Blue 0 yellow, 0 armour · TEST Outrance Man A stopped (10–7). Each comes off every sheet."
+    - paragraph:
+      - text: "Round Score:"
+      - generic: Red 7 – 10 Blue
+      - generic: (average of 1 sheets; shown as 7–10 where a whole number is needed)
+    - status: TEST Counter 2 (counter 1) has not confirmed their count. TEST Counter 3 (counter 2) has not confirmed their count. TEST Counter 4 (counter 3) has not confirmed their count. TEST Edge Profile 2 Counter (counter 4) has not confirmed their count. Check with the marshal and enter why these awarded scores are correct.
+    - generic: Reason
+    - textbox "Reason" [active]:
+      - /placeholder: "For example: checked the phones with the line marshals"
+    - button "Waiting for 4 sheets" [disabled]
+    - button "Type in a paper sheet"
+    - 'button "Head marshal: confirm without TEST Counter 2, TEST Counter 3, TEST Counter 4, TEST Edge Profile 2 Counter (marked \"a phone missing\")" [disabled]'
+    - button "Return the round to the line marshals for recount (write the reason first)"

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "official",
+    "width": 390,
+    "inner": 390,
+    "next": [
+      {
+        "cardLeft": 12,
+        "cardRight": 362.6666870117187,
+        "height": 79.5,
+        "left": 28.666667938232425,
+        "right": 346.0000114440918
+      }
+    ],
+    "scroll": 375
+  },
+  {
+    "name": "official",
+    "width": 1440,
+    "inner": 1440,
+    "next": [
+      {
+        "cardLeft": 452.3333435058594,
+        "cardRight": 972.3333435058594,
+        "height": 64,
+        "left": 469,
+        "right": 955.6666870117188
+      }
+    ],
+    "scroll": 1425
+  },
+  {
+    "name": "observer",
+    "width": 390,
+    "inner": 390,
+    "next": [
+      {
+        "cardLeft": 12,
+        "cardRight": 378,
+        "height": 79.5,
+        "left": 32.66666793823242,
+        "right": 357.3333549499512
+      }
+    ],
+    "scroll": 390
+  },
+  {
+    "name": "observer",
+    "width": 1440,
+    "inner": 1440,
+    "next": [
+      {
+        "cardLeft": 460,
+        "cardRight": 980,
+        "height": 64,
+        "left": 480.6666870117187,
+        "right": 959.3333740234376
+      }
+    ],
+    "scroll": 1440
+  }
+]

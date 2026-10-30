@@ -1,0 +1,83 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: A new version of BuhurtOS is ready.
+    - generic: It will not replace this version while a scoring screen is open and 1 match is part-scored or waiting to be made official on this device. It will be offered again as soon as that is finished.
+    - button "Update anyway (emergency)"
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man A vs TEST Outrance Man C" [level=1]
+  - paragraph: Lyst 1 · TEST Seven Profile Profight · Round 1 · Division 2 · tournament
+  - status:
+    - generic: Scoring
+    - generic: Profight · Outrance Rules V.26.4 · not official until you finish the fight
+  - region "Total Fight Score":
+    - generic: Red
+    - generic: TEST Outrance Man A
+    - generic: "10"
+    - generic: After 1 round
+    - generic: Total Fight Score
+    - generic: Blue
+    - generic: TEST Outrance Man C
+    - generic: "7"
+  - list "Round Scores":
+    - generic: R1
+    - generic: 10–7
+    - generic: 1 marshal · a phone missing
+  - paragraph: "Marshals so far: TEST Anna Red → Unanimous decision"
+  - region "Lyst clock":
+    - generic: Round 2
+    - status: Round paused
+    - status "Time left 0:59": 0:59
+    - button "Resume"
+    - button "Clock options": Clock options ▾
+  - button "End round · start the 0:45 break"
+  - region "Round 2 sheets":
+    - 'heading "Round 2: line marshals'' sheets · 0 · 4 phones to come" [level=2]'
+    - list:
+      - generic: TEST Counter 2
+      - generic: not handed in yet
+      - generic: TEST Counter 3
+      - generic: not handed in yet
+      - generic: TEST Counter 4
+      - generic: not handed in yet
+      - generic: TEST Edge Profile 2 Counter
+      - generic: not handed in yet
+    - paragraph: "This round's protocol: Red 0 yellow, 0 armour · Blue 0 yellow, 0 armour · TEST Outrance Man A stopped (10–7). Each comes off every sheet."
+    - status: TEST Counter 2 (counter 1) has not confirmed their count. TEST Counter 3 (counter 2) has not confirmed their count. TEST Counter 4 (counter 3) has not confirmed their count. TEST Edge Profile 2 Counter (counter 4) has not confirmed their count. Check with the marshal and enter why these awarded scores are correct.
+    - generic: Reason
+    - textbox "Reason":
+      - /placeholder: "For example: checked the phones with the line marshals"
+    - button "Waiting for a sheet" [disabled]
+    - button "Type in a paper sheet"
+  - button "Counter phones 4/4":
+    - generic: Counter phones
+    - generic: 4/4
+  - navigation "Lyst tools":
+    - button "Knight marshal's call · 2"
+    - button "Appeals"
+    - button "Record"
+    - button "Rules"
+  - list "Recent calls":
+    - listitem: "TKO: round lost (Div 2) · Round 1 · TEST Outrance Man C"
+    - listitem: Knockout · Round 2 · TEST Outrance Man A
+  - button "Back to the queue"
+  - button "Use the classic scoreboard (one sheet, paper backup)"
+  - paragraph: v0.1.0 · local · 52e63b4 · 2026-10-30 19:26 UTC
+- dialog "Finish the fight":
+  - heading "Finish the fight" [level=2]
+  - paragraph: TEST Outrance Man A 10 – 7 TEST Outrance Man C
+  - list:
+    - text: "Round 1:"
+    - generic: 10–7
+    - generic: (1 marshal, a phone missing)
+  - paragraph: "Each marshal's fight: TEST Anna 10–7 → Unanimous decision"
+  - button "Blue · TEST Outrance Man C wins by KO"
+  - paragraph: Confirm the round first. A stoppage or disqualification can still end the fight.
+  - alert: The winner cannot have the lower score.
