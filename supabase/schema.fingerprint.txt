@@ -116,6 +116,8 @@ column private.team_discipline_contribution_rows.results bigint not null
 column private.team_discipline_contribution_rows.scope text not null
 column private.team_discipline_contribution_rows.season_id uuid
 column private.team_discipline_contribution_rows.team_id uuid
+column private.test_event_crew.role text not null
+column private.test_event_crew.user_id uuid not null
 column private.tournament_build_plans.created_at timestamp with time zone not null
 column private.tournament_build_plans.event_id uuid not null
 column private.tournament_build_plans.generation integer not null
@@ -2480,6 +2482,8 @@ constraint private.reavers_discord_topic_messages reavers_discord_topic_messages
 constraint private.reavers_discord_topic_messages reavers_discord_topic_messages_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES club_meeting_topics(id) ON DELETE CASCADE
 constraint private.records_refresh_queue records_refresh_at_commit TRIGGER DEFERRABLE INITIALLY DEFERRED
 constraint private.records_refresh_queue records_refresh_queue_pkey PRIMARY KEY (xid)
+constraint private.test_event_crew test_event_crew_pkey PRIMARY KEY (user_id, role)
+constraint private.test_event_crew test_event_crew_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 constraint private.tournament_build_plans tournament_build_plans_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 constraint private.tournament_build_plans tournament_build_plans_pkey PRIMARY KEY (event_id, payload_hash)
 constraint profiles profiles_city_check CHECK (((city IS NULL) OR (char_length(city) <= 80)))
@@ -3122,6 +3126,7 @@ function private.reavers_public_voting_board_trigger() secdef=true fd2fa9db7bf93
 function private.reavers_public_voting_board_update() secdef=true 9887d432bc963ba342cba0d7401e988f
 function private.record_events(p_events uuid[]) secdef=true 712edf8287963e4a9ea56bf328cb1ad7
 function private.record_past_medal(p_fighter uuid, p_event uuid, p_category text, p_place integer, p_team uuid, p_note text, p_actor uuid) secdef=true 417e1e0e57983f9039d63c1a1cad6920
+function private.record_sources_test_crew() secdef=true 928caecb2993c80758d247a6d5a302c1
 function private.records_apply(p_table text) secdef=true 8d74ec8d77d7c90fae573bd0ebf2a316
 function private.records_mark() secdef=true c024dad2daf2a37dd3c4ea972e520351
 function private.records_mark_competition() secdef=true e7124f2abd3d2f0c6c2b33fcf13f7cbf
@@ -3184,6 +3189,8 @@ function private.team_org_enabled(p_team uuid) secdef=true eef613018d1e0ae401917
 function private.team_result_rows(p_team uuid) secdef=true 268c8351c32b8a1b765b153ee61600d5
 function private.teams_keep_represented() secdef=true 355b046e6c83b278ee5c7e46f98c35b1
 function private.technical_win_points(p_match uuid) secdef=true 89920f6e69896aebb48985491a4dac78
+function private.test_crew_join(p_event uuid) secdef=true 3e0d2dc8ff5c8f240859769d7cbf5e2e
+function private.test_event_crew_added() secdef=true 38b72ca840d9f05fd656cbe43f3f4e03
 function private.tier_points(p_base numeric, p_tier text, p_source text) secdef=false 88596a713d97771b9446ed02c6654bb8
 function private.touch_updated_at() secdef=false 587cccdfb0cc0805991745244d57ff0a
 function private.unfinish_competition() secdef=true 157cff9e48c462a330d2cafeb8282291
@@ -3657,6 +3664,7 @@ index private.reavers_discord_topic_boards CREATE UNIQUE INDEX ON private.reaver
 index private.reavers_discord_topic_messages CREATE UNIQUE INDEX ON private.reavers_discord_topic_messages USING btree (topic_id)
 index private.records_refresh_queue CREATE UNIQUE INDEX ON private.records_refresh_queue USING btree (xid)
 index private.team_discipline_contribution_rows CREATE INDEX ON private.team_discipline_contribution_rows USING btree (scope, organization_id, season_id, category, gender, team_id)
+index private.test_event_crew CREATE UNIQUE INDEX ON private.test_event_crew USING btree (user_id, role)
 index private.tournament_build_plans CREATE UNIQUE INDEX ON private.tournament_build_plans USING btree (event_id, payload_hash)
 index public.activity_events CREATE INDEX ON public.activity_events USING btree (at DESC, name)
 index public.activity_events CREATE INDEX ON public.activity_events USING btree (session_id)
@@ -4275,6 +4283,7 @@ table private.reavers_discord_topic_boards rls=false
 table private.reavers_discord_topic_messages rls=false
 table private.records_refresh_queue rls=true
 table private.team_discipline_contribution_rows rls=true
+table private.test_event_crew rls=true
 table private.tournament_build_plans rls=true
 table public.activity_events rls=true
 table public.activity_sessions rls=true
@@ -4440,6 +4449,7 @@ table public.team_roles rls=true
 table public.teams rls=true
 table public.waiver_versions rls=true
 trigger private.records_refresh_queue records_refresh_at_commit efb9f72669f50c05bf41fa10b0bb2e0b
+trigger private.test_event_crew test_event_crew_added ceca3efda65560fe39c62767efee4e1e
 trigger public.authenticity_findings authenticity_findings_guard bddbc8a2a2b7730e5fadf436a5952b24
 trigger public.club_dues reavers_public_voting_board_dues 5ef411bfdf162521f931b94f43e783dc
 trigger public.club_dues_history club_dues_history_append_only 50b72b1bcae402d6c04339d8e22688ed
@@ -4543,6 +4553,7 @@ trigger public.privacy_breach_history privacy_breach_history_append_only f41540f
 trigger public.privacy_breaches privacy_breaches_keep df1fbcf003e297e8690c614e02e553a6
 trigger public.privacy_request_events privacy_request_events_no_update b0743c1e60d54d2b2b81819202b83ced
 trigger public.record_sources record_sources_records_refresh 417bc7baaad4ac17b9d79c39a702238b
+trigger public.record_sources record_sources_test_crew d3bf991c4c90085d75f61b2e29ea0f1e
 trigger public.registration_age_checks registration_age_checks_append_only b529cc70b655e9d99bed992f9b367578
 trigger public.registration_checks registration_checks_discipline_check ae8cad8b1e1756f6f87ec9c65cfc2516
 trigger public.registration_competitions registration_competitions_gender 2ea3adb8693ffe6aab2aba0b9af5d019
