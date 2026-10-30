@@ -1,0 +1,27 @@
+MANAGE DEVICES
+Browser permission
+Allowed
+BuhurtOS alerts on this device
+On
+
+Alerts are on for this device. They arrive even when BuhurtOS is closed.
+
+Send me a test
+Turn off on this device
+YOUR DEVICES
+Android phone
+Last alert 11 days ago
+Remove
+Windows computer
+No alert delivered yet
+Remove
+Android phone
+No alert delivered yet
+Remove
+Windows computerTHIS DEVICE
+No alert delivered yet
+Remove
+
+If an alert does not arrive, your place in the line is always on My next fight.
+
+Back

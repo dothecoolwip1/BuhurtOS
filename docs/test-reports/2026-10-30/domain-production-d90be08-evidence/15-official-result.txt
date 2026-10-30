@@ -1,0 +1,26 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - region "Result official":
+    - heading "TEST Outrance Man A vs TEST Outrance Man B" [level=1]
+    - paragraph: Lyst 1 · Men Longsword · Round 1
+    - status:
+      - generic: Official
+      - generic: "Official: saved on the server"
+    - generic: TEST Outrance Man A
+    - generic: "10"
+    - generic: TEST Outrance Man B
+    - generic: "4"
+    - paragraph: "Winner: TEST Outrance Man A"
+    - paragraph: Nothing is waiting on Lyst 1 right now.
+    - link "Back to Event Control":
+      - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - button "Back to the queue"
+  - paragraph: v0.1.0 · local · d90be08 · 2026-10-30 16:21 UTC

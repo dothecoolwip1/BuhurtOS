@@ -1,0 +1,5 @@
+{
+  "share": "https://buhurt-os.app/events/test-new-domain-longsword-rehearsal-2026-10-30",
+  "calendar": "https://calendar.google.com/calendar/render?action=TEMPLATE&text=TEST+New+Domain+Longsword+Rehearsal+2026-10-30&dates=20261030%2F20261031&location=&details=https%3A%2F%2Fbuhurt-os.app%2Fevents%2Ftest-new-domain-longsword-rehearsal-2026-10-30",
+  "oldLinks": []
+}

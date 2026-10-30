@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//BuhurtOS//Events//EN
+BEGIN:VEVENT
+UID:2ec7b079-9550-40dc-905d-fab3dc2ae5fa@buhurtos
+DTSTAMP:20261030T165947Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:TEST New Domain Longsword Rehearsal 2026-10-30
+LOCATION:
+URL:https://buhurt-os.app/events/test-new-domain-longsword-rehearsal-2026-10-30
+DESCRIPTION:https://buhurt-os.app/events/test-new-domain-longsword-rehearsal-2026-10-30
+END:VEVENT
+END:VCALENDAR
