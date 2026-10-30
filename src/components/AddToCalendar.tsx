@@ -7,7 +7,7 @@ type E = Pick<LiveEvent, 'id' | 'name' | 'slug' | 'startsOn' | 'endsOn' | 'venue
 /** "Add to calendar": Google Calendar link, or an .ics file (Apple, Outlook, the phone's own calendar). All-day, plain dates. */
 export function AddToCalendar({ event }: { event: E }) {
   const [open, setOpen] = useState(false);
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://buhurtos.ca';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://buhurt-os.app';
   const download = () => {
     const blob = new Blob([icsForEvent(event, origin)], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
