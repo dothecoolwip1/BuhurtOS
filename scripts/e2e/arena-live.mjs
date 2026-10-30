@@ -100,15 +100,15 @@ try {
   const { ctx: pctx, page: ph } = await open('phone', 'organizer');
   await ph.goto(BASE + MANAGE); await ph.waitForSelector('.ed-now', { timeout: 30000 });
   await ph.locator('.ed-field-wrap.picked').getByRole('link', { name: 'Open scoreboard' }).click();
-  await ph.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
+  await ph.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor({ timeout: 30000 });
   check('[phone] Open scoreboard lands on the scoring screen for that fight', /field\/Field%201/.test(ph.url()) && (await has(ph, 'Aldric Stone')) && (await has(ph, 'Brann Oakley')), ph.url());
   check('[phone] the status strip says it is pending until saved', await has(ph, 'Pending: not official until you save'));
-  const strip = await ph.locator('.sk-score').boundingBox(), hit = await ph.getByRole('button', { name: 'Head or torso +2' }).first().boundingBox();
+  const strip = await ph.locator('.sk-score').boundingBox(), hit = await ph.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().boundingBox();
   check('[phone] the two sides and the score are at the top, the scoring buttons on the first screen above the bottom bar', strip && strip.y < 400 && hit && hit.y + hit.height <= 844 - 70, JSON.stringify({ strip, hit }));
   const nums = async (p) => (await p.locator('.sk-num').allInnerTexts()).join('-');
   check('[phone] the score starts at 0-0', (await nums(ph)) === '0-0', await nums(ph));
   await shot(ph, '3-phone-scoring-start');
-  await tap(ph, 'Head or torso +2');
+  await tap(ph, /^Head or torso(, two hands)? \+2$/);
   check('[phone] a hit shows at once on the big score', (await nums(ph)) === '2-0', await nums(ph));
   const l1 = await waitDb(() => live(1), '2-0 Round 1 of 2');
   check('the device reported the running score to the server (not a result: the match is still active)', l1 === '2-0 Round 1 of 2' && state(1) === 'active', l1);
@@ -124,7 +124,7 @@ try {
   check('... and the server has the correction (latest wins)', (await waitDb(() => live(1), '0-0 Round 1 of 2')) === '0-0 Round 1 of 2', live(1));
   check('[tv] the display follows the correction', await tv.waitForFunction(() => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()).join('-').startsWith('0-0'), null, { timeout: 40000 }).then(() => true, () => false), JSON.stringify(await scores(tv)));
   // finish the fight: two rounds, one hit each
-  for (let r = 0; r < 2; r++) { await tap(ph, 'Head or torso +2'); await tap(ph, 'End round'); }
+  for (let r = 0; r < 2; r++) { await tap(ph, /^Head or torso(, two hands)? \+2$/); await tap(ph, 'End round'); }
   await ph.getByText('wins the match').first().waitFor({ timeout: 10000 });
   check('[phone] the board knows the fight is decided and says who won', await has(ph, 'Aldric Stone wins the match'), await body(ph));
   const lDecided = await waitDb(() => live(1), '4-0 Fight decided');
@@ -150,9 +150,9 @@ try {
 
   // ================================================================ 4. next fight from the OFFICIAL screen; a reload and a fresh screen show the server's score, not the device's
   await ph.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).click();
-  await ph.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
+  await ph.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor({ timeout: 30000 });
   check('[phone] "Next fight" opens the scoring screen for Cael Rhodes vs Dara Voss', (await has(ph, 'Cael Rhodes')) && (await has(ph, 'Dara Voss')) && (await nums(ph)) === '0-0', await body(ph));
-  await tap(ph, 'Head or torso +2');
+  await tap(ph, /^Head or torso(, two hands)? \+2$/);
   check('the new fight reports on its own', (await waitDb(() => live(2), '2-0 Round 1 of 2')) === '2-0 Round 1 of 2', live(2));
   await tv.reload(); await tv.waitForSelector('.ar-main', { timeout: 30000 });
   const afterReload = await tv.waitForFunction(() => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()).join('-').startsWith('2-0'), null, { timeout: 40000 }).then(() => true, () => false);
@@ -167,7 +167,7 @@ try {
   // ================================================================ 5. the display loses its connection and recovers; the scorer loses signal and saves anyway
   await tvctx.setOffline(true);
   await sleep(1500);
-  await tap(ph, 'Head or torso +2');
+  await tap(ph, /^Head or torso(, two hands)? \+2$/);
   check('the score went up while the display was offline', (await waitDb(() => live(2), '4-0 Round 1 of 2')) === '4-0 Round 1 of 2', live(2));
   await sleep(2000);
   check('[tv] offline, the display keeps showing what it last knew (no blank, no error page)', (await scores(tv)).join('-') === '2-0' && (await tv.locator('.ar-main').count()) === 1, JSON.stringify(await scores(tv)));
@@ -176,7 +176,7 @@ try {
   check('[tv] back online it catches up by itself', recovered, JSON.stringify(await scores(tv)));
   // the scorer loses signal
   await pctx.setOffline(true);
-  await tap(ph, 'End round'); await tap(ph, 'Head or torso +2'); await tap(ph, 'End round');
+  await tap(ph, 'End round'); await tap(ph, /^Head or torso(, two hands)? \+2$/); await tap(ph, 'End round');
   await ph.getByText('wins the match').first().waitFor({ timeout: 10000 });
   await tap(ph, 'Finish match'); await tap(ph, 'Save result');
   await ph.getByText('Pending: NOT official yet').waitFor({ timeout: 20000 });
@@ -192,13 +192,13 @@ try {
 
   // ================================================================ 6. a result two devices disagree about: the display shows the official one, the scorer is told
   await ph.getByRole('button', { name: /Next fight on (Lyst|Field) 1/ }).click();
-  await ph.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
+  await ph.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor({ timeout: 30000 });
   check('[phone] scoring Edric Hale vs Fenna Crow', (await has(ph, 'Edric Hale')) && (await has(ph, 'Fenna Crow')));
-  await tap(ph, 'Head or torso +2');
+  await tap(ph, /^Head or torso(, two hands)? \+2$/);
   check('its running score is reported', (await waitDb(() => live(3), '2-0 Round 1 of 2')) === '2-0 Round 1 of 2', live(3));
   const other = await finishAsDevice('scorekeeper', 3, 'b', 3, 5);
   check('another device saves a result for the same fight first (Fenna Crow wins)', other.body?.status === 'accepted' && live(3) === 'none', JSON.stringify(other));
-  await tap(ph, 'End round'); await tap(ph, 'Head or torso +2'); await tap(ph, 'End round');
+  await tap(ph, 'End round'); await tap(ph, /^Head or torso(, two hands)? \+2$/); await tap(ph, 'End round');
   await ph.getByText('wins the match').first().waitFor({ timeout: 10000 });
   await sleep(600);
   check('the device\'s later snapshot is refused as final and the server keeps no running score for a final match', live(3) === 'none' && state(3) === 'final', live(3));
@@ -214,15 +214,15 @@ try {
 
   // ================================================================ 7. a stale screen: the match changed under the scorer
   await ph.goto(BASE + FIELD1 + `?match=${mid(4)}`);
-  await ph.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
+  await ph.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor({ timeout: 30000 });
   check('[phone] a direct link opens Aldric Stone vs Cael Rhodes', (await has(ph, 'Aldric Stone')) && (await has(ph, 'Cael Rhodes')) && state(4) === 'active', states(4));
-  await tap(ph, 'Head or torso +2');
+  await tap(ph, /^Head or torso(, two hands)? \+2$/);
   check('its running score is reported with the version the device opened', (await waitDb(() => live(4), '2-0 Round 1 of 2')) === '2-0 Round 1 of 2', live(4));
   sql(`update public.matches set version = version + 1 where id = '${mid(4)}'`);   // an organizer's correction while the board is open
   await tap(ph, 'Undo last strike');
   await sleep(900);
   check('a snapshot from an older version of the match is refused (the display keeps the last good one)', live(4) === '2-0 Round 1 of 2', live(4));
-  await tap(ph, 'Head or torso +2'); await tap(ph, 'End round'); await tap(ph, 'Head or torso +2'); await tap(ph, 'End round');
+  await tap(ph, /^Head or torso(, two hands)? \+2$/); await tap(ph, 'End round'); await tap(ph, /^Head or torso(, two hands)? \+2$/); await tap(ph, 'End round');
   await ph.getByText('wins the match').first().waitFor({ timeout: 10000 });
   await tap(ph, 'Finish match'); await tap(ph, 'Save result');
   const staleNotice = await ph.locator('[role="alert"], .notice').first().innerText({ timeout: 20000 }).catch(() => '');
@@ -302,10 +302,10 @@ try {
   for (const kind of ['tablet', 'tabletwide', 'phone']) {
     const { ctx, page: p } = await open(kind, 'scorekeeper');
     await p.goto(BASE + '/events/test-stuff-test/field/Field%202?match=' + mid(13));
-    await p.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
+    await p.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor({ timeout: 30000 });
     const sw = await noSideways(p);
     check(`[${kind} scoring] no sideways scroll`, sw[0] <= sw[1], JSON.stringify(sw));
-    const st = await p.locator('.sk-score').boundingBox(), hit = await p.getByRole('button', { name: 'Head or torso +2' }).first().boundingBox();
+    const st = await p.locator('.sk-score').boundingBox(), hit = await p.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().boundingBox();
     check(`[${kind} scoring] score at the top, the scoring buttons on the first screen`, st && st.y < 420 && hit && hit.y + hit.height <= p.viewportSize().height - (kind === 'phone' ? 70 : 0), JSON.stringify({ st, hit, vh: p.viewportSize().height }));
     const small = await p.evaluate(() => [...document.querySelectorAll('.sk .btn')].filter(e => e.offsetParent !== null).map(e => [Math.round(e.getBoundingClientRect().height), e.innerText.trim().slice(0, 20)]).filter(([h]) => h < 44));
     check(`[${kind} scoring] every button is at least 44px tall`, small.length === 0, JSON.stringify(small));

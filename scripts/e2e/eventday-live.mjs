@@ -88,9 +88,9 @@ try {
 
   // ================================================================ 3. open the scoreboard, record a result, come back
   await f1.getByRole('link', { name: 'Open scoreboard' }).click();
-  await page.getByText('Head or torso +2').first().waitFor({ timeout: 30000 });
+  await page.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor({ timeout: 30000 });
   check('Open scoreboard goes straight to the existing scoring screen on that match', /\/events\/test-stuff-test\/field\/Field%201/.test(page.url()) && (await has(page, 'Aldric Stone vs Brann Oakley')), page.url());
-  for (let r = 0; r < 2; r++) { await page.getByRole('button', { name: 'Head or torso +2' }).first().click(); await page.getByRole('button', { name: 'End round' }).click(); }
+  for (let r = 0; r < 2; r++) { await page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().click(); await page.getByRole('button', { name: 'End round' }).click(); }
   await page.getByText('wins the match').first().waitFor({ timeout: 10000 });
   await page.getByRole('button', { name: 'Finish match' }).click();
   await page.getByRole('button', { name: 'Save result' }).click();

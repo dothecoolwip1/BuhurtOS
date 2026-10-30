@@ -47,7 +47,7 @@ async function session(label) {
   const idA = await version();
   check(`[${label}] the first build installs and controls the page`, typeof idA === 'string' && idA.length > 0);
   await page.getByRole('button', { name: 'Score Iron Wolves against Ash Guard' }).click();
-  await page.getByText('Head or torso +2').first().waitFor();
+  await page.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor();
   const diagnose = async () => page.evaluate(async () => { const r = await navigator.serviceWorker.getRegistration(); return JSON.stringify({ active: r?.active?.state, waiting: r?.waiting?.state, installing: r?.installing?.state, hasController: !!navigator.serviceWorker.controller, footer: document.querySelector('[data-testid=app-version]')?.textContent, url: location.href }); }).catch(e => 'diagnose failed: ' + e);
   return { ctx, page, mock, body, has, version, cacheNames, idb, idA, errors, url, logs, diagnose };
 }
@@ -63,7 +63,7 @@ try {
   globalThis.__diag = async () => JSON.stringify({ state: await s.diagnose(), logs: s.logs.slice(-6) });
   globalThis.__poke = async () => { await s.page.evaluate(async () => { const r = await navigator.serviceWorker.getRegistration(); r.waiting?.postMessage({ type: 'SKIP_WAITING' }); }); await new Promise(r => setTimeout(r, 4000)); return s.diagnose(); };
   s.mock.st.offline = true;   // the API is unreachable (no signal to the server); the page itself stays online
-  await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click();
+  await s.page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().click();
   await sleep(300);
   check('[safe] a score action is waiting on the device (pending work)', (await s.idb('outbox')).length === 1);
   await startUpdate(s);
@@ -75,10 +75,10 @@ try {
   check('[safe] the old build\'s cache is still there', (await s.cacheNames()).some(n => n.endsWith(s.idA)));
   // signal returns: the queue is delivered, the match is finished and made official, the screen is left
   s.mock.st.offline = false;
-  for (let i = 0; i < 2; i++) { if (i > 0) await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click(); }
+  for (let i = 0; i < 2; i++) { if (i > 0) await s.page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().click(); }
   // finish the match: A needs 2 rounds
   await s.page.getByRole('button', { name: 'End round' }).click();
-  await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click();
+  await s.page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().click();
   await s.page.getByRole('button', { name: 'End round' }).click();
   await s.page.getByText('wins the match').first().waitFor();
   await s.page.getByRole('button', { name: 'Finish match' }).click();
@@ -102,7 +102,7 @@ try {
   s = await session('emergency');
   globalThis.__diag = async () => JSON.stringify({ state: await s.diagnose(), logs: s.logs.slice(-25) });
   s.mock.st.offline = true;
-  await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click();
+  await s.page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().click();
   await sleep(300);
   const queued = await s.idb('outbox');
   check('[emergency] an action queued by the old build is stored with schema version 1', queued.length === 1 && queued[0].schema === 1 && queued[0].userId === IDS.userA);
@@ -131,7 +131,7 @@ try {
   s = await session('fallback');
   globalThis.__diag = async () => JSON.stringify({ state: await s.diagnose(), logs: s.logs.slice(-6) });
   s.mock.st.offline = true;
-  await s.page.getByRole('button', { name: 'Head or torso +2' }).first().click();
+  await s.page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().click();
   await sleep(300);
   const q3 = await s.idb('outbox');
   await startUpdate(s);
