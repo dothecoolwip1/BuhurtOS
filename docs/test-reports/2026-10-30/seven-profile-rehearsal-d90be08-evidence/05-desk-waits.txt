@@ -1,0 +1,93 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man B vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 1 · TEST Seven Profile Longsword · Round 1
+  - status:
+    - generic: Scoring
+    - generic: "Pending: not official until you finish the match"
+  - region "Official score":
+    - generic: Red
+    - generic: TEST Outrance Man B
+    - 'generic "TEST Outrance Man B: 0 official points"': "0"
+    - generic: vs
+    - generic: No round confirmed
+    - generic: official
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - 'generic "TEST Outrance Man A: 0 official points"': "0"
+  - list "Rounds":
+    - generic: R1
+    - generic: ·
+    - generic: Scores being confirmed
+  - region "Lyst clock":
+    - generic: Break after round 1
+    - status: Break time
+    - status "Time left 0:00": 0:00
+    - button "Pause"
+    - button "Clock options": Clock options ▾
+  - button "Enter round 1 scores"
+  - navigation "Lyst tools":
+    - button "Marshal's call"
+  - button "Back to the queue"
+  - paragraph: v0.1.0 · local · d90be08 · 2026-10-30 16:21 UTC
+- dialog "Round 1 ended · enter marshal’s scores":
+  - heading "Round 1 ended · enter marshal’s scores" [level=2]
+  - region "Confirm round 1":
+    - paragraph: Enter the score the marshal awards for this round.
+    - status: TEST Counter 4 (counter 4) has not confirmed their count. Saved counter actions need marshal review. Check with the marshal and enter why these awarded scores are correct.
+    - 'group "Fighter A: awarded score"':
+      - generic: "Fighter A: awarded score"
+      - generic: TEST Outrance Man B
+      - 'status "TEST Outrance Man B: not chosen"': –
+      - group "Quick score for TEST Outrance Man B":
+        - button "0" [active]
+        - button "1"
+        - button "2"
+        - button "3"
+        - button "4"
+        - button "5"
+        - button "6"
+        - button "7"
+        - button "8"
+        - button "9"
+      - button "One less for TEST Outrance Man B": −
+      - button "One more for TEST Outrance Man B": +
+      - generic "What the counters for TEST Outrance Man B tallied":
+        - generic: Counters
+        - button "Use counter TEST Counter 2's count of 6 for TEST Outrance Man B": TEST Counter 2 · 6
+        - button "Use counter TEST Edge Profile 2 Counter's count of 8 for TEST Outrance Man B": TEST Edge Profile 2 Counter · 8
+    - 'group "Fighter B: awarded score"':
+      - generic: "Fighter B: awarded score"
+      - generic: TEST Outrance Man A
+      - 'status "TEST Outrance Man A: not chosen"': –
+      - group "Quick score for TEST Outrance Man A":
+        - button "0"
+        - button "1"
+        - button "2"
+        - button "3"
+        - button "4"
+        - button "5"
+        - button "6"
+        - button "7"
+        - button "8"
+        - button "9"
+      - button "One less for TEST Outrance Man A": −
+      - button "One more for TEST Outrance Man A": +
+      - generic "What the counters for TEST Outrance Man A tallied":
+        - generic: Counters
+        - button "Use counter TEST Counter 3's count of 2 for TEST Outrance Man A": TEST Counter 3 · 2
+    - generic: Reason for the marshal’s score
+    - textbox "Reason for the marshal’s score":
+      - /placeholder: "For example: marshal re-counted after the break"
+    - button "Cancel"
+    - button "Choose both scores" [disabled]
+    - generic "Return for recount"
+  - generic "Which counter phone needs attention?"

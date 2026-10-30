@@ -1,0 +1,74 @@
+- banner:
+  - link "Exit to Event Control":
+    - /url: /events/test-new-domain-longsword-rehearsal-2026-10-30/control?mode=live
+    - generic: Exit
+  - generic: Lyst 1
+  - generic "TEST New Domain Longsword Rehearsal 2026-10-30"
+  - status: Synced
+- main:
+  - status:
+    - generic: All score actions confirmed by the server
+  - heading "TEST Outrance Man B vs TEST Outrance Man A" [level=1]
+  - paragraph: Lyst 1 · TEST Seven Profile Longsword · Round 1
+  - status:
+    - generic: Scoring
+    - generic: "Pending: not official until you finish the match"
+  - region "Official score":
+    - generic: Red
+    - generic: TEST Outrance Man B
+    - 'generic "TEST Outrance Man B: 8 official points"': "8"
+    - generic: vs
+    - generic: After 1 round
+    - generic: official
+    - generic: Blue
+    - generic: TEST Outrance Man A
+    - 'generic "TEST Outrance Man A: 3 official points"': "3"
+  - list "Rounds":
+    - generic: R1
+    - generic: 8–3
+    - generic: Confirmed
+    - button "Correct round 1": Correct
+    - generic: R2
+    - generic: ·
+    - generic: Being fought
+  - region "Counters on this fight":
+    - generic: Red · TEST Outrance Man B
+    - list:
+      - generic: Red
+      - generic: TEST Counter 2
+      - generic "Round 2 count 6": "6"
+      - generic: online
+      - generic: Red
+      - generic: TEST Edge Profile 2 Counter
+      - generic "Round 2 count 6": "6"
+      - generic: online
+    - generic: Blue · TEST Outrance Man A
+    - list:
+      - generic: Blue
+      - generic: TEST Counter 3
+      - generic "Round 2 count 2": "2"
+      - generic: online
+      - generic: Blue
+      - generic: TEST Counter 4
+      - generic "Round 2 count 2": "2"
+      - generic: online
+  - region "Lyst clock":
+    - generic: Round 2
+    - status: Round paused
+    - status "Time left 0:35": 0:35
+    - button "Resume"
+    - button "Clock options": Clock options ▾
+  - button "End round · start break"
+  - button "Enter the score now without a break"
+  - button "Counter phones 4/4 · check":
+    - text: Counter phones
+    - generic: 4/4 · check
+  - navigation "Lyst tools":
+    - button "Marshal's call"
+    - button "Counters · 4"
+    - button "Record"
+    - button "Rules"
+    - button "Lyst settings"
+  - button "Back to the queue"
+  - button "Use the classic scoreboard"
+  - paragraph: v0.1.0 · local · d90be08 · 2026-10-30 16:21 UTC

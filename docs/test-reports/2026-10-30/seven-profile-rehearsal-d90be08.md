@@ -1,0 +1,140 @@
+# Seven-profile rehearsal — production d90be08
+
+Date: 2026-10-30. Site: https://buhurt-os.app. **Partial / blocked by service errors; not a completed full rehearsal.** Seven independent Edge profiles participated: organizer, secretary, four QR counters, signed-out spectator. Phone viewports 390×844; desks 1440×900. Viewport simulation, not physical-phone/touch testing.
+
+## Synthetic fixture preserved
+
+[TEST New Domain Longsword Rehearsal 2026-10-30](https://buhurt-os.app/events/test-new-domain-longsword-rehearsal-2026-10-30), event `2ec7b079-9550-40dc-905d-fab3dc2ae5fa`, test_event=true, draft. Page displays Test data/private cleanup notice. Existing event is not organization-linked. Existing test accounts belong to the legacy test organization; no organization/admin permissions changed. Two event_staff entries were added for these test accounts (organizer and scorekeeper) on this private test event only. This setup used the database connector, not the staff UI. New-event permission remains restricted for the test organizer; reused the verified synthetic event instead. No real records, source code, settings, schema, or authentication configuration changed. No records deleted.
+
+New competition: TEST Seven Profile Longsword. Existing synthetic fighters TEST Outrance Man B (Red) vs TEST Outrance Man A (Blue). Match `2fa76d8f-15e5-4431-9138-c548847743df`. Round 1 officially confirmed 8–3. Round 2 counts: red 6/6, blue 2/2. Last observed desk: paused 0:35, round-end command unconfirmed after one retry. Do not assume that command failed to commit: reconcile server state before resuming, using its existing saved command. Preserve all phone journals.
+
+## Results
+
+| Check | Result | Evidence |
+|---|---|---|
+| Organizer and secretary password sign-in | PASS | Separate existing test accounts, scoped event access |
+| Four independent Counter QR sessions | PASS | One existing and three fresh device sessions; separate operators and Red/Blue assignments |
+| Private synthetic event | PASS, limited | Test note visible; signed-out direct URL returns not-found. Draft fixture only; published privacy not retested |
+| Start round and phone discovery | PASS | 4/4 start receipts; four counters followed new fight without reload |
+| Independent Longsword scoring | PASS | R1 red 8/6 and blue 2/4; +2 adds two; R2 Undo restored 7→6 |
+| Longsword pad wording | FAIL | Visible pad only '+2'; accessible name 'Count two points, head or torso' omits two-hands qualification |
+| Automatic round-end confirmation | PASS R1 | Desk and all four phones opened score confirmation automatically; no reliable precise latency measured |
+| Counter submission | MIXED | Three ordinary confirmations succeeded. Edited fourth score 4→3 failed once, retry succeeded as marshal-review evidence |
+| Marshal award and next round | PASS | Reason recorded, R1 8–3 confirmed; R2 reset counts to zero |
+| Next-round phone notice | FAIL | Previous 'Score confirmed. Wait for the next round' persisted while R2 running, cleared after tap |
+| Round-two clock command | FAIL / blocked | End round timed out; same-command retry also unconfirmed, then No signal |
+| Narrow layout at failure state | PASS, limited | Four phones innerWidth390, scrollWidth375; desks1440, scrollWidth1425/1440. No horizontal overflow at measured state |
+| Final result screens, full Profight journeys, hidden-tab recovery | NOT COMPLETED | Service degradation blocked completion; do not carry earlier-run passes into this run |
+
+Paused phone still says 'Tap COUNT for every valid strike' and keeps pads enabled. This may permit legitimate late taps, so treat as a copy/phase clarity issue pending product intent, not proven scoring-rule violation.
+
+## Reliability findings and Supabase monitoring
+
+Read-only bounded log queries; no load generator. Project-wide logs can include other users. They demonstrate server-facing latency/errors, not proof this rehearsal caused them, nor proof of a particular database bottleneck.
+
+19:21–19:25 UTC window: matches returned one HTTP500 (15,291ms); successful device_refresh_session reached20,610ms; matches18,652ms; counter_state10,452ms; counter_deliver_action10,387ms; lyst_state9,052ms. Counter edited-score confirmation displayed 'Could not confirm. Your counts are kept here. Try again.' Retry succeeded. Corrected3 remained review evidence while canonical desk count remained4; the marshal explicitly reviewed this and awarded3. Do not silently replace provisional evidence with an official score.
+
+19:25–19:29 UTC window:
+
+| Request path | Status | Requests | Maximum upstream ms |
+|---|---:|---:|---:|
+| /rest/v1/matches | 200 |49|43747|
+| /rest/v1/rpc/device_whoami |200|26|36805|
+| /rest/v1/rpc/match_readiness |200|7|22226|
+| /rest/v1/rpc/counter_state |200|255|11420|
+| /rest/v1/rpc/counter_state |503|24|8932|
+| /rest/v1/rpc/lyst_state |503|12|5780|
+| /rest/v1/matches |503|18|4631|
+| /rest/v1/rpc/match_readiness |503|1|3365|
+| /rest/v1/rpc/device_whoami |503|3|2369|
+| /rest/v1/rpc/track_activity |503|1|2238|
+| /rest/v1/rpc/counter_acknowledge_run |204|254|4860|
+
+Headers measured: response.headers.x_envoy_upstream_service_time. Counts are bounded server logs, not browser round-trip times. At 19:18:13 and19:29:05 database snapshots: backends21→28; cumulative deadlocks0→0; commits +3442, rollbacks +29; temp files +18, temp bytes +52,048,819. These are whole-database deltas, not attributed to this test. Initial lock wait snapshot0. No continuous CPU/memory/lock monitoring was available, so do not claim absence of resource pressure.
+
+Console captured only '[BuhurtOS] Object' on counter4 at19:24:20.843Z and secretary19:29:10.903Z, source /assets/index-tBXzsjtq.js; it did not expose useful error details. No credentials or QR bearer links included.
+
+## Suggested fixes with reasoning and code
+
+Suggestions only, not applied or validated. Source reviewed from fetched main52e63b4; browser reports d90be08, so compare deployed source before patching.
+
+### P1: server degradation / excessive receipt traffic
+
+Inspect slow RPC query plans, connection-pool pressure and server logs before choosing an index or increasing capacity. counter_acknowledge_run had254 calls in the four-minute window. In src/pages/lyst/CounterPage.tsx the effect depends on the prepared_run object, which can change identity on every poll. Deduplicate successful receipt state by seat/run/started/pending, keep explicit heartbeat separately if required, and retry failed receipt delivery with backoff. Never mark a receipt acknowledged until the server accepts it.
+
+```tsx
+// Illustrative core; integrate generation cleanup and retry scheduling.
+const acked = useRef<string | null>(null);
+const sendingAck = useRef(false);
+async function sendReceipt(seat: string, run: string, started: boolean, pending: number) {
+  const key = JSON.stringify([seat, run, started, pending]);
+  if (acked.current === key || sendingAck.current) return;
+  sendingAck.current = true;
+  try {
+    await acknowledgeCounterRun(seat, run, started, pending);
+    acked.current = key;
+  } finally { sendingAck.current = false; }
+}
+```
+
+Use primitive effect dependencies; if input changes while a receipt is in flight, schedule the latest state afterward. Failed receipts must remain retryable. Preserve server receipt semantics and any required heartbeat; dedup is a candidate optimization, not a proven root-cause fix.
+
+src/lib/lyst/useLystState.ts already prevents overlapping requests, but queued refreshes can retry immediately after slow failures. Add bounded jittered backoff for transient errors; retain immediate explicit user refresh and visibility recovery, single-flight, generation guards and stale-response protection.
+
+```ts
+function retryDelay(failures: number, random = Math.random) {
+  const cap = Math.min(30_000, 2_500 * 2 ** Math.min(failures, 4));
+  return Math.round(cap * (0.8 + random() * 0.4));
+}
+// Schedule next background read AFTER completion; don't replay a backlog
+// of interval/realtime nudges immediately after a 503.
+```
+
+Acceptance: simulate503/slow reads, assert no concurrent reads or retry storm; recover current state after reconnect; round actions retain their original command IDs. Do not blindly retry score mutations with new IDs. Existing clock confirmation dialog correctly warns about unknown outcome; preserve it.
+
+### P2: stale success notice crosses rounds
+
+Scope success notices to the run and phase, rather than clearing all notices on any state update (which could hide saved-evidence warnings).
+
+```tsx
+type Notice = { kind: 'submitted' | 'evidence'; runId: string; text: string };
+const visibleNotice = notice?.kind === 'submitted' && notice.runId !== run?.id
+  ? null : notice;
+```
+
+Also hide a submitted notice if the same run is explicitly reopened for recount. Test round1 submit→round2 start without a tap; evidence warnings must survive.
+
+### P2: clear Longsword pad label
+
+Render the scoring qualification visibly and accessibly, only for the appropriate Longsword rule mode. Preserve the large tap target.
+
+```tsx
+<button className="cp-count is-two" disabled={!canCount} onClick={() => count(2)}
+  aria-label="Head or torso, two hands, plus 2 points">
+  <strong>+2</strong><span>Head or torso, two hands</span>
+</button>
+```
+
+Do not apply this text to other weapons indiscriminately. Validate390px wrapping and target height.
+
+### P2: connection status contradicts itself
+
+Desk displays 'Synced' / 'All score actions confirmed' alongside 'No signal' and an unconfirmed clock command. Separate score-queue state from live connectivity; label each precisely.
+
+```ts
+const connectionLabel = offline ? 'Connection lost · showing saved state'
+  : pendingClock ? 'Clock action awaiting confirmation' : 'Connected';
+```
+
+Keep 'All score actions confirmed' explicitly scoped to scores. Log sanitized RPC name/status/error category/correlation ID instead of an opaque Object, without tokens, payloads or personal data.
+
+## Evidence
+
+See adjacent seven-profile-rehearsal-d90be08-evidence folder: screenshots01–09, round-one snapshots, final-observations.json. The HTML companion embeds the same text and screenshot gallery. These screenshots show the actual failure states, not a successful final fight.
+
+## Resume checklist
+
+1. Establish Supabase recovery and inspect the saved round-two clock command before any new mutation.
+2. Complete round2 confirmations, marshal award6–2 if all evidence still agrees, and finalize. Verify both desks and four phone final screens.
+3. Run Profight line-marshal/paper/criteria/missing-phone/recount/finalization journeys and remaining historical edge cases, with exact fractional scores and privacy checks.
+4. Retest hidden-tab recovery and mobile official-result layout. Do not report the full rehearsal passed until these finish.
