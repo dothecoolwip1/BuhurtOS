@@ -151,8 +151,8 @@ const decide = (matchId) => {
 };
 /** scores a duel or team fight on the open scoring screen so that `win` ('a' | 'b') wins; names = [sideA, sideB] as the board shows them */
 const winOnScreen = async (page, win, names, taps = { n: 0 }, loserPoints = 0) => {
-  if (await page.getByRole('button', { name: 'Head or torso +2' }).count()) {
-    const hit = (side) => page.getByRole('button', { name: 'Head or torso +2' }).nth(side === 'a' ? 0 : 1).click();
+  if (await page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).count()) {
+    const hit = (side) => page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).nth(side === 'a' ? 0 : 1).click();
     await hit(win); taps.n += 1;
     if (loserPoints >= 2) { await hit(win === 'a' ? 'b' : 'a'); taps.n += 1; }
     await page.getByRole('button', { name: 'End round' }).click(); taps.n += 1;
@@ -519,7 +519,7 @@ try {
       const isDuel = sql(`select (e.fighter_id is not null)::text from public.matches m join public.entries e on e.id = m.entry_a where m.id = '${active}'`) === 'true';
       const dOne = decide(active), win = sideOf(dOne);
       await page.getByRole('button', { name: `Score ${names[0]} against ${names[1]}` }).first().click(); taps += 1;
-      await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 30000 });
+      await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 30000 });
       const t = { n: 0 }; await winOnScreen(page, win, names, t, win === 'a' ? dOne.b : dOne.a); taps += t.n;
       await page.getByRole('button', { name: 'Finish match' }).click(); taps += 1;
       await page.getByRole('button', { name: 'Save result' }).click(); taps += 1;
@@ -532,15 +532,15 @@ try {
     check('[tv 1920] the display moved on by itself', sawTv);
     check('[scorer phone] after OFFICIAL the next fight on this field is one tap away', (await page.getByRole('button', { name: /Next fight on Field 1/ }).count()) === 1);
     await page.getByRole('button', { name: /Next fight on Field 1/ }).click(); taps += 1;
-    await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 30000 });
+    await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 30000 });
     // the venue display follows the running score of this one (a duel: one hit = 2-0; a team fight: one round confirmed = 1-0)
     const second = sql(`select m.id from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state = 'active' and coalesce(m.field, 'Field 1') = 'Field 1'`);
     const names2 = [(await page.locator('.sk-side.a .sk-name').first().textContent()).trim(), (await page.locator('.sk-side.b .sk-name').first().textContent()).trim()];   // textContent: innerText would carry the CSS upper-casing
     const win2 = sideOf(decide(second));
-    const duel2 = (await page.getByRole('button', { name: 'Head or torso +2' }).count()) > 0;
+    const duel2 = (await page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).count()) > 0;
     const loser2 = win2 === 'a' ? names2[1] : names2[0];
     const downAll = async () => { const n = await page.locator(`button[aria-label^="${loser2} fighter "]`).count(); for (let i = 1; i <= n; i += 1) { await page.getByRole('button', { name: `${loser2} fighter ${i} standing` }).click(); taps += 1; } await page.getByRole('button', { name: 'Confirm round' }).click(); taps += 1; };
-    if (duel2) { await page.getByRole('button', { name: 'Head or torso +2' }).nth(win2 === 'a' ? 0 : 1).click(); taps += 1; } else await downAll();
+    if (duel2) { await page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).nth(win2 === 'a' ? 0 : 1).click(); taps += 1; } else await downAll();
     const want = duel2 ? (win2 === 'a' ? '2-0' : '0-2') : (win2 === 'a' ? '1-0' : '0-1');
     const liveShown = await tv.waitForFunction((w) => [...document.querySelectorAll('.ar-main .ar-score')].map(e => e.textContent.trim()).join('-').startsWith(w), want, { timeout: 30000 }).then(() => true, () => false);
     check(`[tv 1920] the running score ${want} reaches the hall display without anyone touching it`, liveShown, await text(tv, '.ar-main'));
@@ -554,7 +554,7 @@ try {
     await page.getByRole('button', { name: 'Finish match' }).click(); await page.getByRole('button', { name: 'Save result' }).click(); taps += 2;
     await page.getByText('Official: saved on the server').waitFor({ timeout: 20000 });
     await page.getByRole('button', { name: /Next fight on Field 1/ }).click(); taps += 1;
-    await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 30000 });
+    await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 30000 });
     await page.getByRole('button', { name: 'Back to the queue' }).click();
     await page.locator('button[aria-label^="Score "]').first().waitFor({ timeout: 30000 });
     const third = await scoreOne();
@@ -579,7 +579,7 @@ try {
     const A = activeOn('Field 2'), nA = namesOf(A);
     const B = sql(`select m.id from public.matches m join public.competitions k on k.id = m.competition_id where k.event_id = '${EV}' and m.queue_state = 'on_deck' and coalesce(m.field, 'Field 1') = 'Field 2'`), nB = namesOf(B);
     await page.getByRole('button', { name: `Score ${nA[0]} against ${nA[1]}` }).first().click();
-    await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 30000 });
+    await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 30000 });
     check('[offline] the fight opens as pending until saved', await has(page, 'Pending: not official until you save'));
     await ctx.setOffline(true);
     { const d = decide(A); await winOnScreen(page, sideOf(d), nA, { n: 0 }, sideOf(d) === 'a' ? d.b : d.a); }
@@ -597,12 +597,12 @@ try {
     await page.getByRole('button', { name: 'Back to the queue (keep this pending)' }).click();
     await page.getByRole('button', { name: `Score ${nB[0]} against ${nB[1]}` }).first().waitFor({ timeout: 20000 });
     await page.getByRole('button', { name: `Score ${nB[0]} against ${nB[1]}` }).first().click();
-    const openedOffline = await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 8000 }).then(() => true, () => false);
+    const openedOffline = await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 8000 }).then(() => true, () => false);
     check('[offline] opening the NEXT fight needs signal (it is put on the field and its version re-read): without signal the screen says so, nothing is guessed', !openedOffline && /could not|signal|network|failed|offline/i.test(await text(page, 'main')), (await text(page, 'main')).slice(0, 300));
     issue('P2', 'scoring', 'Without signal a scorekeeper can finish the fight already open (pending on the device) but cannot open the next one: opening a fight sets it active on the server and re-reads its version. Paper is the fallback for the next fight until the signal is back (by design: no full offline mode).');
     await ctx.setOffline(false);
     await page.getByRole('button', { name: `Score ${nB[0]} against ${nB[1]}` }).first().click();
-    await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 30000 });
+    await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 30000 });
     await ctx.setOffline(true);
     { const d = decide(B); await winOnScreen(page, sideOf(d), nB, { n: 0 }, sideOf(d) === 'a' ? d.b : d.a); }
     await page.getByRole('button', { name: 'Finish match' }).click();
@@ -645,7 +645,7 @@ try {
     await page.goto(BASE + `/events/${SLUG}/field/Field%201`); await page.locator('button[aria-label^="Score "]').first().waitFor({ timeout: 30000 });
     const M = activeOn('Field 1'), nM = namesOf(M);
     await page.getByRole('button', { name: `Score ${nM[0]} against ${nM[1]}` }).first().click();
-    await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 30000 });
+    await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 30000 });
     const dM = decide(M), officialM = `final:${dM.result}:${dM.a}-${dM.b}`;
     const other = await finish('scorer2', M, dM.result, dM.a, dM.b);
     check('[conflict] another device makes the fight official first', other.body?.status === 'accepted' && mstate(M) === officialM, `${mstate(M)} ${JSON.stringify(other.body)} M=${M}`);
@@ -660,7 +660,7 @@ try {
     // stale: the match changes (reopened by the organizer) while this device holds it open
     const S = activeOn('Field 1'), nS = namesOf(S);
     await page.getByRole('button', { name: `Score ${nS[0]} against ${nS[1]}` }).first().click();
-    await page.getByText(/Head or torso \+2|standing/).first().waitFor({ timeout: 30000 });
+    await page.getByText(/Head or torso(, two hands)? \+2|standing/).first().waitFor({ timeout: 30000 });
     const dS = decide(S);
     await finish('scorer2', S, dS.result, dS.a, dS.b);
     const re = await rpc('organizer', 'reopen_match', { p_match: S, p_reason: 'Marshal error: wrong fighter named' });

@@ -32,9 +32,9 @@ const idb = (store) => page.evaluate((s) => new Promise((res) => {
 const setSession = (s) => page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [storageKey, s]);
 const goOffline = async () => { mock.st.offline = true; await ctx.setOffline(true); };
 const goOnline = async () => { mock.st.offline = false; await ctx.setOffline(false); };
-const openMatch = async () => { await page.getByRole('button', { name: 'Score Iron Wolves against Ash Guard' }).click(); await page.getByText('Head or torso +2').first().waitFor(); };
+const openMatch = async () => { await page.getByRole('button', { name: 'Score Iron Wolves against Ash Guard' }).click(); await page.getByText(/^Head or torso(, two hands)? \+2$/).first().waitFor(); };
 const winMatchAsA = async () => {
-  for (let r = 0; r < 2; r++) { await page.getByRole('button', { name: 'Head or torso +2' }).first().click(); await page.getByRole('button', { name: 'End round' }).click(); }
+  for (let r = 0; r < 2; r++) { await page.getByRole('button', { name: /^Head or torso(, two hands)? \+2$/ }).first().click(); await page.getByRole('button', { name: 'End round' }).click(); }
   await page.getByText('wins the match').first().waitFor();
 };
 

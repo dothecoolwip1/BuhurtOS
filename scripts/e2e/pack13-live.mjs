@@ -84,7 +84,7 @@ try {
   await tab.goto(BASE + FIELD1);
   await tab.getByRole('button', { name: /Score Aldric Stone against Brann Oakley/ }).click();
   await tab.waitForSelector('.ly-timer', { timeout: 30000 });
-  check('1. a duel opens on the LYST screen (clock, round zone), not the classic board', (await tab.locator('.ly-timer').count()) === 1 && (await tab.getByText('Head or torso +2').count()) === 0, await body(tab));
+  check('1. a duel opens on the LYST screen (clock, round zone), not the classic board', (await tab.locator('.ly-timer').count()) === 1 && (await tab.getByText(/^Head or torso(, two hands)? \+2$/).count()) === 0, await body(tab));
   check('2. the clock shows the round preset 1:00 and it is idle (nothing runs by itself)', (await clockText(tab)) === '1:00' && /ready/i.test(await textOf(tab, '.ly-word')) && timerRow() === 'none', `${await clockText(tab)} / ${timerRow()}`);
   check('3. the screen says the score is pending, and offers START ROUND 1', (await has(tab, 'Pending: not official until you finish the match')) && (await tab.getByRole('button', { name: /Start round 1/ }).count()) === 1);
   check('4. the match was opened in Lyst Control on the server (weighted +2/+1 input for a longsword duel)', await waitDb(() => sql(`select counter_input from public.lyst_matches where match_id = '${mid(1)}'`), 'weighted') === 'weighted');
