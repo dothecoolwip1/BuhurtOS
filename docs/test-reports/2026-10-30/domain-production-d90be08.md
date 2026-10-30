@@ -1,6 +1,6 @@
 # BuhurtOS new-domain verification — 2026-10-30
 
-Live site: https://buhurt-os.app. Observed footer: **d90be08**, built 2026-10-30 16:21 UTC. Edge Chromium, requested viewport 390×844; DOM measured innerWidth 390, innerHeight 844, document scrollWidth 375 on the duel desk. No horizontal overflow there. Touch emulation and a second isolated Edge context were unavailable through the connected browser tools. Do not treat this as a completed physical-phone rehearsal.
+Live site: https://buhurt-os.app. Observed footer: **d90be08**, built 2026-10-30 16:21 UTC. Edge Chromium, requested viewport 390×844; DOM measured innerWidth 390, innerHeight 844, document scrollWidth 375 on the duel desk. No horizontal overflow there. Follow-up completed in a separate Edge Profile 2, verified signed out before QR redemption while Profile 1 retained organizer access. Phone viewport 390×844. Touch emulation is unavailable; this is browser phone-width testing, not a physical touchscreen rehearsal.
 
 ## Results
 
@@ -11,8 +11,8 @@ Live site: https://buhurt-os.app. Observed footer: **d90be08**, built 2026-10-30
 | 3 Email code | PASS functionally; FAIL copy accuracy | Organizer received an **eight-digit** code although UI repeatedly promises six digits. The field accepted it and sign-in succeeded on apex. Email contained no link: **email link not checked — code-only email**. Email also says “create your account” for an existing user. Screenshots 09–10. |
 | 4 Google | PASS on fresh retry; earlier outcome inconclusive | Google account chooser appeared with redirect_to=https://buhurt-os.app/account and no origin_mismatch or redirect_uri_mismatch. Initial user-completed return stayed signed out, including after revisiting Account. A fresh later attempt signed organizer in successfully on apex. Concurrent earlier OAuth attempts may have affected the first callback; not a reproducible product failure. Screenshots 08, 24. |
 | 5 Test event | PASS | Test checkbox selected, review explicitly private/test, one Men Longsword competition, two organizer-added existing synthetic fighters. Event page shows Test data and staff-only note, scheduled cleanup November 10. Screenshot 16. |
-| 6 Counter QR | PARTIAL / BLOCKED | QR creation succeeded, no captured warning/error. Decoded the rendered SVG locally: link starts exactly https://buhurt-os.app/device#c=. Secret suffix omitted. Connected Edge supports shared-session tabs only, not isolated contexts; did not substitute a shared tab and claim isolation. Device-session redemption and CORS response/status therefore **not tested**. |
-| 7 Score/finalize | PARTIAL | Desk started/ended two rounds; automatic score dialogs opened. Confirmed 4–2 and 6–2, saved official **10–4 Man A**. Server-confirmed official screen passed. Counter “Head or torso, two hands +2” label and phone seeing end were **not tested** because step 6 is blocked. Screenshots 13–15. |
+| 6 Counter QR | PASS | Apex QR link redeemed in separate Edge Profile 2, initially signed out. Temporary Counter role and synthetic event opened. No captured console warning/error or visible CORS/device-session error. Response headers/status were not captured. Screenshot 29. |
+| 7 Score/finalize | PASS behavior; FAIL wording/state notices | Separate phone +2 incremented exactly two; +1 and Undo worked. Both round-end confirmation dialogs opened automatically; submissions reached desk without reload. New fight official 10–3; phone automatically showed final score in Last fight, Nothing on yet, disabled controls. Missing two-hands label and stale next-round notice: F2/F3. Screenshots 30–34. |
 | 8 Public pages/privacy | PASS for sampled pages | Signed-out Red Deer Rumble 2026, Garrett Robson fighter, Red Deer Reavers team loaded with empty captured console warning/error arrays. New test event direct URL returned generic 404 signed out; all-dates event search found no match. New non-staff password account saw “Event not available.” This fixture remains a draft; published-private behavior was not retested here. Screenshots 03–05, 22–23, 26. |
 | 9 Share/calendar | PASS | Share copied apex event URL. Google Calendar link has apex event URL in details; outer calendar.google.com destination is expected. Downloaded ICS URL and DESCRIPTION use apex. Download event listener timed out, but files actually downloaded and were read and verified. Screenshot 17 and exported ICS included. |
 | 10 Install/push | PASS for manifest/subscription UI | Manifest loaded on apex with relative scope/start_url/shortcuts. Edge offered Install BuhurtOS. Owner accepted browser notification permission. Manage devices showed Allowed / On / THIS DEVICE; Send me a test returned “Test sent.” No claim of visually observed OS toast. Successful subscription is evidence of worker-backed push functioning, but service-worker registration was not separately inspected in DevTools. Screenshots 06, 20–21. |
@@ -87,52 +87,87 @@ The field names above are illustrative, not a reviewed schema patch. Enforce the
 
 No old vercel.app or github.io link was found in the sampled apex pages, copied event link, calendar URLs, decoded Counter QR or manifest. This is not a whole-site crawl. When deliberately browsing the old Vercel host, its relative navigation stayed on that host, as expected for an address that must continue to work.
 
-No device-session request was made in an isolated phone context, so no CORS response headers/status exist for this run. Console checks only cover captured entries, not a complete network trace. Native Windows screenshot/input mapping failed for the notification permission dialog; owner completed that control. Explicit clipped screenshots sometimes timed out; default screenshots succeeded and were visually checked. No fabricated screenshots or reconstructed UI images are included.
+Follow-up redeemed the device session successfully in isolated Edge Profile 2. No CORS response headers/status were recorded; successful UI redemption and empty captured warning/error logs are the evidence. Console checks only cover captured entries, not a complete network trace. Native Windows screenshot/input mapping failed for the notification permission dialog; owner completed that control. Explicit clipped screenshots sometimes timed out; default screenshots succeeded and were visually checked. No fabricated screenshots or reconstructed UI images are included.
 
-Remaining required verification: isolated counter context with touch, Longsword +2 pad, device-session/CORS, counter final screen. All records preserved for continuation.
-
-## Screenshots
-
-![01-www-apex](domain-production-d90be08-evidence/01-www-apex.png)
-
-![02-old-address](domain-production-d90be08-evidence/02-old-address.png)
-
-![03-public-event](domain-production-d90be08-evidence/03-public-event.png)
-
-![04-public-fighter](domain-production-d90be08-evidence/04-public-fighter.png)
-
-![05-public-team](domain-production-d90be08-evidence/05-public-team.png)
-
-![06-manifest](domain-production-d90be08-evidence/06-manifest.png)
-
-![08-signin-return-still-signed-out](domain-production-d90be08-evidence/08-signin-return-still-signed-out.png)
-
-![09-code-six-digit-prompt](domain-production-d90be08-evidence/09-code-six-digit-prompt.png)
-
-![10-email-code-signed-in](domain-production-d90be08-evidence/10-email-code-signed-in.png)
-
-![13-round-running](domain-production-d90be08-evidence/13-round-running.png)
-
-![14-round-two-confirm](domain-production-d90be08-evidence/14-round-two-confirm.png)
-
-![15-official-result](domain-production-d90be08-evidence/15-official-result.png)
-
-![16-created-event-notice](domain-production-d90be08-evidence/16-created-event-notice.png)
-
-![17-calendar](domain-production-d90be08-evidence/17-calendar.png)
-
-![20-push-subscribed](domain-production-d90be08-evidence/20-push-subscribed.png)
-
-![21-push-test-sent](domain-production-d90be08-evidence/21-push-test-sent.png)
-
-![22-private-event-signed-out](domain-production-d90be08-evidence/22-private-event-signed-out.png)
-
-![23-private-event-public-search](domain-production-d90be08-evidence/23-private-event-public-search.png)
-
-![24-google-retry](domain-production-d90be08-evidence/24-google-retry.png)
-
-![25-password-signin-passed](domain-production-d90be08-evidence/25-password-signin-passed.png)
-
-![26-private-event-nonstaff](domain-production-d90be08-evidence/26-private-event-nonstaff.png)
+Isolated QR redemption, Longsword +2 behavior, submissions and automatic final-result transition are now verified. Physical touch behavior remains unverified. All records preserved.
 
 Evidence quality note: screenshots 20, 21 and 24 were returned as scaled captures by the browser tool. Treat the readable saved device-status text and recorded UI observations as their supporting evidence; these three images alone are not sufficient visual proof. Screenshot 25 was replaced with a readable 390×844 capture.
+
+
+## Separate Edge phone follow-up — 2026-10-30
+
+Same production footer d90be08. Organizer: Edge Profile 1; phone: separate Edge Profile 2, initially signed out. QR secret is excluded from all uploads. This supersedes the initial blocked phone checks.
+
+New synthetic competition: TEST Phone Session Longsword, in the same private test event. New match 47656cd0-2f99-468d-90b8-a84265d648ad. Existing 10–4 match preserved. New rounds 4–1 and 6–2; official result 10–3 to TEST Outrance Man A. No real records changed or records deleted.
+
+Desk URL: https://buhurt-os.app/events/test-new-domain-longsword-rehearsal-2026-10-30/field/Field%201?match=47656cd0-2f99-468d-90b8-a84265d648ad&from=control
+
+Phone URL: https://buhurt-os.app/device (QR credential fragment intentionally omitted).
+
+- PASS: QR signs into temporary Counter role without organizer account login or visible network/CORS error.
+- PASS: +2 gives 0→2→4; +1 gives 5; Undo returns 4. Target measured 168.33×253.20 px at 390×844, above 44 px; document scrollWidth 375, no horizontal overflow.
+- PASS: Ending each round opens the correct round-specific Confirm score / Edit score dialog automatically. Both submissions reach desk without reloading.
+- PASS: Final save shows Official / saved on server, winner A, 10–3. Phone changes automatically to Last fight 10–3 to A, Nothing on yet, waiting for next fight; Count/Undo/Done disabled.
+- FAIL: Longsword pad only says +2; accessible name omits two hands. See F2.
+- FAIL: Confirmed-score notice persists during the next running round and after the final result. See F3.
+- Captured phone warning/error logs: empty array. No failed request URL/status observed; network response headers were not collected.
+
+### F2 — P2: Longsword +2 lacks the required scoring explanation
+
+Observed visible text: +2. Accessible name: Count two points, head or torso. Expected: Head or torso, two hands +2. The two-handed requirement is absent from both, so a counter cannot identify it from the pad. Behavior itself passed. Screenshot 30.
+
+Suggested component-level change (illustrative; wire to existing scoring callback, do not duplicate it):
+
+~~~tsx
+<button
+  aria-label="Head or torso, two hands +2"
+  onClick={() => recordStrike(2)}
+  className="strike-pad"
+>
+  <span>Head or torso, two hands</span>
+  <strong>+2</strong>
+</button>
+~~~
+
+~~~css
+.strike-pad { min-height: 44px; min-width: 0; white-space: normal; }
+.strike-pad span { display: block; overflow-wrap: anywhere; }
+~~~
+
+Retain the existing large pad dimensions. Verify the wording at 390×844, screen-reader name, exactly one +2 per activation and Undo. No implementation changes made.
+
+### F3 — P2: stale confirmation notice contradicts live and final state
+
+After round 1 submitted and round 2 started, count reset to zero and timer ran (0:57), but alert still said Score confirmed. Wait for the next round. After saving the official result it still said the same beneath Waiting for the next fight. Screenshots 32–33 and saved DOM text. This is a state/copy failure, not a failed submission.
+
+Suggested approach: scope confirmation feedback to the exact fight and round; derive its visibility from current phase. Do not let a successful submission's free-standing message persist across rounds or finalization. Illustrative TypeScript contract (adapt identifiers/phases to actual code):
+
+~~~tsx
+type SubmissionKey = { matchId: string; round: number };
+const sameSubmission = submitted?.matchId === currentMatch?.id
+  && submitted?.round === currentRound;
+const showConfirmation = sameSubmission
+  && phase === 'awaiting-next-round'
+  && !isFinal;
+
+return showConfirmation
+  ? <p role="status">Score confirmed. Wait for the next round.</p>
+  : null;
+~~~
+
+Keep the existing final-result/next-fight status as the authoritative final message. Regression: submit round 1, start round 2, finalize, then start another fight with round number 1; stale confirmation must not carry over. Also test delayed submission responses and reconnects. No code changed.
+
+
+## Follow-up screenshots
+
+![29-isolated-qr-session.png](domain-production-d90be08-evidence/29-isolated-qr-session.png)
+
+![30-phone-plus-two.png](domain-production-d90be08-evidence/30-phone-plus-two.png)
+
+![31-phone-round-confirm.png](domain-production-d90be08-evidence/31-phone-round-confirm.png)
+
+![32-phone-round-two-stale-notice.png](domain-production-d90be08-evidence/32-phone-round-two-stale-notice.png)
+
+![33-phone-final.png](domain-production-d90be08-evidence/33-phone-final.png)
+
+![34-desk-official.png](domain-production-d90be08-evidence/34-desk-official.png)
