@@ -5,8 +5,11 @@ import { ServerClock, remainingMs, type LystTimer } from './timer';
 import { realtimeChannel } from '../realtimeChannel';
 import { readCounterCache, saveCounterCache } from './counterCache';
 import { classifyRpcError } from '../scoreSender';
+import { isExpiredSignIn, pollBackoffMs, sessionRefresher } from './pollRecovery';
 
 const POLL_MS = 2500;
+/** One sign-in refresh for every Lyst screen on this device (an expired token is not "no signal"). */
+const refreshSignIn = sessionRefresher(() => supabase.auth.refreshSession().then(r => { if (r.error) throw r.error; }));
 
 /** A re-render source for a ticking clock: only runs while `active`, and reads the DEVICE clock (the server offset is added by the caller). */
 export function useNow(active: boolean, everyMs = 100): number {
@@ -45,6 +48,9 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
   srcRef.current = src;
   /** The state on screen right now (a command's answer merges into this, never into an older copy captured before it was sent). */
   const shown = useRef<S | null>(null);
+  /** Consecutive failed reads, and the earliest time the next BACKGROUND poll may read (a person's refresh, online and visibility read at once). */
+  const failures = useRef(0);
+  const retryAt = useRef(0);
 
   const apply = useCallback((s: S, sentAt?: number, receivedAt?: number) => {
     const at = Date.parse(srcRef.current.serverNow(s));
@@ -62,11 +68,18 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
     try {
       do {
         again.current = false;
-        try { const r = await srcRef.current.fetch(); if (live.current && generation.current === epoch) apply(r.state, r.sentAt, r.receivedAt); }
-        catch (e) {
+        try {
+          const r = await srcRef.current.fetch();
+          if (live.current && generation.current === epoch) { failures.current = 0; retryAt.current = 0; apply(r.state, r.sentAt, r.receivedAt); }
+        } catch (e) {
           if (!live.current || generation.current !== epoch) break;
+          // an expired sign-in: refresh it and read again, instead of showing "No signal" until the page is reloaded
+          if (isExpiredSignIn(e) && await refreshSignIn() && live.current && generation.current === epoch) { again.current = true; continue; }
+          failures.current++; retryAt.current = Date.now() + pollBackoffMs(failures.current, POLL_MS);
           // no signal: keep showing the last true state (the server clock keeps running) and say so
           if (classifyRpcError(e) !== 'reject' || (typeof navigator !== 'undefined' && navigator.onLine === false)) setOffline(true); else setError(e);
+          // do not replay reads queued while this one was failing: the next poll (after the back-off) or a person's refresh reads again
+          again.current = false;
         }
       } while (again.current && live.current && generation.current === epoch);
     } finally { if (inFlight.current === epoch) inFlight.current = null; }
@@ -78,8 +91,9 @@ function useServerState<S>(src: Source<S>, enabled: boolean, nudge: { table: str
     clock.current = new ServerClock();
     if (!enabled) return () => { live.current = false; };
     void refresh();
-    const poll = window.setInterval(() => { if (!document.hidden) void refresh(); }, POLL_MS);
-    const on = () => { void refresh(); };
+    failures.current = 0; retryAt.current = 0;
+    const poll = window.setInterval(() => { if (!document.hidden && Date.now() >= retryAt.current) void refresh(); }, POLL_MS);
+    const on = () => { if (!document.hidden) retryAt.current = 0; void refresh(); };
     window.addEventListener('online', on);
     document.addEventListener('visibilitychange', on);
     let debounce: number | undefined;

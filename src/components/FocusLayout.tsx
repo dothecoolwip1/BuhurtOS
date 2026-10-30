@@ -81,7 +81,7 @@ export function FocusLayout() {
         </div>
         {(!online || bar.pending !== undefined) && (
           <span className={`chip focus-conn ${!online ? 'live' : bar.pending ? 'brass' : 'win'}`} role="status">
-            {!online ? 'Offline' : bar.pending ? `${bar.pending} pending` : 'Synced'}
+            {!online ? 'Offline' : bar.pending ? `${bar.pending} pending` : 'Scores sent'}
           </span>
         )}
       </header>

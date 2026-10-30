@@ -196,6 +196,17 @@ export function nextAfter(t: Timing, confirmed: number, total: Pair): Next {
   return confirmed === t.rounds ? 'tiebreak' : 'head_marshal';
 }
 
+/**
+ * The calls that END the fight whatever the score: a KO (§14.11), a Division 1 TKO for lack of defence (§14.8), a TKO for armour or weapon failure
+ * (§14.2, §14.4), for stalling (§11.4) or by the corner (§6.2), a yield or a medical retirement (§5.2), and any disqualification (§13.4, §14.10).
+ * A Division 2 TKO (tko_round) loses the round only. The same list as the server's private.outrance_fight_ender.
+ */
+export const FIGHT_ENDING_KEYS: readonly string[] = ['ko', 'tko', 'tko_equipment', 'tko_stalling', 'tko_corner', 'yield', 'medical'];
+/** Is the fight over by a call (active, not voided, calls only)? Then no further round and no points decision is offered. */
+export function fightEnded(active: readonly { kind: string; key?: string | null }[], next?: string | null): boolean {
+  return next === 'stopped' || active.some(d => d.kind === 'dq' || (d.kind === 'stoppage' && !!d.key && FIGHT_ENDING_KEYS.includes(d.key)));
+}
+
 /** §14.8: a TKO for lack of defence loses the match in Division 1 and the round in Division 2. */
 export const tkoLosesFight = (division: Division): boolean => division === '1';
 

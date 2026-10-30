@@ -151,6 +151,8 @@ export interface CounterState {
   waiting?: boolean;
   match_id?: string | null; competition?: string | null; round_label?: string | null; final?: boolean; fighter?: string | null; opponent?: string | null;
   counter_input?: CounterInput; per_side?: number | null; standing?: number | null;
+  /** The competition's category (longsword, sword_shield, ...), so the +2 pad can name its rule. Absent from servers before 20261113000200. */
+  category?: string | null;
   round?: { no: number; status: 'running' | 'confirming' | 'confirmed' } | null; my_total?: number; submitted?: boolean; can_count?: boolean;
   timer?: (LystTimer & { now_remaining_ms: number }) | null;
   /** The field's last finished fight, the one on now and the next in its running order (null each when there is none). */
@@ -217,7 +219,8 @@ export type OutrancePhone =
   | { position: 'wrong'; need: 'side' | 'line_marshal' }
   | { position: 'ok'; round_no: number | null; fighters: { a: string | null; b: string | null }; tally: OutranceTally | null; last: { mark: Mark; side: 'a' | 'b' } | null;
       needs_criteria: boolean | null; sheet: OutranceSheet | null; timing: OutranceTiming | null };
-export type OutranceNext = 'confirm' | 'round' | 'tiebreak' | 'head_marshal' | 'finish';
+/** 'stopped': a fight-ending call (KO, Division 1 TKO, the other stoppages, a disqualification) is on record: no more rounds, no points decision. */
+export type OutranceNext = 'confirm' | 'round' | 'tiebreak' | 'head_marshal' | 'finish' | 'stopped';
 export type OutranceHoldKind = 'medic_check' | 'assessment' | 'equipment' | 'knocked_out';
 export interface OutranceState {
   rules: string; timing: OutranceTiming | null;
@@ -225,6 +228,7 @@ export interface OutranceState {
   rounds: { round_no: number; marshals: number; a: number; b: number; short: boolean; reason: string | null; confirmed_at: string }[];
   protocol: { round_no: number; yellows: Pair; armour: Pair; stoppage: 'a' | 'b' | null }[];
   totals: { unit: number; a: number; b: number; rounds: number; open: number; leader: 'a' | 'b' | null; win_type: string | null; next: OutranceNext | null;
+    ended_by?: { id: string; side: 'a' | 'b'; kind: string; key: string | null; label: string; round: number } | null;
     marshals: { seat_id: string; operator: string | null; source?: 'phone' | 'paper'; a: number; b: number; rounds: number; result: 'a' | 'b' | 'draw' }[] };
   holds: { id: string; side: 'a' | 'b'; kind: OutranceHoldKind; created_at: string; from_match: string; during_fight?: boolean }[];
   appeals: { id: string; side: 'a' | 'b'; lodged_by: 'competitor' | 'corner'; grounds: string; lodged_at: string; decision: 'upheld' | 'rejected' | null; outcome: string | null; decision_note: string | null }[];

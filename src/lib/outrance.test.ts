@@ -94,3 +94,20 @@ describe('a finished Profight shows its exact Total Fight Score', () => {
     expect(exactMatchScore(null)).toBeNull();
   });
 });
+
+import { fightEnded } from './outrance';
+describe('seven-profile rehearsal: a fight-ending call ends the fight whatever the score (§14.11, §14.8, §13.4)', () => {
+  it('a KO, a Division 1 TKO, the other stoppages and a disqualification end it', () => {
+    for (const key of ['ko', 'tko', 'tko_equipment', 'tko_stalling', 'tko_corner', 'yield', 'medical']) expect(fightEnded([{ kind: 'stoppage', key }])).toBe(true);
+    expect(fightEnded([{ kind: 'dq', key: 'red' }])).toBe(true);
+    expect(fightEnded([{ kind: 'dq', key: 'equipment' }])).toBe(true);
+  });
+  it('a Division 2 TKO, warnings, cards and armour do not', () => {
+    expect(fightEnded([{ kind: 'stoppage', key: 'tko_round' }, { kind: 'warning' }, { kind: 'card', key: 'yellow' }, { kind: 'armour' }, { kind: 'note' }])).toBe(false);
+    expect(fightEnded([])).toBe(false);
+  });
+  it('the server saying "stopped" is enough (a desk whose call list is behind)', () => {
+    expect(fightEnded([], 'stopped')).toBe(true);
+    expect(fightEnded([], 'tiebreak')).toBe(false);
+  });
+});

@@ -22,6 +22,7 @@ export function friendlyError(error: unknown, fallback = 'Something went wrong. 
   if (m.includes('rate limit') || e.status === 429) return 'Too many attempts. Wait a minute and try again.';
   if (m.includes('invalid') && (m.includes('token') || m.includes('otp') || m.includes('code'))) return 'That code is not right or has expired. Request a new one.';
   if (m.includes('failed to fetch') || m.includes('network')) return 'Could not reach BuhurtOS. Check your signal and try again.';
+  if (m.includes('abort') || m.includes('timed out') || m.includes('timeout')) return 'BuhurtOS did not answer in time. Nothing you entered is lost; try again.';
   return fallback;
 }
 

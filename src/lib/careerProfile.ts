@@ -231,3 +231,13 @@ export function representedText(r: RepresentedFighter): string {
   if (parts.length === 0 && r.individualFights > 0) parts.push(fightWord(r.individualFights));
   return parts.join(' · ');
 }
+
+/**
+ * A fighter's Upcoming list. A real fighter's public profile does not list fictional (synthetic) events: those are labelled demo and rehearsal data,
+ * hidden from the events list by default, and next to a real event's name ("Red Deer Rumble-test" beside the Red Deer Rumble) they mislead
+ * (domain rehearsal 2026-10-30, O2). A fictional fighter's profile lists them, as its career does. Cancelled events never show.
+ */
+export function upcomingFor<T extends { endsOn: string; startsOn: string; eventStatus: string; eventSlug: string }>(a: readonly T[], today: string, context: CareerContext, fictionalEvent: (slug: string) => boolean): T[] {
+  return a.filter(x => x.endsOn >= today && x.eventStatus !== 'cancelled' && (context === 'test' || !fictionalEvent(x.eventSlug)))
+    .sort((x, y) => x.startsOn.localeCompare(y.startsOn));
+}

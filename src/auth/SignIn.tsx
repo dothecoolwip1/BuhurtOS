@@ -129,15 +129,15 @@ export function SignIn({ reason, next: nextProp, startIn = 'password' }: { reaso
 
       {(mode === 'code' || mode === 'code_sent') && (mode === 'code' ? (
         <form onSubmit={e => { e.preventDefault(); void run(async () => { const err = await sendCode(email); if (err) setError(err); else setMode('code_sent'); }); }} className="auth-form" aria-label="Sign in with an email code">
-          <p className="muted">We email you a 6-digit code instead of using a password.</p>
+          <p className="muted">We email you a sign-in code instead of using a password.</p>
           {emailField}
           <button className="btn btn-ink" type="submit" disabled={busy || !okEmail}>{busy ? 'Sending…' : 'Email me a code'}</button>
           <p className="auth-switch"><button type="button" className="linklike" onClick={() => go('password')}>Use a password instead</button></p>
         </form>
       ) : (
         <form onSubmit={e => { e.preventDefault(); void run(async () => { const err = await verifyCode(email, code); if (err) setError(err); }); }} className="auth-form" aria-label="Enter the email code">
-          <p>We sent a 6-digit code to <b style={{ overflowWrap: 'anywhere' }}>{email}</b>. It can take a minute; check spam.</p>
-          <label className="field-in">Code
+          <p>We sent a sign-in code to <b style={{ overflowWrap: 'anywhere' }}>{email}</b>. It can take a minute; check spam.</p>
+          <label className="field-in">Code from the email
             <input inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,8}" required value={code} onChange={e => setCode(e.target.value)} />
           </label>
           <button className="btn btn-ink" type="submit" disabled={busy || code.replace(/\s/g, '').length < 6}>{busy ? 'Signing in…' : 'Sign in'}</button>

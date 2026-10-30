@@ -9,6 +9,7 @@ import { LogPanel } from './LogPanel';
 import { RulesSheet } from '../rules/RulesSheet';
 import { counterReviewReason } from '../../lib/lyst/delivery';
 import { useReliableTimer } from '../../lib/lyst/useReliableTimer';
+import { sendWithRetry } from '../../lib/lyst/pollRecovery';
 import { useLystState, useNow } from '../../lib/lyst/useLystState';
 import { openLyst, outranceAppeal, outranceAppealDecide, outranceClearHold, outranceEnterSheet, outranceFinish, outranceMatchHolds, outranceRemoveSheet, returnRound, setProfightFormat,
   type LystState, type OutranceCall, type OutranceFinishBasis, type OutranceSheet, type OutranceState } from '../../data/lyst';
@@ -23,7 +24,7 @@ import { mergeSides, sideVars } from '../../lib/lyst/counters';
 import { clearFinalCommand, loadFinalCommand, saveFinalCommand } from '../../lib/lyst/finalizeStore';
 import { activeDiscipline, currentRound, describeDiscipline, type LystDiscipline, type LystRound } from '../../lib/lyst/rounds';
 import { presetOf, remainingMs, timerFor } from '../../lib/lyst/timer';
-import { BAND_LABEL, CRITERION_LABEL, WIN_TYPE_LABEL, roundScoreUnits, showScore, wholeScore, type Division, type FightFormat } from '../../lib/outrance';
+import { BAND_LABEL, CRITERION_LABEL, WIN_TYPE_LABEL, fightEnded, roundScoreUnits, showScore, wholeScore, type Division, type FightFormat } from '../../lib/outrance';
 import type { LystScoringProps } from './LystScoring';
 import { fetchWeightClasses } from '../../data/profight';
 import { useAsync } from '../../lib/useAsync';
@@ -163,10 +164,17 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   const savePaper = async (round: LystRound, v: { marshal: string; tally: Tally; calls: CriteriaCalls; reason: string | null }) => {
     setBusy(true); setPaperMsg(null);
     try {
-      await outranceEnterSheet({ id: paperId.current, matchId: match.id, round: round.round_no, marshal: v.marshal, tally: v.tally, calls: v.calls, replaces: fixing?.sheet_id ?? null, reason: v.reason });
+      // the sheet's id is fixed while this dialog is open: a repeat is the same sheet, so an unanswered send is tried again by itself
+      const args = { id: paperId.current, matchId: match.id, round: round.round_no, marshal: v.marshal, tally: v.tally, calls: v.calls, replaces: fixing?.sheet_id ?? null, reason: v.reason };
+      await sendWithRetry(() => outranceEnterSheet(args), isNoSignalError);
       trackEvent('outrance_paper_sheet', { round: round.round_no, fix: !!fixing });
       setSheet(afterPaper()); setFixing(null); await lyst.refresh(true);
-    } catch (e) { setPaperMsg(friendlyError(e, 'Could not save the paper sheet. Check your connection and try again.')); } finally { setBusy(false); }
+    } catch (e) {
+      setPaperMsg(isNoSignalError(e)
+        ? 'The server has not confirmed this sheet yet. It is kept here: Add the sheet again sends the same sheet, so it cannot be counted twice.'
+        : friendlyError(e, 'Could not save the paper sheet. Check your connection and try again.'));
+      void lyst.refresh(true);
+    } finally { setBusy(false); }
   };
   const removePaper = async (why: string) => {
     if (!fixing) return;
@@ -278,6 +286,8 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
   const canConfirm = !!cur && rulesCount && missing.length === 0 && (!deliveryReason || reason.trim().length >= 3) && !busy && waiting === 0;
   const stoppages = activeDiscipline(discipline).filter(d => d.kind === 'stoppage' && d.key && STOPPAGE[d.key]);
   const dq = (['a', 'b'] as const).filter(s => activeDiscipline(discipline).some(d => d.kind === 'dq' && d.side === s));
+  // a fight-ending call is on record: the fight is over whatever the score (§14.11, §14.8, §13.4). The server says so too ('stopped').
+  const ended = fightEnded(activeDiscipline(discipline), totals?.next);
   const marks = (s: 'a' | 'b') => {
     const a = activeDiscipline(discipline).filter(d => d.side === s);
     return { w: a.filter(d => d.kind === 'warning').length, y: a.filter(d => d.kind === 'card' && d.key === 'yellow').length, ar: a.filter(d => d.kind === 'armour').length, dq: a.some(d => d.kind === 'dq') };
@@ -332,10 +342,10 @@ export function OutranceScoring({ opened, eventId, userId, fieldName, nextFight,
           {(zone === 'confirm' || zone === 'fighting') && cur && sheet !== 'confirm' && sheetsBlock(cur)}
           {zone === 'between' && totals && timing && (
             <div className="ly-zone ly-act ly-act-two">
-              {(totals.next === 'round' || totals.next === 'tiebreak') && medicFirst.length > 0 && <p className="ly-note" role="status" data-testid="om-medic-first">{medicFirst.map(h => names[h.side]).join(' and ')} lost the round by TKO: the medic checks them before the next round (Outrance §14.8). Clear the check above when done.</p>}
-              {totals.next === 'round' && <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline || medicFirst.length > 0} onClick={() => startRound(nextNo)}>Start round {nextNo} of {timing.rounds} · {clockText(timing.round_seconds)}</button>}
-              {totals.next === 'tiebreak' && <><p className="ly-hint-line" role="status">Level after {timing.rounds} rounds: a 3rd round is fought (Outrance §4.2).</p><button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline || medicFirst.length > 0} onClick={() => startRound(nextNo)}>Start round {nextNo} · {clockText(timing.round_seconds)}</button></>}
-              {(totals.next === 'finish' || totals.next === 'head_marshal') && <button type="button" className="btn btn-win fq-big ly-go" disabled={busy} onClick={() => { setPhase('finishing'); setError(null); }}>Finish the fight</button>}
+              {!ended && (totals.next === 'round' || totals.next === 'tiebreak') && medicFirst.length > 0 && <p className="ly-note" role="status" data-testid="om-medic-first">{medicFirst.map(h => names[h.side]).join(' and ')} lost the round by TKO: the medic checks them before the next round (Outrance §14.8). Clear the check above when done.</p>}
+              {!ended && totals.next === 'round' && <button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline || medicFirst.length > 0} onClick={() => startRound(nextNo)}>Start round {nextNo} of {timing.rounds} · {clockText(timing.round_seconds)}</button>}
+              {!ended && totals.next === 'tiebreak' && <><p className="ly-hint-line" role="status">Level after {timing.rounds} rounds: a 3rd round is fought (Outrance §4.2).</p><button type="button" className="btn btn-win fq-big ly-go" disabled={timerBusy || lyst.offline || medicFirst.length > 0} onClick={() => startRound(nextNo)}>Start round {nextNo} · {clockText(timing.round_seconds)}</button></>}
+              {!ended && (totals.next === 'finish' || totals.next === 'head_marshal') && <button type="button" className="btn btn-win fq-big ly-go" disabled={busy} onClick={() => { setPhase('finishing'); setError(null); }}>Finish the fight</button>}
             </div>
           )}
           {stoppages.length > 0 && phase === 'scoring' && <button type="button" className="btn btn-win fq-big" onClick={() => setPhase('finishing')}>Finish: {stoppages[0].label}</button>}
@@ -480,14 +490,16 @@ function FinishBlock({ om, names, sides, stoppages, dq, canResolve, busy, onFini
   const leader = t.leader ?? 'draw';
   const type = t.win_type ? (WIN_TYPE_LABEL[t.win_type as keyof typeof WIN_TYPE_LABEL] ?? t.win_type) : null;
   const other = (s: 'a' | 'b') => (s === 'a' ? 'b' : 'a');
+  // a fight-ending call decides the fight (§14.11, §14.8, §13.4): only the call's own finish is offered, never a points decision or another round
+  const ended = stoppages.length > 0 || dq.length > 0 || fightEnded([], t.next);
   return (
     <div className="om-finish" data-testid="om-finish">
       <p className="mono om-total-line">{names.a} {showScore(t.a)} – {showScore(t.b)} {names.b}</p>
       <ul className="ly-rounds-list">{om.rounds.map(r => <li key={r.round_no}>Round {r.round_no}: <b className="mono">{showScore(r.a)}–{showScore(r.b)}</b> <span className="src">({r.marshals} marshal{r.marshals === 1 ? '' : 's'}{r.short ? ', a phone missing' : ''})</span></li>)}</ul>
       {t.marshals.length > 0 && <p className="src">Each marshal's fight: {t.marshals.map(m => `${m.operator ?? 'Marshal'} ${m.a}–${m.b}`).join(' · ')}{type ? ` → ${type}` : ''}</p>}
-      {t.next === 'finish' && <button type="button" className="btn btn-win fq-big" disabled={busy} onClick={() => onFinish('decision', leader, type ? `by ${type.toLowerCase()}` : 'on points', null)} data-testid="om-finish-decision">
+      {!ended && t.next === 'finish' && <button type="button" className="btn btn-win fq-big" disabled={busy} onClick={() => onFinish('decision', leader, type ? `by ${type.toLowerCase()}` : 'on points', null)} data-testid="om-finish-decision">
         {leader === 'draw' ? `Save the draw${type ? ` (${type.toLowerCase()})` : ''}` : `${names[leader]} wins on the Total Fight Score${type ? ` · ${type}` : ''}`}</button>}
-      {t.next === 'head_marshal' && (
+      {!ended && t.next === 'head_marshal' && (
         <div className="ly-other-block"><b>Still level after the 3rd round. The head marshal decides (§2.1).</b>
           {canResolve ? <>
             <div className="mactions">{(['a', 'draw', 'b'] as const).map(r => <button key={r} type="button" className={`btn ${hm === r ? 'btn-ink' : 'btn-line'}`} onClick={() => setHm(r)}>{r === 'draw' ? 'Draw' : names[r]}</button>)}</div>
@@ -498,7 +510,8 @@ function FinishBlock({ om, names, sides, stoppages, dq, canResolve, busy, onFini
       )}
       {stoppages.map(d => { const s = STOPPAGE[d.key!]; const w = other(d.side); return <button key={d.id} type="button" className="btn btn-win fq-big" disabled={busy} onClick={() => onFinish(s.basis, w, s.word, null)}>{sides[w].name} · {names[w]} wins {s.word}</button>; })}
       {dq.map(s => <button key={s} type="button" className="btn btn-win fq-big" disabled={busy} onClick={() => onFinish('dq', other(s), `: ${names[s]} disqualified`, null)}>{names[other(s)]} wins: {names[s]} disqualified</button>)}
-      {t.next === 'round' || t.next === 'tiebreak' || t.next === 'confirm' ? <p className="ly-note">{t.next === 'confirm' ? 'Confirm the round first.' : t.next === 'tiebreak' ? 'Level: the 3rd round is fought first (§4.2).' : 'More rounds to fight (§4).'} A stoppage or disqualification can still end the fight.</p> : null}
+      {ended && <p className="ly-note" data-testid="om-ended-note">The fight was stopped by the call: it ends now, whatever the score. No further round is fought.</p>}
+      {!ended && (t.next === 'round' || t.next === 'tiebreak' || t.next === 'confirm') ? <p className="ly-note">{t.next === 'confirm' ? 'Confirm the round first.' : t.next === 'tiebreak' ? 'Level: the 3rd round is fought first (§4.2).' : 'More rounds to fight (§4).'} A stoppage or disqualification can still end the fight.</p> : null}
     </div>
   );
 }

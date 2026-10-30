@@ -7,7 +7,7 @@ import { isDeviceMode, storedWhoami } from '../../lib/deviceSession';
 import { fieldLabel } from '../../lib/eventDay';
 import { friendlyError } from '../../lib/friendlyError';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
-import { DEFAULT_SIDES, counterBanner, fightLine, mergeSides, nextStep, onlyField, parseJoinCode, sideLabel, sideVars, standingLeft, type CounterStep, type Mark, type Position } from '../../lib/lyst/counters';
+import { DEFAULT_SIDES, counterBanner, fightLine, mergeSides, nextStep, noticeStillTrue, onlyField, weightedPadWords, parseJoinCode, sideLabel, sideVars, standingLeft, type CounterStep, type Mark, type NoticeScope, type Position } from '../../lib/lyst/counters';
 import { readTally, shownTally, strikeGap, undoTarget, MARK_LABEL } from '../../lib/lyst/lineMarshal';
 import { OutranceSheetDialog } from '../../components/lyst/OutranceSheetDialog';
 import type { CriteriaCalls } from '../../lib/outrance';
@@ -278,7 +278,12 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   });
   const run = manualRun ?? state.prepared_run;
   const round = manualRun?.no ?? state.prepared_run?.no ?? state.round?.no ?? 0;
-  const [notice, setNotice] = useState<string | null>(null);
+  const [noticeText, setNoticeText] = useState<string | null>(null);
+  /** A submission notice belongs to its fight, round and run; any other notice has no scope. */
+  const [noticeScope, setNoticeScope] = useState<NoticeScope | null>(null);
+  const setNotice = (text: string | null, scope: NoticeScope | null = null) => { setNoticeText(text); setNoticeScope(scope); };
+  const notice = noticeText && noticeStillTrue(noticeScope, { match_id: state.match_id, final: state.final, waiting: state.waiting, round: state.round, run: run?.id }) ? noticeText : null;
+  const scopeHere = (r: number): NoticeScope => ({ match: state.match_id ?? null, round: r, run: run?.id ?? null });
   const [tick, setTick] = useState(0);
   const [offline, setOffline] = useState(false);
   const lastSendEnd = useRef(0);
@@ -379,7 +384,8 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
     if (!sheetOpen || !lineMarshal || finishing.current) return;
     if (round !== sheetRound || !omRoundOpen || state.final) {
       setSheetOpen(false);
-      setNotice(state.round?.no === sheetRound && state.round.status === 'confirmed' ? `Round ${sheetRound} was confirmed without your sheet. Wait for the next round.` : 'The fight moved on. Wait for the next round.');
+      setNotice(state.round?.no === sheetRound && state.round.status === 'confirmed' ? `Round ${sheetRound} was confirmed without your sheet. Wait for the next round.` : 'The fight moved on. Wait for the next round.',
+        state.round?.no === sheetRound && state.round.status === 'confirmed' ? scopeHere(sheetRound) : null);
     }
   }, [sheetOpen, lineMarshal, round, sheetRound, omRoundOpen, state.final, state.round]);
   const automaticReviewReady = !cs.offline && !cs.cached && !offline && navigator.onLine!==false && counterRoundEndedOnServer(state,round);
@@ -434,7 +440,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
       if (journal.display(round,run.id)!==target) { setReviewMessage('The delivered count changed. Close this pop-up and check the total again.'); return; }
       await counterSubmit(seatId, round);
       if (current()) {
-        setReview(null); setNotice(held.length ? 'Count confirmed for marshal review.' : 'Score confirmed. Wait for the next round.'); void cs.refresh();
+        setReview(null); setNotice(held.length ? 'Count confirmed for marshal review.' : 'Score confirmed. Wait for the next round.', scopeHere(round)); void cs.refresh();
       }
     } catch (e) { setReviewMessage(friendlyError(e, 'Could not confirm. Your counts are kept here. Try again.')); }
     finally { finishing.current = false; setTick(t => t + 1); }
@@ -474,7 +480,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
       if (!id) { id = crypto.randomUUID(); store.set(sheetKey, id); }
       await outranceSubmitSheet(id, seatId, round, calls);
       store.del(sheetKey);
-      setSheetOpen(false); setNotice('Sheet handed in. Wait for the next round.'); void cs.refresh();
+      setSheetOpen(false); setNotice('Sheet handed in. Wait for the next round.', scopeHere(round)); void cs.refresh();
     } catch (e) { setSheetMessage(friendlyError(e, 'Could not hand in the sheet. Your taps are kept here. Try again.')); }
     finally { finishing.current = false; setTick(x => x + 1); }
   };
@@ -484,6 +490,7 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
   const waiting = journal.pending.length;
   const banner = useMemo(() => counterBanner({ seat: seat ? { status: seat.status, role: seat.role, side: seat.side } : null, can_count: state.can_count, final: state.final, waiting: state.waiting, round: state.round, counter_input: state.counter_input, binding: state.binding, outrance: om && om.position === 'ok' ? { position: 'ok', sheet: om.round_no === state.round?.no ? om.sheet : null } : om }, sides), [seat, state.can_count, state.final, state.waiting, state.round, state.counter_input, state.binding, sides, om]);
   const weighted = state.counter_input === 'weighted';
+  const pad = weightedPadWords(state.category);
   const side = seat?.side ?? state.binding?.side ?? null;
   const operator = state.binding?.operator ?? seat?.operator ?? '';
 
@@ -577,8 +584,8 @@ function CountScreen({ state, cs, training, busy, problem, onChangeOperator, onC
           : weighted
             ? (
               <div className="cp-weighted">
-                <button type="button" className="cp-count is-two" disabled={!canCount} onClick={() => count(2)} aria-label="Count two points, head or torso">+2</button>
-                <button type="button" className="cp-count" disabled={!canCount} onClick={() => count(1)} aria-label="Count one point, arm leg or hand">+1</button>
+                <button type="button" className="cp-count is-two" disabled={!canCount} onClick={() => count(2)} aria-label={pad.twoLabel}><span>+2</span><small className="cp-pad-rule">{pad.two}</small></button>
+                <button type="button" className="cp-count" disabled={!canCount} onClick={() => count(1)} aria-label={pad.oneLabel}><span>+1</span><small className="cp-pad-rule">{pad.one}</small></button>
               </div>)
             : <button type="button" className="cp-count" disabled={!canCount} onClick={() => count(1)} aria-label="Count">Count</button>}
       </section>

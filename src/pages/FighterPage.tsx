@@ -9,7 +9,7 @@ import { fetchFighterProfile, fetchMyFighterId, avatarUrl, type FighterProfile, 
 import { fetchFighterCareer, fetchFighterFights, fetchFighterHeadToHead, fetchFighterResults, type Fight } from '../data/careerProfile';
 import { fetchFighterLifecycle } from '../data/lifecycle';
 import {
-  CAREER_FILTER, careerFilters, careerHighlights, careerLines, careerTotal, contextFor, eventHistory, fightsIn, headToHeadLine, newestFirst, official, opponents, pointsText,
+  CAREER_FILTER, upcomingFor, careerFilters, careerHighlights, careerLines, careerTotal, contextFor, eventHistory, fightsIn, headToHeadLine, newestFirst, official, opponents, pointsText,
   rankingHighlights, recordText, splitText, teamsRepresented, yearSpan, type CareerFilter
 } from '../lib/careerProfile';
 import { categoryLabel, divisionLabel, genderLabel, guestLabel, INACTIVE_ORG_NOTICE, membershipSpan, orgName, plural, sortFighterRankings, sortMemberships, todayIso } from '../lib/careerView';
@@ -53,6 +53,7 @@ function Career({ p }: { p: FighterProfile }) {
   const synthetic = useSynthetic();
   const fictional = isSynthetic(synthetic, 'fighter', id);
   const context = contextFor(fictional);
+  const upcoming = (a: Appearance[]) => upcomingFor(a, today, context, slug => isSynthetic(synthetic, 'event', slug));
   const mine = useAsync(() => (userId ? fetchMyFighterId() : Promise.resolve(null)), [userId]);
   const isMine = mine.data === id;
   const claim = useAsync(() => fetchClaimStates([id]), [id]);
@@ -268,10 +269,10 @@ function Career({ p }: { p: FighterProfile }) {
 
       <FighterGallery fighterId={id} name={p.displayName} />
 
-      <Block title="Upcoming" state={appearances} empty={a => upcoming(a, today).length === 0}>
+      <Block title="Upcoming" state={appearances} empty={a => upcoming(a).length === 0}>
         {a => (
           <ul className="plain">
-            {upcoming(a, today).map(x => (
+            {upcoming(a).map(x => (
               <li key={x.entryId}>
                 <Link to={`/events/${x.eventSlug}`}><b>{x.eventName}</b></Link>{' '}<TestBadge synthetic={isSynthetic(synthetic, 'event', x.eventSlug)} />{x.eventStatus === 'draft' && <Chip tone="brass">Draft: only visible to organizers</Chip>}
                 <div className="l">{dateRange(x.startsOn, x.endsOn)} · {x.competition}{x.forTeam && ` · ${x.role === 'mercenary' || x.role === 'guest' ? guestLabel(x.forTeam) : `for ${x.forTeam}`}`}</div>
@@ -349,8 +350,6 @@ function HeadToHead({ me, list, vs, choose, fights }: { me: string; list: Return
   );
 }
 
-const upcoming = (a: Appearance[], today: string): Appearance[] =>
-  a.filter(x => x.endsOn >= today && x.eventStatus !== 'cancelled').sort((x, y) => x.startsOn.localeCompare(y.startsOn));
 
 /** Team memberships as recorded (with dates when the record has them) and guest appearances. Separate from "Teams represented", which is evidence from results. */
 function TeamHistory({ memberships, appearances, homeTeam }: { memberships: AsyncState<Awaited<ReturnType<typeof fetchFighterMemberships>>>; appearances: AsyncState<Appearance[]>; homeTeam: string | null }) {

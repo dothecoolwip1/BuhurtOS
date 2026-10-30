@@ -162,3 +162,28 @@ export function nextStep(b: { operator?: string | null; field_key?: string | nul
 export const onlyField = (fields: readonly { key: string }[]): string | null => (fields.length === 1 ? fields[0].key : null);
 /** What the standing counter shows: fighters still up on this side (bounded at zero). */
 export const standingLeft = (perSide: number | null | undefined, downs: number): number => Math.max(0, (perSide ?? 0) - downs);
+
+/** Where a "score confirmed / sheet handed in" notice was given: this fight, this round, this run of the round. */
+export interface NoticeScope { match: string | null; round: number; run: string | null }
+/**
+ * A submission notice ("Score confirmed. Wait for the next round.") is true only for the round it was given for. It goes as soon as the phone is on
+ * another fight or round, the fight is final or the phone is waiting for the next one, or the round is open again for a recount (seven-profile
+ * rehearsal 2026-10-30: it stayed on screen through round 2 and after the fight was over). Other notices (evidence kept, offline) are not scoped.
+ */
+export function noticeStillTrue(scope: NoticeScope | null, now: { match_id?: string | null; final?: boolean; waiting?: boolean; round?: { no: number; status: string } | null; run?: string | null }): boolean {
+  if (!scope) return true;
+  if (now.final || now.waiting) return false;
+  if ((now.match_id ?? null) !== scope.match) return false;
+  if (!now.round || now.round.no !== scope.round || now.round.status === 'running') return false;
+  return (now.run ?? null) === scope.run || now.run == null;
+}
+
+/**
+ * The words on a counter phone's +2 and +1 pads. Longsword (Duels Rules V.26.4 §2.1.4): head or torso score 2 only with two hands on the grip;
+ * one-handed, every legal zone scores 1. Other weighted duels: head or torso 2, arm, leg or hand 1.
+ */
+export function weightedPadWords(category: string | null | undefined): { two: string; one: string; twoLabel: string; oneLabel: string } {
+  return category === 'longsword'
+    ? { two: 'Head or torso, two hands', one: 'Arm, leg, hand, or one-handed', twoLabel: 'Count two points, head or torso, two hands', oneLabel: 'Count one point, arm leg or hand, or any one-handed strike' }
+    : { two: 'Head or torso', one: 'Arm, leg or hand', twoLabel: 'Count two points, head or torso', oneLabel: 'Count one point, arm leg or hand' };
+}

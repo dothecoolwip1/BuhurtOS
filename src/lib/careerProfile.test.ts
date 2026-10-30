@@ -211,3 +211,20 @@ describe('teams', () => {
     expect(representedText(f({ individualResults: 0, individualFights: 2, teamFights: 0 }))).toBe('2 fights');
   });
 });
+
+import { upcomingFor } from './careerProfile';
+describe('a fighter\'s Upcoming (domain rehearsal 2026-10-30, O2)', () => {
+  const rows = [
+    { entryId: '1', eventSlug: 'red-deer-rumble-test', startsOn: '2026-11-14', endsOn: '2026-11-15', eventStatus: 'published' },
+    { entryId: '2', eventSlug: 'red-deer-rumble-2026', startsOn: '2026-11-14', endsOn: '2026-11-15', eventStatus: 'published' },
+    { entryId: '3', eventSlug: 'old-one', startsOn: '2026-01-01', endsOn: '2026-01-02', eventStatus: 'published' },
+    { entryId: '4', eventSlug: 'called-off', startsOn: '2026-12-01', endsOn: '2026-12-01', eventStatus: 'cancelled' }
+  ];
+  const fictional = (slug: string) => slug.endsWith('-test');
+  it('a real fighter\'s public profile does not list a fictional event', () => {
+    expect(upcomingFor(rows, '2026-10-30', 'official', fictional).map(r => r.entryId)).toEqual(['2']);
+  });
+  it('a fictional fighter\'s profile lists it', () => {
+    expect(upcomingFor(rows, '2026-10-30', 'test', fictional).map(r => r.entryId)).toEqual(['1', '2']);
+  });
+});
