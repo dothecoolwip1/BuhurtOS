@@ -6,7 +6,7 @@
 --     a rehearsal in that browser is left out too.
 -- The visits are kept, only marked (activity_sessions.internal) and hidden from the reads; the Analytics page shows how many were hidden.
 -- Browsers driven by automation (navigator.webdriver) and browsers with analytics turned off on /privacy send nothing at all (app side).
--- In-flight: every visit already recorded (90 days) is marked by the backfill below, so the page is clean straight away.
+-- In-flight: every visit already recorded (90 days) is marked by 20261114000400_analytics_testing_backfill.sql; new and ongoing visits are marked here.
 -- Additive: one column, one private table, two triggers, a backfill and anchored patches of the four owner-only reads (each refuses unless
 -- its anchor is found exactly once; safe to run twice).
 set check_function_bodies = off;
@@ -53,8 +53,7 @@ begin
   return new;
 end $$;
 revoke execute on function private.activity_sessions_mark_internal() from public, anon, authenticated;
-drop trigger if exists activity_sessions_mark_internal on public.activity_sessions;
-create trigger activity_sessions_mark_internal before insert or update of user_id, visitor_id on public.activity_sessions
+create or replace trigger activity_sessions_mark_internal before insert or update of user_id, visitor_id on public.activity_sessions
   for each row execute function private.activity_sessions_mark_internal();
 
 -- once a browser is known to be a testing browser, its earlier signed-out visits are marked too
@@ -67,14 +66,10 @@ begin
   return null;
 end $$;
 revoke execute on function private.activity_sessions_mark_visitor() from public, anon, authenticated;
-drop trigger if exists activity_sessions_mark_visitor on public.activity_sessions;
-create trigger activity_sessions_mark_visitor after insert or update of internal, user_id on public.activity_sessions
+create or replace trigger activity_sessions_mark_visitor after insert or update of internal, user_id on public.activity_sessions
   for each row execute function private.activity_sessions_mark_visitor();
 
--- backfill: every visit already recorded
-update public.activity_sessions set internal = true where not internal and private.analytics_internal_account(user_id);
-update public.activity_sessions s set internal = true
- where not s.internal and s.visitor_id in (select x.visitor_id from public.activity_sessions x where x.internal and x.visitor_id is not null);
+-- the backfill of visits already recorded is in 20261114000400_analytics_testing_backfill.sql (applied on its own on hosted)
 
 -- the owner-only reads leave testing out
 select pg_temp.bos_patch('public.admin_analytics(timestamp with time zone,timestamp with time zone,text,text)'::regprocedure,
