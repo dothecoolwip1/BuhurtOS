@@ -63,7 +63,7 @@ export function ProfileEditor({ profile, onSaved, onCancel }: { profile: Fighter
         {cats.error != null && <p role="alert" style={bad}>{friendlyError(cats.error, 'Could not load the disciplines.')}</p>}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {(cats.data ?? []).map(c => (
-            <label key={c.code} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <label key={c.code} className="pick-row">
               <input type="checkbox" checked={f.disciplines.includes(c.code)} onChange={() => toggle(c.code)} /> {c.name}
             </label>
           ))}

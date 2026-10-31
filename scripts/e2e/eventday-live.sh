@@ -54,7 +54,9 @@ CFG
 node scripts/e2e/localstack.mjs > "$TMPD/localstack.log" 2>&1 & PIDS+=($!)
 
 VITE_BASE=/ VITE_SUPABASE_URL=http://localhost:$STACK_PORT VITE_SUPABASE_PUBLISHABLE_KEY=local-publishable-key npx vite build --outDir "$TMPD/e2e-live" > "$TMPD/e2e-live-build.log" 2>&1 || { tail -5 "$TMPD/e2e-live-build.log"; exit 1; }
-npx vite preview --outDir "$TMPD/e2e-live" --port $APP_PORT > "$TMPD/e2e-live-preview.log" 2>&1 & PIDS+=($!)
+# vite itself, not npx: the cleanup kills this PID, and npx would leave its vite child serving the old build on the port (--strictPort makes a
+# leftover server fail this run loudly instead of the browser silently testing an earlier build)
+node node_modules/vite/bin/vite.js preview --strictPort --outDir "$TMPD/e2e-live" --port $APP_PORT > "$TMPD/e2e-live-preview.log" 2>&1 & PIDS+=($!)
 for i in $(seq 1 40); do curl -sf -o /dev/null localhost:$REST_PORT/ && curl -sf -o /dev/null localhost:$APP_PORT/ && { [ -z "${REAL_AUTH:-}" ] || curl -sf -o /dev/null localhost:9999/health; } && break; sleep 0.5; done
 curl -sf -o /dev/null "localhost:$STACK_PORT/rest/v1/events?select=id" || { echo "the local API did not come up"; tail -5 "$TMPD/postgrest.log"; exit 1; }
 
