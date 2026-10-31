@@ -50,3 +50,21 @@ describe('analytics in device mode', () => {
     expect(analytics.scrubMessage('failed at https://x.ca/device#c=K7Q2M9XD4TRH')).not.toContain('K7Q2M9XD4TRH');
   });
 });
+
+describe('analytics in an automated browser (rehearsals, Playwright, WebDriver)', () => {
+  it('sends nothing when navigator.webdriver is set', async () => {
+    vi.stubGlobal('navigator', { ...navigator, webdriver: true });
+    const { analytics, fetchSpy } = await load({});
+    analytics.initAnalytics();
+    analytics.trackPageView('/events');
+    analytics.trackEvent('sign_in_code_sent');
+    await new Promise(r => setTimeout(r, 20));
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+  it('isAutomated reads only the webdriver flag', async () => {
+    const { analytics } = await load({});
+    expect(analytics.isAutomated({ webdriver: true })).toBe(true);
+    expect(analytics.isAutomated({ webdriver: false })).toBe(false);
+    expect(analytics.isAutomated({})).toBe(false);
+  });
+});

@@ -209,9 +209,13 @@ function loadPostHog(): void {
   }, () => { phQueue = []; phLoading = false; });
 }
 
+/** A browser driven by automation (Playwright, WebDriver: rehearsals and tests) is never tracked, so testing stays out of Analytics. */
+export const isAutomated = (nav: { webdriver?: boolean } | undefined = typeof navigator === 'undefined' ? undefined : navigator): boolean => nav?.webdriver === true;
+const untracked = (): boolean => isDeviceMode() || isAutomated();
+
 /** Called once at start-up. PostHog is loaded only when a project key was built in and analytics are allowed. */
 export function initAnalytics(): void {
-  if (started || isDeviceMode()) return;   // a temporary event device is never tracked: the tracking calls write the caller's id into account-linked columns, which a device does not have
+  if (started || untracked()) return;   // a temporary event device is never tracked: the tracking calls write the caller's id into account-linked columns, which a device does not have
   started = true;
   sinks.length = 0; sinks.push(...sinksNow());
   if (currentlyAllowed()) loadPostHog();
@@ -233,10 +237,10 @@ let errors = 0;
 }
 
 /** A page opened (path only, query and anchor removed). Also used as the minute heartbeat that measures time on site. */
-export function trackPageView(path: string): void { if (isDeviceMode() || !currentlyAllowed()) return; const p = stripUrl(path) || '/'; sinks.forEach(s => s.pageView(p)); }
+export function trackPageView(path: string): void { if (untracked() || !currentlyAllowed()) return; const p = stripUrl(path) || '/'; sinks.forEach(s => s.pageView(p)); }
 /** A product action. Unknown or unsafe names and properties are dropped before anything leaves the browser. */
 export function trackEvent(name: string, props?: Record<string, unknown>): void {
-  if (isDeviceMode() || !validEventName(name) || !currentlyAllowed()) return;
+  if (untracked() || !validEventName(name) || !currentlyAllowed()) return;
   const clean = sanitizeProps(props);
   sinks.forEach(s => s.event(name, clean));
 }
@@ -245,7 +249,7 @@ let currentUser: string | null = null;
 /** Links this browser's anonymous history to the account (account id only). Safe to call on every load. Does nothing while analytics are off. */
 export function identifyUser(userId: string): void {
   currentUser = userId;
-  if (isDeviceMode() || !currentlyAllowed() || identified === userId) return;
+  if (untracked() || !currentlyAllowed() || identified === userId) return;
   identified = userId;
   sinks.forEach(s => s.identify(userId));
 }

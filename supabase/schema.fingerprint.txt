@@ -1,3 +1,6 @@
+column private.analytics_excluded_accounts.added_at timestamp with time zone not null
+column private.analytics_excluded_accounts.note text
+column private.analytics_excluded_accounts.user_id uuid not null
 column private.card_forge_owners.added_at timestamp with time zone not null
 column private.card_forge_owners.note text
 column private.card_forge_owners.user_id uuid not null
@@ -134,6 +137,7 @@ column public.activity_sessions.browser text
 column public.activity_sessions.device text
 column public.activity_sessions.entry_path text
 column public.activity_sessions.id uuid not null
+column public.activity_sessions.internal boolean not null
 column public.activity_sessions.is_new_visitor boolean not null
 column public.activity_sessions.language text
 column public.activity_sessions.last_seen_at timestamp with time zone not null
@@ -2472,6 +2476,8 @@ constraint privacy_requests privacy_requests_request_type_check CHECK ((request_
 constraint privacy_requests privacy_requests_source_check CHECK ((source = ANY (ARRAY['form'::text, 'bug_report'::text])))
 constraint privacy_requests privacy_requests_status_check CHECK ((status = ANY (ARRAY['received'::text, 'in_progress'::text, 'extended'::text, 'completed'::text, 'declined'::text])))
 constraint privacy_requests privacy_requests_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint private.analytics_excluded_accounts analytics_excluded_accounts_pkey PRIMARY KEY (user_id)
+constraint private.analytics_excluded_accounts analytics_excluded_accounts_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 constraint private.card_forge_owners card_forge_owners_pkey PRIMARY KEY (user_id)
 constraint private.card_forge_owners card_forge_owners_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 constraint private.card_studio_access card_studio_access_id_check CHECK (id)
@@ -2782,10 +2788,13 @@ constraint waiver_versions waiver_versions_kind_shape CHECK ((((kind = 'text'::t
 constraint waiver_versions waiver_versions_pkey PRIMARY KEY (id)
 constraint waiver_versions waiver_versions_source_check CHECK (((source IS NULL) OR (source = ANY (ARRAY['template'::text, 'pasted'::text, 'upload'::text]))))
 function private.accept_registration_core(p_reg uuid) secdef=true b54c942d98eff9f4384a0a3ae8508eed
+function private.activity_sessions_mark_internal() secdef=true f7043245a27e56f6aed6e5c23d1b207d
+function private.activity_sessions_mark_visitor() secdef=true 8f36e9a702918b150107c9b607212292
 function private.actor_label() secdef=true 0b613d19376dcdc29865c7b3baff1663
 function private.actor_role(p_event uuid) secdef=true 052b16daaf148ad687caab3657a9dbb7
 function private.add_entrant_core(p_competition uuid, p_fighter uuid, p_team uuid) secdef=true 349610e3ac0e6a1a2a86f2e6e81d5dc5
 function private.advance_after_final() secdef=true 8523cf8c350e0475100456be3f7ea228
+function private.analytics_internal_account(p_user uuid) secdef=true 3e82772073fcd24723009c2f99fba6fe
 function private.assert_session_alive() secdef=true 50692be780dd55f573fee1883f181649
 function private.assert_team_rounds(p_match uuid, p_result text, p_score_a integer, p_score_b integer) secdef=true 675492ca715a76e2d9348f1905cdff79
 function private.audit(p_event uuid, p_action text, p_subject text, p_details jsonb) secdef=true dcdaf003cd72e87e4d13c03b5c2db021
@@ -3239,8 +3248,8 @@ function public.add_entrant(p_competition uuid, p_fighter uuid, p_team uuid) sec
 function public.add_my_gallery_photo(p_path text) secdef=true 70680775723c6b073c40d227eb428afb
 function public.add_past_medal(p_event uuid, p_category text, p_place integer, p_note text, p_fighter uuid, p_team uuid) secdef=true 7006840d963e42585b71e30766905061
 function public.add_waiver_version(p_event uuid, p_title text, p_body text, p_kind text, p_document_path text, p_source text) secdef=true fdaa0c85b020c2b01180a2411c97d7f4
-function public.admin_activity(p_hours integer) secdef=true 18e8197042183cb3d0fe8839e1a08603
-function public.admin_analytics(p_from timestamp with time zone, p_to timestamp with time zone, p_audience text, p_device text) secdef=true 3eed5bcd1a4d6064e79434d19c64ff57
+function public.admin_activity(p_hours integer) secdef=true fcfe0ab0f91203a082e3da6f06633d0b
+function public.admin_analytics(p_from timestamp with time zone, p_to timestamp with time zone, p_audience text, p_device text) secdef=true 4e97dc83a30dc73e72595a2c61d5ee93
 function public.admin_bug_reports(p_status text) secdef=true f4747e9ddfd5e5f2b3a388a9bfb06d7b
 function public.admin_client_error_samples(p_group text) secdef=true 5603ca1eda46d9cfecccd900224be9c2
 function public.admin_client_errors(p_days integer) secdef=true 4eef1debf3f55d32354fc77421ce79e1
@@ -3251,7 +3260,7 @@ function public.admin_privacy_requests(p_open_only boolean) secdef=true 36f3b2b3
 function public.admin_retention_log(p_limit integer) secdef=true 0c15bbbb1b750dd3e388def63b1258b0
 function public.admin_screenshot_removals() secdef=true c62f669736a97669c03cba557e48ed36
 function public.admin_session_views(p_session uuid) secdef=true c8d5a0b13ebddd37fce3372362c7ad17
-function public.admin_user_activity(p_from timestamp with time zone, p_to timestamp with time zone) secdef=true a56254b386ba0d6068583ca844584554
+function public.admin_user_activity(p_from timestamp with time zone, p_to timestamp with time zone) secdef=true ac72226535670572c9dff136f19cb3aa
 function public.advance_field_queue(p_event uuid, p_field text, p_start boolean) secdef=true 544eaa07861372f7f70cc382d0cfe62a
 function public.announcer_readiness(p_event uuid) secdef=true 91fa18db01b08efcf8aa3417de7cb52b
 function public.apply_card_preset(p_event uuid, p_governing_body text) secdef=true 3b1336d30d172efdeebdc374e793b983
@@ -3680,6 +3689,7 @@ function public.withdraw_past_medal(p_result uuid, p_reason text) secdef=true 69
 function public.withdraw_registration(p_reg uuid) secdef=true 40db3227077b7b16bd8d9f675c1997ea
 function public.withdraw_review(p_id uuid, p_reason text) secdef=true e3c08cfa1bd7a8307660789318d986d9
 function public.withdraw_ruleset_version(p_version uuid, p_reason text) secdef=true e0b8f8d0f1d853e7180e92cf86e18217
+index private.analytics_excluded_accounts CREATE UNIQUE INDEX ON private.analytics_excluded_accounts USING btree (user_id)
 index private.card_forge_owners CREATE UNIQUE INDEX ON private.card_forge_owners USING btree (user_id)
 index private.card_studio_access CREATE UNIQUE INDEX ON private.card_studio_access USING btree (id)
 index private.counter_action_runs CREATE UNIQUE INDEX ON private.counter_action_runs USING btree (id)
@@ -3715,6 +3725,7 @@ index public.activity_events CREATE INDEX ON public.activity_events USING btree 
 index public.activity_events CREATE UNIQUE INDEX ON public.activity_events USING btree (id)
 index public.activity_sessions CREATE INDEX ON public.activity_sessions USING btree (last_seen_at DESC)
 index public.activity_sessions CREATE INDEX ON public.activity_sessions USING btree (user_id, last_seen_at DESC)
+index public.activity_sessions CREATE INDEX ON public.activity_sessions USING btree (visitor_id) WHERE (visitor_id IS NOT NULL)
 index public.activity_sessions CREATE UNIQUE INDEX ON public.activity_sessions USING btree (id)
 index public.activity_views CREATE INDEX ON public.activity_views USING btree (at DESC)
 index public.activity_views CREATE INDEX ON public.activity_views USING btree (session_id, at)
@@ -4310,6 +4321,7 @@ policy public.team_roles team_roles_own SELECT roles=authenticated using=(user_i
 policy public.teams teams_read SELECT roles=anon,authenticated using=((status = 'approved'::text) OR private.is_team_captain(id) OR private.can_admin_team(id)) check=
 policy public.waiver_versions waiver_organizer_insert INSERT roles=authenticated using= check=private.is_organizer(event_id)
 policy public.waiver_versions waiver_read SELECT roles=anon,authenticated using=(private.is_event_public(event_id) OR private.is_organizer(event_id)) check=
+table private.analytics_excluded_accounts rls=true
 table private.card_forge_owners rls=true
 table private.card_studio_access rls=true
 table private.counter_action_runs rls=true
@@ -4497,6 +4509,8 @@ table public.teams rls=true
 table public.waiver_versions rls=true
 trigger private.records_refresh_queue records_refresh_at_commit efb9f72669f50c05bf41fa10b0bb2e0b
 trigger private.test_event_crew test_event_crew_added ceca3efda65560fe39c62767efee4e1e
+trigger public.activity_sessions activity_sessions_mark_internal d9b6e9327ef4b25c398423c9b43a7717
+trigger public.activity_sessions activity_sessions_mark_visitor 5339913ab15be749d3aa466ab6c597f3
 trigger public.authenticity_findings authenticity_findings_guard bddbc8a2a2b7730e5fadf436a5952b24
 trigger public.club_dues reavers_public_voting_board_dues 5ef411bfdf162521f931b94f43e783dc
 trigger public.club_dues_history club_dues_history_append_only 50b72b1bcae402d6c04339d8e22688ed

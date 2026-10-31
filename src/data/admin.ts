@@ -22,7 +22,7 @@ export type Audience = 'all' | 'anonymous' | 'registered';
 export type Device = 'phone' | 'tablet' | 'desktop';
 export interface Count { name: string; n: number }
 export interface Analytics {
-  totals: { visitors: number; newVisitors: number; returningVisitors: number; sessions: number; anonymousSessions: number; registeredPeople: number; onlineNow: number;
+  totals: { visitors: number; newVisitors: number; returningVisitors: number; sessions: number; anonymousSessions: number; registeredPeople: number; onlineNow: number; testingHidden: number;
     avgSessionSeconds: number; pageViews: number; signups: number; logins: number; accountsTotal: number };
   pages: { path: string; views: number; visits: number; avgSeconds: number }[];
   entryPages: Count[]; exitPages: Count[]; paths: { from: string; to: string; n: number }[];
@@ -41,7 +41,7 @@ export function parseAnalytics(j: J | null): Analytics {
   const t = (j?.totals ?? {}) as J; const fr = (j?.funnel_registration ?? {}) as J; const fs = (j?.funnel_signup ?? {}) as J;
   return {
     totals: { visitors: num(t.visitors), newVisitors: num(t.new_visitors), returningVisitors: num(t.returning_visitors), sessions: num(t.sessions), anonymousSessions: num(t.anonymous_sessions),
-      registeredPeople: num(t.registered_people), onlineNow: num(t.online_now), avgSessionSeconds: num(t.avg_session_seconds), pageViews: num(t.page_views), signups: num(t.signups),
+      registeredPeople: num(t.registered_people), onlineNow: num(t.online_now), testingHidden: num(t.testing_hidden), avgSessionSeconds: num(t.avg_session_seconds), pageViews: num(t.page_views), signups: num(t.signups),
       logins: num(t.logins), accountsTotal: num(t.accounts_total) },
     pages: arr(j?.pages).map(r => ({ path: String(r.path), views: num(r.views), visits: num(r.visits), avgSeconds: num(r.avg_seconds) })),
     entryPages: counts(j?.entry_pages, 'path'), exitPages: counts(j?.exit_pages, 'path'),

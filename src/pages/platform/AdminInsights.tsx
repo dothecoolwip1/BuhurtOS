@@ -135,6 +135,7 @@ function Analytics() {
             <div className="statcell"><b>{a.totals.logins}</b><span>Sign-ins</span></div>
             <div className="statcell"><b>{a.totals.accountsTotal}</b><span>Accounts in total</span></div>
           </div>
+          <p className="muted" data-testid="testing-hidden">Testing is left out: your own visits, the shared test accounts, and any browser that has signed in as one of them{a.totals.testingHidden > 0 ? ` (${a.totals.testingHidden} ${a.totals.testingHidden === 1 ? 'visit' : 'visits'} in this period)` : ''}. Automated test browsers are never recorded.</p>
 
           {a.daily.length > 1 && <Bars title="Visits per day" rows={a.daily.map(d => ({ name: d.day, n: d.sessions }))} label={d => day(`${d}T12:00:00`)} />}
 
