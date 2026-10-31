@@ -1,0 +1,1944 @@
+[
+  {
+    "step": "3.1",
+    "status": "FAIL",
+    "utc": "2026-10-31T03:58:18.594Z",
+    "build": "4c78d57",
+    "text": "Event creation is for approved organizers",
+    "screenshot": "01-event-creation-blocked.png"
+  },
+  {
+    "step": "1.2 www redirect / 1.1 Events",
+    "utc": "2026-10-31T03:58:59.641Z",
+    "url": "https://buhurt-os.app/events?x=1",
+    "build": "4c78d57",
+    "screenshot": "02-www-events.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 37.69791793823242,
+          "text": "Events",
+          "width": 72.375
+        },
+        {
+          "height": 37.69791793823242,
+          "text": "Calendar",
+          "width": 88.17708587646484
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "What are the tiers? →",
+          "width": 139.70834350585938
+        },
+        {
+          "height": 48,
+          "text": "Search events, venues, cities, organizations",
+          "width": 253.2291717529297
+        },
+        {
+          "height": 48,
+          "text": "Filters",
+          "width": 81.4375
+        },
+        {
+          "height": 40,
+          "text": "Upcoming",
+          "width": 96.69792175292967
+        },
+        {
+          "height": 40,
+          "text": "Past",
+          "width": 57.15625
+        },
+        {
+          "height": 40,
+          "text": "All",
+          "width": 45.55208587646485
+        },
+        {
+          "height": 178,
+          "text": "Nov142026Red Deer Rumble 2026Horse In Hand RanchBlackfalds, ABRegistration openGroup fightDuelsProfi",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "2.3 Missing Show test data filter",
+    "utc": "2026-10-31T03:59:08.915Z",
+    "url": "https://buhurt-os.app/events?x=1",
+    "build": "4c78d57",
+    "screenshot": "03-event-filters.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 37.69791793823242,
+          "text": "Events",
+          "width": 72.375
+        },
+        {
+          "height": 37.69791793823242,
+          "text": "Calendar",
+          "width": 88.17708587646484
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "What are the tiers? →",
+          "width": 139.70834350585938
+        },
+        {
+          "height": 48,
+          "text": "Search events, venues, cities, organizations",
+          "width": 254.5625
+        },
+        {
+          "height": 48,
+          "text": "Filters",
+          "width": 80.10417175292969
+        },
+        {
+          "height": 40,
+          "text": "Upcoming",
+          "width": 96.69792175292967
+        },
+        {
+          "height": 40,
+          "text": "Past",
+          "width": 57.15625
+        },
+        {
+          "height": 40,
+          "text": "All",
+          "width": 45.55208587646485
+        },
+        {
+          "height": 44,
+          "text": "AllGroup fightDuelsProfight",
+          "width": 317.3333435058594
+        },
+        {
+          "height": 44,
+          "text": "Any typeTournament",
+          "width": 317.3333435058594
+        },
+        {
+          "height": 44,
+          "text": "Any organizationHACSANACL-test",
+          "width": 317.3333435058594
+        },
+        {
+          "height": 44,
+          "text": "AnywhereAlbertaBritish ColumbiaManitobaSaskatchewan",
+          "width": 317.3333435058594
+        },
+        {
+          "height": 13,
+          "text": "",
+          "width": 13
+        },
+        {
+          "height": 178,
+          "text": "Nov142026Red Deer Rumble 2026Horse In Hand RanchBlackfalds, ABRegistration openGroup fightDuelsProfi",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "1.1 Home",
+    "utc": "2026-10-31T03:59:14.105Z",
+    "url": "https://buhurt-os.app/",
+    "build": "4c78d57",
+    "screenshot": "04-home.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 44,
+          "text": "See Red Deer Rumble 2026",
+          "width": 226.86459350585935
+        },
+        {
+          "height": 44,
+          "text": "How each style works",
+          "width": 187.9166717529297
+        },
+        {
+          "height": 40,
+          "text": "Install",
+          "width": 60.84375
+        },
+        {
+          "height": 40,
+          "text": "Not now",
+          "width": 76.11458587646484
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "All events →",
+          "width": 78.94792175292969
+        },
+        {
+          "height": 178,
+          "text": "Nov142026Red Deer Rumble 2026Horse In Hand RanchBlackfalds, ABRegistration openGroup fightDuelsProfi",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "All formats and tournament tiers →",
+          "width": 228.5104217529297
+        },
+        {
+          "height": 351.22918701171875,
+          "text": "Group fightBuhurtTeams fight at the same time on one list. A fighter is out when grounded, and a tea",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 381.2291870117187,
+          "text": "One on oneDuelsTwo fighters, no weight classes. Line marshals count clean blade strikes, and each of",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 381.2291870117187,
+          "text": "OutranceProfightFull-contact bouts with strikes, grappling and takedowns, judged round by round on t",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "1.1 Fighters",
+    "utc": "2026-10-31T03:59:19.532Z",
+    "url": "https://buhurt-os.app/fighters",
+    "build": "4c78d57",
+    "screenshot": "05-fighters.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 44,
+          "text": "For example Alex",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Any teamArverni LegionHordeLTm1A Team 1Mace Company ManitobaRed Deer ReaversStrathcona WarhorseThe C",
+          "width": 309.3333435058594
+        },
+        {
+          "height": 44,
+          "text": "AnyFemaleMaleOther",
+          "width": 309.3333435058594
+        },
+        {
+          "height": 44,
+          "text": "Any3v35v512v1230v30Sword & ShieldSword & BucklerLongswordPolearmProfightSabreGreatswordTriathlonMara",
+          "width": 309.3333435058594
+        },
+        {
+          "height": 44,
+          "text": "For example Alberta",
+          "width": 309.3333435058594
+        },
+        {
+          "height": 13,
+          "text": "",
+          "width": 13
+        },
+        {
+          "height": 81.33333587646484,
+          "text": "AAlister",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 135.6666717529297,
+          "text": "BBjorn RobsonRed Deer ReaversABMale",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 165.6666717529297,
+          "text": "BBrogan KublikRed Deer ReaversBowden, ABMaleSabrePolearmSword and shield",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 165.6666717529297,
+          "text": "CColt SpencerRed Deer ReaversRed Deer, ABMale3v3Sword and shieldSword and bucklerProfight",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 81.33333587646484,
+          "text": "CCorey IrwinRed Deer Reavers",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 81.33333587646484,
+          "text": "Eemily",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 81.33333587646484,
+          "text": "GGage",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 135.6666717529297,
+          "text": "GGarrett RobsonRed Deer ReaversLacombe, ABMalePolearm",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 81.33333587646484,
+          "text": "GGraham MacBeanThe Company of the Black Spears",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 81.33333587646484,
+          "text": "JJulian KreszMace Company Manitoba",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 195.6666717529297,
+          "text": "KKeston PicheRed Deer ReaversRED DEER, ABMaleSword and shieldLongswordPolearmSword and buckler",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 195.6666717529297,
+          "text": "KKolby VerkirkRed Deer ReaversRed Deer, ABFemaleSword and shieldSword and bucklerSabrePolearm",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 135.6666717529297,
+          "text": "OOdin RobsonRed Deer ReaversABFemale",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 81.33333587646484,
+          "text": "SSpencer ShwetzRed Deer Reavers",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 135.6666717529297,
+          "text": "TTaylor RobsonRed Deer ReaversABFemale",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "1.1 Teams",
+    "utc": "2026-10-31T03:59:26.171Z",
+    "url": "https://buhurt-os.app/teams",
+    "build": "4c78d57",
+    "screenshot": "06-teams.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 44,
+          "text": "For example Calgary",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "AnyHACSA",
+          "width": 240
+        },
+        {
+          "height": 44,
+          "text": "Add your team",
+          "width": 140.8125
+        },
+        {
+          "height": 13,
+          "text": "",
+          "width": 13
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "AArverni LegionAlberta Foothills, AB, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "HHordeDrayton Valley, AB, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "MMace Company ManitobaWinnipeg, MB, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "Red Deer ReaversRed Deer, AB, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "WStrathcona WarhorseEast Edmonton, AB, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 176.875,
+          "text": "BThe Company of the Black SpearsLethbridge, AB, CAHACSAListed from HACSA website: Teams list (import",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 176.875,
+          "text": "SThe Company of the Silver GryphonsCalgary (North), AB, CAHACSAListed from HACSA website: Teams list",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "CThe Crimson BladesWest Edmonton, AB, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "OThe Oath BearersRegina, SK, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 154.83334350585938,
+          "text": "VVanguardVancouver, BC, CAHACSAListed from HACSA website: Teams list (imported)",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 110.36458587646484,
+          "text": "LLTm1A Team 1Red Deer, AB, CanadaNo source recorded for this listing",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "2.1 Public team",
+    "utc": "2026-10-31T03:59:35.819Z",
+    "url": "https://buhurt-os.app/teams/red-deer-reavers",
+    "build": "4c78d57",
+    "screenshot": "07-public-team.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "← All teams",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 36,
+          "text": "Facebook",
+          "width": 107.11458587646484
+        },
+        {
+          "height": 44,
+          "text": "Club membership",
+          "width": 163.9479217529297
+        },
+        {
+          "height": 44,
+          "text": "Sign in to request to join",
+          "width": 206.98959350585935
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Brogan Kublik",
+          "width": 106.73958587646484
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Colt Spencer",
+          "width": 99.95833587646484
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Garrett Robson",
+          "width": 117.20833587646484
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Keston Piche",
+          "width": 99.875
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Kolby Verkirk",
+          "width": 100.88542175292967
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Taylor Robson",
+          "width": 107.28125
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Corey Irwin",
+          "width": 86.29167175292969
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Spencer Shwetz",
+          "width": 124.14583587646484
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "Team discipline rankings →",
+          "width": 177.08334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 44,
+          "text": "Show fighters",
+          "width": 134.58334350585938
+        },
+        {
+          "height": 24.791667938232425,
+          "text": "Keston Piche",
+          "width": 99.875
+        },
+        {
+          "height": 19.33333396911621,
+          "text": "Coulee Clash 2026",
+          "width": 142.2604217529297
+        },
+        {
+          "height": 19.33333396911621,
+          "text": "Geeky Market 2025 (Edmonton)",
+          "width": 243.30209350585935
+        },
+        {
+          "height": 19.33333396911621,
+          "text": "Strathmore Summer Siege 2025",
+          "width": 245.1875
+        },
+        {
+          "height": 19.33333396911621,
+          "text": "Kings Cup 2025",
+          "width": 119.30208587646484
+        },
+        {
+          "height": 19.33333396911621,
+          "text": "HACSA",
+          "width": 56.40625
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "2.1 / 2.2 Public fighter",
+    "utc": "2026-10-31T03:59:42.031Z",
+    "url": "https://buhurt-os.app/fighters/7c848b31-39db-453c-b2c4-7fa84982620f",
+    "build": "4c78d57",
+    "screenshot": "08-public-fighter.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "← All fighters",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 18.666667938232425,
+          "text": "Red Deer Reavers",
+          "width": 124.10417175292967
+        },
+        {
+          "height": 19.33333396911621,
+          "text": "Red Deer Reavers",
+          "width": 132.375
+        },
+        {
+          "height": 19.33333396911621,
+          "text": "Red Deer Reavers",
+          "width": 132.375
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "1.1 Rules",
+    "utc": "2026-10-31T03:59:51.919Z",
+    "url": "https://buhurt-os.app/rules",
+    "build": "4c78d57",
+    "screenshot": "09-rules.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 46,
+          "text": "Search rules",
+          "width": 285.3333435058594
+        },
+        {
+          "height": 40,
+          "text": "All",
+          "width": 45.55208587646485
+        },
+        {
+          "height": 40,
+          "text": "Group fight",
+          "width": 103.46875
+        },
+        {
+          "height": 40,
+          "text": "Duels",
+          "width": 65.46875
+        },
+        {
+          "height": 40,
+          "text": "Profight",
+          "width": 82.13542175292969
+        },
+        {
+          "height": 40,
+          "text": "Cards and penalties",
+          "width": 155.6041717529297
+        },
+        {
+          "height": 40,
+          "text": "Green card",
+          "width": 98.11458587646484
+        },
+        {
+          "height": 40,
+          "text": "Grounded fighter",
+          "width": 139.36459350585938
+        },
+        {
+          "height": 40,
+          "text": "Strike zones",
+          "width": 105.66667175292967
+        },
+        {
+          "height": 40,
+          "text": "Back of the knee",
+          "width": 133.73959350585938
+        },
+        {
+          "height": 40,
+          "text": "Appeals",
+          "width": 79.32292175292969
+        },
+        {
+          "height": 40,
+          "text": "Authenticity infractions",
+          "width": 181.1354217529297
+        },
+        {
+          "height": 40,
+          "text": "Weapon weights",
+          "width": 135.8854217529297
+        },
+        {
+          "height": 40,
+          "text": "Marshal accreditation",
+          "width": 168.4791717529297
+        },
+        {
+          "height": 44,
+          "text": "Quick summaries ↓",
+          "width": 175.2916717529297
+        },
+        {
+          "height": 48,
+          "text": "Gender policiesText · 2024.03",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 91.04167175292967,
+          "text": "Committees Internal RegulationsText · December 2024",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 66.25,
+          "text": "Committees Decision ProcessText · December 2024",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Judiciary CommitteeText · 2024.06",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "NO AgreementText · January 2026",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Code of ConductText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Rule Update PolicyText · 2024.06",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 66.25,
+          "text": "Structure,Accreditation,TitlesText · December 2024",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Duels RulesText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Buhurt RulesText · 26.4.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Outrance rulesText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 66.25,
+          "text": "Jobs, Titles, Uniforms, AccreditationsText · 2025.02",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "AccreditationText · 2025.03",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Weapon/Shield ChartText · 26.2.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Marshal ArchivesEarlier versions ↗",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Buhurt RegulationsText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "Duel RegulationsText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 66.25,
+          "text": "Tournament StructureText · January 2026",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 48,
+          "text": "League StructureText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 66.25,
+          "text": "Secretary AccreditationText · 2024.06",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 66.25,
+          "text": "Tournament ArchivesEarlier versions ↗",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 86.85417175292969,
+          "text": "InfractionsInfractions Classification and ApplicationText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Armor RequirementsGeneral RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Weapon requirementsGeneral RequirementsText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "FalchionsGeneral RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Shields & BucklersGeneral RequirementsText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 89.94792175292969,
+          "text": "Aesthetics and DecorationsGeneral RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Belt flag(s)General RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "TabardsGeneral RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Textile and LeatherGeneral RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "KlappvisorsHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Great HelmsHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "WolfribsHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Nasals & BretechesHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 89.94792175292969,
+          "text": "Side-pivoting visored BascinetsHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "EyebarsHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "BarbutesHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "AventailsHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "SalletsHelmets RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 89.94792175292969,
+          "text": "Perforated Visor BascinetsHelmets RequirementsText · 26.4",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 66.25,
+          "text": "Authenticity ArchivesEarlier versions ↗",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "GauntletsArmor RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "SabatonsArmor RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "GreavesArmor RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 65.15625,
+          "text": "Neck ProtectionArmor RequirementsText · 26.1",
+          "width": 329.3333435058594
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Rules",
+          "width": 74.42708587646484
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Duels Rules",
+          "width": 67.1875
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Duels Rules",
+          "width": 67.1875
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Duels Rules",
+          "width": 67.1875
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Duels Rules",
+          "width": 67.1875
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Duels Rules",
+          "width": 67.1875
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Duels Rules",
+          "width": 67.1875
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Outrance rules",
+          "width": 85.82292175292969
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Outrance rules",
+          "width": 85.82292175292969
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Outrance rules",
+          "width": 85.82292175292969
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Outrance rules",
+          "width": 85.82292175292969
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Tournament Structure",
+          "width": 129.70834350585938
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Tournament Structure",
+          "width": 129.70834350585938
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Tournament Structure",
+          "width": 129.70834350585938
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Buhurt Regulations",
+          "width": 111.19792175292967
+        },
+        {
+          "height": 15.333333969116213,
+          "text": "Duel Regulations",
+          "width": 98.19792175292967
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "1.1 Rankings",
+    "utc": "2026-10-31T03:59:57.477Z",
+    "url": "https://buhurt-os.app/rankings",
+    "build": "4c78d57",
+    "screenshot": "10-rankings.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 44,
+          "text": "Fighters",
+          "width": 82.45833587646484
+        },
+        {
+          "height": 44,
+          "text": "Teams",
+          "width": 71.46875
+        },
+        {
+          "height": 44,
+          "text": "Profight records",
+          "width": 135.1875
+        },
+        {
+          "height": 44,
+          "text": "Season",
+          "width": 76.53125
+        },
+        {
+          "height": 44,
+          "text": "Organization career",
+          "width": 158.40625
+        },
+        {
+          "height": 44,
+          "text": "Whole organization",
+          "width": 157.14584350585938
+        },
+        {
+          "height": 44,
+          "text": "All time",
+          "width": 78.69792175292969
+        },
+        {
+          "height": 44,
+          "text": "HACSANACL-test",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "5v53v3LongswordSword and shieldPolearm",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Men",
+          "width": 57.13541793823242
+        },
+        {
+          "height": 44,
+          "text": "Women",
+          "width": 80.45833587646484
+        },
+        {
+          "height": 44,
+          "text": "Open",
+          "width": 64.46875
+        },
+        {
+          "height": 38.36458587646485,
+          "text": "How tournaments are tiered",
+          "width": 302.38543701171875
+        },
+        {
+          "height": 44,
+          "text": "See all-time rankings",
+          "width": 301.3333435058594
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "1.2 Old Vercel address",
+    "utc": "2026-10-31T04:00:08.601Z",
+    "url": "https://buhurt-os.vercel.app/events",
+    "build": "4c78d57",
+    "screenshot": "11-old-address.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 37.69791793823242,
+          "text": "Events",
+          "width": 72.375
+        },
+        {
+          "height": 37.69791793823242,
+          "text": "Calendar",
+          "width": 88.17708587646484
+        },
+        {
+          "height": 21.697917938232425,
+          "text": "What are the tiers? →",
+          "width": 139.70834350585938
+        },
+        {
+          "height": 48,
+          "text": "Search events, venues, cities, organizations",
+          "width": 253.2291717529297
+        },
+        {
+          "height": 48,
+          "text": "Filters",
+          "width": 81.4375
+        },
+        {
+          "height": 40,
+          "text": "Upcoming",
+          "width": 96.69792175292967
+        },
+        {
+          "height": 40,
+          "text": "Past",
+          "width": 57.15625
+        },
+        {
+          "height": 40,
+          "text": "All",
+          "width": 45.55208587646485
+        },
+        {
+          "height": 178,
+          "text": "Nov142026Red Deer Rumble 2026Horse In Hand RanchBlackfalds, ABRegistration openGroup fightDuelsProfi",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "2.1 Public event",
+    "utc": "2026-10-31T04:00:23.317Z",
+    "url": "https://buhurt-os.app/events/red-deer-rumble-2026",
+    "build": "4c78d57",
+    "screenshot": "12-public-event.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 44,
+          "text": "Sign in and register",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 42,
+          "text": "Overview",
+          "width": 109.10417175292967
+        },
+        {
+          "height": 42,
+          "text": "Live",
+          "width": 109.11458587646484
+        },
+        {
+          "height": 42,
+          "text": "Results",
+          "width": 109.11458587646484
+        },
+        {
+          "height": 44,
+          "text": "This tournament on Buhurt International",
+          "width": 321.2083435058594
+        },
+        {
+          "height": 44,
+          "text": "Share this event",
+          "width": 150.5416717529297
+        },
+        {
+          "height": 40,
+          "text": "Add to calendar",
+          "width": 122
+        },
+        {
+          "height": 44,
+          "text": "Big screen",
+          "width": 111.08333587646484
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "2.5 Google calendar URL only",
+    "utc": "2026-10-31T04:00:56.030Z",
+    "url": "https://buhurt-os.app/events/red-deer-rumble-2026",
+    "build": "4c78d57",
+    "screenshot": "13-calendar.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 44,
+          "text": "Sign in and register",
+          "width": 342.66668701171875
+        },
+        {
+          "height": 42,
+          "text": "Overview",
+          "width": 109.10417175292967
+        },
+        {
+          "height": 42,
+          "text": "Live",
+          "width": 109.11458587646484
+        },
+        {
+          "height": 42,
+          "text": "Results",
+          "width": 109.11458587646484
+        },
+        {
+          "height": 44,
+          "text": "This tournament on Buhurt International",
+          "width": 321.2083435058594
+        },
+        {
+          "height": 44,
+          "text": "Share this event",
+          "width": 150.5416717529297
+        },
+        {
+          "height": 40,
+          "text": "Add to calendar",
+          "width": 122
+        },
+        {
+          "height": 40,
+          "text": "Google Calendar",
+          "width": 128.125
+        },
+        {
+          "height": 40,
+          "text": "Apple / Outlook (.ics)",
+          "width": 154.4375
+        },
+        {
+          "height": 44,
+          "text": "Big screen",
+          "width": 111.08333587646484
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "1.3 Code wording only",
+    "utc": "2026-10-31T04:01:07.354Z",
+    "url": "https://buhurt-os.app/account",
+    "build": "4c78d57",
+    "screenshot": "14-code-wording.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 375,
+      "targets": [
+        {
+          "height": 40,
+          "text": "BuhurtOS home",
+          "width": 120
+        },
+        {
+          "height": 44,
+          "text": "Report a bug",
+          "width": 44
+        },
+        {
+          "height": 40,
+          "text": "Sign in",
+          "width": 69.98958587646484
+        },
+        {
+          "height": 44,
+          "text": "",
+          "width": 306.66668701171875
+        },
+        {
+          "height": 48,
+          "text": "Email me a code",
+          "width": 306.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Use a password instead",
+          "width": 167.9375
+        },
+        {
+          "height": 48,
+          "text": "Continue with Google",
+          "width": 306.66668701171875
+        },
+        {
+          "height": 44,
+          "text": "Privacy",
+          "width": 58.71875
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Home",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Events",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Teams",
+          "width": 74.92708587646484
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "Fighters",
+          "width": 74.9375
+        },
+        {
+          "height": 61.04166793823242,
+          "text": "More",
+          "width": 74.9375
+        }
+      ],
+      "width": 390
+    },
+    "logs": []
+  },
+  {
+    "step": "2.6 Manifest",
+    "utc": "2026-10-31T04:01:15.668Z",
+    "url": "https://buhurt-os.app/manifest.webmanifest",
+    "build": "4c78d57",
+    "screenshot": "15-manifest.png",
+    "measure": {
+      "height": 844,
+      "scrollWidth": 390,
+      "targets": [],
+      "width": 390
+    },
+    "logs": []
+  }
+]
