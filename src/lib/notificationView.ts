@@ -7,6 +7,11 @@ export const notificationLink = (n: Pick<AppNotification, 'kind' | 'payload'>): 
   if (n.kind === 'fighter_claim_requested') return '/platform/fighters';
   if (n.kind === 'fighter_claim_decided') return n.payload.decision === 'approved' && typeof n.payload.fighter_id === 'string' && /^[0-9a-f-]{36}$/.test(n.payload.fighter_id) ? `/fighters/${n.payload.fighter_id}` : '/claim-profile';
   if (n.kind === 'bug_reported') return '/platform/bugs';
+  if (n.kind === 'organization_suggested') return '/platform/organizations';
+  if (n.kind === 'organization_suggestion_decided') {
+    const org = n.payload.organization_slug;
+    return n.payload.decision === 'approved' && typeof org === 'string' && /^[a-z0-9-]+$/.test(org) ? `/organizations/${org}` : '/organizations';
+  }
   if (n.kind === 'registration_submitted') return evOk ? `/events/${ev}/control?mode=setup&tool=registrations` : '/account';
   if (n.kind === 'registration_decided' || n.kind === 'event_invited') return evOk ? `/events/${ev}` : '/account';
   if (n.kind === 'registration_withdrawn') return evOk ? `/events/${ev}/control?mode=setup&tool=entrants` : '/account';

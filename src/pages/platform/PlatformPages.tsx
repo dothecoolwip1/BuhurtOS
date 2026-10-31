@@ -14,6 +14,7 @@ import {
 } from '../../lib/platformOrgs';
 import { useDocumentTitle } from '../../lib/useDocumentTitle';
 import { ClaimReviews } from './ClaimReviews';
+import { OrganizationSuggestions } from './OrganizationSuggestions';
 import { reviewHeading } from '../../lib/claims';
 import { fetchIdentityReviews, resolveIdentityReview, type IdentitySide } from '../../data/identityReviews';
 import { useAsync } from '../../lib/useAsync';
@@ -50,7 +51,7 @@ export function PlatformHomePage() {
           <li><Link className="panel plat-link" to="/platform/fighters"><b>Fighter identities</b><span className="muted">Fighter records that may be the same person. Nothing is merged without you.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/rules"><b>Rules and suspensions</b><span className="muted">Publish imported official documents after their review; record suspensions that apply to every event.</span></Link></li>
           <li><Link className="panel plat-link" to="/platform/devices"><b>Devices</b><span className="muted">Every phone and tablet signed in on any event: move a counter, sign a phone out, read-only device preview.</span></Link></li>
-          <li><Link className="panel plat-link" to="/platform/organizations"><b>Organizations</b><span className="muted">Switch organizations on or off and manage their admins.</span></Link></li>
+          <li><Link className="panel plat-link" to="/platform/organizations"><b>Organizations</b><span className="muted">Review suggested organizations, switch organizations on or off and manage their admins.</span></Link></li>
         </ul>
         <SampleModeSwitch />
       </section>
@@ -177,6 +178,7 @@ function OrganizationsAdmin() {
     <section className="plat" style={{ display: 'grid', gap: 18 }}>
       <PageHead eyebrow="Platform" title="Organizations" lede="Every organization, switched on or off. Switching one off keeps all of its history; nothing is deleted." />
       <p><Link className="more" to="/platform">Platform</Link></p>
+      <OrganizationSuggestions onCreated={reload} />
       {error && <p role="alert" className="plat-err">{error} <button type="button" className="linklike" onClick={() => void reload()}>Try again</button></p>}
       {!rows && !error && <p className="muted">Loading organizations…</p>}
       {rows && rows.length === 0 && <p className="muted">There are no organizations yet.</p>}
