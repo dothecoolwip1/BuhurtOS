@@ -12,6 +12,7 @@ import './styles/arena.css';
 import './styles/lyst.css';
 import './styles/broadcast.css';
 import './styles/rules.css';
+import './styles/touch.css';   // last: 44 px touch targets on phones
 
 initAnalytics();
 

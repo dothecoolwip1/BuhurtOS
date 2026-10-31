@@ -1,0 +1,12 @@
+/* Touch targets on phones and touch screens: every control is at least 44 px tall (mobile-first, one-handed tournament use).
+   Desks with a mouse keep the denser 40 px controls. Loaded last; each selector is prefixed with `html` so it also wins over
+   style sheets a page loads later (device, announcer). Inline prose links are left as they are. */
+@media (max-width: 760px), (pointer: coarse) {
+  html .btn-sm, html .top .btn, html .seg button, html .careerfilter .seg button, html .ev-control, html .ev-view, html .qs-div,
+  html .rw-cmp, html .rankcard .rk-more, html .gallerygrid .thumb-acts .btn, html .rl-qchip, html details > summary,
+  html .adm-nav a, html .adm-side .btn-line, html .device-bar .db-out, html .device-bar .camoff-btn.compact { min-height: 44px; }
+  html .seglink { display: inline-flex; align-items: center; min-height: 44px; }
+  html .brand { min-height: 44px; }
+  html .more { min-height: 44px; }
+  html .cal-day .more { min-height: 0; }   /* the small "+2 more" inside a calendar day cell */
+}

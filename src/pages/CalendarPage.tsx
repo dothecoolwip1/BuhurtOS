@@ -40,7 +40,7 @@ export function CalendarPage() {
         <EventViewSwitch signedIn={Boolean(userId)} />
         {userId && <Seg label="Whose calendar" value={mine ? 'mine' : 'all'} options={[['all', 'Everyone'], ['mine', 'My calendar']] as const} onChange={v => update(filter, undefined, v === 'mine')} />}
       </div>
-      <EventFilters value={filter} onChange={f => update(f)} options={options} defaults={DEFAULTS} mine={mine} showTest={Boolean(userId)} statuses={Boolean(userId)} />
+      <EventFilters value={filter} onChange={f => update(f)} options={options} defaults={DEFAULTS} mine={mine} showTest statuses={Boolean(userId)} />
       {index.loading && !index.data && <p className="muted">Loading the calendar…</p>}
       {index.error != null && <p role="alert">{friendlyError(index.error, 'Could not load the calendar.')}</p>}
       {index.data && <MonthCalendar events={list} year={y} month={m} today={today} showRoles={mine} onMonth={(ny, nm) => update(filter, monthKey(ny, nm))} />}

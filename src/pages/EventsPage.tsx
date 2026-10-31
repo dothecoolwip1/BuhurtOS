@@ -40,7 +40,7 @@ export function EventsPage() {
           {canCreate.data === true && <Link className="btn btn-ink btn-sm" to="/events/new">Create an event</Link>}
         </div>
       </div>
-      <EventFilters value={filter} onChange={setFilter} options={options} showTest={Boolean(userId)} statuses={Boolean(userId)} />
+      <EventFilters value={filter} onChange={setFilter} options={options} showTest statuses={Boolean(userId)} />
       {index.loading && !index.data && <p className="muted">Loading events…</p>}
       {index.error != null && <p role="alert">{friendlyError(index.error, 'Could not load events.')}</p>}
       {index.data && (

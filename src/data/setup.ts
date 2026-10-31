@@ -40,11 +40,21 @@ export async function removeStaff(eventId: string, userId: string, role: StaffMe
   if (error) throw error;
 }
 
-/** Same rule the database applies in create_event: an owner or approved organizer row in platform_roles (each person can read only their own row). */
-export async function fetchCanCreateEvents(userId: string): Promise<boolean> {
+/** What this person may create, by the same rule the database applies in create_event: 'any' for an owner or approved organizer
+ *  (platform_roles), 'test' for a test organizer (test events only), otherwise 'none'. Falls back to platform_roles alone while the
+ *  database function is not there yet. */
+export type EventCreation = 'any' | 'test' | 'none';
+export async function fetchEventCreation(userId: string): Promise<EventCreation> {
+  const r = await supabase.rpc('my_event_creation');
+  if (!r.error && (r.data === 'any' || r.data === 'test' || r.data === 'none')) return r.data;
+  const code = (r.error as { code?: string } | null)?.code;
+  if (r.error && code !== 'PGRST202' && code !== '42883') throw r.error;
   const { data, error } = await supabase.from('platform_roles').select('role').eq('user_id', userId);
   if (error) throw error;
-  return (data ?? []).some(r => r.role === 'owner' || r.role === 'organizer');
+  return (data ?? []).some(x => x.role === 'owner' || x.role === 'organizer') ? 'any' : 'none';
+}
+export async function fetchCanCreateEvents(userId: string): Promise<boolean> {
+  return (await fetchEventCreation(userId)) !== 'none';
 }
 
 export interface NewEventInput { slug: string; name: string; startsOn: string; endsOn: string; venue: string | null; address: string | null; test?: boolean }

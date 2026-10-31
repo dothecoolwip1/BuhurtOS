@@ -3047,6 +3047,7 @@ function private.is_secretary_only(p_event uuid) secdef=true c58406a35488d02a102
 function private.is_synthetic(p_type text, p_id uuid) secdef=true 6441e62409975f930ec59ceb1246112c
 function private.is_team_captain(p_team uuid) secdef=true d2b750c229f83737920703b5a54ea632
 function private.is_team_member(p_team uuid, p_user uuid) secdef=true e6e5f1ae0985af565901fb1b89453915
+function private.is_test_organizer() secdef=true 4f5563f1eb29a738a48d058e2a1eb337
 function private.join_request_org_guard() secdef=true e1b5ac0af3eeefcb26d3e12b3960b887
 function private.jwt_aal() secdef=false 129c835280e638bedf9b23baddb19bec
 function private.lineup_editable(p_event uuid, p_key text) secdef=true 5fd0dae7a07ae824eb55228a4df21cfa
@@ -3339,7 +3340,7 @@ function public.counter_upload_legacy_action(p_seat uuid, p_action jsonb) secdef
 function public.create_club_meeting(p_team uuid, p_kind text, p_title text, p_starts_at timestamp with time zone, p_timezone text, p_location text, p_details text, p_invite_only boolean, p_ends_at timestamp with time zone) secdef=true 56123da0f502f8df48c2496bdaf5f37b
 function public.create_club_question(p_meeting uuid, p_kind text, p_title text, p_details text, p_office text) secdef=true 80e1dc3afbd37d9f29aeafcf5ab7b12c
 function public.create_competition(p_event uuid, p_name text, p_category text, p_gender text, p_ruleset text, p_structure text, p_rounds_to_win integer) secdef=true f504e21cabc32c7c1bb789c4d83e7ec6
-function public.create_event(p_slug text, p_name text, p_starts_on date, p_ends_on date, p_venue text, p_address text, p_test boolean) secdef=true 101c5ad2e176266eae26a559e136f7b1
+function public.create_event(p_slug text, p_name text, p_starts_on date, p_ends_on date, p_venue text, p_address text, p_test boolean) secdef=true 48618e3244997a1c2cb44114e970a586
 function public.create_event_credential(p_event uuid, p_kind text, p_label text, p_role text, p_code_hash bytea, p_expires_at timestamp with time zone, p_pool_code text, p_training boolean) secdef=true 3bb9e1d4aace4dac6efc65f1b4ff0c70
 function public.create_lyst_join_code(p_event uuid, p_field text) secdef=true ed1dc2f2fd6919659af4afa8f2c08799
 function public.create_season(p_org uuid, p_slug text, p_name text, p_starts_on date, p_ends_on date) secdef=true f5d2ba24f26876c98918aec3efcae63d
@@ -3497,6 +3498,7 @@ function public.move_counter_session(p_session uuid, p_field text, p_side text) 
 function public.move_match_in_queue(p_match uuid, p_action text) secdef=true 67d31406846ccb5fb330fcf0b9a3a4b6
 function public.my_cards() secdef=true d22321ebf5321f3a84d6360a1cc55ee5
 function public.my_desk_roles(p_event uuid) secdef=true 725d209beff9ec7fdbb9304b403a43e9
+function public.my_event_creation() secdef=true 6d67c52faf64e8b73555b11f45f628e1
 function public.my_event_entries(p_event uuid) secdef=true 89a56aabc35651b16824f4213ce82e53
 function public.my_event_relations() secdef=true f4c958aada94b1b5a9aadebfe0cdc537
 function public.my_events() secdef=true a04eef6d37351adaeed8707b72cd189f

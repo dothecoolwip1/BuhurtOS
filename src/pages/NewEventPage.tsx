@@ -8,7 +8,7 @@ import { fetchRefCategories, fetchSetupCompetitions, LEAGUE_LABEL, type Division
 import { fetchSeasons } from '../data/careers';
 import { fetchLinkableOrganizations } from '../data/organizations';
 import { createQuickEvent, fetchMyPastEvents, isOrgLinkNotAllowed } from '../data/quickSetup';
-import { fetchCanCreateEvents, isSlugTaken } from '../data/setup';
+import { fetchEventCreation, isSlugTaken } from '../data/setup';
 import { friendlyError } from '../lib/friendlyError';
 import { useAsync } from '../lib/useAsync';
 import { useDocumentTitle } from '../lib/useDocumentTitle';
@@ -27,12 +27,12 @@ export function NewEventPage() {
   useDocumentTitle('Create an event');
   const { session, loading } = useAuth();
   const userId = session?.user.id;
-  const can = useAsync(() => (userId ? fetchCanCreateEvents(userId) : Promise.resolve(false)), [userId]);
+  const can = useAsync(() => (userId ? fetchEventCreation(userId) : Promise.resolve('none' as const)), [userId]);
   if (loading) return <p className="muted">Loading…</p>;
   if (!session) return <><PageHead eyebrow="Events" title="Create an event" lede="Sign in first." /><SignIn /></>;
   if (can.loading) return <p className="muted">Checking your access…</p>;
   if (can.error != null) return <p role="alert">{friendlyError(can.error, 'Could not check your access.')}</p>;
-  if (!can.data) {
+  if (can.data !== 'any' && can.data !== 'test') {
     return (
       <section className="fade-in" style={{ display: 'grid', gap: 16 }}>
         <PageHead eyebrow="Events" title="Create an event" />
@@ -45,10 +45,10 @@ export function NewEventPage() {
       </section>
     );
   }
-  return <QuickSetup userId={userId!} />;
+  return <QuickSetup userId={userId!} testOnly={can.data === 'test'} />;
 }
 
-function QuickSetup({ userId }: { userId: string }) {
+function QuickSetup({ userId, testOnly }: { userId: string; testOnly: boolean }) {
   const nav = useNavigate();
   const cats = useAsync(() => fetchRefCategories(), []);
   const past = useAsync(() => fetchMyPastEvents(userId).catch(() => []), [userId]);
@@ -62,7 +62,7 @@ function QuickSetup({ userId }: { userId: string }) {
   const [slugTouched, setSlugTouched] = useState(false);
   const [editSlug, setEditSlug] = useState(false);
   const [fields, setFields] = useState(1);
-  const [isTest, setIsTest] = useState(false);
+  const [isTest, setIsTest] = useState(testOnly);   // a test organizer can create test events only
   const [orgId, setOrgId] = useState('');
   const [seasonId, setSeasonId] = useState('');
   const [likeId, setLikeId] = useState('');
@@ -166,8 +166,8 @@ function QuickSetup({ userId }: { userId: string }) {
       <PageHead eyebrow="Create an event · step 1 of 2" title="Create an event" lede="Fill in the basics and untick anything you are not running. Everything else is set up for you." />
       <form onSubmit={toReview} noValidate style={{ display: 'grid', gap: 16 }}>
         <label className={`panel info qs-test${isTest ? ' is-on' : ''}`} data-testid="qs-test">
-          <input type="checkbox" checked={isTest} onChange={e => setIsTest(e.target.checked)} />
-          <span><b>This is a test event</b><span className="src">For practice and trying things out. Only you and the staff you add can see it, nothing from it counts or is kept, and it is deleted 10 days after you create it. Fighter profiles stay.</span></span>
+          <input type="checkbox" checked={isTest} disabled={testOnly} onChange={e => setIsTest(e.target.checked)} />
+          <span><b>This is a test event</b><span className="src">{testOnly && <>This account can create test events only. </>}For practice and trying things out. Only you and the staff you add can see it, nothing from it counts or is kept, and it is deleted 10 days after you create it. Fighter profiles stay.</span></span>
         </label>
         <div className="panel info" style={{ display: 'grid', gap: 14 }}>
           <label className="field-in">Event name

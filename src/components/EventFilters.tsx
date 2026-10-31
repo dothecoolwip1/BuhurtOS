@@ -24,7 +24,7 @@ export interface FilterOptions { orgs: OrgLite[]; regions: string[]; types: stri
 
 /**
  * Search plus a folding filter panel, the same on every view. `mine` adds the role filter; `showTest` offers the test-data toggle
- * (signed-in people only; it is off by default everywhere). `statuses` offers the status filter where drafts can exist.
+ * (off by default everywhere; signed out it can only reveal published fictional events, since the database never returns private test events to anyone but their staff). `statuses` offers the status filter where drafts can exist.
  */
 export function EventFilters({ value, onChange, options, defaults = {}, mine = false, showTest = false, statuses = false, placeholder = 'Search events, venues, cities, organizations' }: {
   value: EventFilter; onChange: (f: EventFilter) => void; options: FilterOptions; defaults?: Partial<EventFilter>; mine?: boolean; showTest?: boolean; statuses?: boolean; placeholder?: string;
