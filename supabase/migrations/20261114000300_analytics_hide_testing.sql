@@ -78,10 +78,8 @@ update public.activity_sessions s set internal = true
 
 -- the owner-only reads leave testing out
 select pg_temp.bos_patch('public.admin_analytics(timestamp with time zone,timestamp with time zone,text,text)'::regprocedure,
-  $a$    select * from public.activity_sessions x
-    where x.started_at < p_to and x.last_seen_at >= p_from$a$,
-  $b$    select * from public.activity_sessions x
-    where not x.internal and x.started_at < p_to and x.last_seen_at >= p_from$b$);
+  $a$where x.started_at < p_to and x.last_seen_at >= p_from$a$,   -- one line: hosted keeps a differently indented copy of this function
+  $b$where not x.internal and x.started_at < p_to and x.last_seen_at >= p_from$b$);
 select pg_temp.bos_patch('public.admin_analytics(timestamp with time zone,timestamp with time zone,text,text)'::regprocedure,
   $a$      and (e.session_id is null or e.session_id in (select id from s))$a$,
   $b$      and (e.session_id is null or e.session_id in (select id from s)) and not private.analytics_internal_account(e.user_id)$b$);
