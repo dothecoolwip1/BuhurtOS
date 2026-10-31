@@ -9,4 +9,7 @@
   html .brand { min-height: 44px; }
   html .more { min-height: 44px; }
   html .cal-day .more { min-height: 0; }   /* the small "+2 more" inside a calendar day cell */
+  /* found by the site sweep (scripts/e2e/site-sweep.mjs) at 390x844 */
+  html label.toggle, html .acct-edit, html .an-event, html .ctl-back, html .roster li > a { display: inline-flex; align-items: center; min-height: 44px; }
+  html .cc-glance li a { display: flex; flex-wrap: wrap; align-items: center; column-gap: .35em; min-height: 44px; }
 }

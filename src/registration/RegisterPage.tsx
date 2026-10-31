@@ -93,7 +93,7 @@ function VolunteerBlock({ f, set, info, toggle, error }: {
   return (
     <div style={{ display: 'grid', gap: 8 }}>
       <VolunteerInfo info={info} />
-      {ALL_VOLUNTEER_ROLES.map(r => <label key={r} style={{ display: 'block' }}><input type="checkbox" checked={f.volunteerRoles.includes(r)} onChange={() => set('volunteerRoles', toggle(f.volunteerRoles, r))} /> {r}</label>)}
+      {ALL_VOLUNTEER_ROLES.map(r => <label key={r} className="pick-row"><input type="checkbox" checked={f.volunteerRoles.includes(r)} onChange={() => set('volunteerRoles', toggle(f.volunteerRoles, r))} /> {r}</label>)}
       {f.volunteerRoles.includes(OTHER_ROLE) && (
         <label className="field-in">Other: describe how you would like to help
           <input value={f.volunteerOther} maxLength={OTHER_ROLE_MAX} onChange={e => set('volunteerOther', e.target.value)} aria-invalid={!!error} />
@@ -247,7 +247,7 @@ export function RegisterPage() {
           <p>Categories</p>
           <p className="src" data-testid="gender-rule" style={{ margin: 0 }}>{genderRuleText(f.gender)}</p>
           {categoriesFor(f.gender, data.comps).map(c => (
-            <label key={c.id} style={{ display: 'block' }}><input type="checkbox" checked={f.competitionIds.includes(c.id)} onChange={() => set('competitionIds', toggle(f.competitionIds, c.id))} /> {c.name}</label>
+            <label key={c.id} className="pick-row"><input type="checkbox" checked={f.competitionIds.includes(c.id)} onChange={() => set('competitionIds', toggle(f.competitionIds, c.id))} /> {c.name}</label>
           ))}
           <Err m={shown('competitionIds')} />
           {selected.filter(c => c.league === 'outrance').map(c => (
@@ -266,13 +266,13 @@ export function RegisterPage() {
         </section>
 
         <section className="card field"><h3>Scheduling</h3>
-          <div><p>Days you can attend</p>{eventDays(data.startsOn, data.endsOn).map(d => <label key={d.iso} style={{ display: 'block' }}><input type="checkbox" checked={f.attendDates.includes(d.iso)} onChange={() => set('attendDates', toggle(f.attendDates, d.iso))} /> {d.label}</label>)}<Err m={shown('attendDates')} /></div>
+          <div><p>Days you can attend</p>{eventDays(data.startsOn, data.endsOn).map(d => <label key={d.iso} className="pick-row"><input type="checkbox" checked={f.attendDates.includes(d.iso)} onChange={() => set('attendDates', toggle(f.attendDates, d.iso))} /> {d.label}</label>)}<Err m={shown('attendDates')} /></div>
           <div><p>Do you share equipment with another fighter?</p><Seg label="Shares equipment" value={f.sharesEquipment} options={[['yes', 'Yes'], ['no', 'No']] as const} onChange={v => set('sharesEquipment', v)} /><Err m={shown('sharesEquipment')} /></div>
           {text('availabilityNotes', 'Anything else about when you can fight')}
         </section>
 
         <section className="card field"><h3>Insurance</h3>
-          {insuranceOptions(data.membership, f.insurance).map(([k, label]) => <label key={k} style={{ display: 'block' }}><input type="radio" name="ins" checked={f.insurance === k} onChange={() => set('insurance', k)} /> {label}</label>)}
+          {insuranceOptions(data.membership, f.insurance).map(([k, label]) => <label key={k} className="pick-row"><input type="radio" name="ins" checked={f.insurance === k} onChange={() => set('insurance', k)} /> {label}</label>)}
           <Err m={shown('insurance')} />
         </section>
 

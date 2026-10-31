@@ -55,7 +55,8 @@ try {
   await sleep(300);
   check('16b. the province filter keeps only Saskatchewan events', !(await has('Red Deer Rumble')));
   check('16c. the filter is in the address bar (shareable)', page.url().includes('province=SK'));
-  check('16d. anonymous visitors are not offered the test-data toggle', (await page.getByTestId('show-test').count()) === 0);
+  // bab430f: Events and Calendar offer Show test data signed out too (only published fictional events; private test events stay hidden)
+  check('16d. anonymous visitors are offered the test-data toggle, off by default', (await page.getByTestId('show-test').count()) === 1 && !(await page.getByTestId('show-test').isChecked()));
   await go('/events?when=all&q=saskatoon');
   await page.getByTestId('event-list').waitFor();
   check('16e. the Events list shares the search: only the Saskatoon clinic matches', await has('Saskatoon Clinic') && !(await has('Red Deer Rumble')));

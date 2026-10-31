@@ -119,6 +119,8 @@ try {
     await p.locator(s.root).first().waitFor({ timeout: 30000 }).catch(() => undefined);
     if (s.filter) await p.getByRole('group', { name: 'Show' }).getByRole('button', { name: s.filter, exact: true }).click().catch(() => undefined);
     if (s.search) await p.locator(s.search.sel).first().fill(s.search.value).catch(() => undefined);
+    // Live ops keeps the Command Centre sections under "Event tools and details" (Lysts come first): open that first, as a person would
+    if (s.openDetails) await p.evaluate((sel) => { const d = document.querySelector(sel)?.closest('details.lo-tools'); if (d && !d.open) d.open = true; }, s.openDetails);
     if (s.openDetails) await p.locator(`${s.openDetails} > summary`).click().catch(() => undefined);
     if (s.typeInto) {
       if (s.typeInto.openFirst) await p.evaluate((sel) => { const d = document.querySelector(sel); if (d && !d.open) d.open = true; }, s.typeInto.openFirst);

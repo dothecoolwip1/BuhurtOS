@@ -71,7 +71,10 @@ export function EventControlPage() {
   if (!loaded.data || !event) return <NotFoundPage />;
   const device = (!session && hasDeviceSession()) || deviceToken;
   if (!session && !device) return <><PageHead eyebrow="Event Control" title={event.name} /><SignIn reason="Sign in with the account that organizes this event, or as its head marshal or secretary." /></>;
-  if (mine.loading && !mine.data) return <p className="muted" role="status">Loading…</p>;
+  // Right after the event loads, `mine` still holds the answer for "no event yet" for one render: wait for the real roles, or a medic or
+  // secretary would mount Live ops for a moment and ask the database for screens it refuses them (seen as 403s by the site sweep).
+  const mineSettling = !!eventId && !!userId && !deviceToken && mine.data === undefined && mine.error == null;
+  if ((mine.loading || mineSettling) && !mine.data) return <p className="muted" role="status">Loading…</p>;
   // A signed-in person with no role here is told so at once. A device (no account) or a person whose roles could not be read is not pre-judged:
   // Live ops asks the database (event_command_snapshot), which refuses anyone who may not run the day, and says so in the same words.
   const noRole = !!session && !device && mine.data !== undefined && !organizer && !mine.data?.roles.some(r => CONTROL_ROLES.includes(r));

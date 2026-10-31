@@ -27,7 +27,7 @@ CFG
 node scripts/e2e/localstack.mjs > /tmp/localstack.log 2>&1 & PIDS+=($!)
 
 VITE_BASE=/ VITE_SUPABASE_URL=http://localhost:54321 VITE_SUPABASE_PUBLISHABLE_KEY=local-publishable-key npx vite build --outDir /tmp/e2e-live > /tmp/e2e-live-build.log 2>&1 || { tail -5 /tmp/e2e-live-build.log; exit 1; }
-npx vite preview --outDir /tmp/e2e-live --port 4182 > /tmp/e2e-live-preview.log 2>&1 & PIDS+=($!)
+node node_modules/vite/bin/vite.js preview --strictPort --outDir /tmp/e2e-live --port 4182 > /tmp/e2e-live-preview.log 2>&1 & PIDS+=($!)
 for i in $(seq 1 40); do curl -sf -o /dev/null localhost:3000/ && curl -sf -o /dev/null localhost:4182/ && break; sleep 0.5; done
 curl -sf -o /dev/null "localhost:54321/rest/v1/events?select=id" || { echo "the local API did not come up"; tail -5 /tmp/postgrest.log; exit 1; }
 

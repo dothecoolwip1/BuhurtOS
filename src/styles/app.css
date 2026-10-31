@@ -1254,6 +1254,8 @@ details > summary{min-height:40px;display:flex;align-items:center;gap:6px;cursor
 .auth-other p{margin:0;text-align:center;font-size:14px}
 .check-row{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted);min-height:44px}
 .check-row input{width:20px;height:20px;flex:none;margin-top:2px}
+/* one choice in a list of checkboxes or radios: the whole row is the tap target */
+.pick-row{display:flex;gap:8px;align-items:center;min-height:44px}
 .acct-pw{padding:0 18px 4px}
 .acct-pw>summary{display:grid;gap:2px;padding:15px 0;min-height:56px;cursor:pointer;list-style:none}
 .acct-pw>summary::-webkit-details-marker{display:none}

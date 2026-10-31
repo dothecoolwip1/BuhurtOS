@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 import { Dialog } from './Dialog';
 import { Chip } from './ui';
 import type { LiveEvent } from '../data/api';
@@ -111,7 +112,9 @@ export function EventLifecycle({ event, onChanged }: { event: LiveEvent; onChang
 export function FighterLifecycle({ fighterId, name }: { fighterId: string; name: string }) {
   const [key, setKey] = useState(0);
   const state = useAsync(() => fetchFighterLifecycle(fighterId), [fighterId, key]);
-  const can = useAsync(() => canManageFighter(fighterId), [fighterId]);
+  const { session } = useAuth();
+  // signed out nobody can change it: do not ask the database (it would answer 401 on every public fighter page)
+  const can = useAsync(() => (session ? canManageFighter(fighterId) : Promise.resolve(false)), [fighterId, !!session]);
   const [ask, setAsk] = useState(false);
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
