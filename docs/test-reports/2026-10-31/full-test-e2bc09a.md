@@ -2,7 +2,7 @@
 
 - Code under test: `e2bc09a` (origin/main, the build serving https://buhurt-os.app per Vercel on 2026-10-31). Fixes and optimizations are on
   branch `claude/project-thread-xkt5e2`.
-- UTC window: 2026-10-31 05:40 to 08:30.
+- UTC window: 2026-10-31 05:40 to 06:45.
 - Browser: Playwright Chromium (headless) in a cloud container, one browser context per role. Phone and tablet sizes are browser viewports
   with touch emulation, not physical devices.
 - Production browser checks: **NOT RUN**. The cloud container cannot open https://buhurt-os.app (blocked by the network policy), and the
