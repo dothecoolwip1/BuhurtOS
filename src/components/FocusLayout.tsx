@@ -1,10 +1,11 @@
-import { createContext, useContext, useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { Suspense, createContext, useContext, useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { ProfileGate } from '../auth/ProfileGate';
 import { setSampleMode, useSampleMode } from '../data/mode';
 import { trackPageView } from '../lib/analytics';
 import { ErrorBoundary } from './ErrorBoundary';
+import { PageLoading } from './PageLoading';
 import { useTheme } from './Layout';
 import { OfflineBanner } from './OfflineBanner';
 import { PushWiring } from './PushWiring';
@@ -91,7 +92,7 @@ export function FocusLayout() {
         <UpdateBanner />
         <ProfileGate />
         <FocusCtx.Provider value={setBar}>
-          <ErrorBoundary resetKey={pathname + search}><Outlet /></ErrorBoundary>
+          <ErrorBoundary resetKey={pathname + search}><Suspense fallback={<PageLoading />}><Outlet /></Suspense></ErrorBoundary>
         </FocusCtx.Provider>
         {/* the build this device runs (the site footer shows it elsewhere): staff and the update banner refer to it, and it is how a device is checked */}
         <p className="focus-version"><span className="mono" data-testid="app-version">{__APP_VERSION__}</span></p>

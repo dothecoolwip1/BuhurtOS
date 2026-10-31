@@ -1,57 +1,68 @@
+import { Suspense } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
 import { FocusLayout } from './components/FocusLayout';
-import { FieldPage } from './pages/FieldPage';
-import { EventRoute } from './pages/EventRoute';
-import { EventsPage } from './pages/EventsPage';
-import { CalendarPage } from './pages/CalendarPage';
-import { MyEventsPage } from './pages/MyEventsPage';
-import { PlatformEventsPage } from './pages/platform/PlatformEventsPage';
-import { FighterPage } from './pages/FighterPage';
-import { ProfileEditPage } from './pages/ProfileEditPage';
-import { FightersPage } from './pages/FightersPage';
-import { RankingsPage } from './pages/RankingsPage';
-import { FormatsPage } from './pages/FormatsPage';
-import { HomePage } from './pages/HomePage';
-import { MarshalPage } from './pages/MarshalPage';
-import { PrivacyPage } from './pages/PrivacyPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { RulesPage } from './pages/RulesPage';
-import { RuleDocPage } from './pages/rules/RuleDocPage';
-import { RulePage } from './pages/rules/RulePage';
-import { RegisterPage } from './registration/RegisterPage';
-import { EventControlPage } from './pages/control/EventControlPage';
-import { CommandRedirect, ManageRedirect } from './pages/control/LegacyRedirects';
-import { AccountPage } from './auth/AccountPage';
-import { ResetPasswordPage, SignInPage } from './auth/AuthPages';
-import { ClaimProfilePage } from './pages/ClaimProfilePage';
-import { TestLoginPage } from './auth/TestLoginPage';
-import { WelcomePage } from './pages/WelcomePage';
-import { NewEventPage } from './pages/NewEventPage';
-import { TeamManagerPage } from './pages/TeamManagerPage';
-import { TeamPage } from './pages/TeamPage';
-import { TeamEditPage } from './pages/TeamEditPage';
-import { ClubMembershipPage } from './pages/ClubMembershipPage';
-import { TeamsPage } from './pages/TeamsPage';
-import { OrganizationPage, OrganizationsPage } from './pages/OrganizationPages';
-import { PlatformFightersPage, PlatformHomePage, PlatformOrganizationsPage } from './pages/platform/PlatformPages';
-import { PlatformActivityPage, PlatformBugsPage } from './pages/platform/AdminInsights';
-import { PlatformRulesPage } from './pages/platform/PlatformRulesPage';
-import { PlatformDevicesPage } from './pages/platform/PlatformDevicesPage';
-import { ArenaPage } from './pages/arena/ArenaPage';
-import { CounterPage } from './pages/lyst/CounterPage';
-import { BroadcastPage } from './pages/broadcast/BroadcastPage';
-import { CheckinDeskPage } from './pages/CheckinDeskPage';
-import { DisciplineLogPage } from './pages/DisciplineLogPage';
-import { AnnouncerPage } from './pages/AnnouncerPage';
-import { DeviceSignInPage } from './pages/DeviceSignInPage';
-import { DeviceApp } from './DeviceApp';
 import { isDeviceMode } from './lib/deviceSession';
+import { lazyPage } from './lib/lazyPage';
+import { PageLoading } from './components/PageLoading';
+
+// Every screen is its own download, fetched when it is first opened (see lib/lazyPage).
+const FieldPage = lazyPage(() => import('./pages/FieldPage'), 'FieldPage');
+const EventRoute = lazyPage(() => import('./pages/EventRoute'), 'EventRoute');
+const EventsPage = lazyPage(() => import('./pages/EventsPage'), 'EventsPage');
+const CalendarPage = lazyPage(() => import('./pages/CalendarPage'), 'CalendarPage');
+const MyEventsPage = lazyPage(() => import('./pages/MyEventsPage'), 'MyEventsPage');
+const PlatformEventsPage = lazyPage(() => import('./pages/platform/PlatformEventsPage'), 'PlatformEventsPage');
+const FighterPage = lazyPage(() => import('./pages/FighterPage'), 'FighterPage');
+const ProfileEditPage = lazyPage(() => import('./pages/ProfileEditPage'), 'ProfileEditPage');
+const FightersPage = lazyPage(() => import('./pages/FightersPage'), 'FightersPage');
+const RankingsPage = lazyPage(() => import('./pages/RankingsPage'), 'RankingsPage');
+const FormatsPage = lazyPage(() => import('./pages/FormatsPage'), 'FormatsPage');
+const HomePage = lazyPage(() => import('./pages/HomePage'), 'HomePage');
+const MarshalPage = lazyPage(() => import('./pages/MarshalPage'), 'MarshalPage');
+const PrivacyPage = lazyPage(() => import('./pages/PrivacyPage'), 'PrivacyPage');
+const NotFoundPage = lazyPage(() => import('./pages/NotFoundPage'), 'NotFoundPage');
+const RulesPage = lazyPage(() => import('./pages/RulesPage'), 'RulesPage');
+const RuleDocPage = lazyPage(() => import('./pages/rules/RuleDocPage'), 'RuleDocPage');
+const RulePage = lazyPage(() => import('./pages/rules/RulePage'), 'RulePage');
+const RegisterPage = lazyPage(() => import('./registration/RegisterPage'), 'RegisterPage');
+const EventControlPage = lazyPage(() => import('./pages/control/EventControlPage'), 'EventControlPage');
+const CommandRedirect = lazyPage(() => import('./pages/control/LegacyRedirects'), 'CommandRedirect');
+const ManageRedirect = lazyPage(() => import('./pages/control/LegacyRedirects'), 'ManageRedirect');
+const AccountPage = lazyPage(() => import('./auth/AccountPage'), 'AccountPage');
+const ResetPasswordPage = lazyPage(() => import('./auth/AuthPages'), 'ResetPasswordPage');
+const SignInPage = lazyPage(() => import('./auth/AuthPages'), 'SignInPage');
+const ClaimProfilePage = lazyPage(() => import('./pages/ClaimProfilePage'), 'ClaimProfilePage');
+const TestLoginPage = lazyPage(() => import('./auth/TestLoginPage'), 'TestLoginPage');
+const WelcomePage = lazyPage(() => import('./pages/WelcomePage'), 'WelcomePage');
+const NewEventPage = lazyPage(() => import('./pages/NewEventPage'), 'NewEventPage');
+const TeamManagerPage = lazyPage(() => import('./pages/TeamManagerPage'), 'TeamManagerPage');
+const TeamPage = lazyPage(() => import('./pages/TeamPage'), 'TeamPage');
+const TeamEditPage = lazyPage(() => import('./pages/TeamEditPage'), 'TeamEditPage');
+const ClubMembershipPage = lazyPage(() => import('./pages/ClubMembershipPage'), 'ClubMembershipPage');
+const TeamsPage = lazyPage(() => import('./pages/TeamsPage'), 'TeamsPage');
+const OrganizationPage = lazyPage(() => import('./pages/OrganizationPages'), 'OrganizationPage');
+const OrganizationsPage = lazyPage(() => import('./pages/OrganizationPages'), 'OrganizationsPage');
+const PlatformFightersPage = lazyPage(() => import('./pages/platform/PlatformPages'), 'PlatformFightersPage');
+const PlatformHomePage = lazyPage(() => import('./pages/platform/PlatformPages'), 'PlatformHomePage');
+const PlatformOrganizationsPage = lazyPage(() => import('./pages/platform/PlatformPages'), 'PlatformOrganizationsPage');
+const PlatformActivityPage = lazyPage(() => import('./pages/platform/AdminInsights'), 'PlatformActivityPage');
+const PlatformBugsPage = lazyPage(() => import('./pages/platform/AdminInsights'), 'PlatformBugsPage');
+const PlatformRulesPage = lazyPage(() => import('./pages/platform/PlatformRulesPage'), 'PlatformRulesPage');
+const PlatformDevicesPage = lazyPage(() => import('./pages/platform/PlatformDevicesPage'), 'PlatformDevicesPage');
+const ArenaPage = lazyPage(() => import('./pages/arena/ArenaPage'), 'ArenaPage');
+const CounterPage = lazyPage(() => import('./pages/lyst/CounterPage'), 'CounterPage');
+const BroadcastPage = lazyPage(() => import('./pages/broadcast/BroadcastPage'), 'BroadcastPage');
+const CheckinDeskPage = lazyPage(() => import('./pages/CheckinDeskPage'), 'CheckinDeskPage');
+const DisciplineLogPage = lazyPage(() => import('./pages/DisciplineLogPage'), 'DisciplineLogPage');
+const AnnouncerPage = lazyPage(() => import('./pages/AnnouncerPage'), 'AnnouncerPage');
+const DeviceSignInPage = lazyPage(() => import('./pages/DeviceSignInPage'), 'DeviceSignInPage');
+const DeviceApp = lazyPage(() => import('./DeviceApp'), 'DeviceApp');
 
 /** A temporary event device (Pack 18.1) runs its own small app; a person's account runs the site. Chosen once per page load: switching is a full page load. */
 export function App() {
-  return isDeviceMode() ? <DeviceApp /> : <SiteApp />;
+  return isDeviceMode() ? <Suspense fallback={<PageLoading />}><DeviceApp /></Suspense> : <SiteApp />;
 }
 
 function SiteApp() {
@@ -59,6 +70,7 @@ function SiteApp() {
   // Last line of defence for the screens outside the site chrome (venue display, broadcast overlay, counter phone); the chrome has its own.
   return (
     <ErrorBoundary resetKey={pathname + search} fullPage>
+    <Suspense fallback={<PageLoading />}>
     <Routes>
       {/* The venue display lives outside the site chrome: no header, menus or footer on a screen beside the list. */}
       <Route path="events/:eventId/arena" element={<ArenaPage />} />
@@ -132,6 +144,7 @@ function SiteApp() {
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
+    </Suspense>
     </ErrorBoundary>
   );
 }
