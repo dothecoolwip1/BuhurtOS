@@ -1173,6 +1173,23 @@ column public.organization_staff.created_at timestamp with time zone not null
 column public.organization_staff.organization_id uuid not null
 column public.organization_staff.role text not null
 column public.organization_staff.user_id uuid not null
+column public.organization_suggestions.country text
+column public.organization_suggestions.created_at timestamp with time zone not null
+column public.organization_suggestions.decided_at timestamp with time zone
+column public.organization_suggestions.decided_by uuid
+column public.organization_suggestions.decision_note text
+column public.organization_suggestions.description text
+column public.organization_suggestions.id uuid not null
+column public.organization_suggestions.involvement text not null
+column public.organization_suggestions.kind text not null
+column public.organization_suggestions.name text not null
+column public.organization_suggestions.note text
+column public.organization_suggestions.organization_id uuid
+column public.organization_suggestions.region text
+column public.organization_suggestions.short_name text
+column public.organization_suggestions.status text not null
+column public.organization_suggestions.user_id uuid
+column public.organization_suggestions.website text
 column public.organizations.country text
 column public.organizations.created_at timestamp with time zone not null
 column public.organizations.description text
@@ -2356,7 +2373,7 @@ constraint melee_packs melee_packs_user_id_source_source_ref_key UNIQUE (user_id
 constraint notification_preferences notification_preferences_pkey PRIMARY KEY (user_id)
 constraint notification_preferences notification_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 constraint notifications notifications_category_check CHECK (((category IS NULL) OR (category = ANY (ARRAY['fights'::text, 'team'::text, 'events'::text, 'system'::text]))))
-constraint notifications notifications_kind_check CHECK ((kind = ANY (ARRAY['team_join_requested'::text, 'team_join_decided'::text, 'team_proposed'::text, 'registration_submitted'::text, 'registration_decided'::text, 'registration_received'::text, 'bug_reported'::text, 'event_invited'::text, 'registration_withdrawn'::text, 'fighter_claim_requested'::text, 'fighter_claim_decided'::text, 'fight_called'::text, 'fight_moved'::text, 'team_member_joined'::text, 'team_member_added'::text, 'event_cancelled'::text, 'test_push'::text, 'schedule_changed'::text, 'event_announcement'::text, 'result_needs_review'::text, 'inspection_needs_correction'::text, 'inspection_passed'::text, 'suspension_changed'::text, 'review_decided'::text, 'green_card_changed'::text, 'club_membership_submitted'::text, 'card_review'::text, 'card_decided'::text, 'card_published'::text, 'privacy_request'::text, 'error_alert'::text, 'retention_due'::text])))
+constraint notifications notifications_kind_check CHECK ((kind = ANY (ARRAY['team_join_requested'::text, 'team_join_decided'::text, 'team_proposed'::text, 'registration_submitted'::text, 'registration_decided'::text, 'registration_received'::text, 'bug_reported'::text, 'organization_suggested'::text, 'organization_suggestion_decided'::text, 'event_invited'::text, 'registration_withdrawn'::text, 'fighter_claim_requested'::text, 'fighter_claim_decided'::text, 'fight_called'::text, 'fight_moved'::text, 'team_member_joined'::text, 'team_member_added'::text, 'event_cancelled'::text, 'test_push'::text, 'schedule_changed'::text, 'event_announcement'::text, 'result_needs_review'::text, 'inspection_needs_correction'::text, 'inspection_passed'::text, 'suspension_changed'::text, 'review_decided'::text, 'green_card_changed'::text, 'club_membership_submitted'::text, 'card_review'::text, 'card_decided'::text, 'card_published'::text, 'privacy_request'::text, 'error_alert'::text, 'retention_due'::text])))
 constraint notifications notifications_pkey PRIMARY KEY (id)
 constraint notifications notifications_push_state_check CHECK ((push_state = ANY (ARRAY['none'::text, 'pending'::text, 'done'::text])))
 constraint notifications notifications_route_check CHECK (((route IS NULL) OR ((char_length(route) <= 200) AND (route ~ '^/[A-Za-z0-9/_.-]*(\?[A-Za-z0-9=&_.-]*)?(#[A-Za-z0-9_.-]+)?$'::text))))
@@ -2365,6 +2382,22 @@ constraint organization_staff organization_staff_organization_id_fkey FOREIGN KE
 constraint organization_staff organization_staff_pkey PRIMARY KEY (organization_id, user_id)
 constraint organization_staff organization_staff_role_check CHECK ((role = 'admin'::text))
 constraint organization_staff organization_staff_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+constraint organization_suggestions organization_suggestions_country_check CHECK (((country IS NULL) OR (char_length(country) <= 80)))
+constraint organization_suggestions organization_suggestions_decided_by_fkey FOREIGN KEY (decided_by) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint organization_suggestions organization_suggestions_decided_consistent CHECK (((status = 'pending'::text) = (decided_at IS NULL)))
+constraint organization_suggestions organization_suggestions_decision_note_check CHECK (((decision_note IS NULL) OR (char_length(decision_note) <= 500)))
+constraint organization_suggestions organization_suggestions_description_check CHECK (((description IS NULL) OR (char_length(description) <= 1000)))
+constraint organization_suggestions organization_suggestions_involvement_check CHECK ((involvement = ANY (ARRAY['admin'::text, 'member'::text, 'none'::text])))
+constraint organization_suggestions organization_suggestions_kind_check CHECK ((kind = ANY (ARRAY['federation'::text, 'national'::text, 'regional'::text, 'club'::text, 'other'::text])))
+constraint organization_suggestions organization_suggestions_name_check CHECK (((char_length(name) >= 2) AND (char_length(name) <= 120)))
+constraint organization_suggestions organization_suggestions_note_check CHECK (((note IS NULL) OR (char_length(note) <= 1000)))
+constraint organization_suggestions organization_suggestions_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE SET NULL
+constraint organization_suggestions organization_suggestions_pkey PRIMARY KEY (id)
+constraint organization_suggestions organization_suggestions_region_check CHECK (((region IS NULL) OR (char_length(region) <= 80)))
+constraint organization_suggestions organization_suggestions_short_name_check CHECK (((short_name IS NULL) OR ((char_length(short_name) >= 2) AND (char_length(short_name) <= 20))))
+constraint organization_suggestions organization_suggestions_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'declined'::text])))
+constraint organization_suggestions organization_suggestions_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL
+constraint organization_suggestions organization_suggestions_website_check CHECK (((website IS NULL) OR (char_length(website) <= 300)))
 constraint organizations organizations_description_check CHECK (((description IS NULL) OR (char_length(description) <= 1000)))
 constraint organizations organizations_disabled_consistent CHECK (((enabled AND (disabled_at IS NULL)) OR ((NOT enabled) AND (disabled_at IS NOT NULL))))
 constraint organizations organizations_kind_check CHECK ((kind = ANY (ARRAY['federation'::text, 'national'::text, 'regional'::text, 'club'::text, 'other'::text])))
@@ -3065,6 +3098,9 @@ function private.open_events() secdef=true b0a6b3d04120c5c42d558d3fd8c84e7c
 function private.open_privacy_request(p_user uuid, p_type text, p_details text, p_contact text, p_source text, p_bug uuid, p_session uuid, p_at timestamp with time zone) secdef=true 379d08b5cd2a7f63f4507ea865ce77c0
 function private.operator_log_guard() secdef=false c5f1abe0146c746be0d8a7b9108297b6
 function private.org_enabled(p_org uuid) secdef=true fe21f4eb3a5d32ece8a2deb165fe9a61
+function private.org_sugg_fold(p text) secdef=false f76351080e283578f7e98c5a9ce11724
+function private.org_sugg_text(p jsonb, p_key text) secdef=false 478bac85a2f71d23913de9e522f802c9
+function private.org_sugg_website(p_raw text) secdef=false 4cbe205c223cc32cdeebfde97b9be18e
 function private.outrance_calls_ok(p_calls jsonb, p_needed boolean) secdef=false 31fb14174cf81c2cc1d9b1c52bbf5548
 function private.outrance_current_rounds(p_match uuid) secdef=true a652e3709c89d97548826830eed30304
 function private.outrance_escalate() secdef=true eb552dce949ca5c6b6d3ef4c2cf742ec
@@ -3208,6 +3244,7 @@ function public.admin_bug_reports(p_status text) secdef=true f4747e9ddfd5e5f2b3a
 function public.admin_client_error_samples(p_group text) secdef=true 5603ca1eda46d9cfecccd900224be9c2
 function public.admin_client_errors(p_days integer) secdef=true 4eef1debf3f55d32354fc77421ce79e1
 function public.admin_list_organizations() secdef=true c6a759664c031b5a7fbdce19f3876d24
+function public.admin_organization_suggestions(p_status text) secdef=true da90dc36844bc37e0bfe6a7630e1e570
 function public.admin_privacy_breaches() secdef=true 7c92e95f418dac1f1e7ddc72f4cd2a7c
 function public.admin_privacy_requests(p_open_only boolean) secdef=true 36f3b2b3c0a71e3990893c5ff3203dd0
 function public.admin_retention_log(p_limit integer) secdef=true 0c15bbbb1b750dd3e388def63b1258b0
@@ -3309,6 +3346,7 @@ function public.create_season(p_org uuid, p_slug text, p_name text, p_starts_on 
 function public.create_team(p_slug text, p_name text, p_city text, p_region text, p_country text) secdef=true e4e4ecf117d4e1c4f9f5742a5d2e7234
 function public.create_unclaimed_fighter(p_event uuid, p_name text, p_home_team uuid, p_city text, p_region text, p_gender text, p_confirmed_distinct boolean, p_competition uuid, p_entry_team uuid) secdef=true 85b7265ea53abd6f8600249f28b43858
 function public.decide_card(p_id uuid, p_decision text, p_game_use boolean, p_note text) secdef=true 96719a96095480f523ae3522dc1c4a86
+function public.decide_organization_suggestion(p_suggestion uuid, p_decision text, p_note text, p_org jsonb, p_make_admin boolean) secdef=true 2c8a4326f49ceb7fb31624026638ba69
 function public.decide_registration(p_reg uuid, p_status text) secdef=true 2b0a817da2ca9745dc3896e9719c4027
 function public.decide_review(p_id uuid, p_outcome text, p_note text, p_apply boolean) secdef=true eab73c688296d1f89f25e7837a9c741c
 function public.decide_team_join(p_request uuid, p_decision text) secdef=true 96bbf189bdda62c4003286c5161ee323
@@ -3468,6 +3506,7 @@ function public.my_fighter_id() secdef=true 1f8cafe8b9887cb5e36ff44cca99d34b
 function public.my_notification_feed(p_limit integer) secdef=true 4238c338b86a72a651e5d0cc1678e648
 function public.my_notification_settings() secdef=true 2e761d28d804193a940b19dca6804565
 function public.my_notifications(p_limit integer) secdef=true ce3109c5315e6228988e5bf9b9ba1302
+function public.my_organization_suggestions() secdef=true da0f6aa6252508a85268211563210126
 function public.my_owner_security() secdef=true d3974948d7d7284dbff962ba7e549d35
 function public.my_push_devices() secdef=true 6cf8470b7ef5a2720c468c63b10452cb
 function public.my_team_ids() secdef=true 2e515a55e5b67e1265978888534c9a3c
@@ -3606,6 +3645,7 @@ function public.submit_club_agm_topic(p_meeting uuid, p_subject text, p_details 
 function public.submit_match_result(p_command uuid, p_match uuid, p_result text, p_score_a integer, p_score_b integer, p_detail jsonb, p_expected_version integer, p_schema integer) secdef=true 4504edea388846624b5fb9862df7a3e5
 function public.submit_privacy_request(p jsonb) secdef=true 33a19264a4a5923c040c5c1861640bd4
 function public.submit_registration(p_event uuid, p_data jsonb, p_adult_confirmed boolean) secdef=true c05c12017f3e5de32755a443b239b858
+function public.suggest_organization(p jsonb) secdef=true ce551a6c0f2f5fcedc82138a9f5538f7
 function public.team_career(p_team uuid) secdef=false 2e4910e031307ffb89e6e78891f2a8cb
 function public.team_clearance(p_event uuid, p_team uuid) secdef=true a0219d10be26cc870881fa950d5b36dd
 function public.team_fighters_represented(p_team uuid) secdef=false 7c6ff1673979bcb83c734a657760c3e0
@@ -4001,6 +4041,9 @@ index public.notifications CREATE UNIQUE INDEX ON public.notifications USING btr
 index public.notifications CREATE UNIQUE INDEX ON public.notifications USING btree (id)
 index public.organization_staff CREATE INDEX ON public.organization_staff USING btree (user_id)
 index public.organization_staff CREATE UNIQUE INDEX ON public.organization_staff USING btree (organization_id, user_id)
+index public.organization_suggestions CREATE INDEX ON public.organization_suggestions USING btree (status, created_at DESC)
+index public.organization_suggestions CREATE INDEX ON public.organization_suggestions USING btree (user_id, created_at DESC)
+index public.organization_suggestions CREATE UNIQUE INDEX ON public.organization_suggestions USING btree (id)
 index public.organizations CREATE UNIQUE INDEX ON public.organizations USING btree (id)
 index public.organizations CREATE UNIQUE INDEX ON public.organizations USING btree (slug)
 index public.outrance_appeals CREATE UNIQUE INDEX ON public.outrance_appeals USING btree (id)
@@ -4400,6 +4443,7 @@ table public.melee_packs rls=true
 table public.notification_preferences rls=true
 table public.notifications rls=true
 table public.organization_staff rls=true
+table public.organization_suggestions rls=true
 table public.organizations rls=true
 table public.outrance_appeals rls=true
 table public.outrance_holds rls=true

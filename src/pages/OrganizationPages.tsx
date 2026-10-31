@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { Chip, PageHead } from '../components/ui';
 import { SuspensionAdmin } from '../components/discipline/SuspensionAdmin';
+import { SuggestOrganization } from '../components/SuggestOrganization';
 import { useAuth } from '../auth/AuthContext';
 import { fetchOrganizationBySlug, fetchOrganizationPage } from '../data/organizationPublic';
 import { fetchActiveOrganizations, organizationLabel, type Organization } from '../data/organizations';
@@ -34,6 +35,7 @@ export function OrganizationsPage() {
           </li>
         ))}
       </ul>
+      <SuggestOrganization />
     </section>
   );
 }
