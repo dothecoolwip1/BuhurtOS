@@ -47,3 +47,8 @@ Supabase remains the backend.
 - Directly test auth, RLS and permission boundaries when they change.
 - In handoffs distinguish repository changes, test/build results, database state, deployment state and live verification.
 - Never claim something is deployed, secure or verified without evidence.
+
+## Skills
+
+- Project skills live in `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex), kept identical. `docs/SKILLS.md` says which skill to use for design, development, database diagnosis and rehearsals, and how each applies to this Vite + Supabase app.
+- Rehearsals and production browser checks follow the `buhurtos-rehearsal` skill.
