@@ -15,6 +15,6 @@ describe('agent skills', () => {
   it('every skill named in skills-lock.json is installed, and the rehearsal skill is present', () => {
     const lock = JSON.parse(readFileSync(join(root, 'skills-lock.json'), 'utf8')) as { skills: Record<string, unknown> };
     const installed = readdirSync(join(root, '.agents', 'skills'));
-    for (const name of [...Object.keys(lock.skills), 'buhurtos-rehearsal']) expect(installed).toContain(name);
+    for (const name of [...Object.keys(lock.skills), 'buhurtos-rehearsal', 'buhurtos-full-test']) expect(installed).toContain(name);
   });
 });

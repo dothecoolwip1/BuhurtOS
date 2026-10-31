@@ -52,3 +52,9 @@ observer page. That is seven. Everyone else acts at a separate moment and can sh
 
 | Profile | Roles played (in order) | Accounts (by role name only) | Viewports | Concurrent with |
 |---|---|---|---|---|
+
+## When Claude Code drives the browsers (buhurtos-full-test)
+
+The seven sessions are the Playwright MCP servers `edge-organizer` (A), `edge-secretary` (B), `edge-counter-1`–`4` (C–F) and `edge-guest` (G),
+each a separate Edge with its own profile folder. They replace the owner's everyday profiles for that run; the same reuse rules apply. See
+`.agents/skills/buhurtos-full-test/SKILL.md`.

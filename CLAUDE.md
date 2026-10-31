@@ -51,4 +51,4 @@ Supabase remains the backend.
 ## Skills
 
 - Project skills live in `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex), kept identical. `docs/SKILLS.md` says which skill to use for design, development, database diagnosis and rehearsals, and how each applies to this Vite + Supabase app.
-- Rehearsals and production browser checks follow the `buhurtos-rehearsal` skill.
+- Rehearsals and production browser checks follow the `buhurtos-rehearsal` skill; "test everything" runs `buhurtos-full-test`.

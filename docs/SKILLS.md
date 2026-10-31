@@ -1,6 +1,6 @@
 # Agent skills for BuhurtOS
 
-Seven skills are installed in this repository, project-scoped, for both Claude Code and Codex:
+Eight skills are installed in this repository, project-scoped, for both Claude Code and Codex:
 
 | Skill | Source | Claude Code | Codex |
 |---|---|---|---|
@@ -11,6 +11,7 @@ Seven skills are installed in this repository, project-scoped, for both Claude C
 | `supabase` | [supabase/agent-skills](https://github.com/supabase/agent-skills/tree/main/skills/supabase) | `.claude/skills/supabase/` | `.agents/skills/supabase/` |
 | `supabase-postgres-best-practices` | [supabase/agent-skills](https://github.com/supabase/agent-skills/tree/main/skills/supabase-postgres-best-practices) | `.claude/skills/supabase-postgres-best-practices/` | `.agents/skills/supabase-postgres-best-practices/` |
 | `buhurtos-rehearsal` (ours) | this repository | `.claude/skills/buhurtos-rehearsal/` | `.agents/skills/buhurtos-rehearsal/` |
+| `buhurtos-full-test` (ours) | this repository | `.claude/skills/buhurtos-full-test/` | `.agents/skills/buhurtos-full-test/` |
 
 The six official skills were installed on 2026-10-31 with the [`skills` CLI](https://github.com/vercel-labs/skills) 1.7.4, which is the method
 the Vercel and Supabase READMEs document (`npx skills add <owner>/<repo>`), and is the skills.sh installer linked from the Anthropic README:
@@ -68,6 +69,24 @@ the seven Edge profiles, sanitized evidence, Supabase health and suggested fixes
 - Development: `vercel-react-best-practices` for React code, `supabase` for Auth, RLS, Realtime and client calls.
 - Database diagnosis: `supabase-postgres-best-practices`, with `supabase` for platform behaviour.
 - Rehearsals: `buhurtos-rehearsal`, with `webapp-testing` only for local automated runs.
+- Test everything, log everything: `buhurtos-full-test`, which runs all of the above in order.
+
+## Running a full test with Claude on the owner's PC
+
+`buhurtos-full-test` is run by Claude Code on the owner's Windows PC, because cloud sessions cannot reach https://buhurt-os.app. It drives
+seven separate Microsoft Edge sessions through Playwright MCP (`@playwright/mcp@0.0.83`, `--browser msedge`, one profile folder each).
+
+One-time setup, in PowerShell from the repository root:
+
+1. Install Microsoft Edge, Node.js 22 LTS, Git and Claude Code, and sign in to Claude Code (`claude`).
+2. `git pull`, then `npm ci`.
+3. `powershell -ExecutionPolicy Bypass -File .agents\skills\buhurtos-full-test\scripts\setup-edge-sessions.ps1 -SignIn`
+4. Three Edge windows open. Sign in to `edge-organizer` with the organizer test account and to `edge-secretary` with the scorekeeper test
+   account. Leave `edge-guest` signed out. Close all three.
+5. `claude mcp list` shows `edge-organizer`, `edge-secretary`, `edge-counter-1` to `edge-counter-4` and `edge-guest`.
+
+To start a run, open Claude Code in the repository folder and say: **Use the buhurtos-full-test skill: test everything on https://buhurt-os.app and log everything.**
+Or type `/buhurtos-full-test`.
 
 ## Keeping the two copies in step
 
